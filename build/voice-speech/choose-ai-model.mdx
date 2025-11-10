@@ -146,20 +146,25 @@ Click **Model Parameters** to access advanced configuration options that control
 
 Controls randomness in responses (range: 0.0 to 2.0)
 
-- **Low (0.0 - 0.3):** Consistent, predictable responses
-  - Use for: Factual information, policy explanations, compliance-sensitive content
-  - Example: "Our return policy is..."
+- **0.0 (Recommended):** Deterministic, consistent responses
+  - Use for: Most voice agents, tool calling, action execution
+  - Maximizes reliability for transfers, bookings, and API calls
+  - Ensures consistent behavior and predictable responses
 
-- **Medium (0.4 - 0.7):** Balanced creativity and consistency
-  - Use for: Most conversational agents, general customer support
-  - Example: "I'd be happy to help you with that!"
+- **0.1 - 0.3:** Slightly varied but still highly consistent
+  - Use for: Agents that need slight natural variation
+  - Still reliable for tool calling
 
-- **High (0.8 - 2.0):** Creative, varied responses
-  - Use for: Personality-driven agents, storytelling, creative applications
-  - Example: More varied conversation styles
+- **0.4 - 0.7:** More creative and varied
+  - Use for: Personality-driven agents where creativity matters more than consistency
+  - Tool calling reliability decreases
+
+- **0.8+:** Highly creative, unpredictable
+  - Avoid for production voice agents
+  - Tool calling becomes unreliable
 
 <Note>
-**Default recommendation:** Start with 0.7 for voice agents. Lower to 0.3-0.5 if responses seem too varied.
+**Default recommendation:** Use 0.0 unless your agent needs more human-like creativity. Temperature above 0 reduces tool calling reliability (transfers, bookings, actions).
 </Note>
 
 ### Max Tokens
@@ -406,7 +411,7 @@ Run the same set on each model for fair comparison.
 **Solutions:**
 - Lower max tokens (try 150-200)
 - Add to instructions: "Keep every response under 25 seconds"
-- Decrease temperature for more focused responses
+- Use temperature 0.0 for more focused, concise responses
 - Consider faster model that encourages brevity (Claude 3 Haiku)
 
 ### Agent Misunderstands Requests
@@ -424,7 +429,7 @@ Run the same set on each model for fair comparison.
 - Simplify and clarify instructions
 - Use bulleted lists instead of paragraphs
 - Add explicit examples of correct behavior
-- Lower temperature for more consistent behavior
+- Use temperature 0.0 for maximum consistency
 
 ### High Latency / Slow Responses
 
