@@ -125,7 +125,7 @@ For agents serving one language:
 1. Open **Models > Transcriber**
 2. Use the **Language Picker** to filter transcribers
 3. Select by language name (e.g., "English") or locale code (e.g., "en-US")
-4. Choose the transcriber with best latency/cost/accuracy balance for your needs
+4. Choose the transcriber with best latency/accuracy balance for your needs
 
 **Language Variants:**
 - **en-US:** American English (General American accent)
@@ -254,7 +254,6 @@ Keyword boosting tells the transcriber to prioritize certain words when it hears
 Most providers limit keyword lists:
 - **Deepgram:** 1,000 keywords recommended, 5,000 max
 - **Azure:** 500-1,000 keywords depending on tier
-- **Google:** 5,000 phrases (can be multi-word)
 
 Focus on quality over quantity—adding too many keywords can reduce overall accuracy.
 
@@ -290,7 +289,7 @@ Start with 20-50 high-priority keywords. Expand based on observed transcription 
     - Azure Speech Premium (~500-600ms)
 
     **Latency less critical (>1s acceptable):**
-    - Azure Speech Standard or any provider if cost/coverage is the priority
+    - Azure Speech Standard or any provider if coverage is the priority
   </Accordion>
 
   <Accordion title="3. Accuracy Requirements" icon="bullseye">
@@ -300,29 +299,15 @@ Start with 20-50 high-priority keywords. Expand based on observed transcription 
     - Consider human review for critical transcripts
 
     **Standard accuracy sufficient:**
-    - Deepgram Nova-2 or Enhanced
+    - Deepgram Nova-2
     - Azure Speech Standard
 
     **Occasional errors acceptable:**
-    - Deepgram Base
-    - Budget-tier transcribers
+    - Azure Speech Standard (with keyword support)
+    - Archived Deepgram variants
   </Accordion>
 
-  <Accordion title="4. Cost Optimization" icon="coins">
-    **Budget-conscious:**
-    - Azure Speech Standard (most cost-effective for large language coverage)
-    - Deepgram Nova-2 (lower cost than Nova-3 while still real-time)
-
-    **Balanced cost/performance:**
-    - Deepgram Nova-3 General
-    - Azure Speech Premium
-
-    **Premium (cost not primary concern):**
-    - Deepgram Nova-3 Medical / specialized variants
-    - Azure Speech Premium with custom vocabularies
-  </Accordion>
-
-  <Accordion title="5. Compliance and Hosting" icon="shield">
+  <Accordion title="4. Compliance and Hosting" icon="shield">
     **EU data residency required (GDPR):**
     - Filter for EU-hosted transcribers
     - Azure Speech deployed in EU regions
@@ -343,10 +328,10 @@ Start with 20-50 high-priority keywords. Expand based on observed transcription 
 |----------|------------------------|-----------|
 | **Customer Support (English)** | Deepgram Nova-2 | Best accuracy + low latency for real-time |
 | **Multilingual Support** | Azure Speech Multilingual | Auto-detection, 100+ languages |
-| **High-Volume FAQ (English)** | Deepgram Enhanced | Good balance of cost and quality |
+| **High-Volume FAQ (English)** | Deepgram Nova-2 | Reliable performance for long-running calls |
 | **Medical/Legal** | Deepgram Nova-2 + keywords | Highest accuracy for compliance |
 | **Global Sales** | Azure Speech Multilingual | Wide language coverage |
-| **Budget/High-Volume** | Deepgram Base | Acceptable quality at low cost |
+| **High-Volume Multilingual** | Azure Speech Standard | Wide coverage for routine informational calls |
 | **Technical Support** | Deepgram Nova-2 + keywords | Handles technical jargon well |
 
 ---
@@ -519,26 +504,9 @@ Azure Speech multilingual models can detect and transcribe multiple languages au
 For multilingual agents, use language-aware instructions to ensure the LLM responds in the customer's language.
 </Note>
 
-### Deepgram Whisper for Maximum Language Coverage
-
-Deepgram's Whisper Cloud model supports 90+ languages:
-
-**Advantages:**
-- Supports rare languages (Swahili, Thai, Arabic, etc.)
-- Good accuracy across all supported languages
-- Single model handles all languages (no configuration)
-
-**Disadvantages:**
-- Higher latency (~800ms-1.5s)
-- Less accurate than language-specific models for English
-- Auto-detection can misidentify similar languages
-
-**Best for:**
-- Global businesses with truly multilingual customer base
-- Asynchronous use cases where latency less critical
-- Languages not well-supported by other providers
-
----
+<Tip>
+For languages that neither Deepgram Nova nor Azure cover today, reach out to our team — new providers can be added via the YAML registry once backend support is ready.
+</Tip>
 
 ## Troubleshooting Transcription Issues
 
@@ -561,13 +529,13 @@ Deepgram's Whisper Cloud model supports 90+ languages:
 ### High Latency / Slow Transcription
 
 **Possible causes:**
-1. Transcriber with inherently high latency (e.g., Whisper)
+1. Transcriber with inherently high latency (e.g., older cloud models)
 2. Network issues between customer and transcriber
 3. Overloaded transcriber endpoint
 4. Inefficient audio encoding
 
 **Solutions:**
-- Switch to faster transcriber (Deepgram Nova-2, Enhanced)
+    - Switch to faster transcriber (Deepgram Nova-2 or Azure Premium)
 - Check network latency in Analytics
 - Contact support if issue persists (may be provider outage)
 - Verify audio codec settings (usually automatic)
@@ -620,9 +588,9 @@ Deepgram's Whisper Cloud model supports 90+ languages:
 <AccordionGroup>
   <Accordion title="Match Transcriber to Use Case" icon="bullseye">
     Don't use the same transcriber for all agents:
-    - English customer support: Deepgram Nova-2
+    - English customer support: Deepgram Nova-3 / Nova-2
     - Multilingual: Azure Speech Multilingual
-    - Budget/high-volume: Deepgram Enhanced or Base
+    - Budget/high-volume: Azure Speech Standard or Deepgram Nova-2 with relaxed settings
 
     Optimize per agent based on language, volume, and requirements.
   </Accordion>
@@ -663,52 +631,6 @@ Deepgram's Whisper Cloud model supports 90+ languages:
     Switching transcribers later due to compliance issues is disruptive.
   </Accordion>
 </AccordionGroup>
-
----
-
-## Cost Management
-
-### Understanding STT Pricing
-
-Transcribers typically charge per minute of audio processed:
-- **Budget tier:** $0.01-$0.02 per minute
-- **Standard tier:** $0.02-$0.04 per minute
-- **Premium tier:** $0.04-$0.06 per minute
-
-**Example costs:**
-```
-Average call duration: 5 minutes
-Calls per month: 1,000
-
-With Deepgram Base ($0.0125/min):
-1,000 calls × 5 min × $0.0125 = $62.50/month
-
-With Deepgram Nova-2 ($0.043/min):
-1,000 calls × 5 min × $0.043 = $215/month
-
-With Azure Premium ($0.034/min):
-1,000 calls × 5 min × $0.034 = $170/month
-```
-
-### Optimizing STT Costs
-
-<CardGroup cols={2}>
-  <Card title="Shorten Calls" icon="clock">
-    More efficient agents = less audio to transcribe. Improve instructions and actions to resolve issues faster.
-  </Card>
-  <Card title="Use Tiered Transcribers" icon="layer-group">
-    Simple FAQ agents: Budget tier
-    Complex support: Premium tier
-  </Card>
-  <Card title="Silence Detection" icon="volume-xmark">
-    Most transcribers don't charge for silence. Good VAD reduces billable minutes.
-  </Card>
-  <Card title="Volume Discounts" icon="handshake">
-    High-volume customers may negotiate discounted rates with providers.
-  </Card>
-</CardGroup>
-
----
 
 ## Next Steps
 
