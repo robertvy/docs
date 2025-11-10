@@ -52,7 +52,7 @@ The model selection interface groups providers with helpful metadata:
 Click a provider to filter the model table to that vendor only. Use the search box to quickly find specific models by name or capability.
 
 The interface surfaces key information for each model:
-- **Model name** (e.g., GPT-4.1, Claude 3.5 Sonnet, Llama 3.1)
+- **Model name** (e.g., GPT-4.1, Claude Sonnet 4.5, Llama 3.1)
 - **Performance metrics** (latency, tokens per second)
 - **Cost per million tokens** (input and output pricing)
 - **Context window** (how much conversation history it can handle)
@@ -88,23 +88,11 @@ OpenAI models are among the most popular for conversational AI, offering strong 
 
 Anthropic's Claude models excel at following detailed instructions and maintaining safety guardrails.
 
-**Claude 3.5 Sonnet**
-- Best for: Conversational nuance, instruction adherence
-- Strengths: Excellent at following complex behavioral rules, strong context retention
-- Considerations: Moderate latency, premium pricing
-- Typical use: Agents with detailed personality requirements, compliance-sensitive applications
-
-**Claude 3 Opus**
-- Best for: Highest-accuracy requirements
-- Strengths: Best-in-class reasoning, handles ambiguity well
-- Considerations: Highest latency and cost in the Claude lineup
-- Typical use: Medical/legal consultations, complex qualification flows
-
-**Claude 3 Haiku**
-- Best for: Speed-optimized applications
-- Strengths: Extremely fast, low latency, cost-effective
-- Considerations: Reduced capability vs. Sonnet/Opus
-- Typical use: High-volume simple routing, quick information retrieval
+**Claude Sonnet 4.5**
+- Best for: Most voice agent use cases, conversational nuance, instruction adherence
+- Strengths: Excellent at following complex behavioral rules, strong context retention, reliable tool calling
+- Considerations: Moderate latency
+- Typical use: Customer support, sales qualification, appointment booking, agents with detailed personality requirements
 
 ### Groq
 
@@ -248,13 +236,13 @@ Use this framework to select your model:
 <AccordionGroup>
   <Accordion title="1. Define Your Requirements" icon="list-check">
     **Accuracy Requirements:**
-    - High accuracy needed? → GPT-4.1, Claude 3.5 Sonnet, Claude 3 Opus
-    - Moderate accuracy sufficient? → GPT-4o, Claude 3 Haiku, Llama 3.1
+    - High accuracy needed? → GPT-4.1, Claude Sonnet 4.5
+    - Moderate accuracy sufficient? → GPT-4o, Llama 3.1
 
     **Latency Requirements:**
     - Ultra-low latency critical? → Groq models (Llama, Mixtral)
-    - Moderate latency acceptable? → GPT-4o, Claude 3 Haiku
-    - Latency less important than quality? → GPT-4.1, Claude 3 Opus
+    - Moderate latency acceptable? → GPT-4o, Claude Sonnet 4.5
+    - Latency less important than quality? → GPT-4.1, Claude Sonnet 4.5
 
     **Cost Constraints:**
     - Budget-conscious? → GPT-3.5 Turbo, Mixtral, Claude 3 Haiku
@@ -289,13 +277,13 @@ Use this framework to select your model:
 
   <Accordion title="4. Factor in Volume" icon="chart-line">
     **Low Volume (under 100 calls/day):**
-    - Choose best quality within budget: GPT-4.1, Claude 3.5 Sonnet
+    - Choose best quality: GPT-4.1, Claude Sonnet 4.5
 
     **Medium Volume (100-1,000 calls/day):**
     - Balance quality and cost: GPT-4o, Llama 3.1 70B
 
     **High Volume (1,000+ calls/day):**
-    - Optimize for cost: GPT-3.5 Turbo, Mixtral, Claude 3 Haiku
+    - Optimize for cost: GPT-3.5 Turbo, Mixtral
   </Accordion>
 </AccordionGroup>
 
@@ -304,7 +292,7 @@ Use this framework to select your model:
 Many customers use different models for different agents:
 
 ```
-High-Value Sales Agent → Claude 3.5 Sonnet (quality, instruction adherence)
+High-Value Sales Agent → Claude Sonnet 4.5 (quality, instruction adherence)
 Support Routing Agent → GPT-3.5 Turbo (cost-effective, fast)
 Qualification Agent → GPT-4o (balanced speed and reasoning)
 Complex Troubleshooting → GPT-4.1 (multi-step reasoning)
@@ -360,7 +348,7 @@ Run the same set on each model for fair comparison.
 <AccordionGroup>
   <Accordion title="Start with Recommended Defaults" icon="rocket">
     For most voice agents, start with:
-    - **Model:** GPT-4o or Claude 3.5 Sonnet
+    - **Model:** GPT-4o or Claude Sonnet 4.5
     - **Temperature:** 0.7
     - **Max Tokens:** 250
     - **Streaming:** Enabled
@@ -412,12 +400,12 @@ Run the same set on each model for fair comparison.
 - Lower max tokens (try 150-200)
 - Add to instructions: "Keep every response under 25 seconds"
 - Use temperature 0.0 for more focused, concise responses
-- Consider faster model that encourages brevity (Claude 3 Haiku)
+- Consider faster model that encourages brevity
 
 ### Agent Misunderstands Requests
 
 **Solutions:**
-- Switch to higher-capability model (GPT-4.1, Claude 3.5 Sonnet)
+- Switch to higher-capability model (GPT-4.1, Claude Sonnet 4.5)
 - Improve instructions with more specific examples
 - Add keyword boosting in transcriber settings
 - Review transcription accuracy first (may be STT issue, not LLM)
@@ -434,7 +422,7 @@ Run the same set on each model for fair comparison.
 ### High Latency / Slow Responses
 
 **Solutions:**
-- Switch to faster model (Groq, Claude 3 Haiku, GPT-3.5)
+- Switch to faster model (Groq, GPT-3.5)
 - Reduce max tokens
 - Enable streaming if disabled
 - Check if issue is model or network latency (test with different providers)
