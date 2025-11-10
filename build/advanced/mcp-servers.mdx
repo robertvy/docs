@@ -172,69 +172,58 @@ MCP servers must first be configured at the account level before attaching to ag
 ### Server Configuration Example
 
 **PostgreSQL Database Server:**
-```
-┌─ Add MCP Server ────────────────────────────────────────┐
-│                                                          │
-│ Server Type: [PostgreSQL Database_______▼]              │
-│                                                          │
-│ Server Name*                                             │
-│ [Customer Database_____________________________]         │
-│                                                          │
-│ Database Configuration                                   │
-│ Host:     [db.company.com_________________________]     │
-│ Port:     [5432___________________________________]     │
-│ Database: [customers_____________________________]      │
-│ Username: [mcp_readonly__________________________]      │
-│ Password: [••••••••••••••••••••••••••••••••••]        │
-│                                                          │
-│ Connection Pool                                          │
-│ Max Connections: [10_______]                            │
-│ Timeout (sec):   [30_______]                            │
-│                                                          │
-│ Exposed Tools (Auto-detected):                          │
-│ • query_database - Execute SELECT queries               │
-│ • get_schema - Retrieve table schema                    │
-│ • count_records - Count rows in tables                  │
-│                                                          │
-│                        [Test Connection] [Save Server]  │
-└──────────────────────────────────────────────────────────┘
+
+**Server Type:** PostgreSQL Database
+
+**Server Name:** Customer Database
+
+**Database Configuration:**
+- **Host:** db.company.com
+- **Port:** 5432
+- **Database:** customers
+- **Username:** mcp_readonly
+- **Password:** ••••••••••••••••••••••••••••••••••
+
+**Connection Pool:**
+- **Max Connections:** 10
+- **Timeout (sec):** 30
+
+**Exposed Tools (Auto-detected):**
+- query_database - Execute SELECT queries
+- get_schema - Retrieve table schema
+- count_records - Count rows in tables
 
 Test Result: ✅ Connected successfully. 3 tools available.
-```
 
 **Salesforce CRM Server:**
-```
-┌─ Add MCP Server ────────────────────────────────────────┐
-│                                                          │
-│ Server Type: [Salesforce CRM___________▼]               │
-│                                                          │
-│ Server Name*                                             │
-│ [Salesforce Production_________________________]        │
-│                                                          │
-│ Authentication                                           │
-│ Instance URL: [https://company.salesforce.com______]   │
-│ Client ID:    [3MVG9...••••••••••••••••••••••]        │
-│ Client Secret:[••••••••••••••••••••••••••••••••]       │
-│ Username:     [api@company.com____________________]     │
-│ Password:     [••••••••••••••••••••••••••••••••]       │
-│ Security Token:[••••••••••••••••••••••••••••••••]      │
-│                                                          │
-│ Scope & Permissions                                      │
-│ ☑ Read Contacts    ☑ Read Accounts                     │
-│ ☑ Read Leads       ☑ Read Opportunities                │
-│ ☐ Write Contacts   ☐ Write Accounts                    │
-│                                                          │
-│ Exposed Tools (Auto-detected):                          │
-│ • lookup_contact - Find contact by phone/email          │
-│ • get_account - Retrieve account details                │
-│ • list_opportunities - Query open opportunities         │
-│ • search_leads - Search lead database                   │
-│                                                          │
-│                        [Test Connection] [Save Server]  │
-└──────────────────────────────────────────────────────────┘
+
+**Server Type:** Salesforce CRM
+
+**Server Name:** Salesforce Production
+
+**Authentication:**
+- **Instance URL:** https://company.salesforce.com
+- **Client ID:** 3MVG9...••••••••••••••••••••••
+- **Client Secret:** ••••••••••••••••••••••••••••••••
+- **Username:** api@company.com
+- **Password:** ••••••••••••••••••••••••••••••••
+- **Security Token:** ••••••••••••••••••••••••••••••••
+
+**Scope & Permissions:**
+- Read Contacts (enabled)
+- Read Accounts (enabled)
+- Read Leads (enabled)
+- Read Opportunities (enabled)
+- Write Contacts (disabled)
+- Write Accounts (disabled)
+
+**Exposed Tools (Auto-detected):**
+- lookup_contact - Find contact by phone/email
+- get_account - Retrieve account details
+- list_opportunities - Query open opportunities
+- search_leads - Search lead database
 
 Test Result: ✅ Authenticated. 4 tools available.
-```
 
 ### Security Considerations
 
@@ -359,42 +348,23 @@ Once servers are configured at account level, attach them to specific agents:
 
 ### MCP Servers UI
 
-```
-┌─ MCP Servers ───────────────────────────────────────────┐
-│                                                          │
-│ Connect Model Context Protocol servers to extend this   │
-│ agent's capabilities with external tools and data.      │
-│                                                          │
-│                              [Attach MCP Server]        │
-│                                                          │
-│ Connected Servers (2):                                  │
-│                                                          │
-│ ┌────────────────────────────────────────┐             │
-│ │ 🗄️  Customer Database                  │   [Remove]  │
-│ │ PostgreSQL MCP Server                  │             │
-│ │                                         │             │
-│ │ Query customer orders, account info,   │             │
-│ │ and transaction history.               │             │
-│ │                                         │             │
-│ │ Tools: 3 (query_database, get_schema,  │             │
-│ │         count_records)                 │             │
-│ └────────────────────────────────────────┘             │
-│                                                          │
-│ ┌────────────────────────────────────────┐             │
-│ │ ☁️  Salesforce Production              │   [Remove]  │
-│ │ Salesforce CRM                         │             │
-│ │                                         │             │
-│ │ Access customer contacts, accounts,    │             │
-│ │ and lead information.                  │             │
-│ │                                         │             │
-│ │ Tools: 4 (lookup_contact, get_account, │             │
-│ │         list_opportunities, ...)        │             │
-│ └────────────────────────────────────────┘             │
-│                                                          │
-│ No servers configured yet? → [MCP Catalog]             │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
-```
+Connect Model Context Protocol servers to extend this agent's capabilities with external tools and data.
+
+**[Attach MCP Server]** button
+
+**Connected Servers (2):**
+
+**Customer Database** [Remove button]
+- Type: PostgreSQL MCP Server
+- Description: Query customer orders, account info, and transaction history
+- Tools: 3 (query_database, get_schema, count_records)
+
+**Salesforce Production** [Remove button]
+- Type: Salesforce CRM
+- Description: Access customer contacts, accounts, and lead information
+- Tools: 4 (lookup_contact, get_account, list_opportunities, ...)
+
+No servers configured yet? → **[MCP Catalog]** link
 
 ### Removing Servers
 
