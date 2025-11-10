@@ -1,0 +1,989 @@
+---
+title: "Transfer Action Details"
+description: "Master call transfers with agents, phones, and SIP destinations"
+icon: "right-left"
+---
+
+## Overview
+
+The Transfer action is one of the most powerful call control tools, enabling your AI agents to seamlessly route conversations to the right destination when specialized help is needed. Whether transferring to human specialists, other AI agents, or external phone systems, proper transfer configuration ensures smooth handoffs that maintain customer satisfaction.
+
+This comprehensive guide covers everything you need to know about transfer destinations, transfer modes, advanced settings, and best practices for reliable call routing.
+
+<Note>
+Transfers happen in real-time during active calls. The customer stays on the line while being connected to the new destination - they don't get hung up on or need to call back.
+</Note>
+
+---
+
+## Transfer Destinations
+
+itellicoAI supports three types of transfer destinations, each suited for different scenarios:
+
+### Agent Transfers
+
+Transfer calls to other AI agents in your itellicoAI account.
+
+**Use cases:**
+- **Specialized agents** - Route to agents with specific knowledge (billing, technical, sales)
+- **Language routing** - Transfer to agents configured for different languages
+- **Department routing** - Direct to agents designed for specific departments
+- **Skill-based routing** - Connect to agents with specialized capabilities
+
+**Configuration:**
+```
+Transfer Type: AGENT
+Destination: Select target agent from dropdown or enter agent ID
+```
+
+**Benefits:**
+- Conversation history transfers with the call
+- No additional telephony costs
+- Instant connection (no dialing delay)
+- Full context preservation
+
+**Example:**
+```
+Agent: General Support
+Action: Transfer to Technical Agent
+
+Instructions:
+When a customer reports a technical issue that requires troubleshooting:
+1. Gather basic information about the problem
+2. Explain you're connecting them to a technical specialist
+3. Use the 'Transfer to Technical Agent' action
+```
+
+### Phone Number Transfers
+
+Transfer calls to external phone numbers - mobile phones, landlines, or business numbers.
+
+**Use cases:**
+- **Human specialists** - Connect to live support agents
+- **On-call teams** - Route to mobile phones for urgent issues
+- **External departments** - Transfer to teams outside your itellicoAI account
+- **Emergency contacts** - Escalate critical situations
+
+**Configuration:**
+```
+Transfer Type: PHONE
+Destination: +1-555-123-4567 (E.164 format required)
+```
+
+**Format requirements:**
+- Must include country code (+1 for US/Canada)
+- No spaces, dashes, or parentheses
+- Examples: +14155551234, +442071234567, +61398765432
+
+**Costs:**
+- Outbound telephony charges apply
+- Rates vary by destination country
+- Check your pricing plan for specific rates
+
+**Example:**
+```
+Agent: After-Hours Support
+Action: Transfer to On-Call Manager
+
+Instructions:
+For urgent issues outside business hours:
+1. Verify the issue is truly urgent
+2. Collect key details (customer name, issue summary)
+3. Explain you're connecting to the on-call manager
+4. Use the 'Transfer to On-Call Manager' action (+1-555-987-6543)
+```
+
+<Warning>
+Phone transfers incur outbound calling costs. International transfers can be expensive. Verify phone numbers are correct to avoid unnecessary charges.
+</Warning>
+
+### SIP Address Transfers
+
+Transfer calls to SIP addresses (Session Initiation Protocol URIs) for integration with PBX systems and contact centers.
+
+**Use cases:**
+- **PBX integration** - Route to internal extensions
+- **Contact center queues** - Transfer to ACD systems
+- **Enterprise telephony** - Connect to corporate phone systems
+- **VoIP platforms** - Integrate with existing voice infrastructure
+
+**Configuration:**
+```
+Transfer Type: SIP
+Destination: sip:1001@yourpbx.example.com
+```
+
+**Format requirements:**
+- Must be valid SIP URI
+- Include username and domain
+- Examples: sip:support@pbx.company.com, sip:1234@10.0.1.50
+
+**Prerequisites:**
+- SIP trunk configured in itellicoAI
+- Destination SIP endpoint reachable
+- Proper authentication configured
+- Network routing in place
+
+**Example:**
+```
+Agent: IVR Replacement Agent
+Action: Transfer to Support Queue
+
+Instructions:
+For general support requests:
+1. Collect caller information
+2. Explain estimated wait time
+3. Use 'Transfer to Support Queue' action (sip:support-queue@pbx.company.com)
+```
+
+<Tip>
+SIP transfers are ideal for enterprises with existing phone systems. They provide seamless integration between AI agents and traditional telephony infrastructure.
+</Tip>
+
+---
+
+## Transfer Modes
+
+Transfer actions support different modes that control how the handoff occurs:
+
+### Cold Transfer
+
+The agent transfers the call immediately and disconnects. The customer connects directly to the destination without the agent introducing them.
+
+**How it works:**
+1. Agent explains the transfer
+2. Agent initiates transfer
+3. Agent disconnects
+4. Customer connects to destination
+
+**When to use:**
+- Standard escalations
+- Department routing
+- Queue transfers
+- High-volume routing scenarios
+
+**Advantages:**
+- Fast and efficient
+- No agent monitoring required
+- Scales easily
+
+**Disadvantages:**
+- No context provided to recipient
+- Recipient doesn't know why call is coming
+- Customer must re-explain their issue
+
+**Configuration:**
+```
+Transfer Mode: Cold (default)
+Transfer Message: "Let me connect you with our billing department."
+```
+
+**Example flow:**
+```
+Customer: "I have a billing question"
+Agent: "I'd be happy to help. Let me connect you with our billing
+        department who can access your account details."
+[Cold transfer to billing]
+[Agent disconnects]
+[Customer connects to billing agent]
+Billing Agent: "Hello, how can I help you?"
+Customer: "I have a question about my bill..."
+```
+
+### Warm Transfer
+
+The agent connects to the destination first, introduces the customer and provides context, then completes the transfer. The customer is placed on hold during the introduction.
+
+**How it works:**
+1. Agent explains the transfer to customer
+2. Customer placed on hold
+3. Agent connects to destination
+4. Agent introduces customer and explains situation
+5. Agent completes transfer
+6. Agent disconnects
+
+**When to use:**
+- Complex issues requiring context
+- High-value customers
+- Situations where background is important
+- When recipient needs preparation
+
+**Advantages:**
+- Context transferred verbally
+- Recipient knows why call is coming
+- Professional handoff experience
+- Customer doesn't repeat themselves
+
+**Disadvantages:**
+- Takes longer
+- Requires destination to answer
+- Uses more agent time
+
+**Configuration:**
+```
+Transfer Mode: Warm
+Hold Music: Enabled
+Transfer Message: "Let me connect you with our specialist.
+                   I'll briefly explain your situation to them."
+```
+
+**Example flow:**
+```
+Customer: "My premium widget isn't working correctly"
+Agent: "I understand how frustrating that must be. Let me connect
+        you with our technical specialist. I'll explain the situation
+        to them so you don't have to repeat yourself."
+[Customer placed on hold with music]
+Agent → Technical Specialist: "Hi, I have Mrs. Johnson on the line.
+        She purchased our premium widget last week and it's not
+        functioning correctly. She's mentioned it won't power on."
+Technical Specialist: "Got it, I can help with that."
+[Transfer completes]
+Technical Specialist → Customer: "Hi Mrs. Johnson, I understand
+        your premium widget isn't powering on. Let's troubleshoot..."
+```
+
+<Note>
+Warm transfers are not yet fully supported in all configurations. Check your account capabilities or contact support for availability.
+</Note>
+
+### Silent Transfer
+
+The agent transfers without saying anything - the call is immediately routed to the destination.
+
+**How it works:**
+1. Agent determines transfer is needed
+2. Transfer executes silently
+3. Customer connects to destination
+
+**When to use:**
+- Routing logic only (no conversation yet)
+- IVR replacement scenarios
+- Menu-based routing
+- When silence is intentional
+
+**Configuration:**
+```
+Silent Transfer: Enabled (checkbox)
+Transfer Message: [ignored when silent enabled]
+```
+
+**Example scenario:**
+```
+Agent: Language Router (silent routing agent)
+
+Instructions:
+Based on the language the customer speaks:
+- If Spanish detected, use 'Transfer to Spanish Agent' (silent)
+- If French detected, use 'Transfer to French Agent' (silent)
+- If English, continue conversation
+
+No need to explain transfer - just route silently.
+```
+
+<Warning>
+Silent transfers can feel abrupt to customers. Use sparingly and only when appropriate for the use case.
+</Warning>
+
+---
+
+## Advanced Transfer Settings
+
+### Hold Music
+
+Play music while the customer waits for the transfer to connect.
+
+**Configuration:**
+- **Play Music:** Checkbox to enable/disable
+- **Music Duration:** How long to play music (default: 6 seconds)
+
+**Use cases:**
+- Cold transfers with connection delay
+- Professional experience during transfer
+- Indicating transfer in progress
+
+**Best practices:**
+- Keep duration reasonable (4-8 seconds)
+- Use when transfers take time to connect
+- Consider disabling for instant agent-to-agent transfers
+
+```
+┌─ Transfer Settings ────────────────────────────────────┐
+│ ☑ Play Music While Connecting                          │
+│ Music Duration: [6___] seconds                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Ring Duration
+
+Play ringing sound while waiting for destination to answer.
+
+**Configuration:**
+- **Should Ring:** Checkbox to enable/disable
+- **Ring Duration:** How long to ring (default: 4 seconds)
+
+**Use cases:**
+- Phone number transfers
+- Simulating normal calling experience
+- Indicating call is connecting
+
+**Best practices:**
+- Use for phone transfers
+- Combine with hold music (music first, then ring)
+- Set realistic duration (4-10 seconds)
+
+```
+┌─ Transfer Settings ────────────────────────────────────┐
+│ ☑ Should Ring                                           │
+│ Ring Duration: [4___] seconds                          │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Combined Audio Settings
+
+You can use both hold music and ring duration together:
+
+1. **Music plays** (6 seconds) - Professional hold experience
+2. **Ringing plays** (4 seconds) - Connection in progress
+3. **Destination answers** - Transfer completes
+
+**Total delay:** Music duration + Ring duration = 10 seconds
+
+<Tip>
+For agent-to-agent transfers, disable both music and ringing for instant connection. For phone transfers to humans, enable both for a professional experience.
+</Tip>
+
+---
+
+## Multi-Destination Support
+
+Create multiple transfer actions for different destinations to handle various routing scenarios:
+
+### Example: Complete Routing Configuration
+
+```
+Agent: Customer Service Router
+
+Transfer Actions Configured:
+1. Transfer to Billing Department (+1-555-100-0001)
+2. Transfer to Technical Support (+1-555-100-0002)
+3. Transfer to Sales Team (+1-555-100-0003)
+4. Transfer to Returns Department (+1-555-100-0004)
+5. Transfer to Manager (sip:manager@pbx.company.com)
+6. Transfer to Spanish Agent (Agent ID: ag_spanish_01)
+
+Instructions:
+Route customers to appropriate department:
+
+Billing questions → 'Transfer to Billing Department'
+Technical issues → 'Transfer to Technical Support'
+Sales inquiries → 'Transfer to Sales Team'
+Return requests → 'Transfer to Returns Department'
+Escalations → 'Transfer to Manager'
+Spanish speakers → 'Transfer to Spanish Agent'
+
+Always explain who you're connecting them to before transferring.
+```
+
+### Fallback Chains
+
+Configure multiple transfer options with fallback logic:
+
+```
+Primary escalation path:
+1. Attempt 'Transfer to Technical Support'
+2. If fails, attempt 'Transfer to General Support'
+3. If that fails, attempt 'Transfer to Manager'
+4. If all fail, apologize and schedule callback
+
+Instructions:
+If the primary transfer fails, the agent should try the backup,
+and handle complete failure gracefully by collecting callback info.
+```
+
+### Conditional Routing
+
+Use different transfers based on customer data or conversation context:
+
+```
+{% if contact.account_type == "enterprise" %}
+Route enterprise customers to 'Transfer to Enterprise Support'
+{% elif contact.account_type == "premium" %}
+Route premium customers to 'Transfer to Premium Support'
+{% else %}
+Route standard customers to 'Transfer to General Support'
+{% endif %}
+```
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Always Explain the Transfer" icon="comment">
+    Never transfer calls without context. Explain who you're connecting them to and why.
+
+    **Good:**
+    ```
+    "I understand you need help with your bill. Let me connect you
+    with our billing department who can access your account and
+    make any necessary adjustments. This should just take a moment."
+    ```
+
+    **Poor:**
+    ```
+    "Hold please." [immediate transfer]
+    ```
+  </Accordion>
+
+  <Accordion title="Set Customer Expectations" icon="clock">
+    Tell customers what to expect during and after the transfer.
+
+    **Good:**
+    ```
+    "I'm going to connect you with our technical team. You'll hear
+    a brief hold message, then they'll pick up within 30 seconds.
+    They'll have your information ready."
+    ```
+
+    **Poor:**
+    ```
+    "Transferring now." [customer doesn't know what's happening]
+    ```
+  </Accordion>
+
+  <Accordion title="Gather Information First" icon="clipboard">
+    Collect basic details before transferring so the recipient has context (or customer doesn't repeat themselves in warm transfer).
+
+    ```
+    Before transferring:
+    1. Get customer name
+    2. Understand basic issue
+    3. Collect account/order number if relevant
+    4. Ask about urgency
+    5. Then transfer with context
+    ```
+  </Accordion>
+
+  <Accordion title="Use Descriptive Names" icon="tag">
+    Name each transfer action clearly based on destination.
+
+    **Good:**
+    - "Transfer to Billing Department"
+    - "Escalate to Technical Support"
+    - "Route to Spanish-Speaking Agent"
+    - "Connect to On-Call Manager"
+
+    **Poor:**
+    - "Transfer 1"
+    - "Phone Transfer"
+    - "Escalate"
+  </Accordion>
+
+  <Accordion title="Test All Destinations" icon="vial">
+    Verify each transfer destination works before going live.
+
+    **Testing checklist:**
+    - ✅ Destination answers
+    - ✅ Audio quality is good
+    - ✅ Caller ID appears correctly
+    - ✅ Context transfers (for agent transfers)
+    - ✅ Hold music plays (if configured)
+    - ✅ Failure scenario handled gracefully
+  </Accordion>
+
+  <Accordion title="Handle Transfer Failures" icon="triangle-exclamation">
+    Always have a plan for when transfers fail (busy, no answer, etc.).
+
+    ```
+    If 'Transfer to Support' action fails:
+    1. Apologize: "I apologize, I'm having trouble connecting right now"
+    2. Offer callback: "I can have our support team call you back
+       within the next hour"
+    3. Collect callback number and best time
+    4. Confirm: "Great, expect a call from us at [number] within the hour"
+    5. Use 'End Call Politely' action
+    ```
+  </Accordion>
+
+  <Accordion title="Use E.164 Format for Phone Numbers" icon="phone">
+    Always format phone numbers correctly to avoid transfer failures.
+
+    **Correct E.164 format:**
+    - Include country code: `+1` for US/Canada
+    - No spaces, dashes, or punctheses
+    - Examples: `+14155551234`, `+442071234567`
+
+    **Incorrect formats:**
+    - ❌ `(415) 555-1234`
+    - ❌ `415-555-1234`
+    - ❌ `14155551234` (missing +)
+    - ❌ `+1 415 555 1234` (spaces)
+  </Accordion>
+
+  <Accordion title="Consider Costs for Phone Transfers" icon="dollar-sign">
+    Be mindful of telephony costs, especially for international transfers.
+
+    **Cost optimization:**
+    - Use agent transfers when possible (free)
+    - Use SIP transfers for internal routing (typically free)
+    - Limit phone transfers to necessary escalations
+    - Monitor transfer frequency and costs
+    - Set up alerts for unusual transfer volumes
+  </Accordion>
+
+  <Accordion title="Optimize Audio Settings by Destination Type" icon="volume-high">
+    Configure hold music and ring settings based on transfer type.
+
+    **Agent-to-Agent transfers:**
+    - Music: Disabled (instant connection)
+    - Ring: Disabled (no ringing needed)
+
+    **Phone transfers to humans:**
+    - Music: Enabled (6 seconds)
+    - Ring: Enabled (4 seconds)
+
+    **SIP transfers to queues:**
+    - Music: Enabled (6 seconds)
+    - Ring: Disabled (queue handles this)
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Testing Transfer Actions
+
+Thorough testing ensures transfers work reliably in production:
+
+<Steps>
+  <Step title="Test Each Destination">
+    Test every configured transfer action individually:
+
+    **For each transfer:**
+    - ✅ Start test call
+    - ✅ Trigger transfer action
+    - ✅ Verify destination receives call
+    - ✅ Check audio quality
+    - ✅ Confirm caller ID displays correctly
+    - ✅ Test from different phone numbers
+  </Step>
+
+  <Step title="Test Transfer Messages">
+    Verify pre-transfer messages work correctly:
+
+    - Default transfer message plays as configured
+    - Custom messages from instructions work
+    - Silent transfers don't play messages
+    - Messages are clear and professional
+  </Step>
+
+  <Step title="Test Audio Settings">
+    Verify hold music and ring settings:
+
+    - Hold music plays for configured duration
+    - Ring tone plays after music
+    - Total delay feels appropriate
+    - Music doesn't cut off abruptly
+    - Ring connects smoothly to destination
+  </Step>
+
+  <Step title="Test Different Transfer Types">
+    Test each destination type:
+
+    **Agent transfers:**
+    - Context transfers correctly
+    - Conversation history available
+    - Instant connection
+
+    **Phone transfers:**
+    - Number dials correctly
+    - Call connects reliably
+    - No audio issues
+
+    **SIP transfers:**
+    - SIP endpoint reachable
+    - Authentication succeeds
+    - Audio quality good
+  </Step>
+
+  <Step title="Test Failure Scenarios">
+    Simulate failures to verify error handling:
+
+    - Destination doesn't answer
+    - Destination is busy
+    - Invalid destination
+    - Network issues
+    - Verify agent handles gracefully
+  </Step>
+
+  <Step title="Test From Different Sources">
+    Test transfers from various call sources:
+
+    - Web calls from dashboard
+    - Inbound phone calls
+    - Outbound campaign calls
+    - Different phone carriers
+    - Mobile and landline origins
+  </Step>
+</Steps>
+
+### Test Checklist
+
+Use this checklist for comprehensive transfer testing:
+
+```
+┌─ Transfer Action Test Checklist ───────────────────────────────┐
+│                                                                 │
+│ Action: Transfer to Support Team                                │
+│ Destination Type: PHONE (+1-555-123-4567)                      │
+│                                                                 │
+│ Basic Functionality:                                            │
+│ ☑ Transfer executes successfully                                │
+│ ☑ Destination receives call                                     │
+│ ☑ Audio quality is good both directions                         │
+│ ☑ Caller ID displays correctly                                  │
+│                                                                 │
+│ Configuration:                                                  │
+│ ☑ Transfer message plays as configured                          │
+│ ☑ Hold music plays (6 seconds)                                 │
+│ ☑ Ring tone plays (4 seconds)                                  │
+│ ☑ Total delay feels appropriate                                │
+│                                                                 │
+│ Instructions:                                                   │
+│ ☑ Agent references correct action name                          │
+│ ☑ Agent explains transfer appropriately                         │
+│ ☑ Agent gathers info before transferring                        │
+│                                                                 │
+│ Error Handling:                                                 │
+│ ☑ No answer scenario handled                                    │
+│ ☑ Busy signal handled                                           │
+│ ☑ Invalid number handled                                        │
+│ ☑ Fallback actions work                                         │
+│                                                                 │
+│ Edge Cases:                                                     │
+│ ☑ Works from mobile callers                                     │
+│ ☑ Works from landline callers                                   │
+│ ☑ Works during high call volume                                │
+│ ☑ International callers can transfer                            │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Transfer Connects But Drops Immediately" icon="phone-slash">
+    **Symptoms:** Transfer appears to connect, but call ends right away
+
+    **Possible causes:**
+    - Destination not configured to accept transfers
+    - SIP endpoint configuration issue
+    - Agent not active (for agent transfers)
+    - Network/firewall blocking
+
+    **Solutions:**
+    - Verify destination agent is active and published
+    - Test destination phone number independently
+    - Check SIP trunk configuration and authentication
+    - Review firewall rules for SIP traffic
+    - Check for "Do Not Disturb" or call blocking on destination
+  </Accordion>
+
+  <Accordion title="No Audio After Transfer" icon="volume-xmark">
+    **Symptoms:** Transfer connects but no audio in one or both directions
+
+    **Possible causes:**
+    - RTP (media) ports blocked
+    - NAT traversal issues
+    - Codec mismatch
+    - SIP endpoint audio settings
+
+    **Solutions:**
+    - Verify RTP ports are open (typically 10000-20000)
+    - Check NAT configuration on SIP endpoints
+    - Ensure compatible codecs configured (G.711, Opus)
+    - Test audio with simple test call first
+    - Review SIP trunk audio settings
+  </Accordion>
+
+  <Accordion title="Phone Transfers Fail With Error" icon="circle-exclamation">
+    **Symptoms:** Transfer action returns error, call not connected
+
+    **Possible causes:**
+    - Invalid phone number format
+    - Insufficient account balance
+    - Number not reachable
+    - Carrier restrictions
+
+    **Solutions:**
+    - Verify E.164 format: +14155551234 (not (415) 555-1234)
+    - Check account balance and telephony credits
+    - Test with different phone number
+    - Verify destination country is supported
+    - Check for carrier blocking or spam filters
+  </Accordion>
+
+  <Accordion title="Agent Transfers Don't Preserve Context" icon="message-slash">
+    **Symptoms:** Context/history not available to receiving agent
+
+    **Possible causes:**
+    - Configuration issue
+    - Agents in different accounts
+    - Transfer mode setting
+
+    **Solutions:**
+    - Verify both agents in same itellicoAI account
+    - Check transfer is configured as agent transfer, not phone
+    - Review agent transfer settings
+    - Test with simple agent-to-agent transfer
+    - Contact support if issue persists
+  </Accordion>
+
+  <Accordion title="Hold Music Not Playing" icon="music-slash">
+    **Symptoms:** Transfer happens but no hold music
+
+    **Possible causes:**
+    - Hold music disabled in settings
+    - Duration set to 0
+    - Agent transfer (music only for phone/SIP)
+
+    **Solutions:**
+    - Enable "Play Music" checkbox in transfer settings
+    - Set music duration (4-8 seconds recommended)
+    - Verify transfer type supports music (not all agent transfers use music)
+    - Test with phone transfer to confirm music works
+  </Accordion>
+
+  <Accordion title="Ring Tone Not Playing" icon="bell-slash">
+    **Symptoms:** No ringing sound during transfer
+
+    **Possible causes:**
+    - Ring disabled in settings
+    - Ring duration set to 0
+    - Transfer completes before ring starts
+
+    **Solutions:**
+    - Enable "Should Ring" checkbox
+    - Set ring duration (4-6 seconds typical)
+    - Adjust music duration if ring should play after
+    - Verify destination actually supports ringing
+  </Accordion>
+
+  <Accordion title="SIP Transfers Fail to Connect" icon="network-wired">
+    **Symptoms:** SIP transfers return errors or don't connect
+
+    **Possible causes:**
+    - Invalid SIP URI format
+    - SIP trunk not configured
+    - Authentication failure
+    - Network routing issue
+
+    **Solutions:**
+    - Verify SIP URI format: sip:user@domain.com
+    - Check SIP trunk is configured in itellicoAI
+    - Verify SIP credentials are correct
+    - Test SIP endpoint with SIP client
+    - Check DNS resolution for SIP domain
+    - Review firewall rules for SIP traffic (port 5060/5061)
+  </Accordion>
+
+  <Accordion title="Caller ID Shows Wrong Number" icon="id-card">
+    **Symptoms:** Transferred call displays incorrect caller ID
+
+    **Possible causes:**
+    - Caller ID passthrough not configured
+    - SIP trunk settings
+    - Carrier limitations
+
+    **Solutions:**
+    - Check caller ID settings in account
+    - Verify SIP trunk passes caller ID correctly
+    - Some carriers block caller ID passthrough
+    - May need to configure allowed caller IDs
+    - Contact support for caller ID configuration help
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Real-World Examples
+
+### Example 1: Multi-Tier Support Routing
+
+```
+Agent: Customer Support Router
+
+Transfer Actions:
+- Transfer to L1 Support (sip:support-l1@queue.company.com)
+- Transfer to L2 Support (sip:support-l2@queue.company.com)
+- Transfer to Engineering (+1-555-100-9999)
+
+Instructions:
+Route support issues by complexity:
+
+Simple questions (password reset, account questions):
+- Answer directly using knowledge base
+- Don't transfer unless customer requests
+
+Medium complexity (feature questions, minor bugs):
+- Attempt to help using knowledge base
+- If unable to resolve, use 'Transfer to L1 Support'
+
+High complexity (system outages, critical bugs):
+- Gather detailed information
+- Use 'Transfer to L2 Support'
+
+Critical emergencies (data loss, security incidents):
+- Collect all details immediately
+- Use 'Transfer to Engineering' without delay
+```
+
+### Example 2: Sales Qualification with Transfer
+
+```
+Agent: Sales Qualification Agent
+
+Transfer Actions:
+- Transfer to Inside Sales (+1-555-200-1000)
+- Transfer to Enterprise Sales (+1-555-200-2000)
+- Transfer to Customer Success (sip:cs-team@company.com)
+
+Instructions:
+For inbound sales inquiries:
+
+1. Greet and understand their interest
+2. Ask qualifying questions:
+   - Company size
+   - Budget range
+   - Timeline
+   - Decision authority
+
+Based on responses:
+
+Small business (<50 employees, <$10k budget):
+- Provide self-service resources
+- Offer to schedule demo via booking action
+- Don't transfer unless they request
+
+Mid-market (50-500 employees, $10k-$100k budget):
+- Use 'Transfer to Inside Sales'
+- Explain: "I'm connecting you with an account executive
+  who can discuss our mid-market packages"
+
+Enterprise (500+ employees, $100k+ budget):
+- Use 'Transfer to Enterprise Sales'
+- Explain: "I'm connecting you with our enterprise team
+  who specializes in large deployments"
+
+Existing customer wanting expansion:
+- Use 'Transfer to Customer Success'
+```
+
+### Example 3: After-Hours Routing
+
+```
+Agent: After-Hours Support
+
+Transfer Actions:
+- Transfer to On-Call Engineer (+1-555-emergency)
+- Transfer to Voicemail (sip:vm@pbx.company.com)
+
+Instructions:
+Outside normal business hours (Mon-Fri 9am-5pm):
+
+1. Greet: "Thank you for calling. Our offices are currently closed."
+
+2. Ask about urgency:
+   "Is this an urgent issue affecting your business operations?"
+
+If urgent/emergency:
+- Gather details: name, company, issue description, impact
+- Explain: "I'm connecting you to our on-call engineer who can
+  help immediately"
+- Use 'Transfer to On-Call Engineer'
+
+If not urgent:
+- Explain business hours
+- Offer options:
+  a) Leave voicemail (Use 'Transfer to Voicemail')
+  b) Schedule callback for next business day (Use booking action)
+  c) Visit self-service knowledge base
+```
+
+---
+
+## Advanced Configurations
+
+### Dynamic Destination Routing
+
+Use variables to dynamically determine transfer destinations:
+
+```
+{% if contact.region == "west" %}
+Transfer destination: +1-555-WEST-001
+{% elif contact.region == "east" %}
+Transfer destination: +1-555-EAST-001
+{% else %}
+Transfer destination: +1-555-MAIN-001
+{% endif %}
+
+When transferring, use the appropriate regional number.
+```
+
+### Time-Based Routing
+
+Route transfers based on time of day:
+
+```
+{% set current_hour = current_datetime | date('H') | int %}
+
+{% if current_hour >= 9 and current_hour < 17 %}
+Business hours: Use 'Transfer to Support Team'
+{% else %}
+After hours: Use 'Transfer to On-Call Support'
+{% endif %}
+```
+
+### Skill-Based Routing
+
+Route based on required expertise:
+
+```
+Determine required skill:
+- Billing question → 'Transfer to Billing Specialist'
+- Technical issue → 'Transfer to Technical Support'
+- Product question → 'Transfer to Product Expert'
+- Account management → 'Transfer to Account Manager'
+
+Use customer's account type to influence routing:
+- VIP accounts always get priority queue transfers
+- Enterprise accounts route to dedicated support
+- Standard accounts route to general support queue
+```
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Call Control Actions" icon="phone" href="/build/actions/call-control">
+    Learn about End Conversation and Inactivity Management actions
+  </Card>
+  <Card title="Actions Overview" icon="bolt" href="/build/actions/overview">
+    Understand all action types and when to use them
+  </Card>
+  <Card title="Booking Actions" icon="calendar" href="/build/actions/booking-calendar">
+    Set up appointment scheduling with Cal.com
+  </Card>
+  <Card title="Custom API Actions" icon="code" href="/build/actions/custom-api-actions">
+    Connect to external systems and APIs
+  </Card>
+  <Card title="Instructions Guide" icon="pen" href="/build/conversation/instructions">
+    Write effective instructions for reliable transfers
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/test-in-dashboard">
+    Comprehensive testing guide for agents with transfers
+  </Card>
+</CardGroup>

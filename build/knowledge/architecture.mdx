@@ -1,0 +1,406 @@
+---
+title: "Knowledge Base Architecture"
+description: "Understand how knowledge bases, collections, and items work together"
+icon: "sitemap"
+---
+
+## Overview
+
+Knowledge bases transform your AI agent from a generic assistant into a business expert. By organizing your company's information into a structured hierarchy, your agent can instantly access and reference policies, procedures, product details, and any other information your business relies on.
+
+Think of knowledge bases as smart filing cabinets that your agent can search through in milliseconds during conversations.
+
+## Knowledge Architecture
+
+### The Three-Level Hierarchy
+
+Knowledge in itellicoAI follows a simple, intuitive structure:
+
+```
+Knowledge Base → Collections → Items
+
+📚 Customer Support FAQ
+├── 📁 Billing & Payments (23 items)
+├── 📁 Technical Issues (45 items)
+├── 📁 Product Information (31 items)
+└── 📁 Return Policies (28 items)
+```
+
+This hierarchy makes it easy to organize large amounts of information while keeping it accessible and manageable.
+
+---
+
+## Dashboard Overview
+
+### Main Knowledge Interface
+
+When you navigate to the Knowledge Bases section, you'll see your knowledge management dashboard:
+
+```
+┌─ Knowledge Bases ───────────────────────────────────────────┐
+│                                   [+ Create Knowledge Base] │
+│                                                             │
+│ 📚 Your Knowledge Bases (3)                                │
+│                                                             │
+│ ┌─ Customer Support FAQ ─────────────────────────────────┐  │
+│ │ 📁 Collections: 4    📄 Items: 127    ✅ Active       │  │
+│ │ • Billing & Payments • Technical Issues              │  │
+│ │ • Product Information • Return Policies              │  │
+│ │                                        [Edit] [View] │  │
+│ └─────────────────────────────────────────────────────────┘  │
+│                                                             │
+│ ┌─ Product Documentation ─────────────────────────────────┐  │
+│ │ 📁 Collections: 2    📄 Items: 89     ✅ Active       │  │
+│ │ • User Manuals • API Documentation                   │  │
+│ │                                        [Edit] [View] │  │
+│ └─────────────────────────────────────────────────────────┘  │
+│                                                             │
+│ ┌─ Company Policies ──────────────────────────────────────┐  │
+│ │ 📁 Collections: 3    📄 Items: 45     ⏸️ Draft        │  │
+│ │ • HR Policies • Compliance • Data Privacy            │  │
+│ │                                        [Edit] [View] │  │
+│ └─────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+The dashboard gives you an at-a-glance view of all your knowledge bases, showing:
+- Total number of collections and items
+- Status (Active or Draft)
+- Quick access to collections
+- Edit and View actions
+
+---
+
+## Understanding Each Level
+
+### Knowledge Bases
+
+<Card title="What is a Knowledge Base?" icon="database">
+  A knowledge base is the top-level container that groups related information together. It represents a major category or domain of your business knowledge.
+</Card>
+
+**Think of knowledge bases as different filing cabinets in your office:**
+- One cabinet for customer support materials
+- Another for product documentation
+- Another for company policies
+- Another for sales resources
+
+**Example knowledge bases:**
+- **Customer Support FAQ** - All customer-facing support information
+- **Product Documentation** - Technical docs, user guides, feature descriptions
+- **Company Policies** - HR policies, compliance docs, internal procedures
+- **Sales Resources** - Pricing sheets, competitor comparisons, pitch decks
+
+<Note>
+Knowledge bases can be in **Active** or **Draft** status. Only active knowledge bases can be assigned to agents.
+</Note>
+
+### Collections
+
+<Card title="What is a Collection?" icon="folder">
+  Collections are organizational units within a knowledge base. They group related items together by topic, category, or purpose.
+</Card>
+
+**Think of collections as folders within your filing cabinet:**
+- They organize similar content together
+- They make information easier to find and manage
+- They allow you to assign specific topics to agents
+
+**Example collections within a Customer Support knowledge base:**
+- **Billing & Payments** - Invoice questions, payment methods, refunds
+- **Technical Issues** - Troubleshooting guides, error messages, bug workarounds
+- **Product Information** - Features, specifications, compatibility
+- **Return Policies** - Return windows, conditions, process steps
+
+<Tip>
+Use clear, descriptive collection names. Your team and your AI will both benefit from intuitive organization.
+</Tip>
+
+### Knowledge Items
+
+<Card title="What is a Knowledge Item?" icon="file">
+  Knowledge items are the actual pieces of information - documents, FAQs, policies, procedures, or any content you want your agent to know.
+</Card>
+
+**Knowledge items can be:**
+- **Text entries** - Directly written content
+- **PDF files** - Uploaded documents (up to 10MB)
+- **URL scrapes** - Content pulled from web pages
+
+**Example knowledge items:**
+- "Refund Policy for Digital Products"
+- "How to Reset Password - Step by Step"
+- "Product Specifications - Model X200"
+- "Shipping Times by Region"
+
+Each knowledge item includes:
+- **Title** - Descriptive name for the content
+- **Content/Source** - The actual information
+- **Processing Status** - Current state (Pending, Processing, Completed, Failed)
+- **Metadata** - Creation date, last update, size
+
+---
+
+## When to Use Knowledge Bases
+
+<AccordionGroup>
+  <Accordion title="Your agent needs to answer specific questions" icon="circle-question">
+    If customers regularly ask about policies, procedures, or product details, add that information to a knowledge base. Your agent will reference it accurately every time.
+
+    **Example:** Customer asks "What's your return policy?" Agent retrieves the exact policy from your knowledge base and explains it naturally.
+  </Accordion>
+
+  <Accordion title="You have detailed documentation" icon="book">
+    If you have existing documentation - user manuals, FAQs, policy documents - you can upload them directly. Your agent will be able to search and reference them in conversations.
+
+    **Example:** Upload your 50-page product manual as a PDF. When customers have technical questions, your agent finds and explains the relevant sections.
+  </Accordion>
+
+  <Accordion title="Information changes frequently" icon="arrows-rotate">
+    Knowledge bases make it easy to update information without changing your agent's core instructions. Update a price sheet or policy document, and your agent instantly has the new information.
+
+    **Example:** You update your pricing document once, and all agents using that knowledge base immediately reference the new prices.
+  </Accordion>
+
+  <Accordion title="Multiple agents need the same information" icon="users">
+    Create one knowledge base and share it across multiple agents. Maintain information in one place, use it everywhere.
+
+    **Example:** Your "Product Specifications" knowledge base can be used by your sales agent, support agent, and pre-sales qualification agent.
+  </Accordion>
+
+  <Accordion title="You want to separate concerns" icon="layer-group">
+    Keep your agent's conversational instructions separate from factual information. Instructions define personality and behavior; knowledge bases provide facts and details.
+
+    **Example:** Your agent instructions say "be friendly and professional." Your knowledge base contains the actual product specs, pricing, and policies.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Organization Best Practices
+
+### Start with Clear Categories
+
+<CardGroup cols={2}>
+  <Card title="By Department" icon="building">
+    - Sales Knowledge
+    - Support Knowledge
+    - Billing Knowledge
+    - Technical Documentation
+  </Card>
+  <Card title="By Topic" icon="tags">
+    - Product Information
+    - Policies & Procedures
+    - Troubleshooting
+    - FAQs
+  </Card>
+  <Card title="By Customer Journey" icon="map">
+    - Pre-Sales Information
+    - Onboarding Guides
+    - Usage & Features
+    - Support & Troubleshooting
+  </Card>
+  <Card title="By Audience" icon="user-group">
+    - Customer-Facing Info
+    - Internal Procedures
+    - Partner Resources
+    - Technical Specs
+  </Card>
+</CardGroup>
+
+### Naming Conventions
+
+Use clear, consistent names that make sense to your entire team:
+
+**Good naming examples:**
+- Knowledge Base: "Customer Support Resources"
+- Collection: "Billing & Payments"
+- Item: "Refund Policy - Digital Products"
+
+**Poor naming examples:**
+- Knowledge Base: "KB_001"
+- Collection: "Misc Docs"
+- Item: "Policy_v2_final_UPDATED"
+
+<Tip>
+Include version dates or numbers in item titles if you maintain multiple versions: "Pricing Sheet - 2025 Q1"
+</Tip>
+
+### Keep Items Focused
+
+Each knowledge item should cover one topic or concept thoroughly:
+
+<CardGroup cols={2}>
+  <Card title="✅ Good: Focused Items" icon="check">
+    - "Return Policy for Physical Products"
+    - "Return Policy for Digital Products"
+    - "Return Shipping Instructions"
+  </Card>
+  <Card title="❌ Avoid: Mega Documents" icon="xmark">
+    - "All Company Policies and Procedures" (50 pages)
+
+    Split large documents into focused items for better retrieval.
+  </Card>
+</CardGroup>
+
+### Maintain a Logical Structure
+
+```
+📚 E-Commerce Support Knowledge Base
+├── 📁 Orders & Shipping
+│   ├── 📄 Order Tracking Instructions
+│   ├── 📄 Shipping Times by Region
+│   ├── 📄 International Shipping Info
+│   └── 📄 Order Modification Policy
+├── 📁 Returns & Refunds
+│   ├── 📄 Return Policy Overview
+│   ├── 📄 Return Shipping Process
+│   ├── 📄 Refund Processing Times
+│   └── 📄 Exchange Procedures
+├── 📁 Products & Inventory
+│   ├── 📄 Product Categories
+│   ├── 📄 Stock Availability
+│   └── 📄 Product Specifications
+└── 📁 Payment & Billing
+    ├── 📄 Accepted Payment Methods
+    ├── 📄 Invoice Questions
+    └── 📄 Payment Plan Options
+```
+
+### Regular Maintenance
+
+<Steps>
+  <Step title="Review quarterly">
+    Schedule regular reviews of your knowledge bases to ensure information stays current.
+  </Step>
+  <Step title="Archive outdated content">
+    Remove or archive items that are no longer relevant. Outdated information can confuse your agent.
+  </Step>
+  <Step title="Monitor usage">
+    Track which knowledge items are accessed most frequently. These are good candidates for optimization.
+  </Step>
+  <Step title="Update based on feedback">
+    If customers report incorrect information, check your knowledge base immediately.
+  </Step>
+</Steps>
+
+---
+
+## Real-World Examples
+
+### Example 1: SaaS Support Agent
+
+**Knowledge Base:** "SaaS Product Support"
+
+**Collections:**
+- **Account Management** (15 items)
+  - Password reset process
+  - Account upgrade instructions
+  - Billing cycle information
+  - Plan comparison chart
+- **Feature Documentation** (47 items)
+  - Individual feature guides
+  - Integration tutorials
+  - API documentation
+  - Best practices
+- **Troubleshooting** (23 items)
+  - Common error messages
+  - Connection issues
+  - Browser compatibility
+  - Performance optimization
+
+**Result:** Support agent can answer 80% of technical questions without human intervention.
+
+### Example 2: Healthcare Appointment Agent
+
+**Knowledge Base:** "Patient Services"
+
+**Collections:**
+- **Appointment Policies** (8 items)
+  - Scheduling guidelines
+  - Cancellation policy
+  - Insurance requirements
+  - New patient process
+- **Office Information** (5 items)
+  - Office locations and hours
+  - Parking instructions
+  - Accessibility information
+  - Contact directory
+- **Insurance & Billing** (12 items)
+  - Accepted insurance providers
+  - Payment options
+  - Billing questions
+  - Financial assistance
+
+**Result:** Agent handles appointment booking and policy questions 24/7 with complete accuracy.
+
+### Example 3: E-Commerce Sales Agent
+
+**Knowledge Base:** "Product Catalog & Sales"
+
+**Collections:**
+- **Product Specifications** (89 items)
+  - Detailed product descriptions
+  - Technical specifications
+  - Compatibility information
+  - Size guides
+- **Pricing & Promotions** (15 items)
+  - Current pricing
+  - Active promotions
+  - Volume discounts
+  - Seasonal sales
+- **Shipping & Delivery** (7 items)
+  - Shipping options
+  - Delivery timeframes
+  - International shipping
+  - Tracking information
+
+**Result:** Sales agent provides accurate product information and pricing instantly during customer conversations.
+
+---
+
+## How Agents Use Knowledge
+
+### Access Methods
+
+Agents can access knowledge in two ways:
+
+1. **Context Mode** - Knowledge is injected directly into the conversation context
+2. **RAG Mode** - Agent retrieves relevant knowledge dynamically based on the conversation
+
+Learn more in [Context vs RAG](/build/knowledge/context-vs-rag).
+
+### Assignment Options
+
+You can assign knowledge to agents at different levels:
+
+<CardGroup cols={3}>
+  <Card title="Entire Knowledge Base" icon="database">
+    Agent has access to all collections and items
+  </Card>
+  <Card title="Specific Collection" icon="folder">
+    Agent only accesses one collection within a base
+  </Card>
+  <Card title="Individual Items" icon="file">
+    Agent has access to specific knowledge items only
+  </Card>
+</CardGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Create Knowledge Bases" icon="plus" href="/build/knowledge/create-knowledge-bases">
+    Step-by-step guide to creating and organizing your knowledge
+  </Card>
+  <Card title="Content Types" icon="file-lines" href="/build/knowledge/content-types">
+    Learn about text, PDF, and URL knowledge items
+  </Card>
+  <Card title="Context vs RAG" icon="brain" href="/build/knowledge/context-vs-rag">
+    Choose the right access method for your use case
+  </Card>
+  <Card title="Variables & Dynamic Content" icon="brackets-curly" href="/build/conversation/variables-dynamic-content">
+    Reference knowledge in your agent instructions
+  </Card>
+</CardGroup>

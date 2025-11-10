@@ -1,0 +1,500 @@
+---
+title: "Variables & Dynamic Content"
+description: "Use Jinja templating to personalize agent instructions and greetings"
+icon: "brackets-curly"
+---
+
+## Overview
+
+Variables allow you to personalize your agent's instructions and greetings with dynamic data from contacts, campaigns, and context. itellicoAI uses Jinja2 templating to make this powerful and flexible.
+
+## Basic Variable Syntax
+
+###  Simple Variable
+
+```jinja
+{{ variable_name }}
+```
+
+### Variable with Default
+
+```jinja
+{{ variable_name | default("fallback value") }}
+```
+
+### Example
+
+```jinja
+Hello {{ contact.first_name | default("there") }}!
+```
+
+**Result:**
+- If `contact.first_name` is "Sarah": "Hello Sarah!"
+- If `contact.first_name` is empty: "Hello there!"
+
+---
+
+## Available Variables
+
+### Contact Variables
+
+Access customer information:
+
+```jinja
+{{ contact.first_name }}
+{{ contact.last_name }}
+{{ contact.email }}
+{{ contact.phone }}
+{{ contact.timezone }}
+{{ contact.language }}
+{{ contact.account_type }}
+{{ contact.account_value }}
+```
+
+**Example usage:**
+
+```
+You are speaking with {{ contact.first_name }} {{ contact.last_name }}.
+Their email is {{ contact.email | default("not provided") }}.
+Their account type is {{ contact.account_type | default("standard") }}.
+
+{% if contact.account_type == "VIP" %}
+IMPORTANT: This is a VIP customer. Provide priority service.
+{% endif %}
+```
+
+### Campaign Variables (Outbound)
+
+Access outbound campaign context:
+
+```jinja
+{{ campaign.name }}
+{{ campaign.description }}
+{{ context.call_reason }}
+{{ context.current_offer }}
+{{ context.offer_deadline }}
+```
+
+**Example usage:**
+
+```
+You are calling as part of the {{ campaign.name }} campaign.
+Purpose: {{ campaign.description }}
+
+Mention the current offer: {{ context.current_offer }}
+Deadline: {{ context.offer_deadline }}
+```
+
+### Organization Variables
+
+Access your company information:
+
+```jinja
+{{ organization.name }}
+{{ organization.short_name }}
+```
+
+**Example usage:**
+
+```
+You represent {{ organization.name }}.
+Thank customers for choosing {{ organization.short_name }}.
+```
+
+### Date & Time
+
+```jinja
+{{ now() }}                    # Current timestamp
+{{ now().hour }}               # Current hour (0-23)
+{{ now().strftime("%A") }}     # Day name
+```
+
+**Example usage:**
+
+```jinja
+{% if now().hour < 12 %}
+Good morning, {{ contact.first_name }}!
+{% elif now().hour < 17 %}
+Good afternoon, {{ contact.first_name }}!
+{% else %}
+Good evening, {{ contact.first_name }}!
+{% endif %}
+```
+
+---
+
+## Conditional Logic
+
+### If Statement
+
+```jinja
+{% if condition %}
+  This shows if condition is true
+{% endif %}
+```
+
+### If-Else
+
+```jinja
+{% if contact.account_type == "VIP" %}
+  Provide VIP service
+{% else %}
+  Provide standard service
+{% endif %}
+```
+
+### If-Elif-Else
+
+```jinja
+{% if contact.account_value > 10000 %}
+  Enterprise tier customer
+{% elif contact.account_value > 1000 %}
+  Professional tier customer
+{% else %}
+  Standard tier customer
+{% endif %}
+```
+
+### Real-World Example
+
+```jinja
+{% if contact.language == "es" %}
+Respond in Spanish. Use formal addressing (usted).
+{% elif contact.language == "fr" %}
+Respond in French. Use formal addressing (vous).
+{% elif contact.language == "de" %}
+Respond in German. Use formal addressing (Sie).
+{% else %}
+Respond in English. Use friendly, conversational tone.
+{% endif %}
+```
+
+---
+
+## Filters
+
+Filters transform variable values.
+
+### Common Filters
+
+**default:** Provide fallback value
+
+```jinja
+{{ contact.first_name | default("there") }}
+```
+
+**upper:** Convert to uppercase
+
+```jinja
+{{ contact.last_name | upper }}
+```
+
+**lower:** Convert to lowercase
+
+```jinja
+{{ contact.email | lower }}
+```
+
+**title:** Title case
+
+```jinja
+{{ contact.first_name | title }}
+```
+
+**length:** Get length
+
+```jinja
+{% if contact.phone | length > 10 %}
+  International number detected
+{% endif %}
+```
+
+### Chaining Filters
+
+```jinja
+{{ contact.first_name | default("Friend") | title }}
+```
+
+---
+
+## Loops
+
+Iterate over lists (advanced use case):
+
+```jinja
+{% for item in list_variable %}
+  Process {{ item }}
+{% endfor %}
+```
+
+**Example with knowledge:**
+
+```jinja
+Your available products:
+{% for product in context.products %}
+- {{ product.name }}: {{ product.price }}
+{% endfor %}
+```
+
+---
+
+## Knowledge References
+
+Embed knowledge base content directly:
+
+### Direct UUID Reference
+
+```jinja
+{{ _k_a1b2c3d4-e5f6-7890-abcd-ef1234567890 || Knowledge Item Title }}
+```
+
+### Raw Mode (No Formatting)
+
+```jinja
+{{ _k_a1b2c3d4-e5f6-7890-abcd-ef1234567890 || Knowledge Item Title | raw }}
+```
+
+**Example:**
+
+```
+Company Return Policy:
+{{ _k_12345678-abcd-efgh-ijkl-mnopqrstuvwx || Return Policy | raw }}
+
+Refer to this policy when customers ask about returns.
+```
+
+---
+
+## Practical Examples
+
+### Example 1: Personalized Greeting
+
+```jinja
+{% if contact.first_name %}
+Hello {{ contact.first_name }}, thanks for calling {{ organization.name }}!
+{% else %}
+Hello! Thanks for calling {{ organization.name }}!
+{% endif %}
+
+{% if contact.account_type == "VIP" %}
+As a VIP customer, you have priority support. How can I help you today?
+{% else %}
+How can I help you today?
+{% endif %}
+```
+
+### Example 2: Outbound Campaign Context
+
+```jinja
+You are calling {{ contact.first_name | default("the contact") }} as part of the {{ campaign.name }} campaign.
+
+Campaign objective: {{ campaign.description }}
+
+Reference these details:
+- Current offer: {{ context.current_offer }}
+- Offer valid until: {{ context.offer_deadline }}
+- Lead source: {{ context.lead_source | default("website") }}
+
+{% if context.lead_source == "webinar" %}
+They attended our webinar, so they're familiar with the product basics.
+{% else %}
+They may need a full product introduction.
+{% endif %}
+```
+
+### Example 3: Time-Based Instructions
+
+```jinja
+Current time: {{ now().strftime("%H:%M") }}
+
+{% if now().hour >= 17 or now().hour < 9 %}
+Outside normal business hours. If customer needs immediate assistance:
+"Our regular support hours are 9 AM to 5 PM. For urgent issues, I can take your information and have someone call you first thing in the morning, or you can reach our emergency line at [number]."
+{% else %}
+Within business hours. Full support available.
+{% endif %}
+```
+
+### Example 4: Multi-Language Support
+
+```jinja
+Customer's preferred language: {{ contact.language | default("en") }}
+
+{% if contact.language == "es" %}
+Language: Spanish
+Greeting: "¡Hola!"
+Tone: Formal (use "usted")
+Knowledge collection: "FAQ Español"
+{% elif contact.language == "de" %}
+Language: German
+Greeting: "Guten Tag!"
+Tone: Formal (use "Sie")
+Knowledge collection: "FAQ Deutsch"
+{% else %}
+Language: English
+Greeting: "Hello!"
+Tone: Friendly and conversational
+Knowledge collection: "FAQ English"
+{% endif %}
+```
+
+### Example 5: Account Tier Logic
+
+```jinja
+Account value: ${{ contact.account_value | default(0) }}
+
+{% if contact.account_value >= 50000 %}
+🌟 ENTERPRISE CUSTOMER
+- Offer white-glove service
+- Direct access to account manager
+- Priority response times
+- Custom solutions available
+{% elif contact.account_value >= 10000 %}
+💼 PROFESSIONAL CUSTOMER
+- Premium support tier
+- Dedicated support team
+- Priority queue
+{% else %}
+👤 STANDARD CUSTOMER
+- Standard support
+- Knowledge base first
+- Transfer for complex issues
+{% endif %}
+```
+
+---
+
+## Testing Variables
+
+### Test with Different Data
+
+1. Go to **Test Call**
+2. Test scenarios with different contact data:
+   - With first name vs without
+   - VIP vs standard customer
+   - Different languages
+   - Different timezone
+
+### Debug Variables
+
+Add debug output temporarily:
+
+```jinja
+<!-- DEBUG INFO (remove after testing) -->
+Name: {{ contact.first_name | default("MISSING") }}
+Account Type: {{ contact.account_type | default("MISSING") }}
+Campaign: {{ campaign.name | default("MISSING") }}
+<!-- END DEBUG -->
+```
+
+### Common Issues
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Variable shows as blank | No default provided | Add `| default("fallback")` |
+| Syntax error | Typo in variable name | Check spelling against available variables |
+| Condition not working | Wrong comparison operator | Use `==` not `=` |
+| Filter not applying | Filter doesn't exist | Check filter name spelling |
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Always Use Defaults" icon="shield">
+    Never assume a variable has a value. Always provide defaults.
+
+    ```jinja
+    ❌ Hello {{ contact.first_name }}!
+    ✅ Hello {{ contact.first_name | default("there") }}!
+    ```
+  </Accordion>
+
+  <Accordion title="Keep Logic Simple" icon="lightbulb">
+    Complex nested conditions are hard to debug. Keep it simple.
+
+    ```jinja
+    ❌ Too complex:
+    {% if contact.account_type == "VIP" and contact.account_value > 10000 and contact.region == "US" and now().hour < 17 %}
+
+    ✅ Simpler:
+    {% if contact.account_type == "VIP" %}
+    ```
+  </Accordion>
+
+  <Accordion title="Test Edge Cases" icon="vial">
+    Test with:
+    - Missing data (all fields empty)
+    - Unexpected values
+    - Very long strings
+    - Special characters
+  </Accordion>
+
+  <Accordion title="Document Your Variables" icon="file-text">
+    In your agent description or notes, document which variables you're using and why.
+
+    ```
+    Variables used:
+    - contact.first_name (personalization)
+    - contact.account_type (VIP detection)
+    - campaign.name (outbound context)
+    - context.current_offer (promotion reference)
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Quick Reference
+
+### Syntax Cheat Sheet
+
+```jinja
+{# Comments (not rendered) #}
+
+{{ variable }}                                    # Output variable
+{{ variable | default("fallback") }}             # With default
+{{ variable | upper }}                           # With filter
+
+{% if condition %}...{% endif %}                 # Conditional
+{% if condition %}...{% else %}...{% endif %}    # If-else
+
+{% for item in list %}...{% endfor %}            # Loop
+```
+
+### Common Patterns
+
+```jinja
+# Safe name display
+{{ contact.first_name | default("there") }}
+
+# VIP detection
+{% if contact.account_type == "VIP" %}
+  VIP instructions
+{% endif %}
+
+# Time-based greeting
+{% if now().hour < 12 %}Good morning{% else %}Good afternoon{% endif %}
+
+# Multi-language
+{% if contact.language == "es" %}Spanish instructions{% else %}English instructions{% endif %}
+
+# Knowledge reference
+{{ _k_uuid || Title | raw }}
+```
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Prompt Engineering Guide" icon="book" href="/build/conversation/prompt-engineering-guide">
+    See variables in action with complete examples
+  </Card>
+  <Card title="Knowledge Base" icon="book" href="/build/knowledge/architecture">
+    Learn about knowledge references
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/test-in-dashboard">
+    Test your variables work correctly
+  </Card>
+</CardGroup>

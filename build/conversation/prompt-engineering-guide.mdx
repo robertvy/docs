@@ -1,0 +1,661 @@
+---
+title: "Prompt Engineering Guide"
+description: "Master the art of writing effective agent instructions"
+icon: "book"
+---
+
+## Introduction
+
+Designing a strong prompt (instructions) is how you turn a generic voice model into a reliable AI teammate. This comprehensive guide walks through how the itellicoAI agent runtime interprets your instructions, the structure we recommend, and repeatable patterns you can use for different use cases.
+
+<Tip>
+This is an advanced guide. If you're just getting started, see [Instructions Basics](/build/conversation/instructions) first.
+</Tip>
+
+---
+
+## Understanding the Instruction Panel
+
+Inside **Agents → Abilities → Instructions** you provide a single block of text. The platform sends this block to the LLM on every turn together with:
+
+- **Structured context** - Contact data, campaign details, recent action results
+- **Knowledge Base snippets** - Retrieved content relevant to the conversation
+- **Real-time transcript** - The ongoing conversation history
+
+<Note>
+Because the prompt is concatenated with other system messages, keep it focused on the rules that **only you can provide**: mission, guardrails, conversation flow, and when to use actions.
+</Note>
+
+### What the Agent Already Knows
+
+The platform automatically provides:
+- Full conversation history
+- Contact information (name, email, phone, custom fields)
+- Campaign context (for outbound calls)
+- Available actions and their parameters
+- Knowledge base content (when retrieved)
+- Current date, time, and timezone
+
+**Don't repeat this information** in your instructions. Focus on behavioral rules, decision-making logic, and business-specific guidance.
+
+---
+
+## Before You Write Anything
+
+Collect these inputs so the prompt speaks to a specific scenario instead of a generic persona:
+
+<Steps>
+  <Step title="Define Call Objective">
+    What should the caller achieve by the end of the conversation?
+
+    Examples:
+    - Get answer to product question
+    - Book an appointment
+    - Qualify as sales lead
+    - Resolve technical issue
+  </Step>
+
+  <Step title="Identify Must-Have Data">
+    What fields are needed for downstream actions?
+
+    Examples:
+    - Email address (for confirmations)
+    - Policy number (for lookups)
+    - Pain point (for qualification)
+    - Preferred date/time (for booking)
+  </Step>
+
+  <Step title="List Available Actions">
+    What actions can the agent trigger?
+
+    Examples:
+    - Transfer to Support
+    - Book Appointment
+    - Send Follow-up Email
+    - Update CRM
+
+    Include failover plans for each.
+  </Step>
+
+  <Step title="Map Knowledge Sources">
+    Which knowledge collections are attached?
+
+    Examples:
+    - Product FAQ
+    - Return Policies
+    - Technical Troubleshooting
+    - Pricing Information
+
+    When should each be referenced?
+  </Step>
+
+  <Step title="Define Guardrails">
+    What topics must be avoided? When to escalate?
+
+    Examples:
+    - Never discuss competitor products
+    - Never promise refunds (transfer instead)
+    - Escalate legal threats immediately
+    - Don't diagnose hardware (schedule technician)
+  </Step>
+</Steps>
+
+**Documenting these inputs first** keeps your prompt short, specific, and easier to maintain.
+
+---
+
+## Recommended Prompt Structure
+
+Use this structure as a template:
+
+| Section | Purpose | Tips |
+|---------|---------|------|
+| **Role & Tone** | Tell the LLM who it is representing and how it should sound | Include brand tone, languages allowed, pronunciation notes |
+| **Primary Goal** | Explain the desired outcome for the caller | Use bullets or numbered lists for clarity |
+| **Conversation Flow** | Lay out the core steps in order | Reference prerequisites, loops, exit criteria |
+| **Information Capture** | Call out required fields and confirmation steps | Highlight how to verify accuracy before proceeding |
+| **Knowledge Usage** | Instruct when to pull in knowledge base facts | Mention collection names or keywords to search for |
+| **Action Triggers** | Describe when to run each action and with which inputs | Use explicit action names that match the configuration UI |
+| **Escalations & Guardrails** | Define forbidden topics and when to hand off or end calls | Pair rules with the relevant transfer/end action |
+| **Closure & Follow-up** | Spell out how to wrap up the call and confirm next steps | Include any follow-up messaging you promise the caller |
+
+<Tip>
+Keeping these sections in a consistent order helps later editors understand the prompt quickly.
+</Tip>
+
+---
+
+## Reusable Patterns
+
+### Pattern: Sequencing
+
+```
+Follow these steps in order:
+1. [First step]
+2. [Second step]
+3. [Third step]
+
+If interrupted, return to the first unfinished step before moving on.
+```
+
+**Use when:** You need strict conversation flow
+
+---
+
+### Pattern: Acknowledgement & Empathy
+
+```
+When customers express frustration:
+- Acknowledge feelings: "I understand how frustrating that must be"
+- Apologize when appropriate: "I'm sorry you're experiencing this"
+- Take ownership: "Let me see what I can do to help"
+- Avoid defensive language
+```
+
+**Use when:** Tone matters for customer satisfaction
+
+---
+
+### Pattern: Action Safety Nets
+
+```
+If the [Action Name] action fails:
+1. Apologize sincerely: "I apologize, I'm having trouble with that"
+2. Explain what went wrong briefly
+3. Offer alternative: [describe alternative]
+4. If alternative also fails, trigger [Fallback Action]
+```
+
+**Use when:** Actions might fail and you need graceful recovery
+
+---
+
+### Pattern: Multi-Language Support
+
+```
+Languages allowed: English, Spanish, French
+
+If the caller speaks Spanish:
+- Respond in Spanish
+- Use formal addressing (usted)
+- Reference "Políticas de Devolución" knowledge collection
+
+If the caller speaks French:
+- Respond in French
+- Use formal addressing (vous)
+- Reference "Politique de Retour" knowledge collection
+```
+
+**Use when:** Serving multilingual customers
+
+---
+
+### Pattern: Compliance Statements
+
+```
+Important compliance rules:
+- NEVER promise service availability outside business hours
+- NEVER discuss pricing not listed in the current price sheet
+- NEVER share customer data without verification
+- ALWAYS disclose that calls may be recorded (already in greeting)
+
+If asked about regulated topics, say: "I need to transfer you to [Department] for that information."
+```
+
+**Use when:** Legal/regulatory requirements exist
+
+---
+
+## Referencing Actions
+
+<Warning>
+Always reference actions by the **exact name** configured in the UI. The agent runtime exposes a function call with that name, so ambiguous wording can break execution.
+</Warning>
+
+### Example: Booking Action
+
+```
+When the caller confirms they want to schedule, call the `Schedule Dental Checkup` booking action with:
+- `date` and `time` gathered during the conversation
+- `timezone` from `{{ contact.timezone | default("America/Los_Angeles") }}`
+- Ask for email if `contact.email` is missing; otherwise use contact email
+
+If the action returns an error:
+1. Apologize: "I'm sorry, I'm having trouble booking that time slot"
+2. Offer two alternative slots from the same day
+3. Retry once with the alternative
+4. If the second attempt fails, trigger the `Transfer to Front Desk` action
+```
+
+### Example: Transfer Action
+
+```
+Use the `Transfer to Tier 2 Support` action when:
+- Issue requires escalation beyond your capabilities
+- Customer explicitly requests human agent
+- Technical issue unresolved after troubleshooting
+- Legal or billing questions arise
+
+Before transferring:
+1. Explain why: "I'm going to connect you with a specialist who can help"
+2. Summarize what you've discussed so they don't have to repeat themselves
+3. Thank them for their patience
+4. Then trigger the transfer action
+```
+
+---
+
+## Using Knowledge Effectively
+
+### Mention Collection Names
+
+```
+Knowledge Base Usage:
+
+Use the `Product FAQ` collection when:
+- Callers ask about product features
+- Questions about compatibility
+- General "how does it work" questions
+
+Use the `Return Policies` collection when:
+- Callers ask about returns or refunds
+- Questions about warranty coverage
+- Exchange processes
+
+Use the `Troubleshooting Guide` collection when:
+- Technical issues reported
+- Error messages mentioned
+- Performance problems described
+```
+
+### Instruct How to Cite
+
+```
+When using knowledge base information:
+- Summarize policies in your own words
+- Don't read verbatim legal text
+- Use conversational language
+- Confirm understanding: "Does that answer your question?"
+```
+
+### Handle Conflicting Information
+
+```
+Priority when information conflicts:
+1. Live campaign data ({{ context.current_offer }})
+2. Recently updated knowledge bases (marked with dates)
+3. General knowledge base content
+
+If knowledge base contradicts new pricing from {{ context.launch_campaign }}, prioritize the live campaign data.
+```
+
+---
+
+## Variables and Conditional Content
+
+### Jinja Templating Basics
+
+Personalize instructions with dynamic values:
+
+```jinja
+The caller's name is {{ contact.first_name | default("there") }}.
+They are calling about {{ campaign.name | default("general support") }}.
+Their account type is {{ contact.account_type | default("standard") }}.
+```
+
+### Conditional Logic
+
+```jinja
+{% if contact.account_type == "VIP" %}
+IMPORTANT: This is a VIP customer. Acknowledge their status:
+"Thank you for being a valued VIP customer, we really appreciate your business."
+Prioritize their requests and offer premium solutions first.
+{% endif %}
+
+{% if contact.language == "es" %}
+Respond in Spanish and use formal addressing (usted).
+{% else %}
+Respond in English conversationally.
+{% endif %}
+```
+
+### Using Defaults
+
+```jinja
+Timezone: {{ contact.timezone | default("America/New_York") }}
+Campaign: {{ campaign.name | default("this campaign") }}
+Offer: {{ context.current_offer | default("our standard services") }}
+```
+
+<Tip>
+Use conditionals sparingly and favor defaults to avoid rendering empty phrases. Testing prompts with dummy context values helps catch mistakes.
+</Tip>
+
+---
+
+## Example Templates
+
+### Customer Support Intake
+
+```
+You are "Riley", the friendly voice of {{ organization.name }}. Sound warm, concise, and professional.
+
+Goal:
+1. Identify the caller's product and issue category
+2. Capture name, callback number, and best email
+3. Resolve basic questions using the Knowledge Base. If unable, escalate
+
+Flow:
+1. Greet the caller, confirm how you can help
+2. Gather account or order identifier; verify spelling
+3. Diagnose using the `Product FAQ` collection. Summarize solutions plainly
+4. If unresolved after two attempts or if caller requests a human, trigger `Transfer to Tier 2`
+
+Actions:
+- `Transfer to Tier 2`: use when policy requires human follow-up or caller insists
+- `End Standard Call`: use only after confirming next steps and asking if anything else is needed
+
+Guardrails:
+- Never promise refunds or credits; instead, explain policy and escalate
+- If caller mentions emergencies or legal threats, escalate immediately
+
+Close the call by recapping the resolution or next steps and thanking them for choosing {{ organization.short_name }}.
+```
+
+---
+
+### Outbound Follow-up / Appointment Setter
+
+```
+Role: Outbound concierge calling warm leads who requested a consultation. Be energetic, keep responses under 25 seconds.
+
+Target Outcome: Book a demo within 7 days or confirm lack of interest.
+
+Steps:
+1. Confirm you're speaking with the correct person using {{ contact.first_name }}
+2. Remind them of the original request date: {{ contact.source_form_date }}
+3. Qualify interest with two discovery questions before offering times
+4. Offer two time slots: {{ context.primary_slot }} and {{ context.secondary_slot }}
+5. Trigger `Book Demo` action once time confirmed
+6. If they decline, mark reason in notes and use `End Prospect Call`
+
+If voicemail detected:
+"Hi {{ contact.first_name }}, this is [Name] from {{ organization.name }}. You requested information about [product]. I'll try you again tomorrow, or you can reach us at [number]. Thanks!"
+
+Objection handling:
+- "Too busy" → Offer specific short time slots, emphasize 15-minute duration
+- "Not interested" → Ask what changed, attempt one soft requalification
+- "Already chose competitor" → Thank them, ask for feedback, mark lost in CRM
+```
+
+---
+
+### Technical Support Agent
+
+```
+You are a {{ organization.name }} technical support specialist helping with {{ product.name }}.
+
+Primary Goal: Resolve technical issues efficiently and professionally.
+
+Conversation Flow:
+1. Greet and confirm the technical issue
+2. Gather essential info (product version, error message, steps attempted)
+3. Search `Troubleshooting Guide` knowledge collection
+4. Walk through solution step-by-step (one step at a time)
+5. Confirm each step completed before moving to next
+6. Verify issue resolved
+7. Ask if anything else needed
+
+Troubleshooting Protocol:
+- Ask one diagnostic question at a time
+- Confirm understanding of responses
+- Use simple, non-technical language unless customer is technical
+- If solution requires > 5 steps, offer to schedule technician visit
+
+Actions:
+- `Schedule Technician Visit`: Use when remote troubleshooting insufficient
+- `Create Support Ticket`: Use for issues requiring engineering investigation
+- `Transfer to Level 3`: Use for complex hardware or network issues
+
+Knowledge Usage:
+- Reference `Troubleshooting Guide` for step-by-step procedures
+- Check `Known Issues` collection for active problems
+- Use `Product Documentation` for feature explanations
+
+Guardrails:
+- Never guess at solutions - use knowledge base or escalate
+- Never ask customer to open physical devices (safety risk)
+- If frustrated after 10 minutes, offer escalation proactively
+```
+
+---
+
+### Sales Qualification Agent
+
+```
+Role: Professional sales qualifier for {{ organization.name }}, speaking with inbound leads.
+
+Objective: Qualify leads and route to appropriate sales rep within 5 minutes.
+
+Qualification Criteria:
+✅ Budget: > $10k annually (ask: "What budget range have you allocated?")
+✅ Timeline: Decision within 90 days (ask: "When are you looking to implement?")
+✅ Authority: Can influence or make purchase decisions (ask: "Who else is involved in the decision?")
+✅ Need: Clear pain point we can solve (ask: "What challenges are you trying to solve?")
+
+Conversation Flow:
+1. Warm greeting, thank them for interest
+2. Ask discovery questions naturally (don't interrogate)
+3. Listen actively, acknowledge responses
+4. Qualify against criteria (all 4 must be met for "qualified")
+5. For qualified: Book meeting with sales using `Book Sales Call` action
+6. For unqualified: Offer resources, add to nurture campaign
+
+Qualification Outcomes:
+- **Qualified** (all 4 criteria met): Book meeting, mark as "Hot Lead" in CRM
+- **Partially Qualified** (2-3 criteria): Send resources, mark as "Warm Lead", schedule follow-up
+- **Unqualified** (0-1 criteria): Politely disengage, mark as "Cold", add to newsletter
+
+Actions:
+- `Book Sales Call`: For qualified leads only, get email and phone confirmation
+- `Send Resources Email`: For partially qualified, send relevant case studies
+- `Update CRM`: Always update with qualification status and notes
+
+Tone: Professional, consultative, not pushy. Build rapport but stay efficient.
+
+If lead asks about pricing:
+"Pricing varies based on your specific needs. Once I understand your situation better, I can connect you with someone who can provide accurate pricing. May I ask a few questions about your requirements?"
+```
+
+---
+
+## Advanced Techniques
+
+### Dynamic Conversation Paths
+
+```jinja
+{% if context.call_reason == "billing" %}
+This caller has a billing question. Focus on:
+- Verifying account access before sharing information
+- Referencing the `Billing Policies` knowledge collection
+- Using the `Transfer to Billing` action for payment processing
+{% elif context.call_reason == "technical" %}
+This caller has a technical issue. Focus on:
+- Gathering diagnostic information (product, version, error)
+- Referencing the `Troubleshooting Guide` knowledge collection
+- Methodical step-by-step resolution
+{% else %}
+General inquiry. Follow standard support flow.
+{% endif %}
+```
+
+### Escalation Triggers
+
+```
+Escalation Triggers - Transfer Immediately When:
+
+🚨 URGENT (Transfer to Manager):
+- Legal language used ("lawyer", "sue", "legal action")
+- Threat of harm or violence
+- Data breach concerns
+- Major service outage impact
+
+⚠️ HIGH PRIORITY (Transfer to Specialist):
+- Customer dissatisfaction after 2 resolution attempts
+- Request for supervisor or manager
+- Complex technical issue beyond knowledge base
+- Large account (> $50k annual value from {{ contact.account_value }})
+
+📋 STANDARD (Complete Call):
+- General questions answerable from knowledge base
+- Standard troubleshooting
+- Information requests
+- Appointment booking/rescheduling
+```
+
+### Response Pacing
+
+```
+Response Guidelines:
+
+Length:
+- Keep responses under 30 seconds when possible
+- Break long explanations into chunks with confirmation checks
+- For multi-step processes, confirm after each step
+
+Pacing:
+- Speak at moderate pace (not rushed)
+- Pause briefly after asking questions
+- Use filler phrases naturally: "Let me check that for you", "One moment please"
+- Don't use excessive filler words (um, uh, like)
+
+Checking Understanding:
+After explaining something complex:
+- "Does that make sense so far?"
+- "Do you have any questions about that?"
+- "Would you like me to clarify anything?"
+```
+
+---
+
+## Testing and Iteration
+
+### Test Methodology
+
+<Steps>
+  <Step title="Dry Run in Agent Tester">
+    Test that agent follows the sequence, captures required data, and triggers the correct actions.
+
+    Use the Test Call feature to simulate conversations.
+  </Step>
+
+  <Step title="Review Analytics">
+    Check the Call Analysis panel to see if goals were met. Identify prompt gaps.
+
+    Look for patterns in failed conversations.
+  </Step>
+
+  <Step title="Analyze Transcripts">
+    Look for:
+    - Hallucinations (making up information)
+    - Missing disclaimers or guardrails
+    - Overlong responses
+    - Incorrect action triggers
+    - Poor knowledge retrieval
+  </Step>
+
+  <Step title="Version Control">
+    Before major changes:
+    - Duplicate the agent for A/B testing
+    - Paste the previous prompt into Notes with date
+    - Document what changed and why
+  </Step>
+</Steps>
+
+### Common Issues and Fixes
+
+| Issue | Symptom | Fix |
+|-------|---------|-----|
+| **Too Verbose** | Responses over 45 seconds | Add: "Keep responses under 25 seconds. Break long explanations into chunks." |
+| **Doesn't Use Actions** | Never triggers booking/transfer | Add explicit triggers with examples. Use exact action names. |
+| **Ignores Knowledge** | Answers without checking KB | Reference specific collection names. Add: "Always check [Collection] first." |
+| **Wrong Tone** | Too formal or too casual | Add tone examples and constraints. Use sample phrasing. |
+| **Interrupts Often** | Cuts off customers | Adjust VAD settings, not prompt. Or add: "Let customers finish speaking fully." |
+| **Doesn't Follow Flow** | Skips steps | Number steps clearly. Add: "Do not skip steps. Complete each before moving to next." |
+| **Poor Escalation** | Doesn't transfer when needed | Define explicit escalation triggers. Make rules unmistakable. |
+
+---
+
+## Best Practices Summary
+
+<AccordionGroup>
+  <Accordion title="✅ Do" icon="check">
+    - Be specific and explicit
+    - Use exact action names from UI
+    - Reference knowledge collections by name
+    - Provide examples for complex scenarios
+    - Test thoroughly after changes
+    - Version control significant changes
+    - Keep focused on behavioral rules
+    - Use numbered lists for sequences
+    - Define clear escalation criteria
+  </Accordion>
+
+  <Accordion title="❌ Don't" icon="xmark">
+    - Write overly long prompts (> 1000 words)
+    - Use vague instructions ("be helpful")
+    - Include contradictory rules
+    - Hardcode facts (use knowledge bases)
+    - Forget to test edge cases
+    - Make changes without backup
+    - Include information agent already knows
+    - Use ambiguous action references
+    - Skip defining guardrails
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Ongoing Maintenance
+
+Prompt engineering is **ongoing**. Schedule periodic reviews, especially after:
+
+- Product launches
+- Policy changes
+- New feature releases
+- Seasonal campaigns
+- Customer feedback indicating issues
+- Analytics showing goal achievement drops
+
+### Review Checklist
+
+- [ ] Instructions still accurate for current business?
+- [ ] Action names match current UI?
+- [ ] Knowledge collections still relevant?
+- [ ] Guardrails up to date with compliance?
+- [ ] Tone still matches brand voice?
+- [ ] Examples still applicable?
+- [ ] Goal achievement rates acceptable?
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Greeting Messages" icon="hand-wave" href="/build/conversation/greeting-messages">
+    Configure how conversations start
+  </Card>
+  <Card title="Variables & Dynamic Content" icon="brackets-curly" href="/build/conversation/variables-dynamic-content">
+    Master Jinja templating
+  </Card>
+  <Card title="Add Knowledge Base" icon="book" href="/build/knowledge/architecture">
+    Create knowledge for your agent to reference
+  </Card>
+  <Card title="Configure Actions" icon="bolt" href="/build/actions/overview">
+    Enable your agent to take actions
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+Email [support@itellico.ai](mailto:support@itellico.ai) for assistance with prompt engineering and agent optimization.

@@ -1,0 +1,1023 @@
+---
+title: "DTMF Controls"
+description: "Configure Dual-Tone Multi-Frequency (DTMF) tone sending and capture for interactive phone menus"
+icon: "phone-keypad"
+---
+
+## Overview
+
+DTMF (Dual-Tone Multi-Frequency) controls enable your AI agents to both send and capture phone keypad tones during conversations. This allows agents to navigate IVR systems, interact with legacy phone systems, and collect structured input from callers through keypad presses - transforming your agent from voice-only to a full-featured phone automation system.
+
+DTMF capabilities are essential for integrating AI agents with existing business phone infrastructure, enabling seamless transfers through complex IVR menus, and collecting precise numeric input like account numbers, PIN codes, or menu selections.
+
+<Note>
+DTMF configuration is available in the Abilities tab under DTMF Controls. Settings include global enable/disable, tone sending parameters, and capture mode configuration.
+</Note>
+
+---
+
+## What is DTMF?
+
+### Understanding DTMF Technology
+
+DTMF is the signal generated when you press keys on a phone keypad. Each key produces two simultaneous tones at different frequencies:
+
+**How DTMF works:**
+```
+Phone Keypad:
+┌───┬───┬───┐
+│ 1 │ 2 │ 3 │  → Each key press generates
+├───┼───┼───┤     two specific frequencies
+│ 4 │ 5 │ 6 │     (one high, one low)
+├───┼───┼───┤
+│ 7 │ 8 │ 9 │  → Receiving system decodes
+├───┼───┼───┤     the tone pair to identify
+│ * │ 0 │ # │     which key was pressed
+└───┴───┴───┘
+```
+
+**Available keys:**
+- **Digits:** 0-9 (numeric input)
+- **Star:** * (often used as "back" or "cancel")
+- **Pound/Hash:** # (often used as "confirm" or "enter")
+
+**Common uses:**
+- Navigate IVR menus ("Press 1 for Sales, 2 for Support")
+- Enter account numbers or PINs
+- Make menu selections
+- Confirm or cancel actions
+- Control call flows
+
+---
+
+## DTMF Capabilities
+
+### Two Primary Functions
+
+<CardGroup cols={2}>
+  <Card title="Tone Sending" icon="phone-arrow-up">
+    Agent sends DTMF tones to external systems (IVR navigation)
+  </Card>
+  <Card title="Tone Capture" icon="phone-arrow-down">
+    Agent receives and interprets DTMF tones from callers
+  </Card>
+</CardGroup>
+
+### Tone Sending Use Cases
+
+**IVR Navigation:**
+```
+Agent calls external support line
+→ IVR: "Press 1 for billing, 2 for technical support"
+→ Agent automatically sends tone "2"
+→ IVR routes to technical support
+→ Agent continues on behalf of customer
+```
+
+**Authentication:**
+```
+Agent calls bank to check balance
+→ IVR: "Please enter your account number"
+→ Agent sends tones: "5551234567"
+→ IVR: "Please enter your PIN"
+→ Agent sends tones: "9876"
+→ Agent accesses account information
+```
+
+**System Integration:**
+```
+Agent needs to transfer call through multi-level IVR
+→ Initiates transfer to main number
+→ IVR: "Press 3 for customer service, then 2 for existing customers"
+→ Agent sends: "3" (wait) "2"
+→ Call routes to correct department
+```
+
+### Tone Capture Use Cases
+
+**Menu Selection:**
+```
+Agent: "I can help you with billing or technical support.
+       Press 1 for billing, or press 2 for technical support."
+→ Customer presses "1"
+→ Agent detects tone and routes to billing flow
+```
+
+**Information Collection:**
+```
+Agent: "Please enter your 6-digit account number using your keypad,
+       followed by the pound key."
+→ Customer presses: "123456#"
+→ Agent captures "123456" and uses it for account lookup
+```
+
+**Secure Input:**
+```
+Agent: "For security, please enter the last 4 digits of your
+       social security number using your keypad."
+→ Customer enters digits via keypad (not spoken)
+→ Agent captures digits without them being spoken aloud
+→ Reduces security risk on recorded lines
+```
+
+---
+
+## Configuring DTMF Controls
+
+### Accessing DTMF Settings
+
+<Steps>
+  <Step title="Navigate to DTMF Configuration">
+    Open your agent configuration
+
+    Go to **Abilities** tab
+
+    Scroll to **DTMF Controls** section
+  </Step>
+  <Step title="Enable DTMF">
+    Toggle **DTMF Support** to ON
+
+    This enables both sending and capture capabilities
+  </Step>
+  <Step title="Configure Settings">
+    Configure tone sending parameters and capture mode (detailed below)
+  </Step>
+  <Step title="Save Configuration">
+    Save changes
+
+    Save bar appears if unsaved changes exist
+  </Step>
+</Steps>
+
+### Global DTMF Toggle
+
+**Enable/Disable DTMF:**
+```
+┌─ DTMF Controls ─────────────────────────────────────────┐
+│                                                          │
+│ DTMF Support                                   [ON/OFF] │
+│                                                          │
+│ Enable DTMF tone sending and capture for this agent.    │
+│ When enabled, configure tone sending and capture modes  │
+│ below.                                                   │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+```
+
+**When to enable:**
+- Agent needs to navigate IVR systems
+- Agent needs to collect structured numeric input
+- Integration requires DTMF interaction
+
+**When to disable:**
+- Voice-only conversations (no keypad interaction needed)
+- Reduces processing overhead slightly
+- Simplifies configuration
+
+---
+
+## Tone Sending Configuration
+
+### Enable Tone Sending
+
+Configure your agent to send DTMF tones to external systems:
+
+```
+┌─ Tone Sending ──────────────────────────────────────────┐
+│                                                          │
+│ ☑ Enable Tone Sending                                   │
+│                                                          │
+│ Cooldown Between Tones    [200____________] ms          │
+│ Tone Duration             [100____________] ms          │
+│ Inter-Tone Gap            [50_____________] ms          │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+```
+
+### Tone Sending Parameters
+
+<AccordionGroup>
+  <Accordion title="Cooldown Between Tones" icon="clock">
+    **What it controls:** Minimum time between sequential tone transmissions
+
+    **Default:** 200ms
+
+    **Range:** 50ms - 2000ms
+
+    **Purpose:** Ensures receiving IVR has time to process each tone before the next arrives
+
+    **When to adjust:**
+    - **Increase (300-500ms):** Slow/legacy IVR systems missing tones
+    - **Decrease (100-150ms):** Fast modern systems, reduce total navigation time
+
+    **Example:**
+    ```
+    Sending "1234" with 200ms cooldown:
+    Tone "1" → 200ms pause → Tone "2" → 200ms pause →
+    Tone "3" → 200ms pause → Tone "4"
+
+    Total time: ~1 second
+    ```
+  </Accordion>
+
+  <Accordion title="Tone Duration" icon="stopwatch">
+    **What it controls:** Length of each individual tone transmission
+
+    **Default:** 100ms
+
+    **Range:** 50ms - 500ms
+
+    **Purpose:** Determines how long the agent "holds down" each key
+
+    **When to adjust:**
+    - **Increase (150-200ms):** IVR systems not detecting tones reliably
+    - **Decrease (70-90ms):** Speed up interactions, reduce latency
+
+    **Technical note:** Most IVRs require minimum 60-80ms to detect a tone. Below this threshold, tones may be missed.
+  </Accordion>
+
+  <Accordion title="Inter-Tone Gap" icon="grip-lines">
+    **What it controls:** Silent gap between the end of one tone and start of the next
+
+    **Default:** 50ms
+
+    **Range:** 20ms - 200ms
+
+    **Purpose:** Provides clear separation between consecutive tones to prevent blending
+
+    **When to adjust:**
+    - **Increase (80-100ms):** IVR treating rapid tones as single input
+    - **Decrease (30-40ms):** Speed up multi-digit sequences
+
+    **Relationship to cooldown:**
+    ```
+    Total time between tones = Tone Duration + Inter-Tone Gap + Cooldown
+
+    Example with defaults:
+    100ms (tone) + 50ms (gap) + 200ms (cooldown) = 350ms between starts
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Recommended Settings by Use Case
+
+**Fast Modern IVRs:**
+```
+Cooldown: 150ms
+Tone Duration: 80ms
+Inter-Tone Gap: 40ms
+
+Use for: Cloud-based IVRs, modern phone systems
+Total time per tone: ~270ms
+```
+
+**Standard/Legacy IVRs:**
+```
+Cooldown: 200ms (default)
+Tone Duration: 100ms (default)
+Inter-Tone Gap: 50ms (default)
+
+Use for: Most business phone systems
+Total time per tone: ~350ms
+```
+
+**Slow/Problematic IVRs:**
+```
+Cooldown: 400ms
+Tone Duration: 150ms
+Inter-Tone Gap: 80ms
+
+Use for: Systems dropping tones, legacy infrastructure
+Total time per tone: ~630ms
+```
+
+<Tip>
+Start with default settings and only adjust if you observe tones being missed or IVR navigation failures. Test thoroughly after any changes.
+</Tip>
+
+---
+
+## Tone Capture Configuration
+
+### Capture Modes
+
+Choose how your agent receives and interprets DTMF input from callers:
+
+```
+┌─ Tone Capture ──────────────────────────────────────────┐
+│                                                          │
+│ Capture Mode:  ● Menu (Single Key)                      │
+│                ○ Collector (Multi-Digit)                │
+│                                                          │
+│ [Mode-specific settings appear below]                   │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+```
+
+### Mode 1: Menu (Single Key)
+
+**Best for:** IVR-style menus where customer makes single-key selections
+
+**How it works:**
+- Agent prompts with menu options
+- Customer presses single key (0-9, *, #)
+- Tone immediately captured and processed
+- Agent responds based on key pressed
+
+**Example:**
+```
+Agent: "Press 1 for billing, 2 for technical support, or 3 to speak
+       with a representative."
+
+Customer: [Presses 2]
+
+Agent: [Detects "2" immediately]
+       "Great, I'll help you with technical support. What issue
+       are you experiencing?"
+```
+
+**Configuration:**
+```
+┌─ Menu Mode Settings ────────────────────────────────────┐
+│                                                          │
+│ No additional configuration needed                       │
+│                                                          │
+│ • Single key capture                                     │
+│ • Immediate processing                                   │
+│ • No termination key required                            │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+```
+
+**Use cases:**
+- Department selection menus
+- Yes/no confirmations (1 for yes, 2 for no)
+- Rating scales (1-5 star rating)
+- Quick option selection
+
+### Mode 2: Collector (Multi-Digit)
+
+**Best for:** Collecting sequences of digits like account numbers, PINs, phone numbers
+
+**How it works:**
+- Agent prompts for multi-digit input
+- Customer enters multiple digits
+- Presses termination key (usually #) when complete
+- Agent receives complete digit string
+
+**Example:**
+```
+Agent: "Please enter your 10-digit account number, followed by
+       the pound key."
+
+Customer: [Presses 5-5-5-1-2-3-4-5-6-7-#]
+
+Agent: [Receives "5551234567" after # is pressed]
+       "Thank you. I've found your account ending in 4567."
+```
+
+**Configuration:**
+```
+┌─ Collector Mode Settings ───────────────────────────────┐
+│                                                          │
+│ Minimum Digits        [4______________]                  │
+│ Maximum Digits        [16_____________]                  │
+│ Termination Key       [# (pound)_____▼]                 │
+│ Timeout (seconds)     [5______________]                  │
+│ Clear Key             [* (star)______▼]                 │
+│ Emit Timing           [on_finalize___▼]                 │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+```
+
+### Collector Mode Parameters
+
+<AccordionGroup>
+  <Accordion title="Minimum Digits" icon="arrow-down-1-9">
+    **What it controls:** Fewest digits required before input is considered valid
+
+    **Default:** 1
+
+    **Range:** 1-20
+
+    **Purpose:** Prevents premature submission, validates expected input length
+
+    **Examples:**
+    - **Account number (10 digits):** Set to 10
+    - **PIN (4 digits):** Set to 4
+    - **Flexible input:** Set to 1 (any length accepted)
+
+    **Behavior:**
+    - If customer presses # before minimum reached → Error, prompt to re-enter
+    - If customer reaches minimum → Can press # to submit early
+  </Accordion>
+
+  <Accordion title="Maximum Digits" icon="arrow-up-9-1">
+    **What it controls:** Maximum digits accepted before auto-submission
+
+    **Default:** 10
+
+    **Range:** 1-30
+
+    **Purpose:** Prevents excessively long input, can auto-submit when max reached
+
+    **Examples:**
+    - **Phone number:** Set to 10 (US format)
+    - **Account number:** Set to expected length
+    - **Variable length:** Set higher than expected maximum
+
+    **Behavior:**
+    - When max digits entered → Automatically submits without requiring #
+    - Tones after max are ignored
+  </Accordion>
+
+  <Accordion title="Termination Key" icon="hashtag">
+    **What it controls:** Which key signals "input complete"
+
+    **Options:**
+    - **# (pound/hash)** - Standard (recommended)
+    - **\* (star)** - Alternative
+    - **None** - Only use max digits for auto-submission
+
+    **Default:** # (pound)
+
+    **Purpose:** Allows variable-length input with explicit completion signal
+
+    **Example:**
+    ```
+    Agent: "Enter your account number followed by pound."
+    Customer enters: 123456#
+    → Agent receives "123456"
+
+    Agent: "Enter your phone number followed by pound."
+    Customer enters: 5551234567#
+    → Agent receives "5551234567"
+    ```
+  </Accordion>
+
+  <Accordion title="Timeout (seconds)" icon="clock">
+    **What it controls:** How long to wait for next digit before timing out
+
+    **Default:** 5 seconds
+
+    **Range:** 2-30 seconds
+
+    **Purpose:** Handles abandoned input, prompts customer to continue
+
+    **Behavior:**
+    - Timer starts after each digit press
+    - Resets with each new digit
+    - If timeout reached → Treat as complete or prompt for more
+
+    **Examples:**
+    - **Quick input (PIN):** 3-4 seconds
+    - **Long input (account number):** 5-7 seconds
+    - **Patient system:** 10+ seconds
+
+    **Instruction handling:**
+    ```
+    If DTMF input times out before termination key:
+    - Prompt customer: "I didn't receive the complete number.
+      Please try again, and press pound when finished."
+    - Reset collector and allow retry
+    ```
+  </Accordion>
+
+  <Accordion title="Clear Key" icon="delete-left">
+    **What it controls:** Which key deletes the last entered digit
+
+    **Options:**
+    - **\* (star)** - Most common
+    - **# (pound)** - Alternative
+    - **None** - No correction allowed
+
+    **Default:** * (star)
+
+    **Purpose:** Allows customer to correct mistakes without starting over
+
+    **Example:**
+    ```
+    Customer enters: 1-2-3-4-5-6
+    Realizes error, presses: *
+    System deletes last digit: 1-2-3-4-5
+    Customer continues: 7-8-#
+    Final input: "12345678"
+    ```
+
+    **Note:** If customer presses clear key on empty buffer, typically ignored (no action).
+  </Accordion>
+
+  <Accordion title="Emit Timing" icon="circle-arrow-right">
+    **What it controls:** When captured digits are sent to the LLM for processing
+
+    **Options:**
+    - **on_finalize** - After termination key or max digits (recommended)
+    - **on_digit** - After each individual digit
+    - **on_timeout** - Only when timeout occurs
+
+    **Default:** on_finalize
+
+    **Why it matters:**
+    - **on_finalize:** Agent sees complete input at once, cleanest for processing
+    - **on_digit:** Agent sees progressive input, can provide real-time feedback
+    - **on_timeout:** Agent only gets partial input if customer abandons
+
+    **Example (on_finalize):**
+    ```
+    Customer enters: 5-5-5-1-2-3-4-#
+    → Agent receives: "5551234" (complete string)
+    → Agent processes: "Thank you, I have account 5551234"
+    ```
+
+    **Example (on_digit):**
+    ```
+    Customer enters: 5
+    → Agent receives: "5"
+    Customer enters: 5
+    → Agent receives: "55"
+    Customer enters: 5-1-2-3-4-#
+    → Agent receives each digit progressively
+
+    Allows real-time feedback but more complex to handle in instructions
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Recommended Collector Settings by Use Case
+
+**Account Number Collection (10 digits):**
+```
+Minimum Digits: 10
+Maximum Digits: 10
+Termination Key: # (optional, auto-submits at 10)
+Timeout: 6 seconds
+Clear Key: *
+Emit Timing: on_finalize
+
+Result: Auto-submits at exactly 10 digits, or customer can press # early
+```
+
+**PIN Collection (4-6 digits):**
+```
+Minimum Digits: 4
+Maximum Digits: 6
+Termination Key: #
+Timeout: 4 seconds
+Clear Key: *
+Emit Timing: on_finalize
+
+Result: Accepts 4-6 digit PINs, requires # for 4-5 digits, auto-submits at 6
+```
+
+**Phone Number (Variable Format):**
+```
+Minimum Digits: 7
+Maximum Digits: 15
+Termination Key: #
+Timeout: 6 seconds
+Clear Key: *
+Emit Timing: on_finalize
+
+Result: Handles US (10 digit) and international (variable) formats
+```
+
+**Flexible Numeric Input:**
+```
+Minimum Digits: 1
+Maximum Digits: 20
+Termination Key: #
+Timeout: 8 seconds
+Clear Key: *
+Emit Timing: on_finalize
+
+Result: Accepts any length, customer controls completion with #
+```
+
+---
+
+## Using DTMF in Instructions
+
+### Prompting for DTMF Input
+
+**Menu selection example:**
+```
+When presenting options, clearly instruct the customer to use their keypad:
+
+Agent: "I can help you with three things:
+       For account balance, press 1.
+       For recent transactions, press 2.
+       For customer service, press 3.
+
+       Please press a number now."
+
+Wait for DTMF input. When received, confirm the selection:
+
+If customer presses 1: "Great, I'll look up your account balance."
+If customer presses 2: "Okay, I'll show you recent transactions."
+If customer presses 3: "I'll connect you with customer service."
+```
+
+**Multi-digit collection example:**
+```
+When collecting account numbers or PINs:
+
+Agent: "For security, I'll need to verify your account.
+       Please enter your 8-digit account number using your keypad,
+       followed by the pound key."
+
+Wait for DTMF input (collector mode with min=8, max=8, term=#).
+
+When digits received, confirm receipt without repeating the full number:
+"Thank you, I've located your account ending in [last 4 digits]."
+```
+
+### Handling DTMF Responses
+
+**Processing captured tones:**
+```
+After requesting DTMF input, the system provides the captured value
+to you as a variable: {{ dtmf_input }}
+
+Example instruction logic:
+
+{% if dtmf_input == "1" %}
+Customer selected billing. Proceed to billing flow.
+{% elif dtmf_input == "2" %}
+Customer selected technical support. Proceed to tech support flow.
+{% elif dtmf_input == "3" %}
+Transfer call to representative using Transfer action.
+{% else %}
+Invalid selection. Prompt again:
+"I didn't recognize that option. Please press 1, 2, or 3."
+{% endif %}
+```
+
+**Validating multi-digit input:**
+```
+When customer enters account number via DTMF:
+
+Validate the input:
+- Check length matches expected (e.g., 10 digits for account number)
+- Verify format (numeric only, expected pattern)
+- Use for account lookup action
+
+If validation fails:
+"I received {{ dtmf_input|length }} digits, but account numbers are
+10 digits. Let's try again. Please enter your 10-digit account
+number followed by pound."
+
+If validation succeeds:
+Use 'Lookup Customer Account' action with account_number={{ dtmf_input }}
+```
+
+### Fallback to Voice
+
+**Offering voice alternative:**
+```
+Always provide a voice fallback option for customers who can't or
+won't use DTMF:
+
+Agent: "You can enter your account number using your keypad, or
+       if you prefer, you can say it out loud. Which would you like?"
+
+If customer says "keypad" or presses a key:
+→ Enter DTMF collection mode
+
+If customer says "say it" or speaks the number:
+→ Use voice recognition to capture account number
+```
+
+**Handling DTMF failures:**
+```
+If customer doesn't respond to DTMF prompt after 10 seconds:
+
+"I haven't received a keypad entry. If you're having trouble with
+your keypad, you can also tell me your account number verbally.
+Would you like to try the keypad again, or speak the number?"
+```
+
+---
+
+## Testing DTMF Configuration
+
+### Test Plan
+
+<Steps>
+  <Step title="Test Tone Sending (IVR Navigation)">
+    **Setup:**
+    1. Configure agent with transfer action to phone number with IVR
+    2. Add instructions to navigate IVR using DTMF tones
+
+    **Test:**
+    1. Start test call
+    2. Trigger transfer action
+    3. Monitor agent navigating IVR (check logs for sent tones)
+    4. Verify agent reaches correct destination
+
+    **Validation:**
+    - Tones sent at correct intervals
+    - IVR recognizes all tones
+    - Navigation completes successfully
+    - No dropped or misinterpreted tones
+  </Step>
+
+  <Step title="Test Menu Mode (Single Key Capture)">
+    **Setup:**
+    1. Configure DTMF in Menu mode
+    2. Add menu options to instructions
+
+    **Test:**
+    1. Start test call
+    2. Listen to menu options
+    3. Press single key (1, 2, 3, etc.)
+    4. Verify agent recognizes and responds appropriately
+
+    **Test matrix:**
+    | Key | Expected Action |
+    |-----|----------------|
+    | 1   | Route to option 1 |
+    | 2   | Route to option 2 |
+    | 9   | Route to option 9 |
+    | *   | Handle star key |
+    | #   | Handle pound key |
+    | Invalid | Error handling |
+  </Step>
+
+  <Step title="Test Collector Mode (Multi-Digit)">
+    **Setup:**
+    1. Configure DTMF in Collector mode
+    2. Set appropriate min/max digits, termination key
+
+    **Test:**
+    1. Start test call
+    2. Prompt agent to collect digits
+    3. Enter various digit sequences:
+       - Exactly minimum digits + #
+       - Between min and max digits + #
+       - Exactly maximum digits (auto-submit)
+       - Use clear key (*) to correct mistakes
+       - Let input timeout
+    4. Verify agent receives correct digit string
+
+    **Validation:**
+    - Minimum digit enforcement works
+    - Maximum digit auto-submit works
+    - Termination key properly finalizes input
+    - Clear key correctly deletes last digit
+    - Timeout handling appropriate
+  </Step>
+
+  <Step title="Test Edge Cases">
+    **Scenarios to test:**
+
+    **Empty input:**
+    - Press # immediately (no digits)
+    - Should reject if min > 0
+
+    **Timeout scenarios:**
+    - Enter partial digits, wait for timeout
+    - Verify appropriate handling
+
+    **Rapid entry:**
+    - Enter digits very quickly
+    - Verify all captured correctly
+
+    **Clear key edge cases:**
+    - Press * on empty buffer (should ignore)
+    - Press * multiple times (deletes multiple digits)
+    - Enter digits, clear all, enter new sequence
+
+    **Invalid keys:**
+    - Press keys in wrong mode (e.g., # in Menu mode)
+    - Hold key too long
+    - Press multiple keys simultaneously
+  </Step>
+
+  <Step title="Test Integration with Instructions">
+    **Validation:**
+    1. Agent properly prompts for DTMF input
+    2. Agent waits for input (doesn't continue speaking)
+    3. Agent confirms receipt of input
+    4. Agent correctly processes captured value
+    5. Agent handles invalid input gracefully
+    6. Agent offers voice fallback when appropriate
+  </Step>
+</Steps>
+
+### Common Testing Issues
+
+<AccordionGroup>
+  <Accordion title="Tones Not Detected" icon="phone-slash">
+    **Symptoms:** Customer presses keys but agent doesn't respond
+
+    **Possible causes:**
+    1. DTMF Support not enabled globally
+    2. Tone duration too short for detection
+    3. Network/codec issues degrading tones
+    4. Instructions not handling DTMF variable
+
+    **Solutions:**
+    - Verify DTMF Support toggle is ON
+    - Increase tone duration to 120-150ms
+    - Test from different phone/network
+    - Add logging to confirm {{ dtmf_input }} is populated
+  </Accordion>
+
+  <Accordion title="Wrong Digits Captured" icon="sort-numeric-down">
+    **Symptoms:** Agent receives different digits than customer pressed
+
+    **Possible causes:**
+    1. Inter-tone gap too short (tones blending)
+    2. Background noise creating false tones
+    3. Customer pressing keys too rapidly
+
+    **Solutions:**
+    - Increase inter-tone gap to 70-100ms
+    - Test in quiet environment
+    - Increase timeout to slow customer entry
+    - Add validation and confirmation in instructions
+  </Accordion>
+
+  <Accordion title="IVR Navigation Failing" icon="phone-xmark">
+    **Symptoms:** Agent sends tones but IVR doesn't respond correctly
+
+    **Possible causes:**
+    1. Cooldown between tones too short
+    2. Tone duration inadequate for legacy IVR
+    3. Tones sent before IVR ready to receive
+
+    **Solutions:**
+    - Increase cooldown to 300-500ms
+    - Increase tone duration to 150-200ms
+    - Add delays in instructions before sending tones:
+      ```
+      Wait 2 seconds after IVR answers before sending first tone
+      to ensure IVR is ready to receive input.
+      ```
+  </Accordion>
+
+  <Accordion title="Clear Key Not Working" icon="delete-left">
+    **Symptoms:** Pressing * doesn't delete last digit
+
+    **Possible causes:**
+    1. Clear key not configured properly
+    2. Clear key pressed in Menu mode (not applicable)
+    3. * assigned as termination key (conflict)
+
+    **Solutions:**
+    - Verify clear key is set to * in Collector mode
+    - Ensure mode is Collector (clear key only works in Collector)
+    - Don't use * as both clear and termination key
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Always Offer Voice Fallback" icon="microphone">
+    **Never force DTMF-only interaction**
+
+    ```
+    Good:
+    "You can enter your account number using your keypad, or if you
+    prefer, you can say it out loud. Which would you like?"
+
+    Bad:
+    "Enter your account number using your keypad now."
+    [No alternative provided]
+    ```
+
+    **Why:** Not all customers can use DTMF:
+    - Mobile phones in poor signal areas
+    - VoIP apps without keypad
+    - Accessibility needs
+    - Preference for voice interaction
+  </Accordion>
+
+  <Accordion title="Confirm Received Input" icon="check-double">
+    **Always confirm what you received, especially for multi-digit input**
+
+    ```
+    Good:
+    Customer enters: 5551234567#
+    Agent: "Thank you. I've located your account ending in 4567."
+
+    Bad:
+    Customer enters: 5551234567#
+    Agent: [Proceeds without confirmation]
+    [Customer unsure if correct number was received]
+    ```
+
+    **Security consideration:** For sensitive input (PIN, SSN), confirm partial:
+    ```
+    "I've received your 4-digit PIN ending in 78."
+    ```
+    Don't repeat full sensitive number.
+  </Accordion>
+
+  <Accordion title="Clear Instructions for DTMF Prompts" icon="message">
+    **Be explicit about expectations**
+
+    ```
+    Good:
+    "Please enter your 10-digit phone number using your keypad,
+    followed by the pound key."
+
+    Bad:
+    "Enter your phone number."
+    [Customer doesn't know to use keypad vs. voice]
+    [Doesn't know how to signal completion]
+    ```
+
+    **Include in prompt:**
+    - What to enter (account number, PIN, selection)
+    - How many digits (if fixed length)
+    - Termination key (if applicable)
+    - Alternative method (voice)
+  </Accordion>
+
+  <Accordion title="Start with Conservative Timing" icon="gauge">
+    **Use default settings initially, optimize based on real data**
+
+    **Default strategy:**
+    1. Start with recommended defaults
+    2. Deploy to small test group
+    3. Monitor for DTMF errors in logs
+    4. Adjust timing based on actual failures
+    5. Roll out optimized settings
+
+    **Don't:**
+    - Set very fast timing without testing
+    - Assume all IVRs behave the same
+    - Optimize for speed over reliability
+  </Accordion>
+
+  <Accordion title="Validate Input Before Using" icon="shield-check">
+    **Always validate captured DTMF before using in actions**
+
+    ```
+    {% set account_number = dtmf_input %}
+
+    Validation checks:
+    {% if account_number|length != 10 %}
+      Invalid: "Account numbers must be 10 digits. You entered
+      {{ account_number|length }}. Let's try again."
+    {% elif not account_number.isdigit() %}
+      Invalid: "I received non-numeric characters. Please enter
+      digits 0-9 only."
+    {% else %}
+      Valid: Use 'Lookup Account' action with {{ account_number }}
+    {% endif %}
+    ```
+
+    **Common validations:**
+    - Length matches expected
+    - Numeric only (no letters)
+    - Format matches pattern (e.g., phone number format)
+    - Value in valid range (e.g., PIN 0000-9999)
+  </Accordion>
+
+  <Accordion title="Handle Retries Gracefully" icon="rotate">
+    **Allow multiple attempts with helpful feedback**
+
+    ```
+    Instructions example:
+
+    Track DTMF attempts (use conversation variable):
+    {% set dtmf_attempts = dtmf_attempts | default(0) + 1 %}
+
+    If attempt 1: "Let's try again. Remember to press pound when finished."
+    If attempt 2: "Having trouble? You can also say the number out loud instead."
+    If attempt 3: "I'll transfer you to someone who can help directly."
+    ```
+
+    **Don't:**
+    - Give up after single failure
+    - Repeat exact same instructions (not helpful)
+    - Get stuck in infinite retry loop
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Actions Overview" icon="bolt" href="/build/actions/overview">
+    Combine DTMF with actions for powerful automation
+  </Card>
+  <Card title="Transfer Details" icon="phone-arrow-right" href="/build/actions/transfer-details">
+    Use DTMF for navigating transfer IVRs
+  </Card>
+  <Card title="Instructions" icon="pen" href="/build/conversation/instructions">
+    Write effective prompts for DTMF interactions
+  </Card>
+  <Card title="Variables & Dynamic Content" icon="brackets-curly" href="/build/conversation/variables-dynamic-content">
+    Use DTMF variables in your prompts
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/test-in-dashboard">
+    Test DTMF functionality with web and phone calls
+  </Card>
+</CardGroup>

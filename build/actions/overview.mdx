@@ -1,0 +1,613 @@
+---
+title: "Actions & Tools Overview"
+description: "Enable your AI agents to execute real business tasks during conversations"
+icon: "bolt"
+---
+
+## Overview
+
+Actions transform your AI agents from conversation-only assistants into powerful business automation tools. Beyond answering questions, your agents can schedule appointments, transfer calls, update systems, and integrate with your existing business workflows - all while maintaining natural conversation flow.
+
+Think of actions as your agent's toolkit. Just as a human employee uses different tools to complete tasks, your AI agent uses actions to execute real work during customer interactions.
+
+<Note>
+Actions execute automatically based on conversation context and the instructions you provide in your agent's prompt. You define when and how actions should be used through prompt engineering.
+</Note>
+
+---
+
+## What Are Actions?
+
+Actions are pre-configured tools that your agent can invoke during conversations to accomplish specific tasks. When a customer requests something that requires action - like booking an appointment or speaking to a specialist - your agent can execute the appropriate action seamlessly.
+
+### How Actions Work
+
+During conversations, your agent:
+1. **Evaluates context** - Understands what the customer needs
+2. **Identifies appropriate action** - Determines which tool to use
+3. **Executes with parameters** - Calls the action with relevant data
+4. **Processes response** - Handles the result and continues conversation
+5. **Incorporates results** - References outcomes naturally in dialogue
+
+<Tip>
+Your agent only uses actions when you instruct it to in your prompt. Clear instructions about when and how to use each action are essential for reliable behavior.
+</Tip>
+
+---
+
+## Action Categories
+
+itellicoAI provides five categories of actions, each designed for specific use cases:
+
+<CardGroup cols={2}>
+  <Card title="Transfer" icon="right-left" href="/build/actions/transfer-details">
+    Route calls to other agents, phone numbers, or SIP addresses when specialized expertise is needed
+  </Card>
+  <Card title="End Conversation" icon="phone-slash" href="/build/actions/call-control">
+    Terminate conversations professionally with custom farewell messages
+  </Card>
+  <Card title="Inactivity Management" icon="clock" href="/build/actions/call-control">
+    Handle conversation pauses intelligently without awkward check-ins
+  </Card>
+  <Card title="Booking" icon="calendar" href="/build/actions/booking-calendar">
+    Schedule appointments through Cal.com integration with automatic confirmations
+  </Card>
+  <Card title="Custom API" icon="code" href="/build/actions/custom-api-actions">
+    Connect to any external system via HTTP to retrieve or update data
+  </Card>
+</CardGroup>
+
+---
+
+## Built-in vs Custom Actions
+
+### Built-in Actions
+
+Pre-configured actions for common business needs:
+
+**Call Control Actions:**
+- **Transfer** - Hand off calls to humans or other AI agents
+- **End Conversation** - Close calls with custom farewell messages
+- **Inactivity Management** - Pause automated check-ins during natural pauses
+
+**Integration Actions:**
+- **Booking** - Schedule appointments via Cal.com
+
+These actions have structured configuration interfaces and handle common workflows out-of-the-box.
+
+### Custom Actions
+
+Flexible HTTP-based integrations for your specific needs:
+
+- Connect to your CRM, help desk, inventory system, or any API
+- Retrieve customer data during conversations
+- Update records in external systems
+- Trigger webhooks and automation workflows
+- Implement custom business logic
+
+Custom actions support all HTTP methods (GET, POST, PUT, PATCH, DELETE) and multiple authentication schemes.
+
+---
+
+## When Actions Execute
+
+Actions execute **during the conversation** when triggered by your agent based on its instructions. Unlike traditional IVR systems that follow rigid scripts, AI agents use contextual understanding to determine when actions are appropriate.
+
+### Trigger Mechanisms
+
+**Instruction-Based Triggers:**
+```
+When the customer asks to speak to a human, use the 'Transfer to Support' action.
+
+After successfully booking an appointment, use the 'End Call Politely' action.
+
+If the customer says they need time to check something, use the 'Pause Inactivity Timer' action.
+```
+
+**Conditional Triggers:**
+```
+If the customer reports a billing issue:
+1. Use the 'Lookup Account' action to retrieve their information
+2. If balance is overdue, transfer to billing department
+3. If balance is current, troubleshoot the issue
+
+{% if contact.vip_status == "platinum" %}
+Always offer to transfer VIP customers to dedicated support immediately.
+{% endif %}
+```
+
+**Multi-Step Workflows:**
+```
+Appointment Booking Flow:
+1. Gather required information (name, email, preferred date)
+2. Use 'Check Availability' action to query Cal.com
+3. Present options to customer
+4. Use 'Book Appointment' action to confirm
+5. Use 'Send SMS Confirmation' action if customer provided phone
+6. Use 'End Call Politely' action to conclude
+```
+
+<Warning>
+Actions execute in real-time during the call. Ensure your endpoints are reliable and respond quickly to avoid awkward pauses in conversation.
+</Warning>
+
+---
+
+## Accessing Actions Configuration
+
+All action configuration happens in the agent editor under the **Abilities → Actions** tab.
+
+<Steps>
+  <Step title="Navigate to Actions">
+    Open your agent in the editor and click **Abilities** → **Actions** tab
+  </Step>
+  <Step title="Add New Action">
+    Click **Add Action** to see all available action types
+  </Step>
+  <Step title="Choose Action Type">
+    Select the action category that matches your need (Transfer, End, Inactivity, Booking, Custom)
+  </Step>
+  <Step title="Configure Action">
+    Complete the action-specific configuration form with required parameters
+  </Step>
+  <Step title="Name Your Action">
+    Give your action a clear, descriptive name - you'll reference this exact name in your instructions
+  </Step>
+  <Step title="Save Action">
+    Save the action to add it to your agent's toolkit
+  </Step>
+</Steps>
+
+### Action Configuration Interface
+
+When you click **Add Action**, you'll see the action type selector:
+
+```
+┌─ Add Action ────────────────────────────────────────────────────┐
+│                                                                  │
+│ Choose an action type:                                          │
+│                                                                  │
+│ ┌─ Transfer ────────────────────────────────────────────────┐   │
+│ │ 📞 Route calls to agents, phone numbers, or SIP addresses │   │
+│ └──────────────────────────────────────────────────────────────┘   │
+│                                                                  │
+│ ┌─ End Conversation ────────────────────────────────────────┐   │
+│ │ 📴 Terminate calls with custom farewell messages          │   │
+│ └──────────────────────────────────────────────────────────────┘   │
+│                                                                  │
+│ ┌─ Inactivity Management ───────────────────────────────────┐   │
+│ │ ⏸️  Pause automated check-ins during natural silence       │   │
+│ └──────────────────────────────────────────────────────────────┘   │
+│                                                                  │
+│ ┌─ Calendar Booking ────────────────────────────────────────┐   │
+│ │ 📅 Schedule appointments via Cal.com integration          │   │
+│ └──────────────────────────────────────────────────────────────┘   │
+│                                                                  │
+│ ┌─ Custom API ──────────────────────────────────────────────┐   │
+│ │ 🔌 Connect to external systems via HTTP                   │   │
+│ └──────────────────────────────────────────────────────────────┘   │
+│                                                                  │
+│                                            [Cancel]             │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Action Status Indicators
+
+After adding actions, you'll see them listed in your agent's Actions tab with status indicators:
+
+<CardGroup cols={3}>
+  <Card title="Configured" icon="circle-check">
+    Action is properly configured and ready to use
+  </Card>
+  <Card title="Incomplete" icon="circle-exclamation">
+    Missing required configuration or credentials
+  </Card>
+  <Card title="Error" icon="circle-xmark">
+    Configuration error or authentication failure
+  </Card>
+</CardGroup>
+
+### Action List View
+
+```
+┌─ Actions (4) ────────────────────────────────────────────────────┐
+│                                               [+ Add Action]     │
+│                                                                  │
+│ ✅ Transfer to Support                                          │
+│    Type: Transfer → Phone Number                               │
+│    Destination: +1-555-123-4567                         [Edit]  │
+│                                                                  │
+│ ✅ Book Consultation                                            │
+│    Type: Booking → Cal.com                                     │
+│    Event: 30-min Discovery Call                         [Edit]  │
+│                                                                  │
+│ ⚠️  Lookup Customer Data                                        │
+│    Type: Custom API → GET                                      │
+│    Status: Authentication required                      [Edit]  │
+│                                                                  │
+│ ✅ End Call Politely                                            │
+│    Type: End Conversation                                      │
+│    Goodbye: "Thanks for calling!"                       [Edit]  │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Referencing Actions in Instructions
+
+To use actions, reference them **by exact name** in your agent's instructions:
+
+### Direct Reference
+```
+When a customer asks to speak to someone about billing,
+use the 'Transfer to Billing Department' action.
+```
+
+### With Custom Messages
+```
+Before using the 'Transfer to Sales' action, say:
+"Let me connect you with our sales team who can help with pricing."
+```
+
+### With Conditions
+```
+If the customer's issue cannot be resolved:
+1. Apologize for the inconvenience
+2. Explain you're connecting them to a specialist
+3. Use the 'Transfer to Support' action
+```
+
+### With Parameters
+```
+After gathering the customer's email and preferred date,
+use the 'Book Consultation' action to schedule the meeting.
+```
+
+<Note>
+Action names are case-sensitive and must match exactly as configured. If you rename an action, update all references in your instructions.
+</Note>
+
+---
+
+## Context and Variables
+
+Actions have access to comprehensive conversation data that can be used in configurations:
+
+### Available Data
+
+**Contact Information:**
+- `{{ contact.first_name }}` - Customer's first name
+- `{{ contact.last_name }}` - Customer's last name
+- `{{ contact.email }}` - Email address
+- `{{ contact.phone_number }}` - Phone number
+- Custom contact fields
+
+**Agent Context:**
+- `{{ agent_number }}` - Agent's assigned phone number
+- `{{ agent_name }}` - Agent's display name
+- `{{ team }}` - Team assignment
+
+**Call Details:**
+- `{{ direction }}` - Call direction (inbound/outbound)
+- `{{ medium }}` - Communication channel (phone/web)
+- `{{ current_datetime }}` - Current timestamp
+- `{{ session_id }}` - Unique session identifier
+
+**External Data:**
+- Data retrieved from previous custom actions
+- Knowledge base content
+- Campaign variables (outbound calls)
+
+### Using Variables in Actions
+
+**In Custom API URLs:**
+```
+https://api.crm.com/customers/{{ contact.phone_number }}
+```
+
+**In Request Bodies:**
+```json
+{
+  "customer_name": "{{ contact.first_name }} {{ contact.last_name }}",
+  "email": "{{ contact.email }}",
+  "call_time": "{{ current_datetime }}"
+}
+```
+
+**In SMS Templates:**
+```
+Hi {{ contact.first_name }}, your appointment is confirmed for {date} at {time}.
+Meeting link: {link}
+```
+
+---
+
+## Configuration Best Practices
+
+<AccordionGroup>
+  <Accordion title="Start Simple" icon="seedling">
+    Begin with basic actions before adding complex integrations. Add one action at a time, test thoroughly, then add the next.
+
+    **Example progression:**
+    1. Add End Conversation action
+    2. Add Transfer to Support action
+    3. Add Booking action
+    4. Add Custom API actions
+  </Accordion>
+
+  <Accordion title="Use Clear Names" icon="tag">
+    Action names should clearly describe what they do. Avoid generic names or abbreviations.
+
+    **Good names:**
+    - "Transfer to Billing Department"
+    - "Book 30-Minute Consultation"
+    - "Lookup Customer Account"
+
+    **Poor names:**
+    - "Action 1"
+    - "Transfer"
+    - "API Call"
+  </Accordion>
+
+  <Accordion title="Provide Descriptions" icon="file-lines">
+    Use the description field to document when and how each action should be used. This helps your team understand the agent's capabilities.
+
+    ```
+    Name: Lookup Customer Account
+    Description: Retrieves customer data from Salesforce using
+    phone number. Use before answering account-specific questions.
+    ```
+  </Accordion>
+
+  <Accordion title="Test Thoroughly" icon="vial">
+    Test each action in the agent test interface before going live:
+    - Verify action executes correctly
+    - Test success scenarios
+    - Test failure scenarios
+    - Verify error handling
+    - Check conversation flow
+  </Accordion>
+
+  <Accordion title="Handle Failures Gracefully" icon="shield-check">
+    Configure fallback behaviors for when actions fail. Instruct your agent what to do when actions don't work.
+
+    ```
+    If the 'Book Appointment' action fails:
+    1. Apologize sincerely
+    2. Offer to have someone call back to schedule
+    3. Collect their preferred callback number
+    4. Use the 'End Call Politely' action
+    ```
+  </Accordion>
+
+  <Accordion title="Collect Information First" icon="clipboard-check">
+    Ensure agents gather required data before executing actions. Don't attempt to book appointments without email addresses or transfer calls without explaining why.
+
+    ```
+    Before using the 'Book Consultation' action:
+    1. Confirm the customer wants to schedule
+    2. Ask for their email address if not in contact record
+    3. Discuss their preferred dates and times
+    4. Explain what the consultation will cover
+    5. Only then execute the booking action
+    ```
+  </Accordion>
+
+  <Accordion title="Secure Credentials" icon="lock">
+    Use appropriate authentication for all custom actions. Never expose API keys or credentials in URLs or unencrypted fields.
+
+    - Use Bearer tokens for API authentication
+    - Use Basic auth over HTTPS only
+    - Store sensitive credentials securely
+    - Rotate credentials regularly
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Testing Actions
+
+Before deploying agents with actions, thoroughly test in the dashboard test interface:
+
+<Steps>
+  <Step title="Open Test Interface">
+    Click **Test Call** in the agent editor's top-right corner
+  </Step>
+  <Step title="Start Web Call">
+    Click **Start Web Call** to begin a test conversation
+  </Step>
+  <Step title="Trigger Each Action">
+    Run through scenarios that trigger each configured action
+  </Step>
+  <Step title="Verify Execution">
+    Check that actions execute correctly and handle responses appropriately
+  </Step>
+  <Step title="Test Failure Cases">
+    Simulate failures to verify error handling works as expected
+  </Step>
+  <Step title="Review Transcript">
+    Examine the conversation transcript to ensure flow is natural and actions integrate smoothly
+  </Step>
+</Steps>
+
+### What to Test
+
+**For Transfer Actions:**
+- Transfer executes to correct destination
+- Hold music plays if configured
+- Transfer message is appropriate
+- Cold vs warm transfer modes work correctly
+
+**For Booking Actions:**
+- Availability is retrieved correctly
+- Booking confirms successfully
+- Email/SMS notifications send properly
+- Timezone handling is accurate
+
+**For Custom Actions:**
+- API calls succeed
+- Authentication works
+- Response data is available to agent
+- Error responses are handled gracefully
+
+**For All Actions:**
+- Agent references action by correct name
+- Agent gathers required information first
+- Conversation flow remains natural
+- Failures don't break the conversation
+
+<Warning>
+Test calls use real integrations. If you're testing a booking action, it will create real appointments in your Cal.com account. Clean up test data afterward.
+</Warning>
+
+---
+
+## Common Use Cases
+
+### Customer Support Workflow
+
+```
+Agent Configuration:
+- Transfer to Support (for complex issues)
+- Lookup Customer Account (custom API)
+- Create Support Ticket (custom API)
+- End Call Politely
+
+Instructions:
+When a customer calls:
+1. Greet them warmly
+2. Use 'Lookup Customer Account' to retrieve their information
+3. Ask about their issue
+4. If you can resolve it, do so using knowledge base
+5. If it's complex, use 'Create Support Ticket' and provide ticket number
+6. If customer requests human, use 'Transfer to Support'
+7. When resolved, use 'End Call Politely'
+```
+
+### Appointment Booking Workflow
+
+```
+Agent Configuration:
+- Book Consultation (Cal.com booking)
+- Send SMS Confirmation (optional)
+- Transfer to Scheduling (fallback)
+- End Call Politely
+
+Instructions:
+When a customer wants to book:
+1. Ask what type of appointment they need
+2. Collect email address if not in contact record
+3. Discuss their preferred dates
+4. Use 'Book Consultation' to show availability and confirm
+5. If booking succeeds, confirm details verbally
+6. If booking fails, use 'Transfer to Scheduling'
+7. Use 'End Call Politely' to finish
+```
+
+### Sales Qualification Workflow
+
+```
+Agent Configuration:
+- Lookup Company Data (custom API)
+- Update CRM Lead (custom API)
+- Transfer to Sales (for qualified leads)
+- End Call Politely
+
+Instructions:
+For outbound sales calls:
+1. Introduce yourself and purpose
+2. Use 'Lookup Company Data' to retrieve firmographics
+3. Ask qualifying questions (budget, timeline, authority)
+4. Use 'Update CRM Lead' with qualification status
+5. If qualified, use 'Transfer to Sales' with context
+6. If not qualified, thank them and use 'End Call Politely'
+```
+
+---
+
+## Troubleshooting Common Issues
+
+<AccordionGroup>
+  <Accordion title="Action Not Triggering" icon="circle-exclamation">
+    **Problem:** Agent doesn't use the action even though it should.
+
+    **Solutions:**
+    - Verify action name in instructions matches exactly (case-sensitive)
+    - Check action status is "Configured" not "Incomplete" or "Error"
+    - Make instructions more explicit about when to use action
+    - Test in isolation by explicitly asking agent to use the action
+    - Review conversation transcript to see agent's reasoning
+  </Accordion>
+
+  <Accordion title="Authentication Failures" icon="key">
+    **Problem:** Custom actions fail with 401/403 errors.
+
+    **Solutions:**
+    - Verify credentials are correct and not expired
+    - Check authentication type matches API requirements
+    - Ensure Bearer tokens include "Bearer" prefix if needed
+    - Test endpoint independently with Postman or curl
+    - Review API documentation for authentication format
+  </Accordion>
+
+  <Accordion title="Booking Action Fails" icon="calendar-xmark">
+    **Problem:** Cal.com booking action returns errors.
+
+    **Solutions:**
+    - Verify Cal.com integration is connected
+    - Check event type exists and is active
+    - Ensure meeting platform is configured in Cal.com
+    - Verify scheduling windows allow requested dates
+    - Check timezone configuration
+    - Test booking manually in Cal.com to verify availability
+  </Accordion>
+
+  <Accordion title="Transfer Not Connecting" icon="phone-slash">
+    **Problem:** Transfer action executes but doesn't connect.
+
+    **Solutions:**
+    - Verify destination is correct format (+1-555-123-4567)
+    - Check destination agent is active (for agent transfers)
+    - Ensure phone number is reachable (for phone transfers)
+    - Verify SIP address is correct (for SIP transfers)
+    - Test destination independently
+  </Accordion>
+
+  <Accordion title="Variables Not Populating" icon="brackets-curly">
+    **Problem:** Template variables show as empty or undefined.
+
+    **Solutions:**
+    - Verify variable names match exactly ({{ contact.email }} not {{ email }})
+    - Check contact record has the required field populated
+    - Use default filters: {{ contact.email | default("not provided") }}
+    - Test with known populated contact records
+    - Review available variables in documentation
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Call Control Actions" icon="phone" href="/build/actions/call-control">
+    Configure Transfer, End Conversation, and Inactivity Management actions
+  </Card>
+  <Card title="Transfer Details" icon="right-left" href="/build/actions/transfer-details">
+    Master transfer destinations, modes, and advanced settings
+  </Card>
+  <Card title="Booking Integration" icon="calendar" href="/build/actions/booking-calendar">
+    Set up Cal.com appointment scheduling with email and SMS notifications
+  </Card>
+  <Card title="Custom API Actions" icon="code" href="/build/actions/custom-api-actions">
+    Connect your agents to external systems and APIs
+  </Card>
+  <Card title="Instructions Guide" icon="pen" href="/build/conversation/instructions">
+    Learn how to write effective agent instructions
+  </Card>
+  <Card title="Prompt Engineering" icon="book" href="/build/conversation/prompt-engineering-guide">
+    Master advanced prompting techniques for reliable agent behavior
+  </Card>
+</CardGroup>

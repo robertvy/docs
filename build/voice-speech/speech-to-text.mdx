@@ -1,0 +1,788 @@
+---
+title: "Speech-to-Text Configuration"
+description: "Choose and configure transcription models for accurate speech recognition"
+icon: "ear"
+---
+
+## Overview
+
+Speech-to-text (STT) is the first step in your agent's processing pipeline. It converts customer speech into text that the AI model can understand and respond to. Accurate transcription is critical—errors in this step cascade through the entire conversation.
+
+<Note>
+Configure speech-to-text under **Models > Transcriber** in your agent settings. Changes apply immediately to new conversations.
+</Note>
+
+## How Speech-to-Text Works
+
+The STT process happens in real-time during conversations:
+
+```mermaid
+graph LR
+    A[Customer Speaks] --> B[Audio Capture]
+    B --> C[Voice Activity Detection]
+    C --> D[STT Engine]
+    D --> E[Text Output]
+    E --> F[LLM Processing]
+```
+
+1. **Customer speaks** - Audio captured from phone or web call
+2. **Voice Activity Detection (VAD)** - System detects when customer is speaking vs. silence
+3. **STT engine** - Transcribes audio chunks to text in real-time
+4. **Text output** - Transcribed text sent to language model
+5. **LLM processing** - AI model generates response based on transcription
+
+---
+
+## The Transcriber Catalog
+
+The transcriber selection interface provides a comprehensive view of all available STT engines.
+
+### Catalog Features
+
+<CardGroup cols={2}>
+  <Card title="Provider Stats" icon="chart-line">
+    Latency metrics and performance data for each engine
+  </Card>
+  <Card title="Cost Visibility" icon="dollar-sign">
+    Per-minute transcription costs clearly displayed
+  </Card>
+  <Card title="EU-Hosted Badge" icon="location-dot">
+    Indicates engines that process audio within EU regions
+  </Card>
+  <Card title="Language Support" icon="globe">
+    Filter by supported languages and locales
+  </Card>
+</CardGroup>
+
+### Browsing Transcribers
+
+Each transcriber row shows:
+- **Provider name** (Deepgram, Azure Speech, etc.)
+- **Model name** (Nova-2, Whisper, etc.)
+- **Average latency** (milliseconds from speech to text)
+- **Cost per minute** of audio transcribed
+- **Supported languages** (count or list)
+- **EU hosting status** (badge if applicable)
+- **Special capabilities** (multilingual, keyword boosting, etc.)
+
+Use the search box to quickly find transcribers by name, provider, or capability.
+
+---
+
+## Available Transcription Providers
+
+### Deepgram
+
+Deepgram specializes in real-time speech recognition with industry-leading accuracy and speed.
+
+**Models:**
+
+**Nova-2 (Recommended)**
+- Latest generation, highest accuracy
+- Optimized for conversational AI and phone calls
+- Low latency (~300-400ms)
+- Excellent with accents, background noise, and crosstalk
+- Best for: Most voice agents, especially customer-facing
+
+**Enhanced**
+- Previous generation, still excellent quality
+- Slightly higher latency than Nova-2
+- Cost-effective option for high-volume deployments
+
+**Base**
+- Budget option for simple use cases
+- Higher word error rate than Nova-2/Enhanced
+- Use for: Low-stakes applications where occasional errors acceptable
+
+**Whisper Cloud**
+- Based on OpenAI's Whisper model
+- Exceptional multilingual support (90+ languages)
+- Higher latency (~800ms-1.5s)
+- Best for: Multilingual agents, non-real-time scenarios
+
+**Characteristics:**
+- Fast inference optimized for real-time conversations
+- Strong performance on phone audio quality
+- Handles speech disfluencies well (um, uh, false starts)
+- Keyword boosting support for brand names and jargon
+- Streaming transcription (text arrives as customer speaks)
+
+**Best for:**
+- Real-time conversational agents
+- Phone-based customer service
+- Applications requiring low latency
+- English-primary agents (excellent English support)
+
+### Azure Speech
+
+Microsoft Azure Speech offers robust transcription with extensive language coverage and enterprise compliance.
+
+**Models:**
+
+**Azure Speech STT (Standard)**
+- Solid general-purpose transcription
+- 100+ language and locale variants
+- Good phone call optimization
+- Moderate latency (~500-700ms)
+
+**Azure Speech STT (Premium)**
+- Enhanced accuracy over standard
+- Better noise handling
+- Lower latency
+- Higher cost per minute
+
+**Multilingual Models**
+- Auto-detect language from predefined set
+- Automatically switch between languages mid-conversation
+- Falls back to configured default language when uncertain
+- Example: Auto-detect between en-US, es-ES, and fr-FR
+
+**Characteristics:**
+- Massive language coverage (best in industry)
+- Multilingual auto-detection capabilities
+- Can be deployed in EU, US, Asia regions
+- HIPAA, SOC 2, ISO compliance available
+- Integration with Azure ecosystem
+
+**Best for:**
+- Multilingual agents serving global markets
+- Enterprise deployments requiring compliance
+- Agents serving non-English markets
+- Applications requiring specific regional hosting (GDPR)
+
+### Other Providers
+
+Depending on your plan, additional providers may include:
+
+**Google Cloud Speech-to-Text**
+- Excellent multilingual support
+- Adaptive recognition for specific contexts
+- Integration with Google Cloud ecosystem
+
+**Amazon Transcribe**
+- Cost-effective for high-volume
+- Custom vocabulary support
+- AWS ecosystem integration
+
+**AssemblyAI**
+- Strong accuracy, especially for accents
+- Speaker diarization (identifying different speakers)
+- Real-time and batch processing
+
+Check your dashboard for the complete list of provisioned transcribers.
+
+---
+
+## Language Configuration
+
+### Single Language Setup
+
+For agents serving one language:
+
+1. Open **Models > Transcriber**
+2. Use the **Language Picker** to filter transcribers
+3. Select by language name (e.g., "English") or locale code (e.g., "en-US")
+4. Choose the transcriber with best latency/cost/accuracy balance for your needs
+
+**Language Variants:**
+- **en-US:** American English (General American accent)
+- **en-GB:** British English (Received Pronunciation)
+- **en-AU:** Australian English
+- **en-IN:** Indian English
+- **en-CA:** Canadian English
+
+Select the variant matching your customer base for best accuracy.
+
+### Multilingual Auto-Detection
+
+Azure Speech supports automatic language detection from a predefined set.
+
+**Setup:**
+1. Select an Azure Speech multilingual model
+2. Configure primary language (default/fallback)
+3. Add secondary languages to detect (up to 10 recommended)
+4. Enable auto-detection
+
+**How it works:**
+- Customer starts speaking
+- Azure detects language from first few words
+- Transcribes in detected language for remainder of utterance
+- Falls back to primary language if detection uncertain
+
+**Example use case:**
+```
+Primary: en-US
+Secondary: es-ES, fr-FR
+
+Customer says: "Hola, necesito ayuda"
+→ Detects Spanish, transcribes: "Hola, necesito ayuda"
+
+Customer says: "Actually, I'll switch to English"
+→ Detects English, transcribes: "Actually, I'll switch to English"
+```
+
+<Warning>
+Auto-detection adds slight latency (~100-200ms) as the system analyzes language. For single-language agents, use language-specific models instead.
+</Warning>
+
+### Configuring Default Language
+
+The default/primary language serves multiple purposes:
+- **Fallback:** When auto-detection uncertain
+- **Analytics:** Default language for transcripts and reports
+- **Voice/LLM coordination:** Signals expected language to other components
+
+Set this to your most common customer language.
+
+---
+
+## Keyword Boosting
+
+Keyword boosting (also called custom vocabulary) helps the transcriber recognize specific terms accurately.
+
+### What is Keyword Boosting?
+
+Transcribers are trained on general language but may struggle with:
+- Brand names (your company, products, competitors)
+- Industry jargon (technical terms, acronyms)
+- Proper nouns (people names, location names)
+- Domain-specific vocabulary
+
+Keyword boosting tells the transcriber to prioritize certain words when it hears similar sounds.
+
+### How to Add Keywords
+
+1. Open **Models > Transcriber**
+2. Select your transcriber
+3. Click **Keyword Boosting** or **Custom Vocabulary**
+4. Add keywords one per line or comma-separated:
+   ```
+   itellicoAI
+   Anthropic
+   Claude
+   ElevenLabs
+   Deepgram
+   API endpoint
+   OAuth
+   webhook
+   ```
+
+5. Save and test
+
+### Keyword Best Practices
+
+<AccordionGroup>
+  <Accordion title="Add All Brand Names" icon="copyright">
+    - Your company name and spelling variants
+    - Product names and SKUs
+    - Competitor names (if mentioned by customers)
+    - Partner and integration names
+
+    Example: itellicoAI, Acme Software, Salesforce, HubSpot
+  </Accordion>
+
+  <Accordion title="Include Industry Jargon" icon="industry">
+    - Technical terms specific to your domain
+    - Acronyms (spell them out if multi-word)
+    - Common abbreviations
+
+    Example (healthcare): HIPAA, EHR, EMR, copay, prior authorization
+    Example (SaaS): API, webhook, OAuth, SSO, SAML
+  </Accordion>
+
+  <Accordion title="Proper Nouns Matter" icon="location-dot">
+    - Common customer names if predictable (surnames for B2B)
+    - Geographic locations you reference
+    - Department names
+
+    Example: Dr. Patel, Dr. Chen, Manhattan office, billing department
+  </Accordion>
+
+  <Accordion title="Test and Iterate" icon="arrows-rotate">
+    - Add keywords based on actual transcription errors
+    - Review call transcripts for common mistakes
+    - Test after adding keywords to verify improvement
+    - Remove ineffective keywords to avoid over-boosting
+  </Accordion>
+</AccordionGroup>
+
+### Keyword Boosting Limits
+
+Most providers limit keyword lists:
+- **Deepgram:** 1,000 keywords recommended, 5,000 max
+- **Azure:** 500-1,000 keywords depending on tier
+- **Google:** 5,000 phrases (can be multi-word)
+
+Focus on quality over quantity—adding too many keywords can reduce overall accuracy.
+
+<Tip>
+Start with 20-50 high-priority keywords. Expand based on observed transcription errors in real conversations.
+</Tip>
+
+---
+
+## Choosing the Right Transcriber
+
+### Decision Framework
+
+<AccordionGroup>
+  <Accordion title="1. Language Requirements" icon="globe">
+    **Single language (English):**
+    - Deepgram Nova-2 (best accuracy and speed)
+    - Azure Speech Premium (enterprise compliance)
+
+    **Single language (non-English):**
+    - Azure Speech (broadest language coverage)
+    - Deepgram Whisper (excellent multilingual)
+
+    **Multilingual (auto-detect):**
+    - Azure Speech Multilingual (best auto-detection)
+    - Deepgram Whisper (90+ languages)
+  </Accordion>
+
+  <Accordion title="2. Latency Sensitivity" icon="gauge-high">
+    **Ultra-low latency critical (<400ms):**
+    - Deepgram Nova-2 (~300ms)
+    - Deepgram Enhanced (~350ms)
+
+    **Moderate latency acceptable (<700ms):**
+    - Azure Speech Premium (~500ms)
+    - Deepgram Whisper (~600ms for primary languages)
+
+    **Latency less critical (>1s acceptable):**
+    - Any provider—optimize for cost and accuracy instead
+  </Accordion>
+
+  <Accordion title="3. Accuracy Requirements" icon="bullseye">
+    **Highest accuracy needed (medical, legal, compliance):**
+    - Deepgram Nova-2 + extensive keyword boosting
+    - Azure Speech Premium + custom vocabulary
+    - Consider human review for critical transcripts
+
+    **Standard accuracy sufficient:**
+    - Deepgram Nova-2 or Enhanced
+    - Azure Speech Standard
+
+    **Occasional errors acceptable:**
+    - Deepgram Base
+    - Budget-tier transcribers
+  </Accordion>
+
+  <Accordion title="4. Cost Optimization" icon="coins">
+    **Budget-conscious:**
+    - Deepgram Base (~$0.0125/min)
+    - Azure Speech Standard (~$0.017/min)
+
+    **Balanced cost/performance:**
+    - Deepgram Enhanced (~$0.025/min)
+    - Azure Speech Premium (~$0.034/min)
+
+    **Premium (cost not primary concern):**
+    - Deepgram Nova-2 (~$0.043/min)
+    - Specialty models optimized for use case
+  </Accordion>
+
+  <Accordion title="5. Compliance and Hosting" icon="shield">
+    **EU data residency required (GDPR):**
+    - Filter for EU-hosted transcribers
+    - Azure Speech deployed in EU regions
+    - Deepgram EU endpoints
+
+    **HIPAA compliance needed:**
+    - Azure Speech with BAA (Business Associate Agreement)
+    - Deepgram HIPAA-compliant plans
+
+    **No specific compliance:**
+    - All providers available
+  </Accordion>
+</AccordionGroup>
+
+### Recommended Configurations by Use Case
+
+| Use Case | Recommended Transcriber | Rationale |
+|----------|------------------------|-----------|
+| **Customer Support (English)** | Deepgram Nova-2 | Best accuracy + low latency for real-time |
+| **Multilingual Support** | Azure Speech Multilingual | Auto-detection, 100+ languages |
+| **High-Volume FAQ (English)** | Deepgram Enhanced | Good balance of cost and quality |
+| **Medical/Legal** | Deepgram Nova-2 + keywords | Highest accuracy for compliance |
+| **Global Sales** | Azure Speech Multilingual | Wide language coverage |
+| **Budget/High-Volume** | Deepgram Base | Acceptable quality at low cost |
+| **Technical Support** | Deepgram Nova-2 + keywords | Handles technical jargon well |
+
+---
+
+## Advanced Configuration
+
+### Streaming vs. Batch Transcription
+
+**Streaming (Real-time):**
+- Text arrives as customer speaks
+- Enables faster agent responses
+- Required for true conversational AI
+- Default for all live voice agents
+
+**Batch:**
+- Transcription after audio complete
+- Higher accuracy (has full context)
+- Not suitable for real-time conversations
+- Use for: Voicemail transcription, call recording analysis
+
+All itellicoAI voice agents use streaming transcription by default.
+
+### Profanity Filtering
+
+Some transcribers offer profanity filtering:
+- **Enabled:** Replaces profanity with "***" or "[profanity]"
+- **Disabled:** Transcribes verbatim
+
+**Recommendation:** Disable for voice agents (LLM handles inappropriate language per your instructions). Enable only if you need sanitized transcripts for compliance.
+
+### Diarization (Speaker Identification)
+
+Some transcribers can identify different speakers:
+- Speaker 1: "I need help with my account"
+- Speaker 2: "I can help with that"
+
+**Use cases:**
+- Conference call bots (multiple participants)
+- Analyzing agent/customer dynamics in recordings
+
+**Not typically needed** for standard 1:1 voice agents.
+
+### Punctuation and Formatting
+
+Modern transcribers add punctuation automatically:
+- Periods, commas, question marks
+- Capitalization
+- Paragraph breaks (in longer transcripts)
+
+**Provider differences:**
+- Deepgram: Excellent automatic punctuation
+- Azure: Good punctuation, customizable
+- Older models: May require manual punctuation insertion
+
+Automatic punctuation helps LLMs understand sentence boundaries and intent.
+
+---
+
+## Testing Transcription Accuracy
+
+### How to Test
+
+1. **Start a test call** using Test Call feature
+2. **Speak clearly** using realistic scenarios
+3. **Review transcript** in call logs after conversation
+4. **Identify errors:**
+   - Misheard words
+   - Missing words
+   - Incorrect words
+   - Poor punctuation
+
+### Common Error Types
+
+| Error Type | Example | Fix |
+|------------|---------|-----|
+| Brand name wrong | "I tell eco" (vs. itellicoAI) | Add to keyword boosting |
+| Technical term wrong | "A P I" (vs. API) | Add acronym to keywords |
+| Similar-sounding word | "their" (vs. "there") | LLM usually handles context |
+| Accent misheard | "tree" (vs. "three") | Test different transcriber, use accented voice samples |
+| Background noise | "[inaudible]" | Use better audio source, noise cancellation |
+| Fast speech | Missing words | Adjust VAD settings, instruct customers to speak clearly |
+
+### Systematic Testing Process
+
+<AccordionGroup>
+  <Accordion title="1. Create Test Script" icon="file-lines">
+    Develop a script covering:
+    - Common customer requests
+    - Brand names and products
+    - Technical terms
+    - Numbers (phone numbers, account numbers, dollar amounts)
+    - Addresses and spelling
+    - Edge cases (fast speech, accents, background noise)
+  </Accordion>
+
+  <Accordion title="2. Test Multiple Transcribers" icon="vials">
+    - Run same script with 2-3 different transcribers
+    - Test at different times (provider performance can vary)
+    - Use different audio sources (phone, web, mobile)
+  </Accordion>
+
+  <Accordion title="3. Calculate Word Error Rate" icon="calculator">
+    Word Error Rate (WER) = (Substitutions + Insertions + Deletions) / Total Words
+
+    Example:
+    - Customer said: "I need help with my itellicoAI account" (7 words)
+    - Transcribed: "I need help with my I tell eco account" (8 words)
+    - Errors: 1 substitution (itellicoAI → I tell eco), 1 insertion (extra word)
+    - WER: 2/7 = 28.6%
+
+    Target WER: <5% for good transcription, <10% acceptable, >15% problematic
+  </Accordion>
+
+  <Accordion title="4. Test with Real Customers (Pilot)" icon="users">
+    After selecting a transcriber:
+    - Deploy to small customer segment (5-10% of calls)
+    - Monitor for 3-7 days
+    - Review sample transcripts
+    - Check for issues:
+      - High transfer rates (may indicate misunderstanding)
+      - Customer frustration ("I already said that!")
+      - Repeated requests for clarification
+    - Adjust or switch transcriber if issues arise
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Multilingual Support Deep Dive
+
+### Single Language per Agent
+
+Simplest approach: One agent per language
+- English agent uses Deepgram Nova-2 (en-US)
+- Spanish agent uses Azure Speech (es-ES)
+- German agent uses Azure Speech (de-DE)
+
+**Routing:**
+- IVR menu: "Press 1 for English, 2 for Spanish"
+- Automatic: Detect language from phone number area code or customer data
+- Web interface: Language selector before starting chat
+
+### Multi-Language with Auto-Detection
+
+Azure Speech multilingual models can detect and transcribe multiple languages automatically.
+
+**Configuration:**
+1. Select Azure Speech Multilingual transcriber
+2. Set primary language (most common): `en-US`
+3. Add secondary languages:
+   - `es-ES` (Spanish - Spain)
+   - `es-MX` (Spanish - Mexico)
+   - `fr-FR` (French - France)
+   - `de-DE` (German - Germany)
+   - `zh-CN` (Chinese - Mandarin)
+
+**Behavior:**
+- First utterance analyzed for language
+- Transcribes in detected language
+- Can switch languages mid-conversation if customer code-switches
+- Falls back to primary language if uncertain
+
+**Limitations:**
+- Adds ~100-200ms latency for detection
+- Works best with 2-5 languages (accuracy decreases with more)
+- Some accents may confuse detection
+- Similar languages may be misidentified (e.g., en-US vs. en-GB)
+
+<Note>
+For multilingual agents, also configure the Language settings (multimodal agents) or use language-aware instructions to ensure the LLM responds in the customer's language.
+</Note>
+
+### Deepgram Whisper for Maximum Language Coverage
+
+Deepgram's Whisper Cloud model supports 90+ languages:
+
+**Advantages:**
+- Supports rare languages (Swahili, Thai, Arabic, etc.)
+- Good accuracy across all supported languages
+- Single model handles all languages (no configuration)
+
+**Disadvantages:**
+- Higher latency (~800ms-1.5s)
+- Less accurate than language-specific models for English
+- Auto-detection can misidentify similar languages
+
+**Best for:**
+- Global businesses with truly multilingual customer base
+- Asynchronous use cases where latency less critical
+- Languages not well-supported by other providers
+
+---
+
+## Troubleshooting Transcription Issues
+
+### Low Accuracy / Many Errors
+
+**Possible causes:**
+1. Poor audio quality (background noise, low volume)
+2. Strong accents not well-supported by model
+3. Fast or unclear speech
+4. Technical terms/brand names not in keyword list
+5. Wrong language model selected
+
+**Solutions:**
+- Test different transcriber (e.g., Deepgram Nova-2 vs. Azure Premium)
+- Add keywords for commonly misheard terms
+- Improve audio source (better microphone, noise cancellation)
+- Use transcriber trained on accent (e.g., en-IN for Indian English)
+- Instruct customers to speak clearly (in greeting message)
+
+### High Latency / Slow Transcription
+
+**Possible causes:**
+1. Transcriber with inherently high latency (e.g., Whisper)
+2. Network issues between customer and transcriber
+3. Overloaded transcriber endpoint
+4. Inefficient audio encoding
+
+**Solutions:**
+- Switch to faster transcriber (Deepgram Nova-2, Enhanced)
+- Check network latency in Analytics
+- Contact support if issue persists (may be provider outage)
+- Verify audio codec settings (usually automatic)
+
+### Transcription Cuts Off
+
+**Possible causes:**
+1. Voice Activity Detection (VAD) too sensitive
+2. Customer pauses mid-sentence
+3. Background noise confusing VAD
+
+**Solutions:**
+- Adjust VAD settings (increase silence threshold)
+- Instruct customers not to pause mid-sentence
+- Reduce background noise
+- Use transcriber with better VAD (Deepgram)
+
+### Missing Words or Phrases
+
+**Possible causes:**
+1. Audio dropouts (network issues)
+2. Very fast speech
+3. Low volume
+4. Overlapping speech (customer + agent speaking simultaneously)
+
+**Solutions:**
+- Check network quality
+- Adjust interruption handling (reduce agent interruptions)
+- Increase audio gain if available
+- Instruct customers to speak clearly
+
+### Wrong Language Detected (Multilingual)
+
+**Possible causes:**
+1. Too many languages in detection list
+2. Similar languages confusing model (en-US vs. en-GB)
+3. Customer has strong accent
+4. Short initial utterance (not enough to detect)
+
+**Solutions:**
+- Reduce language list to most likely 2-3
+- Use language-specific models instead of multilingual
+- Let customer select language explicitly (IVR or web UI)
+- Require longer initial utterance before detection
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Match Transcriber to Use Case" icon="bullseye">
+    Don't use the same transcriber for all agents:
+    - English customer support: Deepgram Nova-2
+    - Multilingual: Azure Speech Multilingual
+    - Budget/high-volume: Deepgram Enhanced or Base
+
+    Optimize per agent based on language, volume, and requirements.
+  </Accordion>
+
+  <Accordion title="Always Use Keyword Boosting" icon="list">
+    Even excellent transcribers need help with:
+    - Your company and product names
+    - Industry-specific jargon
+    - Common proper nouns in your context
+
+    Maintain and update keyword list based on observed errors.
+  </Accordion>
+
+  <Accordion title="Test with Real Audio Sources" icon="phone">
+    Test transcription using:
+    - Actual phone calls (not just web calls)
+    - Different phone types (mobile, landline, VoIP)
+    - Various audio quality conditions
+    - Real customer accents and speech patterns
+
+    Web call testing alone may not reveal phone-specific issues.
+  </Accordion>
+
+  <Accordion title="Monitor Transcription Quality" icon="chart-line">
+    Review sample transcripts regularly:
+    - Check weekly for new error patterns
+    - Review high-value or escalated calls
+    - Look for seasonal trends (e.g., new product launches introducing new terms)
+    - Update keyword list based on findings
+  </Accordion>
+
+  <Accordion title="Consider Compliance Requirements Early" icon="shield">
+    If you need:
+    - EU data residency: Use EU-hosted transcribers from the start
+    - HIPAA compliance: Configure Azure Speech with BAA before launch
+    - Industry certifications: Verify transcriber compliance before selection
+
+    Switching transcribers later due to compliance issues is disruptive.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Cost Management
+
+### Understanding STT Pricing
+
+Transcribers typically charge per minute of audio processed:
+- **Budget tier:** $0.01-$0.02 per minute
+- **Standard tier:** $0.02-$0.04 per minute
+- **Premium tier:** $0.04-$0.06 per minute
+
+**Example costs:**
+```
+Average call duration: 5 minutes
+Calls per month: 1,000
+
+With Deepgram Base ($0.0125/min):
+1,000 calls × 5 min × $0.0125 = $62.50/month
+
+With Deepgram Nova-2 ($0.043/min):
+1,000 calls × 5 min × $0.043 = $215/month
+
+With Azure Premium ($0.034/min):
+1,000 calls × 5 min × $0.034 = $170/month
+```
+
+### Optimizing STT Costs
+
+<CardGroup cols={2}>
+  <Card title="Shorten Calls" icon="clock">
+    More efficient agents = less audio to transcribe. Improve instructions and actions to resolve issues faster.
+  </Card>
+  <Card title="Use Tiered Transcribers" icon="layer-group">
+    Simple FAQ agents: Budget tier
+    Complex support: Premium tier
+  </Card>
+  <Card title="Silence Detection" icon="volume-xmark">
+    Most transcribers don't charge for silence. Good VAD reduces billable minutes.
+  </Card>
+  <Card title="Volume Discounts" icon="handshake">
+    High-volume customers may negotiate discounted rates with providers.
+  </Card>
+</CardGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Choose AI Model" icon="brain" href="/build/voice-speech/choose-ai-model">
+    Select the language model that processes transcribed text
+  </Card>
+  <Card title="Select Voice" icon="microphone" href="/build/voice-speech/select-voice">
+    Choose the voice that speaks responses to customers
+  </Card>
+  <Card title="Custom Pronunciations" icon="spell-check" href="/build/voice-speech/custom-pronunciations">
+    Correct how the voice pronounces specific terms
+  </Card>
+  <Card title="Language Configuration" icon="language" href="/build/voice-speech/language-configuration">
+    Configure multilingual support for multimodal agents
+  </Card>
+</CardGroup>

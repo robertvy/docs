@@ -1,0 +1,547 @@
+---
+title: "Choose AI Model"
+description: "Select and configure the language model that powers your agent's reasoning"
+icon: "brain"
+---
+
+## Overview
+
+The AI model (LLM) is the brain of your voice agent. It processes what customers say, understands their intent, reasons about the best response, and decides when to take actions. Choosing the right model involves balancing performance, latency, cost, and compliance requirements.
+
+<Note>
+Model selection happens under **Models > Model** in your agent configuration. Changes apply immediately—no separate publish step required.
+</Note>
+
+## Understanding Language Models
+
+Language models are trained on vast amounts of text to understand and generate human language. In voice agents, the LLM:
+
+- **Interprets** customer requests and questions
+- **Reasons** about the best response based on instructions and knowledge
+- **Decides** when to use actions like transfers or bookings
+- **Generates** natural conversation responses
+- **Maintains** context throughout the conversation
+
+Different models excel at different tasks. Some prioritize speed, others accuracy, and some offer the best balance for conversational AI.
+
+---
+
+## Model Selection Interface
+
+### Provider Catalog
+
+The model selection interface groups providers with helpful metadata:
+
+<CardGroup cols={2}>
+  <Card title="Provider Icons" icon="building">
+    Visual branding for OpenAI, Anthropic, Groq, Azure, and more
+  </Card>
+  <Card title="EU-Hosted Badge" icon="location-dot">
+    Indicates models that process data within EU regions
+  </Card>
+  <Card title="Model Count" icon="list-ol">
+    Shows how many models are available from each provider
+  </Card>
+  <Card title="Active Selection" icon="check">
+    Highlights your currently selected model
+  </Card>
+</CardGroup>
+
+### Filtering and Search
+
+Click a provider to filter the model table to that vendor only. Use the search box to quickly find specific models by name or capability.
+
+The interface surfaces key information for each model:
+- **Model name** (e.g., GPT-4.1, Claude 3.5 Sonnet, Llama 3.1)
+- **Performance metrics** (latency, tokens per second)
+- **Cost per million tokens** (input and output pricing)
+- **Context window** (how much conversation history it can handle)
+- **Hosting location** (US, EU, or multi-region)
+
+---
+
+## Available Model Providers
+
+### OpenAI
+
+OpenAI models are among the most popular for conversational AI, offering strong performance and reliability.
+
+**GPT-4.1**
+- Best for: Complex reasoning, multi-step tasks, high-accuracy requirements
+- Strengths: Excellent instruction following, strong context understanding
+- Considerations: Higher latency than smaller models, higher cost
+- Typical use: Customer support with complex troubleshooting, sales conversations
+
+**GPT-4o (Optimized)**
+- Best for: Balance of speed and capability
+- Strengths: Faster than GPT-4.1 while maintaining quality
+- Considerations: Still higher cost tier
+- Typical use: Most general-purpose voice agents
+
+**GPT-3.5 Turbo**
+- Best for: High-volume, straightforward conversations
+- Strengths: Fast, cost-effective, reliable
+- Considerations: Less capable with complex reasoning
+- Typical use: FAQ answering, simple routing, data collection
+
+### Anthropic
+
+Anthropic's Claude models excel at following detailed instructions and maintaining safety guardrails.
+
+**Claude 3.5 Sonnet**
+- Best for: Conversational nuance, instruction adherence
+- Strengths: Excellent at following complex behavioral rules, strong context retention
+- Considerations: Moderate latency, premium pricing
+- Typical use: Agents with detailed personality requirements, compliance-sensitive applications
+
+**Claude 3 Opus**
+- Best for: Highest-accuracy requirements
+- Strengths: Best-in-class reasoning, handles ambiguity well
+- Considerations: Highest latency and cost in the Claude lineup
+- Typical use: Medical/legal consultations, complex qualification flows
+
+**Claude 3 Haiku**
+- Best for: Speed-optimized applications
+- Strengths: Extremely fast, low latency, cost-effective
+- Considerations: Reduced capability vs. Sonnet/Opus
+- Typical use: High-volume simple routing, quick information retrieval
+
+### Groq
+
+Groq offers ultra-fast inference with open-source models, ideal for latency-sensitive applications.
+
+**Llama 3.1 (70B/405B)**
+- Best for: Open-source preference, low-latency requirements
+- Strengths: Near-instant response generation, competitive quality
+- Considerations: May require more prompt engineering than proprietary models
+- Typical use: Real-time conversational agents where every millisecond counts
+
+**Mixtral 8x7B**
+- Best for: Cost-conscious deployments with speed requirements
+- Strengths: Excellent speed-to-cost ratio
+- Considerations: Smaller context window than top-tier models
+- Typical use: High-volume screening calls, basic qualification
+
+### Azure OpenAI
+
+Azure-hosted OpenAI models with enterprise compliance and regional deployment options.
+
+**Azure GPT-4 / GPT-3.5**
+- Best for: Enterprise customers already on Azure, EU data residency requirements
+- Strengths: Same models as OpenAI with Azure compliance, EU hosting available
+- Considerations: Requires Azure subscription, may have regional availability limits
+- Typical use: Enterprise deployments with compliance requirements
+
+<Warning>
+EU-hosted models are essential for GDPR compliance when serving European customers. Look for the EU badge in the model catalog.
+</Warning>
+
+---
+
+## Model Parameters
+
+Click **Model Parameters** to access advanced configuration options that control how the model behaves.
+
+### Temperature
+
+Controls randomness in responses (range: 0.0 to 2.0)
+
+- **Low (0.0 - 0.3):** Consistent, predictable responses
+  - Use for: Factual information, policy explanations, compliance-sensitive content
+  - Example: "Our return policy is..."
+
+- **Medium (0.4 - 0.7):** Balanced creativity and consistency
+  - Use for: Most conversational agents, general customer support
+  - Example: "I'd be happy to help you with that!"
+
+- **High (0.8 - 2.0):** Creative, varied responses
+  - Use for: Personality-driven agents, storytelling, creative applications
+  - Example: More varied conversation styles
+
+<Note>
+**Default recommendation:** Start with 0.7 for voice agents. Lower to 0.3-0.5 if responses seem too varied.
+</Note>
+
+### Max Tokens
+
+Maximum number of tokens the model can generate per response (range varies by model)
+
+- **Short (50-150 tokens):** Quick, concise responses
+  - Best for: Fast-paced conversations, simple confirmations
+  - Equivalent to: ~1-2 sentences or ~10-30 seconds of speech
+
+- **Medium (150-400 tokens):** Standard conversational responses
+  - Best for: Most voice agents, detailed explanations
+  - Equivalent to: ~2-4 sentences or ~30-90 seconds of speech
+
+- **Long (400+ tokens):** Extended explanations
+  - Best for: Complex troubleshooting, detailed product information
+  - Risk: Customer disengagement, interruptions
+
+<Warning>
+For voice, responses over 400 tokens (~90 seconds) risk customer frustration. Use instructions to enforce brevity instead of relying solely on token limits.
+</Warning>
+
+### Top P (Nucleus Sampling)
+
+Alternative to temperature, controls diversity by selecting from top probability tokens (range: 0.0 to 1.0)
+
+- **0.9-1.0:** Consider all likely options (standard)
+- **0.5-0.8:** More focused, deterministic outputs
+- Use temperature OR top_p, not both simultaneously
+
+### Frequency Penalty
+
+Reduces repetition by penalizing tokens that have already appeared (range: 0.0 to 2.0)
+
+- **0.0:** No penalty (default)
+- **0.5-1.0:** Discourages repetitive phrases
+- **1.5+:** Strongly avoids repetition (may affect coherence)
+
+Use when your agent tends to repeat phrases like "I understand" or "Of course" too frequently.
+
+### Presence Penalty
+
+Encourages introducing new topics by penalizing any token that has appeared (range: 0.0 to 2.0)
+
+- **0.0:** No encouragement for new topics
+- **0.5-1.0:** Gentle push toward topic diversity
+- **1.5+:** Strong push for new content
+
+Less useful in voice agents where customers control topic flow.
+
+### Stop Sequences
+
+Custom strings that halt generation when encountered. Useful for structured outputs or preventing unwanted continuations.
+
+Example: Stop at `"\n\nHuman:"` to prevent the model from simulating customer responses.
+
+### Response Format
+
+Some models support structured output (JSON mode):
+- **Text:** Standard conversational output (default for voice)
+- **JSON:** Structured data output (use only when parsing responses programmatically)
+
+### Streaming
+
+Controls whether responses stream token-by-token or arrive complete:
+- **Enabled:** Agent starts speaking as soon as first tokens arrive (lower perceived latency)
+- **Disabled:** Agent waits for complete response before speaking (more reliable for complex logic)
+
+<Note>
+Streaming is recommended for voice agents to minimize perceived latency and create natural conversation flow.
+</Note>
+
+---
+
+## Choosing the Right Model
+
+### Decision Framework
+
+Use this framework to select your model:
+
+<AccordionGroup>
+  <Accordion title="1. Define Your Requirements" icon="list-check">
+    **Accuracy Requirements:**
+    - High accuracy needed? → GPT-4.1, Claude 3.5 Sonnet, Claude 3 Opus
+    - Moderate accuracy sufficient? → GPT-4o, Claude 3 Haiku, Llama 3.1
+
+    **Latency Requirements:**
+    - Ultra-low latency critical? → Groq models (Llama, Mixtral)
+    - Moderate latency acceptable? → GPT-4o, Claude 3 Haiku
+    - Latency less important than quality? → GPT-4.1, Claude 3 Opus
+
+    **Cost Constraints:**
+    - Budget-conscious? → GPT-3.5 Turbo, Mixtral, Claude 3 Haiku
+    - Balanced? → GPT-4o, Llama 3.1 70B
+    - Cost not primary concern? → GPT-4.1, Claude 3.5 Sonnet
+  </Accordion>
+
+  <Accordion title="2. Consider Compliance" icon="shield">
+    **EU Data Residency:**
+    - Required? → Filter for EU-hosted models (Azure, select providers)
+    - Not required? → All models available
+
+    **Industry Regulations:**
+    - Healthcare (HIPAA)? → Azure models with BAA agreements
+    - Financial services? → Consider Claude for instruction adherence
+    - General commercial? → All models appropriate
+  </Accordion>
+
+  <Accordion title="3. Assess Conversation Complexity" icon="brain">
+    **Simple Routing / FAQ:**
+    - GPT-3.5 Turbo, Mixtral 8x7B, Claude 3 Haiku
+
+    **Standard Customer Support:**
+    - GPT-4o, Llama 3.1 70B, Claude 3.5 Sonnet
+
+    **Complex Reasoning / Multi-Step:**
+    - GPT-4.1, Claude 3 Opus, Llama 3.1 405B
+
+    **Personality-Critical / Brand-Sensitive:**
+    - Claude 3.5 Sonnet, GPT-4.1
+  </Accordion>
+
+  <Accordion title="4. Factor in Volume" icon="chart-line">
+    **Low Volume (<100 calls/day):**
+    - Choose best quality within budget: GPT-4.1, Claude 3.5 Sonnet
+
+    **Medium Volume (100-1,000 calls/day):**
+    - Balance quality and cost: GPT-4o, Llama 3.1 70B
+
+    **High Volume (1,000+ calls/day):**
+    - Optimize for cost: GPT-3.5 Turbo, Mixtral, Claude 3 Haiku
+  </Accordion>
+</AccordionGroup>
+
+### Common Model Combinations
+
+Many customers use different models for different agents:
+
+```
+High-Value Sales Agent → Claude 3.5 Sonnet (quality, instruction adherence)
+Support Routing Agent → GPT-3.5 Turbo (cost-effective, fast)
+Qualification Agent → GPT-4o (balanced speed and reasoning)
+Complex Troubleshooting → GPT-4.1 (multi-step reasoning)
+```
+
+---
+
+## Testing Model Performance
+
+### A/B Testing Models
+
+To compare models scientifically:
+
+1. **Duplicate your agent** in the dashboard
+2. **Change only the model** on one version
+3. **Keep all other settings identical** (instructions, voice, actions)
+4. **Run identical test scenarios** on both
+5. **Compare:**
+   - Response quality and accuracy
+   - Latency and speed
+   - Conversation naturalness
+   - Action trigger reliability
+
+### Evaluation Criteria
+
+Rate each model on:
+
+| Criteria | What to Look For |
+|----------|-----------------|
+| **Accuracy** | Does it understand requests correctly? |
+| **Instruction Adherence** | Does it follow your system prompt rules? |
+| **Latency** | How quickly does it respond? |
+| **Context Retention** | Does it remember earlier conversation? |
+| **Action Timing** | Does it trigger actions at right moments? |
+| **Error Handling** | How does it handle unclear requests? |
+| **Cost** | Is the quality improvement worth the price difference? |
+
+### Test Scenarios
+
+Create a standard test set covering:
+- **Common requests** (80% of real conversations)
+- **Edge cases** (unclear requests, interruptions)
+- **Multi-turn conversations** (context retention)
+- **Action triggers** (booking, transfer scenarios)
+- **Error conditions** (API failures, missing data)
+
+Run the same set on each model for fair comparison.
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Start with Recommended Defaults" icon="rocket">
+    For most voice agents, start with:
+    - **Model:** GPT-4o or Claude 3.5 Sonnet
+    - **Temperature:** 0.7
+    - **Max Tokens:** 250
+    - **Streaming:** Enabled
+
+    Adjust based on testing results.
+  </Accordion>
+
+  <Accordion title="Match Model to Complexity" icon="scale-balanced">
+    Don't over-engineer simple use cases:
+    - FAQ answering doesn't need GPT-4.1
+    - Complex multi-step reasoning doesn't work well with minimal models
+
+    Match capability to requirement.
+  </Accordion>
+
+  <Accordion title="Monitor Real-World Performance" icon="chart-line">
+    Use analytics to track:
+    - Average response time
+    - Action success rates
+    - Transfer rates (high transfers may indicate reasoning issues)
+    - Customer satisfaction scores
+
+    Switch models if metrics degrade.
+  </Accordion>
+
+  <Accordion title="Consider Regional Deployment" icon="globe">
+    If serving global customers:
+    - Use EU-hosted models for European callers (GDPR)
+    - Consider regional Azure deployments for enterprise compliance
+    - Factor in latency from model hosting region to customers
+  </Accordion>
+
+  <Accordion title="Document Model Changes" icon="file-pen">
+    When changing models in production:
+    - Note the date and reason in agent description
+    - Monitor metrics for 24-48 hours after
+    - Keep previous model ID documented for rollback
+    - Test thoroughly before switching high-volume agents
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Troubleshooting Model Issues
+
+### Agent Responses Are Too Verbose
+
+**Solutions:**
+- Lower max tokens (try 150-200)
+- Add to instructions: "Keep every response under 25 seconds"
+- Decrease temperature for more focused responses
+- Consider faster model that encourages brevity (Claude 3 Haiku)
+
+### Agent Misunderstands Requests
+
+**Solutions:**
+- Switch to higher-capability model (GPT-4.1, Claude 3.5 Sonnet)
+- Improve instructions with more specific examples
+- Add keyword boosting in transcriber settings
+- Review transcription accuracy first (may be STT issue, not LLM)
+
+### Agent Doesn't Follow Instructions
+
+**Solutions:**
+- Claude models typically better at instruction adherence
+- Simplify and clarify instructions
+- Use bulleted lists instead of paragraphs
+- Add explicit examples of correct behavior
+- Lower temperature for more consistent behavior
+
+### High Latency / Slow Responses
+
+**Solutions:**
+- Switch to faster model (Groq, Claude 3 Haiku, GPT-3.5)
+- Reduce max tokens
+- Enable streaming if disabled
+- Check if issue is model or network latency (test with different providers)
+
+### Agent Repeats Same Phrases
+
+**Solutions:**
+- Increase frequency penalty (0.5-1.0)
+- Add instruction: "Vary your phrasing; avoid repetitive expressions"
+- Consider different model (some have better diversity)
+- Review if instructions inadvertently cause repetition
+
+---
+
+## Model Updates and Versioning
+
+### Provider Model Updates
+
+Model providers regularly update their offerings:
+- **Minor updates** often improve performance without breaking changes
+- **Major version changes** (e.g., GPT-4 → GPT-5) may require testing
+- itellicoAI notifies customers before automatic version updates
+
+### Controlling Model Versions
+
+Some providers let you pin to specific versions:
+- **Latest:** Always use newest version (default, recommended)
+- **Pinned:** Stay on specific version (use if you've heavily optimized for that model)
+
+### Deprecation Policy
+
+When providers deprecate models:
+1. itellicoAI emails affected customers 60 days before sunset
+2. Recommended migration path provided
+3. Agents automatically moved to successor model if no action taken
+4. Migration assistance available from support
+
+---
+
+## Pricing and Cost Management
+
+### Understanding Model Costs
+
+Models charge per token (input + output):
+- **Input tokens:** Your instructions + conversation history + knowledge
+- **Output tokens:** Agent's generated responses
+
+Costs vary widely:
+- Budget tier: $0.50-$2 per million tokens
+- Mid tier: $5-$15 per million tokens
+- Premium tier: $20-$60 per million tokens
+
+### Cost Optimization Tips
+
+<CardGroup cols={2}>
+  <Card title="Minimize Instruction Length" icon="scissors">
+    Shorter instructions = lower input token count per turn
+  </Card>
+  <Card title="Use Knowledge Efficiently" icon="book">
+    RAG mode only injects relevant knowledge, reducing tokens
+  </Card>
+  <Card title="Limit Max Tokens" icon="gauge">
+    Cap output tokens to prevent unnecessarily long responses
+  </Card>
+  <Card title="Choose Appropriate Model" icon="bullseye">
+    Don't use GPT-4 for tasks GPT-3.5 can handle
+  </Card>
+</CardGroup>
+
+### Estimating Monthly Costs
+
+Example calculation for 1,000 calls/month:
+```
+Average conversation: 15 turns
+Average response: 150 tokens
+Input per turn: 1,500 tokens (instructions + history)
+Output per turn: 150 tokens
+
+Per conversation:
+- Input: 15 turns × 1,500 tokens = 22,500 tokens
+- Output: 15 turns × 150 tokens = 2,250 tokens
+
+Total monthly tokens (1,000 calls):
+- Input: 22.5M tokens
+- Output: 2.25M tokens
+
+With GPT-4o ($5/M input, $15/M output):
+- Input cost: 22.5M × $5/M = $112.50
+- Output cost: 2.25M × $15/M = $33.75
+- Total: $146.25/month for model usage
+
+With GPT-3.5 Turbo ($1/M input, $2/M output):
+- Total: $27/month for model usage
+```
+
+Cost tracking available in Analytics > Usage Reports.
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Select Voice" icon="microphone" href="/build/voice-speech/select-voice">
+    Configure how your agent sounds with voice selection
+  </Card>
+  <Card title="Speech-to-Text Configuration" icon="ear" href="/build/voice-speech/speech-to-text">
+    Choose transcription models for listening to customers
+  </Card>
+  <Card title="Voice Settings" icon="sliders" href="/build/voice-speech/voice-settings">
+    Fine-tune speed, pitch, and timbre for your voice
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/test-in-dashboard">
+    Test model performance with web calls
+  </Card>
+</CardGroup>

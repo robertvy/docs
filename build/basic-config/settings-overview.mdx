@@ -1,0 +1,294 @@
+---
+title: "Agent Settings Overview"
+description: "Navigate the agent configuration panel and understand settings hierarchy"
+icon: "sliders"
+---
+
+## Configuration Panel Overview
+
+The agent configuration panel is organized into logical sections that control different aspects of your agent's behavior and capabilities.
+
+## Main Configuration Sections
+
+<CardGroup cols={2}>
+  <Card title="Abilities" icon="wand-magic-sparkles">
+    Instructions, greetings, knowledge, actions, DTMF, MCP servers
+  </Card>
+  <Card title="Models" icon="brain">
+    AI model selection, voice configuration, transcriber settings
+  </Card>
+  <Card title="Operations" icon="gear">
+    Inactivity handling, voice activity detection, dynamic context
+  </Card>
+  <Card title="Analytics" icon="chart-line">
+    Conversation goals, post-call analysis configuration
+  </Card>
+</CardGroup>
+
+---
+
+## Abilities Tab
+
+Configure what your agent can do and how it behaves in conversations.
+
+### Instructions (System Prompt)
+Define your agent's personality, knowledge, and conversational flow.
+- Jinja-aware editor with syntax highlighting
+- Variable insertion and knowledge references
+- Prompt templates and writing tips
+
+[Learn more about Instructions →](/build/conversation/instructions)
+
+### Greeting & Opening
+Control how conversations start.
+- User initiates, AI-generated, or fixed greeting
+- Inbound vs outbound greeting overrides
+- Interruptibility and delay settings
+
+[Learn more about Greetings →](/build/conversation/greeting-messages)
+
+### Knowledge Access
+Connect knowledge bases, collections, and documents.
+- Attach multiple knowledge sources
+- Choose Context or RAG mode per source
+- View remaining context tokens
+
+[Learn more about Knowledge →](/build/knowledge/architecture)
+
+### Actions & Integrations
+Enable your agent to take real actions.
+- Transfer calls (agent, phone, SIP)
+- End conversations
+- Smart booking (Cal.com)
+- Custom API actions
+
+[Learn more about Actions →](/build/actions/overview)
+
+### DTMF Controls
+Configure keypad input handling.
+- Menu mode (single key) or Collector mode (multi-digit)
+- Tone sending configuration
+- Capture and emit settings
+
+[Learn more about DTMF →](/build/advanced/dtmf-controls)
+
+### MCP Servers
+Attach Model Context Protocol integrations.
+- Connect account-level MCP servers
+- Manage server connections
+- Access external tools mid-conversation
+
+[Learn more about MCP →](/build/advanced/mcp-servers)
+
+---
+
+## Models Tab
+
+Select and configure the AI technologies powering your agent.
+
+### Model (LLM)
+Choose the language model for reasoning.
+- Provider catalog (OpenAI, Anthropic, Groq, Azure)
+- Model selection with EU-hosting badges
+- Advanced parameters (temperature, max tokens, streaming)
+
+[Learn more about AI Models →](/build/voice-speech/choose-ai-model)
+
+### Voice
+Select how your agent sounds.
+- Voice library with previews
+- Provider metadata and localization
+- Voice configuration (speed, pitch, parameters)
+
+[Learn more about Voice Selection →](/build/voice-speech/select-voice)
+
+### Transcriber
+Configure speech-to-text.
+- Provider catalog (Deepgram, Azure Speech)
+- Language selection and multilingual support
+- Keyword boosting
+
+[Learn more about Transcription →](/build/voice-speech/speech-to-text)
+
+
+### Sound Effects
+Add ambient audio to conversations.
+- Background ambience (office, café, street)
+- Volume adjustment
+- Backchannel (coming soon)
+
+[Learn more about Ambient Sound →](/build/voice-speech/ambient-sound)
+
+---
+
+## Operations Tab
+
+Fine-tune operational behavior and conversation mechanics.
+
+### Inactivity & Timeout
+Handle silence and inactive customers.
+- Check-in cadence and retry logic
+- Custom timeout messages
+- Inactivity actions
+
+[Learn more about Inactivity →](/optimize/conversation-quality#inactivity-timeout)
+
+### Voice Activity Detection (VAD)
+Control when your agent speaks and listens.
+- Preset modes (Low, Medium, High) or Custom
+- Interruption handling
+- Endpointing delay configuration
+- Smart endpointing toggle
+
+[Learn more about VAD →](/optimize/conversation-quality#voice-activity-detection)
+
+### Dynamic Context (Integrations)
+Fetch personalized data before conversations.
+- Context endpoint configuration
+- Authentication setup
+- Test request functionality
+
+[Learn more about Dynamic Context →](/build/advanced/dynamic-context)
+
+---
+
+## Analytics Tab
+
+Configure conversation measurement and success tracking.
+
+### Goals
+Define what success looks like.
+- Primary and secondary goals
+- Goal types and criteria
+- Achievement tracking
+
+[Learn more about Goals →](/build/advanced/conversation-goals)
+
+### Post-Call Analysis
+Configure automated conversation analysis.
+- Analysis criteria
+- Rating systems
+- Performance metrics
+
+[Learn more in Optimize →](/optimize/goal-outcome-optimization)
+
+---
+
+## Agent Architecture Types
+
+### Pipeline Agents (Default)
+Traditional multi-model architecture with separate components.
+
+**Components:**
+- Speech-to-Text (Transcriber)
+- Language Model (LLM)
+- Text-to-Speech (Voice)
+
+**Advantages:**
+- More provider options
+- Granular control over each component
+- Custom pronunciations support
+- Generally more cost-effective
+
+**Best For:**
+- Most use cases
+- Complex knowledge integration
+- Custom actions and workflows
+
+### Multimodal Agents
+End-to-end models that handle speech natively.
+
+**Components:**
+- Single unified model handles speech and reasoning
+
+**Advantages:**
+- Lower latency
+- More natural interruptions
+- Better voice-specific understanding
+
+**Best For:**
+- Ultra-low latency requirements
+- Highly conversational interactions
+- Real-time responsiveness critical
+
+<Note>
+Most users should start with Pipeline agents as they offer more flexibility and control. Multimodal agents are available for specific use cases requiring ultra-low latency.
+</Note>
+
+---
+
+## Navigation Tips
+
+### Using the Configuration Panel
+
+<Steps>
+  <Step title="Start with Abilities">
+    Configure instructions, greetings, and knowledge first
+  </Step>
+  <Step title="Configure Models">
+    Select AI model, voice, and transcriber
+  </Step>
+  <Step title="Fine-tune Operations">
+    Adjust VAD and timeout settings after testing
+  </Step>
+  <Step title="Set Up Analytics">
+    Define goals for measurement
+  </Step>
+</Steps>
+
+### Save Behavior
+
+<Warning>
+Changes to most settings are applied immediately when you click Save. Some settings (like model selection) take effect on the next conversation.
+</Warning>
+
+**Auto-save:** Not available - always click Save
+**Unsaved changes:** Yellow bar appears warning about unsaved changes
+**Validation:** Real-time syntax checking in instruction editor
+
+### Quick Actions
+
+- **Test Call:** Top-right button for quick testing
+- **Duplicate Agent:** Create copy with all settings
+- **Export Config:** Download agent configuration (API)
+- **View History:** See configuration change log (coming soon)
+
+---
+
+## Configuration Workflow
+
+### Initial Setup (First Time)
+1. Set agent identity and type
+2. Write basic instructions
+3. Configure greeting
+4. Select model, voice, transcriber
+5. Test thoroughly
+
+### Adding Capabilities
+1. Add knowledge bases
+2. Configure actions
+3. Set up goals
+4. Test new features
+
+### Optimization (Ongoing)
+1. Review analytics
+2. Refine instructions
+3. Tune VAD and timeouts
+4. Update knowledge
+5. Test and iterate
+
+---
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Write Instructions" icon="pen" href="/build/conversation/instructions">
+    Define your agent's behavior
+  </Card>
+  <Card title="Configure Voice" icon="microphone" href="/build/voice-speech/choose-ai-model">
+    Select AI model and voice
+  </Card>
+  <Card title="Add Knowledge" icon="book" href="/build/knowledge/architecture">
+    Connect your business info
+  </Card>
+</CardGroup>

@@ -1,0 +1,1049 @@
+---
+title: "MCP Servers"
+description: "Integrate Model Context Protocol servers to extend agent capabilities with external tools and data sources"
+icon: "server"
+---
+
+## Overview
+
+Model Context Protocol (MCP) servers transform your AI agents from standalone assistants into powerful platforms connected to external systems, databases, and specialized tools. By attaching MCP servers, you give your agents access to real-time data, computational capabilities, and integrations that go far beyond their base training - enabling them to query databases, fetch live information, execute complex calculations, and interact with third-party services seamlessly during conversations.
+
+MCP represents a standardized way for AI models to connect with external resources, making it easy to extend agent capabilities without custom integrations or complex API development.
+
+<Note>
+MCP servers are configured at the account level and then selectively attached to individual agents. The MCP Controls section appears in the agent's Abilities tab for managing server connections.
+</Note>
+
+---
+
+## What is Model Context Protocol?
+
+### Understanding MCP
+
+**Model Context Protocol (MCP)** is an open standard that defines how AI models interact with external tools and data sources in a consistent, secure, and efficient way.
+
+**Key concepts:**
+
+<CardGroup cols={2}>
+  <Card title="Protocol Standard" icon="file-contract">
+    Standardized communication format between AI models and tools
+  </Card>
+  <Card title="Server Architecture" icon="server">
+    External services expose capabilities via MCP server interface
+  </Card>
+  <Card title="Tool Discovery" icon="magnifying-glass">
+    Agents automatically discover available tools from connected servers
+  </Card>
+  <Card title="Secure Execution" icon="shield-check">
+    Controlled, authenticated access to external resources
+  </Card>
+</CardGroup>
+
+### How MCP Works
+
+**Traditional approach (before MCP):**
+```
+Agent needs external data
+→ Custom API integration required for each service
+→ Different authentication, formats, error handling per integration
+→ Maintenance overhead for each custom connection
+→ Limited discoverability of available tools
+```
+
+**MCP approach:**
+```
+Agent needs external data
+→ Connect to MCP server (standardized interface)
+→ Server exposes tools via MCP protocol
+→ Agent discovers available tools automatically
+→ Agent calls tools using standard MCP format
+→ Server handles authentication, execution, and response
+→ One protocol, many capabilities
+```
+
+**Example flow:**
+```
+1. Agent connected to "Database MCP Server"
+2. Customer asks: "What orders do I have pending?"
+3. Agent discovers tool: query_customer_orders
+4. Agent calls: query_customer_orders(customer_id="12345")
+5. MCP server executes database query
+6. Returns: [Order #789, Order #790]
+7. Agent responds: "You have 2 pending orders: #789 and #790"
+```
+
+### Benefits of MCP
+
+**For agents:**
+- **Extended capabilities** - Access to tools beyond base model training
+- **Real-time data** - Query current information, not just training data
+- **Specialized functions** - Mathematical calculations, data analysis, file operations
+- **System integrations** - Connect to databases, APIs, internal systems
+
+**For developers:**
+- **Standardization** - One protocol instead of many custom integrations
+- **Reusability** - Same MCP server can be used by multiple agents
+- **Maintainability** - Update server capabilities without changing agent code
+- **Discoverability** - Agents automatically find and use available tools
+
+**For users:**
+- **More capable agents** - Agents can do more than just conversation
+- **Accurate information** - Real-time data instead of potentially outdated knowledge
+- **Seamless experience** - Integrations work naturally in conversation
+- **Reliable execution** - Standardized error handling and retries
+
+---
+
+## MCP Server Catalog
+
+### Available MCP Integrations
+
+The MCP ecosystem includes servers for common business needs:
+
+**Data & Databases:**
+- **PostgreSQL MCP Server** - Query and update PostgreSQL databases
+- **MongoDB MCP Server** - NoSQL database operations
+- **MySQL MCP Server** - Relational database access
+- **Redis MCP Server** - Key-value store and caching operations
+- **SQLite MCP Server** - Local database queries
+
+**Business Systems:**
+- **Salesforce MCP Server** - CRM data access and updates
+- **HubSpot MCP Server** - Marketing and sales automation
+- **Google Sheets MCP Server** - Spreadsheet reading and writing
+- **Airtable MCP Server** - Database and workflow access
+- **Notion MCP Server** - Knowledge base integration
+
+**Development Tools:**
+- **GitHub MCP Server** - Repository access, issue tracking
+- **GitLab MCP Server** - Source control operations
+- **Jira MCP Server** - Project management and issue tracking
+- **Linear MCP Server** - Modern issue tracking
+
+**Communication:**
+- **Slack MCP Server** - Send messages, read channels
+- **Gmail MCP Server** - Email reading and sending
+- **Twilio MCP Server** - SMS and communication tools
+- **SendGrid MCP Server** - Email delivery and tracking
+
+**Files & Storage:**
+- **AWS S3 MCP Server** - Cloud file storage operations
+- **Google Drive MCP Server** - File access and sharing
+- **Dropbox MCP Server** - File synchronization and access
+- **Local Filesystem MCP Server** - Read/write local files
+
+**APIs & Web:**
+- **HTTP MCP Server** - Generic HTTP request execution
+- **REST API MCP Server** - RESTful API interactions
+- **GraphQL MCP Server** - GraphQL query execution
+- **Web Scraping MCP Server** - Extract data from websites
+
+**Analytics & Data:**
+- **Google Analytics MCP Server** - Website analytics data
+- **Mixpanel MCP Server** - Product analytics
+- **Segment MCP Server** - Customer data platform
+- **Stripe MCP Server** - Payment and subscription data
+
+**Utilities:**
+- **Calculator MCP Server** - Advanced mathematical operations
+- **Date/Time MCP Server** - Timezone conversion, date calculations
+- **Weather MCP Server** - Current weather and forecasts
+- **Translation MCP Server** - Language translation services
+
+<Tip>
+The MCP catalog link in the platform UI provides an up-to-date list of available servers with setup instructions and documentation.
+</Tip>
+
+---
+
+## Configuring MCP Servers
+
+### Account-Level Setup
+
+MCP servers must first be configured at the account level before attaching to agents:
+
+<Steps>
+  <Step title="Access MCP Configuration">
+    Navigate to **Account Settings**
+
+    Go to **Integrations** or **MCP Servers** section
+
+    (Exact location may vary - check settings menu)
+  </Step>
+
+  <Step title="Add New MCP Server">
+    Click **Add MCP Server** or **Connect Server**
+
+    Choose from:
+    - **MCP Catalog** - Pre-configured popular servers
+    - **Custom Server** - Connect your own MCP server
+  </Step>
+
+  <Step title="Configure Server Connection">
+    **For catalog servers:**
+    1. Select server from list
+    2. Enter required credentials (API keys, database URLs, etc.)
+    3. Configure authentication settings
+    4. Test connection
+    5. Save server
+
+    **For custom servers:**
+    1. Enter server endpoint URL
+    2. Configure authentication (Bearer token, API key, etc.)
+    3. Specify server capabilities (or auto-discover)
+    4. Test connection
+    5. Save server
+  </Step>
+
+  <Step title="Verify Server Status">
+    Server appears in account MCP server list
+
+    Status should show: **Connected** or **Active**
+
+    Tools exposed by server are listed
+  </Step>
+</Steps>
+
+### Server Configuration Example
+
+**PostgreSQL Database Server:**
+```
+┌─ Add MCP Server ────────────────────────────────────────┐
+│                                                          │
+│ Server Type: [PostgreSQL Database_______▼]              │
+│                                                          │
+│ Server Name*                                             │
+│ [Customer Database_____________________________]         │
+│                                                          │
+│ Database Configuration                                   │
+│ Host:     [db.company.com_________________________]     │
+│ Port:     [5432___________________________________]     │
+│ Database: [customers_____________________________]      │
+│ Username: [mcp_readonly__________________________]      │
+│ Password: [••••••••••••••••••••••••••••••••••]        │
+│                                                          │
+│ Connection Pool                                          │
+│ Max Connections: [10_______]                            │
+│ Timeout (sec):   [30_______]                            │
+│                                                          │
+│ Exposed Tools (Auto-detected):                          │
+│ • query_database - Execute SELECT queries               │
+│ • get_schema - Retrieve table schema                    │
+│ • count_records - Count rows in tables                  │
+│                                                          │
+│                        [Test Connection] [Save Server]  │
+└──────────────────────────────────────────────────────────┘
+
+Test Result: ✅ Connected successfully. 3 tools available.
+```
+
+**Salesforce CRM Server:**
+```
+┌─ Add MCP Server ────────────────────────────────────────┐
+│                                                          │
+│ Server Type: [Salesforce CRM___________▼]               │
+│                                                          │
+│ Server Name*                                             │
+│ [Salesforce Production_________________________]        │
+│                                                          │
+│ Authentication                                           │
+│ Instance URL: [https://company.salesforce.com______]   │
+│ Client ID:    [3MVG9...••••••••••••••••••••••]        │
+│ Client Secret:[••••••••••••••••••••••••••••••••]       │
+│ Username:     [api@company.com____________________]     │
+│ Password:     [••••••••••••••••••••••••••••••••]       │
+│ Security Token:[••••••••••••••••••••••••••••••••]      │
+│                                                          │
+│ Scope & Permissions                                      │
+│ ☑ Read Contacts    ☑ Read Accounts                     │
+│ ☑ Read Leads       ☑ Read Opportunities                │
+│ ☐ Write Contacts   ☐ Write Accounts                    │
+│                                                          │
+│ Exposed Tools (Auto-detected):                          │
+│ • lookup_contact - Find contact by phone/email          │
+│ • get_account - Retrieve account details                │
+│ • list_opportunities - Query open opportunities         │
+│ • search_leads - Search lead database                   │
+│                                                          │
+│                        [Test Connection] [Save Server]  │
+└──────────────────────────────────────────────────────────┘
+
+Test Result: ✅ Authenticated. 4 tools available.
+```
+
+### Security Considerations
+
+<AccordionGroup>
+  <Accordion title="Use Read-Only Credentials When Possible" icon="lock">
+    **Principle of least privilege:**
+
+    Create dedicated credentials for MCP servers with minimum necessary permissions
+
+    **Example (Database):**
+    ```sql
+    -- Bad: Full access
+    GRANT ALL PRIVILEGES ON DATABASE customers TO mcp_user;
+
+    -- Good: Read-only access
+    CREATE USER mcp_readonly WITH PASSWORD 'secure_password';
+    GRANT SELECT ON ALL TABLES IN SCHEMA public TO mcp_readonly;
+    ```
+
+    **Why:** If credentials compromised, read-only limits damage
+  </Accordion>
+
+  <Accordion title="Rotate Credentials Regularly" icon="rotate">
+    **Best practice:**
+    - Rotate API keys, passwords every 90 days
+    - Update MCP server configuration with new credentials
+    - Revoke old credentials immediately after rotation
+
+    **Automation:**
+    - Set calendar reminders for credential rotation
+    - Use secret management tools (AWS Secrets Manager, HashiCorp Vault)
+    - Monitor for approaching expiration dates
+  </Accordion>
+
+  <Accordion title="Limit Server Scope" icon="filter">
+    **Don't expose entire system:**
+
+    Configure servers to expose only necessary tools
+
+    **Example:**
+    ```
+    Bad Configuration:
+    Salesforce MCP Server with full read/write access to all objects
+
+    Good Configuration:
+    Salesforce MCP Server limited to:
+    - Read Contacts (phone, email, name only)
+    - Read Accounts (company, industry only)
+    - No write access
+    - No access to sensitive fields (SSN, financial data)
+    ```
+  </Accordion>
+
+  <Accordion title="Monitor MCP Server Usage" icon="chart-line">
+    **Tracking and auditing:**
+    - Log all MCP tool executions
+    - Monitor for unusual patterns (high volume, unexpected tools)
+    - Set alerts for sensitive operations
+    - Review logs regularly for security issues
+
+    **Red flags:**
+    - Sudden spike in tool usage
+    - Queries to sensitive tables
+    - Failed authentication attempts
+    - Tool calls outside business hours
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Attaching MCP Servers to Agents
+
+### Agent-Level Configuration
+
+Once servers are configured at account level, attach them to specific agents:
+
+<Steps>
+  <Step title="Open Agent Configuration">
+    Navigate to your agent
+
+    Go to **Abilities** tab
+
+    Scroll to **MCP Servers** section
+  </Step>
+
+  <Step title="Attach Server">
+    Click **Attach MCP Server** button
+
+    Server selector opens showing available servers
+
+    **Displayed for each server:**
+    - Server name
+    - Server type/description
+    - Number of tools available
+    - Connection status
+  </Step>
+
+  <Step title="Select Server(s)">
+    Choose server(s) to attach to this agent
+
+    Multiple servers can be attached
+
+    Click **Attach** or **Add**
+  </Step>
+
+  <Step title="Verify Connection">
+    Attached server appears as card in MCP Servers section
+
+    **Card displays:**
+    - Server icon and name
+    - Description
+    - Tool count
+    - Remove button
+  </Step>
+
+  <Step title="Save Changes">
+    Save agent configuration
+
+    Server tools immediately available to agent
+  </Step>
+</Steps>
+
+### MCP Servers UI
+
+```
+┌─ MCP Servers ───────────────────────────────────────────┐
+│                                                          │
+│ Connect Model Context Protocol servers to extend this   │
+│ agent's capabilities with external tools and data.      │
+│                                                          │
+│                              [Attach MCP Server]        │
+│                                                          │
+│ Connected Servers (2):                                  │
+│                                                          │
+│ ┌────────────────────────────────────────┐             │
+│ │ 🗄️  Customer Database                  │   [Remove]  │
+│ │ PostgreSQL MCP Server                  │             │
+│ │                                         │             │
+│ │ Query customer orders, account info,   │             │
+│ │ and transaction history.               │             │
+│ │                                         │             │
+│ │ Tools: 3 (query_database, get_schema,  │             │
+│ │         count_records)                 │             │
+│ └────────────────────────────────────────┘             │
+│                                                          │
+│ ┌────────────────────────────────────────┐             │
+│ │ ☁️  Salesforce Production              │   [Remove]  │
+│ │ Salesforce CRM                         │             │
+│ │                                         │             │
+│ │ Access customer contacts, accounts,    │             │
+│ │ and lead information.                  │             │
+│ │                                         │             │
+│ │ Tools: 4 (lookup_contact, get_account, │             │
+│ │         list_opportunities, ...)        │             │
+│ └────────────────────────────────────────┘             │
+│                                                          │
+│ No servers configured yet? → [MCP Catalog]             │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+```
+
+### Removing Servers
+
+To disconnect a server from an agent:
+
+1. Find server card in MCP Servers section
+2. Click **Remove** button
+3. Confirm removal
+4. Save agent configuration
+5. Tools immediately unavailable to agent
+
+<Warning>
+Removing an MCP server from an agent doesn't delete the server from your account. It only disconnects it from this specific agent. Other agents using the same server are unaffected.
+</Warning>
+
+---
+
+## Using MCP Tools in Conversations
+
+### How Agents Use MCP Tools
+
+Once attached, MCP tools work automatically based on conversation context:
+
+**Automatic tool discovery:**
+```
+Agent receives message: "What orders do I have pending?"
+
+Agent thinks:
+1. I need order information for this customer
+2. Check available tools...
+3. Found: query_customer_orders (from Customer Database MCP Server)
+4. This tool can retrieve order data
+5. I have customer_id from contact record
+6. Execute: query_customer_orders(customer_id="12345", status="pending")
+7. Response: [Order #789: Widget A, Order #790: Widget B]
+8. Format response: "You have 2 pending orders..."
+```
+
+**The agent doesn't need explicit instructions** - it discovers and uses appropriate tools automatically based on:
+- Available tool descriptions
+- Conversation context
+- Customer request
+- Contact/campaign data
+
+### Instructing Tool Usage
+
+While agents auto-discover tools, you can guide when and how to use them:
+
+**Example instructions with MCP:**
+```
+You have access to the Customer Database via MCP tools.
+
+When a customer asks about their orders:
+1. Use the query_customer_orders tool with their customer_id
+2. Filter by status if they specify (pending, shipped, delivered)
+3. Summarize results in a friendly way
+4. If no orders found, double-check using get_customer_account tool
+
+When a customer asks about account balance:
+1. Use the get_customer_account tool
+2. Retrieve the 'balance' field
+3. Format as currency
+4. Mention any pending charges
+
+Always confirm customer identity before querying sensitive information.
+```
+
+**Conditional tool usage:**
+```
+{% if contact.customer_id %}
+You have access to this customer's full order history via MCP tools.
+Use query_customer_orders when they ask about orders.
+{% else %}
+Customer is not yet in our system. Offer to create account or
+provide general information only. Do not attempt to query orders.
+{% endif %}
+```
+
+### Tool Execution Flow
+
+**Real conversation example:**
+
+```
+Customer: "Can you tell me when my last order was delivered?"
+
+Agent internal process:
+1. Identify intent: Check order delivery date
+2. Extract parameters: customer_id from contact record
+3. Select tool: query_customer_orders
+4. Build query: status="delivered", sort="date_desc", limit=1
+5. Execute MCP tool call:
+
+   MCP Request:
+   {
+     "tool": "query_customer_orders",
+     "parameters": {
+       "customer_id": "12345",
+       "status": "delivered",
+       "sort": "date_desc",
+       "limit": 1
+     }
+   }
+
+6. MCP Server processes query:
+   → Authenticates with database
+   → Executes SQL: SELECT * FROM orders WHERE...
+   → Returns results
+
+   MCP Response:
+   {
+     "orders": [{
+       "order_id": "ORD-888",
+       "product": "Blue Widget",
+       "delivered_date": "2025-11-05",
+       "tracking": "1Z999AA1234567890"
+     }]
+   }
+
+7. Agent formats response:
+
+Agent: "Your last order was delivered on November 5th. That was
+       order #888 for the Blue Widget. Would you like the tracking
+       number or any other details?"
+```
+
+**Error handling:**
+```
+MCP tool fails (timeout, error, not found):
+
+Agent: "I'm having trouble accessing your order information right
+       now. Let me try another way, or I can transfer you to someone
+       who can look that up directly. Which would you prefer?"
+
+[Agent follows error handling instructions, doesn't expose technical details]
+```
+
+---
+
+## Use Cases
+
+### Real-World MCP Implementations
+
+<AccordionGroup>
+  <Accordion title="Customer Support: CRM Integration" icon="headset">
+    **Scenario:** Support agent with Salesforce access
+
+    **MCP Servers:**
+    - Salesforce CRM MCP Server
+    - Support Ticket MCP Server (Zendesk/Jira)
+
+    **Tools available:**
+    - lookup_contact(phone/email) → Customer details
+    - get_open_tickets(customer_id) → Active support tickets
+    - create_ticket(description, priority) → New ticket
+    - update_ticket(ticket_id, status) → Update existing
+
+    **Conversation example:**
+    ```
+    Customer: "I called last week about a billing issue, what's the status?"
+
+    Agent: [Uses lookup_contact to find customer]
+           [Uses get_open_tickets to retrieve active tickets]
+           "I see you opened ticket #12345 on November 3rd about a
+           billing discrepancy. The status shows it's been escalated
+           to our billing team and they're reviewing your account.
+           You should hear back within 24 hours."
+    ```
+
+    **Benefits:**
+    - Instant access to customer history
+    - No manual CRM lookups required
+    - Accurate, up-to-date information
+    - Seamless ticket creation if needed
+  </Accordion>
+
+  <Accordion title="E-Commerce: Order Management" icon="cart-shopping">
+    **Scenario:** Order status and tracking assistance
+
+    **MCP Servers:**
+    - Order Database MCP Server
+    - Shipping API MCP Server
+    - Inventory MCP Server
+
+    **Tools available:**
+    - query_orders(customer_id, status) → Order list
+    - get_order_details(order_id) → Specific order info
+    - track_shipment(tracking_number) → Live tracking
+    - check_inventory(product_id) → Stock availability
+
+    **Conversation example:**
+    ```
+    Customer: "Where's my order?"
+
+    Agent: [Uses query_orders to find recent orders]
+           [Uses track_shipment with tracking number]
+           "Your order #5678 shipped on November 7th via FedEx.
+           It's currently in transit and scheduled to arrive
+           tomorrow, November 11th, by 8 PM. Would you like me
+           to text you the tracking link?"
+    ```
+  </Accordion>
+
+  <Accordion title="Financial Services: Account Queries" icon="building-columns">
+    **Scenario:** Banking customer service with account access
+
+    **MCP Servers:**
+    - Banking Database MCP Server (read-only)
+    - Transaction History MCP Server
+    - Fraud Detection MCP Server
+
+    **Tools available:**
+    - get_account_balance(account_id) → Current balance
+    - list_transactions(account_id, date_range) → Transaction history
+    - check_fraud_alerts(account_id) → Security alerts
+
+    **Conversation example:**
+    ```
+    Customer: "What's my checking account balance?"
+
+    Agent: [Verifies identity first]
+           [Uses get_account_balance]
+           "Your checking account ending in 1234 has a current
+           balance of $3,456.78. Is there anything specific you'd
+           like to know about recent transactions?"
+
+    Customer: "Yes, what did I spend at Amazon yesterday?"
+
+    Agent: [Uses list_transactions filtered by merchant and date]
+           "You had one Amazon transaction yesterday for $87.32.
+           Would you like more details on that purchase?"
+    ```
+
+    **Security note:** Use strong identity verification before executing financial queries
+  </Accordion>
+
+  <Accordion title="Healthcare: Appointment Scheduling" icon="calendar-check">
+    **Scenario:** Medical office with appointment system integration
+
+    **MCP Servers:**
+    - Appointment Database MCP Server
+    - Provider Schedule MCP Server
+    - Patient Records MCP Server (HIPAA-compliant)
+
+    **Tools available:**
+    - get_patient_appointments(patient_id) → Upcoming appointments
+    - check_provider_availability(provider_id, date_range) → Open slots
+    - schedule_appointment(patient_id, provider_id, datetime) → Book
+    - cancel_appointment(appointment_id) → Cancel/reschedule
+
+    **Conversation example:**
+    ```
+    Patient: "I need to reschedule my appointment next week."
+
+    Agent: [Uses get_patient_appointments]
+           "I see you have an appointment with Dr. Smith on
+           November 15th at 2 PM. Would you like to reschedule?"
+
+    Patient: "Yes, I need something the following week."
+
+    Agent: [Uses check_provider_availability for week of Nov 18-22]
+           "Dr. Smith has availability on November 20th at 10 AM,
+           or November 21st at 3 PM. Which works better for you?"
+
+    Patient: "November 20th at 10 AM."
+
+    Agent: [Uses cancel_appointment for Nov 15]
+           [Uses schedule_appointment for Nov 20]
+           "Perfect! I've rescheduled your appointment to November 20th
+           at 10 AM with Dr. Smith. You'll receive a confirmation text."
+    ```
+  </Accordion>
+
+  <Accordion title="Data Analysis: Business Intelligence" icon="chart-line">
+    **Scenario:** Sales team with analytics access
+
+    **MCP Servers:**
+    - Sales Database MCP Server
+    - Analytics MCP Server
+    - Reporting MCP Server
+
+    **Tools available:**
+    - get_sales_metrics(date_range, region) → Sales figures
+    - compare_periods(metric, period1, period2) → Trend analysis
+    - generate_report(report_type, parameters) → Custom reports
+
+    **Conversation example:**
+    ```
+    Sales Manager: "How are we tracking against Q4 goals?"
+
+    Agent: [Uses get_sales_metrics for Q4 to date]
+           [Uses compare_periods to compare with target]
+           "We're currently at $2.3M in Q4 sales, which is 76%
+           of our $3M goal with 6 weeks remaining. This is tracking
+           8% ahead of Q4 last year at the same point."
+
+    Sales Manager: "Which region is performing best?"
+
+    Agent: [Uses get_sales_metrics grouped by region]
+           "Northeast region is leading with $950K (41% of total),
+           followed by West at $780K (34%), and Southeast at $570K
+           (25%). Would you like me to generate a detailed regional
+           breakdown report?"
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Start with Read-Only Tools" icon="eye">
+    **For initial deployments:**
+
+    Only attach MCP servers with read-only capabilities
+
+    **Why:**
+    - Lower risk if agent misbehaves
+    - Easier to test and validate
+    - Build confidence before enabling write operations
+
+    **Progression:**
+    1. **Phase 1:** Read-only tools (queries, lookups, get operations)
+    2. **Phase 2:** Low-risk writes (create non-critical records, send notifications)
+    3. **Phase 3:** Higher-risk writes (update customer data, financial transactions)
+
+    Test thoroughly at each phase before advancing.
+  </Accordion>
+
+  <Accordion title="Provide Clear Tool Descriptions" icon="file-text">
+    **When configuring custom MCP servers:**
+
+    Write detailed descriptions for each tool so agents know when and how to use them
+
+    **Bad description:**
+    ```
+    query_database - Queries database
+    ```
+
+    **Good description:**
+    ```
+    query_customer_orders - Retrieves order history for a specific customer.
+
+    Parameters:
+    - customer_id (required): Customer's unique identifier
+    - status (optional): Filter by order status (pending, shipped, delivered, cancelled)
+    - limit (optional): Maximum number of orders to return (default: 10)
+
+    Returns: List of orders with order_id, product, status, date, and tracking info
+
+    Use when: Customer asks about their orders, delivery status, or order history
+    ```
+
+    Clear descriptions help agents select the right tool and use it correctly.
+  </Accordion>
+
+  <Accordion title="Monitor MCP Tool Usage" icon="magnifying-glass-chart">
+    **Track and analyze how agents use MCP tools:**
+
+    **Metrics to monitor:**
+    - Tool execution frequency
+    - Success vs. error rate
+    - Average execution time
+    - Tools never used (potential to remove)
+    - Tools heavily used (optimize for performance)
+
+    **Action plan:**
+    ```
+    Weekly review:
+    1. Check MCP tool logs for errors or unusual patterns
+    2. Identify underutilized tools → Remove or improve descriptions
+    3. Identify overutilized tools → Optimize for performance
+    4. Review failed tool calls → Fix data issues or update instructions
+    ```
+  </Accordion>
+
+  <Accordion title="Handle Tool Failures Gracefully" icon="circle-exclamation">
+    **Instruct agents how to handle MCP tool errors:**
+
+    ```
+    Instructions example:
+
+    When an MCP tool fails (timeout, error, not found):
+
+    1. Don't expose technical error details to customer
+    2. Acknowledge the issue professionally:
+       "I'm having trouble accessing that information right now."
+
+    3. Offer alternatives:
+       - "Let me try a different approach..."
+       - "I can transfer you to someone who can look that up directly."
+       - "If you provide [specific information], I can help another way."
+
+    4. If tool repeatedly fails, escalate:
+       - Transfer to human agent
+       - Create support ticket for manual follow-up
+
+    Never say: "MCP query_database tool returned error 500"
+    Instead say: "I'm having trouble retrieving that information right now.
+                 Let me connect you with someone who can help directly."
+    ```
+  </Accordion>
+
+  <Accordion title="Test Tools Before Production" icon="vial">
+    **Comprehensive testing strategy:**
+
+    <Steps>
+      <Step title="Test in Isolation">
+        Test each MCP tool individually using test interface or API client
+
+        Verify:
+        - Tool executes correctly
+        - Returns expected data format
+        - Handles errors appropriately
+        - Performance is acceptable
+      </Step>
+
+      <Step title="Test with Agent">
+        Attach server to test agent
+
+        Run conversation scenarios that should trigger each tool
+
+        Verify:
+        - Agent discovers and selects correct tool
+        - Agent passes correct parameters
+        - Agent interprets results correctly
+        - Agent handles errors gracefully
+      </Step>
+
+      <Step title="Test Edge Cases">
+        Test unusual scenarios:
+        - Tool returns empty results
+        - Tool returns very large results
+        - Tool times out
+        - Tool returns error
+        - Multiple tools used in sequence
+        - Tool used with missing/invalid parameters
+      </Step>
+
+      <Step title="Load Testing">
+        For high-volume deployments:
+        - Test concurrent tool executions
+        - Verify performance under load
+        - Ensure connection pools handle volume
+        - Monitor for resource exhaustion
+      </Step>
+    </Steps>
+  </Accordion>
+
+  <Accordion title="Document MCP Integrations" icon="book">
+    **Maintain documentation for your team:**
+
+    **For each MCP server, document:**
+    - Purpose and use cases
+    - Required credentials and how to obtain them
+    - Tools available and their functions
+    - Which agents use this server
+    - Security/permission considerations
+    - Troubleshooting guide
+
+    **Example documentation:**
+    ```markdown
+    # Customer Database MCP Server
+
+    ## Purpose
+    Provides read-only access to customer order and account data
+    for customer service agents.
+
+    ## Credentials
+    - Database: PostgreSQL 14
+    - Host: db.company.com
+    - Port: 5432
+    - Username: mcp_readonly
+    - Credentials stored in: 1Password vault "MCP Servers"
+
+    ## Tools
+    1. query_customer_orders - Retrieves order history
+    2. get_account_balance - Checks account balance
+    3. lookup_customer - Searches by phone/email
+
+    ## Used By
+    - Customer Support Agent (inbound)
+    - Order Status Agent (outbound campaigns)
+
+    ## Security
+    - Read-only access only
+    - No PII exposure beyond necessary fields
+    - Credentials rotated quarterly
+
+    ## Troubleshooting
+    - Connection errors: Check VPN connection
+    - Slow queries: Database may need indexing
+    - Contact: DBA team (dba@company.com)
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="MCP Server Not Appearing in Agent Selector" icon="eye-slash">
+    **Symptoms:** Server configured at account level but not available when attaching to agent
+
+    **Possible causes:**
+    1. Server not saved/activated at account level
+    2. Server connection failed
+    3. Browser cache issue
+    4. Permissions issue
+
+    **Solutions:**
+    - Go to account MCP servers, verify server shows as "Connected"
+    - Click "Test Connection" to verify server is reachable
+    - Refresh browser / clear cache
+    - Check account permissions (admin role may be required)
+    - Try different browser
+  </Accordion>
+
+  <Accordion title="Agent Not Using MCP Tools" icon="robot">
+    **Symptoms:** Tools are attached but agent doesn't use them in conversations
+
+    **Possible causes:**
+    1. Tool descriptions unclear
+    2. Agent doesn't recognize when to use tool
+    3. Required parameters not available
+    4. Instructions conflicting with tool usage
+
+    **Solutions:**
+    - **Improve tool descriptions:** Make them more explicit about when to use
+    - **Add instructions:** Guide agent on tool usage:
+      ```
+      When customer asks about orders, always use query_customer_orders
+      tool to get accurate information. Don't rely on general knowledge.
+      ```
+    - **Check parameters:** Ensure agent has access to required data (customer_id, etc.)
+    - **Test explicitly:** Ask questions that clearly require tool usage
+  </Accordion>
+
+  <Accordion title="Tool Execution Errors" icon="triangle-exclamation">
+    **Symptoms:** Tools fail when agent tries to use them
+
+    **Possible causes:**
+    1. Authentication failure (expired credentials)
+    2. Network connectivity issue
+    3. External service down
+    4. Invalid parameters passed by agent
+    5. Permissions insufficient
+
+    **Solutions:**
+    - **Check credentials:** Verify API keys, passwords haven't expired
+    - **Test connection:** Use "Test Connection" button in server config
+    - **Review logs:** Check MCP server logs for specific error messages
+    - **Verify permissions:** Ensure server credentials have necessary access
+    - **Check external service:** Confirm third-party service is operational
+    - **Validate parameters:** Review tool call logs to see what agent is passing
+  </Accordion>
+
+  <Accordion title="Slow Tool Performance" icon="hourglass">
+    **Symptoms:** MCP tools take very long to execute (>5 seconds)
+
+    **Possible causes:**
+    1. External service slow (database, API)
+    2. Complex queries inefficient
+    3. Network latency
+    4. Connection pool exhausted
+    5. Large data transfers
+
+    **Solutions:**
+    - **Optimize queries:** Add database indexes, simplify queries
+    - **Increase connection pool:** Allow more concurrent connections
+    - **Reduce data transfer:** Return only necessary fields, add pagination
+    - **Cache results:** For frequently accessed data, implement caching
+    - **Monitor infrastructure:** Check database/API server performance
+    - **Consider async:** For very slow operations, use webhooks instead
+  </Accordion>
+
+  <Accordion title="Incorrect Results from Tools" icon="circle-xmark">
+    **Symptoms:** Tool returns data but it's wrong or unexpected
+
+    **Possible causes:**
+    1. Agent passing wrong parameters
+    2. Tool logic incorrect (custom servers)
+    3. Data quality issue in source system
+    4. Mismatched data formats
+
+    **Solutions:**
+    - **Review tool call logs:** Check parameters agent is passing
+    - **Test tool directly:** Call tool with known parameters, verify results
+    - **Check source data:** Query database/API directly to confirm data
+    - **Update tool logic:** Fix bugs in custom MCP server implementation
+    - **Add validation:** Validate parameters before executing tool
+    - **Update instructions:** Guide agent to pass correct parameters
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Custom API Actions" icon="code" href="/build/actions/custom-api-actions">
+    Create custom HTTP integrations for systems without MCP servers
+  </Card>
+  <Card title="Instructions" icon="pen" href="/build/conversation/instructions">
+    Write effective prompts for MCP tool usage
+  </Card>
+  <Card title="Variables & Dynamic Content" icon="brackets-curly" href="/build/conversation/variables-dynamic-content">
+    Pass dynamic data to MCP tools
+  </Card>
+  <Card title="Actions Overview" icon="bolt" href="/build/actions/overview">
+    Combine MCP tools with other agent capabilities
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/test-in-dashboard">
+    Test MCP tool execution in conversations
+  </Card>
+</CardGroup>

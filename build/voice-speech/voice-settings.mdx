@@ -1,0 +1,710 @@
+---
+title: "Voice Settings"
+description: "Fine-tune speed, pitch, timbre, and provider-specific voice parameters"
+icon: "sliders"
+---
+
+## Overview
+
+After selecting your agent's voice, you can fine-tune how it sounds through advanced voice settings. Adjustments to speed, pitch, and timbre help you achieve the perfect tone and pacing for your brand and use case.
+
+<Note>
+Access voice settings by clicking **Configure** next to your selected voice in the Voice tab. Changes apply immediately to new conversations.
+</Note>
+
+## Voice Configuration Interface
+
+The voice configuration sheet provides intuitive controls for all available parameters:
+
+<CardGroup cols={2}>
+  <Card title="Real-time Preview" icon="play">
+    Hear changes immediately with preview samples
+  </Card>
+  <Card title="Visual Sliders" icon="sliders">
+    Adjust parameters with intuitive slider controls
+  </Card>
+  <Card title="JSON Payload" icon="code">
+    View and copy the resulting configuration for API use
+  </Card>
+  <Card title="Reset to Defaults" icon="rotate-left">
+    Restore original voice settings instantly
+  </Card>
+</CardGroup>
+
+### Accessing Voice Settings
+
+1. Navigate to **Voice** tab in agent configuration
+2. Select your desired voice (or keep current selection)
+3. Click **Configure** or **Settings** button next to the voice
+4. Voice configuration panel opens with all available parameters
+
+---
+
+## Universal Voice Parameters
+
+These parameters are available for most voice providers and have similar effects across different voices.
+
+### Speed (Rate)
+
+Controls how fast the voice speaks (range typically: 0.5x to 2.0x)
+
+**Speed Values:**
+- **0.5x - 0.7x:** Very slow
+  - Use for: Elderly audiences, complex information, legal disclosures
+  - Risk: May sound condescending or robotic
+
+- **0.8x - 0.9x:** Slightly slow
+  - Use for: Clearer enunciation, accented audiences, technical instructions
+  - Benefit: More time for comprehension without sounding unnatural
+
+- **1.0x:** Normal speed (default)
+  - Use for: Most conversational agents
+  - Standard: Matches natural human speech pace
+
+- **1.1x - 1.2x:** Slightly fast
+  - Use for: Energetic brands, younger audiences, time-sensitive calls
+  - Benefit: Conveys efficiency and energy
+
+- **1.3x - 2.0x:** Very fast
+  - Use for: Rarely (sounds rushed and unnatural)
+  - Risk: Customers may miss information or feel rushed
+
+<Tip>
+**Recommended starting point:** 1.0x for most agents. Adjust by 0.05-0.1x increments based on testing feedback. Small changes make a significant difference.
+</Tip>
+
+**Testing speed:**
+- Test with your longest typical responses (30-60 seconds)
+- Have team members listen to full conversations, not just samples
+- Consider customer demographics (older customers often prefer slightly slower)
+- Check comprehension: Can listeners understand and retain information?
+
+### Pitch
+
+Controls the fundamental frequency of the voice (range typically: -20% to +20%)
+
+**Pitch Values:**
+- **-20% to -10%:** Lower pitch
+  - Effect: More authoritative, serious, masculine
+  - Use for: Professional services, financial, legal, security
+  - Risk: May sound monotone or robotic at extremes
+
+- **-5% to +5%:** Slight adjustment
+  - Effect: Subtle tonal shifts
+  - Use for: Fine-tuning to match brand personality
+  - Safe: Minimal risk of sounding unnatural
+
+- **0%:** Default pitch (recommended)
+  - Effect: Voice as trained/designed
+  - Use for: Most applications
+
+- **+10% to +20%:** Higher pitch
+  - Effect: More energetic, youthful, feminine
+  - Use for: Retail, hospitality, children's services
+  - Risk: May sound artificial or squeaky at extremes
+
+<Warning>
+Large pitch adjustments (>15%) can make voices sound unnatural or robotic. Use sparingly and test thoroughly.
+</Warning>
+
+**Pitch considerations:**
+- Higher pitch conveys energy but may reduce authority
+- Lower pitch conveys authority but may reduce approachability
+- Gender: Pitch doesn't change gender perception significantly
+- Cultural factors: Pitch preferences vary by region and context
+
+### Timbre (Tone Quality)
+
+Some providers offer timbre or tone controls that affect the voice's character beyond pitch and speed.
+
+**What timbre controls:**
+- Warmth vs. brightness of the voice
+- Resonance and richness
+- Breathiness or clarity
+- Overall tonal quality
+
+**Timbre settings (provider-dependent):**
+- **Warmer:** Fuller, softer, more intimate sound
+- **Brighter:** Clearer, sharper, more energetic sound
+- **Neutral:** Balanced tone (default)
+
+Not all providers expose timbre controls. ElevenLabs and some Azure voices offer this parameter.
+
+---
+
+## Provider-Specific Parameters
+
+### ElevenLabs Parameters
+
+ElevenLabs voices offer unique parameters for controlling naturalness and consistency.
+
+#### Stability
+
+Controls variability and expressiveness (range: 0-100)
+
+**How stability works:**
+- **Low stability (0-40):** More variation between takes
+  - Each generation of the same text sounds different
+  - More expressive and emotional
+  - Less consistent across multiple calls
+
+- **Medium stability (50-60):** Balanced (recommended)
+  - Some natural variation
+  - Reasonably consistent
+  - Maintains expressiveness
+
+- **High stability (70-100):** Maximum consistency
+  - Same text generates nearly identical audio every time
+  - More robotic, less variation
+  - Predictable output
+
+**Recommended values:**
+- **Customer service:** 60-70 (consistent but not robotic)
+- **Creative/Marketing:** 30-50 (expressive, varied)
+- **Compliance/Legal:** 80-90 (highly consistent, repeatable)
+
+<Note>
+Higher stability reduces the model's creative expressiveness but ensures the same sentence sounds identical across different calls—useful for regulated content.
+</Note>
+
+#### Similarity Boost
+
+Controls how closely the voice matches the original speaker (range: 0-100)
+
+**How similarity boost works:**
+- **Low boost (0-40):** More creative interpretation
+  - Voice may deviate from original character
+  - Can add variety but may sound less "true to the voice"
+
+- **Medium boost (50-70):** Balanced adherence
+  - Maintains voice identity
+  - Allows some natural variation
+
+- **High boost (75-100):** Strict voice matching
+  - Voice stays very close to original training
+  - Reduces creativity and variation
+  - Best for cloned/custom voices
+
+**Recommended values:**
+- **Standard ElevenLabs voices:** 60-75
+- **Custom cloned voices:** 80-90 (to preserve identity)
+- **Generic applications:** 50-60
+
+#### Style Exaggeration
+
+Some ElevenLabs models support style exaggeration for emotional range.
+
+- **0%:** Neutral delivery
+- **50%:** Moderate emotional expression
+- **100%:** Maximum emotional range
+
+Use higher values for customer service agents requiring empathy; lower for factual, information-only agents.
+
+### Azure Speech Parameters
+
+Azure voices support SSML (Speech Synthesis Markup Language) for fine-grained control.
+
+#### Speaking Style
+
+Azure Neural voices offer predefined speaking styles:
+
+**Common styles:**
+- `chat` - Casual, conversational tone
+- `customerservice` - Friendly and helpful
+- `newscast` - Formal, news anchor style
+- `assistant` - Warm, helpful assistant tone
+- `cheerful` - Upbeat and positive
+- `sad` - Empathetic, somber
+- `angry` - Firm and assertive (use carefully)
+- `fearful` - Hesitant, nervous
+
+**Setting styles:**
+Configure via SSML in voice settings or dynamically in responses using Jinja templates.
+
+Example SSML:
+```xml
+<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis"
+       xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="en-US">
+  <voice name="en-US-JennyNeural">
+    <mstts:express-as style="customerservice">
+      I'd be happy to help you with that today!
+    </mstts:express-as>
+  </voice>
+</speak>
+```
+
+#### Role
+
+Some Azure voices support role-playing:
+- `YoungAdultFemale`
+- `YoungAdultMale`
+- `OlderAdultFemale`
+- `OlderAdultMale`
+- `SeniorFemale`
+- `SeniorMale`
+
+Useful for matching agent persona to customer demographics.
+
+#### Prosody Controls
+
+Azure SSML allows detailed prosody control:
+- **Contour:** Pitch pattern across utterance
+- **Range:** How much pitch varies
+- **Rate:** Speed of speech
+- **Volume:** Loudness
+
+These can be applied to specific words or phrases within responses.
+
+<Warning>
+SSML requires proper formatting and escaping. Invalid SSML may cause voice synthesis to fail. Test thoroughly when using SSML.
+</Warning>
+
+---
+
+## Advanced Voice Tuning
+
+### Emphasis and Breaks
+
+Add emphasis or pauses for clarity and impact.
+
+#### Word/Phrase Emphasis
+
+Some providers support emphasizing specific words:
+
+**ElevenLabs:** Inherently adds natural emphasis
+**Azure SSML:** Use `<emphasis>` tag
+```xml
+<emphasis level="strong">This is very important</emphasis>
+```
+
+**Use cases:**
+- Highlighting key information: "Your balance is <emphasis>zero dollars</emphasis>"
+- Adding urgency: "<emphasis>Immediately</emphasis> update your password"
+- Clarifying: "I said <emphasis>fifteen</emphasis>, not fifty"
+
+#### Breaks and Pauses
+
+Insert pauses for pacing and comprehension:
+
+**Azure SSML:**
+```xml
+<break time="500ms"/>  <!-- Half-second pause -->
+<break time="1s"/>     <!-- One-second pause -->
+<break strength="weak"/> <!-- Natural short pause -->
+```
+
+**Use cases:**
+- After important information: "Your confirmation number is A-B-C-1-2-3 <break time="500ms"/> Did you get that?"
+- Lists: "First <break strength="weak"/> second <break strength="weak"/> and third"
+- Dramatic effect: "The answer is <break time="1s"/> yes!"
+
+### Pronunciation Adjustments
+
+For voices that don't pronounce words correctly:
+
+**Option 1: Phonetic spelling**
+Change text to phonetically spell the word:
+- "itellicoAI" → "eye-tell-ee-co A I"
+- "SQL" → "sequel" or "S Q L"
+
+**Option 2: Custom pronunciations** (covered in detail in Custom Pronunciations page)
+Use dedicated pronunciation features (pipeline agents only).
+
+**Option 3: SSML phonemes** (Azure)
+Use International Phonetic Alphabet:
+```xml
+<phoneme alphabet="ipa" ph="ˈaɪ.tɛl.iː.koʊ">itellicoAI</phoneme>
+```
+
+<Tip>
+Simple phonetic spelling is easiest and works across all providers. Reserve IPA/SSML for complex pronunciations.
+</Tip>
+
+---
+
+## JSON Payload and API Usage
+
+### Viewing the JSON Configuration
+
+The voice configuration interface displays the resulting JSON payload:
+
+```json
+{
+  "provider": "elevenlabs",
+  "voice_id": "21m00Tcm4TlvDq8ikWAM",
+  "model": "eleven_monolingual_v1",
+  "voice_settings": {
+    "stability": 0.65,
+    "similarity_boost": 0.75,
+    "style": 0.0,
+    "use_speaker_boost": true
+  },
+  "speed": 1.05,
+  "optimize_streaming_latency": 3
+}
+```
+
+### Copying Configuration
+
+Use the JSON payload to:
+- **Document voice settings** for your records
+- **Replicate settings** across multiple agents
+- **API integration** if building custom interfaces
+- **Version control** track voice setting changes over time
+
+**How to copy:**
+1. Open voice configuration panel
+2. Adjust settings as desired
+3. Click **View JSON** or **Copy Configuration**
+4. Paste into your documentation or code
+
+### Applying JSON Configurations
+
+To apply a saved configuration:
+1. Open voice configuration panel
+2. Click **Import from JSON** (if available)
+3. Paste your JSON configuration
+4. Verify settings loaded correctly
+5. Save
+
+Alternatively, configure manually based on saved JSON values.
+
+---
+
+## Testing Voice Settings
+
+### Systematic Testing Process
+
+<AccordionGroup>
+  <Accordion title="1. Baseline Test" icon="play">
+    **Before making changes:**
+    - Test current voice with default settings
+    - Run through 3-5 realistic conversation scenarios
+    - Record or take notes on what sounds good/bad
+    - Identify specific issues to address:
+      - "Too fast for older customers"
+      - "Not authoritative enough"
+      - "Sounds monotone"
+  </Accordion>
+
+  <Accordion title="2. Incremental Adjustments" icon="sliders">
+    **Make one change at a time:**
+    - Adjust only one parameter (e.g., speed)
+    - Change in small increments (0.05-0.1 for speed, 5-10 for stability)
+    - Test after each change
+    - Note the effect before making another adjustment
+
+    **Why?** Changing multiple parameters simultaneously makes it impossible to identify which change improved/worsened the voice.
+  </Accordion>
+
+  <Accordion title="3. A/B Comparison" icon="code-compare">
+    **Compare settings directly:**
+    - Create two test agents with different voice settings
+    - Use identical instructions and scenarios
+    - Have team members test both without knowing which is which
+    - Collect ratings and preferences
+    - Choose winner or iterate further
+
+    **Example:**
+    - Agent A: Speed 1.0x, Stability 60
+    - Agent B: Speed 1.1x, Stability 70
+  </Accordion>
+
+  <Accordion title="4. Long-Form Testing" icon="clock">
+    **Test extended conversations:**
+    - Have a 5-10 minute conversation with the agent
+    - Longer interactions reveal issues short samples hide:
+      - Voice fatigue (repetitive, annoying after time)
+      - Pacing problems (too fast/slow sustained)
+      - Consistency issues
+
+    **Question to ask:** Would I be comfortable listening to this for 10 minutes?
+  </Accordion>
+
+  <Accordion title="5. Diverse Speaker Testing" icon="users">
+    **Get multiple perspectives:**
+    - Different ages (voice preferences vary by age)
+    - Different roles (customer service team, executives, customers)
+    - Different contexts (quiet office vs. noisy environment)
+
+    Collect feedback systematically using a rating form.
+  </Accordion>
+</AccordionGroup>
+
+### Evaluation Criteria
+
+Rate voice settings on these dimensions (1-5 scale):
+
+| Criteria | What to Assess |
+|----------|---------------|
+| **Clarity** | Can you understand every word easily? |
+| **Naturalness** | Does it sound like a real person? |
+| **Pacing** | Is the speed comfortable? |
+| **Brand fit** | Does it match your brand personality? |
+| **Pleasantness** | Is it pleasant to listen to for several minutes? |
+| **Authority** | Does it convey appropriate expertise? |
+| **Warmth** | Does it sound friendly and approachable? |
+| **Energy** | Does it match the desired energy level? |
+
+Aim for 4+ on all criteria relevant to your use case.
+
+---
+
+## Common Voice Settings by Use Case
+
+### Customer Support
+
+**Objective:** Helpful, patient, professional
+
+**Recommended settings:**
+- Speed: 0.95x - 1.0x (slightly slower for clarity)
+- Pitch: 0% to +5% (slightly higher for approachability)
+- Stability (ElevenLabs): 65-70 (consistent but warm)
+- Similarity Boost: 70-75
+- Style: Warm, empathetic
+
+**Why:**
+- Slower pace ensures customers understand solutions
+- Slight higher pitch conveys friendliness
+- High stability ensures consistent quality answers
+
+### Sales and Lead Qualification
+
+**Objective:** Confident, energetic, persuasive
+
+**Recommended settings:**
+- Speed: 1.05x - 1.1x (energetic pace)
+- Pitch: -5% to 0% (authoritative)
+- Stability (ElevenLabs): 55-65 (expressive)
+- Similarity Boost: 60-70
+- Style: Enthusiastic, confident
+
+**Why:**
+- Faster pace conveys energy and momentum
+- Neutral/lower pitch conveys confidence
+- Lower stability allows expressive variation
+
+### Healthcare and Medical
+
+**Objective:** Professional, empathetic, clear
+
+**Recommended settings:**
+- Speed: 0.9x - 0.95x (clear, unhurried)
+- Pitch: 0% (neutral, professional)
+- Stability (ElevenLabs): 70-75 (very consistent)
+- Similarity Boost: 75-80
+- Style: Calm, reassuring, professional
+
+**Why:**
+- Slower pace critical for medical information comprehension
+- Neutral pitch maintains professionalism
+- High stability ensures repeatable delivery of medical info
+
+### Technical Support
+
+**Objective:** Patient, knowledgeable, clear
+
+**Recommended settings:**
+- Speed: 0.9x - 0.95x (clear for instructions)
+- Pitch: -5% to 0% (knowledgeable)
+- Stability (ElevenLabs): 65-70
+- Similarity Boost: 70-75
+- Style: Patient, instructional
+
+**Why:**
+- Slower pace essential for technical instructions
+- Slightly lower pitch conveys expertise
+- Moderate stability balances consistency and warmth
+
+### Appointment Booking
+
+**Objective:** Efficient, friendly, organized
+
+**Recommended settings:**
+- Speed: 1.0x - 1.05x (efficient)
+- Pitch: 0% to +5% (friendly)
+- Stability (ElevenLabs): 70-75 (consistent)
+- Similarity Boost: 70-75
+- Style: Professional, helpful
+
+**Why:**
+- Standard to slightly fast pace maintains efficiency
+- Slight higher pitch for friendliness
+- High stability for repeatable appointment confirmations
+
+### Collections and Billing
+
+**Objective:** Professional, firm but respectful
+
+**Recommended settings:**
+- Speed: 0.95x - 1.0x (measured)
+- Pitch: -5% to -10% (authoritative)
+- Stability (ElevenLabs): 75-80 (very consistent)
+- Similarity Boost: 75-80
+- Style: Professional, serious
+
+**Why:**
+- Standard pace maintains professionalism
+- Lower pitch conveys authority
+- Very high stability for consistent policy delivery
+
+---
+
+## Troubleshooting Voice Issues
+
+### Voice Sounds Robotic
+
+**Symptoms:** Unnatural, mechanical, lacking expression
+
+**Possible causes:**
+1. Too high stability (ElevenLabs)
+2. Extreme pitch or speed adjustments
+3. Poor quality voice model
+4. Choppy audio from network issues
+
+**Solutions:**
+- Lower stability to 50-60 (ElevenLabs)
+- Reset speed and pitch to defaults
+- Try a different, more natural voice (e.g., ElevenLabs premium)
+- Check network latency and audio quality
+
+### Voice Too Fast/Slow
+
+**Symptoms:** Customers miss information or feel rushed/bored
+
+**Solutions:**
+- Adjust speed in 0.05x increments
+- Test with real conversations (not just samples)
+- Consider customer demographics (older = slower)
+- Check if instructions cause repetitive, lengthy responses
+
+### Pronunciation Errors
+
+**Symptoms:** Voice mispronounces brand names, technical terms, acronyms
+
+**Solutions:**
+- Use phonetic spelling in instructions/responses
+- Add to custom pronunciations (pipeline agents)
+- Use SSML phonemes (Azure)
+- Test different voices (some pronounce certain words better)
+
+See Custom Pronunciations page for detailed solutions.
+
+### Voice Quality Varies
+
+**Symptoms:** Sometimes clear, sometimes muffled or distorted
+
+**Possible causes:**
+1. Network quality fluctuations
+2. Low stability setting causing variation
+3. Provider service issues
+4. Audio codec problems
+
+**Solutions:**
+- Check network stability and latency
+- Increase stability setting (ElevenLabs)
+- Test at different times to rule out provider issues
+- Contact support if persistent
+
+### Voice Lacks Energy/Emotion
+
+**Symptoms:** Monotone, flat, disengaged
+
+**Solutions:**
+- Lower stability for more expressiveness (ElevenLabs)
+- Adjust style/emotion settings (Azure speaking style)
+- Choose more expressive voice model
+- Write more dynamic instructions (varied phrasing, shorter sentences)
+
+### Voice Too Harsh/Aggressive
+
+**Symptoms:** Sounds unfriendly, impatient, or rude
+
+**Solutions:**
+- Increase pitch slightly (+5% to +10%)
+- Slow down speed (0.9x - 0.95x)
+- Choose warmer voice model
+- Adjust instructions to use gentler language
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Start with Defaults" icon="rotate-left">
+    Always begin testing with default voice settings (1.0x speed, 0% pitch, default stability):
+    - Defaults are optimized by voice designers
+    - Easier to identify what needs adjustment
+    - Avoids compounding adjustments
+
+    Make changes only when you identify specific issues.
+  </Accordion>
+
+  <Accordion title="Make Small Adjustments" icon="gauge">
+    Voice settings are sensitive—small changes have big impacts:
+    - Speed: Adjust by 0.05x - 0.1x at a time
+    - Pitch: Adjust by 5% increments
+    - Stability: Adjust by 5-10 points
+
+    Test after each small change before making another.
+  </Accordion>
+
+  <Accordion title="Test in Context" icon="comments">
+    Don't optimize based on single-sentence samples:
+    - Test full conversations (3-5 minutes minimum)
+    - Use realistic scenarios from your use case
+    - Include complex responses (explanations, instructions)
+    - Test edge cases (numbers, spelling, addresses)
+
+    What sounds good in a sample may not work in real calls.
+  </Accordion>
+
+  <Accordion title="Get Diverse Feedback" icon="users">
+    Your preferences may not match customer preferences:
+    - Test with team members of different ages and backgrounds
+    - Consider target customer demographics
+    - Run A/B tests with small customer segments if possible
+    - Measure satisfaction and comprehension, not just preference
+
+    Data beats opinions.
+  </Accordion>
+
+  <Accordion title="Document Your Settings" icon="file-lines">
+    Keep records of voice configurations:
+    - Copy JSON payload to your documentation
+    - Note the rationale for settings ("Slower for elderly customers")
+    - Track changes over time
+    - Document what worked and what didn't
+
+    This helps when replicating settings or training new team members.
+  </Accordion>
+
+  <Accordion title="Retest After Provider Updates" icon="rotate">
+    Voice providers update their models periodically:
+    - Improved voices may sound different
+    - Your optimized settings may need adjustment
+    - Test after receiving update notifications
+    - Re-baseline if voice character changes significantly
+
+    Subscribe to provider changelogs and itellicoAI update emails.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Custom Pronunciations" icon="spell-check" href="/build/voice-speech/custom-pronunciations">
+    Correct pronunciation of difficult words and brand names
+  </Card>
+  <Card title="Ambient Sound" icon="volume" href="/build/voice-speech/ambient-sound">
+    Add background ambience and sound effects to calls
+  </Card>
+  <Card title="Select Voice" icon="microphone" href="/build/voice-speech/select-voice">
+    Go back to select a different voice
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/test-in-dashboard">
+    Test your voice settings with web calls
+  </Card>
+</CardGroup>
