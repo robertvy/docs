@@ -218,49 +218,32 @@ Account Balance: ${{ context.account.balance }}
 
 ### Context Endpoint Configuration
 
-```
-┌─ Dynamic Context ───────────────────────────────────────┐
-│                                                          │
-│ Dynamic Context              [ON/OFF]                   │
-│                                                          │
-│ Fetch personalized context from your API before calls   │
-│ begin. Returned JSON data is available as variables     │
-│ in instructions.                                         │
-│                                                          │
-│ ────────────────────────────────────────────────────────│
-│                                                          │
-│ Endpoint URL*                                            │
-│ [https://api.company.com/customer-context_________]    │
-│                                                          │
-│ HTTP Method                                              │
-│ ● GET   ○ POST                                          │
-│                                                          │
-│ Request Parameters (Query or Body)                      │
-│ ┌────────────────────────────────────────────────────┐ │
-│ │ Parameter Name         Value / Variable             │ │
-│ │ phone_number           {{ contact.phone_number }}  │ │
-│ │ email                  {{ contact.email }}         │ │
-│ │ customer_id            {{ contact.custom_customer_id }}│
-│ │                                        [+ Add]      │ │
-│ └────────────────────────────────────────────────────┘ │
-│                                                          │
-│ 🔐 Authentication                      [Configure ▼]    │
-│                                                          │
-│ Request Headers                                          │
-│ ┌────────────────────────────────────────────────────┐ │
-│ │ Header Name            Value                        │ │
-│ │ Content-Type           application/json            │ │
-│ │ X-API-Version          v2                          │ │
-│ │                                        [+ Add]      │ │
-│ └────────────────────────────────────────────────────┘ │
-│                                                          │
-│ ⚙️ Advanced Settings                                     │
-│ Timeout (seconds):     [5_________]                     │
-│ Retry on failure:      [☑] (1 retry)                   │
-│                                                          │
-│                           [Test Request] [Save]         │
-└──────────────────────────────────────────────────────────┘
-```
+**Dynamic Context Configuration:**
+
+**Enable Dynamic Context:** ON/OFF toggle
+
+Fetch personalized context from your API before calls begin. Returned JSON data is available as variables in instructions.
+
+**Endpoint URL:** `https://api.company.com/customer-context`
+
+**HTTP Method:** GET or POST
+
+**Request Parameters (Query or Body):**
+- phone_number: `{{ contact.phone_number }}`
+- email: `{{ contact.email }}`
+- customer_id: `{{ contact.custom_customer_id }}`
+- [+ Add more parameters]
+
+**Authentication:** Configure authentication method
+
+**Request Headers:**
+- Content-Type: application/json
+- X-API-Version: v2
+- [+ Add more headers]
+
+**Advanced Settings:**
+- Timeout (seconds): 5
+- Retry on failure: Yes (1 retry)
 
 ### Endpoint URL Configuration
 
@@ -310,15 +293,9 @@ Dynamic Context supports multiple authentication schemes:
 - IP whitelisting provides security
 - Testing/development endpoints
 
-```
-┌─ Authentication ─────────────────────────────────────────┐
-│                                                          │
-│ Auth Type: NONE                                          │
-│                                                          │
-│ No authentication required for this endpoint            │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
-```
+**Authentication Type:** None
+
+No authentication required for this endpoint
 
 <Warning>
 Only use NONE authentication for truly internal endpoints. Production APIs should use authentication to prevent unauthorized access.
@@ -328,20 +305,13 @@ Only use NONE authentication for truly internal endpoints. Production APIs shoul
 
 **Most common for modern APIs**
 
-```
-┌─ Authentication ─────────────────────────────────────────┐
-│                                                          │
-│ Auth Type: BEARER                                        │
-│                                                          │
-│ Bearer Token*                                            │
-│ [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIx•••]│
-│                                                          │
-│ ℹ️  Token will be sent as: Authorization: Bearer {token}│
-│                                                          │
-│ 🔒 Token is masked in UI and logs                       │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
-```
+**Authentication Type:** Bearer
+
+**Bearer Token:** `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIx•••`
+
+Token will be sent as: `Authorization: Bearer {token}`
+
+Token is masked in UI and logs for security
 
 **HTTP header sent:**
 ```
@@ -357,24 +327,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 **Traditional username/password authentication**
 
-```
-┌─ Authentication ─────────────────────────────────────────┐
-│                                                          │
-│ Auth Type: BASIC                                         │
-│                                                          │
-│ Username*                                                │
-│ [api_user_________________________________]             │
-│                                                          │
-│ Password*                                                │
-│ [••••••••••••••••••••••••••••••••••••]                │
-│                                                          │
-│ ℹ️  Credentials will be Base64 encoded and sent in      │
-│    Authorization header                                 │
-│                                                          │
-│ 🔒 Password is masked in UI and logs                    │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
-```
+**Authentication Type:** Basic
+
+**Username:** api_user
+
+**Password:** ••••••••
+
+Credentials will be Base64 encoded and sent in Authorization header
+
+Password is masked in UI and logs for security
 
 **HTTP header sent:**
 ```
@@ -390,23 +351,15 @@ Authorization: Basic YXBpX3VzZXI6cGFzc3dvcmQ=
 
 **Custom authentication via HTTP headers (e.g., API keys)**
 
-```
-┌─ Authentication ─────────────────────────────────────────┐
-│                                                          │
-│ Auth Type: HEADER                                        │
-│                                                          │
-│ Header Name*                                             │
-│ [X-API-Key_________________________________]            │
-│                                                          │
-│ Header Value*                                            │
-│ [sk-abc123def456ghi789•••••••••••••••••]               │
-│                                                          │
-│ ℹ️  Custom header will be added to all requests         │
-│                                                          │
-│ 🔒 Value is masked in UI and logs                       │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
-```
+**Authentication Type:** Header
+
+**Header Name:** X-API-Key
+
+**Header Value:** `sk-abc123def456ghi789•••••••••••••••••`
+
+Custom header will be added to all requests
+
+Value is masked in UI and logs for security
 
 **HTTP header sent:**
 ```
@@ -428,24 +381,15 @@ X-API-Key: sk-abc123def456ghi789jkl012mno345pqr678
 
 **Credentials included in request body (typically for POST requests)**
 
-```
-┌─ Authentication ─────────────────────────────────────────┐
-│                                                          │
-│ Auth Type: BODY                                          │
-│                                                          │
-│ Parameter Name*                                          │
-│ [api_key___________________________________]            │
-│                                                          │
-│ Parameter Value*                                         │
-│ [sk-xyz789abc123•••••••••••••••••••••]                 │
-│                                                          │
-│ ℹ️  Authentication parameter will be included in request│
-│    body JSON                                            │
-│                                                          │
-│ 🔒 Value is masked in UI and logs                       │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
-```
+**Authentication Type:** Body
+
+**Parameter Name:** api_key
+
+**Parameter Value:** `sk-xyz789abc123•••••••••••••••••••••`
+
+Authentication parameter will be included in request body JSON
+
+Value is masked in UI and logs for security
 
 **Request body includes:**
 ```json
@@ -578,59 +522,49 @@ Before enabling context fetching in production, test your configuration:
 
 ### Test Request Modal Interface
 
+**Test Context Request**
+
+Test your context endpoint configuration before enabling in production.
+
+**Test Data:**
+- Use Sample Contact: John Smith (555-1234) - dropdown
+- Or manually enter:
+  - Phone Number: +15551234567
+  - Email: john@example.com
+  - Customer ID: 12345
+
+**Send Test Request** button
+
+**Results:**
+
+**Request:**
 ```
-┌─ Test Context Request ──────────────────────────────────┐
-│                                                          │
-│ Test your context endpoint configuration before         │
-│ enabling in production.                                  │
-│                                                          │
-│ ────────────────────────────────────────────────────────│
-│                                                          │
-│ Test Data                                                │
-│                                                          │
-│ Use Sample Contact: [John Smith (555-1234) ▼]  or...   │
-│                                                          │
-│ Phone Number:  [+15551234567______________]             │
-│ Email:         [john@example.com___________]            │
-│ Customer ID:   [12345______________________]            │
-│                                                          │
-│                            [Send Test Request]          │
-│                                                          │
-│ ────────────────────────────────────────────────────────│
-│                                                          │
-│ Results                                                  │
-│                                                          │
-│ ┌─ Request ──────────────────────────────────────────┐ │
-│ │ GET https://api.company.com/customer-context      │ │
-│ │     ?phone=%2B15551234567&email=john@example.com  │ │
-│ │                                                    │ │
-│ │ Headers:                                           │ │
-│ │   Authorization: Bearer eyJhbG... [REDACTED]      │ │
-│ │   Content-Type: application/json                  │ │
-│ │                                                    │ │
-│ │ Sent at: 2025-11-10 14:32:15                      │ │
-│ └────────────────────────────────────────────────────┘ │
-│                                                          │
-│ ┌─ Response ─────────────────────────────────────────┐ │
-│ │ Status: 200 OK (152ms)                             │ │
-│ │                                                    │ │
-│ │ {                                                  │ │
-│ │   "account": {                                     │ │
-│ │     "customer_id": "12345",                        │ │
-│ │     "tier": "VIP",                                 │ │
-│ │     "status": "active",                            │ │
-│ │     "created_date": "2022-03-15"                   │ │
-│ │   },                                               │ │
-│ │   "recent_orders": [ ... ],                        │ │
-│ │   "support_tickets": [ ... ]                       │ │
-│ │ }                                                  │ │
-│ │                                                    │ │
-│ │ ✅ Valid JSON received                             │ │
-│ │ ℹ️  Available as {{ context.account.tier }}, etc. │ │
-│ └────────────────────────────────────────────────────┘ │
-│                                                          │
-│                                       [Close]  [Retry]  │
-└──────────────────────────────────────────────────────────┘
+GET https://api.company.com/customer-context?phone=%2B15551234567&email=john@example.com
+
+Headers:
+  Authorization: Bearer eyJhbG... [REDACTED]
+  Content-Type: application/json
+
+Sent at: 2025-11-10 14:32:15
+```
+
+**Response:**
+```
+Status: 200 OK (152ms)
+
+{
+  "account": {
+    "customer_id": "12345",
+    "tier": "VIP",
+    "status": "active",
+    "created_date": "2022-03-15"
+  },
+  "recent_orders": [ ... ],
+  "support_tickets": [ ... ]
+}
+
+✅ Valid JSON received
+ℹ️  Available as {{ context.account.tier }}, etc.
 ```
 
 ### Common Test Scenarios

@@ -23,18 +23,12 @@ DTMF configuration is available in the Abilities tab under DTMF Controls. Settin
 DTMF is the signal generated when you press keys on a phone keypad. Each key produces two simultaneous tones at different frequencies:
 
 **How DTMF works:**
-```
-Phone Keypad:
-┌───┬───┬───┐
-│ 1 │ 2 │ 3 │  → Each key press generates
-├───┼───┼───┤     two specific frequencies
-│ 4 │ 5 │ 6 │     (one high, one low)
-├───┼───┼───┤
-│ 7 │ 8 │ 9 │  → Receiving system decodes
-├───┼───┼───┤     the tone pair to identify
-│ * │ 0 │ # │     which key was pressed
-└───┴───┴───┘
-```
+
+Each key press generates two specific frequencies (one high, one low):
+- **Digits 1-9**: Standard numeric keys
+- **Special keys**: * (star) and # (pound)
+- **Tone pairs**: Each key produces a unique combination of frequencies
+- **Detection**: Receiving system decodes the tone pair to identify which key was pressed
 
 **Available keys:**
 - **Digits:** 0-9 (numeric input)
@@ -152,17 +146,10 @@ Agent: "For security, please enter the last 4 digits of your
 ### Global DTMF Toggle
 
 **Enable/Disable DTMF:**
-```
-┌─ DTMF Controls ─────────────────────────────────────────┐
-│                                                          │
-│ DTMF Support                                   [ON/OFF] │
-│                                                          │
-│ Enable DTMF tone sending and capture for this agent.    │
-│ When enabled, configure tone sending and capture modes  │
-│ below.                                                   │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
-```
+
+**DTMF Support:** ON/OFF toggle
+
+Enable DTMF tone sending and capture for this agent. When enabled, configure tone sending and capture modes below.
 
 **When to enable:**
 - Agent needs to navigate IVR systems
@@ -182,17 +169,11 @@ Agent: "For security, please enter the last 4 digits of your
 
 Configure your agent to send DTMF tones to external systems:
 
-```
-┌─ Tone Sending ──────────────────────────────────────────┐
-│                                                          │
-│ ☑ Enable Tone Sending                                   │
-│                                                          │
-│ Cooldown Between Tones    [200____________] ms          │
-│ Tone Duration             [100____________] ms          │
-│ Inter-Tone Gap            [50_____________] ms          │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
-```
+**Tone Sending Configuration:**
+- **Enable Tone Sending:** Checkbox to enable/disable
+- **Cooldown Between Tones:** 200 ms (default)
+- **Tone Duration:** 100 ms (default)
+- **Inter-Tone Gap:** 50 ms (default)
 
 ### Tone Sending Parameters
 
@@ -303,16 +284,11 @@ Start with default settings and only adjust if you observe tones being missed or
 
 Choose how your agent receives and interprets DTMF input from callers:
 
-```
-┌─ Tone Capture ──────────────────────────────────────────┐
-│                                                          │
-│ Capture Mode:  ● Menu (Single Key)                      │
-│                ○ Collector (Multi-Digit)                │
-│                                                          │
-│ [Mode-specific settings appear below]                   │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
-```
+**Capture Mode:**
+- **Menu (Single Key)** - For IVR-style menu selections
+- **Collector (Multi-Digit)** - For collecting sequences like account numbers
+
+Mode-specific settings appear below based on selection.
 
 ### Mode 1: Menu (Single Key)
 
@@ -337,17 +313,11 @@ Agent: [Detects "2" immediately]
 ```
 
 **Configuration:**
-```
-┌─ Menu Mode Settings ────────────────────────────────────┐
-│                                                          │
-│ No additional configuration needed                       │
-│                                                          │
-│ • Single key capture                                     │
-│ • Immediate processing                                   │
-│ • No termination key required                            │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
-```
+
+No additional configuration needed for Menu Mode:
+- Single key capture
+- Immediate processing
+- No termination key required
 
 **Use cases:**
 - Department selection menus
@@ -377,18 +347,14 @@ Agent: [Receives "5551234567" after # is pressed]
 ```
 
 **Configuration:**
-```
-┌─ Collector Mode Settings ───────────────────────────────┐
-│                                                          │
-│ Minimum Digits        [4______________]                  │
-│ Maximum Digits        [16_____________]                  │
-│ Termination Key       [# (pound)_____▼]                 │
-│ Timeout (seconds)     [5______________]                  │
-│ Clear Key             [* (star)______▼]                 │
-│ Emit Timing           [on_finalize___▼]                 │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
-```
+
+**Collector Mode Settings:**
+- **Minimum Digits:** 4 (default)
+- **Maximum Digits:** 16 (default)
+- **Termination Key:** # (pound) - dropdown selection
+- **Timeout (seconds):** 5 (default)
+- **Clear Key:** * (star) - dropdown selection
+- **Emit Timing:** on_finalize - dropdown selection
 
 ### Collector Mode Parameters
 

@@ -338,175 +338,24 @@ Start with 20-50 high-priority keywords. Expand based on observed transcription 
 
 ## Advanced Configuration
 
-### Streaming vs. Batch Transcription
+## Advanced Configuration
 
-**Streaming (Real-time):**
-- Text arrives as customer speaks
-- Enables faster agent responses
-- Required for true conversational AI
-- Default for all live voice agents
-
-**Batch:**
-- Transcription after audio complete
-- Higher accuracy (has full context)
-- Not suitable for real-time conversations
-- Use for: Voicemail transcription, call recording analysis
-
-All itellicoAI voice agents use streaming transcription by default.
-
-### Profanity Filtering
-
-Some transcribers offer profanity filtering:
-- **Enabled:** Replaces profanity with "***" or "[profanity]"
-- **Disabled:** Transcribes verbatim
-
-**Recommendation:** Disable for voice agents (LLM handles inappropriate language per your instructions). Enable only if you need sanitized transcripts for compliance.
-
-### Diarization (Speaker Identification)
-
-Some transcribers can identify different speakers:
-- Speaker 1: "I need help with my account"
-- Speaker 2: "I can help with that"
-
-**Use cases:**
-- Conference call bots (multiple participants)
-- Analyzing agent/customer dynamics in recordings
-
-**Not typically needed** for standard 1:1 voice agents.
-
-### Punctuation and Formatting
-
-Modern transcribers add punctuation automatically:
-- Periods, commas, question marks
-- Capitalization
-- Paragraph breaks (in longer transcripts)
-
-**Provider differences:**
-- Deepgram: Excellent automatic punctuation
-- Azure: Good punctuation, customizable
-- Older models: May require manual punctuation insertion
-
-Automatic punctuation helps LLMs understand sentence boundaries and intent.
+itellicoAI voice agents always use real-time streaming transcription with sensible defaults (automatic punctuation, no profanity filtering, single-speaker focus). There are no batch-mode, diarization, or profanity toggles in the UI today. If you have a compliance requirement that needs those provider-level settings, reach out to support and we can help configure it for your account.
 
 ---
 
 ## Testing Transcription Accuracy
 
-### How to Test
-
-1. **Start a test call** using Test Call feature
-2. **Speak clearly** using realistic scenarios
-3. **Review transcript** in call logs after conversation
-4. **Identify errors:**
-   - Misheard words
-   - Missing words
-   - Incorrect words
-   - Poor punctuation
-
-### Common Error Types
-
-| Error Type | Example | Fix |
-|------------|---------|-----|
-| Brand name wrong | "I tell eco" (vs. itellicoAI) | Add to keyword boosting |
-| Technical term wrong | "A P I" (vs. API) | Add acronym to keywords |
-| Similar-sounding word | "their" (vs. "there") | LLM usually handles context |
-| Accent misheard | "tree" (vs. "three") | Test different transcriber, use accented voice samples |
-| Background noise | "[inaudible]" | Use better audio source, noise cancellation |
-| Fast speech | Missing words | Adjust VAD settings, instruct customers to speak clearly |
-
-### Systematic Testing Process
-
-<AccordionGroup>
-  <Accordion title="1. Create Test Script" icon="file-lines">
-    Develop a script covering:
-    - Common customer requests
-    - Brand names and products
-    - Technical terms
-    - Numbers (phone numbers, account numbers, dollar amounts)
-    - Addresses and spelling
-    - Edge cases (fast speech, accents, background noise)
-  </Accordion>
-
-  <Accordion title="2. Test Multiple Transcribers" icon="vials">
-    - Run same script with 2-3 different transcribers
-    - Test at different times (provider performance can vary)
-    - Use different audio sources (phone, web, mobile)
-  </Accordion>
-
-  <Accordion title="3. Calculate Word Error Rate" icon="calculator">
-    Word Error Rate (WER) = (Substitutions + Insertions + Deletions) / Total Words
-
-    Example:
-    - Customer said: "I need help with my itellicoAI account" (7 words)
-    - Transcribed: "I need help with my I tell eco account" (8 words)
-    - Errors: 1 substitution (itellicoAI → I tell eco), 1 insertion (extra word)
-    - WER: 2/7 = 28.6%
-
-    Target WER: under 5% for good transcription, under 10% acceptable, over 15% problematic
-  </Accordion>
-
-  <Accordion title="4. Test with Real Customers (Pilot)" icon="users">
-    After selecting a transcriber:
-    - Deploy to small customer segment (5-10% of calls)
-    - Monitor for 3-7 days
-    - Review sample transcripts
-    - Check for issues:
-      - High transfer rates (may indicate misunderstanding)
-      - Customer frustration ("I already said that!")
-      - Repeated requests for clarification
-    - Adjust or switch transcriber if issues arise
-  </Accordion>
-</AccordionGroup>
+1. Place a quick test call from the dashboard and speak the scenarios your customers actually use (brand names, order numbers, addresses).
+2. Open the conversation log, skim the transcript, and jot down any misheard words.
+3. Add recurring mistakes to your keyword list or consider switching between Deepgram Nova and Azure Premium if the issue persists.
+4. During rollout, spot-check a handful of real calls each week—looking for repeated “sorry, say that again?” moments is usually enough.
 
 ---
 
 ## Multilingual Support Deep Dive
 
-### Single Language per Agent
-
-Simplest approach: One agent per language
-- English agent uses Deepgram Nova-2 (en-US)
-- Spanish agent uses Azure Speech (es-ES)
-- German agent uses Azure Speech (de-DE)
-
-**Routing:**
-- IVR menu: "Press 1 for English, 2 for Spanish"
-- Automatic: Detect language from phone number area code or customer data
-- Web interface: Language selector before starting chat
-
-### Multi-Language with Auto-Detection
-
-Azure Speech multilingual models can detect and transcribe multiple languages automatically.
-
-**Configuration:**
-1. Select Azure Speech Multilingual transcriber
-2. Set primary language (most common): `en-US`
-3. Add secondary languages:
-   - `es-ES` (Spanish - Spain)
-   - `es-MX` (Spanish - Mexico)
-   - `fr-FR` (French - France)
-   - `de-DE` (German - Germany)
-   - `zh-CN` (Chinese - Mandarin)
-
-**Behavior:**
-- First utterance analyzed for language
-- Transcribes in detected language
-- Can switch languages mid-conversation if customer code-switches
-- Falls back to primary language if uncertain
-
-**Limitations:**
-- Adds ~100-200ms latency for detection
-- Works best with 2-5 languages (accuracy decreases with more)
-- Some accents may confuse detection
-- Similar languages may be misidentified (e.g., en-US vs. en-GB)
-
-<Note>
-For multilingual agents, use language-aware instructions to ensure the LLM responds in the customer's language.
-</Note>
-
-<Tip>
-For languages that neither Deepgram Nova nor Azure cover today, reach out to our team — new providers can be added via the YAML registry once backend support is ready.
-</Tip>
+For a full walkthrough of routing strategies, auto-detect, and language-specific prompts, see [Advanced → Multilingual Support](/build/advanced/multilingual-support). At a high level: use separate agents for high-volume languages, and turn on Azure Speech Multilingual if you need the assistant to detect two to five languages in a single flow.
 
 ## Troubleshooting Transcription Issues
 
