@@ -1,0 +1,128 @@
+---
+title: "Web Calls"
+description: "Create intelligent web-based voice interactions with itellicoAI"
+icon: "globe"
+---
+
+## Overview
+
+Embed AI-powered voice interactions directly into your web applications with itellicoAI's web call capabilities.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Browser Integration" icon="window">
+    Seamlessly integrate voice AI into any web application
+  </Card>
+  <Card title="WebRTC Support" icon="signal-stream">
+    Low-latency voice communication using WebRTC technology
+  </Card>
+  <Card title="Custom UI" icon="paintbrush">
+    Fully customizable voice interface components
+  </Card>
+  <Card title="Multi-platform" icon="devices">
+    Works across desktop and mobile browsers
+  </Card>
+</CardGroup>
+
+## Getting Started
+
+<Steps>
+  <Step title="Install SDK">
+    Add the itellicoAI web SDK to your application
+    ```bash
+    npm install @itellico/web-sdk
+    ```
+  </Step>
+  <Step title="Initialize client">
+    Set up the web call client with your API credentials
+    ```javascript
+    import { WebCallClient } from '@itellico/web-sdk';
+
+    const client = new WebCallClient({
+      apiKey: 'your-api-key'
+    });
+    ```
+  </Step>
+  <Step title="Start a call">
+    Initiate a voice conversation from your web app
+    ```javascript
+    await client.startCall({
+      agentId: 'your-agent-id'
+    });
+    ```
+  </Step>
+  <Step title="Customize experience">
+    Configure UI elements and conversation flows
+  </Step>
+</Steps>
+
+## Use Cases
+
+<AccordionGroup>
+  <Accordion title="Live Chat Alternative">
+    Offer voice-based customer support as a more personal alternative to text chat.
+  </Accordion>
+  <Accordion title="Virtual Assistants">
+    Embed intelligent voice assistants directly into your web applications.
+  </Accordion>
+  <Accordion title="Interactive Demos">
+    Create voice-guided product tours and interactive demonstrations.
+  </Accordion>
+  <Accordion title="Accessibility">
+    Provide voice-based navigation and assistance for users with accessibility needs.
+  </Accordion>
+</AccordionGroup>
+
+## Integration Examples
+
+<CodeGroup>
+```javascript React
+import { useWebCall } from '@itellico/web-sdk/react';
+
+function VoiceAssistant() {
+  const { startCall, endCall, isActive } = useWebCall({
+    apiKey: process.env.ITELLICO_API_KEY,
+    agentId: 'assistant-1'
+  });
+
+  return (
+    <button onClick={isActive ? endCall : startCall}>
+      {isActive ? 'End Call' : 'Start Voice Chat'}
+    </button>
+  );
+}
+```
+
+```html JavaScript
+<script src="https://cdn.itellico.ai/web-sdk.js"></script>
+<script>
+  const client = new ItellicaAI.WebCallClient({
+    apiKey: 'your-api-key'
+  });
+
+  document.getElementById('call-button').onclick = () => {
+    client.startCall({ agentId: 'assistant-1' });
+  };
+</script>
+```
+</CodeGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="API Reference"
+    icon="code"
+    href="/api-reference/introduction"
+  >
+    Explore the Web Calls API documentation
+  </Card>
+  <Card
+    title="Quickstart Guide"
+    icon="rocket"
+    href="/quickstart"
+  >
+    Build your first web call integration
+  </Card>
+</CardGroup>
