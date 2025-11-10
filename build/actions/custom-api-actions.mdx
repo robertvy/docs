@@ -195,36 +195,36 @@ DELETE operations are permanent. Ensure your agents only use DELETE actions when
 ### Basic Action Configuration
 
 ```
-┌─ Create Custom API Action ──────────────────────────────────┐
-│                                                              │
-│ Action Name*                                                 │
-│ [Lookup Customer Account_____________________]              │
-│                                                              │
-│ Description                                                  │
-│ [Retrieve customer data from Salesforce using____]          │
-│ [phone number. Use for account questions._____]             │
-│                                                              │
-│ 🌐 HTTP Configuration                                        │
-│                                                              │
-│ HTTP Method*                                                 │
-│ ● GET   ○ POST   ○ PUT   ○ PATCH   ○ DELETE                │
-│                                                              │
-│ Endpoint URL*                                                │
-│ [https://api.salesforce.com/customers/{{contact.phone}}]   │
-│                                                              │
-│ 📋 Request Headers                           [+ Add Header] │
-│ ┌──────────────────────────────────────────────────────┐   │
-│ │ Content-Type     [application/json______________]    │   │
-│ │ X-API-Version    [v2.1_______________________]       │   │
-│ └──────────────────────────────────────────────────────┘   │
-│                                                              │
-│ 🔐 Authentication                            [Configure ▼]  │
-│                                                              │
-│ 📄 Request Configuration                                     │
-│ [Configure based on method...]                              │
-│                                                              │
-│                                   [Cancel]  [Save Action]   │
-└──────────────────────────────────────────────────────────────┘
+
+
+ Action Name*  
+ [Lookup Customer Account_____________________]  
+
+ Description  
+ [Retrieve customer data from Salesforce using____]  
+ [phone number. Use for account questions._____]  
+
+ 🌐 HTTP Configuration  
+
+ HTTP Method*  
+ ● GET   ○ POST   ○ PUT   ○ PATCH   ○ DELETE  
+
+ Endpoint URL*  
+ [https://api.salesforce.com/customers/{{contact.phone}}]  
+
+ 📋 Request Headers                           [+ Add Header]
+
+  Content-Type     [application/json______________]  
+  X-API-Version    [v2.1_______________________]  
+
+
+ 🔐 Authentication                            [Configure ▼]  
+
+ 📄 Request Configuration  
+ [Configure based on method...]  
+
+                                   [Cancel]  [Save Action]  
+
 ```
 
 ---
@@ -238,13 +238,13 @@ Custom actions support five authentication schemes:
 Use for public APIs that don't require authentication.
 
 ```
-┌─ Authentication ─────────────────────────────────────────────┐
-│                                                              │
-│ Auth Type: NONE                                              │
-│                                                              │
-│ No authentication required for this endpoint                │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
+
+
+ Auth Type: NONE  
+
+ No authentication required for this endpoint  
+
+
 ```
 
 **Use cases:**
@@ -261,16 +261,16 @@ Only use NONE authentication for truly public endpoints. Most production APIs sh
 Most common for modern APIs. Sends a token in the Authorization header.
 
 ```
-┌─ Authentication ─────────────────────────────────────────────┐
-│                                                              │
-│ Auth Type: BEARER                                            │
-│                                                              │
-│ Bearer Token*                                                │
-│ [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIx•••••]  │
-│                                                              │
-│ ℹ️  Token will be sent as: Authorization: Bearer {token}    │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
+
+
+ Auth Type: BEARER  
+
+ Bearer Token*  
+ [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIx•••••]  
+
+ ℹ️  Token will be sent as: Authorization: Bearer {token}  
+
+
 ```
 
 **HTTP header sent:**
@@ -301,20 +301,20 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 Traditional username/password authentication using Base64 encoding.
 
 ```
-┌─ Authentication ─────────────────────────────────────────────┐
-│                                                              │
-│ Auth Type: BASIC                                             │
-│                                                              │
-│ Username*                                                    │
-│ [api_user_________________________________]                  │
-│                                                              │
-│ Password*                                                    │
-│ [••••••••••••••••••••••••••••••••••••]                     │
-│                                                              │
-│ ℹ️  Credentials will be Base64 encoded and sent in          │
-│    Authorization header                                     │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
+
+
+ Auth Type: BASIC  
+
+ Username*  
+ [api_user_________________________________]  
+
+ Password*  
+ [••••••••••••••••••••••••••••••••••••]  
+
+ ℹ️  Credentials will be Base64 encoded and sent in  
+    Authorization header  
+
+
 ```
 
 **HTTP header sent:**
@@ -349,19 +349,19 @@ Basic auth should only be used over HTTPS to prevent credential exposure. Most m
 Custom authentication via HTTP headers (e.g., X-API-Key).
 
 ```
-┌─ Authentication ─────────────────────────────────────────────┐
-│                                                              │
-│ Auth Type: HEADER                                            │
-│                                                              │
-│ Header Name*                                                 │
-│ [X-API-Key_________________________________]                 │
-│                                                              │
-│ Header Value*                                                │
-│ [sk-abc123def456ghi789•••••••••••••••••]                   │
-│                                                              │
-│ ℹ️  Custom header will be added to all requests             │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
+
+
+ Auth Type: HEADER  
+
+ Header Name*  
+ [X-API-Key_________________________________]  
+
+ Header Value*  
+ [sk-abc123def456ghi789•••••••••••••••••]  
+
+ ℹ️  Custom header will be added to all requests  
+
+
 ```
 
 **HTTP header sent:**
@@ -400,20 +400,20 @@ X-API-Key: sk-abc123def456ghi789jkl012mno345pqr678
 Credentials included in the request body (typically for POST requests).
 
 ```
-┌─ Authentication ─────────────────────────────────────────────┐
-│                                                              │
-│ Auth Type: BODY                                              │
-│                                                              │
-│ Parameter Name*                                              │
-│ [api_key___________________________________]                 │
-│                                                              │
-│ Parameter Value*                                             │
-│ [sk-xyz789abc123•••••••••••••••••••••]                     │
-│                                                              │
-│ ℹ️  Authentication parameter will be included in request    │
-│    body JSON                                                │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
+
+
+ Auth Type: BODY  
+
+ Parameter Name*  
+ [api_key___________________________________]  
+
+ Parameter Value*  
+ [sk-xyz789abc123•••••••••••••••••••••]  
+
+ ℹ️  Authentication parameter will be included in request  
+    body JSON  
+
+
 ```
 
 **Request body includes:**
@@ -451,20 +451,20 @@ Credentials included in the request body (typically for POST requests).
 For GET requests, add URL query parameters:
 
 ```
-┌─ Query Parameters ───────────────────────────────────────────┐
-│                                                              │
-│ Parameter Name          Value                   [+ Add]      │
-│ ┌──────────────────────────────────────────────────────┐   │
-│ │ include          [orders,preferences_________]       │   │
-│ │ limit            [100____________________]            │   │
-│ │ format           [json___________________]            │   │
-│ └──────────────────────────────────────────────────────┘   │
-│                                                              │
-│ Resulting URL:                                               │
-│ https://api.crm.com/customers/123?include=orders,           │
-│ preferences&limit=100&format=json                           │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
+
+
+ Parameter Name          Value                   [+ Add]  
+
+  include          [orders,preferences_________]  
+  limit            [100____________________]  
+  format           [json___________________]  
+
+
+ Resulting URL:  
+ https://api.crm.com/customers/123?include=orders,  
+ preferences&limit=100&format=json  
+
+
 ```
 
 **Configuration example:**
@@ -485,23 +485,23 @@ For GET requests, add URL query parameters:
 For methods that accept body data, configure the JSON payload:
 
 ```
-┌─ Request Body ───────────────────────────────────────────────┐
-│                                                              │
-│ Body Content (JSON)                                          │
-│ ┌──────────────────────────────────────────────────────┐   │
-│ │{                                                      │   │
-│ │  "customer_id": "{{ contact.id }}",                  │   │
-│ │  "phone": "{{ contact.phone_number }}",              │   │
-│ │  "email": "{{ contact.email }}",                     │   │
-│ │  "call_time": "{{ current_datetime }}",              │   │
-│ │  "agent": "{{ agent_name }}",                        │   │
-│ │  "status": "contacted"                               │   │
-│ │}                                                      │   │
-│ └──────────────────────────────────────────────────────┘   │
-│                                                              │
-│ ✅ Valid JSON   💡 Variables supported                      │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
+
+
+ Body Content (JSON)  
+
+ {  
+   "customer_id": "{{ contact.id }}",  
+   "phone": "{{ contact.phone_number }}",  
+   "email": "{{ contact.email }}",  
+   "call_time": "{{ current_datetime }}",  
+   "agent": "{{ agent_name }}",  
+   "status": "contacted"  
+ }  
+
+
+ ✅ Valid JSON   💡 Variables supported  
+
+
 ```
 
 **Configuration example:**
@@ -837,50 +837,50 @@ Thorough testing ensures reliable integrations:
 ### Testing Checklist
 
 ```
-┌─ Custom Action Test Checklist ──────────────────────────────┐
-│                                                              │
-│ Pre-Integration Testing:                                     │
-│ ☑ Endpoint tested with Postman/cURL                         │
-│ ☑ Authentication verified                                   │
-│ ☑ Request format confirmed                                  │
-│ ☑ Response structure documented                             │
-│                                                              │
-│ Configuration Testing:                                       │
-│ ☑ Action name is descriptive                                │
-│ ☑ HTTP method is correct                                    │
-│ ☑ Endpoint URL is accurate                                  │
-│ ☑ Headers configured properly                               │
-│ ☑ Authentication credentials valid                          │
-│ ☑ Parameters/body structured correctly                      │
-│                                                              │
-│ Variable Testing:                                            │
-│ ☑ Template variables populate correctly                     │
-│ ☑ Default values work when data missing                     │
-│ ☑ Special characters handled                                │
-│ ☑ Null/empty values don't break requests                    │
-│                                                              │
-│ Agent Integration Testing:                                   │
-│ ☑ Agent references action by correct name                   │
-│ ☑ Action executes when expected                             │
-│ ☑ Response data available to agent                          │
-│ ☑ Agent uses response data appropriately                    │
-│ ☑ Conversation flow remains natural                         │
-│                                                              │
-│ Error Handling:                                              │
-│ ☑ 404 errors handled gracefully                             │
-│ ☑ 500 errors don't break conversation                       │
-│ ☑ Authentication failures handled                           │
-│ ☑ Timeout scenarios handled                                 │
-│ ☑ Invalid responses handled                                 │
-│                                                              │
-│ Production Readiness:                                        │
-│ ☑ Tested with real customer data                            │
-│ ☑ Performance acceptable (<2 second response)               │
-│ ☑ Error messages customer-friendly                          │
-│ ☑ Fallback actions configured                               │
-│ ☑ Monitoring/logging in place                               │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
+
+
+ Pre-Integration Testing:  
+ ☑ Endpoint tested with Postman/cURL  
+ ☑ Authentication verified  
+ ☑ Request format confirmed  
+ ☑ Response structure documented  
+
+ Configuration Testing:  
+ ☑ Action name is descriptive  
+ ☑ HTTP method is correct  
+ ☑ Endpoint URL is accurate  
+ ☑ Headers configured properly  
+ ☑ Authentication credentials valid  
+ ☑ Parameters/body structured correctly  
+
+ Variable Testing:  
+ ☑ Template variables populate correctly  
+ ☑ Default values work when data missing  
+ ☑ Special characters handled  
+ ☑ Null/empty values don't break requests  
+
+ Agent Integration Testing:  
+ ☑ Agent references action by correct name  
+ ☑ Action executes when expected  
+ ☑ Response data available to agent  
+ ☑ Agent uses response data appropriately  
+ ☑ Conversation flow remains natural  
+
+ Error Handling:  
+ ☑ 404 errors handled gracefully  
+ ☑ 500 errors don't break conversation  
+ ☑ Authentication failures handled  
+ ☑ Timeout scenarios handled  
+ ☑ Invalid responses handled  
+
+ Production Readiness:  
+ ☑ Tested with real customer data  
+ ☑ Performance acceptable (<2 second response)  
+ ☑ Error messages customer-friendly  
+ ☑ Fallback actions configured  
+ ☑ Monitoring/logging in place  
+
+
 ```
 
 ---
