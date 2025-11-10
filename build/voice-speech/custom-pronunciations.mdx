@@ -8,10 +8,6 @@ icon: "spell-check"
 
 Even premium AI voices occasionally mispronounce brand names, technical terms, acronyms, or industry-specific jargon. Custom pronunciations let you define exactly how specific words should sound, ensuring your agent always says them correctly.
 
-<Warning>
-Custom pronunciations are available for **pipeline agents only**. Multimodal agents (using end-to-end voice models) do not currently support pronunciation customization. For multimodal agents, use phonetic spelling in your instructions instead.
-</Warning>
-
 ## What Are Custom Pronunciations?
 
 Custom pronunciations create text-replacement rules that modify what the voice synthesis engine receives:
@@ -27,15 +23,6 @@ Custom pronunciations create text-replacement rules that modify what the voice s
 ---
 
 ## Accessing Pronunciation Settings
-
-### Pipeline Agents Only
-
-Verify your agent is a pipeline agent:
-1. Open agent configuration
-2. Check agent type in overview or settings
-3. Look for **Pronunciations** tab or section
-
-If you don't see Pronunciations, you're using a multimodal agent. See "Alternatives for Multimodal Agents" section below.
 
 ### Opening Pronunciation Manager
 
@@ -323,17 +310,17 @@ To modify an existing rule:
 - You find a better phonetic spelling
 - Original text needs to match different capitalization
 
-### Toggling Rules On/Off
+### Managing Rules
 
-Instead of deleting rules, temporarily disable them:
+To modify pronunciation rules:
 1. Find the rule in the list
-2. Click the **toggle** or **status** switch
-3. Rule remains in dictionary but won't be applied
+2. Edit the pronunciation directly
+3. Or delete and recreate with new pronunciation
 
-**Use cases:**
-- Testing different pronunciations (disable old, enable new, compare)
-- Seasonal terms (enable for campaign, disable after)
-- A/B testing (enable for Agent A, disable for Agent B)
+**Best practices:**
+- Test pronunciations in Test Call before deploying
+- Keep a backup of your CSV before making bulk changes
+- Use descriptive original text for easy identification
 
 ### Deleting Rules
 
@@ -563,57 +550,6 @@ Test with your voice provider; this feature is not universally supported.
 
 ---
 
-## Alternatives for Multimodal Agents
-
-Since multimodal agents don't support custom pronunciation features, use these strategies:
-
-### Phonetic Spelling in Instructions
-
-Add common mispronunciations to your system prompt:
-```
-Pronunciation guide (for voice output):
-- Always say "itellicoAI" as "eye-tell-ee-co A I"
-- Always say "SQL" as "sequel"
-- Always say "API" as "A P I"
-- Always say "Dr." as "Doctor"
-```
-
-**Effectiveness:** Mixed. The model may not always apply these rules consistently.
-
-### Phonetic Spelling in Responses
-
-When the agent generates responses, it can use phonetic spelling directly:
-
-**Example instruction:**
-```
-When mentioning our company name, write it phonetically: "eye-tell-ee-co A I" instead of "itellicoAI"
-```
-
-**Downside:** Transcripts show phonetic spelling, which looks unprofessional.
-
-### Context Injection
-
-Use Jinja templates to inject phonetic versions:
-```
-{% set company_name_spoken = "eye-tell-ee-co A I" %}
-{% set company_name_written = "itellicoAI" %}
-
-When speaking, say {{ company_name_spoken }}.
-In transcripts, show {{ company_name_written }}.
-```
-
-Effectiveness depends on model's ability to separate spoken and written forms.
-
-### Wait for Feature Support
-
-Multimodal agent pronunciation features are on the roadmap. Subscribe to product updates for announcements.
-
-<Note>
-As multimodal models improve, pronunciation accuracy often increases with newer model versions. Test after model updates to see if mispronunciations are resolved.
-</Note>
-
----
-
 ## Best Practices
 
 <AccordionGroup>
@@ -682,16 +618,15 @@ As multimodal models improve, pronunciation accuracy often increases with newer 
 ### Pronunciation Rule Not Applied
 
 **Possible causes:**
-1. Rule is disabled (check toggle status)
-2. Text doesn't match exactly (check case, spacing, punctuation)
-3. Rule added but agent not refreshed
-4. Multimodal agent (doesn't support pronunciations)
+1. Text doesn't match exactly (check case, spacing, punctuation)
+2. Rule added but agent not refreshed
+3. Voice provider doesn't support pronunciation overrides
 
 **Solutions:**
-- Verify rule is enabled
 - Check exact text matching (copy from transcript)
 - Test with new conversation
-- Confirm agent type (pipeline vs. multimodal)
+- Clear browser cache and test again
+- Try a different phonetic spelling
 
 ### Replacement Sounds Worse
 

@@ -1,6 +1,6 @@
 ---
 title: "Knowledge Base Architecture"
-description: "Understand how knowledge bases, collections, and items work together"
+description: "Understand how knowledge bases, folders, and items work together"
 icon: "sitemap"
 ---
 
@@ -16,15 +16,13 @@ Think of knowledge bases as smart filing cabinets that your agent can search thr
 
 Knowledge in itellicoAI follows a simple, intuitive structure:
 
-```
-Knowledge Base → Collections → Items
+**Knowledge Base → Folders → Items**
 
-📚 Customer Support FAQ
-├── 📁 Billing & Payments (23 items)
-├── 📁 Technical Issues (45 items)
-├── 📁 Product Information (31 items)
-└── 📁 Return Policies (28 items)
-```
+**Example: Customer Support FAQ**
+- Billing & Payments (23 items)
+- Technical Issues (45 items)
+- Product Information (31 items)
+- Return Policies (28 items)
 
 This hierarchy makes it easy to organize large amounts of information while keeping it accessible and manageable.
 
@@ -34,39 +32,29 @@ This hierarchy makes it easy to organize large amounts of information while keep
 
 ### Main Knowledge Interface
 
-When you navigate to the Knowledge Bases section, you'll see your knowledge management dashboard:
+When you navigate to the Knowledge Bases section, you'll see your knowledge management dashboard with an at-a-glance view of all your knowledge bases:
 
-```
-┌─ Knowledge Bases ───────────────────────────────────────────┐
-│                                   [+ Create Knowledge Base] │
-│                                                             │
-│ 📚 Your Knowledge Bases (3)                                │
-│                                                             │
-│ ┌─ Customer Support FAQ ─────────────────────────────────┐  │
-│ │ 📁 Collections: 4    📄 Items: 127    ✅ Active       │  │
-│ │ • Billing & Payments • Technical Issues              │  │
-│ │ • Product Information • Return Policies              │  │
-│ │                                        [Edit] [View] │  │
-│ └─────────────────────────────────────────────────────────┘  │
-│                                                             │
-│ ┌─ Product Documentation ─────────────────────────────────┐  │
-│ │ 📁 Collections: 2    📄 Items: 89     ✅ Active       │  │
-│ │ • User Manuals • API Documentation                   │  │
-│ │                                        [Edit] [View] │  │
-│ └─────────────────────────────────────────────────────────┘  │
-│                                                             │
-│ ┌─ Company Policies ──────────────────────────────────────┐  │
-│ │ 📁 Collections: 3    📄 Items: 45     ⏸️ Draft        │  │
-│ │ • HR Policies • Compliance • Data Privacy            │  │
-│ │                                        [Edit] [View] │  │
-│ └─────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-```
+<CardGroup cols={1}>
+  <Card title="Customer Support FAQ">
+    - Folders: 4
+    - Items: 127
+    - Contains: Billing & Payments, Technical Issues, Product Information, Return Policies
+  </Card>
+  <Card title="Product Documentation">
+    - Folders: 2
+    - Items: 89
+    - Contains: User Manuals, API Documentation
+  </Card>
+  <Card title="Company Policies">
+    - Folders: 3
+    - Items: 45
+    - Contains: HR Policies, Compliance, Data Privacy
+  </Card>
+</CardGroup>
 
-The dashboard gives you an at-a-glance view of all your knowledge bases, showing:
-- Total number of collections and items
-- Status (Active or Draft)
-- Quick access to collections
+The dashboard shows:
+- Total number of folders and items
+- Quick access to folders
 - Edit and View actions
 
 ---
@@ -92,28 +80,28 @@ The dashboard gives you an at-a-glance view of all your knowledge bases, showing
 - **Sales Resources** - Pricing sheets, competitor comparisons, pitch decks
 
 <Note>
-Knowledge bases can be in **Active** or **Draft** status. Only active knowledge bases can be assigned to agents.
+Knowledge bases are available to agents once you link them in agent configuration.
 </Note>
 
-### Collections
+### Folders
 
-<Card title="What is a Collection?" icon="folder">
-  Collections are organizational units within a knowledge base. They group related items together by topic, category, or purpose.
+<Card title="What is a Folder?" icon="folder">
+  Folders are organizational units within a knowledge base. They group related items together by topic, category, or purpose.
 </Card>
 
-**Think of collections as folders within your filing cabinet:**
+**Think of folders within your filing cabinet:**
 - They organize similar content together
 - They make information easier to find and manage
 - They allow you to assign specific topics to agents
 
-**Example collections within a Customer Support knowledge base:**
+**Example folders within a Customer Support knowledge base:**
 - **Billing & Payments** - Invoice questions, payment methods, refunds
 - **Technical Issues** - Troubleshooting guides, error messages, bug workarounds
 - **Product Information** - Features, specifications, compatibility
 - **Return Policies** - Return windows, conditions, process steps
 
 <Tip>
-Use clear, descriptive collection names. Your team and your AI will both benefit from intuitive organization.
+Use clear, descriptive folder names. Your team and your AI will both benefit from intuitive organization.
 </Tip>
 
 ### Knowledge Items
@@ -124,7 +112,7 @@ Use clear, descriptive collection names. Your team and your AI will both benefit
 
 **Knowledge items can be:**
 - **Text entries** - Directly written content
-- **PDF files** - Uploaded documents (up to 10MB)
+- **File uploads** - PDF, DOC, DOCX, TXT, and other document formats (up to 10MB)
 - **URL scrapes** - Content pulled from web pages
 
 **Example knowledge items:**
@@ -151,9 +139,9 @@ Each knowledge item includes:
   </Accordion>
 
   <Accordion title="You have detailed documentation" icon="book">
-    If you have existing documentation - user manuals, FAQs, policy documents - you can upload them directly. Your agent will be able to search and reference them in conversations.
+    If you have existing documentation - user manuals, FAQs, policy documents - you can upload them directly in various formats (PDF, DOC, DOCX, TXT). Your agent will be able to search and reference them in conversations.
 
-    **Example:** Upload your 50-page product manual as a PDF. When customers have technical questions, your agent finds and explains the relevant sections.
+    **Example:** Upload your 50-page product manual. When customers have technical questions, your agent finds and explains the relevant sections.
   </Accordion>
 
   <Accordion title="Information changes frequently" icon="arrows-rotate">
@@ -231,12 +219,12 @@ Include version dates or numbers in item titles if you maintain multiple version
 Each knowledge item should cover one topic or concept thoroughly:
 
 <CardGroup cols={2}>
-  <Card title="✅ Good: Focused Items" icon="check">
+  <Card title="Good: Focused Items" icon="check">
     - "Return Policy for Physical Products"
     - "Return Policy for Digital Products"
     - "Return Shipping Instructions"
   </Card>
-  <Card title="❌ Avoid: Mega Documents" icon="xmark">
+  <Card title="Avoid: Mega Documents" icon="xmark">
     - "All Company Policies and Procedures" (50 pages)
 
     Split large documents into focused items for better retrieval.
@@ -245,27 +233,29 @@ Each knowledge item should cover one topic or concept thoroughly:
 
 ### Maintain a Logical Structure
 
-```
-📚 E-Commerce Support Knowledge Base
-├── 📁 Orders & Shipping
-│   ├── 📄 Order Tracking Instructions
-│   ├── 📄 Shipping Times by Region
-│   ├── 📄 International Shipping Info
-│   └── 📄 Order Modification Policy
-├── 📁 Returns & Refunds
-│   ├── 📄 Return Policy Overview
-│   ├── 📄 Return Shipping Process
-│   ├── 📄 Refund Processing Times
-│   └── 📄 Exchange Procedures
-├── 📁 Products & Inventory
-│   ├── 📄 Product Categories
-│   ├── 📄 Stock Availability
-│   └── 📄 Product Specifications
-└── 📁 Payment & Billing
-    ├── 📄 Accepted Payment Methods
-    ├── 📄 Invoice Questions
-    └── 📄 Payment Plan Options
-```
+**Example: E-Commerce Support Knowledge Base**
+
+**Orders & Shipping folder:**
+- Order Tracking Instructions
+- Shipping Times by Region
+- International Shipping Info
+- Order Modification Policy
+
+**Returns & Refunds folder:**
+- Return Policy Overview
+- Return Shipping Process
+- Refund Processing Times
+- Exchange Procedures
+
+**Products & Inventory folder:**
+- Product Categories
+- Stock Availability
+- Product Specifications
+
+**Payment & Billing folder:**
+- Accepted Payment Methods
+- Invoice Questions
+- Payment Plan Options
 
 ### Regular Maintenance
 
@@ -292,7 +282,7 @@ Each knowledge item should cover one topic or concept thoroughly:
 
 **Knowledge Base:** "SaaS Product Support"
 
-**Collections:**
+**Folders:**
 - **Account Management** (15 items)
   - Password reset process
   - Account upgrade instructions
@@ -315,7 +305,7 @@ Each knowledge item should cover one topic or concept thoroughly:
 
 **Knowledge Base:** "Patient Services"
 
-**Collections:**
+**Folders:**
 - **Appointment Policies** (8 items)
   - Scheduling guidelines
   - Cancellation policy
@@ -338,7 +328,7 @@ Each knowledge item should cover one topic or concept thoroughly:
 
 **Knowledge Base:** "Product Catalog & Sales"
 
-**Collections:**
+**Folders:**
 - **Product Specifications** (89 items)
   - Detailed product descriptions
   - Technical specifications
@@ -376,10 +366,10 @@ You can assign knowledge to agents at different levels:
 
 <CardGroup cols={3}>
   <Card title="Entire Knowledge Base" icon="database">
-    Agent has access to all collections and items
+    Agent has access to all folders and items
   </Card>
-  <Card title="Specific Collection" icon="folder">
-    Agent only accesses one collection within a base
+  <Card title="Specific Folder" icon="folder">
+    Agent only accesses one folder within a base
   </Card>
   <Card title="Individual Items" icon="file">
     Agent has access to specific knowledge items only

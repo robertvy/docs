@@ -11,8 +11,8 @@ Enable your AI agents to communicate with customers across the globe by configur
 Multilingual support transforms your agent from a single-language assistant into a global communication platform capable of understanding and responding in dozens of languages while maintaining natural conversation flow and cultural awareness.
 
 <Note>
-Language configuration differs between pipeline and multimodal agents. Pipeline agents configure language through Speech-to-Text settings, while multimodal agents use the dedicated Language tab. This guide covers multilingual strategy for both architectures.
-</Note>
+Language configuration is primarily done through Speech-to-Text settings in the Models tab. This guide covers multilingual strategy and configuration options.
+
 
 ---
 
@@ -55,11 +55,9 @@ Language configuration differs between pipeline and multimodal agents. Pipeline 
 
 ## Language Architecture
 
-### Pipeline vs Multimodal Agents
+Your agent's language configuration is set through the Speech-to-Text provider:
 
-Understanding your agent architecture determines how you configure languages:
-
-**Pipeline Agents (Traditional):**
+**Audio Processing Flow:**
 ```
 Audio → Transcriber → LLM → Voice Synthesizer → Audio
        [Language]   [Any]   [Language]
@@ -68,22 +66,7 @@ Audio → Transcriber → LLM → Voice Synthesizer → Audio
 **Configuration:**
 - Language set on Speech-to-Text provider (Deepgram, AssemblyAI, etc.)
 - Voice provider must match language
-- Each component configured independently
-
-**Multimodal Agents:**
-```
-Audio → Multimodal Model → Audio
-       [Unified Language]
-```
-
-**Configuration:**
-- Single language setting in Language tab
-- Unified processing across entire pipeline
-- Native multilingual capabilities built into model
-
-<Tip>
-For new implementations requiring robust multilingual support, multimodal agents offer superior language detection and more natural cross-lingual responses.
-</Tip>
+- Each component configured independently for optimal control
 
 ---
 
@@ -95,9 +78,7 @@ The primary language serves as your agent's default:
 
 <Steps>
   <Step title="Access Language Configuration">
-    **For multimodal agents:** Navigate to Language tab
-
-    **For pipeline agents:** Go to Voice & Speech → Speech-to-Text
+    Navigate to Models → Transcriber (Speech-to-Text)
   </Step>
   <Step title="Select Primary Language">
     Choose the language you expect to use for the majority of conversations
@@ -127,16 +108,11 @@ The primary language serves as your agent's default:
 
 Enable additional languages your agent should support:
 
-**For multimodal agents:**
-1. Open **Language** tab
-2. Click **Add Secondary Language**
-3. Select language from picker
-4. Repeat for additional languages (recommended: 3-5 max)
+1. Open **Models → Transcriber** section
+2. Select a transcriber that supports multilingual capabilities
+3. Configure primary and secondary languages as supported by your chosen provider
+4. Recommended: 3-5 languages maximum for optimal accuracy
 5. Save configuration
-
-**For pipeline agents:**
-- Configure multiple language models if provider supports it
-- Or create separate agents per language and route appropriately
 
 **Recommended limits:**
 - **2-3 languages:** Optimal accuracy and performance
@@ -383,7 +359,7 @@ If no match in customer's language, translate English version.
 **Cons:** Complex metadata management, requires language-aware retrieval
 
 <Tip>
-For most use cases, Option 2 (English knowledge with AI translation) provides the best balance of maintenance efficiency and quality. Modern multimodal models excel at accurate cross-lingual knowledge retrieval and response generation.
+For most use cases, Option 2 (English knowledge with AI translation) provides the best balance of maintenance efficiency and quality. Modern AI models excel at accurate cross-lingual knowledge retrieval and response generation.
 </Tip>
 
 ---
@@ -596,7 +572,7 @@ Run this exact flow in English, Spanish, French, German, etc. to ensure consiste
   </Accordion>
 
   <Accordion title="Keep Instructions Language-Agnostic When Possible" icon="globe">
-    **Multimodal models adapt automatically**
+    **AI models adapt automatically**
 
     **Recommended approach:**
     - Write clear, universal guidelines
@@ -745,11 +721,8 @@ Run this exact flow in English, Spanish, French, German, etc. to ensure consiste
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Language Configuration" icon="gear" href="/build/voice-speech/language-configuration">
-    Detailed configuration for multimodal agents
-  </Card>
   <Card title="Speech-to-Text" icon="ear" href="/build/voice-speech/speech-to-text">
-    Language configuration for pipeline agents
+    Language configuration and transcriber setup
   </Card>
   <Card title="Select Voice" icon="microphone" href="/build/voice-speech/select-voice">
     Choose multilingual voices for each language

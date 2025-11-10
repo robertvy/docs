@@ -198,6 +198,11 @@ Context Mode uses tokens from your available context window. Large knowledge bas
 
 As conversations get longer, older messages are removed to fit within the window.
 
+**Additional Context Mode costs:**
+- **Higher latency**: Injecting large knowledge bases increases response time
+- **Higher costs**: All knowledge tokens are processed with every request
+- **Token inefficiency**: Entire knowledge base is sent even if only small portion is relevant
+
 ---
 
 ## RAG Mode (Retrieval-Augmented Generation)
@@ -433,8 +438,8 @@ Navigate to your agent's configuration and access the Knowledge tab:
 
   <Step title="Select knowledge scope">
     Choose what to assign:
-    - **Entire Knowledge Base** - All collections and items
-    - **Specific Collection** - One collection within a base
+    - **Entire Knowledge Base** - All folders and items
+    - **Specific Folder** - One folder within a base
     - **Specific Items** - Individual knowledge items only
   </Step>
 
@@ -446,29 +451,24 @@ Navigate to your agent's configuration and access the Knowledge tab:
 ### Assignment Options
 
 **Entire Knowledge Base:**
-```
-Agent has access to:
-📚 Customer Support FAQ
-├── 📁 Billing & Payments (all 23 items)
-├── 📁 Technical Issues (all 45 items)
-├── 📁 Product Information (all 31 items)
-└── 📁 Return Policies (all 28 items)
-```
 
-**Specific Collection:**
-```
-Agent has access to:
-📚 Customer Support FAQ
-└── 📁 Billing & Payments (23 items only)
-```
+Agent has access to Customer Support FAQ including:
+- Billing & Payments (all 23 items)
+- Technical Issues (all 45 items)
+- Product Information (all 31 items)
+- Return Policies (all 28 items)
+
+**Specific Folder:**
+
+Agent has access to Customer Support FAQ:
+- Billing & Payments folder only (23 items)
 
 **Individual Items:**
-```
-Agent has access to:
-📄 Return Policy - Digital Products
-📄 Shipping Options
-📄 Contact Information
-```
+
+Agent has access to specific items:
+- Return Policy - Digital Products
+- Shipping Options
+- Contact Information
 
 <Tip>
 Start broad (entire knowledge base) and narrow down if you find the agent is getting confused by too much information.
@@ -699,7 +699,7 @@ This gives you the best of both worlds.
     - "How to Reset Your Password"
     - "Pricing Plans Comparison"
 
-    **Poor titles:**
+    **Bad titles:**
     - "Policy 1"
     - "Process"
     - "Info"
@@ -721,13 +721,11 @@ This gives you the best of both worlds.
 <AccordionGroup>
   <Accordion title="Agent isn't using knowledge (Context Mode)">
     **Check:**
-    - Is knowledge base status set to Active?
     - Are all knowledge items in COMPLETED status?
     - Is remaining context sufficient (not truncated)?
     - Are agent instructions referencing the knowledge?
 
     **Solution:**
-    - Activate knowledge base
     - Fix failed items
     - Reduce knowledge size or switch to RAG
     - Add explicit instructions to reference knowledge

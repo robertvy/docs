@@ -16,8 +16,8 @@ itellicoAI supports three types of knowledge items, each designed for different 
   <Card title="Text Items" icon="text">
     Direct content entry using the built-in editor
   </Card>
-  <Card title="PDF Files" icon="file-pdf">
-    Upload PDF documents up to 10MB
+  <Card title="File Uploads" icon="file-pdf">
+    Upload PDF, DOC, DOCX, TXT, and other document formats up to 10MB
   </Card>
   <Card title="URL Scraping" icon="link">
     Pull content from web pages
@@ -152,8 +152,8 @@ Text items are content you enter directly into the itellicoAI knowledge base edi
 ### Creating Text Items
 
 <Steps>
-  <Step title="Navigate to collection">
-    Open the collection where you want to add the item.
+  <Step title="Navigate to folder">
+    Open the folder where you want to add the item.
   </Step>
 
   <Step title="Click 'Add Knowledge Item'">
@@ -215,17 +215,17 @@ Text items are the most reliable content type. When possible, enter content as t
 
 ---
 
-## PDF File Items
+## File Upload Items
 
-### What Are PDF File Items?
+### What Are File Upload Items?
 
-PDF items allow you to upload existing documents. The system extracts the text content and makes it available to your agents.
+File upload items allow you to upload existing documents in various formats. The system extracts the text content and makes it available to your agents.
 
-### When to Use PDF Files
+### When to Use File Uploads
 
 <AccordionGroup>
   <Accordion title="Existing documentation" icon="file">
-    You already have content in PDF format.
+    You already have content in document format.
 
     **Examples:**
     - User manuals
@@ -235,7 +235,7 @@ PDF items allow you to upload existing documents. The system extracts the text c
   </Accordion>
 
   <Accordion title="Formatted documents" icon="file-pdf">
-    Documents with specific layouts that are easier to maintain as PDFs.
+    Documents with specific layouts that are easier to maintain as files.
 
     **Examples:**
     - Technical diagrams
@@ -254,23 +254,23 @@ PDF items allow you to upload existing documents. The system extracts the text c
   </Accordion>
 </AccordionGroup>
 
-### PDF Requirements
+### File Requirements
 
 **File specifications:**
-- **Format:** PDF only (.pdf)
+- **Formats:** PDF, DOC, DOCX, TXT, and other document formats
 - **Size limit:** 10MB maximum
-- **Content:** Text-based PDFs (scanned images may not extract well)
+- **Content:** Text-based documents and scanned images (advanced parsing handles most scans)
 - **Protection:** No password protection
 
-<Warning>
-PDFs created from scanned images may not extract properly. If you have image-based PDFs, use OCR software to add a text layer before uploading, or copy the content manually into a text item.
-</Warning>
+<Note>
+The system uses advanced document parsing to extract text from scanned images and PDFs. Most scanned documents will process correctly, though very poor quality scans may require manual text entry.
+</Note>
 
-### Creating PDF Items
+### Creating File Items
 
 <Steps>
-  <Step title="Navigate to collection">
-    Open the collection where you want to add the PDF.
+  <Step title="Navigate to folder">
+    Open the folder where you want to add the file.
   </Step>
 
   <Step title="Click 'Add Knowledge Item'">
@@ -282,15 +282,15 @@ PDFs created from scanned images may not extract properly. If you have image-bas
   </Step>
 
   <Step title="Enter title">
-    Give your PDF a descriptive title (this is separate from the filename).
+    Give your file a descriptive title (this is separate from the filename).
   </Step>
 
-  <Step title="Upload PDF file">
-    Click **Upload** and select your PDF file from your computer.
+  <Step title="Upload file">
+    Click **Upload** and select your document from your computer.
   </Step>
 
   <Step title="Click 'Create'">
-    The system will upload and begin processing your PDF.
+    The system will upload and begin processing your file.
 
     Status progression:
     - PENDING → File uploaded, queued for processing
@@ -300,7 +300,7 @@ PDFs created from scanned images may not extract properly. If you have image-bas
   </Step>
 </Steps>
 
-### PDF Item JSON Example
+### File Item JSON Example
 
 ```json
 {
@@ -313,65 +313,64 @@ PDFs created from scanned images may not extract properly. If you have image-bas
 
 ### Processing Time
 
-PDF processing time varies based on:
+File processing time varies based on:
 - **File size:** Larger files take longer
 - **Page count:** More pages = longer processing
 - **Complexity:** Tables, images, and complex layouts slow processing
 - **Text quality:** Clean, simple text extracts faster
 
 **Typical processing times:**
-- Small PDFs (< 1MB, 10 pages): 10-30 seconds
-- Medium PDFs (1-5MB, 10-50 pages): 30-90 seconds
-- Large PDFs (5-10MB, 50+ pages): 2-5 minutes
+- Small files (< 1MB, 10 pages): 10-30 seconds
+- Medium files (1-5MB, 10-50 pages): 30-90 seconds
+- Large files (5-10MB, 50+ pages): 2-5 minutes
 
-### Common PDF Issues
+### Common File Issues
 
 <AccordionGroup>
   <Accordion title="Processing failed" icon="circle-xmark">
     **Causes:**
     - File exceeds 10MB
-    - PDF is password-protected
-    - PDF is corrupted
-    - PDF is image-based without text layer
+    - File is password-protected
+    - File is corrupted
+    - Very poor quality scanned images
 
     **Solutions:**
-    - Compress PDF or split into smaller files
+    - Compress file or split into smaller files
     - Remove password protection
-    - Re-export PDF from source
-    - Use OCR to add text layer
-    - Copy content into text item instead
+    - Re-export file from source
+    - For very poor quality scans, copy content into text item instead
   </Accordion>
 
   <Accordion title="Content extracted incorrectly" icon="text-slash">
     **Causes:**
     - Complex layouts (multi-column, tables)
-    - Scanned images
+    - Very poor quality scanned images
     - Special fonts or encoding
     - Form fields and interactive elements
 
     **Solutions:**
     - Check extracted content in edit mode
     - Re-create as text item with proper formatting
-    - Simplify PDF layout before uploading
-    - Export as plain text PDF
+    - Simplify document layout before uploading
+    - Export as plain text document
   </Accordion>
 
   <Accordion title="Processing takes too long" icon="clock">
     **What to do:**
     - Wait 5-10 minutes before assuming failure
     - Check file size and page count
-    - For large files, consider splitting into multiple PDFs
+    - For large files, consider splitting into multiple files
     - Convert to text and upload as TEXT items instead
   </Accordion>
 </AccordionGroup>
 
-### PDF Best Practices
+### File Upload Best Practices
 
 <CardGroup cols={2}>
   <Card title="Optimize before upload" icon="compress">
-    - Compress large PDFs
+    - Compress large files
     - Remove unnecessary images
-    - Use text-based PDFs
+    - Use text-based documents
     - Keep under 5MB when possible
   </Card>
   <Card title="Test extraction" icon="vial">
@@ -427,8 +426,8 @@ URL items scrape content from web pages and store it in your knowledge base. Thi
 ### Creating URL Items
 
 <Steps>
-  <Step title="Navigate to collection">
-    Open the collection where you want to add the URL.
+  <Step title="Navigate to folder">
+    Open the folder where you want to add the URL.
   </Step>
 
   <Step title="Click 'Add Knowledge Item'">
@@ -610,29 +609,11 @@ All knowledge items go through a processing lifecycle. Understanding these statu
   </Step>
 </Steps>
 
-### Processing Flow Diagram
+### Processing Flow
 
-```
-┌─────────────┐
-│   CREATED   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐      TEXT items skip
-│   PENDING   │      directly to
-└──────┬──────┘      COMPLETED
-       │
-       ▼
-┌─────────────┐
-│ PROCESSING  │ ──────────┐
-└──────┬──────┘           │
-       │                  │
-       │ Success          │ Error
-       ▼                  ▼
-┌─────────────┐      ┌─────────────┐
-│  COMPLETED  │      │   FAILED    │
-└─────────────┘      └─────────────┘
-```
+**CREATED** → **PENDING** → **PROCESSING** → **COMPLETED** or **FAILED**
+
+Note: TEXT items skip directly from CREATED to COMPLETED
 
 ---
 
@@ -649,12 +630,12 @@ If a knowledge item shows FAILED status:
 
   <Step title="Identify the cause">
     Common causes:
-    - **PDF:** File too large, corrupted, password-protected, scanned image
+    - **Files:** File too large, corrupted, password-protected, scanned image
     - **URL:** Authentication required, broken link, content not accessible
   </Step>
 
   <Step title="Try solutions">
-    - **For PDFs:** Compress, remove protection, add text layer, or convert to text
+    - **For Files:** Compress, remove protection, add text layer, or convert to text
     - **For URLs:** Verify accessibility, try different URL, or copy content to text item
   </Step>
 
@@ -668,9 +649,9 @@ If a knowledge item shows FAILED status:
 ### Preventing Errors
 
 <CardGroup cols={2}>
-  <Card title="PDF Prevention" icon="file-pdf">
+  <Card title="File Prevention" icon="file-pdf">
     - Keep files under 5MB
-    - Use text-based PDFs
+    - Use text-based documents or quality scans
     - Remove passwords
     - Test with small file first
   </Card>
@@ -688,24 +669,19 @@ If a knowledge item shows FAILED status:
 
 ### Dashboard Indicators
 
-In your knowledge base dashboard, you can see processing status at a glance:
+In your knowledge base dashboard, you can see processing status at a glance for each item in your folders:
 
-```
-┌─ Collection: Product Documentation ─────────────────────┐
-│                                                          │
-│ ✅ User Manual.pdf                          COMPLETED   │
-│ ⏳ Quick Start Guide.pdf                   PROCESSING   │
-│ ⏸️ API Documentation                       PENDING      │
-│ ❌ Legacy Manual.pdf                        FAILED       │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
-```
+**Status indicators:**
+- Green checkmark = COMPLETED
+- Hourglass = PROCESSING
+- Pause symbol = PENDING
+- Red X = FAILED
 
-**Icons:**
-- ✅ Green checkmark = COMPLETED
-- ⏳ Hourglass = PROCESSING
-- ⏸️ Pause symbol = PENDING
-- ❌ Red X = FAILED
+**Example folder view:**
+- User Manual.pdf - COMPLETED
+- Quick Start Guide.pdf - PROCESSING
+- API Documentation - PENDING
+- Legacy Manual.pdf - FAILED
 
 ### Bulk Processing
 
@@ -726,31 +702,27 @@ Upload a test item first to verify format and processing before bulk uploading.
 
 Use this decision tree to select the best content type:
 
-```
-Do you have existing content?
-├─ No → Use TEXT (write directly)
-└─ Yes
-   ├─ Is it a PDF?
-   │  ├─ Yes, under 10MB → Use FILE
-   │  └─ No or over 10MB → Extract text, use TEXT
-   └─ Is it a web page?
-      ├─ Yes, publicly accessible → Use URL
-      │  └─ If scraping fails → Copy to TEXT
-      └─ No → Copy content to TEXT
-```
+**Do you have existing content?**
+- No → Use TEXT (write directly)
+- Yes, it's a document →
+  - Under 10MB → Use FILE
+  - Over 10MB → Extract text, use TEXT
+- Yes, it's a web page →
+  - Publicly accessible → Use URL (if scraping fails, copy to TEXT)
+  - Not accessible → Copy content to TEXT
 
 ### Quick Recommendations
 
 | Your Situation | Best Content Type |
 |---------------|-------------------|
 | Writing FAQs from scratch | TEXT |
-| Have existing Word docs | Convert to PDF or copy to TEXT |
-| Have PDFs under 10MB | FILE |
-| Have PDFs over 10MB | Split into smaller PDFs or extract to TEXT |
+| Have existing Word/PDF docs | Upload as FILE |
+| Have documents under 10MB | FILE |
+| Have documents over 10MB | Split into smaller files or extract to TEXT |
 | Public web documentation | URL (with TEXT as backup) |
 | Private/authenticated content | Copy to TEXT |
 | Need immediate availability | TEXT (no processing delay) |
-| Complex formatting matters | FILE (PDF) |
+| Complex formatting matters | FILE |
 
 ---
 
