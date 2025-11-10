@@ -635,22 +635,29 @@ When digits received, confirm receipt without repeating the full number:
 
 **Processing captured tones:**
 ```
-After requesting DTMF input, the system provides the captured value
-to you as a variable: {{ dtmf_input }}
+The `wait_for_dtmf_input` tool returns a JSON payload. Example:
 
-Example instruction logic:
+{
+  "value": "1234",
+  "digits": ["1","2","3","4"],
+  "length": 4,
+  "met_minimum": true,
+  "reason": "termination"
+}
 
-{% if dtmf_input == "1" %}
-Customer selected billing. Proceed to billing flow.
-{% elif dtmf_input == "2" %}
-Customer selected technical support. Proceed to tech support flow.
-{% elif dtmf_input == "3" %}
-Transfer call to representative using Transfer action.
-{% else %}
-Invalid selection. Prompt again:
-"I didn't recognize that option. Please press 1, 2, or 3."
-{% endif %}
+Use this payload directly in your tool-processing logic:
+
+if result.value == "1":
+    # Customer chose billing
+elif result.value == "2":
+    # Route to technical support
+else:
+    # Reprompt and call wait_for_dtmf_input again
 ```
+
+Inside the LiveKit worker, that same result is stored as `session.userdata.last_dtmf_input`
+and mirrored into `conversation_data.custom_data["last_dtmf_input"]`. Your backend automations
+or custom actions can read those values later in the call if you need to reuse the digits.
 
 **Validating multi-digit input:**
 ```
@@ -662,12 +669,12 @@ Validate the input:
 - Use for account lookup action
 
 If validation fails:
-"I received {{ dtmf_input|length }} digits, but account numbers are
+"I received {result.length} digits, but account numbers are
 10 digits. Let's try again. Please enter your 10-digit account
 number followed by pound."
 
 If validation succeeds:
-Use 'Lookup Customer Account' action with account_number={{ dtmf_input }}
+Use 'Lookup Customer Account' action with account_number = result.value
 ```
 
 ### Fallback to Voice
@@ -820,7 +827,7 @@ Would you like to try the keypad again, or speak the number?"
     - Verify DTMF Support toggle is ON
     - Increase tone duration to 120-150ms
     - Test from different phone/network
-    - Add logging to confirm {{ dtmf_input }} is populated
+    - Add logging to confirm `wait_for_dtmf_input` is invoked and that `session.userdata.last_dtmf_input` is populated
   </Accordion>
 
   <Accordion title="Wrong Digits Captured" icon="sort-numeric-down">
@@ -958,18 +965,16 @@ Would you like to try the keypad again, or speak the number?"
     **Always validate captured DTMF before using in actions**
 
     ```
-    {% set account_number = dtmf_input %}
+    account_number = result.value
 
-    Validation checks:
-    {% if account_number|length != 10 %}
-      Invalid: "Account numbers must be 10 digits. You entered
-      {{ account_number|length }}. Let's try again."
-    {% elif not account_number.isdigit() %}
-      Invalid: "I received non-numeric characters. Please enter
-      digits 0-9 only."
-    {% else %}
-      Valid: Use 'Lookup Account' action with {{ account_number }}
-    {% endif %}
+    if len(account_number) != 10:
+        say("Account numbers must be 10 digits. Let's try again.")
+        repeat_prompt()
+    elif not account_number.isdigit():
+        say("I heard characters outside 0-9. Please use digits only.")
+        repeat_prompt()
+    else:
+        call_action("Lookup Account", account_number=account_number)
     ```
 
     **Common validations:**
@@ -985,8 +990,8 @@ Would you like to try the keypad again, or speak the number?"
     ```
     Instructions example:
 
-    Track DTMF attempts (use conversation variable):
-    {% set dtmf_attempts = dtmf_attempts | default(0) + 1 %}
+    Track DTMF attempts (for example with a memory variable or custom data structure):
+    attempts += 1
 
     If attempt 1: "Let's try again. Remember to press pound when finished."
     If attempt 2: "Having trouble? You can also say the number out loud instead."

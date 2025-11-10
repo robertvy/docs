@@ -40,30 +40,29 @@ The transcriber selection interface provides a comprehensive view of all availab
 ### Catalog Features
 
 <CardGroup cols={2}>
-  <Card title="Provider Stats" icon="chart-line">
-    Latency metrics and performance data for each engine
+  <Card title="Provider Filter" icon="building">
+    Switch between Deepgram and Azure with a single click
   </Card>
-  <Card title="Cost Visibility" icon="dollar-sign">
-    Per-minute transcription costs clearly displayed
+  <Card title="Language Chips" icon="globe">
+    Each model lists every supported locale — click a chip to apply it immediately
   </Card>
   <Card title="EU-Hosted Badge" icon="location-dot">
-    Indicates engines that process audio within EU regions
+    Quickly see whether a provider keeps audio inside the EU
   </Card>
-  <Card title="Language Support" icon="globe">
-    Filter by supported languages and locales
+  <Card title="Smart Labels" icon="star">
+    “Recommended” tags and short descriptions help you pick the right model
   </Card>
 </CardGroup>
 
 ### Browsing Transcribers
 
 Each transcriber row shows:
-- **Provider name** (Deepgram, Azure Speech, etc.)
-- **Model name** (Nova-2, Whisper, etc.)
-- **Average latency** (milliseconds from speech to text)
-- **Cost per minute** of audio transcribed
-- **Supported languages** (count or list)
-- **EU hosting status** (badge if applicable)
-- **Special capabilities** (multilingual, keyword boosting, etc.)
+- **Provider name** (Deepgram or Azure Speech)
+- **Model name** (for example Nova-3 General or Azure STT Standard)
+- **Short description** of when to use the model
+- **Supported languages** rendered as clickable chips (with a “Multilingual” chip when the engine supports auto-detect)
+- **EU hosting badge** when the provider keeps processing inside the EU
+- **Recommended label** where we have a default choice for most teams
 
 Use the search box to quickly find transcribers by name, provider, or capability.
 
@@ -73,69 +72,30 @@ Use the search box to quickly find transcribers by name, provider, or capability
 
 ### Deepgram
 
-Deepgram specializes in real-time speech recognition with industry-leading accuracy and speed.
+Deepgram specializes in real-time speech recognition with low latency and strong phone-audio performance. We expose the following models today:
 
-**Models:**
-
-**Nova-2 (Recommended)**
-- Latest generation, highest accuracy
-- Optimized for conversational AI and phone calls
-- Low latency (~300-400ms)
-- Excellent with accents, background noise, and crosstalk
-- Best for: Most voice agents, especially customer-facing
-
-**Enhanced**
-- Previous generation, still excellent quality
-- Slightly higher latency than Nova-2
-- Cost-effective option for high-volume deployments
-
-**Base**
-- Budget option for simple use cases
-- Higher word error rate than Nova-2/Enhanced
-- Use for: Low-stakes applications where occasional errors acceptable
-
-**Whisper Cloud**
-- Based on OpenAI's Whisper model
-- Exceptional multilingual support (90+ languages)
-- Higher latency (~800ms-1.5s)
-- Best for: Multilingual agents, non-real-time scenarios
+- **Nova-3 General (Recommended)** – latest generation with multilingual coverage (English, German, Dutch, Swedish, Hindi, Japanese, and more) plus a dedicated multilingual chip in the catalog.
+- **Nova-3 Medical** – tuned for English healthcare terminology when compliance or vocabulary matters.
+- **Nova-2 General** – previous generation with the broadest language list (e.g., Catalan, Portuguese-BR, Thai, Vietnamese, Chinese variants). Still excellent for global teams.
+- **Nova-2 Phone Call / Meeting / Conversational AI** – optimized for narrow telephony scenarios when you only need English accuracy.
 
 **Characteristics:**
-- Fast inference optimized for real-time conversations
-- Strong performance on phone audio quality
-- Handles speech disfluencies well (um, uh, false starts)
-- Keyword boosting support for brand names and jargon
-- Streaming transcription (text arrives as customer speaks)
+- Fast streaming transcripts ideal for real-time agents
+- Handles crosstalk, filler words, and noisy phone calls well
+- Keyword boosting available on Nova-2 variants (handy for brand names)
 
-**Best for:**
-- Real-time conversational agents
-- Phone-based customer service
-- Applications requiring low latency
-- English-primary agents (excellent English support)
+**When to pick Deepgram:**
+- You primarily serve English or the languages covered by Nova-3/Nova-2
+- Ultra-low latency is more important than cloud-region alignment
+- You want a single provider for both telephony and web calls
 
 ### Azure Speech
 
-Microsoft Azure Speech offers robust transcription with extensive language coverage and enterprise compliance.
+Microsoft Azure Speech complements Deepgram with a very wide language catalogue and regional hosting controls. The catalog currently lists:
 
-**Models:**
-
-**Azure Speech STT (Standard)**
-- Solid general-purpose transcription
-- 100+ language and locale variants
-- Good phone call optimization
-- Moderate latency (~500-700ms)
-
-**Azure Speech STT (Premium)**
-- Enhanced accuracy over standard
-- Better noise handling
-- Lower latency
-- Higher cost per minute
-
-**Multilingual Models**
-- Auto-detect language from predefined set
-- Automatically switch between languages mid-conversation
-- Falls back to configured default language when uncertain
-- Example: Auto-detect between en-US, es-ES, and fr-FR
+- **Azure Speech STT (Standard)** – general-purpose model for 100+ locales (English, Spanish, Arabic, Mandarin, etc.) with solid accuracy on both telephony and web audio.
+- **Azure Speech STT (Premium)** – same coverage with better noise handling and slightly lower latency.
+- **Azure Multilingual Mode** – lets you specify a set of languages (for example en-US + es-ES + fr-FR). Azure automatically detects which one is being spoken and switches without an explicit reconfiguration.
 
 **Characteristics:**
 - Massive language coverage (best in industry)
@@ -150,26 +110,9 @@ Microsoft Azure Speech offers robust transcription with extensive language cover
 - Agents serving non-English markets
 - Applications requiring specific regional hosting (GDPR)
 
-### Other Providers
-
-Depending on your plan, additional providers may include:
-
-**Google Cloud Speech-to-Text**
-- Excellent multilingual support
-- Adaptive recognition for specific contexts
-- Integration with Google Cloud ecosystem
-
-**Amazon Transcribe**
-- Cost-effective for high-volume
-- Custom vocabulary support
-- AWS ecosystem integration
-
-**AssemblyAI**
-- Strong accuracy, especially for accents
-- Speaker diarization (identifying different speakers)
-- Real-time and batch processing
-
-Check your dashboard for the complete list of provisioned transcribers.
+<Tip>
+Need a provider outside Deepgram or Azure? Let us know — the catalog is powered by YAML configs and can be extended once we add the necessary backend integrations.
+</Tip>
 
 ---
 

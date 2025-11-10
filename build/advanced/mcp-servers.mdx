@@ -98,61 +98,22 @@ Agent needs external data
 
 ### Available MCP Integrations
 
-The MCP ecosystem includes servers for common business needs:
+Out of the box we curate two ready-to-use servers:
 
-**Data & Databases:**
-- **PostgreSQL MCP Server** - Query and update PostgreSQL databases
-- **MongoDB MCP Server** - NoSQL database operations
-- **MySQL MCP Server** - Relational database access
-- **Redis MCP Server** - Key-value store and caching operations
-- **SQLite MCP Server** - Local database queries
+<CardGroup cols={2}>
+  <Card title="Time MCP Server" icon="clock">
+    Real-time time awareness (current time, timezone conversions, timestamp math). Helpful for scheduling flows and polite callbacks.
+  </Card>
+  <Card title="Context7 MCP Server" icon="book">
+    Technical documentation lookup powered by Upstash Context7 — great for developer support and “what does this API do?” scenarios.
+  </Card>
+</CardGroup>
 
-**Business Systems:**
-- **Salesforce MCP Server** - CRM data access and updates
-- **HubSpot MCP Server** - Marketing and sales automation
-- **Google Sheets MCP Server** - Spreadsheet reading and writing
-- **Airtable MCP Server** - Database and workflow access
-- **Notion MCP Server** - Knowledge base integration
+Everything else in the catalog comes from the Smithery registry. Once you add an **SMITHERY_API_KEY** in your environment, the MCP UI talks to Smithery’s API (`/mcp-servers/smithery-registry/*` endpoints) and lets you browse or instantiate any server available there. That means you can access Salesforce, Slack, Jira, HTTP proxy servers, etc., but only after you connect your Smithery account.
 
-**Development Tools:**
-- **GitHub MCP Server** - Repository access, issue tracking
-- **GitLab MCP Server** - Source control operations
-- **Jira MCP Server** - Project management and issue tracking
-- **Linear MCP Server** - Modern issue tracking
-
-**Communication:**
-- **Slack MCP Server** - Send messages, read channels
-- **Gmail MCP Server** - Email reading and sending
-- **Twilio MCP Server** - SMS and communication tools
-- **SendGrid MCP Server** - Email delivery and tracking
-
-**Files & Storage:**
-- **AWS S3 MCP Server** - Cloud file storage operations
-- **Google Drive MCP Server** - File access and sharing
-- **Dropbox MCP Server** - File synchronization and access
-- **Local Filesystem MCP Server** - Read/write local files
-
-**APIs & Web:**
-- **HTTP MCP Server** - Generic HTTP request execution
-- **REST API MCP Server** - RESTful API interactions
-- **GraphQL MCP Server** - GraphQL query execution
-- **Web Scraping MCP Server** - Extract data from websites
-
-**Analytics & Data:**
-- **Google Analytics MCP Server** - Website analytics data
-- **Mixpanel MCP Server** - Product analytics
-- **Segment MCP Server** - Customer data platform
-- **Stripe MCP Server** - Payment and subscription data
-
-**Utilities:**
-- **Calculator MCP Server** - Advanced mathematical operations
-- **Date/Time MCP Server** - Timezone conversion, date calculations
-- **Weather MCP Server** - Current weather and forecasts
-- **Translation MCP Server** - Language translation services
-
-<Tip>
-The MCP catalog link in the platform UI provides an up-to-date list of available servers with setup instructions and documentation.
-</Tip>
+<Note>
+If you do not set `SMITHERY_API_KEY`, the catalog will only show the two curated templates above. This prevents broken links or “phantom” servers that cannot be provisioned.
+</Note>
 
 ---
 
@@ -171,11 +132,15 @@ MCP servers must first be configured at the account level before attaching to ag
     (Exact location may vary - check settings menu)
   </Step>
 
+  <Step title="Provide Smithery Credentials (optional)">
+    To browse the full Smithery registry you must set the `SMITHERY_API_KEY` environment variable on your backend (see `/backend/django_app/api/mcp/views.py`). Without it, only the curated Time + Context7 templates appear.
+  </Step>
+
   <Step title="Add New MCP Server">
     Click **Add MCP Server** or **Connect Server**
 
     Choose from:
-    - **MCP Catalog** - Pre-configured popular servers
+    - **MCP Catalog (Smithery)** - Full registry when `SMITHERY_API_KEY` is present, otherwise just the Time/Context7 templates
     - **Custom Server** - Connect your own MCP server
   </Step>
 
