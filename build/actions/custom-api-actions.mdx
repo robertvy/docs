@@ -54,7 +54,7 @@ Customer: "Yes please"
   Body: {"email": "customer@example.com", "tracking": "1Z999..."}
 
 Agent: "Done! I've sent the tracking information to your email."
-```text wrap
+```
 
 This entire interaction happens in seconds during a live conversation, with no human intervention required.
 
@@ -64,7 +64,7 @@ curl --request GET \
   --url "https://api.company.com/orders" \
   --header "Authorization: Bearer $API_TOKEN" \
   --data-urlencode "phone={{ contact.phone_number }}"
-```text wrap
+```
 
 ```javascript sendTracking.js theme={null}
 await fetch("https://api.company.com/notifications/email", {
@@ -78,7 +78,7 @@ await fetch("https://api.company.com/notifications/email", {
     tracking: context.order.tracking
   })
 });
-```text wrap
+```
 </CodeGroup>
 
 ---
@@ -117,7 +117,7 @@ Use cases:
 - Fetch account balance
 
 Example: GET https://crm.company.com/customers/12345
-```text wrap
+```
 
 **POST - Create New Data:**
 ```text wrap
@@ -129,7 +129,7 @@ Use cases:
 - Trigger webhooks
 
 Example: POST https://helpdesk.company.com/tickets
-```text wrap
+```
 
 **PUT - Replace Data:**
 ```text wrap
@@ -139,7 +139,7 @@ Use cases:
 - Overwrite document content
 
 Example: PUT https://crm.company.com/customers/12345
-```text wrap
+```
 
 **PATCH - Modify Data:**
 ```text wrap
@@ -150,7 +150,7 @@ Use cases:
 - Increment counters
 
 Example: PATCH https://crm.company.com/leads/789
-```text wrap
+```
 
 **DELETE - Remove Data:**
 ```text wrap
@@ -161,7 +161,7 @@ Use cases:
 - Unsubscribe from lists
 
 Example: DELETE https://api.company.com/subscriptions/456
-```text wrap
+```
 
 <Warning>
 DELETE operations are permanent. Ensure your agents only use DELETE actions when explicitly instructed and after proper confirmation from customers.
@@ -296,7 +296,7 @@ Use consistent parameter names so your LLM instructions remain simple.
 
                                    [Cancel]  [Save Action]  
 
-```text wrap
+```
 
 ---
 
@@ -337,7 +337,7 @@ Use for public APIs that don't require authentication.
  No authentication required for this endpoint  
 
 
-```text wrap
+```
 
 **Use cases:**
 - Public APIs
@@ -363,12 +363,12 @@ Most common for modern APIs. Sends a token in the Authorization header.
  ℹ️  Token will be sent as: Authorization: Bearer {token}  
 
 
-```text wrap
+```
 
 **HTTP header sent:**
 ```text wrap
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-```text wrap
+```
 
 **Use cases:**
 - JWT authentication
@@ -386,7 +386,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     }
   }
 }
-```text wrap
+```
 
 ### Basic Authentication
 
@@ -407,12 +407,12 @@ Traditional username/password authentication using Base64 encoding.
     Authorization header  
 
 
-```text wrap
+```
 
 **HTTP header sent:**
 ```text wrap
 Authorization: Basic YXBpX3VzZXI6cGFzc3dvcmQ=
-```text wrap
+```
 
 **Use cases:**
 - Legacy APIs
@@ -430,7 +430,7 @@ Authorization: Basic YXBpX3VzZXI6cGFzc3dvcmQ=
     }
   }
 }
-```text wrap
+```
 
 <Note>
 Basic auth should only be used over HTTPS to prevent credential exposure. Most modern APIs prefer Bearer token authentication.
@@ -454,12 +454,12 @@ Custom authentication via HTTP headers (e.g., X-API-Key).
  ℹ️  Custom header will be added to all requests  
 
 
-```text wrap
+```
 
 **HTTP header sent:**
 ```text wrap
 X-API-Key: sk-abc123def456ghi789jkl012mno345pqr678
-```text wrap
+```
 
 **Use cases:**
 - API key authentication
@@ -478,7 +478,7 @@ X-API-Key: sk-abc123def456ghi789jkl012mno345pqr678
     }
   }
 }
-```text wrap
+```
 
 **Common header names:**
 - `X-API-Key`
@@ -506,7 +506,7 @@ Credentials included in the request body (typically for POST requests).
     body JSON  
 
 
-```text wrap
+```
 
 **Request body includes:**
 ```json wrap
@@ -514,7 +514,7 @@ Credentials included in the request body (typically for POST requests).
   "api_key": "sk-xyz789abc123",
   "...other parameters..."
 }
-```text wrap
+```
 
 **Use cases:**
 - Login/authentication endpoints
@@ -532,7 +532,7 @@ Credentials included in the request body (typically for POST requests).
     }
   }
 }
-```text wrap
+```
 
 ---
 
@@ -557,7 +557,7 @@ For GET requests, add URL query parameters:
  preferences&limit=100&format=json  
 
 
-```text wrap
+```
 
 **Configuration example:**
 ```json wrap
@@ -570,7 +570,7 @@ For GET requests, add URL query parameters:
     "format": "json"
   }
 }
-```text wrap
+```
 
 ### Request Body (POST/PUT/PATCH)
 
@@ -594,7 +594,7 @@ For methods that accept body data, configure the JSON payload:
  <Icon icon="check-circle" /> Valid JSON   <Icon icon="lightbulb" /> Variables supported  
 
 
-```text wrap
+```
 
 **Configuration example:**
 ```json wrap
@@ -609,7 +609,7 @@ For methods that accept body data, configure the JSON payload:
     "status": "contacted"
   }
 }
-```text wrap
+```
 
 <Tip>
 Use template variables in your request body to include dynamic data from the conversation, contact record, or campaign context.
@@ -631,7 +631,7 @@ Custom actions support Jinja2 template syntax for dynamic content:
 {{ contact.phone_number }}      - Phone number (E.164 format)
 {{ contact.id }}                - Unique contact ID
 {{ contact.custom_field_name }} - Custom contact fields
-```text wrap
+```
 
 **Agent Context:**
 ```text wrap
@@ -639,7 +639,7 @@ Custom actions support Jinja2 template syntax for dynamic content:
 {{ agent_name }}                - Agent's display name
 {{ agent_id }}                  - Unique agent ID
 {{ team }}                      - Team assignment
-```text wrap
+```
 
 **Call Details:**
 ```text wrap
@@ -647,7 +647,7 @@ Custom actions support Jinja2 template syntax for dynamic content:
 {{ medium }}                    - Communication channel (phone/web)
 {{ current_datetime }}          - Current timestamp (ISO 8601)
 {{ session_id }}                - Unique session identifier
-```text wrap
+```
 
 ### Using Variables in URLs
 
@@ -659,7 +659,7 @@ GET https://api.crm.com/customers/{{ contact.phone_number }}
 POST https://api.company.com/tickets?agent={{ agent_id }}
 
 PATCH https://api.service.com/leads/{{ contact.id }}/status
-```text wrap
+```
 
 ### Using Variables in Headers
 
@@ -671,7 +671,7 @@ PATCH https://api.service.com/leads/{{ contact.id }}/status
     "X-Agent-Name": "{{ agent_name }}"
   }
 }
-```text wrap
+```
 
 ### Using Variables in Request Bodies
 
@@ -691,7 +691,7 @@ PATCH https://api.service.com/leads/{{ contact.id }}/status
     }
   }
 }
-```text wrap
+```
 
 ### Default Values and Filters
 
@@ -701,7 +701,7 @@ Use Jinja filters to handle missing data:
 {{ contact.email | default("not-provided@example.com") }}
 {{ contact.first_name | default("Customer") }}
 {{ contact.phone_number | default("unknown") }}
-```text wrap
+```
 
 **Common filters:**
 - `default("value")` - Provide fallback if variable is empty
@@ -746,7 +746,7 @@ Endpoint: GET https://crm.com/customers/{{ contact.phone_number }}
 Agent instructions:
 Before greeting the customer, I automatically look up their
 account information so I can personalize the conversation.
-```text wrap
+```
 
 ### During-Call Data
 
@@ -788,7 +788,7 @@ Agent instructions:
 After collecting the customer's issue description and
 determining priority, use the 'Create Support Ticket' action
 to log the issue in our help desk system.
-```text wrap
+```
 
 <Note>
 Before-call actions execute automatically when the call starts. During-call actions execute when explicitly invoked by the agent based on conversation context and your instructions.
@@ -824,14 +824,14 @@ When a custom action executes, the response is made available to the agent:
     }
   ]
 }
-```text wrap
+```
 
 **Agent uses data:**
 ```text wrap
 Agent: "Hi John! I can see you're a premium member with us.
        Your recent order #789 has shipped and should arrive soon.
        Your tracking number is 1Z999AA1234567890."
-```text wrap
+```
 
 ### Chaining Actions
 
@@ -848,7 +848,7 @@ Use data from one action in subsequent actions:
 3. Call 'Send Email' action
    → Uses customer email from step 1
    → Includes order info from step 2
-```text wrap
+```
 
 ---
 
@@ -965,7 +965,7 @@ Thorough testing ensures reliable integrations:
  ☑ Monitoring/logging in place  
 
 
-```text wrap
+```
 
 ---
 
@@ -1012,7 +1012,7 @@ If the 'Lookup Customer' action fails:
    - Transfer to human agent
    - Schedule callback
    - Collect information for manual follow-up
-```text wrap
+```
 
 ### Retry Logic
 
@@ -1028,7 +1028,7 @@ Don't retry for:
 - 4xx errors (client errors - won't succeed on retry)
 - 401/403 (authentication - needs credentials fixed)
 - 404 (not found - resource doesn't exist)
-```text wrap
+```
 
 <Warning>
 Be cautious with automatic retries for POST/PUT/PATCH/DELETE actions. Retrying could create duplicate records or unintended changes. Retry logic is safest for GET requests.
@@ -1128,7 +1128,7 @@ Use custom actions for synchronous, conversation-critical operations. Use webhoo
     }
   }
 }
-```text wrap
+```
 
 **Agent instructions:**
 ```text wrap
@@ -1141,7 +1141,7 @@ to personalize the greeting.
 
 If the lookup fails or returns no results, I greet them
 generically and ask how I can help.
-```text wrap
+```
 
 ### Example 2: Create Support Ticket
 
@@ -1180,7 +1180,7 @@ generically and ask how I can help.
     }
   }
 }
-```text wrap
+```
 
 **Agent instructions:**
 ```text wrap
@@ -1193,7 +1193,7 @@ When I cannot resolve a customer's issue:
    - Priority: Set based on urgency (normal, high, urgent)
 4. Provide ticket number to customer
 5. Set expectations for follow-up timing
-```text wrap
+```
 
 ### Example 3: Update Lead Status
 
@@ -1227,7 +1227,7 @@ When I cannot resolve a customer's issue:
     }
   }
 }
-```text wrap
+```
 
 **Agent instructions:**
 ```text wrap
@@ -1249,7 +1249,7 @@ For outbound sales qualification calls:
    - calculated_score: Based on quality of answers
 
 4. If qualified, offer to transfer to sales
-```text wrap
+```
 
 ### Example 4: Inventory Check
 
@@ -1282,7 +1282,7 @@ For outbound sales qualification calls:
     }
   }
 }
-```text wrap
+```
 
 **Agent instructions:**
 ```text wrap
@@ -1300,7 +1300,7 @@ When a customer asks about product availability:
    - In stock: Confirm availability and offer to process order
    - Low stock: "We have X units available. Would you like to reserve them?"
    - Out of stock: "Currently out of stock. Expected restock: [date]"
-```text wrap
+```
 
 ### Example 5: Send Notification
 
@@ -1342,7 +1342,7 @@ When a customer asks about product availability:
     }
   }
 }
-```text wrap
+```
 
 **Agent instructions:**
 ```text wrap
@@ -1353,7 +1353,7 @@ After successfully handling a customer request:
 3. Use 'Send Confirmation Email' action
 4. Confirm: "I've sent a confirmation to [email]. You should
    receive it within a few minutes."
-```text wrap
+```
 
 ---
 

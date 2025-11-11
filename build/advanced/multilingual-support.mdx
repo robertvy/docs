@@ -61,7 +61,7 @@ Your agent's language configuration is set through the Speech-to-Text provider:
 ```text wrap
 Audio → Transcriber → LLM → Voice Synthesizer → Audio
        [Language]   [Any]   [Language]
-```text wrap
+```
 
 **Configuration:**
 - Language set on Speech-to-Text provider (Deepgram, AssemblyAI, etc.)
@@ -139,7 +139,7 @@ Primary Language: en-US → Voice: "Sarah" (US English)
 Secondary: es-ES → Voice: "Elena" (Spain Spanish)
 Secondary: fr-FR → Voice: "Pierre" (French)
 Secondary: de-DE → Voice: "Hans" (German)
-```text wrap
+```
 
 Some voice providers offer multilingual voices that can speak multiple languages with appropriate accents - these work well for agents supporting many languages.
 
@@ -230,7 +230,7 @@ For phone agents (IVR):
 
 For web agents:
 Provide language selector dropdown before starting call
-```text wrap
+```
 
 **Strategy 2: Optimize greeting for longer responses**
 ```text wrap
@@ -239,7 +239,7 @@ Start the conversation by saying: "Thank you for calling Acme Corp.
 Please tell me in a few words how I can help you today."
 
 This encourages 5-10 word responses vs. "Hi" which aids detection.
-```text wrap
+```
 
 **Strategy 3: Add confirmation for ambiguous detection**
 ```text wrap
@@ -250,7 +250,7 @@ In English: "I can help you in English or Spanish. Which do you prefer?"
 In Spanish: "Puedo ayudarle en español o inglés. ¿Cuál prefiere?"
 
 Then switch to confirmed language.
-```text wrap
+```
 
 ---
 
@@ -271,7 +271,7 @@ Your role:
 - Maintain a friendly, helpful tone
 
 [Model automatically adapts tone and formality to detected language]
-```text wrap
+```
 
 **Approach 2: Language-specific instructions (for cultural customization)**
 ```text wrap
@@ -303,7 +303,7 @@ Default to English conversational style
 {% endif %}
 
 [Universal rules apply to all languages]
-```text wrap
+```
 
 ### Knowledge Bases for Multilingual Agents
 
@@ -322,7 +322,7 @@ Use "Product FAQ (French)" knowledge base for answers
 {% else %}
 Use "Product FAQ (English)" knowledge base for answers
 {% endif %}
-```text wrap
+```
 
 **Pros:** Native content, culturally appropriate, no translation errors
 
@@ -337,7 +337,7 @@ Instructions:
 Access the Product FAQ knowledge base and translate responses
 into the customer's language naturally. Ensure technical terms
 remain accurate and culturally adapt examples when needed.
-```text wrap
+```
 
 **Pros:** Single source of truth, easy maintenance, works well with modern AI
 
@@ -352,7 +352,7 @@ Structure:
 Instructions:
 Retrieve knowledge matching both the topic AND the customer's language.
 If no match in customer's language, translate English version.
-```text wrap
+```
 
 **Pros:** Flexible, supports partial translation, single collection
 
@@ -381,7 +381,7 @@ Appointment time: {{ appointment_time | date("HH:mm") }}
 {% else %}
 Use ISO 8601 format: {{ current_date | date("YYYY-MM-DD") }}
 {% endif %}
-```text wrap
+```
 
 **Currency and number formatting:**
 ```text wrap
@@ -392,7 +392,7 @@ Total: 1.234,56 € (Euro)
 {% elif language == "ja-JP" %}
 Total: ¥123,456 (Japanese Yen)
 {% endif %}
-```text wrap
+```
 
 **Cultural context:**
 ```text wrap
@@ -410,7 +410,7 @@ Formal titles are important (Herr, Frau).
 Build rapport before business. Mexican customers value personal connection.
 Use warm, friendly language. Avoid being overly formal or cold.
 {% endif %}
-```text wrap
+```
 
 ### Holiday and Event Recognition
 
@@ -424,7 +424,7 @@ Happy German Unity Day!
 {% elif language == "fr-FR" and current_date contains "07-14" %}
 Happy Bastille Day!
 {% endif %}
-```text wrap
+```
 
 ---
 

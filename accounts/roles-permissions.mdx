@@ -1,0 +1,417 @@
+---
+title: "Roles & Permissions"
+description: "Understand the four role levels and their permissions"
+icon: "user-shield"
+---
+
+## Overview
+
+itellicoAI uses a role-based access control system with four distinct roles. Each role has specific permissions designed for different team responsibilities.
+
+## The Four Roles
+
+<CardGroup cols={2}>
+  <Card title="Owner" icon="crown">
+    Full administrative control of the account
+  </Card>
+  <Card title="Admin" icon="user-shield">
+    Administrative privileges without billing access
+  </Card>
+  <Card title="Member" icon="user">
+    Standard user with full access to features
+  </Card>
+  <Card title="Viewer" icon="eye">
+    Read-only access to the account
+  </Card>
+</CardGroup>
+
+---
+
+## Owner
+
+**Full administrative control** of the account.
+
+### Permissions
+
+✅ **All permissions** (wildcard access)
+- Manage team members and roles
+- Manage account settings and branding
+- Create and manage subaccounts
+- Manage billing and subscriptions
+- **Delete the account**
+- Cannot be removed by others
+
+### Restrictions
+
+- Only **one Owner** per account
+- Owner role cannot be transferred via UI (contact support)
+- Cannot be removed by other team members
+
+### Best For
+
+- Company leadership
+- Account administrators
+- Primary points of contact
+
+<Warning>
+The Owner role has unrestricted access, including the ability to delete the account. Choose carefully!
+</Warning>
+
+---
+
+## Admin
+
+**Administrative privileges** without billing access.
+
+### Permissions
+
+✅ **Team Management**
+- Add, remove, and manage team members
+- Change member roles (except Owner)
+- Send and manage invitations
+
+✅ **Account Management**
+- Manage account settings
+- Create and manage subaccounts (if subscription allows)
+- Manage integrations and API keys
+
+✅ **Full Feature Access**
+- Create and edit agents
+- Access all conversations
+- Manage knowledge bases
+- Configure actions and tools
+
+### Restrictions
+
+❌ **Cannot:**
+- Delete the account
+- Remove the Owner
+- Access billing settings
+- Transfer ownership
+
+### Best For
+
+- Technical leads
+- Team managers
+- Senior developers
+- Client account managers
+
+---
+
+## Member
+
+**Standard user** with full access to features.
+
+### Permissions
+
+✅ **Content Creation**
+- Create and edit agents
+- Manage own agents and configurations
+- Use test features
+- Create and manage conversations
+
+✅ **Content Access**
+- Access all agents in the account
+- View all conversation logs
+- View and use knowledge bases
+- View team members
+
+### Restrictions
+
+❌ **Cannot:**
+- Manage team members
+- Change account settings
+- Create subaccounts
+- Manage billing
+- Create API keys
+- Remove other members
+
+### Best For
+
+- Developers
+- Content creators
+- Customer support staff
+- Most team members
+
+---
+
+## Viewer
+
+**Read-only access** to the account.
+
+### Permissions
+
+✅ **View Only**
+- View agents and configurations
+- View conversation logs and transcripts
+- View team members
+- View analytics and reports
+
+### Restrictions
+
+❌ **Cannot:**
+- Create or edit anything
+- Access settings
+- Invite members
+- Make any changes to the account
+
+### Best For
+
+- Stakeholders
+- Auditors
+- Clients who need visibility
+- Reporting staff
+
+---
+
+## Permission Matrix
+
+| Permission | Owner | Admin | Member | Viewer |
+|------------|:-----:|:-----:|:------:|:------:|
+| **Agents** |
+| View agents | ✅ | ✅ | ✅ | ✅ |
+| Create agents | ✅ | ✅ | ✅ | ❌ |
+| Edit agents | ✅ | ✅ | ✅ | ❌ |
+| Delete agents | ✅ | ✅ | ✅ | ❌ |
+| **Conversations** |
+| View conversations | ✅ | ✅ | ✅ | ✅ |
+| Initiate conversations | ✅ | ✅ | ✅ | ❌ |
+| **Knowledge Bases** |
+| View knowledge | ✅ | ✅ | ✅ | ✅ |
+| Create/edit knowledge | ✅ | ✅ | ✅ | ❌ |
+| **Team** |
+| View team members | ✅ | ✅ | ✅ | ✅ |
+| Invite members | ✅ | ✅ | ❌ | ❌ |
+| Remove members | ✅ | ✅ | ❌ | ❌ |
+| Change roles | ✅ | ✅ | ❌ | ❌ |
+| **Account** |
+| View settings | ✅ | ✅ | ❌ | ❌ |
+| Edit settings | ✅ | ✅ | ❌ | ❌ |
+| Manage branding | ✅ | ✅ | ❌ | ❌ |
+| Manage API keys | ✅ | ✅ | ❌ | ❌ |
+| **Subaccounts** |
+| View subaccounts | ✅ | ✅ | ❌ | ❌ |
+| Create subaccounts | ✅ | ✅* | ❌ | ❌ |
+| Manage subaccounts | ✅ | ✅* | ❌ | ❌ |
+| **Billing** |
+| View billing | ✅ | ❌ | ❌ | ❌ |
+| Manage billing | ✅ | ❌ | ❌ | ❌ |
+| **Critical** |
+| Delete account | ✅ | ❌ | ❌ | ❌ |
+| Transfer ownership | ✅** | ❌ | ❌ | ❌ |
+
+\* If subscription allows
+\*\* Requires contacting support
+
+---
+
+## Choosing the Right Role
+
+### Decision Tree
+
+```
+Need to manage billing?
+├─ Yes → Owner
+└─ No → Need to manage team members?
+    ├─ Yes → Admin
+    └─ No → Need to create/edit content?
+        ├─ Yes → Member
+        └─ No → Viewer
+```
+
+### Common Role Assignments
+
+<AccordionGroup>
+  <Accordion title="Small Team (2-5 people)" icon="users">
+    - **1 Owner**: Founder or CEO
+    - **1-2 Admins**: Technical leads or managers
+    - **1-2 Members**: Developers or creators
+  </Accordion>
+
+  <Accordion title="Agency" icon="briefcase">
+    - **1 Owner**: Agency owner or operations lead
+    - **2-3 Admins**: Client success managers
+    - **5-10 Members**: Content creators and developers
+    - **Viewers**: Optional for stakeholders
+  </Accordion>
+
+  <Accordion title="Enterprise" icon="building">
+    - **1 Owner**: IT director or CTO
+    - **5-10 Admins**: Department heads and team leads
+    - **20-100 Members**: Staff across departments
+    - **10-20 Viewers**: Executive leadership, compliance
+  </Accordion>
+
+  <Accordion title="Client Subaccounts (Agency)" icon="user-tie">
+    - **1 Owner**: Client primary contact
+    - **0-2 Admins**: Client team leads
+    - **1-5 Members**: Client staff
+    - **0-3 Viewers**: Client stakeholders
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Changing Roles
+
+### Who Can Change Roles
+
+- **Owners**: Can change any role (except Owner)
+- **Admins**: Can change Member and Viewer roles
+- **Members**: Cannot change roles
+- **Viewers**: Cannot change roles
+
+### How to Change a Member's Role
+
+<Steps>
+  <Step title="Navigate to Team Settings">
+    Go to **Settings → Team** in your account
+  </Step>
+
+  <Step title="Find the Member">
+    Locate the team member in the list
+  </Step>
+
+  <Step title="Change Role">
+    Click the role dropdown next to their name and select the new role
+  </Step>
+
+  <Step title="Confirm">
+    The role change takes effect immediately
+  </Step>
+</Steps>
+
+<Warning>
+Role changes are immediate and permanent. The user's permissions update instantly.
+</Warning>
+
+---
+
+## Special Scenarios
+
+### Transferring Ownership
+
+To transfer the Owner role:
+
+1. Contact support at support@itellico.ai
+2. Provide:
+   - Current owner email
+   - New owner email
+   - Account name and UUID
+   - Confirmation from current owner
+3. Support will verify and process the transfer
+
+<Note>
+Ownership transfers cannot be done through the UI for security reasons. This prevents accidental or unauthorized transfers.
+</Note>
+
+### Multiple Owners
+
+**Not Supported**: Each account can have only one Owner.
+
+**Why?**
+- Clear accountability for billing
+- Prevents conflicting administrative decisions
+- Simplifies ownership transfer process
+
+**Alternative**: Promote additional users to Admin role for nearly equivalent access (without billing control).
+
+### External Consultants
+
+For temporary team members like consultants:
+
+**Best Practice:**
+- Assign **Viewer** role initially
+- Promote to **Member** if they need to create content
+- **Never** give Admin or Owner to external parties
+- Remove access when engagement ends
+
+---
+
+## Security Best Practices
+
+<AccordionGroup>
+  <Accordion title="Principle of Least Privilege" icon="shield-halved">
+    Always assign the minimum role needed:
+
+    - Need to observe? → Viewer
+    - Need to create? → Member
+    - Need to manage team? → Admin
+    - Need billing access? → Owner
+  </Accordion>
+
+  <Accordion title="Regular Audits" icon="clipboard-list">
+    Review team members quarterly:
+
+    - Remove inactive users
+    - Demote users who changed responsibilities
+    - Verify external consultants still need access
+    - Check if any Admins should be Members
+  </Accordion>
+
+  <Accordion title="Protect Owner Access" icon="crown">
+    - Limit Owner role to 1-2 trusted individuals
+    - Use strong passwords and 2FA
+    - Never share Owner credentials
+    - Plan ownership succession
+  </Accordion>
+
+  <Accordion title="Document Role Assignments" icon="file-lines">
+    Maintain a record of:
+
+    - Why each person has their role
+    - When they were granted access
+    - When access should be reviewed
+    - Approval for Admin/Owner roles
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## FAQs
+
+<AccordionGroup>
+  <Accordion title="Can I have multiple Owners?">
+    No. Each account can have only one Owner for clear accountability.
+  </Accordion>
+
+  <Accordion title="What happens if the Owner leaves?">
+    Contact support to transfer ownership to another team member. Provide verification and they'll process the transfer.
+  </Accordion>
+
+  <Accordion title="Can Admins see billing information?">
+    No. Only the Owner can access billing and subscription details.
+  </Accordion>
+
+  <Accordion title="Can I remove myself from an account?">
+    - **Owner**: No, you must transfer ownership first
+    - **Admin/Member/Viewer**: Yes, you can remove yourself
+  </Accordion>
+
+  <Accordion title="Do role changes apply to subaccounts?">
+    No. Roles are per-account. A user might be an Owner in a subaccount but a Member in the parent.
+  </Accordion>
+
+  <Accordion title="Can Viewers export data?">
+    No. Viewers have read-only access and cannot export or download data.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Team Management" icon="users" href="/accounts/team-management">
+    Learn how to invite and manage team members
+  </Card>
+  <Card title="Creating Accounts" icon="plus" href="/accounts/creating-accounts">
+    Create main accounts and subaccounts
+  </Card>
+  <Card title="Account Settings" icon="gear" href="/accounts/account-settings">
+    Customize your account settings
+  </Card>
+  <Card title="API Keys" icon="key" href="/accounts/api-keys">
+    Manage programmatic access
+  </Card>
+</CardGroup>

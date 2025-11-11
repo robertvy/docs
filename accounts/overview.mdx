@@ -65,279 +65,6 @@ Parent Account (Agency)
 - **No sibling access**: Subaccounts cannot access each other
 - **Context switching**: Users with multiple memberships can switch between accounts
 
-## User Roles and Permissions
-
-Each team member has one of four roles:
-
-<AccordionGroup>
-  <Accordion title="Owner" icon="crown">
-    **Full administrative control** of the account.
-
-    Permissions:
-    - All permissions (wildcard access)
-    - Manage team members and roles
-    - Manage account settings and branding
-    - Create and manage subaccounts
-    - Manage billing and subscriptions
-    - Delete the account
-    - Cannot be removed by others
-
-    Limitations:
-    - Only **one owner** per account
-    - Owner role cannot be transferred via UI (contact support)
-  </Accordion>
-
-  <Accordion title="Admin" icon="user-shield">
-    **Administrative privileges** without billing access.
-
-    Permissions:
-    - Manage team members (add, remove, change roles)
-    - Manage account settings
-    - Create and manage subaccounts (if subscription allows)
-    - Manage integrations and API keys
-    - Full access to agents and conversations
-
-    Limitations:
-    - Cannot delete the account
-    - Cannot remove the owner
-    - Cannot access billing settings
-  </Accordion>
-
-  <Accordion title="Member" icon="user">
-    **Standard user** with full access to features.
-
-    Permissions:
-    - Create and edit agents
-    - Access all conversations
-    - Manage own content
-    - Use test features
-    - View team members
-
-    Limitations:
-    - Cannot manage team members
-    - Cannot change account settings
-    - Cannot create subaccounts
-  </Accordion>
-
-  <Accordion title="Viewer" icon="eye">
-    **Read-only access** to the account.
-
-    Permissions:
-    - View agents and configurations
-    - View conversation logs
-    - View team members
-
-    Limitations:
-    - Cannot create or edit anything
-    - Cannot access settings
-    - Cannot invite members
-  </Accordion>
-</AccordionGroup>
-
-## Managing Accounts
-
-### Creating a Main Account
-
-<Steps>
-  <Step title="Open Account Switcher">
-    Click your account name in the top navigation bar.
-  </Step>
-
-  <Step title="Create New Account">
-    Click **Create new account** and select **Main Account**.
-  </Step>
-
-  <Step title="Configure Account">
-    Enter the account name and confirm.
-
-    You become the **Owner** of the new account automatically.
-  </Step>
-</Steps>
-
-<Note>
-Main accounts have separate billing. You'll need to configure a subscription for the new account.
-</Note>
-
-### Creating a Subaccount
-
-<Steps>
-  <Step title="Navigate to Subaccounts">
-    Go to **Settings → Subaccounts** in your parent account.
-  </Step>
-
-  <Step title="Create Subaccount">
-    Click **Create Subaccount** and enter the name.
-
-    **Requirements:**
-    - You must be an Admin or Owner
-    - Your subscription must include subaccount management
-  </Step>
-
-  <Step title="Configure Team">
-    You become the Owner of the subaccount. Invite team members as needed.
-  </Step>
-</Steps>
-
-<Tip>
-Subaccounts inherit billing from the parent account. Usage is tracked separately but billed to the parent.
-</Tip>
-
-### Switching Between Accounts
-
-If you're a member of multiple accounts:
-
-1. Click your account name in the top navigation
-2. Browse the account tree
-3. Click any account to switch context
-4. All data, agents, and settings update to reflect the selected account
-
-<Note>
-The selected account persists per browser tab, allowing you to work in multiple accounts simultaneously.
-</Note>
-
-## Team Member Management
-
-### Inviting Members
-
-<Steps>
-  <Step title="Open Team Settings">
-    Navigate to **Settings → Team** in your account.
-  </Step>
-
-  <Step title="Send Invitation">
-    Click **Invite Members** and enter email addresses.
-
-    New members default to **Member** role.
-  </Step>
-
-  <Step title="Member Accepts">
-    Invitees receive an email with a secure link to accept or decline.
-
-    Invitations expire after 7 days.
-  </Step>
-</Steps>
-
-<Tip>
-You can resend or cancel pending invitations from the team page.
-</Tip>
-
-### Changing Member Roles
-
-**Admins and Owners** can change member roles:
-
-1. Go to **Settings → Team**
-2. Find the member in the list
-3. Click the role dropdown
-4. Select new role: Admin, Member, or Viewer
-
-<Warning>
-You cannot change the Owner role. Contact support to transfer ownership.
-</Warning>
-
-### Removing Members
-
-**Only Owners** can remove team members:
-
-1. Go to **Settings → Team**
-2. Click the menu (⋯) next to a member
-3. Select **Remove from team**
-4. Confirm removal
-
-<Note>
-- You cannot remove yourself
-- You cannot remove other Owners
-- Removed members lose all access immediately
-</Note>
-
-## API Keys and Programmatic Access
-
-API keys provide programmatic access to your account:
-
-### Creating API Keys
-
-1. Navigate to **Settings → API Keys**
-2. Click **Create API Key**
-3. Enter a label (e.g., "Production Server")
-4. **Copy the key immediately** - it's shown only once
-5. Store securely (treat like a password)
-
-<Warning>
-API keys have full access to your account. Never commit them to version control or share publicly.
-</Warning>
-
-### Key Format
-
-```
-sk-{8-char-prefix}.{55-random-chars}
-```
-
-- The prefix helps identify keys in logs
-- Full key is hashed and cannot be retrieved
-
-### Managing Keys
-
-- **Revoke**: Disable a key without deleting (can reactivate later)
-- **Delete**: Permanently remove a key
-- **Set expiration**: Auto-expire keys on a specific date
-- **Last used**: Track when each key was last accessed
-
-<Tip>
-Use separate API keys for different environments (development, staging, production) and rotate them regularly.
-</Tip>
-
-## Account Settings
-
-### Branding Customization
-
-Customize your account's appearance:
-
-- **Logo**: Square logo for account switcher and navigation
-- **Wide Logo**: Horizontal logo for login pages and emails
-- **Favicon**: Custom browser icon
-- **Colors**: Primary and secondary brand colors
-
-**To update branding:**
-1. Go to **Settings → Branding**
-2. Upload images or select colors
-3. Preview changes
-4. Save
-
-### Account Information
-
-Update basic account details:
-
-- **Account Name**: Display name throughout the platform
-- **Account Status**: Active/Inactive (soft disable)
-
-## Security Best Practices
-
-<AccordionGroup>
-  <Accordion title="Use the principle of least privilege" icon="shield-halved">
-    - Assign Viewer role for read-only needs
-    - Reserve Admin role for those managing the team
-    - Limit Owner role to 1-2 people
-  </Accordion>
-
-  <Accordion title="Organize with subaccounts" icon="sitemap">
-    - Create separate subaccounts for clients
-    - Use subaccounts to isolate departments
-    - Leverage hierarchy for access control
-  </Accordion>
-
-  <Accordion title="Manage API keys carefully" icon="key">
-    - Create separate keys per environment
-    - Revoke unused or compromised keys immediately
-    - Set expiration dates for temporary access
-    - Monitor last used timestamps
-  </Accordion>
-
-  <Accordion title="Audit team members regularly" icon="clipboard-list">
-    - Review team members quarterly
-    - Remove departing employees immediately
-    - Update roles when responsibilities change
-  </Accordion>
-</AccordionGroup>
-
 ## Common Use Cases
 
 ### Agency Managing Multiple Clients
@@ -391,6 +118,55 @@ Reseller (Parent Account)
 - Custom branding per customer
 - Scalable customer onboarding
 
+## What You Can Do
+
+<CardGroup cols={2}>
+  <Card title="Create Accounts" icon="plus" href="/accounts/creating-accounts">
+    Learn how to create main accounts and subaccounts
+  </Card>
+  <Card title="Manage Team Members" icon="users" href="/accounts/team-management">
+    Invite, manage roles, and remove team members
+  </Card>
+  <Card title="Roles & Permissions" icon="user-shield" href="/accounts/roles-permissions">
+    Understand the four role levels and their permissions
+  </Card>
+  <Card title="API Keys" icon="key" href="/accounts/api-keys">
+    Create and manage programmatic access
+  </Card>
+  <Card title="Account Settings" icon="gear" href="/accounts/account-settings">
+    Customize branding and manage account details
+  </Card>
+</CardGroup>
+
+## Security Best Practices
+
+<AccordionGroup>
+  <Accordion title="Use the principle of least privilege" icon="shield-halved">
+    - Assign Viewer role for read-only needs
+    - Reserve Admin role for those managing the team
+    - Limit Owner role to 1-2 people
+  </Accordion>
+
+  <Accordion title="Organize with subaccounts" icon="sitemap">
+    - Create separate subaccounts for clients
+    - Use subaccounts to isolate departments
+    - Leverage hierarchy for access control
+  </Accordion>
+
+  <Accordion title="Manage API keys carefully" icon="key">
+    - Create separate keys per environment
+    - Revoke unused or compromised keys immediately
+    - Set expiration dates for temporary access
+    - Monitor last used timestamps
+  </Accordion>
+
+  <Accordion title="Audit team members regularly" icon="clipboard-list">
+    - Review team members quarterly
+    - Remove departing employees immediately
+    - Update roles when responsibilities change
+  </Accordion>
+</AccordionGroup>
+
 ## FAQs
 
 <AccordionGroup>
@@ -422,23 +198,6 @@ Reseller (Parent Account)
     Contact support to transfer the Owner role. This cannot be done through the UI for security reasons.
   </Accordion>
 </AccordionGroup>
-
-## Next Steps
-
-<CardGroup cols={2}>
-  <Card title="Team Management" icon="users" href="/accounts/team-management">
-    Learn how to invite and manage team members
-  </Card>
-  <Card title="API Keys" icon="key" href="/accounts/api-keys">
-    Create and manage programmatic access
-  </Card>
-  <Card title="Branding" icon="palette" href="/accounts/branding">
-    Customize your account's appearance
-  </Card>
-  <Card title="Billing" icon="credit-card" href="/accounts/billing">
-    Manage subscriptions and payment
-  </Card>
-</CardGroup>
 
 ## Need Help?
 

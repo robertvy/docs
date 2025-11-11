@@ -48,7 +48,7 @@ Agent needs external data
 → Different authentication, formats, error handling per integration
 → Maintenance overhead for each custom connection
 → Limited discoverability of available tools
-```text wrap
+```
 
 **MCP approach:**
 ```text wrap
@@ -59,7 +59,7 @@ Agent needs external data
 → Agent calls tools using standard MCP format
 → Server handles authentication, execution, and response
 → One protocol, many capabilities
-```text wrap
+```
 
 **Example flow:**
 ```text wrap
@@ -70,7 +70,7 @@ Agent needs external data
 5. MCP server executes database query
 6. Returns: [Order #789, Order #790]
 7. Agent responds: "You have 2 pending orders: #789 and #790"
-```text wrap
+```
 
 ### Benefits of MCP
 
@@ -401,7 +401,7 @@ Agent thinks:
 6. Execute: query_customer_orders(customer_id="12345", status="pending")
 7. Response: [Order #789: Widget A, Order #790: Widget B]
 8. Format response: "You have 2 pending orders..."
-```text wrap
+```
 
 **The agent doesn't need explicit instructions** - it discovers and uses appropriate tools automatically based on:
 - Available tool descriptions
@@ -430,7 +430,7 @@ When a customer asks about account balance:
 4. Mention any pending charges
 
 Always confirm customer identity before querying sensitive information.
-```text wrap
+```
 
 **Conditional tool usage:**
 ```text wrap
@@ -441,7 +441,7 @@ Use query_customer_orders when they ask about orders.
 Customer is not yet in our system. Offer to create account or
 provide general information only. Do not attempt to query orders.
 {% endif %}
-```text wrap
+```
 
 ### Tool Execution Flow
 
@@ -488,7 +488,7 @@ Agent internal process:
 Agent: "Your last order was delivered on November 5th. That was
        order #888 for the Blue Widget. Would you like the tracking
        number or any other details?"
-```text wrap
+```
 
 **Error handling:**
 ```text wrap
@@ -499,7 +499,7 @@ Agent: "I'm having trouble accessing your order information right
        who can look that up directly. Which would you prefer?"
 
 [Agent follows error handling instructions, doesn't expose technical details]
-```text wrap
+```
 
 ---
 

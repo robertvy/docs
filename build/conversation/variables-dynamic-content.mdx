@@ -14,19 +14,19 @@ Variables allow you to personalize your agent's instructions and greetings with 
 
 ```jinja wrap
 {{ variable_name }}
-```text wrap
+```
 
 ### Variable with Default
 
 ```jinja wrap
 {{ variable_name | default("fallback value") }}
-```text wrap
+```
 
 ### Example
 
 ```jinja wrap
 Hello {{ contact.first_name | default("there") }}!
-```text wrap
+```
 
 **Result:**
 - If `contact.first_name` is "Sarah": "Hello Sarah!"
@@ -46,7 +46,7 @@ Access customer information:
 {{ contact.email }}
 {{ contact.phone }}
 {{ contact.full_name }}
-```text wrap
+```
 
 **Example usage:**
 
@@ -58,7 +58,7 @@ Their account type is {{ contact.account_type | default("standard") }}.
 {% if contact.account_type == "VIP" %}
 IMPORTANT: This is a VIP customer. Provide priority service.
 {% endif %}
-```text wrap
+```
 
 ### Organization Variables
 
@@ -67,14 +67,14 @@ Access your company information:
 ```jinja wrap
 {{ organization.name }}
 {{ organization.short_name }}
-```text wrap
+```
 
 **Example usage:**
 
 ```text wrap
 You represent {{ organization.name }}.
 Thank customers for choosing {{ organization.short_name }}.
-```text wrap
+```
 
 ### Date & Time
 
@@ -82,7 +82,7 @@ Thank customers for choosing {{ organization.short_name }}.
 {{ now() }}                    # Current timestamp
 {{ now().hour }}               # Current hour (0-23)
 {{ now().strftime("%A") }}     # Day name
-```text wrap
+```
 
 **Example usage:**
 
@@ -94,7 +94,7 @@ Good afternoon, {{ contact.first_name }}!
 {% else %}
 Good evening, {{ contact.first_name }}!
 {% endif %}
-```text wrap
+```
 
 ---
 
@@ -106,7 +106,7 @@ Good evening, {{ contact.first_name }}!
 {% if condition %}
   This shows if condition is true
 {% endif %}
-```text wrap
+```
 
 ### If-Else
 
@@ -116,7 +116,7 @@ Good evening, {{ contact.first_name }}!
 {% else %}
   Provide standard service
 {% endif %}
-```text wrap
+```
 
 ### If-Elif-Else
 
@@ -128,7 +128,7 @@ Good evening, {{ contact.first_name }}!
 {% else %}
   Standard tier customer
 {% endif %}
-```text wrap
+```
 
 ### Real-World Example
 
@@ -142,7 +142,7 @@ Respond in German. Use formal addressing (Sie).
 {% else %}
 Respond in English. Use friendly, conversational tone.
 {% endif %}
-```text wrap
+```
 
 ---
 
@@ -156,25 +156,25 @@ Filters transform variable values.
 
 ```jinja wrap
 {{ contact.first_name | default("there") }}
-```text wrap
+```
 
 **upper:** Convert to uppercase
 
 ```jinja wrap
 {{ contact.last_name | upper }}
-```text wrap
+```
 
 **lower:** Convert to lowercase
 
 ```jinja wrap
 {{ contact.email | lower }}
-```text wrap
+```
 
 **title:** Title case
 
 ```jinja wrap
 {{ contact.first_name | title }}
-```text wrap
+```
 
 **length:** Get length
 
@@ -182,13 +182,13 @@ Filters transform variable values.
 {% if contact.phone | length > 10 %}
   International number detected
 {% endif %}
-```text wrap
+```
 
 ### Chaining Filters
 
 ```jinja wrap
 {{ contact.first_name | default("Friend") | title }}
-```text wrap
+```
 
 ---
 
@@ -200,7 +200,7 @@ Iterate over lists (advanced use case):
 {% for item in list_variable %}
   Process {{ item }}
 {% endfor %}
-```text wrap
+```
 
 **Example with knowledge:**
 
@@ -209,7 +209,7 @@ Your available products:
 {% for product in context.products %}
 - {{ product.name }}: {{ product.price }}
 {% endfor %}
-```text wrap
+```
 
 ---
 
@@ -229,7 +229,7 @@ As a VIP customer, you have priority support. How can I help you today?
 {% else %}
 How can I help you today?
 {% endif %}
-```text wrap
+```
 
 ### Example 2: Time-Based Instructions
 
@@ -242,7 +242,7 @@ Outside normal business hours. If customer needs immediate assistance:
 {% else %}
 Within business hours. Full support available.
 {% endif %}
-```text wrap
+```
 
 ### Example 4: Multi-Language Support
 
@@ -265,7 +265,7 @@ Greeting: "Hello!"
 Tone: Friendly and conversational
 Knowledge collection: "FAQ English"
 {% endif %}
-```text wrap
+```
 
 ### Example 5: Account Tier Logic
 
@@ -289,7 +289,7 @@ Account value: ${{ contact.account_value | default(0) }}
 - Knowledge base first
 - Transfer for complex issues
 {% endif %}
-```text wrap
+```
 
 ---
 
@@ -313,7 +313,7 @@ Add debug output temporarily:
 Name: {{ contact.first_name | default("MISSING") }}
 Account Type: {{ contact.account_type | default("MISSING") }}
 <!-- END DEBUG -->
-```text wrap
+```
 
 ### Common Issues
 
@@ -387,7 +387,7 @@ Account Type: {{ contact.account_type | default("MISSING") }}
 {% if condition %}...{% else %}...{% endif %}    # If-else
 
 {% for item in list %}...{% endfor %}            # Loop
-```text wrap
+```
 
 ### Common Patterns
 
@@ -405,7 +405,7 @@ Account Type: {{ contact.account_type | default("MISSING") }}
 
 # Multi-language
 {% if contact.language == "es" %}Spanish instructions{% else %}English instructions{% endif %}
-```text wrap
+```
 
 ---
 

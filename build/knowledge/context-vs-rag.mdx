@@ -63,7 +63,7 @@ You are a helpful customer service agent.
 ==== END KNOWLEDGE BASE ====
 
 Now assist the customer with their question.
-```text wrap
+```
 
 The agent sees ALL knowledge content from the start and can reference it throughout the conversation.
 
@@ -84,7 +84,7 @@ Collection description
 Item content here
 ----------------------------------------
 ========================================
-```text wrap
+```
 
 This formatting helps the agent understand the structure and organization of the knowledge.
 
@@ -94,12 +94,12 @@ Use the `| raw` flag to inject content without formatting headers:
 
 ```jinja wrap
 {{ _k_a1b2c3d4-e5f6-7890-abcd-ef1234567890 || Pricing Information | raw }}
-```text wrap
+```
 
 **Raw output:**
 ```text wrap
 Our pricing tiers include Basic ($29/month), Pro ($99/month), and Enterprise (custom pricing).
-```text wrap
+```
 
 **Without raw flag:**
 ```text wrap
@@ -113,7 +113,7 @@ Our pricing tiers include Basic ($29/month), Pro ($99/month), and Enterprise (cu
 Our pricing tiers include Basic ($29/month), Pro ($99/month), and Enterprise (custom pricing).
 ----------------------------------------
 ========================================
-```text wrap
+```
 
 ### When to Use Context Mode
 
@@ -240,7 +240,7 @@ NOT retrieved:
 - Billing FAQ
 - Product Specifications
 - Account Management
-```text wrap
+```
 
 ### When to Use RAG Mode
 
@@ -348,7 +348,7 @@ The dashboard shows your context usage:
  Remaining for conversation: 74,500 tokens  
 
 
-```text wrap
+```
 
 ### What the Numbers Mean
 
@@ -484,7 +484,7 @@ You can reference specific knowledge items directly in your agent instructions u
 
 ```jinja wrap
 {{ _k_a1b2c3d4-e5f6-7890-abcd-ef1234567890 || Pricing Information }}
-```text wrap
+```
 
 **Syntax breakdown:**
 - `{{ }}` - Jinja template delimiters
@@ -497,7 +497,7 @@ You can reference specific knowledge items directly in your agent instructions u
 
 ```jinja wrap
 {{ _k_a1b2c3d4-e5f6-7890-abcd-ef1234567890 || Pricing Information | raw }}
-```text wrap
+```
 
 The `| raw` flag includes content without formatting headers.
 
@@ -515,7 +515,7 @@ To get a knowledge item's UUID:
 ```text wrap
 URL: app.itellico.ai/knowledge/bases/kb-123/items/a1b2c3d4-e5f6-7890-abcd-ef1234567890
                                                    ↑ This is the UUID
-```text wrap
+```
 
 ### Using UUID References in Instructions
 
@@ -529,7 +529,7 @@ When discussing pricing, always reference our current rates:
 
 When asked about guarantees, explain our warranty:
 {{ _k_a1b2c3d4-e5f6-7890-abcd-ef1234567890 || Warranty Policy | raw }}
-```text wrap
+```
 
 **Example 2: Conditional knowledge inclusion**
 
@@ -541,7 +541,7 @@ Use this pricing structure:
 Use this pricing structure:
 {{ _k_standard-pricing-uuid || Standard Pricing | raw }}
 {% endif %}
-```text wrap
+```
 
 **Example 3: Multiple knowledge references**
 
@@ -558,7 +558,7 @@ Return Process:
 {{ _k_returns-uuid || Return Instructions | raw }}
 
 Refer to the appropriate resource based on customer questions.
-```text wrap
+```
 
 ### UUID References vs Knowledge Assignment
 
@@ -596,7 +596,7 @@ How large is your knowledge base?
    └─ Are conversations focused on specific topics?
       ├─ Yes (one topic per call) → RAG Mode
       └─ No (need everything) → Split into multiple smaller bases + Context Mode
-```text wrap
+```
 
 ### Quick Reference Table
 
