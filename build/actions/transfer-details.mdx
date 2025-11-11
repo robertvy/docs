@@ -31,10 +31,10 @@ Transfer calls to other AI agents in your itellicoAI account.
 - **Skill-based routing** - Connect to agents with specialized capabilities
 
 **Configuration:**
-```
+```text wrap
 Transfer Type: AGENT
 Destination: Select target agent from dropdown or enter agent ID
-```
+```text wrap
 
 **Benefits:**
 - Conversation history transfers with the call
@@ -43,7 +43,7 @@ Destination: Select target agent from dropdown or enter agent ID
 - Full context preservation
 
 **Example:**
-```
+```text wrap
 Agent: General Support
 Action: Transfer to Technical Agent
 
@@ -52,7 +52,7 @@ When a customer reports a technical issue that requires troubleshooting:
 1. Gather basic information about the problem
 2. Explain you're connecting them to a technical specialist
 3. Use the 'Transfer to Technical Agent' action
-```
+```text wrap
 
 ### Phone Number Transfers
 
@@ -65,10 +65,10 @@ Transfer calls to external phone numbers - mobile phones, landlines, or business
 - **Emergency contacts** - Escalate critical situations
 
 **Configuration:**
-```
+```text wrap
 Transfer Type: PHONE
 Destination: +1-555-123-4567 (E.164 format required)
-```
+```text wrap
 
 **Format requirements:**
 - Must include country code (+1 for US/Canada)
@@ -81,7 +81,7 @@ Destination: +1-555-123-4567 (E.164 format required)
 - Check your pricing plan for specific rates
 
 **Example:**
-```
+```text wrap
 Agent: After-Hours Support
 Action: Transfer to On-Call Manager
 
@@ -91,7 +91,7 @@ For urgent issues outside business hours:
 2. Collect key details (customer name, issue summary)
 3. Explain you're connecting to the on-call manager
 4. Use the 'Transfer to On-Call Manager' action (+1-555-987-6543)
-```
+```text wrap
 
 <Warning>
 Phone transfers incur outbound calling costs. International transfers can be expensive. Verify phone numbers are correct to avoid unnecessary charges.
@@ -108,10 +108,10 @@ Transfer calls to SIP addresses (Session Initiation Protocol URIs) for integrati
 - **VoIP platforms** - Integrate with existing voice infrastructure
 
 **Configuration:**
-```
+```text wrap
 Transfer Type: SIP
 Destination: sip:1001@yourpbx.example.com
-```
+```text wrap
 
 **Format requirements:**
 - Must be valid SIP URI
@@ -125,7 +125,7 @@ Destination: sip:1001@yourpbx.example.com
 - Network routing in place
 
 **Example:**
-```
+```text wrap
 Agent: IVR Replacement Agent
 Action: Transfer to Support Queue
 
@@ -134,7 +134,7 @@ For general support requests:
 1. Collect caller information
 2. Explain estimated wait time
 3. Use 'Transfer to Support Queue' action (sip:support-queue@pbx.company.com)
-```
+```text wrap
 
 <Tip>
 SIP transfers are ideal for enterprises with existing phone systems. They provide seamless integration between AI agents and traditional telephony infrastructure.
@@ -173,13 +173,13 @@ The agent transfers the call immediately and disconnects. The customer connects 
 - Customer must re-explain their issue
 
 **Configuration:**
-```
+```text wrap
 Transfer Mode: Cold (default)
 Transfer Message: "Let me connect you with our billing department."
-```
+```text wrap
 
 **Example flow:**
-```
+```text wrap
 Customer: "I have a billing question"
 Agent: "I'd be happy to help. Let me connect you with our billing
         department who can access your account details."
@@ -188,7 +188,7 @@ Agent: "I'd be happy to help. Let me connect you with our billing
 [Customer connects to billing agent]
 Billing Agent: "Hello, how can I help you?"
 Customer: "I have a question about my bill..."
-```
+```text wrap
 
 ### Warm Transfer
 
@@ -220,15 +220,15 @@ The agent connects to the destination first, introduces the customer and provide
 - Uses more agent time
 
 **Configuration:**
-```
+```text wrap
 Transfer Mode: Warm
 Hold Music: Enabled
 Transfer Message: "Let me connect you with our specialist.
                    I'll briefly explain your situation to them."
-```
+```text wrap
 
 **Example flow:**
-```
+```text wrap
 Customer: "My premium widget isn't working correctly"
 Agent: "I understand how frustrating that must be. Let me connect
         you with our technical specialist. I'll explain the situation
@@ -241,7 +241,7 @@ Technical Specialist: "Got it, I can help with that."
 [Transfer completes]
 Technical Specialist → Customer: "Hi Mrs. Johnson, I understand
         your premium widget isn't powering on. Let's troubleshoot..."
-```
+```text wrap
 
 <Note>
 Warm transfers are not yet fully supported in all configurations. Check your account capabilities or contact support for availability.
@@ -263,13 +263,13 @@ The agent transfers without saying anything - the call is immediately routed to 
 - When silence is intentional
 
 **Configuration:**
-```
+```text wrap
 Silent Transfer: Enabled (checkbox)
 Transfer Message: [ignored when silent enabled]
-```
+```text wrap
 
 **Example scenario:**
-```
+```text wrap
 Agent: Language Router (silent routing agent)
 
 Instructions:
@@ -279,7 +279,7 @@ Based on the language the customer speaks:
 - If English, continue conversation
 
 No need to explain transfer - just route silently.
-```
+```text wrap
 
 <Warning>
 Silent transfers can feel abrupt to customers. Use sparingly and only when appropriate for the use case.
@@ -307,12 +307,12 @@ Play music while the customer waits for the transfer to connect.
 - Use when transfers take time to connect
 - Consider disabling for instant agent-to-agent transfers
 
-```
+```text wrap
 
  ☑ Play Music While Connecting  
  Music Duration: [6___] seconds  
 
-```
+```text wrap
 
 ### Ring Duration
 
@@ -332,12 +332,12 @@ Play ringing sound while waiting for destination to answer.
 - Combine with hold music (music first, then ring)
 - Set realistic duration (4-10 seconds)
 
-```
+```text wrap
 
  ☑ Should Ring  
  Ring Duration: [4___] seconds  
 
-```
+```text wrap
 
 ### Combined Audio Settings
 
@@ -361,7 +361,7 @@ Create multiple transfer actions for different destinations to handle various ro
 
 ### Example: Complete Routing Configuration
 
-```
+```text wrap
 Agent: Customer Service Router
 
 Transfer Actions Configured:
@@ -383,13 +383,13 @@ Escalations → 'Transfer to Manager'
 Spanish speakers → 'Transfer to Spanish Agent'
 
 Always explain who you're connecting them to before transferring.
-```
+```text wrap
 
 ### Fallback Chains
 
 Configure multiple transfer options with fallback logic:
 
-```
+```text wrap
 Primary escalation path:
 1. Attempt 'Transfer to Technical Support'
 2. If fails, attempt 'Transfer to General Support'
@@ -399,13 +399,13 @@ Primary escalation path:
 Instructions:
 If the primary transfer fails, the agent should try the backup,
 and handle complete failure gracefully by collecting callback info.
-```
+```text wrap
 
 ### Conditional Routing
 
 Use different transfers based on customer data or conversation context:
 
-```
+```text wrap
 {% if contact.account_type == "enterprise" %}
 Route enterprise customers to 'Transfer to Enterprise Support'
 {% elif contact.account_type == "premium" %}
@@ -413,7 +413,7 @@ Route premium customers to 'Transfer to Premium Support'
 {% else %}
 Route standard customers to 'Transfer to General Support'
 {% endif %}
-```
+```text wrap
 
 ---
 
@@ -631,7 +631,7 @@ Thorough testing ensures transfers work reliably in production:
 
 Use this checklist for comprehensive transfer testing:
 
-```
+```text wrap
 
 
  Action: Transfer to Support Team  
@@ -667,7 +667,7 @@ Use this checklist for comprehensive transfer testing:
  ☑ International callers can transfer  
 
 
-```
+```text wrap
 
 ---
 
@@ -812,7 +812,7 @@ Use this checklist for comprehensive transfer testing:
 
 ### Example 1: Multi-Tier Support Routing
 
-```
+```text wrap
 Agent: Customer Support Router
 
 Transfer Actions:
@@ -838,11 +838,11 @@ High complexity (system outages, critical bugs):
 Critical emergencies (data loss, security incidents):
 - Collect all details immediately
 - Use 'Transfer to Engineering' without delay
-```
+```text wrap
 
 ### Example 2: Sales Qualification with Transfer
 
-```
+```text wrap
 Agent: Sales Qualification Agent
 
 Transfer Actions:
@@ -879,11 +879,11 @@ Enterprise (500+ employees, $100k+ budget):
 
 Existing customer wanting expansion:
 - Use 'Transfer to Customer Success'
-```
+```text wrap
 
 ### Example 3: After-Hours Routing
 
-```
+```text wrap
 Agent: After-Hours Support
 
 Transfer Actions:
@@ -910,7 +910,7 @@ If not urgent:
   a) Leave voicemail (Use 'Transfer to Voicemail')
   b) Schedule callback for next business day (Use booking action)
   c) Visit self-service knowledge base
-```
+```text wrap
 
 ---
 
@@ -920,7 +920,7 @@ If not urgent:
 
 Use variables to dynamically determine transfer destinations:
 
-```
+```text wrap
 {% if contact.region == "west" %}
 Transfer destination: +1-555-WEST-001
 {% elif contact.region == "east" %}
@@ -930,13 +930,13 @@ Transfer destination: +1-555-MAIN-001
 {% endif %}
 
 When transferring, use the appropriate regional number.
-```
+```text wrap
 
 ### Time-Based Routing
 
 Route transfers based on time of day:
 
-```
+```text wrap
 {% set current_hour = current_datetime | date('H') | int %}
 
 {% if current_hour >= 9 and current_hour < 17 %}
@@ -944,13 +944,13 @@ Business hours: Use 'Transfer to Support Team'
 {% else %}
 After hours: Use 'Transfer to On-Call Support'
 {% endif %}
-```
+```text wrap
 
 ### Skill-Based Routing
 
 Route based on required expertise:
 
-```
+```text wrap
 Determine required skill:
 - Billing question → 'Transfer to Billing Specialist'
 - Technical issue → 'Transfer to Technical Support'
@@ -961,7 +961,7 @@ Use customer's account type to influence routing:
 - VIP accounts always get priority queue transfers
 - Enterprise accounts route to dedicated support
 - Standard accounts route to general support queue
-```
+```text wrap
 
 ---
 

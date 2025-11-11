@@ -60,59 +60,59 @@ Each key press generates two specific frequencies (one high, one low):
 ### Tone Sending Use Cases
 
 **IVR Navigation:**
-```
+```text wrap
 Agent calls external support line
 → IVR: "Press 1 for billing, 2 for technical support"
 → Agent automatically sends tone "2"
 → IVR routes to technical support
 → Agent continues on behalf of customer
-```
+```text wrap
 
 **Authentication:**
-```
+```text wrap
 Agent calls bank to check balance
 → IVR: "Please enter your account number"
 → Agent sends tones: "5551234567"
 → IVR: "Please enter your PIN"
 → Agent sends tones: "9876"
 → Agent accesses account information
-```
+```text wrap
 
 **System Integration:**
-```
+```text wrap
 Agent needs to transfer call through multi-level IVR
 → Initiates transfer to main number
 → IVR: "Press 3 for customer service, then 2 for existing customers"
 → Agent sends: "3" (wait) "2"
 → Call routes to correct department
-```
+```text wrap
 
 ### Tone Capture Use Cases
 
 **Menu Selection:**
-```
+```text wrap
 Agent: "I can help you with billing or technical support.
        Press 1 for billing, or press 2 for technical support."
 → Customer presses "1"
 → Agent detects tone and routes to billing flow
-```
+```text wrap
 
 **Information Collection:**
-```
+```text wrap
 Agent: "Please enter your 6-digit account number using your keypad,
        followed by the pound key."
 → Customer presses: "123456#"
 → Agent captures "123456" and uses it for account lookup
-```
+```text wrap
 
 **Secure Input:**
-```
+```text wrap
 Agent: "For security, please enter the last 4 digits of your
        social security number using your keypad."
 → Customer enters digits via keypad (not spoken)
 → Agent captures digits without them being spoken aloud
 → Reduces security risk on recorded lines
-```
+```text wrap
 
 ---
 
@@ -243,34 +243,34 @@ Configure your agent to send DTMF tones to external systems:
 ### Recommended Settings by Use Case
 
 **Fast Modern IVRs:**
-```
+```text wrap
 Cooldown: 150ms
 Tone Duration: 80ms
 Inter-Tone Gap: 40ms
 
 Use for: Cloud-based IVRs, modern phone systems
 Total time per tone: ~270ms
-```
+```text wrap
 
 **Standard/Legacy IVRs:**
-```
+```text wrap
 Cooldown: 200ms (default)
 Tone Duration: 100ms (default)
 Inter-Tone Gap: 50ms (default)
 
 Use for: Most business phone systems
 Total time per tone: ~350ms
-```
+```text wrap
 
 **Slow/Problematic IVRs:**
-```
+```text wrap
 Cooldown: 400ms
 Tone Duration: 150ms
 Inter-Tone Gap: 80ms
 
 Use for: Systems dropping tones, legacy infrastructure
 Total time per tone: ~630ms
-```
+```text wrap
 
 <Tip>
 Start with default settings and only adjust if you observe tones being missed or IVR navigation failures. Test thoroughly after any changes.
@@ -301,7 +301,7 @@ Mode-specific settings appear below based on selection.
 - Agent responds based on key pressed
 
 **Example:**
-```
+```text wrap
 Agent: "Press 1 for billing, 2 for technical support, or 3 to speak
        with a representative."
 
@@ -310,7 +310,7 @@ Customer: [Presses 2]
 Agent: [Detects "2" immediately]
        "Great, I'll help you with technical support. What issue
        are you experiencing?"
-```
+```text wrap
 
 **Configuration:**
 
@@ -336,7 +336,7 @@ No additional configuration needed for Menu Mode:
 - Agent receives complete digit string
 
 **Example:**
-```
+```text wrap
 Agent: "Please enter your 10-digit account number, followed by
        the pound key."
 
@@ -344,7 +344,7 @@ Customer: [Presses 5-5-5-1-2-3-4-5-6-7-#]
 
 Agent: [Receives "5551234567" after # is pressed]
        "Thank you. I've found your account ending in 4567."
-```
+```text wrap
 
 **Configuration:**
 
@@ -512,7 +512,7 @@ Agent: [Receives "5551234567" after # is pressed]
 ### Recommended Collector Settings by Use Case
 
 **Account Number Collection (10 digits):**
-```
+```text wrap
 Minimum Digits: 10
 Maximum Digits: 10
 Termination Key: # (optional, auto-submits at 10)
@@ -521,10 +521,10 @@ Clear Key: *
 Emit Timing: on_finalize
 
 Result: Auto-submits at exactly 10 digits, or customer can press # early
-```
+```text wrap
 
 **PIN Collection (4-6 digits):**
-```
+```text wrap
 Minimum Digits: 4
 Maximum Digits: 6
 Termination Key: #
@@ -533,10 +533,10 @@ Clear Key: *
 Emit Timing: on_finalize
 
 Result: Accepts 4-6 digit PINs, requires # for 4-5 digits, auto-submits at 6
-```
+```text wrap
 
 **Phone Number (Variable Format):**
-```
+```text wrap
 Minimum Digits: 7
 Maximum Digits: 15
 Termination Key: #
@@ -545,10 +545,10 @@ Clear Key: *
 Emit Timing: on_finalize
 
 Result: Handles US (10 digit) and international (variable) formats
-```
+```text wrap
 
 **Flexible Numeric Input:**
-```
+```text wrap
 Minimum Digits: 1
 Maximum Digits: 20
 Termination Key: #
@@ -557,7 +557,7 @@ Clear Key: *
 Emit Timing: on_finalize
 
 Result: Accepts any length, customer controls completion with #
-```
+```text wrap
 
 ---
 
@@ -566,7 +566,7 @@ Result: Accepts any length, customer controls completion with #
 ### Prompting for DTMF Input
 
 **Menu selection example:**
-```
+```text wrap
 When presenting options, clearly instruct the customer to use their keypad:
 
 Agent: "I can help you with three things:
@@ -581,10 +581,10 @@ Wait for DTMF input. When received, confirm the selection:
 If customer presses 1: "Great, I'll look up your account balance."
 If customer presses 2: "Okay, I'll show you recent transactions."
 If customer presses 3: "I'll connect you with customer service."
-```
+```text wrap
 
 **Multi-digit collection example:**
-```
+```text wrap
 When collecting account numbers or PINs:
 
 Agent: "For security, I'll need to verify your account.
@@ -595,12 +595,12 @@ Wait for DTMF input (collector mode with min=8, max=8, term=#).
 
 When digits received, confirm receipt without repeating the full number:
 "Thank you, I've located your account ending in [last 4 digits]."
-```
+```text wrap
 
 ### Handling DTMF Responses
 
 **Processing captured tones:**
-```
+```text wrap
 The `wait_for_dtmf_input` tool returns a JSON payload. Example:
 
 {
@@ -619,14 +619,14 @@ elif result.value == "2":
     # Route to technical support
 else:
     # Reprompt and call wait_for_dtmf_input again
-```
+```text wrap
 
 Inside the LiveKit worker, that same result is stored as `session.userdata.last_dtmf_input`
 and mirrored into `conversation_data.custom_data["last_dtmf_input"]`. Your backend automations
 or custom actions can read those values later in the call if you need to reuse the digits.
 
 **Validating multi-digit input:**
-```
+```text wrap
 When customer enters account number via DTMF:
 
 Validate the input:
@@ -641,12 +641,12 @@ number followed by pound."
 
 If validation succeeds:
 Use 'Lookup Customer Account' action with account_number = result.value
-```
+```text wrap
 
 ### Fallback to Voice
 
 **Offering voice alternative:**
-```
+```text wrap
 Always provide a voice fallback option for customers who can't or
 won't use DTMF:
 
@@ -658,16 +658,16 @@ If customer says "keypad" or presses a key:
 
 If customer says "say it" or speaks the number:
 → Use voice recognition to capture account number
-```
+```text wrap
 
 **Handling DTMF failures:**
-```
+```text wrap
 If customer doesn't respond to DTMF prompt after 10 seconds:
 
 "I haven't received a keypad entry. If you're having trouble with
 your keypad, you can also tell me your account number verbally.
 Would you like to try the keypad again, or speak the number?"
-```
+```text wrap
 
 ---
 

@@ -23,19 +23,19 @@ AMD configuration is primarily accessed during campaign creation and in campaign
 When making outbound calls, you encounter two possible scenarios:
 
 **Scenario 1: Live Answer**
-```
+```text wrap
 Phone rings → Person answers → "Hello?"
 → Agent should engage in conversation
 → Full agent capabilities needed
-```
+```text wrap
 
 **Scenario 2: Voicemail**
-```
+```text wrap
 Phone rings → Voicemail system answers → "You've reached John Smith..."
 → Agent should either leave brief message or hang up
 → Don't waste time with full conversation script
 → Don't create awkward interaction talking over voicemail greeting
-```
+```text wrap
 
 **The problem:** How does the agent know which scenario occurred?
 
@@ -44,12 +44,12 @@ Phone rings → Voicemail system answers → "You've reached John Smith..."
 AMD analyzes the audio in the first few seconds after call connection to determine if a human or machine answered:
 
 **Detection process:**
-```
+```text wrap
 1. Call connects
 2. AMD analyzes audio (0.5-3 seconds depending on method)
 3. Classification: HUMAN or MACHINE
 4. Agent executes appropriate behavior
-```
+```text wrap
 
 **Benefits:**
 - **Efficiency:** Don't waste agent time on voicemail
@@ -75,7 +75,7 @@ AMD analyzes the audio in the first few seconds after call connection to determi
 ### Text-Based AMD
 
 **How it works:**
-```
+```text wrap
 1. Call connects
 2. Speech-to-text transcribes first few seconds
 3. Scans for voicemail keywords:
@@ -86,7 +86,7 @@ AMD analyzes the audio in the first few seconds after call connection to determi
    - "After the beep"
 4. If keywords detected → MACHINE
 5. If no keywords in first 2-3 seconds → HUMAN
-```
+```text wrap
 
 **Characteristics:**
 
@@ -145,7 +145,7 @@ AMD analyzes the audio in the first few seconds after call connection to determi
 ### ML-Based AMD
 
 **How it works:**
-```
+```text wrap
 1. Call connects
 2. ML model analyzes audio characteristics:
    - Speech patterns and cadence
@@ -155,7 +155,7 @@ AMD analyzes the audio in the first few seconds after call connection to determi
    - Acoustic features
 3. Classification based on learned patterns
 4. Returns: HUMAN or MACHINE with confidence score
-```
+```text wrap
 
 **Characteristics:**
 
@@ -231,7 +231,7 @@ AMD analyzes the audio in the first few seconds after call connection to determi
 | **Cost Sensitivity** | Budget-conscious | Quality-focused |
 
 **Recommendation:**
-```
+```text wrap
 Use Text-Based AMD if:
 ✓ Primarily B2B calling
 ✓ English language only
@@ -245,7 +245,7 @@ Use ML-Based AMD if:
 ✓ Creative/personal greetings common
 ✓ Accuracy is critical
 ✓ Willing to accept slightly slower detection
-```
+```text wrap
 
 <Tip>
 When in doubt, start with ML-based AMD for higher accuracy. The 1-2 second speed difference is minimal compared to the cost of misclassification (talking to voicemail or hanging up on humans).
@@ -318,7 +318,7 @@ Changing AMD method mid-campaign may affect analytics consistency. Consider crea
 When AMD detects voicemail, configure how your agent responds:
 
 **Option 1: Leave voicemail message**
-```
+```text wrap
 Instructions example:
 
 When voicemail detected:
@@ -332,10 +332,10 @@ When voicemail detected:
    Thank you, and have a great day."
 
 3. End call after message delivery
-```
+```text wrap
 
 **Option 2: Hang up silently**
-```
+```text wrap
 Instructions example:
 
 When voicemail detected:
@@ -347,10 +347,10 @@ Use when:
 - Multiple retry attempts planned (will try different times)
 - Voicemail messages not effective for campaign type
 - Avoiding voicemail spam concerns
-```
+```text wrap
 
 **Option 3: Conditional based on attempt number**
-```
+```text wrap
 Instructions example:
 
 {% if campaign_contact_attempt_count == 1 %}
@@ -362,23 +362,23 @@ Final attempt - leave voicemail message:
 "This is our final attempt to reach you regarding [topic].
 Please call [number] if you're interested."
 {% endif %}
-```
+```text wrap
 
 ### Beep Detection
 
 **Challenge:** Voicemail systems play greeting before the recording beep. Agent should wait for beep before speaking to ensure message is recorded.
 
 **Beep detection process:**
-```
+```text wrap
 1. AMD detects MACHINE
 2. Agent enters "wait for beep" mode
 3. Listens for characteristic tone (usually 1-2 seconds of 1000Hz tone)
 4. Beep detected → Begin speaking message
 5. Beep not detected after 10 seconds → Assume recording started, begin message
-```
+```text wrap
 
 **Instructions for beep handling:**
-```
+```text wrap
 When voicemail is detected:
 
 1. Listen carefully for the recording beep (usually a single tone)
@@ -389,7 +389,7 @@ When voicemail is detected:
 
 Do NOT start speaking during the voicemail greeting - wait for
 the beep so your message is actually recorded.
-```
+```text wrap
 
 ### Crafting Effective Voicemail Messages
 
@@ -516,7 +516,7 @@ the beep so your message is actually recorded.
 
 **Integrating AMD with campaign retry logic:**
 
-```
+```text wrap
 Campaign AMD Configuration:
 
 Attempt 1:
@@ -540,13 +540,13 @@ This strategy:
 - Leaves professional impression (attempt 3 message)
 - Respects customer's time (limits voicemail spam)
 - Provides closure (clear final message)
-```
+```text wrap
 
 ### AMD and Contact Status
 
 **How AMD affects contact lifecycle:**
 
-```
+```text wrap
 Contact Status Flow with AMD:
 
 Pending
@@ -563,7 +563,7 @@ AMD Classification
        → Mark as "Voicemail"
        ├─ Leave message → Retry or Completed
        └─ Hang up → Retry (different time)
-```
+```text wrap
 
 **Analytics impact:**
 - Separate "reached voicemail" from "no answer" in reporting

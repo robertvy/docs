@@ -456,7 +456,7 @@ Always reference actions by the **exact name** configured in the UI. The agent r
 
 ### Example: Booking Action
 
-```
+```text wrap
 When the caller confirms they want to schedule, call the `Schedule Dental Checkup` booking action with:
 - `date` and `time` gathered during the conversation
 - Ask for email if `contact.email` is missing; otherwise use contact email
@@ -466,11 +466,11 @@ If the action returns an error:
 2. Offer two alternative slots from the same day
 3. Retry once with the alternative
 4. If the second attempt fails, trigger the `Transfer to Front Desk` action
-```
+```text wrap
 
 ### Example: Transfer Action
 
-```
+```text wrap
 Use the `Transfer to Tier 2 Support` action when:
 - Issue requires escalation beyond your capabilities
 - Customer explicitly requests human agent
@@ -481,7 +481,7 @@ Before transferring:
 1. Explain why: "I'd like to connect you with a specialist who can better help with this"
 2. Ask permission: "May I transfer you to them now?"
 3. If they agree, trigger the transfer action
-```
+```text wrap
 
 ---
 
@@ -491,7 +491,7 @@ Use Jinja templating to personalize instructions with dynamic values from contac
 
 ### Conditional Logic
 
-```jinja
+```jinja wrap
 {% if contact.email %}
 You have the customer's email on file: {{ contact.email }}
 {% else %}
@@ -503,7 +503,7 @@ Greet them by name: "Hi {{ contact.first_name }}, thanks for calling!"
 {% else %}
 Use a general greeting: "Hi there, thanks for calling!"
 {% endif %}
-```
+```text wrap
 
 ---
 

@@ -42,16 +42,16 @@ MCP servers are configured at the account level and then selectively attached to
 ### How MCP Works
 
 **Traditional approach (before MCP):**
-```
+```text wrap
 Agent needs external data
 → Custom API integration required for each service
 → Different authentication, formats, error handling per integration
 → Maintenance overhead for each custom connection
 → Limited discoverability of available tools
-```
+```text wrap
 
 **MCP approach:**
-```
+```text wrap
 Agent needs external data
 → Connect to MCP server (standardized interface)
 → Server exposes tools via MCP protocol
@@ -59,10 +59,10 @@ Agent needs external data
 → Agent calls tools using standard MCP format
 → Server handles authentication, execution, and response
 → One protocol, many capabilities
-```
+```text wrap
 
 **Example flow:**
-```
+```text wrap
 1. Agent connected to "Database MCP Server"
 2. Customer asks: "What orders do I have pending?"
 3. Agent discovers tool: query_customer_orders
@@ -70,7 +70,7 @@ Agent needs external data
 5. MCP server executes database query
 6. Returns: [Order #789, Order #790]
 7. Agent responds: "You have 2 pending orders: #789 and #790"
-```
+```text wrap
 
 ### Benefits of MCP
 
@@ -389,7 +389,7 @@ Removing an MCP server from an agent doesn't delete the server from your account
 Once attached, MCP tools work automatically based on conversation context:
 
 **Automatic tool discovery:**
-```
+```text wrap
 Agent receives message: "What orders do I have pending?"
 
 Agent thinks:
@@ -401,7 +401,7 @@ Agent thinks:
 6. Execute: query_customer_orders(customer_id="12345", status="pending")
 7. Response: [Order #789: Widget A, Order #790: Widget B]
 8. Format response: "You have 2 pending orders..."
-```
+```text wrap
 
 **The agent doesn't need explicit instructions** - it discovers and uses appropriate tools automatically based on:
 - Available tool descriptions
@@ -414,7 +414,7 @@ Agent thinks:
 While agents auto-discover tools, you can guide when and how to use them:
 
 **Example instructions with MCP:**
-```
+```text wrap
 You have access to the Customer Database via MCP tools.
 
 When a customer asks about their orders:
@@ -430,10 +430,10 @@ When a customer asks about account balance:
 4. Mention any pending charges
 
 Always confirm customer identity before querying sensitive information.
-```
+```text wrap
 
 **Conditional tool usage:**
-```
+```text wrap
 {% if contact.customer_id %}
 You have access to this customer's full order history via MCP tools.
 Use query_customer_orders when they ask about orders.
@@ -441,13 +441,13 @@ Use query_customer_orders when they ask about orders.
 Customer is not yet in our system. Offer to create account or
 provide general information only. Do not attempt to query orders.
 {% endif %}
-```
+```text wrap
 
 ### Tool Execution Flow
 
 **Real conversation example:**
 
-```
+```text wrap
 Customer: "Can you tell me when my last order was delivered?"
 
 Agent internal process:
@@ -488,10 +488,10 @@ Agent internal process:
 Agent: "Your last order was delivered on November 5th. That was
        order #888 for the Blue Widget. Would you like the tracking
        number or any other details?"
-```
+```text wrap
 
 **Error handling:**
-```
+```text wrap
 MCP tool fails (timeout, error, not found):
 
 Agent: "I'm having trouble accessing your order information right
@@ -499,7 +499,7 @@ Agent: "I'm having trouble accessing your order information right
        who can look that up directly. Which would you prefer?"
 
 [Agent follows error handling instructions, doesn't expose technical details]
-```
+```text wrap
 
 ---
 

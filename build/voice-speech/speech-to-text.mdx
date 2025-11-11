@@ -16,14 +16,14 @@ Configure speech-to-text under **Models > Transcriber** in your agent settings. 
 
 The STT process happens in real-time during conversations:
 
-```mermaid
+```mermaid wrap
 graph LR
     A[Customer Speaks] --> B[Audio Capture]
     B --> C[Voice Activity Detection]
     C --> D[STT Engine]
     D --> E[Text Output]
     E --> F[LLM Processing]
-```
+```text wrap
 
 1. **Customer speaks** - Audio captured from phone or web call
 2. **Voice Activity Detection (VAD)** - System detects when customer is speaking vs. silence
@@ -168,7 +168,7 @@ Azure Speech supports automatic language detection from a predefined set.
 - Falls back to primary language if detection uncertain
 
 **Example use case:**
-```
+```text wrap
 Primary: en-US
 Secondary: es-ES, fr-FR
 
@@ -177,7 +177,7 @@ Customer says: "Hola, necesito ayuda"
 
 Customer says: "Actually, I'll switch to English"
 → Detects English, transcribes: "Actually, I'll switch to English"
-```
+```text wrap
 
 <Warning>
 Auto-detection adds slight latency (~100-200ms) as the system analyzes language. For single-language agents, use language-specific models instead.
@@ -368,7 +368,7 @@ curl --request PATCH \
       "language": "en-US"
     }
   }'
-```
+```text wrap
 
 ```javascript updateTranscriber.mjs theme={null}
 await fetch(`https://api.itellico.ai/v1/agents/${agentUuid}`, {
@@ -385,7 +385,7 @@ await fetch(`https://api.itellico.ai/v1/agents/${agentUuid}`, {
     }
   })
 });
-```
+```text wrap
 </CodeGroup>
 
 ---

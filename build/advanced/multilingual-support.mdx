@@ -58,10 +58,10 @@ Language configuration is primarily done through Speech-to-Text settings in the 
 Your agent's language configuration is set through the Speech-to-Text provider:
 
 **Audio Processing Flow:**
-```
+```text wrap
 Audio → Transcriber → LLM → Voice Synthesizer → Audio
        [Language]   [Any]   [Language]
-```
+```text wrap
 
 **Configuration:**
 - Language set on Speech-to-Text provider (Deepgram, AssemblyAI, etc.)
@@ -134,12 +134,12 @@ Ensure authentic pronunciation by selecting native voices:
 4. Consider regional differences (Mexican vs. Spain Spanish)
 
 **Voice matching strategy:**
-```
+```text wrap
 Primary Language: en-US → Voice: "Sarah" (US English)
 Secondary: es-ES → Voice: "Elena" (Spain Spanish)
 Secondary: fr-FR → Voice: "Pierre" (French)
 Secondary: de-DE → Voice: "Hans" (German)
-```
+```text wrap
 
 Some voice providers offer multilingual voices that can speak multiple languages with appropriate accents - these work well for agents supporting many languages.
 
@@ -224,25 +224,25 @@ Some voice providers offer multilingual voices that can speak multiple languages
 ### Improving Detection Accuracy
 
 **Strategy 1: Use explicit language selection**
-```
+```text wrap
 For phone agents (IVR):
 "Press 1 for English, Press 2 for Spanish, Press 3 for French"
 
 For web agents:
 Provide language selector dropdown before starting call
-```
+```text wrap
 
 **Strategy 2: Optimize greeting for longer responses**
-```
+```text wrap
 Instructions example:
 Start the conversation by saying: "Thank you for calling Acme Corp.
 Please tell me in a few words how I can help you today."
 
 This encourages 5-10 word responses vs. "Hi" which aids detection.
-```
+```text wrap
 
 **Strategy 3: Add confirmation for ambiguous detection**
-```
+```text wrap
 Instructions example:
 If language detection confidence is below 90%, confirm with customer:
 
@@ -250,7 +250,7 @@ In English: "I can help you in English or Spanish. Which do you prefer?"
 In Spanish: "Puedo ayudarle en español o inglés. ¿Cuál prefiere?"
 
 Then switch to confirmed language.
-```
+```text wrap
 
 ---
 
@@ -261,7 +261,7 @@ Then switch to confirmed language.
 Customize agent behavior based on detected language:
 
 **Approach 1: Language-agnostic instructions (recommended for most cases)**
-```
+```text wrap
 You are a helpful customer service agent for Acme Corp.
 
 Your role:
@@ -271,10 +271,10 @@ Your role:
 - Maintain a friendly, helpful tone
 
 [Model automatically adapts tone and formality to detected language]
-```
+```text wrap
 
 **Approach 2: Language-specific instructions (for cultural customization)**
-```
+```text wrap
 You are a helpful customer service agent for Acme Corp.
 
 {% if language == "es" or language == "es-ES" or language == "es-MX" %}
@@ -303,12 +303,12 @@ Default to English conversational style
 {% endif %}
 
 [Universal rules apply to all languages]
-```
+```text wrap
 
 ### Knowledge Bases for Multilingual Agents
 
 **Option 1: Separate knowledge bases per language**
-```
+```text wrap
 Structure:
 - "Product FAQ (English)" collection
 - "Product FAQ (Spanish)" collection
@@ -322,14 +322,14 @@ Use "Product FAQ (French)" knowledge base for answers
 {% else %}
 Use "Product FAQ (English)" knowledge base for answers
 {% endif %}
-```
+```text wrap
 
 **Pros:** Native content, culturally appropriate, no translation errors
 
 **Cons:** Duplication, high maintenance overhead, version drift risk
 
 **Option 2: English knowledge with AI translation (recommended)**
-```
+```text wrap
 Structure:
 - Single "Product FAQ" collection in English
 
@@ -337,14 +337,14 @@ Instructions:
 Access the Product FAQ knowledge base and translate responses
 into the customer's language naturally. Ensure technical terms
 remain accurate and culturally adapt examples when needed.
-```
+```text wrap
 
 **Pros:** Single source of truth, easy maintenance, works well with modern AI
 
 **Cons:** May miss cultural nuances, technical translation requires validation
 
 **Option 3: Multilingual knowledge base**
-```
+```text wrap
 Structure:
 - Single collection with documents tagged by language
 - Each article has language metadata
@@ -352,7 +352,7 @@ Structure:
 Instructions:
 Retrieve knowledge matching both the topic AND the customer's language.
 If no match in customer's language, translate English version.
-```
+```text wrap
 
 **Pros:** Flexible, supports partial translation, single collection
 
@@ -371,7 +371,7 @@ For most use cases, Option 2 (English knowledge with AI translation) provides th
 Beyond language, customize for regional expectations:
 
 **Date and time formats:**
-```
+```text wrap
 {% if language == "en-US" %}
 Today's date: {{ current_date | date("MM/DD/YYYY") }}
 Appointment time: {{ appointment_time | date("h:mm A") }}
@@ -381,10 +381,10 @@ Appointment time: {{ appointment_time | date("HH:mm") }}
 {% else %}
 Use ISO 8601 format: {{ current_date | date("YYYY-MM-DD") }}
 {% endif %}
-```
+```text wrap
 
 **Currency and number formatting:**
-```
+```text wrap
 {% if language == "en-US" %}
 Total: $1,234.56 (US Dollars)
 {% elif language == "de-DE" %}
@@ -392,10 +392,10 @@ Total: 1.234,56 € (Euro)
 {% elif language == "ja-JP" %}
 Total: ¥123,456 (Japanese Yen)
 {% endif %}
-```
+```text wrap
 
 **Cultural context:**
-```
+```text wrap
 {% if language == "ja-JP" %}
 When addressing customers, always use respectful honorifics.
 Be extremely apologetic for any inconvenience.
@@ -410,13 +410,13 @@ Formal titles are important (Herr, Frau).
 Build rapport before business. Mexican customers value personal connection.
 Use warm, friendly language. Avoid being overly formal or cold.
 {% endif %}
-```
+```text wrap
 
 ### Holiday and Event Recognition
 
 Reference local holidays and events appropriately:
 
-```
+```text wrap
 {% if language == "es-MX" and current_date contains "11-02" %}
 Happy Día de los Muertos! How can I help you today?
 {% elif language == "de-DE" and current_date contains "10-03" %}
@@ -424,7 +424,7 @@ Happy German Unity Day!
 {% elif language == "fr-FR" and current_date contains "07-14" %}
 Happy Bastille Day!
 {% endif %}
-```
+```text wrap
 
 ---
 

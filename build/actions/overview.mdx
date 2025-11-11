@@ -96,16 +96,16 @@ Actions execute **during the conversation** when triggered by your agent based o
 ### Trigger Mechanisms
 
 **Instruction-Based Triggers:**
-```
+```text wrap
 When the customer asks to speak to a human, use the 'Transfer to Support' action.
 
 After successfully booking an appointment, use the 'End Call Politely' action.
 
 If the customer says they need time to check something, use the 'Pause Inactivity Timer' action.
-```
+```text wrap
 
 **Conditional Triggers:**
-```
+```text wrap
 If the customer reports a billing issue:
 1. Use the 'Lookup Account' action to retrieve their information
 2. If balance is overdue, transfer to billing department
@@ -114,10 +114,10 @@ If the customer reports a billing issue:
 {% if contact.vip_status == "platinum" %}
 Always offer to transfer VIP customers to dedicated support immediately.
 {% endif %}
-```
+```text wrap
 
 **Multi-Step Workflows:**
-```
+```text wrap
 Appointment Booking Flow:
 1. Gather required information (name, email, preferred date)
 2. Use 'Check Availability' action to query Cal.com
@@ -125,7 +125,7 @@ Appointment Booking Flow:
 4. Use 'Book Appointment' action to confirm
 5. Use 'Send SMS Confirmation' action if customer provided phone
 6. Use 'End Call Politely' action to conclude
-```
+```text wrap
 
 <Warning>
 Actions execute in real-time during the call. Ensure your endpoints are reliable and respond quickly to avoid awkward pauses in conversation.
@@ -162,7 +162,7 @@ All action configuration happens in the agent editor under the **Abilities → A
 
 When you click **Add Action**, you'll see the action type selector:
 
-```
+```text wrap
 
 
  Choose an action type:  
@@ -189,7 +189,7 @@ When you click **Add Action**, you'll see the action type selector:
 
                                             [Cancel]  
 
-```
+```text wrap
 
 ---
 
@@ -211,7 +211,7 @@ After adding actions, you'll see them listed in your agent's Actions tab with st
 
 ### Action List View
 
-```
+```text wrap
 
                                                [+ Add Action]  
 
@@ -231,7 +231,7 @@ After adding actions, you'll see them listed in your agent's Actions tab with st
     Type: End Conversation
     Goodbye: "Thanks for calling!"                       [Edit]  
 
-```
+```text wrap
 
 ---
 
@@ -240,30 +240,30 @@ After adding actions, you'll see them listed in your agent's Actions tab with st
 To use actions, reference them **by exact name** in your agent's instructions:
 
 ### Direct Reference
-```
+```text wrap
 When a customer asks to speak to someone about billing,
 use the 'Transfer to Billing Department' action.
-```
+```text wrap
 
 ### With Custom Messages
-```
+```text wrap
 Before using the 'Transfer to Sales' action, say:
 "Let me connect you with our sales team who can help with pricing."
-```
+```text wrap
 
 ### With Conditions
-```
+```text wrap
 If the customer's issue cannot be resolved:
 1. Apologize for the inconvenience
 2. Explain you're connecting them to a specialist
 3. Use the 'Transfer to Support' action
-```
+```text wrap
 
 ### With Parameters
-```
+```text wrap
 After gathering the customer's email and preferred date,
 use the 'Book Consultation' action to schedule the meeting.
-```
+```text wrap
 
 <Note>
 Action names are case-sensitive and must match exactly as configured. If you rename an action, update all references in your instructions.
@@ -302,24 +302,24 @@ Actions have access to comprehensive conversation data that can be used in confi
 ### Using Variables in Actions
 
 **In Custom API URLs:**
-```
+```text wrap
 https://api.crm.com/customers/{{ contact.phone_number }}
-```
+```text wrap
 
 **In Request Bodies:**
-```json
+```json wrap
 {
   "customer_name": "{{ contact.first_name }} {{ contact.last_name }}",
   "email": "{{ contact.email }}",
   "call_time": "{{ current_datetime }}"
 }
-```
+```text wrap
 
 **In SMS Templates:**
-```
+```text wrap
 Hi {{ contact.first_name }}, your appointment is confirmed for {date} at {time}.
 Meeting link: {link}
-```
+```text wrap
 
 ---
 
@@ -467,7 +467,7 @@ Test calls use real integrations. If you're testing a booking action, it will cr
 
 ### Customer Support Workflow
 
-```
+```text wrap
 Agent Configuration:
 - Transfer to Support (for complex issues)
 - Lookup Customer Account (custom API)
@@ -483,11 +483,11 @@ When a customer calls:
 5. If it's complex, use 'Create Support Ticket' and provide ticket number
 6. If customer requests human, use 'Transfer to Support'
 7. When resolved, use 'End Call Politely'
-```
+```text wrap
 
 ### Appointment Booking Workflow
 
-```
+```text wrap
 Agent Configuration:
 - Book Consultation (Cal.com booking)
 - Send SMS Confirmation (optional)
@@ -503,11 +503,11 @@ When a customer wants to book:
 5. If booking succeeds, confirm details verbally
 6. If booking fails, use 'Transfer to Scheduling'
 7. Use 'End Call Politely' to finish
-```
+```text wrap
 
 ### Sales Qualification Workflow
 
-```
+```text wrap
 Agent Configuration:
 - Lookup Company Data (custom API)
 - Update CRM Lead (custom API)
@@ -522,7 +522,7 @@ For outbound sales calls:
 4. Use 'Update CRM Lead' with qualification status
 5. If qualified, use 'Transfer to Sales' with context
 6. If not qualified, thank them and use 'End Call Politely'
-```
+```text wrap
 
 ---
 
