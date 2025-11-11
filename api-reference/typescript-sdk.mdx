@@ -71,11 +71,20 @@ const agent = await client.agents.create({
   },
   voice: {
     provider: 'elevenlabs',
-    voiceId: '21m00Tcm4TlvDq8ikWAM',
+    voiceId: 'EXAVITQu4vr4xnSDxMaL',
   },
   transcriber: {
     provider: 'deepgram',
+    model: 'nova-2:general',
+    language: 'en-US',
   },
+  initialMessage: {
+    mode: 'fixed_message',
+    message: 'Hello! How can I assist you today?',
+    delayMs: 1000,
+  },
+  maxDurationSeconds: 1800,
+  tags: ['support', 'customer-service'],
 });
 
 console.log(`Created agent: ${agent.id}`);

@@ -67,11 +67,20 @@ agent = client.agents.create(
     },
     voice={
         "provider": "elevenlabs",
-        "voice_id": "21m00Tcm4TlvDq8ikWAM"
+        "voice_id": "EXAVITQu4vr4xnSDxMaL"
     },
     transcriber={
-        "provider": "deepgram"
-    }
+        "provider": "deepgram",
+        "model": "nova-2:general",
+        "language": "en-US"
+    },
+    initial_message={
+        "mode": "fixed_message",
+        "message": "Hello! How can I assist you today?",
+        "delay_ms": 1000
+    },
+    max_duration_seconds=1800,
+    tags=["support", "customer-service"]
 )
 
 print(f"Created agent: {agent.id}")
@@ -107,35 +116,59 @@ asyncio.run(main())
 ### List Agents
 
 ```python
-agents = client.agents.list()
+from itellicoai import Itellicoai
 
-for agent in agents:
-    print(f"{agent.name} - {agent.id}")
+client = Itellicoai(
+    api_key="My API Key",
+)
+agents = client.agents.list(
+    account_id="account_id",
+)
+print(agents.count)
 ```
 
 ### Retrieve Agent
 
 ```python
-agent = client.agents.retrieve("agent_123abc")
+from itellicoai import Itellicoai
 
-print(f"Agent name: {agent.name}")
-print(f"Model: {agent.model.model}")
+client = Itellicoai(
+    api_key="My API Key",
+)
+agent_response = client.agents.retrieve(
+    agent_id="agent_id",
+    account_id="account_id",
+)
+print(agent_response.id)
 ```
 
 ### Update Agent
 
 ```python
-updated_agent = client.agents.update(
-    agent_id="agent_123abc",
-    name="Updated Support Agent",
-    instructions="You are a helpful customer support agent..."
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
 )
+agent_response = client.agents.update(
+    agent_id="agent_id",
+    account_id="account_id",
+)
+print(agent_response.id)
 ```
 
-### Delete Agent
+### Archive Agent
 
 ```python
-client.agents.delete("agent_123abc")
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+client.agents.archive(
+    agent_id="agent_id",
+    account_id="account_id",
+)
 ```
 
   </Accordion>
