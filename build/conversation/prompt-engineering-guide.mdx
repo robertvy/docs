@@ -459,7 +459,6 @@ Always reference actions by the **exact name** configured in the UI. The agent r
 ```
 When the caller confirms they want to schedule, call the `Schedule Dental Checkup` booking action with:
 - `date` and `time` gathered during the conversation
-- `timezone` from `{{ contact.timezone | default("America/Los_Angeles") }}`
 - Ask for email if `contact.email` is missing; otherwise use contact email
 
 If the action returns an error:
@@ -541,30 +540,27 @@ Personalize instructions with dynamic values:
 
 ```jinja
 The caller's name is {{ contact.first_name | default("there") }}.
-Their account type is {{ contact.account_type | default("standard") }}.
-Their timezone is {{ contact.timezone | default("America/New_York") }}.
 ```
 
 ### Conditional Logic
 
 ```jinja
-{% if contact.account_type == "VIP" %}
-IMPORTANT: This is a VIP customer. Acknowledge their status:
-"Thank you for being a valued VIP customer, we really appreciate your business."
-Prioritize their requests and offer premium solutions first.
+{% if contact.email %}
+You have the customer's email on file: {{ contact.email }}
+{% else %}
+Ask for their email address before proceeding with the booking.
 {% endif %}
 
-{% if contact.language == "es" %}
-Respond in Spanish and use formal addressing (usted).
+{% if contact.first_name %}
+Greet them by name: "Hi {{ contact.first_name }}, thanks for calling!"
 {% else %}
-Respond in English conversationally.
+Use a general greeting: "Hi there, thanks for calling!"
 {% endif %}
 ```
 
 ### Using Defaults
 
 ```jinja
-Timezone: {{ contact.timezone | default("America/New_York") }}
 Organization: {{ organization.name | default("our company") }}
 Offer: {{ context.current_offer | default("our standard services") }}
 ```
