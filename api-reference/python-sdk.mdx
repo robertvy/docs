@@ -178,14 +178,19 @@ client.agents.archive(
 ### List Conversations
 
 ```python
-conversations = client.conversations.list(
-    agent_id="agent_123abc",
-    limit=50
+from itellicoai import Itellicoai
+
+client = Itellicoai(api_key="My API Key")
+
+conversations = client.accounts.list_conversations(
+    account_id="account_id"
 )
 
-for conv in conversations:
-    print(f"Call from: {conv.customer_phone}")
-    print(f"Duration: {conv.duration}s")
+for conv in conversations.items:
+    print(f"Conversation ID: {conv.conversation_id}")
+    print(f"Contact: {conv.contact_number}")
+    print(f"Duration: {conv.duration_seconds}s")
+    print(f"Status: {conv.status}")
 ```
 
   </Accordion>

@@ -138,14 +138,19 @@ await client.agents.delete('agent_123abc');
 ### List Conversations
 
 ```typescript
-const conversations = await client.conversations.list({
-  agentId: 'agent_123abc',
-  limit: 50,
+import { Itellicoai } from 'itellicoai';
+
+const client = new Itellicoai({ apiKey: 'My API Key' });
+
+const conversations = await client.accounts.listConversations({
+  accountId: 'account_id'
 });
 
-conversations.forEach(conv => {
-  console.log(`Call from: ${conv.customerPhone}`);
-  console.log(`Duration: ${conv.duration}s`);
+conversations.items.forEach(conv => {
+  console.log(`Conversation ID: ${conv.conversationId}`);
+  console.log(`Contact: ${conv.contactNumber}`);
+  console.log(`Duration: ${conv.durationSeconds}s`);
+  console.log(`Status: ${conv.status}`);
 });
 ```
 
