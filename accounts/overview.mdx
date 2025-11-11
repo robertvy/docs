@@ -16,7 +16,7 @@ Main accounts (also called "root accounts" or "parent accounts") are top-level o
 
 - Independent billing and subscriptions
 - Full administrative control
-- Ability to create unlimited subaccounts (subscription dependent)
+- Ability to create subaccounts (subscription dependent)
 - Separate API keys and integrations
 
 **Use cases:**
@@ -34,9 +34,9 @@ Subaccounts are nested under parent accounts and provide:
 - Shared billing with parent account
 
 **Key characteristics:**
-- Unlimited nesting depth (subaccounts can have their own subaccounts)
+- Subaccounts can have their own subaccounts (keep nesting simple for easier management)
 - Parent accounts can access child data
-- Children **cannot** access parent or sibling data
+- Subaccounts **cannot** access parent or sibling data
 - Each subaccount has its own owner and team
 
 **Use cases:**
@@ -49,13 +49,14 @@ Subaccounts are nested under parent accounts and provide:
 
 The system follows a parent-child hierarchy with strict access control:
 
-```
-Parent Account (Agency)
-├── Subaccount A (Client 1)
-│   ├── Sub-subaccount A1 (Client 1 - Sales Team)
-│   └── Sub-subaccount A2 (Client 1 - Support Team)
-├── Subaccount B (Client 2)
-└── Subaccount C (Client 3)
+```mermaid
+graph TD
+    A[Parent Account - Agency]
+    A --> B[Subaccount A - Client 1]
+    A --> C[Subaccount B - Client 2]
+    A --> D[Subaccount C - Client 3]
+    B --> E[Sub-subaccount A1 - Sales Team]
+    B --> F[Sub-subaccount A2 - Support Team]
 ```
 
 ### Access Rules
@@ -67,56 +68,60 @@ Parent Account (Agency)
 
 ## Common Use Cases
 
-### Agency Managing Multiple Clients
+<AccordionGroup>
+  <Accordion title="Agency Managing Multiple Clients" icon="building">
+    ```mermaid
+    graph TD
+        A[Agency - Parent Account]
+        A --> B[Client A Subaccount]
+        A --> C[Client B Subaccount]
+        B --> D[Client A staff has full access]
+        C --> E[Client B staff has full access]
+    ```
 
-```
-Agency (Parent Account)
-├── Client A Subaccount
-│   └── Client A staff has full access
-├── Client B Subaccount
-│   └── Client B staff has full access
-└── Agency retains visibility across all clients
-```
+    **Benefits:**
+    - Clients can't see each other's data
+    - Agency admins can manage all accounts
+    - Separate billing tracking per client
+    - Easy onboarding and offboarding
+  </Accordion>
 
-**Benefits:**
-- Clients can't see each other's data
-- Agency admins can manage all accounts
-- Separate billing tracking per client
-- Easy onboarding and offboarding
+  <Accordion title="Enterprise with Regional Teams" icon="globe">
+    ```mermaid
+    graph TD
+        A[Company HQ - Parent Account]
+        A --> B[North America Region]
+        A --> C[Europe Region]
+        A --> D[APAC Region]
+        B --> E[Sales Team]
+        B --> F[Support Team]
+        C --> G[Sales Team]
+        C --> H[Support Team]
+    ```
 
-### Enterprise with Regional Teams
+    **Benefits:**
+    - Regional autonomy with central oversight
+    - Department-level access control
+    - Consolidated billing and reporting
+    - Flexible team structures
+  </Accordion>
 
-```
-Company HQ (Parent Account)
-├── North America Region
-│   ├── Sales Team
-│   └── Support Team
-├── Europe Region
-│   ├── Sales Team
-│   └── Support Team
-└── APAC Region
-```
+  <Accordion title="Reseller or White-Label Provider" icon="store">
+    ```mermaid
+    graph TD
+        A[Reseller - Parent Account]
+        A --> B[Customer 1 Subaccount]
+        A --> C[Customer 2 Subaccount]
+        A --> D[Customer 3 Subaccount]
+    ```
 
-**Benefits:**
-- Regional autonomy with central oversight
-- Department-level access control
-- Consolidated billing and reporting
-- Flexible team structures
-
-### Reseller or White-Label Provider
-
-```
-Reseller (Parent Account)
-├── Customer 1 (Subaccount)
-├── Customer 2 (Subaccount)
-└── Customer 3 (Subaccount)
-```
-
-**Benefits:**
-- Customer isolation and privacy
-- Centralized billing to reseller
-- Custom branding per customer
-- Scalable customer onboarding
+    **Benefits:**
+    - Customer isolation and privacy
+    - Centralized billing to reseller
+    - Custom branding per customer
+    - Scalable customer onboarding
+  </Accordion>
+</AccordionGroup>
 
 ## What You Can Do
 
@@ -171,7 +176,7 @@ Reseller (Parent Account)
 
 <AccordionGroup>
   <Accordion title="How many subaccounts can I create?">
-    The number of subaccounts depends on your subscription plan. Contact sales to discuss your needs.
+    The number of subaccounts depends on your subscription plan. Contact [support@itellico.ai](mailto:support@itellico.ai) to discuss your needs.
   </Accordion>
 
   <Accordion title="Can I transfer a subaccount to another parent?">
