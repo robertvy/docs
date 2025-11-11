@@ -121,11 +121,11 @@ The platform automatically provides the following context to your agent with eve
   </Accordion>
 
   <Accordion title="Contact Information" icon="user">
-    Contact data like name, email, phone number, and any custom fields you've added. Access via variables like `{{ contact.first_name }}`.
+    Contact data like name, email, and phone number. Access via variables like `{{ contact.first_name }}`.
   </Accordion>
 
   <Accordion title="Knowledge Base Content" icon="book">
-    When relevant, the platform automatically retrieves and includes content from your knowledge bases. You just need to tell the agent when and how to use it.
+    When relevant, the platform automatically retrieves and includes content from your knowledge bases.
   </Accordion>
 
   <Accordion title="Available Actions" icon="bolt">
@@ -137,49 +137,48 @@ The platform automatically provides the following context to your agent with eve
   </Accordion>
 </AccordionGroup>
 
-<Warning>
-**Don't repeat system-provided information in your instructions.** Focus on behavioral rules, conversation flow, and decision-making guidance instead.
-</Warning>
 
 ---
 
 ## Common Mistakes
 
-Avoid these common pitfalls when writing instructions:
+<AccordionGroup>
+  <Accordion title="Instructions too long" icon="text-size">
+    Keep instructions under 1000 words. Long instructions confuse the model and slow response times.
 
-<Warning>
-**Instructions too long** - Keep instructions under 1000 words. Long instructions confuse the model and slow response times.
-</Warning>
+    **Fix:** Focus on essential rules and conversation flow. Move facts and policies to knowledge bases.
+  </Accordion>
 
-<Warning>
-**Too vague** - "Be helpful" doesn't provide actionable guidance. Instead: "Answer questions in under 30 seconds, ask one clarifying question at a time, and confirm understanding before providing solutions."
-</Warning>
+  <Accordion title="Too vague" icon="circle-question">
+    "Be helpful" doesn't provide actionable guidance.
 
-<Warning>
-**Contradictory rules** - Conflicting instructions confuse the agent. Review carefully to ensure guidelines don't contradict each other.
-</Warning>
+    **Fix:** Be specific. Instead write: "Answer questions in under 30 seconds, ask one clarifying question at a time, and confirm understanding before providing solutions."
+  </Accordion>
 
-<Warning>
-**Hardcoded facts in instructions** - Facts, product details, and policies belong in knowledge bases, not instructions. Instructions should contain behavioral rules and conversation guidance.
-</Warning>
+  <Accordion title="Contradictory rules" icon="triangle-exclamation">
+    Conflicting instructions confuse the agent.
 
-<Warning>
-**Overly complex logic** - Deeply nested conditionals and complex Jinja logic often fail. Keep logic simple and clear.
-</Warning>
+    **Fix:** Review carefully to ensure guidelines don't contradict each other. Test thoroughly.
+  </Accordion>
 
-<Warning>
-**Incorrect action names** - Always reference exact action names from the Actions section. Mismatched names prevent the agent from using actions correctly.
-</Warning>
+  <Accordion title="Hardcoded facts" icon="database">
+    Facts, product details, and policies belong in knowledge bases, not instructions.
 
-### Quick Fixes
+    **Fix:** Move all factual content to knowledge bases. Instructions should contain only behavioral rules and conversation guidance.
+  </Accordion>
 
-| Issue | Fix |
-|-------|-----|
-| Agent too verbose | Add: "Keep responses under 25 seconds" |
-| Doesn't use actions | Add explicit triggers: "When [situation], use [action name]" |
-| Ignores knowledge | Reference collection names: "Check the Product FAQs collection for..." |
-| Wrong tone | Add specific tone examples and constraints |
-| Interrupts customers | Add: "Let customers finish speaking before responding" |
+  <Accordion title="Overly complex logic" icon="code">
+    Deeply nested conditionals and complex Jinja logic often fail.
+
+    **Fix:** Keep logic simple and clear. Use straightforward if/then statements.
+  </Accordion>
+
+  <Accordion title="Incorrect action names" icon="bolt">
+    Mismatched action names prevent the agent from using actions correctly.
+
+    **Fix:** Always reference exact action names from the Actions section. Copy them directly from the UI.
+  </Accordion>
+</AccordionGroup>
 
 ---
 
