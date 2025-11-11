@@ -27,6 +27,30 @@ pnpm add itellicoai
 
 ---
 
+## Get Your API Key
+
+To use the SDK, you'll need an API key from your [itellicoAI dashboard](https://app.itellico.ai):
+
+1. Navigate to **Developers** from the sidebar
+2. Click on **API Keys**
+3. Click **Create API Key**
+4. Copy the generated key to use with the SDK
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/light.png" alt="API Keys dashboard" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/dark.png" alt="API Keys dashboard" />
+  </div>
+</Frame>
+
+<Warning>
+Store your API key securely using environment variables. Never commit it to version control.
+</Warning>
+
+---
+
 ## Quick Start
 
 ```typescript
@@ -59,12 +83,14 @@ console.log(`Created agent: ${agent.id}`);
 
 ---
 
-## Common Operations
+## SDK Operations
+
+<AccordionGroup>
+  <Accordion title="Agent Management" defaultOpen>
 
 ### List Agents
 
 ```typescript
-// List all agents
 const agents = await client.agents.list();
 
 agents.forEach(agent => {
@@ -75,7 +101,6 @@ agents.forEach(agent => {
 ### Retrieve Agent
 
 ```typescript
-// Get specific agent by ID
 const agent = await client.agents.retrieve('agent_123abc');
 
 console.log(`Agent name: ${agent.name}`);
@@ -85,7 +110,6 @@ console.log(`Model: ${agent.model.model}`);
 ### Update Agent
 
 ```typescript
-// Update agent configuration
 const updatedAgent = await client.agents.update('agent_123abc', {
   name: 'Updated Support Agent',
   instructions: 'You are a helpful customer support agent...',
@@ -95,14 +119,16 @@ const updatedAgent = await client.agents.update('agent_123abc', {
 ### Delete Agent
 
 ```typescript
-// Delete agent
 await client.agents.delete('agent_123abc');
 ```
+
+  </Accordion>
+
+  <Accordion title="Conversations">
 
 ### List Conversations
 
 ```typescript
-// Get conversations for an agent
 const conversations = await client.conversations.list({
   agentId: 'agent_123abc',
   limit: 50,
@@ -113,6 +139,65 @@ conversations.forEach(conv => {
   console.log(`Duration: ${conv.duration}s`);
 });
 ```
+
+  </Accordion>
+
+  <Accordion title="Analytics">
+
+### Get Usage Analytics
+
+```typescript
+const response = await client.accounts.analytics.getUsage('account_id');
+
+console.log(response.meta);
+```
+
+  </Accordion>
+
+  <Accordion title="Subaccounts">
+
+### List Subaccounts
+
+```typescript
+const subaccounts = await client.accounts.subaccounts.list('account_id');
+
+console.log(subaccounts.count);
+```
+
+### Create Subaccount
+
+```typescript
+const account = await client.accounts.subaccounts.create('account_id', {
+  name: 'name',
+});
+
+console.log(account.id);
+```
+
+### Get Subaccount
+
+```typescript
+const account = await client.accounts.subaccounts.retrieve(
+  'account_id',
+  'subaccount_id'
+);
+
+console.log(account.id);
+```
+
+### Update Subaccount
+
+```typescript
+const account = await client.accounts.subaccounts.update(
+  'account_id',
+  'subaccount_id'
+);
+
+console.log(account.id);
+```
+
+  </Accordion>
+</AccordionGroup>
 
 ---
 
@@ -190,6 +275,9 @@ const createAgent = async (
 <CardGroup cols={2}>
   <Card title="NPM Package" icon="npm" href="https://www.npmjs.com/package/itellicoai">
     Install from NPM
+  </Card>
+  <Card title="GitHub Repository" icon="github" href="https://github.com/itellicoAI/server-sdk-typescript">
+    View source code on GitHub
   </Card>
   <Card title="API Reference" icon="book" href="/api-reference/introduction">
     REST API documentation

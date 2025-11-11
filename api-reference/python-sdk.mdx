@@ -23,6 +23,30 @@ poetry add itellicoai
 
 ---
 
+## Get Your API Key
+
+To use the SDK, you'll need an API key from your [itellicoAI dashboard](https://app.itellico.ai):
+
+1. Navigate to **Developers** from the sidebar
+2. Click on **API Keys**
+3. Click **Create API Key**
+4. Copy the generated key to use with the SDK
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/light.png" alt="API Keys dashboard" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/dark.png" alt="API Keys dashboard" />
+  </div>
+</Frame>
+
+<Warning>
+Store your API key securely using environment variables. Never commit it to version control.
+</Warning>
+
+---
+
 ## Quick Start
 
 ```python
@@ -75,12 +99,14 @@ asyncio.run(main())
 
 ---
 
-## Common Operations
+## SDK Operations
+
+<AccordionGroup>
+  <Accordion title="Agent Management" defaultOpen>
 
 ### List Agents
 
 ```python
-# List all agents
 agents = client.agents.list()
 
 for agent in agents:
@@ -90,7 +116,6 @@ for agent in agents:
 ### Retrieve Agent
 
 ```python
-# Get specific agent by ID
 agent = client.agents.retrieve("agent_123abc")
 
 print(f"Agent name: {agent.name}")
@@ -100,7 +125,6 @@ print(f"Model: {agent.model.model}")
 ### Update Agent
 
 ```python
-# Update agent configuration
 updated_agent = client.agents.update(
     agent_id="agent_123abc",
     name="Updated Support Agent",
@@ -111,14 +135,16 @@ updated_agent = client.agents.update(
 ### Delete Agent
 
 ```python
-# Delete agent
 client.agents.delete("agent_123abc")
 ```
+
+  </Accordion>
+
+  <Accordion title="Conversations">
 
 ### List Conversations
 
 ```python
-# Get conversations for an agent
 conversations = client.conversations.list(
     agent_id="agent_123abc",
     limit=50
@@ -128,6 +154,65 @@ for conv in conversations:
     print(f"Call from: {conv.customer_phone}")
     print(f"Duration: {conv.duration}s")
 ```
+
+  </Accordion>
+
+  <Accordion title="Analytics">
+
+### Get Usage Analytics
+
+```python
+response = client.accounts.analytics.get_usage(
+    account_id="account_id",
+)
+print(response.meta)
+```
+
+  </Accordion>
+
+  <Accordion title="Subaccounts">
+
+### List Subaccounts
+
+```python
+subaccounts = client.accounts.subaccounts.list(
+    account_id="account_id",
+)
+print(subaccounts.count)
+```
+
+### Create Subaccount
+
+```python
+account = client.accounts.subaccounts.create(
+    account_id="account_id",
+    name="name",
+)
+print(account.id)
+```
+
+### Get Subaccount
+
+```python
+account = client.accounts.subaccounts.retrieve(
+    subaccount_id="subaccount_id",
+    account_id="account_id",
+)
+print(account.id)
+```
+
+### Update Subaccount
+
+```python
+account = client.accounts.subaccounts.update(
+    subaccount_id="subaccount_id",
+    account_id="account_id",
+)
+print(account.id)
+```
+
+  </Accordion>
+</AccordionGroup>
 
 ---
 
@@ -178,6 +263,9 @@ client = ItellicoAI(api_key=os.getenv("ITELLICO_API_KEY"))
 <CardGroup cols={2}>
   <Card title="PyPI Package" icon="python" href="https://pypi.org/project/itellicoai/">
     Install from PyPI
+  </Card>
+  <Card title="GitHub Repository" icon="github" href="https://github.com/itellicoAI/server-sdk-python">
+    View source code on GitHub
   </Card>
   <Card title="API Reference" icon="book" href="/api-reference/introduction">
     REST API documentation
