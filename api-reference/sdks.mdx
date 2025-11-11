@@ -1,0 +1,541 @@
+---
+title: 'SDKs'
+description: 'Official itellicoAI SDKs for Python and TypeScript'
+icon: 'code'
+---
+
+## Official SDKs
+
+itellicoAI provides official SDKs for Python and TypeScript/Node.js to simplify integration with our voice AI platform.
+
+<CardGroup cols={2}>
+  <Card title="Python SDK" icon="python" href="#python-sdk">
+    Type-safe Python library with async support
+  </Card>
+  <Card title="TypeScript SDK" icon="js" href="#typescript-sdk">
+    Full TypeScript support with autocomplete
+  </Card>
+</CardGroup>
+
+## Why Use SDKs?
+
+<AccordionGroup>
+  <Accordion title="Type Safety" icon="shield-check">
+    Full TypeScript definitions and Python type hints for all API methods, reducing runtime errors and improving development experience
+  </Accordion>
+
+  <Accordion title="Simplified Authentication" icon="key">
+    Built-in API key management—no need to manually set headers for every request
+  </Accordion>
+
+  <Accordion title="Better Error Handling" icon="triangle-exclamation">
+    Structured exceptions that make debugging easier than raw HTTP responses
+  </Accordion>
+
+  <Accordion title="Less Boilerplate" icon="code">
+    Clean, intuitive methods instead of manually crafting HTTP requests and parsing JSON
+  </Accordion>
+
+  <Accordion title="Auto-completion" icon="wand-magic-sparkles">
+    IDE autocomplete and inline documentation for faster development
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Python SDK
+
+### Installation
+
+<CodeGroup>
+```bash pip
+pip install itellicoai
+```
+
+```bash poetry
+poetry add itellicoai
+```
+</CodeGroup>
+
+### Requirements
+
+- Python 3.8+
+- Supports both sync and async operations
+
+### Quick Start
+
+```python
+from itellicoai import ItellicoAI
+
+# Initialize client
+client = ItellicoAI(
+    api_key="your-api-key"
+)
+
+# Create an agent
+agent = client.agents.create(
+    name="Customer Support Agent",
+    model={
+        "provider": "azure",
+        "model": "gpt-4o-mini"
+    },
+    voice={
+        "provider": "elevenlabs",
+        "voice_id": "21m00Tcm4TlvDq8ikWAM"
+    },
+    transcriber={
+        "provider": "deepgram",
+        "model": "nova-2"
+    }
+)
+
+print(f"Created agent: {agent.id}")
+```
+
+### Async Support
+
+```python
+import asyncio
+from itellicoai import AsyncItellicoAI
+
+async def main():
+    client = AsyncItellicoAI(api_key="your-api-key")
+
+    # List agents asynchronously
+    agents = await client.agents.list()
+
+    for agent in agents:
+        print(f"Agent: {agent.name}")
+
+asyncio.run(main())
+```
+
+### Common Operations
+
+<AccordionGroup>
+  <Accordion title="List All Agents" icon="list">
+    ```python
+    # List all agents
+    agents = client.agents.list()
+
+    for agent in agents:
+        print(f"{agent.name} - {agent.id}")
+    ```
+  </Accordion>
+
+  <Accordion title="Retrieve Agent" icon="search">
+    ```python
+    # Get specific agent by ID
+    agent = client.agents.retrieve("agent_123abc")
+
+    print(f"Agent name: {agent.name}")
+    print(f"Model: {agent.model.model}")
+    ```
+  </Accordion>
+
+  <Accordion title="Update Agent" icon="pen">
+    ```python
+    # Update agent configuration
+    updated_agent = client.agents.update(
+        agent_id="agent_123abc",
+        name="Updated Support Agent",
+        instructions="You are a helpful customer support agent..."
+    )
+    ```
+  </Accordion>
+
+  <Accordion title="Delete Agent" icon="trash">
+    ```python
+    # Delete agent
+    client.agents.delete("agent_123abc")
+    ```
+  </Accordion>
+
+  <Accordion title="List Conversations" icon="comments">
+    ```python
+    # Get conversations for an agent
+    conversations = client.conversations.list(
+        agent_id="agent_123abc",
+        limit=50
+    )
+
+    for conv in conversations:
+        print(f"Call from: {conv.customer_phone}")
+        print(f"Duration: {conv.duration}s")
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Error Handling
+
+```python
+from itellicoai import ItellicoAI
+from itellicoai.exceptions import (
+    AuthenticationError,
+    NotFoundError,
+    RateLimitError,
+    APIError
+)
+
+client = ItellicoAI(api_key="your-api-key")
+
+try:
+    agent = client.agents.retrieve("agent_123abc")
+except AuthenticationError:
+    print("Invalid API key")
+except NotFoundError:
+    print("Agent not found")
+except RateLimitError:
+    print("Rate limit exceeded")
+except APIError as e:
+    print(f"API error: {e.message}")
+```
+
+### Environment Variables
+
+```python
+import os
+from itellicoai import ItellicoAI
+
+# API key automatically loaded from ITELLICO_API_KEY env var
+client = ItellicoAI()
+
+# Or set explicitly
+client = ItellicoAI(api_key=os.getenv("ITELLICO_API_KEY"))
+```
+
+---
+
+## TypeScript SDK
+
+### Installation
+
+<CodeGroup>
+```bash npm
+npm install itellicoai
+```
+
+```bash yarn
+yarn add itellicoai
+```
+
+```bash pnpm
+pnpm add itellicoai
+```
+</CodeGroup>
+
+### Requirements
+
+- Node.js 18.10.0+
+- Full TypeScript support
+
+### Quick Start
+
+```typescript
+import { ItellicoAI } from 'itellicoai';
+
+// Initialize client
+const client = new ItellicoAI({
+  apiKey: 'your-api-key',
+});
+
+// Create an agent
+const agent = await client.agents.create({
+  name: 'Customer Support Agent',
+  model: {
+    provider: 'azure',
+    model: 'gpt-4o-mini',
+  },
+  voice: {
+    provider: 'elevenlabs',
+    voiceId: '21m00Tcm4TlvDq8ikWAM',
+  },
+  transcriber: {
+    provider: 'deepgram',
+    model: 'nova-2',
+  },
+});
+
+console.log(`Created agent: ${agent.id}`);
+```
+
+### Common Operations
+
+<AccordionGroup>
+  <Accordion title="List All Agents" icon="list">
+    ```typescript
+    // List all agents
+    const agents = await client.agents.list();
+
+    agents.forEach(agent => {
+      console.log(`${agent.name} - ${agent.id}`);
+    });
+    ```
+  </Accordion>
+
+  <Accordion title="Retrieve Agent" icon="search">
+    ```typescript
+    // Get specific agent by ID
+    const agent = await client.agents.retrieve('agent_123abc');
+
+    console.log(`Agent name: ${agent.name}`);
+    console.log(`Model: ${agent.model.model}`);
+    ```
+  </Accordion>
+
+  <Accordion title="Update Agent" icon="pen">
+    ```typescript
+    // Update agent configuration
+    const updatedAgent = await client.agents.update('agent_123abc', {
+      name: 'Updated Support Agent',
+      instructions: 'You are a helpful customer support agent...',
+    });
+    ```
+  </Accordion>
+
+  <Accordion title="Delete Agent" icon="trash">
+    ```typescript
+    // Delete agent
+    await client.agents.delete('agent_123abc');
+    ```
+  </Accordion>
+
+  <Accordion title="List Conversations" icon="comments">
+    ```typescript
+    // Get conversations for an agent
+    const conversations = await client.conversations.list({
+      agentId: 'agent_123abc',
+      limit: 50,
+    });
+
+    conversations.forEach(conv => {
+      console.log(`Call from: ${conv.customerPhone}`);
+      console.log(`Duration: ${conv.duration}s`);
+    });
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Error Handling
+
+```typescript
+import {
+  ItellicoAI,
+  AuthenticationError,
+  NotFoundError,
+  RateLimitError,
+  APIError,
+} from 'itellicoai';
+
+const client = new ItellicoAI({ apiKey: 'your-api-key' });
+
+try {
+  const agent = await client.agents.retrieve('agent_123abc');
+} catch (error) {
+  if (error instanceof AuthenticationError) {
+    console.error('Invalid API key');
+  } else if (error instanceof NotFoundError) {
+    console.error('Agent not found');
+  } else if (error instanceof RateLimitError) {
+    console.error('Rate limit exceeded');
+  } else if (error instanceof APIError) {
+    console.error(`API error: ${error.message}`);
+  }
+}
+```
+
+### Environment Variables
+
+```typescript
+import { ItellicoAI } from 'itellicoai';
+
+// API key automatically loaded from ITELLICO_API_KEY env var
+const client = new ItellicoAI();
+
+// Or set explicitly
+const client = new ItellicoAI({
+  apiKey: process.env.ITELLICO_API_KEY,
+});
+```
+
+### TypeScript Types
+
+Full TypeScript definitions included:
+
+```typescript
+import type {
+  Agent,
+  AgentCreateParams,
+  AgentUpdateParams,
+  Conversation,
+  PhoneNumber,
+} from 'itellicoai';
+
+const createAgent = async (
+  params: AgentCreateParams
+): Promise<Agent> => {
+  const client = new ItellicoAI();
+  return await client.agents.create(params);
+};
+```
+
+---
+
+## SDK vs REST API Comparison
+
+### Creating an Agent
+
+<CodeGroup>
+```python Python SDK
+from itellicoai import ItellicoAI
+
+client = ItellicoAI(api_key="your-api-key")
+
+agent = client.agents.create(
+    name="Support Agent",
+    model={
+        "provider": "azure",
+        "model": "gpt-4o-mini"
+    }
+)
+```
+
+```typescript TypeScript SDK
+import { ItellicoAI } from 'itellicoai';
+
+const client = new ItellicoAI({ apiKey: 'your-api-key' });
+
+const agent = await client.agents.create({
+  name: 'Support Agent',
+  model: {
+    provider: 'azure',
+    model: 'gpt-4o-mini',
+  },
+});
+```
+
+```bash REST API
+curl -X POST https://api.itellico.ai/v1/agents \
+  -H "X-API-Key: your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Support Agent",
+    "model": {
+      "provider": "azure",
+      "model": "gpt-4o-mini"
+    }
+  }'
+```
+</CodeGroup>
+
+### Benefits of SDK Approach
+
+| Feature | SDK | REST API |
+|---------|-----|----------|
+| **Type Safety** | ✅ Full type hints/definitions | ❌ No built-in types |
+| **Auto-completion** | ✅ IDE support | ❌ Manual reference needed |
+| **Error Handling** | ✅ Structured exceptions | ⚠️ HTTP status codes only |
+| **Authentication** | ✅ Automatic header management | ⚠️ Manual header setup |
+| **Boilerplate** | ✅ Minimal | ❌ More verbose |
+| **JSON Parsing** | ✅ Automatic | ⚠️ Manual |
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Use Environment Variables" icon="lock">
+    Never hardcode API keys in your source code:
+
+    ```bash
+    # .env file
+    ITELLICO_API_KEY=your-api-key
+    ```
+
+    Both SDKs automatically read from `ITELLICO_API_KEY` environment variable.
+  </Accordion>
+
+  <Accordion title="Handle Errors Gracefully" icon="shield">
+    Always implement proper error handling for production applications:
+
+    ```python
+    try:
+        agent = client.agents.create(...)
+    except RateLimitError:
+        # Implement exponential backoff
+        time.sleep(60)
+        agent = client.agents.create(...)
+    except APIError as e:
+        logger.error(f"API error: {e}")
+        # Handle appropriately
+    ```
+  </Accordion>
+
+  <Accordion title="Use Async for High Throughput" icon="bolt">
+    For applications making many concurrent API calls, use async clients:
+
+    ```python
+    # Python
+    from itellicoai import AsyncItellicoAI
+
+    async def process_batch():
+        client = AsyncItellicoAI()
+        tasks = [client.agents.retrieve(id) for id in agent_ids]
+        return await asyncio.gather(*tasks)
+    ```
+  </Accordion>
+
+  <Accordion title="Leverage Type Safety" icon="check">
+    Use TypeScript or Python type hints to catch errors at development time:
+
+    ```typescript
+    // TypeScript catches this error before runtime
+    const agent = await client.agents.create({
+      name: 'Agent',
+      model: {
+        provider: 'invalid',  // Error: Type '"invalid"' is not assignable
+        model: 'gpt-4'
+      }
+    });
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Resources
+
+<CardGroup cols={2}>
+  <Card title="GitHub - Python" icon="github" href="https://github.com/stainless-sdks/itellicoai-python">
+    Python SDK source code and examples
+  </Card>
+  <Card title="GitHub - TypeScript" icon="github" href="https://github.com/stainless-sdks/itellicoai-typescript">
+    TypeScript SDK source code and examples
+  </Card>
+  <Card title="PyPI Package" icon="python" href="https://pypi.org/project/itellicoai/">
+    Python package on PyPI
+  </Card>
+  <Card title="NPM Package" icon="npm" href="https://www.npmjs.com/package/itellicoai">
+    TypeScript package on NPM
+  </Card>
+  <Card title="REST API Reference" icon="book" href="/api-reference/introduction">
+    Complete REST API documentation
+  </Card>
+  <Card title="OpenAPI Spec" icon="file-code" href="https://api.itellico.ai/v1/openapi.json">
+    OpenAPI specification file
+  </Card>
+</CardGroup>
+
+---
+
+## Support
+
+Having issues with the SDKs? We're here to help:
+
+- **GitHub Issues**: Report bugs on the respective SDK repositories
+- **Email Support**: [support@itellico.ai](mailto:support@itellico.ai)
+- **Documentation**: This docs site for guides and examples
+
+<Note>
+The SDKs are generated using [Stainless](https://stainlessapi.com) and automatically stay in sync with our REST API.
+</Note>
