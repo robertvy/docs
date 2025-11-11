@@ -31,6 +31,21 @@ graph LR
 4. **Text output** - Transcribed text sent to language model
 5. **LLM processing** - AI model generates response based on transcription
 
+<Panel>
+  <Info>
+    Picking a transcriber is a trade-off between latency, accuracy, and language coverage. Use this quick matrix while you read the sections below.
+  </Info>
+  <Columns cols={1}>
+    <Card title="Cheat sheet" icon="table-cells">
+      • **Deepgram Nova-3:** Fastest English + select EU/Asia languages<br/>
+      • **Deepgram Nova-2:** Balanced accuracy vs. cost, still real-time<br/>
+      • **Azure Standard:** Massive language coverage<br/>
+      • **Azure Premium:** Compliance + better noise handling<br/>
+      • **Azure Multilingual:** Auto-detect 2–5 languages per agent
+    </Card>
+  </Columns>
+</Panel>
+
 ---
 
 ## The Transcriber Catalog
@@ -336,7 +351,44 @@ Start with 20-50 high-priority keywords. Expand based on observed transcription 
 
 ---
 
-## Advanced Configuration
+## Updating via API
+
+Prefer automation? Patch your agent's transcriber directly from your CI/CD jobs.
+
+<CodeGroup>
+```bash update-transcriber.sh theme={null}
+curl --request PATCH \
+  --url "https://api.itellico.ai/v1/agents/$AGENT_UUID" \
+  --header "Authorization: Bearer $API_TOKEN" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "transcriber": {
+      "provider": "deepgram",
+      "model": "deepgram:nova-3:general",
+      "language": "en-US"
+    }
+  }'
+```
+
+```javascript updateTranscriber.mjs theme={null}
+await fetch(`https://api.itellico.ai/v1/agents/${agentUuid}`, {
+  method: "PATCH",
+  headers: {
+    Authorization: `Bearer ${process.env.API_TOKEN}`,
+    "content-type": "application/json"
+  },
+  body: JSON.stringify({
+    transcriber: {
+      provider: "azure",
+      model: "azure:stt:premium",
+      languages: ["en-US", "es-ES"]
+    }
+  })
+});
+```
+</CodeGroup>
+
+---
 
 ## Advanced Configuration
 

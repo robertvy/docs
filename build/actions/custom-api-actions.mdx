@@ -58,6 +58,29 @@ Agent: "Done! I've sent the tracking information to your email."
 
 This entire interaction happens in seconds during a live conversation, with no human intervention required.
 
+<CodeGroup>
+```bash lookup-order.sh theme={null}
+curl --request GET \
+  --url "https://api.company.com/orders" \
+  --header "Authorization: Bearer $API_TOKEN" \
+  --data-urlencode "phone={{ contact.phone_number }}"
+```
+
+```javascript sendTracking.js theme={null}
+await fetch("https://api.company.com/notifications/email", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${env.API_TOKEN}`,
+    "content-type": "application/json"
+  },
+  body: JSON.stringify({
+    email: contact.email,
+    tracking: context.order.tracking
+  })
+});
+```
+</CodeGroup>
+
 ---
 
 ## HTTP Method Support
@@ -146,6 +169,44 @@ DELETE operations are permanent. Ensure your agents only use DELETE actions when
 
 ---
 
+## Payload Reference
+
+Use consistent parameter names so your LLM instructions remain simple.
+
+<ParamField path="query phone" type="string" required placeholder="+14155551234">
+  Phone number (E.164). Commonly used to look up an existing customer record.
+</ParamField>
+
+<ParamField path="header X-API-Key" type="string" required placeholder="sk_live_xxx">
+  Shared secret or short-lived token required by your API gateway.
+</ParamField>
+
+<ParamField path="body metadata.order_id" type="string">
+  Optional identifier to correlate follow-up actions. Persist this in the conversation context.
+</ParamField>
+
+<ResponseField name="status" type="string" required>
+  Machine readable status (`success`, `not_found`, `error`).
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  The payload your LLM will read. Keep the schema shallow when possible.
+</ResponseField>
+
+<Expandable title="data fields">
+  <ResponseField name="tracking" type="string">
+    Tracking number returned by shipping provider.
+  </ResponseField>
+  <ResponseField name="eta" type="string">
+    Estimated delivery (ISO date).
+  </ResponseField>
+  <ResponseField name="actions" type="string[]">
+    Optional list of follow-up action IDs the agent may call next.
+  </ResponseField>
+</Expandable>
+
+---
+
 ## Creating a Custom Action
 
 <Steps>
@@ -188,6 +249,16 @@ DELETE operations are permanent. Ensure your agents only use DELETE actions when
   </Step>
 </Steps>
 
+<Columns cols={2}>
+  <Card title="API key header" icon="key">
+    Simplest option. Store the key in **Core → Secrets** and inject it as a static header.
+  </Card>
+
+  <Card title="OAuth 2.0 client credentials" icon="lock">
+    For services that issue short-lived tokens. Create a pre-action hook that exchanges client ID/secret for an access token and pass it to your action.
+  </Card>
+</Columns>
+
 ---
 
 ## Configuration Interface
@@ -228,6 +299,27 @@ DELETE operations are permanent. Ensure your agents only use DELETE actions when
 ```
 
 ---
+
+<RequestExample>
+  ```bash Lookup Order theme={null}
+  curl --request GET \
+    --url "https://api.company.com/orders?phone={{ contact.phone_number }}" \
+    --header "Authorization: Bearer {{ secrets.order_api_key }}"
+  ```
+</RequestExample>
+
+<ResponseExample>
+  ```json Order Response theme={null}
+  {
+    "status": "success",
+    "data": {
+      "order_id": "ORD-12345",
+      "tracking": "1Z999AA1234567890",
+      "eta": "2025-01-18"
+    }
+  }
+  ```
+</ResponseExample>
 
 ## Authentication Methods
 
@@ -499,7 +591,7 @@ For methods that accept body data, configure the JSON payload:
  }  
 
 
- ✅ Valid JSON   💡 Variables supported  
+ <Icon icon="check-circle" /> Valid JSON   <Icon icon="lightbulb" /> Variables supported  
 
 
 ```
@@ -780,10 +872,10 @@ Thorough testing ensures reliable integrations:
     - Your API's test console
 
     Verify:
-    - ✅ Endpoint is reachable
-    - ✅ Authentication works
-    - ✅ Request format is correct
-    - ✅ Response is as expected
+    - <Icon icon="check-circle" /> Endpoint is reachable
+    - <Icon icon="check-circle" /> Authentication works
+    - <Icon icon="check-circle" /> Request format is correct
+    - <Icon icon="check-circle" /> Response is as expected
   </Step>
 
   <Step title="Test with Static Data">
@@ -1279,8 +1371,8 @@ After successfully handling a customer request:
   <Accordion title="Use HTTPS Only" icon="lock">
     Always use HTTPS endpoints, never HTTP:
 
-    ✅ `https://api.company.com/endpoint`
-    ❌ `http://api.company.com/endpoint`
+    <Icon icon="check" /> `https://api.company.com/endpoint`
+    <Icon icon="xmark" /> `http://api.company.com/endpoint`
 
     HTTP transmits data in plain text, exposing sensitive information.
   </Accordion>

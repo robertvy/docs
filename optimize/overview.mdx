@@ -1,0 +1,65 @@
+---
+title: "Optimize Overview"
+description: "Use analytics, goals, and reviews to keep agents sharp"
+icon: "gauge-high"
+---
+
+## Optimization Pillars
+
+itellicoAI exposes three feedback loops for continuous improvement:
+
+1. **Conversation analytics** – every call logs duration, goal completion, actions, and post-call analysis (`backend/django_app/conversations/models.py`).
+2. **Goal + Post-call reports** – configurable in the agent editor under **Operations → Goals / Post-call analysis**. Results show up in analytics dashboards and CSV exports.
+3. **Knowledge + prompt tuning** – update instructions, knowledge bases, or actions based on what you learn from transcripts.
+
+## Weekly Review Routine
+
+<Steps>
+  <Step title="Check dashboards">
+    Open **Analytics → Conversations** and filter by agent. Look at completion rate, average handle time, goal achievement, and transfer rate.
+  </Step>
+  <Step title="Sample transcripts">
+    Pull 5-10 transcripts from **Conversations → Logs**. Spot issues like repeated clarifications, missing knowledge, or wrong actions.
+  </Step>
+  <Step title="Adjust goals & actions">
+    Update goal definitions, add post-call questions, or tweak custom actions so agents capture the right outcomes.
+  </Step>
+  <Step title="Refresh knowledge & prompts">
+    Add missing FAQs to knowledge bases or refine instructions (e.g., new promotions, pricing, business hours).
+  </Step>
+</Steps>
+
+## Tools That Help
+
+<CardGroup cols={2}>
+  <Card title="Goal Analysis" icon="bullseye">
+    Configure goals in **Operations → Goals**. The background job (`conversations/tasks.py`) scores each call so you can filter by Achieved / Missed and review reasoning.
+  </Card>
+  <Card title="Post-call Analysis" icon="clipboard-list">
+    Add YES/NO, multiple choice, or free-form questions. The answers appear in the Conversation detail pane for quick QA.
+  </Card>
+  <Card title="Conversation Exports" icon="file-arrow-down">
+    Use the export feature to send transcripts, tool payloads, and analytics to your BI stack for deeper analysis.
+  </Card>
+  <Card title="Knowledge Metrics" icon="book">
+    In **Knowledge → Bases** you can see token counts, ingestion status, and last refresh for each collection—handy when agents miss answers.
+  </Card>
+</CardGroup>
+
+## Optimization Playbook
+
+- **Reduce transfers:** inspect calls with transfers, update instructions to handle more in automation, or add a custom action.
+- **Boost first-call resolution:** create conversation goals around resolution and monitor the goal dashboard.
+- **Improve CSAT:** add post-call questions like “Was this helpful?” and iterate on instructions based on low-scoring calls.
+- **Control costs:** shorten scripts, tighten inactivity settings, or reuse the same agent across channels instead of cloning configurations.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Analytics Dashboard" icon="chart-bar" href="/optimize/analytics">
+    Deep dive into metrics and filters.
+  </Card>
+  <Card title="Knowledge Base Guides" icon="book" href="/build/knowledge/architecture">
+    Keep your knowledge up to date to reduce escalations.
+  </Card>
+</CardGroup>

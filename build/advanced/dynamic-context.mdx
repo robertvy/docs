@@ -14,6 +14,20 @@ This capability bridges the gap between your AI agents and your business systems
 Dynamic Context is configured in the Operations or Operational Controls section of agent settings. It allows you to specify an external endpoint that returns JSON data used to personalize the agent's instructions and conversation.
 </Note>
 
+<Panel>
+  <Info>
+    Dynamic context requests fire before the greeting. Keep your API low-latency (&lt;1s) and return only the data you need for prompts.
+  </Info>
+  <Columns cols={1}>
+    <Card title="Quick checklist" icon="list-check">
+      <Icon icon="check-circle" /> HTTPS endpoint reachable from the backend<br/>
+      <Icon icon="check-circle" /> Secret stored in **Core → Secrets**<br/>
+      <Icon icon="check-circle" /> JSON payload under 32 KB<br/>
+      <Icon icon="check-circle" /> Safe fallbacks when data is missing
+    </Card>
+  </Columns>
+</Panel>
+
 ---
 
 ## What is Dynamic Context?
@@ -85,59 +99,68 @@ Result:
 9. Call proceeds with full context
 ```
 
-**Example request:**
-```http
-GET https://api.company.com/customer-context
-Headers:
+<RequestExample>
+  ```http Customer Context Request theme={null}
+  GET https://api.company.com/customer-context
   Authorization: Bearer your_api_token_here
   Content-Type: application/json
 
-Query Parameters:
-  phone_number=+15551234567
-  email=john@example.com
-  customer_id=12345
-```
+  Query Parameters:
+    phone_number=+15551234567
+    email=john@example.com
+    customer_id=12345
+  ```
+</RequestExample>
 
-**Example response:**
-```json
-{
-  "account": {
-    "customer_id": "12345",
-    "tier": "VIP",
-    "status": "active",
-    "created_date": "2022-03-15",
-    "lifetime_value": 15680.00,
-    "balance": 0.00
-  },
-  "recent_orders": [
-    {
-      "order_id": "ORD-789",
-      "status": "shipped",
-      "tracking": "1Z999AA1234567890",
-      "items": ["Blue Widget", "Widget Stand"],
-      "total": 127.99
+<ResponseExample>
+  ```json Customer Context Response theme={null}
+  {
+    "account": {
+      "customer_id": "12345",
+      "tier": "VIP",
+      "status": "active",
+      "created_date": "2022-03-15",
+      "lifetime_value": 15680.0,
+      "balance": 0.0
     },
-    {
-      "order_id": "ORD-756",
-      "status": "delivered",
-      "delivered_date": "2025-10-28"
+    "recent_orders": [
+      {
+        "order_id": "ORD-789",
+        "status": "shipped",
+        "tracking": "1Z999AA1234567890",
+        "items": ["Blue Widget", "Widget Stand"],
+        "total": 127.99
+      }
+    ],
+    "support_tickets": [
+      {
+        "ticket_id": "TKT-456",
+        "status": "open",
+        "subject": "Billing question",
+        "opened_date": "2025-11-08",
+        "priority": "normal"
+      }
+    ],
+    "preferences": {
+      "contact_method": "email",
+      "language": "en-US",
+      "marketing_opt_in": true
     }
-  ],
-  "support_tickets": [
-    {
-      "ticket_id": "TKT-456",
-      "status": "open",
-      "subject": "Billing question",
-      "opened_date": "2025-11-08",
-      "priority": "normal"
-    }
-  ],
-  "preferences": {
-    "contact_method": "email",
-    "language": "en-US",
-    "marketing_opt_in": true
   }
-}
+  ```
+</ResponseExample>
+
+```mermaid theme={null}
+sequenceDiagram
+    participant Agent
+    participant ContextAPI
+    participant CRM
+    participant Billing
+    Agent->>ContextAPI: GET /customer-context
+    ContextAPI->>CRM: Lookup contact
+    ContextAPI->>Billing: Fetch balance
+    ContextAPI-->>Agent: Context JSON
+    Agent->>Agent: Render personalized prompt
 ```
 
 **Using in instructions:**
@@ -215,6 +238,15 @@ Account Balance: ${{ context.account.balance }}
     Context fetching now active for all calls
   </Step>
 </Steps>
+
+<Columns cols={2}>
+  <Card title="Inbound calls" icon="phone">
+    Includes caller ANI/CLI, SIP headers, ring group, and IVR selections. Prefetch billing data, outage status, or loyalty tier before the agent speaks.
+  </Card>
+  <Card title="Outbound campaigns" icon="arrow-up-right-dots">
+    Adds campaign identifiers (`campaign_id`, `attempt`, `list_id`). Use them to select the right script, suppression rules, or follow-up reminders.
+  </Card>
+</Columns>
 
 ### Context Endpoint Configuration
 
@@ -563,8 +595,8 @@ Status: 200 OK (152ms)
   "support_tickets": [ ... ]
 }
 
-✅ Valid JSON received
-ℹ️  Available as {{ context.account.tier }}, etc.
+<Icon icon="check-circle" /> Valid JSON received
+<Icon icon="info-circle" />  Available as {{ context.account.tier }}, etc.
 ```
 
 ### Common Test Scenarios

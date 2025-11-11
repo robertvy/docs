@@ -1,0 +1,52 @@
+---
+title: "Testübersicht"
+description: "So prüfst du deinen Agenten vor dem Go-Live"
+icon: "vial"
+---
+
+## Testflächen in der App
+
+- **Web-Simulator** – direkt im Agenteneditor. Nutzt denselben LiveKit-Stack wie Produktion, inkl. Barge-In, DTMF und Aktionen.
+- **Telefonischer Testanruf** – generiert eine temporäre Rufnummer. Ideal, um Carrier-Audio, Latenz und IVR-Navigation zu prüfen.
+
+Beide Varianten schreiben Gesprächsprotokolle. Unter **Konversationen → Logs** kannst du Audio anhören, Transkripte prüfen und Tool-Aufrufe einsehen.
+
+## Checkliste
+
+<Steps>
+  <Step title="Simulatortest">
+    Gruß, Einstiegsfrage und Aktionen prüfen – Probleme lassen sich hier am schnellsten beheben.
+  </Step>
+  <Step title="Telefonie-Test">
+    Zwei Anrufe (Headset & Lautsprecher). Auf Echo, Lautstärke und Unterbrechungen achten.
+  </Step>
+  <Step title="Edge Cases">
+    Kunden schweigen lassen, mitten im Satz unterbrechen und jede Aktion einmal auslösen.
+  </Step>
+  <Step title="Log prüfen">
+    In den Logs nach DTMF-Werten, Aktionen und Goal-Analysen schauen. Fehlende Daten sofort fixen.
+  </Step>
+</Steps>
+
+## Tipps
+
+<CardGroup cols={2}>
+  <Card title="Kontext zurücksetzen" icon="repeat">
+    Mit **Reset test** im Simulator lässt sich das Gespräch sofort neu starten.
+  </Card>
+  <Card title="DTMF-Debugging" icon="phone-keypad">
+    Im Log steht `conversation_data.custom_data.last_dtmf_input`. Ist der Wert leer, prüfe die DTMF-Einstellungen des Agents.
+  </Card>
+  <Card title="Provider vergleichen" icon="arrows-left-right">
+    Zwischen Deepgram und Azure wechseln, Testskript wiederholen und den besseren Wert beibehalten.
+  </Card>
+  <Card title="Ergebnisse teilen" icon="share-nodes">
+    Log-Link posten – Teammitglieder können die Aufnahme im Browser anhören.
+  </Card>
+</CardGroup>
+
+## Nächste Schritte
+
+<Card title="Launch-Übersicht" icon="rocket" href="/de/launch/overview">
+  Prüfe, wie du Rufnummern, Kampagnen oder Widgets live schaltest.
+</Card>
