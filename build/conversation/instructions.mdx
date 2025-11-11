@@ -8,8 +8,6 @@ icon: "pen"
 
 The Instructions field (also called the system prompt) is where you define your agent's personality, conversational style, objectives, and behavioral rules. This is the most important configuration for your agent's success.
 
-## What Are Instructions?
-
 Instructions are a text block sent to the AI model with every conversation turn. They tell the model:
 - **Who it is** (role and identity)
 - **How to behave** (tone, style, guardrails)
@@ -17,14 +15,14 @@ Instructions are a text block sent to the AI model with every conversation turn.
 - **When to use tools** (actions, knowledge, transfers)
 
 <Note>
-The platform automatically adds conversation transcript, contact data, and knowledge base content alongside your instructions. Focus your instructions on rules only you can provide.
+The platform automatically provides conversation history, contact data, and knowledge base content. Focus your instructions on rules and guidance only you can provide.
 </Note>
+
+---
 
 ## The Instruction Editor
 
-### Jinja-Aware Editor Features
-
-The instruction editor includes helpful features:
+The instruction editor includes helpful features to make writing instructions easier:
 
 <CardGroup cols={2}>
   <Card title="Large Text Editor" icon="text">
@@ -34,7 +32,7 @@ The instruction editor includes helpful features:
     Full Jinja2 templating with variables and conditionals
   </Card>
   <Card title="Prompt Templates" icon="book">
-    Pre-built templates for lead qualification, appointment booking, customer feedback, and more
+    Pre-built templates for common use cases
   </Card>
   <Card title="Language Switcher" icon="language">
     Templates available in English and German
@@ -44,7 +42,9 @@ The instruction editor includes helpful features:
   </Card>
 </CardGroup>
 
-### Using Prompt Templates
+---
+
+## Using Prompt Templates
 
 The instruction editor includes a **Prompt Library** with ready-to-use templates:
 
@@ -52,7 +52,7 @@ The instruction editor includes a **Prompt Library** with ready-to-use templates
 - **Appointment Booking** - Service scheduling with confirmations
 - **Customer Feedback** - NPS surveys with recovery workflows
 - **Information Gathering** - Research and data collection
-- **Outreach Campaign** - Cold calling with value-first approach
+- **Outreach** - Cold calling with value-first approach
 - **Industry-Specific** - Healthcare, real estate, home services, and more
 
 **To use a template:**
@@ -63,7 +63,7 @@ The instruction editor includes a **Prompt Library** with ready-to-use templates
 5. Test and refine based on your specific needs
 
 <Tip>
-Templates follow the proven structure: Role → Goal → Conversation Flow → Quick Reference. Start with a template and adapt it rather than starting from scratch.
+Templates follow a proven structure: Role → Goal → Conversation Flow → Quick Reference. Start with a template and adapt it rather than starting from scratch.
 </Tip>
 
 ---
@@ -115,274 +115,75 @@ When a customer mentions billing issues, provide basic information but always of
 
 ---
 
-## Advanced Instruction Components
+## What the Agent Already Knows
 
-### 1. Role & Identity
+The platform automatically provides the following context to your agent with every conversation turn. **You don't need to include these in your instructions:**
 
-Define who the agent represents:
+<AccordionGroup>
+  <Accordion title="Conversation Transcript" icon="messages">
+    The complete conversation history between the agent and the contact, including all messages and tool calls.
+  </Accordion>
 
-```
-You are Riley, the voice assistant for TechCorp's technical support department.
-You represent our commitment to excellent customer service.
-```
+  <Accordion title="Contact Information" icon="user">
+    Contact data like name, email, phone number, and any custom fields you've added. Access via variables like `{{ contact.first_name }}`.
+  </Accordion>
 
-**Tips:**
-- Give your agent a name (humanizes the experience)
-- Explain what department/function they represent
-- Include brand values if relevant
+  <Accordion title="Knowledge Base Content" icon="book">
+    When relevant, the platform automatically retrieves and includes content from your knowledge bases. You just need to tell the agent when and how to use it.
+  </Accordion>
 
-### 2. Objectives & Goals
+  <Accordion title="Available Actions" icon="bolt">
+    The platform tells the agent what actions are available (transfer, book appointment, custom API actions). You just need to explain when to use them.
+  </Accordion>
 
-State what the agent should accomplish:
+  <Accordion title="Current Date/Time" icon="clock">
+    The agent automatically knows the current date, time, and timezone.
+  </Accordion>
+</AccordionGroup>
 
-```
-Your primary objective is to resolve customer technical issues efficiently.
-
-Goals per conversation:
-1. Understand the customer's specific problem
-2. Gather necessary information (product, error codes, steps taken)
-3. Provide a solution or workaround when possible
-4. If unresolved, create a support ticket and set expectations
-```
-
-### 3. Conversation Flow
-
-Describe how conversations should progress:
-
-```
-Conversation flow:
-1. Greet the customer and confirm you understand their issue
-2. Ask clarifying questions if needed (one at a time)
-3. Check the knowledge base for relevant solutions
-4. Walk through troubleshooting steps clearly
-5. Confirm if the solution worked
-6. Offer to help with anything else
-7. Thank them and end the call professionally
-```
-
-### 4. Tone & Style
-
-Specify communication approach:
-
-```
-Tone: Friendly and conversational, but professional
-- Use simple language, avoid jargon
-- Keep responses under 30 seconds when possible
-- Show empathy for customer frustration
-- Be patient with less technical customers
-- Maintain professionalism even if customer is upset
-```
-
-### 5. Knowledge Usage
-
-Instruct when to reference knowledge:
-
-```
-Knowledge Base Usage:
-- Search the "Product FAQs" collection for product-specific questions
-- Use the "Troubleshooting Guide" for technical issues
-- Reference the "Return Policy" when customers ask about returns
-- Summarize policies in your own words - don't read verbatim
-- If knowledge base contradicts live information, trust live data
-```
-
-### 6. Action Triggers
-
-Explain when to use actions:
-
-```
-Actions:
-
-Transfer to Human Support:
-- Use when issue requires escalation beyond your capabilities
-- Use when customer explicitly requests human agent
-- Always explain why you're transferring before initiating
-
-Book Appointment:
-- Use when customer needs in-person service
-- Confirm date/time before booking
-- Ask for email if not in contact data
-- If booking fails, apologize and offer alternatives
-
-End Call:
-- Only use after confirming all customer needs addressed
-- Always ask "Is there anything else I can help with?" first
-```
-
-### 7. Guardrails & Restrictions
-
-Define what NOT to do:
-
-```
-Important restrictions:
-- NEVER discuss competitor products or make comparisons
-- NEVER promise refunds - transfer to billing instead
-- NEVER share customer data with unverified callers
-- NEVER diagnose hardware issues - schedule technician visits
-- If asked about topics outside your scope, politely decline and transfer
-```
+<Warning>
+**Don't repeat system-provided information in your instructions.** Focus on behavioral rules, conversation flow, and decision-making guidance instead.
+</Warning>
 
 ---
 
-## Using Variables
+## Common Mistakes
 
-### Contact Variables
+Avoid these common pitfalls when writing instructions:
 
-Reference customer data in your instructions:
+<Warning>
+**Instructions too long** - Keep instructions under 1000 words. Long instructions confuse the model and slow response times.
+</Warning>
 
-```
-The customer's name is {{ contact.first_name | default("there") }}.
-Their account type is {{ contact.account_type | default("standard") }}.
-They are located in {{ contact.timezone | default("America/New_York") }}.
+<Warning>
+**Too vague** - "Be helpful" doesn't provide actionable guidance. Instead: "Answer questions in under 30 seconds, ask one clarifying question at a time, and confirm understanding before providing solutions."
+</Warning>
 
-{% if contact.account_type == "VIP" %}
-Remember to acknowledge their VIP status and thank them for their loyalty.
-{% endif %}
-```
+<Warning>
+**Contradictory rules** - Conflicting instructions confuse the agent. Review carefully to ensure guidelines don't contradict each other.
+</Warning>
 
-### Campaign Variables
+<Warning>
+**Hardcoded facts in instructions** - Facts, product details, and policies belong in knowledge bases, not instructions. Instructions should contain behavioral rules and conversation guidance.
+</Warning>
 
-Use campaign context for outbound calls:
+<Warning>
+**Overly complex logic** - Deeply nested conditionals and complex Jinja logic often fail. Keep logic simple and clear.
+</Warning>
 
-```
-You are calling as part of the {{ campaign.name }} campaign.
-The purpose is {{ campaign.description }}.
+<Warning>
+**Incorrect action names** - Always reference exact action names from the Actions section. Mismatched names prevent the agent from using actions correctly.
+</Warning>
 
-Reference this information:
-- Offer: {{ context.current_offer }}
-- Deadline: {{ context.offer_deadline }}
-```
-
----
-
-## Common Patterns
-
-### Pattern: Multi-Step Process
-
-```
-Follow these steps in order:
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
-
-If interrupted, return to the first incomplete step before proceeding.
-```
-
-### Pattern: Conditional Logic
-
-```
-{% if contact.language == "es" %}
-Speak in Spanish and use formal addressing (usted).
-{% else %}
-Speak in English conversationally.
-{% endif %}
-```
-
-### Pattern: Error Handling
-
-```
-If the [Action Name] action fails:
-1. Apologize sincerely: "I apologize, I'm having trouble with that"
-2. Explain what went wrong briefly
-3. Offer alternative: [describe alternative]
-4. If alternative also fails, transfer to [destination]
-```
-
-### Pattern: Empathy & Acknowledgment
-
-```
-When customers express frustration:
-- Acknowledge their feelings: "I understand how frustrating that must be"
-- Apologize when appropriate: "I'm sorry you're experiencing this"
-- Take ownership: "Let me see what I can do to help"
-- Avoid defensive language
-```
-
----
-
-## Testing Your Instructions
-
-### Test Scenarios
-
-Create test cases covering:
-1. **Happy path:** Normal, successful conversation
-2. **Missing information:** Agent needs to ask for details
-3. **Action execution:** Agent uses actions correctly
-4. **Knowledge retrieval:** Agent references knowledge appropriately
-5. **Escalation:** Agent transfers when needed
-6. **Edge cases:** Unusual requests, interruptions, errors
-
-### Using the Test Interface
-
-1. Click **Test Call** in top-right
-2. Click **Start Web Call**
-3. Run through your test scenarios
-4. Review transcript for:
-   - Did agent follow instructions?
-   - Was tone appropriate?
-   - Were actions triggered correctly?
-   - Did agent access knowledge when needed?
-
-### Iterating Based on Tests
-
-Common issues and fixes:
+### Quick Fixes
 
 | Issue | Fix |
 |-------|-----|
 | Agent too verbose | Add: "Keep responses under 25 seconds" |
-| Doesn't use actions | Add explicit triggers and examples |
-| Ignores knowledge | Reference collection names specifically |
-| Wrong tone | Add more tone examples and constraints |
-| Interrupts too much | Adjust VAD, add conversational pacing |
-
----
-
-## Best Practices
-
-<AccordionGroup>
-  <Accordion title="Keep It Focused" icon="bullseye">
-    Don't write everything you know about your business. Focus on rules, objectives, and behavioral guidelines. Let knowledge bases handle facts and details.
-  </Accordion>
-
-  <Accordion title="Be Specific" icon="crosshairs">
-    Vague: "Be helpful"
-    Specific: "Answer questions in under 30 seconds, ask one clarifying question at a time, and confirm understanding before providing solutions"
-  </Accordion>
-
-  <Accordion title="Use Examples" icon="lightbulb">
-    Show the agent how to respond in specific situations:
-
-    ```
-    When customer says "I want to cancel":
-    - Don't immediately cancel
-    - Ask: "I can help with that. May I ask what's prompting the cancellation?"
-    - Listen to concerns and address if possible
-    - If they still want to cancel, use the Cancel Account action
-    ```
-  </Accordion>
-
-  <Accordion title="Test Thoroughly" icon="vial">
-    Always test after changing instructions. Small wording changes can significantly affect behavior.
-  </Accordion>
-
-  <Accordion title="Version Control" icon="code-branch">
-    Before major changes:
-    - Copy current instructions to Description or Notes
-    - Note the date and what changed
-    - Or duplicate the entire agent for A/B testing
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Common Mistakes to Avoid
-
-❌ **Too long:** Instructions over 1000 words often confuse the model
-❌ **Too vague:** "Be nice" doesn't provide actionable guidance
-❌ **Contradictory:** Conflicting rules confuse the agent
-❌ **Overly complex:** Nested conditionals and complex logic often fail
-❌ **Hardcoded facts:** Facts belong in knowledge bases, not instructions
-❌ **Missing action names:** Reference exact action names from UI
+| Doesn't use actions | Add explicit triggers: "When [situation], use [action name]" |
+| Ignores knowledge | Reference collection names: "Check the Product FAQs collection for..." |
+| Wrong tone | Add specific tone examples and constraints |
+| Interrupts customers | Add: "Let customers finish speaking before responding" |
 
 ---
 
@@ -390,7 +191,7 @@ Common issues and fixes:
 
 <CardGroup cols={2}>
   <Card title="Prompt Engineering Guide" icon="book" href="/build/conversation/prompt-engineering-guide">
-    Comprehensive guide to advanced prompt techniques
+    Advanced techniques for writing effective instructions
   </Card>
   <Card title="Greeting Messages" icon="hand-wave" href="/build/conversation/greeting-messages">
     Configure how conversations start
@@ -399,6 +200,6 @@ Common issues and fixes:
     Master Jinja templating and variables
   </Card>
   <Card title="Test Your Agent" icon="vial" href="/test/test-in-dashboard">
-    Learn how to test effectively
+    Learn how to test your agent effectively
   </Card>
 </CardGroup>

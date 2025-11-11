@@ -63,28 +63,6 @@ IMPORTANT: This is a VIP customer. Provide priority service.
 {% endif %}
 ```
 
-### Campaign Variables (Outbound)
-
-Access outbound campaign context:
-
-```jinja
-{{ campaign.name }}
-{{ campaign.description }}
-{{ context.call_reason }}
-{{ context.current_offer }}
-{{ context.offer_deadline }}
-```
-
-**Example usage:**
-
-```
-You are calling as part of the {{ campaign.name }} campaign.
-Purpose: {{ campaign.description }}
-
-Mention the current offer: {{ context.current_offer }}
-Deadline: {{ context.offer_deadline }}
-```
-
 ### Organization Variables
 
 Access your company information:
@@ -256,26 +234,7 @@ How can I help you today?
 {% endif %}
 ```
 
-### Example 2: Outbound Campaign Context
-
-```jinja
-You are calling {{ contact.first_name | default("the contact") }} as part of the {{ campaign.name }} campaign.
-
-Campaign objective: {{ campaign.description }}
-
-Reference these details:
-- Current offer: {{ context.current_offer }}
-- Offer valid until: {{ context.offer_deadline }}
-- Lead source: {{ context.lead_source | default("website") }}
-
-{% if context.lead_source == "webinar" %}
-They attended our webinar, so they're familiar with the product basics.
-{% else %}
-They may need a full product introduction.
-{% endif %}
-```
-
-### Example 3: Time-Based Instructions
+### Example 2: Time-Based Instructions
 
 ```jinja
 Current time: {{ now().strftime("%H:%M") }}
@@ -356,7 +315,6 @@ Add debug output temporarily:
 <!-- DEBUG INFO (remove after testing) -->
 Name: {{ contact.first_name | default("MISSING") }}
 Account Type: {{ contact.account_type | default("MISSING") }}
-Campaign: {{ campaign.name | default("MISSING") }}
 <!-- END DEBUG -->
 ```
 
@@ -410,8 +368,7 @@ Campaign: {{ campaign.name | default("MISSING") }}
     Variables used:
     - contact.first_name (personalization)
     - contact.account_type (VIP detection)
-    - campaign.name (outbound context)
-    - context.current_offer (promotion reference)
+    - context.custom_field (additional context data)
     ```
   </Accordion>
 </AccordionGroup>

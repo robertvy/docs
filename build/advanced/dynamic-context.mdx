@@ -68,10 +68,10 @@ Before call starts:
    - Custom business data
 
 Agent Instructions (now personalized):
-"You are helping {{ customer.first_name }}, a {{ account_tier }} customer
-since {{ account_created_date }}. They have {{ open_tickets_count }} open
-support tickets and {{ pending_orders_count }} pending orders. Their
-account status is {{ account_status }}."
+"You are helping {{ contact.first_name }}, a {{ context.account.tier }} customer
+since {{ context.account.created_date }}. They have {{ context.support_tickets|length }} open
+support tickets and {{ context.pending_orders|length }} pending orders. Their
+account status is {{ context.account.status }}."
 
 Result:
 - Agent has full business context
@@ -89,7 +89,6 @@ Result:
 2. Agent triggers context endpoint request
 3. Request includes:
    - Contact information (phone, email, name, etc.)
-   - Campaign data (if outbound)
    - Any custom parameters you configure
 4. Your API receives request
 5. Your API queries relevant systems (CRM, database, etc.)
@@ -303,13 +302,12 @@ Endpoint: https://api.company.com/customer-context
 Method: POST
 Body: {
   "phone_number": "{{ contact.phone_number }}",
-  "email": "{{ contact.email }}",
-  "campaign_id": "{{ campaign.id }}"
+  "email": "{{ contact.email }}"
 }
 ```
 
 <Tip>
-Use template variables like `{{ contact.phone_number }}` to include dynamic data in your API requests. Any contact field or campaign variable is available.
+Use template variables like `{{ contact.phone_number }}` to include dynamic data in your API requests. Any contact field is available.
 </Tip>
 
 ---
