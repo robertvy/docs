@@ -1,9 +1,445 @@
 ---
 title: "Accounts and Subaccounts"
-description: "Manage your organization's accounts and subaccounts"
+description: "Organize teams with hierarchical accounts and manage access control"
 icon: "users"
 ---
 
-## Coming Soon
+## Overview
 
-Documentation for accounts and subaccounts management is coming soon.
+itellicoAI uses a hierarchical account system that allows you to organize your teams, manage access control, and scale your voice AI operations. Whether you're a single team or an enterprise with multiple departments, the accounts system provides flexibility and security.
+
+## Account Types
+
+### Main Accounts
+
+Main accounts (also called "root accounts" or "parent accounts") are top-level organizations with:
+
+- Independent billing and subscriptions
+- Full administrative control
+- Ability to create unlimited subaccounts (subscription dependent)
+- Separate API keys and integrations
+
+**Use cases:**
+- Individual companies
+- Agencies managing multiple clients
+- Enterprises with distinct business units
+
+### Subaccounts
+
+Subaccounts are nested under parent accounts and provide:
+
+- Isolated workspace for teams or clients
+- Separate agents, contacts, and conversations
+- Independent team members and permissions
+- Shared billing with parent account
+
+**Key characteristics:**
+- Unlimited nesting depth (subaccounts can have their own subaccounts)
+- Parent accounts can access child data
+- Children **cannot** access parent or sibling data
+- Each subaccount has its own owner and team
+
+**Use cases:**
+- Agency client workspaces
+- Department separation within enterprises
+- Regional or product-line divisions
+- Reseller customer accounts
+
+## Account Hierarchy
+
+The system follows a parent-child hierarchy with strict access control:
+
+```
+Parent Account (Agency)
+├── Subaccount A (Client 1)
+│   ├── Sub-subaccount A1 (Client 1 - Sales Team)
+│   └── Sub-subaccount A2 (Client 1 - Support Team)
+├── Subaccount B (Client 2)
+└── Subaccount C (Client 3)
+```
+
+### Access Rules
+
+- **Downward access**: Parents can access all child subaccounts
+- **No upward access**: Children cannot access parent data
+- **No sibling access**: Subaccounts cannot access each other
+- **Context switching**: Users with multiple memberships can switch between accounts
+
+## User Roles and Permissions
+
+Each team member has one of four roles:
+
+<AccordionGroup>
+  <Accordion title="Owner" icon="crown">
+    **Full administrative control** of the account.
+
+    Permissions:
+    - All permissions (wildcard access)
+    - Manage team members and roles
+    - Manage account settings and branding
+    - Create and manage subaccounts
+    - Manage billing and subscriptions
+    - Delete the account
+    - Cannot be removed by others
+
+    Limitations:
+    - Only **one owner** per account
+    - Owner role cannot be transferred via UI (contact support)
+  </Accordion>
+
+  <Accordion title="Admin" icon="user-shield">
+    **Administrative privileges** without billing access.
+
+    Permissions:
+    - Manage team members (add, remove, change roles)
+    - Manage account settings
+    - Create and manage subaccounts (if subscription allows)
+    - Manage integrations and API keys
+    - Full access to agents and conversations
+
+    Limitations:
+    - Cannot delete the account
+    - Cannot remove the owner
+    - Cannot access billing settings
+  </Accordion>
+
+  <Accordion title="Member" icon="user">
+    **Standard user** with full access to features.
+
+    Permissions:
+    - Create and edit agents
+    - Access all conversations
+    - Manage own content
+    - Use test features
+    - View team members
+
+    Limitations:
+    - Cannot manage team members
+    - Cannot change account settings
+    - Cannot create subaccounts
+  </Accordion>
+
+  <Accordion title="Viewer" icon="eye">
+    **Read-only access** to the account.
+
+    Permissions:
+    - View agents and configurations
+    - View conversation logs
+    - View team members
+
+    Limitations:
+    - Cannot create or edit anything
+    - Cannot access settings
+    - Cannot invite members
+  </Accordion>
+</AccordionGroup>
+
+## Managing Accounts
+
+### Creating a Main Account
+
+<Steps>
+  <Step title="Open Account Switcher">
+    Click your account name in the top navigation bar.
+  </Step>
+
+  <Step title="Create New Account">
+    Click **Create new account** and select **Main Account**.
+  </Step>
+
+  <Step title="Configure Account">
+    Enter the account name and confirm.
+
+    You become the **Owner** of the new account automatically.
+  </Step>
+</Steps>
+
+<Note>
+Main accounts have separate billing. You'll need to configure a subscription for the new account.
+</Note>
+
+### Creating a Subaccount
+
+<Steps>
+  <Step title="Navigate to Subaccounts">
+    Go to **Settings → Subaccounts** in your parent account.
+  </Step>
+
+  <Step title="Create Subaccount">
+    Click **Create Subaccount** and enter the name.
+
+    **Requirements:**
+    - You must be an Admin or Owner
+    - Your subscription must include subaccount management
+  </Step>
+
+  <Step title="Configure Team">
+    You become the Owner of the subaccount. Invite team members as needed.
+  </Step>
+</Steps>
+
+<Tip>
+Subaccounts inherit billing from the parent account. Usage is tracked separately but billed to the parent.
+</Tip>
+
+### Switching Between Accounts
+
+If you're a member of multiple accounts:
+
+1. Click your account name in the top navigation
+2. Browse the account tree
+3. Click any account to switch context
+4. All data, agents, and settings update to reflect the selected account
+
+<Note>
+The selected account persists per browser tab, allowing you to work in multiple accounts simultaneously.
+</Note>
+
+## Team Member Management
+
+### Inviting Members
+
+<Steps>
+  <Step title="Open Team Settings">
+    Navigate to **Settings → Team** in your account.
+  </Step>
+
+  <Step title="Send Invitation">
+    Click **Invite Members** and enter email addresses.
+
+    New members default to **Member** role.
+  </Step>
+
+  <Step title="Member Accepts">
+    Invitees receive an email with a secure link to accept or decline.
+
+    Invitations expire after 7 days.
+  </Step>
+</Steps>
+
+<Tip>
+You can resend or cancel pending invitations from the team page.
+</Tip>
+
+### Changing Member Roles
+
+**Admins and Owners** can change member roles:
+
+1. Go to **Settings → Team**
+2. Find the member in the list
+3. Click the role dropdown
+4. Select new role: Admin, Member, or Viewer
+
+<Warning>
+You cannot change the Owner role. Contact support to transfer ownership.
+</Warning>
+
+### Removing Members
+
+**Only Owners** can remove team members:
+
+1. Go to **Settings → Team**
+2. Click the menu (⋯) next to a member
+3. Select **Remove from team**
+4. Confirm removal
+
+<Note>
+- You cannot remove yourself
+- You cannot remove other Owners
+- Removed members lose all access immediately
+</Note>
+
+## API Keys and Programmatic Access
+
+API keys provide programmatic access to your account:
+
+### Creating API Keys
+
+1. Navigate to **Settings → API Keys**
+2. Click **Create API Key**
+3. Enter a label (e.g., "Production Server")
+4. **Copy the key immediately** - it's shown only once
+5. Store securely (treat like a password)
+
+<Warning>
+API keys have full access to your account. Never commit them to version control or share publicly.
+</Warning>
+
+### Key Format
+
+```
+sk-{8-char-prefix}.{55-random-chars}
+```
+
+- The prefix helps identify keys in logs
+- Full key is hashed and cannot be retrieved
+
+### Managing Keys
+
+- **Revoke**: Disable a key without deleting (can reactivate later)
+- **Delete**: Permanently remove a key
+- **Set expiration**: Auto-expire keys on a specific date
+- **Last used**: Track when each key was last accessed
+
+<Tip>
+Use separate API keys for different environments (development, staging, production) and rotate them regularly.
+</Tip>
+
+## Account Settings
+
+### Branding Customization
+
+Customize your account's appearance:
+
+- **Logo**: Square logo for account switcher and navigation
+- **Wide Logo**: Horizontal logo for login pages and emails
+- **Favicon**: Custom browser icon
+- **Colors**: Primary and secondary brand colors
+
+**To update branding:**
+1. Go to **Settings → Branding**
+2. Upload images or select colors
+3. Preview changes
+4. Save
+
+### Account Information
+
+Update basic account details:
+
+- **Account Name**: Display name throughout the platform
+- **Account Status**: Active/Inactive (soft disable)
+
+## Security Best Practices
+
+<AccordionGroup>
+  <Accordion title="Use the principle of least privilege" icon="shield-halved">
+    - Assign Viewer role for read-only needs
+    - Reserve Admin role for those managing the team
+    - Limit Owner role to 1-2 people
+  </Accordion>
+
+  <Accordion title="Organize with subaccounts" icon="sitemap">
+    - Create separate subaccounts for clients
+    - Use subaccounts to isolate departments
+    - Leverage hierarchy for access control
+  </Accordion>
+
+  <Accordion title="Manage API keys carefully" icon="key">
+    - Create separate keys per environment
+    - Revoke unused or compromised keys immediately
+    - Set expiration dates for temporary access
+    - Monitor last used timestamps
+  </Accordion>
+
+  <Accordion title="Audit team members regularly" icon="clipboard-list">
+    - Review team members quarterly
+    - Remove departing employees immediately
+    - Update roles when responsibilities change
+  </Accordion>
+</AccordionGroup>
+
+## Common Use Cases
+
+### Agency Managing Multiple Clients
+
+```
+Agency (Parent Account)
+├── Client A Subaccount
+│   └── Client A staff has full access
+├── Client B Subaccount
+│   └── Client B staff has full access
+└── Agency retains visibility across all clients
+```
+
+**Benefits:**
+- Clients can't see each other's data
+- Agency admins can manage all accounts
+- Separate billing tracking per client
+- Easy onboarding and offboarding
+
+### Enterprise with Regional Teams
+
+```
+Company HQ (Parent Account)
+├── North America Region
+│   ├── Sales Team
+│   └── Support Team
+├── Europe Region
+│   ├── Sales Team
+│   └── Support Team
+└── APAC Region
+```
+
+**Benefits:**
+- Regional autonomy with central oversight
+- Department-level access control
+- Consolidated billing and reporting
+- Flexible team structures
+
+### Reseller or White-Label Provider
+
+```
+Reseller (Parent Account)
+├── Customer 1 (Subaccount)
+├── Customer 2 (Subaccount)
+└── Customer 3 (Subaccount)
+```
+
+**Benefits:**
+- Customer isolation and privacy
+- Centralized billing to reseller
+- Custom branding per customer
+- Scalable customer onboarding
+
+## FAQs
+
+<AccordionGroup>
+  <Accordion title="How many subaccounts can I create?">
+    The number of subaccounts depends on your subscription plan. Contact sales to discuss your needs.
+  </Accordion>
+
+  <Accordion title="Can I transfer a subaccount to another parent?">
+    Contact support to transfer subaccounts between parents or convert subaccounts to main accounts.
+  </Accordion>
+
+  <Accordion title="Who gets billed for subaccount usage?">
+    The parent account is responsible for all subaccount billing. Usage is tracked separately for reporting.
+  </Accordion>
+
+  <Accordion title="Can subaccounts have their own API keys?">
+    Yes! Each subaccount can create independent API keys. Keys are scoped to their account context.
+  </Accordion>
+
+  <Accordion title="What happens to data when I deactivate an account?">
+    Accounts are soft-deleted (marked inactive). Data is preserved and can be reactivated by contacting support.
+  </Accordion>
+
+  <Accordion title="Can one user be a member of multiple accounts?">
+    Yes! Users can be invited to multiple accounts and switch between them using the account switcher.
+  </Accordion>
+
+  <Accordion title="How do I transfer ownership of an account?">
+    Contact support to transfer the Owner role. This cannot be done through the UI for security reasons.
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Team Management" icon="users" href="/accounts/team-management">
+    Learn how to invite and manage team members
+  </Card>
+  <Card title="API Keys" icon="key" href="/accounts/api-keys">
+    Create and manage programmatic access
+  </Card>
+  <Card title="Branding" icon="palette" href="/accounts/branding">
+    Customize your account's appearance
+  </Card>
+  <Card title="Billing" icon="credit-card" href="/accounts/billing">
+    Manage subscriptions and payment
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+Contact [support@itellico.ai](mailto:support@itellico.ai) for assistance with account management, billing questions, or ownership transfers.
