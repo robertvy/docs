@@ -6,46 +6,108 @@ icon: "brackets-curly"
 
 ## Overview
 
-Variables allow you to personalize your agent's instructions and greetings with dynamic data from contacts, campaigns, and context. itellico AI uses Jinja2 templating to make this powerful and flexible.
+Variables let you personalize your agent's instructions with dynamic data. itellico AI uses Jinja2 templating.
 
-## Basic Variable Syntax
+---
 
-###  Simple Variable
+## How Variables Work
 
-```jinja wrap
-{{ variable_name }}
-```
+### Built-in Contact Variables
 
-### Variable with Default
+If a contact exists in your itellico AI account, these 5 fields are automatically available:
 
 ```jinja wrap
-{{ variable_name | default("fallback value") }}
+{{ contact.first_name }}
+{{ contact.last_name }}
+{{ contact.full_name }}
+{{ contact.email }}
+{{ contact.phone }}
 ```
 
-### Example
+**Example:**
+```jinja wrap
+Hello {{ contact.first_name }}!
+Your email is {{ contact.email }}.
+```
+
+✅ No setup needed - works automatically if contact exists
+
+---
+
+### Everything Else: Dynamic Context API
+
+**All other data** must come from your Dynamic Context API endpoint as **top-level variables**:
 
 ```jinja wrap
-Hello {{ contact.first_name | default("there") }}!
+{{ language }}
+{{ account_tier }}
+{{ company_name }}
+{{ order_id }}
+{{ customer_since }}
 ```
 
-**Result:**
-- If `contact.first_name` is "Sarah": "Hello Sarah!"
-- If `contact.first_name` is empty: "Hello there!"
+**Example - Your API returns:**
+```json
+{
+  "language": "de",
+  "account_tier": "premium",
+  "company_name": "Acme Corp"
+}
+```
+
+**Your agent can use:**
+```jinja wrap
+{% if language == "de" %}
+Guten Tag! Sie arbeiten für {{ company_name }}.
+{% endif %}
+
+{% if account_tier == "premium" %}
+Priority support available.
+{% endif %}
+```
+
+⚙️ Requires setup - see [Dynamic Context API](#dynamic-context-variables)
+
+---
+
+## Complete Example
+
+Combining built-in contact data with your custom data:
+
+```jinja wrap
+Hello {{ contact.first_name | default("there") }},
+
+{% if account_tier == "enterprise" %}
+As an enterprise customer at {{ company_name }}, you have priority support.
+{% endif %}
+
+Contact information on file:
+- Email: {{ contact.email | default("not provided") }}
+- Phone: {{ contact.phone | default("not provided") }}
+
+{% if language == "de" %}
+Sie können auch auf Deutsch sprechen.
+{% endif %}
+```
+
+**What you need:**
+- `contact.*` variables → Contact must exist in itellico AI
+- `account_tier`, `company_name`, `language` → Your Dynamic Context API must return these
 
 ---
 
 ## Available Variables
 
-### Contact Variables
+### Built-in Contact Variables
 
-Access customer information:
+These variables are automatically available from your itellico AI contacts:
 
 ```jinja wrap
 {{ contact.first_name }}
 {{ contact.last_name }}
+{{ contact.full_name }}
 {{ contact.email }}
 {{ contact.phone }}
-{{ contact.full_name }}
 ```
 
 **Example usage:**
@@ -53,28 +115,41 @@ Access customer information:
 ```text wrap
 You are speaking with {{ contact.first_name }} {{ contact.last_name }}.
 Their email is {{ contact.email | default("not provided") }}.
-Their account type is {{ contact.account_type | default("standard") }}.
-
-{% if contact.account_type == "VIP" %}
-IMPORTANT: This is a VIP customer. Provide priority service.
-{% endif %}
+Their phone number is {{ contact.phone }}.
 ```
 
-### Organization Variables
+<Note>
+**Custom fields** are NOT nested under `contact.` — they're top-level variables like `{{ language }}` or `{{ account_tier }}`. You must provide these through your [Dynamic Context API](#dynamic-context-variables).
+</Note>
 
-Access your company information:
+### Dynamic Context Variables
+
+Any custom data you provide through your Dynamic Context API endpoint becomes available as **top-level** variables:
 
 ```jinja wrap
-{{ organization.name }}
-{{ organization.short_name }}
+{{ account_tier }}
+{{ language }}
+{{ company_name }}
+{{ preferred_contact_method }}
 ```
 
-**Example usage:**
+**Example with custom variables:**
 
 ```text wrap
-You represent {{ organization.name }}.
-Thank customers for choosing {{ organization.short_name }}.
+{% if account_tier == "premium" %}
+As a premium customer, you have priority support.
+{% endif %}
+
+{% if language == "de" %}
+Sprechen Sie Deutsch.
+{% endif %}
+
+Company: {{ company_name | default("valued customer") }}
 ```
+
+<Tip>
+Set up a Dynamic Context API endpoint to provide custom variables. Any JSON fields you return become top-level variables (e.g., `{"language": "de"}` → `{{ language }}`).
+</Tip>
 
 ### Date & Time
 
@@ -137,7 +212,7 @@ Good evening, {{ contact.first_name }}!
 Respond in Spanish. Use formal addressing (usted).
 {% elif contact.language == "fr" %}
 Respond in French. Use formal addressing (vous).
-{% elif contact.language == "de" %}
+{% elif language == "de" %}
 Respond in German. Use formal addressing (Sie).
 {% else %}
 Respond in English. Use friendly, conversational tone.
@@ -215,23 +290,40 @@ Your available products:
 
 ## Practical Examples
 
-### Example 1: Personalized Greeting
+### Example 1: Personalized Greeting (Built-in Variables)
 
 ```jinja wrap
 {% if contact.first_name %}
-Hello {{ contact.first_name }}, thanks for calling {{ organization.name }}!
+Hello {{ contact.first_name }}, thanks for calling!
 {% else %}
-Hello! Thanks for calling {{ organization.name }}!
+Hello! Thanks for calling!
 {% endif %}
 
-{% if contact.account_type == "VIP" %}
-As a VIP customer, you have priority support. How can I help you today?
+Your phone number: {{ contact.phone | default("not on file") }}
+Email: {{ contact.email | default("not provided") }}
+```
+
+### Example 2: Custom Business Logic (Requires Dynamic Context API)
+
+```jinja wrap
+{% if contact.first_name %}
+Hello {{ contact.first_name }}, thanks for calling {{ company_name }}!
+{% else %}
+Hello! Thanks for calling {{ company_name }}!
+{% endif %}
+
+{% if account_tier == "premium" %}
+As a premium customer, you have priority support. How can I help you today?
 {% else %}
 How can I help you today?
 {% endif %}
 ```
 
-### Example 2: Time-Based Instructions
+<Note>
+Variables like `company_name` and `account_tier` must be provided by your Dynamic Context API endpoint.
+</Note>
+
+### Example 3: Time-Based Instructions
 
 ```jinja wrap
 Current time: {{ now().strftime("%H:%M") }}
@@ -244,17 +336,17 @@ Within business hours. Full support available.
 {% endif %}
 ```
 
-### Example 4: Multi-Language Support
+### Example 4: Multi-Language Support (Requires Dynamic Context API)
 
 ```jinja wrap
-Customer's preferred language: {{ contact.language | default("en") }}
+Customer's preferred language: {{ language | default("en") }}
 
-{% if contact.language == "es" %}
+{% if language == "es" %}
 Language: Spanish
 Greeting: "¡Hola!"
 Tone: Formal (use "usted")
 Knowledge collection: "FAQ Español"
-{% elif contact.language == "de" %}
+{% elif language == "de" %}
 Language: German
 Greeting: "Guten Tag!"
 Tone: Formal (use "Sie")

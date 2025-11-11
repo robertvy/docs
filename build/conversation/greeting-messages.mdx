@@ -210,18 +210,31 @@ By default, outbound calls mirror your inbound greeting. Use overrides when you 
 Personalize with customer information:
 
 ```jinja wrap
-Hi {{ contact.first_name | default("there") }}! Thanks for calling {{ organization.name }}.
+Hi {{ contact.first_name | default("there") }}! Thanks for calling.
 ```
 
 ```jinja wrap
-Good {{ "morning" if now().hour < 12 else "afternoon" }}, {{ contact.first_name }}!
+Good {{ "morning" if now().hour < 12 else "afternoon" }}, {{ contact.full_name | default("there") }}!
 ```
 
 ### Conditional Greetings
 
+Use built-in contact variables:
+
 ```jinja wrap
-{% if contact.account_type == "VIP" %}
-Hello {{ contact.first_name }}, thank you for being a valued VIP customer.
+{% if contact.email %}
+Hello {{ contact.first_name }}, I have your email {{ contact.email }} on file.
+{% else %}
+Hi {{ contact.first_name }}, thanks for calling!
+{% endif %}
+How can I help you today?
+```
+
+Or use custom variables from your Dynamic Context API:
+
+```jinja wrap
+{% if account_tier == "premium" %}
+Hello {{ contact.first_name }}, thank you for being a valued premium customer.
 {% else %}
 Hi {{ contact.first_name }}, thanks for calling!
 {% endif %}
@@ -229,7 +242,7 @@ How can I help you today?
 ```
 
 <Note>
-You can also reference variables you add via the [dynamic context endpoint](/build/advanced/dynamic-context).
+Variables like `account_tier`, `company_name`, or custom fields must be provided via your [Dynamic Context API endpoint](/build/conversation/context-api).
 </Note>
 
 ---
