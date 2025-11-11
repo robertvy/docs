@@ -6,7 +6,7 @@ icon: "key"
 
 ## Overview
 
-API keys provide programmatic access to the itellicoAI platform, allowing you to integrate agents into your applications, automate tasks, and build custom workflows.
+API keys provide programmatic access to the itellico AI platform, allowing you to integrate agents into your applications, automate tasks, and build custom workflows.
 
 ## What are API Keys?
 
@@ -19,13 +19,6 @@ API keys are secure tokens that authenticate your API requests without requiring
 - **Trackable**: Monitor last used timestamp and activity
 
 ## Creating API Keys
-
-### Who Can Create Keys
-
-- **Owner**: ✅ Can create and manage all keys
-- **Admin**: ✅ Can create and manage all keys
-- **Member**: ❌ Cannot create keys
-- **Viewer**: ❌ Cannot create keys
 
 ### How to Create
 
@@ -70,24 +63,6 @@ API keys are secure tokens that authenticate your API requests without requiring
 The full API key is displayed **only once** at creation. If you lose it, you must create a new key.
 </Warning>
 
-## API Key Format
-
-```
-sk-{8-char-prefix}.{55-random-chars}
-```
-
-**Example:**
-```
-sk-a1b2c3d4.xyz789abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLM
-```
-
-- **Prefix (`sk-a1b2c3d4`)**: First 8 characters, used for identification
-- **Secret**: Remaining 55 characters, cryptographically random
-
-<Note>
-The prefix helps you identify keys in logs and error messages without exposing the full secret.
-</Note>
-
 ## Using API Keys
 
 ### Authentication Header
@@ -102,14 +77,19 @@ curl https://api.itellico.ai/v1/agents \
 
 ### Account Context
 
-API keys are automatically scoped to their account. All requests use that account's context.
+API keys are scoped to their account. When you create a key in a parent account, it can access both the parent and all subaccounts.
 
-For parent accounts accessing subaccounts, include the `X-Account-ID` header:
+To access a specific account, include the account ID in the URL path:
 
 ```bash
-curl https://api.itellico.ai/v1/agents \
+# Access parent account
+curl https://api.itellico.ai/v1/accounts/me/agents \
   -H "Authorization: Bearer sk-a1b2c3d4.xyz789..." \
-  -H "X-Account-ID: subaccount-uuid-here" \
+  -H "Content-Type: application/json"
+
+# Access specific subaccount
+curl https://api.itellico.ai/v1/accounts/{account-id}/agents \
+  -H "Authorization: Bearer sk-a1b2c3d4.xyz789..." \
   -H "Content-Type: application/json"
 ```
 
@@ -139,17 +119,6 @@ const client = new ItellicoAI({
 const agents = await client.agents.list();
 ```
 
-```javascript JavaScript
-const { ItellicoAI } = require('@itellico/sdk');
-
-const client = new ItellicoAI({
-  apiKey: process.env.ITELLICO_API_KEY
-});
-
-// List agents
-const agents = await client.agents.list();
-```
-
 </CodeGroup>
 
 <Tip>
@@ -162,14 +131,14 @@ Store API keys in environment variables and never hardcode them in your source c
 
 The API Keys page shows:
 - **Label**: Your descriptive name
-- **Prefix**: First 8 characters (e.g., `sk-a1b2c3d4`)
+- **Partial Key**: First few characters (e.g., `sk-a1b2c3d4...`)
 - **Status**: Active, Revoked, or Expired
 - **Created**: When the key was created
 - **Last Used**: When it was last used for an API request
 - **Expires**: Expiration date (if set)
 
 <Note>
-The full secret is **never** shown after creation - only the prefix.
+The full key is **never** shown after creation - only the first few characters for identification.
 </Note>
 
 ### Editing Keys
@@ -304,10 +273,7 @@ Deletion is permanent and cannot be undone. The key will immediately stop workin
     - **Old timestamp**: Might be safe to revoke
     - **Recent activity**: Key is active
 
-    **Set up alerts:**
-    - Notify when keys haven't been used in 30 days
-    - Alert on suspicious usage patterns
-    - Report keys nearing expiration
+    Review your API keys monthly to remove inactive ones.
   </Accordion>
 
   <Accordion title="Descriptive Labels" icon="tag">
@@ -357,24 +323,6 @@ If you accidentally commit a key:
 5. Notify team members to pull latest
 </Warning>
 
-### Common Security Mistakes
-
-❌ **Don't:**
-- Hardcode keys in source code
-- Commit `.env` files to git
-- Share keys via email or Slack
-- Use production keys in development
-- Leave unused keys active
-- Use the same key across all environments
-
-✅ **Do:**
-- Store in environment variables
-- Use secrets managers
-- Create separate keys per environment
-- Rotate keys regularly
-- Revoke keys immediately when compromised
-- Monitor usage and set up alerts
-
 ### If a Key is Compromised
 
 <Steps>
@@ -403,28 +351,6 @@ If you accidentally commit a key:
   </Step>
 </Steps>
 
-## Rate Limits
-
-API keys are subject to rate limits based on your subscription:
-
-| Plan | Requests per Minute |
-|------|---------------------|
-| Free | 10 |
-| Starter | 60 |
-| Pro | 300 |
-| Enterprise | Custom |
-
-**Rate limit headers:**
-```
-X-RateLimit-Limit: 60
-X-RateLimit-Remaining: 45
-X-RateLimit-Reset: 1672531200
-```
-
-<Tip>
-If you hit rate limits, consider caching responses or upgrading your plan.
-</Tip>
-
 ## Troubleshooting
 
 <AccordionGroup>
@@ -445,13 +371,13 @@ If you hit rate limits, consider caching responses or upgrading your plan.
   <Accordion title="403 Forbidden" icon="ban">
     **Causes:**
     - Key doesn't have access to the requested account
-    - Requesting a subaccount without proper headers
+    - Requesting a subaccount the key can't access
     - Account is inactive
 
     **Solutions:**
-    - Verify the key belongs to the correct account
-    - Include `X-Account-ID` header for subaccounts
-    - Check account status
+    - Verify the key was created in the parent account or the subaccount you're accessing
+    - Check that the account ID in the URL is correct
+    - Verify account status is active
   </Accordion>
 
   <Accordion title="429 Too Many Requests" icon="gauge-high">
@@ -490,7 +416,7 @@ If you hit rate limits, consider caching responses or upgrading your plan.
   </Accordion>
 
   <Accordion title="Can I use one key across multiple accounts?">
-    No. Each key is scoped to one account. Create separate keys for each account.
+    API keys created in a parent account can access both the parent and all its subaccounts. Keys created in a subaccount can only access that subaccount.
   </Accordion>
 
   <Accordion title="What happens if I delete a key?">
@@ -520,9 +446,6 @@ If you hit rate limits, consider caching responses or upgrading your plan.
     Use our official Python and TypeScript SDKs
   </Card>
   <Card title="Team Management" icon="users" href="/accounts/team-management">
-    Manage who can create API keys
-  </Card>
-  <Card title="Roles & Permissions" icon="user-shield" href="/accounts/roles-permissions">
-    Understand access control
+    Manage team members
   </Card>
 </CardGroup>

@@ -19,7 +19,7 @@ Choose from three different greeting modes:
     Your agent says the exact same greeting every time.
 
     ```text wrap
-    Hello! Thank you for calling Acme Software support. My name is Alex, and I'm here to help you today. What can I assist you with?
+    Hey! Thanks for calling Acme support. This is Alex. What can I help you with?
     ```
 
     **Advantages:**
@@ -42,16 +42,16 @@ Choose from three different greeting modes:
     **Example variations:**
     ```text wrap
     # With customer name:
-    "Hi Sarah! Thanks for calling. How can I help you today?"
+    "Hi Sarah! Thanks for calling. What can I help you with today?"
 
     # VIP customer:
-    "Hello Mr. Johnson, thank you for being a valued VIP customer. What can I do for you today?"
+    "Hi Mr. Johnson! Thanks for calling. What can I help you with today?"
 
     # Time-based:
-    "Good morning! Thanks for calling Acme support. What brings you in today?"
+    "Good morning! Thanks for calling Acme support. What brings you in?"
 
     # Campaign-specific:
-    "Hi! I see you requested information about our Enterprise plan. I'd love to help with that!"
+    "Hey! I see you requested info about our Enterprise plan. Happy to help with that!"
     ```
 
     **Advantages:**
@@ -85,7 +85,7 @@ Choose from three different greeting modes:
     - You want the customer to initiate the conversation
 
     <Note>
-    **For most use cases, we recommend Fixed Greeting instead.** User Initiates is specifically designed for outbound calling scenarios.
+    **For most use cases, we recommend Fixed Greeting instead.** User Initiates is only useful in certain outbound calling scenarios.
     </Note>
   </Tab>
 </Tabs>
@@ -98,10 +98,7 @@ Choose from three different greeting modes:
 
 Control how long the agent waits before speaking (0-5 seconds).
 
-**Recommended settings:**
-- **0 seconds**: Immediate greeting (outbound calls)
-- **0.5 seconds**: Slight pause (inbound calls, sounds natural)
-- **1-2 seconds**: Longer pause (if customers often speak first)
+A delay of **0.5 seconds** is a good starting point for most use cases.
 
 ### Interruptibility
 
@@ -117,7 +114,7 @@ Control whether customers can interrupt the greeting.
 - Customer can speak during greeting
 - Agent stops mid-greeting and listens
 - Can lead to incomplete introductions
-- Use only if customers frequently interrupt
+- Use only if customers frequently interrupt and non-interruptible greetings lead to suboptimal conversations or hangups
 
 <Tip>
 Non-interruptible greetings ensure your brand introduction and purpose are always communicated clearly. Keep greetings concise (under 10 seconds) for best results.
@@ -200,7 +197,9 @@ Configure separate greetings for outbound calls in the **Greeting** section.
   </Step>
 </Steps>
 
+<Note>
 By default, outbound calls mirror your inbound greeting. Use overrides when you need different behavior for proactive calls.
+</Note>
 
 ---
 
@@ -229,46 +228,39 @@ Hi {{ contact.first_name }}, thanks for calling!
 How can I help you today?
 ```
 
+<Note>
+You can also reference variables you add via the [dynamic context endpoint](/build/advanced/dynamic-context).
+</Note>
+
 ---
 
 ## Writing Great Greetings
 
-### Keep It Brief
+<AccordionGroup>
+  <Accordion title="Keep it brief" icon="clock">
+    Aim for under 10 seconds.
 
-<CardGroup cols={2}>
-  <Card title="Good" icon="check">
-    "Hi! Thanks for calling Acme support. How can I help?"
+    **Good:** "Hi! Thanks for calling Acme support. How can I help?"
 
-    **7 seconds**
-  </Card>
-  <Card title="❌ Too Long" icon="xmark">
-    "Hello and thank you for calling Acme Software technical support center. My name is Alex, and I'll be assisting you today with any questions or concerns you may have regarding our software products or services. Please let me know how I can be of assistance to you this afternoon."
+    **Too long:** "Hello and thank you for calling Acme Software technical support center. My name is Alex, and I'll be assisting you today..."
+  </Accordion>
 
-    **22 seconds** - Customer loses patience
-  </Card>
-</CardGroup>
+  <Accordion title="Sound natural" icon="comments">
+    Use conversational language.
 
-### Be Natural
+    **Good:** "Hey! Thanks for calling. What can I help with?"
 
-<CardGroup cols={2}>
-  <Card title="Natural" icon="check">
-    "Hey! Thanks for calling. What can I help with?"
-  </Card>
-  <Card title="❌ Robotic" icon="xmark">
-    "Greetings, valued customer. Please state the nature of your inquiry."
-  </Card>
-</CardGroup>
+    **Avoid:** "Greetings, valued customer. Please state the nature of your inquiry."
+  </Accordion>
 
-### Set Expectations
+  <Accordion title="Set expectations" icon="bullseye">
+    Make your purpose clear.
 
-<CardGroup cols={2}>
-  <Card title="Clear Purpose" icon="check">
-    "Hi! This is Alex from Acme Billing. I'm calling about your recent invoice."
-  </Card>
-  <Card title="❌ Vague" icon="xmark">
-    "Hello, this is Acme. I wanted to reach out to you today."
-  </Card>
-</CardGroup>
+    **Good:** "Hi! This is Alex from Acme Billing. I'm calling about your recent invoice."
+
+    **Avoid:** "Hello, this is Acme. I wanted to reach out to you today."
+  </Accordion>
+</AccordionGroup>
 
 ---
 
@@ -316,38 +308,31 @@ How can I help you today?
 
 ## Common Mistakes
 
-❌ **Too formal:** "Greetings. You have reached the Acme Corporation technical support division."
+<AccordionGroup>
+  <Accordion title="Too formal" icon="user-tie">
+    **Avoid:** "Greetings. You have reached the Acme Corporation technical support division."
 
-<Icon icon="check" /> **Better:** "Hi! Acme support here. How can I help?"
+    **Better:** "Hey! Thanks for calling Acme support. What can I help you with?"
+  </Accordion>
 
----
+  <Accordion title="Too casual" icon="face-smile">
+    **Avoid:** "Yo! What's up? What do you need?"
 
-❌ **Too casual:** "Yo! What's up? What do you need?"
+    **Better:** "Hey there! Thanks for calling. What can I help with today?"
+  </Accordion>
 
-<Icon icon="check" /> **Better:** "Hey there! Thanks for calling. What can I help with?"
+  <Accordion title="Missing company name" icon="building">
+    **Avoid:** "Hi, this is Alex. How can I help?"
 
----
+    **Better:** "Hey! This is Alex from Acme support. What brings you in today?"
+  </Accordion>
 
-❌ **Missing company name:** "Hi, this is Alex. How can I help?"
+  <Accordion title="No purpose for outbound calls" icon="phone-arrow-up-right">
+    **Avoid:** "Hi, is this Sarah? How are you today?"
 
-<Icon icon="check" /> **Better:** "Hi! This is Alex from Acme support. How can I help?"
-
----
-
-❌ **No purpose (outbound):** "Hi, is this Sarah? Great. So anyway..."
-
-<Icon icon="check" /> **Better:** "Hi Sarah, this is Alex from Acme. You requested info about our product. Do you have a moment?"
-
----
-
-## Quick Reference
-
-| Greeting Mode | Best For | Timing | Interruptible | Recommended |
-|---------------|----------|--------|---------------|-------------|
-| **Fixed** | Most use cases | 0.5s | No (recommended) | ✓ |
-| **AI-Generated** | Personalization | 0.5s | No (recommended) | |
-| **User Initiates** | Outbound when recipient speaks first | N/A | N/A | |
-| **Outbound Fixed** | Outbound campaigns | 0s | No (recommended) | |
+    **Better:** "Hi Sarah! This is Alex from Acme. You requested some info about our product - do you have a quick minute to chat?"
+  </Accordion>
+</AccordionGroup>
 
 ---
 
