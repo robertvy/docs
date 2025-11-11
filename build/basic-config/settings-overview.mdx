@@ -11,19 +11,74 @@ The agent configuration panel is organized into logical sections that control di
 ## Main Configuration Sections
 
 <CardGroup cols={2}>
-  <Card title="Abilities" icon="wand-magic-sparkles">
-    Instructions, greetings, knowledge, actions, DTMF, MCP servers
-  </Card>
-  <Card title="Models" icon="brain">
+  <Card title="Models" icon="brain" href="#models-tab">
     AI model selection, voice configuration, transcriber settings
   </Card>
-  <Card title="Operations" icon="gear">
+  <Card title="Abilities" icon="wand-magic-sparkles" href="#abilities-tab">
+    Instructions, greetings, knowledge, actions, DTMF, MCP servers
+  </Card>
+  <Card title="Operations" icon="gear" href="#operations-tab">
     Inactivity handling, voice activity detection, dynamic context
   </Card>
-  <Card title="Analytics" icon="chart-line">
-    Conversation goals, post-call analysis configuration
+  <Card title="Analytics" icon="chart-line" href="#analytics-tab">
+    Conversation goals, post-call analysis and workflows
   </Card>
 </CardGroup>
+
+---
+
+## Models Tab
+
+Select and configure the AI technologies powering your agent.
+
+### Model (LLM)
+Choose the language model for reasoning.
+
+**Providers:**
+- Azure OpenAI
+- OpenAI
+- Anthropic
+- Groq
+
+**Features:**
+- Model selection with EU-hosting badges
+- Temperature control
+
+[Learn more about AI Models →](/build/voice-speech/choose-ai-model)
+
+### Voice
+Select how your agent sounds.
+
+**Providers:**
+- ElevenLabs
+- Azure
+- Cartesia
+
+**Features:**
+- Voice library with previews
+- Voice configuration (varies by provider)
+
+[Learn more about Voice Selection →](/build/voice-speech/select-voice)
+
+### Transcriber
+Configure speech-to-text.
+
+**Providers:**
+- Deepgram
+- Azure Speech
+
+**Features:**
+- Language selection and multilingual support
+- Keyword boosting
+
+[Learn more about Transcription →](/build/voice-speech/speech-to-text)
+
+
+### Sound Effects
+Add ambient audio to conversations.
+- Background ambience (office, café, street)
+
+[Learn more about Ambient Sound →](/build/voice-speech/ambient-sound)
 
 ---
 
@@ -39,7 +94,7 @@ Define your agent's personality, knowledge, and conversational flow.
 
 [Learn more about Instructions →](/build/conversation/instructions)
 
-### Greeting & Opening
+### Greeting
 Control how conversations start.
 - User initiates, AI-generated, or fixed greeting
 - Inbound vs outbound greeting overrides
@@ -51,7 +106,7 @@ Control how conversations start.
 Connect knowledge bases, collections, and documents.
 - Attach multiple knowledge sources
 - Choose Context or RAG mode per source
-- View remaining context tokens
+- Support for multiple file types and website scraping
 
 [Learn more about Knowledge →](/build/knowledge/architecture)
 
@@ -72,53 +127,6 @@ Configure keypad input handling.
 
 [Learn more about DTMF →](/build/advanced/dtmf-controls)
 
-### MCP Servers
-Attach Model Context Protocol integrations.
-- Connect account-level MCP servers
-- Manage server connections
-- Access external tools mid-conversation
-
-[Learn more about MCP →](/build/advanced/mcp-servers)
-
----
-
-## Models Tab
-
-Select and configure the AI technologies powering your agent.
-
-### Model (LLM)
-Choose the language model for reasoning.
-- Provider catalog (OpenAI, Anthropic, Groq, Azure)
-- Model selection with EU-hosting badges
-- Advanced parameters (temperature, max tokens, streaming)
-
-[Learn more about AI Models →](/build/voice-speech/choose-ai-model)
-
-### Voice
-Select how your agent sounds.
-- Voice library with previews
-- Provider metadata and localization
-- Voice configuration (speed, pitch, parameters)
-
-[Learn more about Voice Selection →](/build/voice-speech/select-voice)
-
-### Transcriber
-Configure speech-to-text.
-- Provider catalog (Deepgram, Azure Speech)
-- Language selection and multilingual support
-- Keyword boosting
-
-[Learn more about Transcription →](/build/voice-speech/speech-to-text)
-
-
-### Sound Effects
-Add ambient audio to conversations.
-- Background ambience (office, café, street)
-- Volume adjustment
-- Backchannel (coming soon)
-
-[Learn more about Ambient Sound →](/build/voice-speech/ambient-sound)
-
 ---
 
 ## Operations Tab
@@ -127,7 +135,7 @@ Fine-tune operational behavior and conversation mechanics.
 
 ### Inactivity & Timeout
 Handle silence and inactive customers.
-- Check-in cadence and retry logic
+- Check-in/reminder cadence
 - Custom timeout messages
 - Inactivity actions
 
@@ -142,7 +150,7 @@ Control when your agent speaks and listens.
 
 [Learn more about VAD →](/optimize/conversation-quality#voice-activity-detection)
 
-### Dynamic Context (Integrations)
+### Dynamic Context
 Fetch personalized data before conversations.
 - Context endpoint configuration
 - Authentication setup
@@ -160,12 +168,13 @@ Configure conversation measurement and success tracking.
 Define what success looks like.
 - Primary and secondary goals
 - Goal types and criteria
-- Achievement tracking
+- Performance tracking
 
 [Learn more about Goals →](/build/advanced/conversation-goals)
 
 ### Post-Call Analysis
 Configure automated conversation analysis.
+- Extract structured information
 - Analysis criteria
 - Rating systems
 - Performance metrics
@@ -179,11 +188,11 @@ Configure automated conversation analysis.
 ### Using the Configuration Panel
 
 <Steps>
-  <Step title="Start with Abilities">
-    Configure instructions, greetings, and knowledge first
-  </Step>
   <Step title="Configure Models">
     Select AI model, voice, and transcriber
+  </Step>
+  <Step title="Set Up Abilities">
+    Configure instructions, greetings, and knowledge
   </Step>
   <Step title="Fine-tune Operations">
     Adjust VAD and timeout settings after testing
@@ -195,44 +204,7 @@ Configure automated conversation analysis.
 
 ### Save Behavior
 
-<Warning>
-Changes to most settings are applied immediately when you click Save. Some settings (like model selection) take effect on the next conversation.
-</Warning>
-
-**Auto-save:** Not available - always click Save
-**Unsaved changes:** Yellow bar appears warning about unsaved changes
-**Validation:** Real-time syntax checking in instruction editor
-
-### Quick Actions
-
-- **Test Call:** Top-right button for quick testing
-- **Duplicate Agent:** Create copy with all settings
-- **Export Config:** Download agent configuration (API)
-- **View History:** See configuration change log (coming soon)
-
----
-
-## Configuration Workflow
-
-### Initial Setup (First Time)
-1. Set agent identity and type
-2. Write basic instructions
-3. Configure greeting
-4. Select model, voice, transcriber
-5. Test thoroughly
-
-### Adding Capabilities
-1. Add knowledge bases
-2. Configure actions
-3. Set up goals
-4. Test new features
-
-### Optimization (Ongoing)
-1. Review analytics
-2. Refine instructions
-3. Tune VAD and timeouts
-4. Update knowledge
-5. Test and iterate
+Some sections (like model selection) save automatically. Others require clicking the Save button. Changes apply to future calls only, not calls in progress.
 
 ---
 
