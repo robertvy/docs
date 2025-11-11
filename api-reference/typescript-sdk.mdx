@@ -62,23 +62,21 @@ const client = new Itellicoai({
 });
 
 // Create an agent
-const agent = await client.accounts.agents.create(
-  'your-account-id',
-  {
-    name: 'Customer Support Agent',
-    model: {
-      provider: 'openai',
-      model: 'gpt-4o-mini',
-    },
-    voice: {
-      provider: 'elevenlabs',
-      voiceId: '21m00Tcm4TlvDq8ikWAM',
-    },
-    transcriber: {
-      provider: 'deepgram',
-    },
-  }
-);
+const agent = await client.agents.create({
+  accountId: 'your-account-id',
+  name: 'Customer Support Agent',
+  model: {
+    provider: 'openai',
+    model: 'gpt-4o-mini',
+  },
+  voice: {
+    provider: 'elevenlabs',
+    voiceId: '21m00Tcm4TlvDq8ikWAM',
+  },
+  transcriber: {
+    provider: 'deepgram',
+  },
+});
 
 console.log(`Created agent: ${agent.id}`);
 ```
