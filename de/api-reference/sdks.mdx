@@ -1,0 +1,115 @@
+---
+title: 'SDKs'
+description: 'Offizielle itellicoAI SDKs zum Erstellen von Voice-AI-Anwendungen'
+icon: 'code'
+---
+
+## Server-SDKs
+
+Erstellen Sie Backend-Integrationen mit typsicheren SDKs.
+
+<CardGroup cols={2}>
+  <Card title="Python" icon="python" href="/api-reference/python-sdk">
+    Typsichere Python-Bibliothek mit Async-Unterstützung
+  </Card>
+  <Card title="TypeScript" icon="js" href="/api-reference/typescript-sdk">
+    Vollständige TypeScript-Unterstützung mit Autovervollständigung
+  </Card>
+</CardGroup>
+
+---
+
+## Warum SDKs verwenden?
+
+<CardGroup cols={2}>
+  <Card title="Typsicherheit" icon="shield-check">
+    Vollständige TypeScript-Definitionen und Python-Type-Hints für alle API-Methoden
+  </Card>
+
+  <Card title="Vereinfachte Authentifizierung" icon="key">
+    Integrierte API-Schlüsselverwaltung – keine manuellen Header erforderlich
+  </Card>
+
+  <Card title="Bessere Fehler" icon="triangle-exclamation">
+    Strukturierte Exceptions für einfacheres Debugging
+  </Card>
+
+  <Card title="Weniger Code" icon="code">
+    Saubere Methoden anstelle von manuellen HTTP-Anfragen
+  </Card>
+</CardGroup>
+
+---
+
+## Schnellvergleich
+
+### Einen Agenten erstellen
+
+<CodeGroup>
+```python Python SDK
+from itellicoai import ItellicoAI
+
+client = ItellicoAI(api_key="your-api-key")
+
+agent = client.agents.create(
+    name="Support Agent",
+    model={"provider": "azure", "model": "gpt-4o-mini"}
+)
+```
+
+```typescript TypeScript SDK
+import { ItellicoAI } from 'itellicoai';
+
+const client = new ItellicoAI({ apiKey: 'your-api-key' });
+
+const agent = await client.agents.create({
+  name: 'Support Agent',
+  model: { provider: 'azure', model: 'gpt-4o-mini' }
+});
+```
+
+```bash REST API
+curl -X POST https://api.itellico.ai/v1/agents \
+  -H "X-API-Key: your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Support Agent",
+    "model": {"provider": "azure", "model": "gpt-4o-mini"}
+  }'
+```
+</CodeGroup>
+
+---
+
+## Installation
+
+<Tabs>
+  <Tab title="Python">
+    ```bash
+    pip install itellicoai
+    ```
+
+    [Python SDK-Dokumentation anzeigen →](/api-reference/python-sdk)
+  </Tab>
+
+  <Tab title="TypeScript">
+    ```bash
+    npm install itellicoai
+    ```
+
+    [TypeScript SDK-Dokumentation anzeigen →](/api-reference/typescript-sdk)
+  </Tab>
+</Tabs>
+
+---
+
+## Ressourcen
+
+<CardGroup cols={2}>
+  <Card title="REST API-Referenz" icon="book" href="/api-reference/introduction">
+    Vollständige REST API-Dokumentation
+  </Card>
+  <Card title="OpenAPI-Spezifikation" icon="file-code" href="https://api.itellico.ai/v1/openapi.json">
+    OpenAPI-Spezifikationsdatei
+  </Card>
+</CardGroup>

@@ -1,0 +1,197 @@
+---
+title: 'TypeScript SDK'
+description: 'Typsichere TypeScript/Node.js-Bibliothek für die itellicoAI API'
+icon: 'js'
+---
+
+## Installation
+
+<CodeGroup>
+```bash npm
+npm install itellicoai
+```
+
+```bash yarn
+yarn add itellicoai
+```
+
+```bash pnpm
+pnpm add itellicoai
+```
+</CodeGroup>
+
+## Anforderungen
+
+- Node.js 18.10.0+
+- Vollständige TypeScript-Unterstützung
+
+---
+
+## Schnellstart
+
+```typescript
+import { ItellicoAI } from 'itellicoai';
+
+// Client initialisieren
+const client = new ItellicoAI({
+  apiKey: 'your-api-key',
+});
+
+// Einen Agenten erstellen
+const agent = await client.agents.create({
+  name: 'Customer Support Agent',
+  model: {
+    provider: 'azure',
+    model: 'gpt-4o-mini',
+  },
+  voice: {
+    provider: 'elevenlabs',
+    voiceId: '21m00Tcm4TlvDq8ikWAM',
+  },
+  transcriber: {
+    provider: 'deepgram',
+    model: 'nova-2',
+  },
+});
+
+console.log(`Created agent: ${agent.id}`);
+```
+
+---
+
+## Häufige Operationen
+
+### Agenten auflisten
+
+```typescript
+// Alle Agenten auflisten
+const agents = await client.agents.list();
+
+agents.forEach(agent => {
+  console.log(`${agent.name} - ${agent.id}`);
+});
+```
+
+### Agent abrufen
+
+```typescript
+// Spezifischen Agenten nach ID abrufen
+const agent = await client.agents.retrieve('agent_123abc');
+
+console.log(`Agent name: ${agent.name}`);
+console.log(`Model: ${agent.model.model}`);
+```
+
+### Agent aktualisieren
+
+```typescript
+// Agentenkonfiguration aktualisieren
+const updatedAgent = await client.agents.update('agent_123abc', {
+  name: 'Updated Support Agent',
+  instructions: 'You are a helpful customer support agent...',
+});
+```
+
+### Agent löschen
+
+```typescript
+// Agent löschen
+await client.agents.delete('agent_123abc');
+```
+
+### Konversationen auflisten
+
+```typescript
+// Konversationen für einen Agenten abrufen
+const conversations = await client.conversations.list({
+  agentId: 'agent_123abc',
+  limit: 50,
+});
+
+conversations.forEach(conv => {
+  console.log(`Call from: ${conv.customerPhone}`);
+  console.log(`Duration: ${conv.duration}s`);
+});
+```
+
+---
+
+## Fehlerbehandlung
+
+```typescript
+import {
+  ItellicoAI,
+  AuthenticationError,
+  NotFoundError,
+  RateLimitError,
+  APIError,
+} from 'itellicoai';
+
+const client = new ItellicoAI({ apiKey: 'your-api-key' });
+
+try {
+  const agent = await client.agents.retrieve('agent_123abc');
+} catch (error) {
+  if (error instanceof AuthenticationError) {
+    console.error('Invalid API key');
+  } else if (error instanceof NotFoundError) {
+    console.error('Agent not found');
+  } else if (error instanceof RateLimitError) {
+    console.error('Rate limit exceeded');
+  } else if (error instanceof APIError) {
+    console.error(`API error: ${error.message}`);
+  }
+}
+```
+
+---
+
+## Umgebungsvariablen
+
+```typescript
+import { ItellicoAI } from 'itellicoai';
+
+// API-Schlüssel wird automatisch aus der ITELLICO_API_KEY-Umgebungsvariable geladen
+const client = new ItellicoAI();
+
+// Oder explizit setzen
+const client = new ItellicoAI({
+  apiKey: process.env.ITELLICO_API_KEY,
+});
+```
+
+---
+
+## TypeScript-Typen
+
+Vollständige TypeScript-Definitionen enthalten:
+
+```typescript
+import type {
+  Agent,
+  AgentCreateParams,
+  AgentUpdateParams,
+  Conversation,
+  PhoneNumber,
+} from 'itellicoai';
+
+const createAgent = async (
+  params: AgentCreateParams
+): Promise<Agent> => {
+  const client = new ItellicoAI();
+  return await client.agents.create(params);
+};
+```
+
+---
+
+## Ressourcen
+
+<CardGroup cols={2}>
+  <Card title="NPM-Paket" icon="npm" href="https://www.npmjs.com/package/itellicoai">
+    Von NPM installieren
+  </Card>
+  <Card title="API-Referenz" icon="book" href="/api-reference/introduction">
+    REST API-Dokumentation
+  </Card>
+</CardGroup>

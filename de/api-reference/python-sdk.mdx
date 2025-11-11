@@ -1,0 +1,185 @@
+---
+title: 'Python SDK'
+description: 'Typsichere Python-Bibliothek für die itellicoAI API'
+icon: 'python'
+---
+
+## Installation
+
+<CodeGroup>
+```bash pip
+pip install itellicoai
+```
+
+```bash poetry
+poetry add itellicoai
+```
+</CodeGroup>
+
+## Anforderungen
+
+- Python 3.8+
+- Unterstützt sowohl synchrone als auch asynchrone Operationen
+
+---
+
+## Schnellstart
+
+```python
+from itellicoai import ItellicoAI
+
+# Client initialisieren
+client = ItellicoAI(
+    api_key="your-api-key"
+)
+
+# Einen Agenten erstellen
+agent = client.agents.create(
+    name="Customer Support Agent",
+    model={
+        "provider": "azure",
+        "model": "gpt-4o-mini"
+    },
+    voice={
+        "provider": "elevenlabs",
+        "voice_id": "21m00Tcm4TlvDq8ikWAM"
+    },
+    transcriber={
+        "provider": "deepgram",
+        "model": "nova-2"
+    }
+)
+
+print(f"Created agent: {agent.id}")
+```
+
+---
+
+## Async-Unterstützung
+
+```python
+import asyncio
+from itellicoai import AsyncItellicoAI
+
+async def main():
+    client = AsyncItellicoAI(api_key="your-api-key")
+
+    # Agenten asynchron auflisten
+    agents = await client.agents.list()
+
+    for agent in agents:
+        print(f"Agent: {agent.name}")
+
+asyncio.run(main())
+```
+
+---
+
+## Häufige Operationen
+
+### Agenten auflisten
+
+```python
+# Alle Agenten auflisten
+agents = client.agents.list()
+
+for agent in agents:
+    print(f"{agent.name} - {agent.id}")
+```
+
+### Agent abrufen
+
+```python
+# Spezifischen Agenten nach ID abrufen
+agent = client.agents.retrieve("agent_123abc")
+
+print(f"Agent name: {agent.name}")
+print(f"Model: {agent.model.model}")
+```
+
+### Agent aktualisieren
+
+```python
+# Agentenkonfiguration aktualisieren
+updated_agent = client.agents.update(
+    agent_id="agent_123abc",
+    name="Updated Support Agent",
+    instructions="You are a helpful customer support agent..."
+)
+```
+
+### Agent löschen
+
+```python
+# Agent löschen
+client.agents.delete("agent_123abc")
+```
+
+### Konversationen auflisten
+
+```python
+# Konversationen für einen Agenten abrufen
+conversations = client.conversations.list(
+    agent_id="agent_123abc",
+    limit=50
+)
+
+for conv in conversations:
+    print(f"Call from: {conv.customer_phone}")
+    print(f"Duration: {conv.duration}s")
+```
+
+---
+
+## Fehlerbehandlung
+
+```python
+from itellicoai import ItellicoAI
+from itellicoai.exceptions import (
+    AuthenticationError,
+    NotFoundError,
+    RateLimitError,
+    APIError
+)
+
+client = ItellicoAI(api_key="your-api-key")
+
+try:
+    agent = client.agents.retrieve("agent_123abc")
+except AuthenticationError:
+    print("Invalid API key")
+except NotFoundError:
+    print("Agent not found")
+except RateLimitError:
+    print("Rate limit exceeded")
+except APIError as e:
+    print(f"API error: {e.message}")
+```
+
+---
+
+## Umgebungsvariablen
+
+```python
+import os
+from itellicoai import ItellicoAI
+
+# API-Schlüssel wird automatisch aus der ITELLICO_API_KEY-Umgebungsvariable geladen
+client = ItellicoAI()
+
+# Oder explizit setzen
+client = ItellicoAI(api_key=os.getenv("ITELLICO_API_KEY"))
+```
+
+---
+
+## Ressourcen
+
+<CardGroup cols={2}>
+  <Card title="PyPI-Paket" icon="python" href="https://pypi.org/project/itellicoai/">
+    Von PyPI installieren
+  </Card>
+  <Card title="API-Referenz" icon="book" href="/api-reference/introduction">
+    REST API-Dokumentation
+  </Card>
+</CardGroup>
