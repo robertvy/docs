@@ -58,6 +58,34 @@ itellicoAI supports three types of transfer destinations. Choose the one that fi
       </Step>
     </Steps>
 
+    ### Audio Settings
+
+    Agent transfers support customizable hold music and ring tones:
+
+    **Hold Music:**
+    - Play music while the customer waits for the transfer to connect
+    - Duration: 1-30 seconds (default: 6 seconds)
+    - Use for: Professional experience during connection delays
+    - Not recommended for: Instant transfers when immediate connection is preferred
+
+    **Ring Duration:**
+    - Play ringing sound while waiting for the destination agent to answer
+    - Duration: 1-30 seconds (default: 4 seconds)
+    - Enabled by default
+    - Simulates normal calling experience
+
+    **Combined Settings:**
+    You can enable both for a complete transfer experience:
+    1. Music plays (e.g., 6 seconds) - Professional hold experience
+    2. Ringing plays (e.g., 4 seconds) - Connection in progress
+    3. Agent answers - Transfer completes
+
+    **Total delay:** Music duration + Ring duration (e.g., 10 seconds)
+
+    <Info>
+    For instant agent-to-agent transfers, disable both music and ringing for immediate connection.
+    </Info>
+
     ### Benefits
 
     - Conversation history transfers with the call
@@ -268,98 +296,18 @@ Customer: "I have a question about my bill..."
 ### Warm Transfer
 
 <Card title="Coming Soon" icon="clock">
-  **Warm transfers** place the customer on hold while the AI agent connects to the destination first. The AI provides context (via whisper message, summary, or three-way introduction) to the receiving agent before bringing the customer into the conversation. This ensures the receiving agent is briefed and prepared before speaking with the customer.
+  **Warm transfers** use a three-way call approach: the customer hears hold music while the AI initiates a new call to the destination in the background. Once the destination answers, the AI provides context (via whisper message, summary, or three-way introduction) before connecting the customer. This ensures the receiving agent is briefed and prepared before speaking with the customer.
 
-  **Key difference from cold transfer:** The AI establishes contact with the destination and provides a briefing before the customer is connected, rather than disconnecting immediately.
+  **How it works:**
+  1. Customer placed on hold (hears hold music)
+  2. AI initiates new call to destination in background
+  3. Destination answers, AI provides briefing
+  4. Customer connected to briefed destination agent
+
+  **Key difference from cold transfer:** AI maintains both call legs and briefs the destination before connecting the customer, rather than disconnecting immediately.
 
   This feature is currently in development and will be available in a future release.
 </Card>
-
----
-
-## Advanced Transfer Settings
-
-<Warning>
-**Agent transfers only:** Hold music and ring duration settings are currently only available for **inter-agent transfers**. Phone and SIP transfers do not support these audio settings.
-</Warning>
-
-Customize the agent transfer experience with audio settings:
-
-<AccordionGroup>
-  <Accordion title="Hold Music" icon="music">
-    Play music while the customer waits for the agent transfer to connect.
-
-    **Available for:** Agent transfers only
-
-    ### Configuration
-
-    | Setting | Options | Default |
-    |---------|---------|---------|
-    | **Play Music** | Checkbox (enable/disable) | Disabled |
-    | **Music Duration** | 1-30 seconds | 6 seconds |
-
-    ### When to Use
-
-    - Agent transfers with connection delays
-    - Professional experience during transfer
-    - Indicating transfer is in progress
-
-    **Not recommended for:** Instant agent-to-agent transfers when immediate connection is preferred
-
-    ### Best Practices
-
-    <Info>
-    Keep duration reasonable (4-8 seconds). Use when transfers take time to connect. Consider disabling for instant agent-to-agent transfers.
-    </Info>
-  </Accordion>
-
-  <Accordion title="Ring Duration" icon="bell">
-    Play ringing sound while waiting for the destination agent to answer.
-
-    **Available for:** Agent transfers only
-
-    ### Configuration
-
-    | Setting | Options | Default |
-    |---------|---------|---------|
-    | **Should Ring** | Checkbox (enable/disable) | Enabled |
-    | **Ring Duration** | 1-30 seconds | 4 seconds |
-
-    ### When to Use
-
-    - Inter-agent transfers
-    - Simulating normal calling experience
-    - Indicating connection is in progress
-
-    ### Best Practices
-
-    <Info>
-    Combine with hold music (music first, then ring) for a complete transfer experience. Set realistic duration (4-10 seconds).
-    </Info>
-  </Accordion>
-
-  <Accordion title="Combined Audio Settings" icon="waveform">
-    You can use both hold music and ring duration together for agent transfers:
-
-    <Steps>
-      <Step title="Music plays">
-        **6 seconds** - Professional hold experience
-      </Step>
-      <Step title="Ringing plays">
-        **4 seconds** - Connection in progress
-      </Step>
-      <Step title="Agent answers">
-        Transfer completes
-      </Step>
-    </Steps>
-
-    **Total delay:** Music duration + Ring duration = **10 seconds**
-
-    <Tip>
-    For instant agent-to-agent transfers, disable both music and ringing for immediate connection.
-    </Tip>
-  </Accordion>
-</AccordionGroup>
 
 ---
 
