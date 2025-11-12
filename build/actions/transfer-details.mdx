@@ -316,61 +316,65 @@ Customer: "I have a question about my bill..."
 
 Create multiple transfer actions for different destinations to handle various routing scenarios:
 
-### Example: Complete Routing Configuration
+<AccordionGroup>
+  <Accordion title="Complete Routing Configuration" icon="sitemap">
+    Configure multiple transfer destinations for comprehensive routing:
 
-```text wrap
-Agent: Customer Service Router
+    ```text wrap
+    Agent: Customer Service Router
 
-Transfer Actions Configured:
-1. Transfer to Billing Department (+1-555-100-0001)
-2. Transfer to Technical Support (+1-555-100-0002)
-3. Transfer to Sales Team (+1-555-100-0003)
-4. Transfer to Returns Department (+1-555-100-0004)
-5. Transfer to Manager (sip:manager@pbx.company.com)
-6. Transfer to Spanish Agent (Agent ID: ag_spanish_01)
+    Transfer Actions Configured:
+    1. Transfer to Billing Department (+1-555-100-0001)
+    2. Transfer to Technical Support (+1-555-100-0002)
+    3. Transfer to Sales Team (+1-555-100-0003)
+    4. Transfer to Returns Department (+1-555-100-0004)
+    5. Transfer to Manager (sip:manager@pbx.company.com)
+    6. Transfer to Spanish Agent (Agent ID: ag_spanish_01)
 
-Instructions:
-Route customers to appropriate department:
+    Instructions:
+    Route customers to appropriate department:
 
-Billing questions → 'Transfer to Billing Department'
-Technical issues → 'Transfer to Technical Support'
-Sales inquiries → 'Transfer to Sales Team'
-Return requests → 'Transfer to Returns Department'
-Escalations → 'Transfer to Manager'
-Spanish speakers → 'Transfer to Spanish Agent'
+    Billing questions → 'Transfer to Billing Department'
+    Technical issues → 'Transfer to Technical Support'
+    Sales inquiries → 'Transfer to Sales Team'
+    Return requests → 'Transfer to Returns Department'
+    Escalations → 'Transfer to Manager'
+    Spanish speakers → 'Transfer to Spanish Agent'
 
-Always explain who you're connecting them to before transferring.
-```
+    Always explain who you're connecting them to before transferring.
+    ```
+  </Accordion>
 
-### Fallback Chains
+  <Accordion title="Fallback Chains" icon="arrow-turn-down-right">
+    Configure multiple transfer options with fallback logic:
 
-Configure multiple transfer options with fallback logic:
+    ```text wrap
+    Primary escalation path:
+    1. Attempt 'Transfer to Technical Support'
+    2. If fails, attempt 'Transfer to General Support'
+    3. If that fails, attempt 'Transfer to Manager'
+    4. If all fail, apologize and schedule callback
 
-```text wrap
-Primary escalation path:
-1. Attempt 'Transfer to Technical Support'
-2. If fails, attempt 'Transfer to General Support'
-3. If that fails, attempt 'Transfer to Manager'
-4. If all fail, apologize and schedule callback
+    Instructions:
+    If the primary transfer fails, the agent should try the backup,
+    and handle complete failure gracefully by collecting callback info.
+    ```
+  </Accordion>
 
-Instructions:
-If the primary transfer fails, the agent should try the backup,
-and handle complete failure gracefully by collecting callback info.
-```
+  <Accordion title="Conditional Routing" icon="code-branch">
+    Use different transfers based on customer data or conversation context:
 
-### Conditional Routing
-
-Use different transfers based on customer data or conversation context:
-
-```text wrap
-{% if contact.account_type == "enterprise" %}
-Route enterprise customers to 'Transfer to Enterprise Support'
-{% elif contact.account_type == "premium" %}
-Route premium customers to 'Transfer to Premium Support'
-{% else %}
-Route standard customers to 'Transfer to General Support'
-{% endif %}
-```
+    ```text wrap
+    {% if contact.account_type == "enterprise" %}
+    Route enterprise customers to 'Transfer to Enterprise Support'
+    {% elif contact.account_type == "premium" %}
+    Route premium customers to 'Transfer to Premium Support'
+    {% else %}
+    Route standard customers to 'Transfer to General Support'
+    {% endif %}
+    ```
+  </Accordion>
+</AccordionGroup>
 
 ---
 
@@ -511,121 +515,18 @@ Route standard customers to 'Transfer to General Support'
 
 ## Testing Transfer Actions
 
-Thorough testing ensures transfers work reliably in production:
+Test all transfer destinations before going live to ensure reliable operation:
 
-<Steps>
-  <Step title="Test Each Destination">
-    Test every configured transfer action individually:
+**Essential tests:**
+- ✅ Transfer executes and destination receives call
+- ✅ Audio quality is good in both directions
+- ✅ Agent explains transfer appropriately in instructions
+- ✅ Failure scenarios handled gracefully (no answer, busy signal, invalid destination)
+- ✅ Test from different call sources (phone, web)
 
-    **For each transfer:**
-    - <Icon icon="check-circle" /> Start test call
-    - <Icon icon="check-circle" /> Trigger transfer action
-    - <Icon icon="check-circle" /> Verify destination receives call
-    - <Icon icon="check-circle" /> Check audio quality
-    - <Icon icon="check-circle" /> Confirm caller ID displays correctly
-    - <Icon icon="check-circle" /> Test from different phone numbers
-  </Step>
-
-  <Step title="Test Transfer Messages">
-    Verify pre-transfer messages work correctly:
-
-    - Default transfer message plays as configured
-    - Custom messages from instructions work
-    - Silent transfers don't play messages
-    - Messages are clear and professional
-  </Step>
-
-  <Step title="Test Audio Settings">
-    Verify hold music and ring settings:
-
-    - Hold music plays for configured duration
-    - Ring tone plays after music
-    - Total delay feels appropriate
-    - Music doesn't cut off abruptly
-    - Ring connects smoothly to destination
-  </Step>
-
-  <Step title="Test Different Transfer Types">
-    Test each destination type:
-
-    **Agent transfers:**
-    - Context transfers correctly
-    - Conversation history available
-    - Instant connection
-
-    **Phone transfers:**
-    - Number dials correctly
-    - Call connects reliably
-    - No audio issues
-
-    **SIP transfers:**
-    - SIP endpoint reachable
-    - Authentication succeeds
-    - Audio quality good
-  </Step>
-
-  <Step title="Test Failure Scenarios">
-    Simulate failures to verify error handling:
-
-    - Destination doesn't answer
-    - Destination is busy
-    - Invalid destination
-    - Network issues
-    - Verify agent handles gracefully
-  </Step>
-
-  <Step title="Test From Different Sources">
-    Test transfers from various call sources:
-
-    - Web calls from dashboard
-    - Inbound phone calls
-    - Outbound campaign calls
-    - Different phone carriers
-    - Mobile and landline origins
-  </Step>
-</Steps>
-
-### Test Checklist
-
-Use this checklist for comprehensive transfer testing:
-
-```text wrap
-
-
- Action: Transfer to Support Team  
- Destination Type: PHONE (+1-555-123-4567)  
-
- Basic Functionality:  
- ☑ Transfer executes successfully  
- ☑ Destination receives call  
- ☑ Audio quality is good both directions  
- ☑ Caller ID displays correctly  
-
- Configuration:  
- ☑ Transfer message plays as configured  
- ☑ Hold music plays (6 seconds)  
- ☑ Ring tone plays (4 seconds)  
- ☑ Total delay feels appropriate  
-
- Instructions:  
- ☑ Agent references correct action name  
- ☑ Agent explains transfer appropriately  
- ☑ Agent gathers info before transferring  
-
- Error Handling:  
- ☑ No answer scenario handled  
- ☑ Busy signal handled  
- ☑ Invalid number handled  
- ☑ Fallback actions work  
-
- Edge Cases:  
- ☑ Works from mobile callers  
- ☑ Works from landline callers  
- ☑ Works during high call volume  
- ☑ International callers can transfer  
-
-
-```
+<Info>
+For agent transfers, verify conversation history transfers correctly. For phone/SIP transfers, confirm proper E.164 formatting and destination reachability.
+</Info>
 
 ---
 
@@ -768,107 +669,115 @@ Use this checklist for comprehensive transfer testing:
 
 ## Real-World Examples
 
-### Example 1: Multi-Tier Support Routing
+<AccordionGroup>
+  <Accordion title="Multi-Tier Support Routing" icon="layer-group">
+    Route support issues by complexity tier:
 
-```text wrap
-Agent: Customer Support Router
+    ```text wrap
+    Agent: Customer Support Router
 
-Transfer Actions:
-- Transfer to L1 Support (sip:support-l1@queue.company.com)
-- Transfer to L2 Support (sip:support-l2@queue.company.com)
-- Transfer to Engineering (+1-555-100-9999)
+    Transfer Actions:
+    - Transfer to L1 Support (sip:support-l1@queue.company.com)
+    - Transfer to L2 Support (sip:support-l2@queue.company.com)
+    - Transfer to Engineering (+1-555-100-9999)
 
-Instructions:
-Route support issues by complexity:
+    Instructions:
+    Route support issues by complexity:
 
-Simple questions (password reset, account questions):
-- Answer directly using knowledge base
-- Don't transfer unless customer requests
+    Simple questions (password reset, account questions):
+    - Answer directly using knowledge base
+    - Don't transfer unless customer requests
 
-Medium complexity (feature questions, minor bugs):
-- Attempt to help using knowledge base
-- If unable to resolve, use 'Transfer to L1 Support'
+    Medium complexity (feature questions, minor bugs):
+    - Attempt to help using knowledge base
+    - If unable to resolve, use 'Transfer to L1 Support'
 
-High complexity (system outages, critical bugs):
-- Gather detailed information
-- Use 'Transfer to L2 Support'
+    High complexity (system outages, critical bugs):
+    - Gather detailed information
+    - Use 'Transfer to L2 Support'
 
-Critical emergencies (data loss, security incidents):
-- Collect all details immediately
-- Use 'Transfer to Engineering' without delay
-```
+    Critical emergencies (data loss, security incidents):
+    - Collect all details immediately
+    - Use 'Transfer to Engineering' without delay
+    ```
+  </Accordion>
 
-### Example 2: Sales Qualification with Transfer
+  <Accordion title="Sales Qualification with Transfer" icon="chart-line">
+    Qualify leads and route to appropriate sales team:
 
-```text wrap
-Agent: Sales Qualification Agent
+    ```text wrap
+    Agent: Sales Qualification Agent
 
-Transfer Actions:
-- Transfer to Inside Sales (+1-555-200-1000)
-- Transfer to Enterprise Sales (+1-555-200-2000)
-- Transfer to Customer Success (sip:cs-team@company.com)
+    Transfer Actions:
+    - Transfer to Inside Sales (+1-555-200-1000)
+    - Transfer to Enterprise Sales (+1-555-200-2000)
+    - Transfer to Customer Success (sip:cs-team@company.com)
 
-Instructions:
-For inbound sales inquiries:
+    Instructions:
+    For inbound sales inquiries:
 
-1. Greet and understand their interest
-2. Ask qualifying questions:
-   - Company size
-   - Budget range
-   - Timeline
-   - Decision authority
+    1. Greet and understand their interest
+    2. Ask qualifying questions:
+       - Company size
+       - Budget range
+       - Timeline
+       - Decision authority
 
-Based on responses:
+    Based on responses:
 
-Small business (<50 employees, <$10k budget):
-- Provide self-service resources
-- Offer to schedule demo via booking action
-- Don't transfer unless they request
+    Small business (<50 employees, <$10k budget):
+    - Provide self-service resources
+    - Offer to schedule demo via booking action
+    - Don't transfer unless they request
 
-Mid-market (50-500 employees, $10k-$100k budget):
-- Use 'Transfer to Inside Sales'
-- Explain: "I'm connecting you with an account executive
-  who can discuss our mid-market packages"
+    Mid-market (50-500 employees, $10k-$100k budget):
+    - Use 'Transfer to Inside Sales'
+    - Explain: "I'm connecting you with an account executive
+      who can discuss our mid-market packages"
 
-Enterprise (500+ employees, $100k+ budget):
-- Use 'Transfer to Enterprise Sales'
-- Explain: "I'm connecting you with our enterprise team
-  who specializes in large deployments"
+    Enterprise (500+ employees, $100k+ budget):
+    - Use 'Transfer to Enterprise Sales'
+    - Explain: "I'm connecting you with our enterprise team
+      who specializes in large deployments"
 
-Existing customer wanting expansion:
-- Use 'Transfer to Customer Success'
-```
+    Existing customer wanting expansion:
+    - Use 'Transfer to Customer Success'
+    ```
+  </Accordion>
 
-### Example 3: After-Hours Routing
+  <Accordion title="After-Hours Routing" icon="moon">
+    Handle calls outside business hours:
 
-```text wrap
-Agent: After-Hours Support
+    ```text wrap
+    Agent: After-Hours Support
 
-Transfer Actions:
-- Transfer to On-Call Engineer (+1-555-emergency)
-- Transfer to Voicemail (sip:vm@pbx.company.com)
+    Transfer Actions:
+    - Transfer to On-Call Engineer (+1-555-emergency)
+    - Transfer to Voicemail (sip:vm@pbx.company.com)
 
-Instructions:
-Outside normal business hours (Mon-Fri 9am-5pm):
+    Instructions:
+    Outside normal business hours (Mon-Fri 9am-5pm):
 
-1. Greet: "Thank you for calling. Our offices are currently closed."
+    1. Greet: "Thank you for calling. Our offices are currently closed."
 
-2. Ask about urgency:
-   "Is this an urgent issue affecting your business operations?"
+    2. Ask about urgency:
+       "Is this an urgent issue affecting your business operations?"
 
-If urgent/emergency:
-- Gather details: name, company, issue description, impact
-- Explain: "I'm connecting you to our on-call engineer who can
-  help immediately"
-- Use 'Transfer to On-Call Engineer'
+    If urgent/emergency:
+    - Gather details: name, company, issue description, impact
+    - Explain: "I'm connecting you to our on-call engineer who can
+      help immediately"
+    - Use 'Transfer to On-Call Engineer'
 
-If not urgent:
-- Explain business hours
-- Offer options:
-  a) Leave voicemail (Use 'Transfer to Voicemail')
-  b) Schedule callback for next business day (Use booking action)
-  c) Visit self-service knowledge base
-```
+    If not urgent:
+    - Explain business hours
+    - Offer options:
+      a) Leave voicemail (Use 'Transfer to Voicemail')
+      b) Schedule callback for next business day (Use booking action)
+      c) Visit self-service knowledge base
+    ```
+  </Accordion>
+</AccordionGroup>
 
 ---
 
