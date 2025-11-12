@@ -213,9 +213,15 @@ Personalize with customer information:
 Hi {{ contact.first_name | default("there") }}! Thanks for calling.
 ```
 
+Time-based greetings using the built-in `current_datetime` variable:
+
 ```jinja wrap
-Good {{ "morning" if now().hour < 12 else "afternoon" }}, {{ contact.full_name | default("there") }}!
+Good {{ "morning" if current_datetime.hour < 12 else "afternoon" }}, {{ contact.full_name | default("there") }}!
 ```
+
+<Tip>
+The `current_datetime` variable is automatically available in greetings and instructions for building time-based logic. See [Variables & Dynamic Content](/build/conversation/variables-dynamic-content) for more details.
+</Tip>
 
 ### Conditional Greetings
 
