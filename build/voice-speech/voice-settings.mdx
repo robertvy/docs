@@ -20,66 +20,70 @@ ElevenLabs voices support the following adjustable parameters:
 
 ### Stability
 
-Controls consistency and expressiveness (range: 0.0-1.0, default: 0.71)
+Controls consistency and expressiveness (range: 0.0-1.0, itellico default: 0.71)
 
 **How it works:**
 - **Lower values (0.3-0.5):** More expressive and varied, but less consistent between generations
 - **Medium values (0.5-0.7):** Balanced expressiveness and consistency (recommended)
 - **Higher values (0.7-1.0):** More consistent and predictable, but may sound monotone
 
-**Recommended starting point:** 0.71 (default)
+**Recommended starting point:** 0.5-0.7
 
-Use lower stability for creative applications where variety is desired, and higher stability for consistent customer service responses.
+Use lower stability for creative applications where variety is desired, and higher stability (0.6-0.85) for consistent customer service responses.
 
 ### Similarity Boost
 
-Controls how closely the voice matches the original speaker (range: 0.0-1.0, default: 0.75)
+Controls how closely the voice matches the original speaker (range: 0.0-1.0, itellico default: 0.75)
 
 **How it works:**
 - **Lower values (0.5-0.7):** More creative interpretation of the voice
-- **Medium values (0.7-0.8):** Balanced adherence to original voice (recommended)
+- **Medium values (0.75-0.8):** Balanced adherence to original voice (recommended)
 - **Higher values (0.8-1.0):** Strict matching to original voice character
 
-**Recommended starting point:** 0.75 (default)
+**Recommended starting point:** 0.75-0.8
 
-Use higher similarity boost for custom/cloned voices where preserving the original character is critical.
+Higher values increase computational load and can add latency. They're also more likely to reproduce artifacts if the source voice data is noisy.
 
 ### Style
 
-Controls stylistic variation in pacing and intonation (range: 0.0-1.0, default: 0.0)
+Controls stylistic variation in pacing and intonation (range: 0.0-1.0, itellico default: 0.0)
 
 **How it works:**
 - **0.0:** Neutral delivery (recommended)
 - **0.5-1.0:** Amplified style of the original speaker
 
-**Recommended starting point:** 0.0 (default)
+**Recommended starting point:** 0.0
 
-Higher style values can make voices less stable. It's generally recommended to keep this at 0.
+Higher style values can make voices less stable and add latency. Keep this at 0 for most use cases.
 
 ### Speaker Boost
 
-Enhances clarity and presence (boolean, default: true)
+Enhances clarity and presence (boolean, itellico default: enabled)
 
 **How it works:**
 - **Enabled:** Boosts similarity to the original speaker, improving clarity
 - **Disabled:** Standard processing
 
-**Recommended starting point:** Enabled (default)
+**Recommended starting point:** Enabled
 
-Adds minimal latency but improves voice quality.
+Increases latency slightly; subtle effect. Not available on Eleven v3 models.
 
 ### Speed
 
-Controls playback speed (range: 0.7-1.2, default: 1.0)
+Controls playback speed (range: 0.7-1.2, itellico default: 1.0)
 
 **Speed values:**
 - **0.7-0.9:** Slower, clearer delivery
 - **1.0:** Normal speed (default)
 - **1.1-1.2:** Faster, more energetic delivery
 
-**Recommended starting point:** 1.0 (default)
+**Recommended starting point:** 1.0
 
 Adjust in small increments (0.05-0.1) and test with full conversations.
+
+<Tip>
+**Latency optimization:** For live calls, use ElevenLabs Turbo v2.5 (~250-300ms model inference) with streaming enabled. Keep connections warm and place TTS in the same region as your application.
+</Tip>
 
 ---
 
@@ -87,29 +91,52 @@ Adjust in small increments (0.05-0.1) and test with full conversations.
 
 Cartesia voices support the following adjustable parameter:
 
-### Speech Rate
+### Speed
 
-Controls how fast the voice speaks (range: 0.5-2.0, default: 1.0)
+Controls how fast the voice speaks. Sonic-3 (Cartesia's flagship model) emphasizes ultra-low latency.
 
-**Speech rate values:**
-- **0.5-0.8:** Slower delivery for clarity
-- **1.0:** Normal speed (default)
-- **1.2-2.0:** Faster delivery for efficiency
+**Speed options:**
+- **slow:** Slower delivery for clarity
+- **normal:** Standard speed (default)
+- **fast:** Faster delivery for efficiency
 
-**Recommended starting point:** 1.0 (default)
+**Recommended starting point:** normal
 
-Cartesia's ultra-low latency makes speed adjustments feel responsive. Test with realistic conversation scenarios.
+<Note>
+Speed control availability is model-specific and may be experimental or deprecated depending on the Cartesia model. Sonic-3 focuses on ultra-low latency rather than extensive speed adjustments.
+</Note>
 
 ---
 
 ## Azure Speech Settings
 
-Azure Speech voices do not currently support adjustable settings through the itellico AI interface.
+Azure Speech voices do not support adjustable settings through the itellico AI interface. Azure uses default voice configurations optimized by Microsoft for each neural voice.
 
-Azure uses default voice configurations optimized by Microsoft for each neural voice. For advanced customization, Azure supports SSML (Speech Synthesis Markup Language), which can be used in your agent's response templates.
+### Advanced Customization with SSML
+
+For fine-grained control over Azure voices, use SSML (Speech Synthesis Markup Language) in your agent's response templates:
+
+**Example SSML:**
+```xml
+<speak version="1.0" xml:lang="en-US">
+  <voice name="en-US-JennyNeural">
+    <mstts:express-as style="chat">
+      <prosody rate="+5%" pitch="+2st">
+        Thanks for calling. How can I help?
+      </prosody>
+    </mstts:express-as>
+  </voice>
+</speak>
+```
+
+**SSML capabilities:**
+- **Prosody:** Adjust rate (speed), pitch, volume
+- **Speaking styles:** chat, customerservice, newscast, cheerful, empathetic
+- **Emphasis:** Highlight specific words
+- **Breaks:** Add pauses for pacing
 
 <Note>
-If you need advanced Azure voice customization (speaking styles, prosody, emphasis), contact support for guidance on implementing SSML in your agent responses.
+Contact support for guidance on implementing SSML in your agent responses.
 </Note>
 
 ---
@@ -139,36 +166,42 @@ After adjusting voice settings:
 ## Common Settings by Use Case
 
 ### Customer Support
-- **ElevenLabs:** Stability 0.65-0.75, Similarity 0.75, Style 0.0, Speed 1.0
-- **Cartesia:** Speech Rate 1.0
-- **Goal:** Consistent, clear, professional
+- **ElevenLabs:** Stability 0.60-0.85, Similarity 0.75-0.85, Style 0.0, Speed 0.95-1.05
+- **Cartesia:** Speed normal
+- **Azure:** Use SSML style="customerservice" with rate="+0%" to "+5%"
+- **Goal:** Clear, steady, professional
 
 ### Sales
-- **ElevenLabs:** Stability 0.60-0.70, Similarity 0.70, Style 0.0, Speed 1.05-1.1
-- **Cartesia:** Speech Rate 1.1-1.2
+- **ElevenLabs:** Stability 0.45-0.70, Similarity 0.70-0.80, Style 0.0, Speed 1.05-1.15
+- **Cartesia:** Speed normal to fast
+- **Azure:** Use SSML style="cheerful" with rate="+5%" to "+10%"
 - **Goal:** Energetic, confident, engaging
 
 ### Technical Support
-- **ElevenLabs:** Stability 0.70-0.75, Similarity 0.75, Style 0.0, Speed 0.95
-- **Cartesia:** Speech Rate 0.9-0.95
+- **ElevenLabs:** Stability 0.60-0.85, Similarity 0.75-0.85, Style 0.0, Speed 0.95-1.0
+- **Cartesia:** Speed slow to normal
+- **Azure:** Use SSML style="assistant" with rate="-5%" to "+0%"
 - **Goal:** Clear, patient, instructional
 
 ### Healthcare
-- **ElevenLabs:** Stability 0.75-0.80, Similarity 0.80, Style 0.0, Speed 0.9-0.95
-- **Cartesia:** Speech Rate 0.9
-- **Goal:** Professional, empathetic, clear
+- **ElevenLabs:** Stability 0.70-0.85, Similarity 0.80-0.90, Style 0.0, Speed 0.9-1.0
+- **Cartesia:** Speed slow
+- **Azure:** Use SSML style="empathetic" or "calm" with rate="-5%" to "+0%"
+- **Goal:** Calm, consistent, professional
 
 ---
 
 ## Best Practices
 
-**Start with defaults:** Default settings are optimized by voice providers. Only adjust when you identify specific issues.
+**Start with recommended defaults:** Itellico defaults are optimized starting points. ElevenLabs recommends stability ≈0.5 and similarity ≈0.75-0.8 as common baselines.
 
 **Make small changes:** Voice settings are sensitive. Adjust in small increments and test after each change.
 
 **Test in context:** Use full conversation scenarios (3-5 minutes), not just single-sentence samples.
 
 **Consider your audience:** Older customers often prefer slightly slower speeds. Younger audiences may prefer slightly faster.
+
+**Understand latency trade-offs:** Higher similarity boost and speaker boost increase latency. Style values >0 can also add latency and reduce stability.
 
 **Document your settings:** Keep track of what works for each use case and voice combination.
 
