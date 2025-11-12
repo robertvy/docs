@@ -279,11 +279,17 @@ Customer: "I have a question about my bill..."
 
 ## Advanced Transfer Settings
 
-Customize the transfer experience with audio settings:
+<Warning>
+**Agent transfers only:** Hold music and ring duration settings are currently only available for **inter-agent transfers**. Phone and SIP transfers do not support these audio settings.
+</Warning>
+
+Customize the agent transfer experience with audio settings:
 
 <AccordionGroup>
   <Accordion title="Hold Music" icon="music">
-    Play music while the customer waits for the transfer to connect.
+    Play music while the customer waits for the agent transfer to connect.
+
+    **Available for:** Agent transfers only
 
     ### Configuration
 
@@ -294,11 +300,11 @@ Customize the transfer experience with audio settings:
 
     ### When to Use
 
-    - Cold transfers with connection delays
+    - Agent transfers with connection delays
     - Professional experience during transfer
     - Indicating transfer is in progress
 
-    **Not recommended for:** Instant agent-to-agent transfers
+    **Not recommended for:** Instant agent-to-agent transfers when immediate connection is preferred
 
     ### Best Practices
 
@@ -308,31 +314,32 @@ Customize the transfer experience with audio settings:
   </Accordion>
 
   <Accordion title="Ring Duration" icon="bell">
-    Play ringing sound while waiting for destination to answer.
+    Play ringing sound while waiting for the destination agent to answer.
+
+    **Available for:** Agent transfers only
 
     ### Configuration
 
     | Setting | Options | Default |
     |---------|---------|---------|
-    | **Should Ring** | Checkbox (enable/disable) | Disabled |
+    | **Should Ring** | Checkbox (enable/disable) | Enabled |
     | **Ring Duration** | 1-30 seconds | 4 seconds |
 
     ### When to Use
 
-    - Phone number transfers
+    - Inter-agent transfers
     - Simulating normal calling experience
-    - Indicating call is connecting
-    - SIP address transfers
+    - Indicating connection is in progress
 
     ### Best Practices
 
     <Info>
-    Use for phone transfers. Combine with hold music (music first, then ring). Set realistic duration (4-10 seconds).
+    Combine with hold music (music first, then ring) for a complete transfer experience. Set realistic duration (4-10 seconds).
     </Info>
   </Accordion>
 
   <Accordion title="Combined Audio Settings" icon="waveform">
-    You can use both hold music and ring duration together for a professional experience:
+    You can use both hold music and ring duration together for agent transfers:
 
     <Steps>
       <Step title="Music plays">
@@ -341,7 +348,7 @@ Customize the transfer experience with audio settings:
       <Step title="Ringing plays">
         **4 seconds** - Connection in progress
       </Step>
-      <Step title="Destination answers">
+      <Step title="Agent answers">
         Transfer completes
       </Step>
     </Steps>
@@ -349,7 +356,7 @@ Customize the transfer experience with audio settings:
     **Total delay:** Music duration + Ring duration = **10 seconds**
 
     <Tip>
-    For **agent-to-agent** transfers, disable both music and ringing for instant connection. For **phone transfers to humans**, enable both for a professional experience.
+    For instant agent-to-agent transfers, disable both music and ringing for immediate connection.
     </Tip>
   </Accordion>
 </AccordionGroup>
