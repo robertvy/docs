@@ -18,293 +18,391 @@ Transfers happen in real-time during active calls. The customer stays on the lin
 
 ## Transfer Destinations
 
-itellicoAI supports three types of transfer destinations, each suited for different scenarios:
+itellicoAI supports three types of transfer destinations. Choose the one that fits your workflow:
 
-### Agent Transfers
+<Tabs>
+  <Tab title="Agent Transfer">
+    Transfer calls to other AI agents in your itellicoAI account.
 
-Transfer calls to other AI agents in your itellicoAI account.
+    ### Use Cases
 
-**Use cases:**
-- **Specialized agents** - Route to agents with specific knowledge (billing, technical, sales)
-- **Language routing** - Transfer to agents configured for different languages
-- **Department routing** - Direct to agents designed for specific departments
-- **Skill-based routing** - Connect to agents with specialized capabilities
+    <CardGroup cols={2}>
+      <Card title="Specialized Agents" icon="user-gear">
+        Route to agents with specific knowledge (billing, technical, sales)
+      </Card>
+      <Card title="Language Routing" icon="language">
+        Transfer to agents configured for different languages
+      </Card>
+      <Card title="Department Routing" icon="sitemap">
+        Direct to agents designed for specific departments
+      </Card>
+      <Card title="Skill-Based Routing" icon="certificate">
+        Connect to agents with specialized capabilities
+      </Card>
+    </CardGroup>
 
-**Configuration:**
-```text wrap
-Transfer Type: AGENT
-Destination: Select target agent from dropdown
-Transfer Hold Music: Optional audio to play while connecting
-Ring Tone: Optional ring sound during transfer
-```
+    ### Configuration
 
-**Benefits:**
-- Conversation history transfers with the call
-- No additional telephony costs
-- Instant connection (no dialing delay)
-- Full context preservation
-- Customizable hold music and ring tone for branded experience
+    <Steps>
+      <Step title="Select transfer type">
+        Choose **AGENT** as the transfer type
+      </Step>
+      <Step title="Choose destination agent">
+        Select the target agent from the dropdown menu
+      </Step>
+      <Step title="Optional: Add hold music">
+        Upload audio to play while connecting (optional)
+      </Step>
+      <Step title="Optional: Add ring tone">
+        Add a ring sound during transfer (optional)
+      </Step>
+    </Steps>
 
-**Example:**
-```text wrap
-Agent: General Support
-Action: Transfer to Technical Agent
+    ### Benefits
 
-Instructions:
-When a customer reports a technical issue that requires troubleshooting:
-1. Gather basic information about the problem
-2. Explain you're connecting them to a technical specialist
-3. Use the 'Transfer to Technical Agent' action
-```
+    - ✅ Conversation history transfers with the call
+    - ✅ No additional telephony costs
+    - ✅ Instant connection (no dialing delay)
+    - ✅ Full context preservation
+    - ✅ Customizable hold music and ring tone
 
-### Phone Number Transfers
+    ### Example Instructions
 
-Transfer calls to external phone numbers - mobile phones, landlines, or business numbers.
+    ```
+    When a customer reports a technical issue that requires troubleshooting:
+    1. Gather basic information about the problem
+    2. Explain you're connecting them to a technical specialist
+    3. Use the 'Transfer to Technical Agent' action
+    ```
+  </Tab>
 
-**Use cases:**
-- **Human specialists** - Connect to live support agents
-- **On-call teams** - Route to mobile phones for urgent issues
-- **External departments** - Transfer to teams outside your itellicoAI account
-- **Emergency contacts** - Escalate critical situations
+  <Tab title="Phone Number">
+    Transfer calls to external phone numbers - mobile phones, landlines, or business numbers.
 
-**Configuration:**
-```text wrap
-Transfer Type: PHONE
-Destination: +1-555-123-4567 (E.164 format required)
-```
+    ### Use Cases
 
-**Format requirements:**
-- Must include country code (+1 for US/Canada)
-- No spaces, dashes, or parentheses
-- Examples: +14155551234, +442071234567, +61398765432
+    <CardGroup cols={2}>
+      <Card title="Human Specialists" icon="user-headset">
+        Connect to live support agents
+      </Card>
+      <Card title="On-Call Teams" icon="mobile">
+        Route to mobile phones for urgent issues
+      </Card>
+      <Card title="External Departments" icon="building">
+        Transfer to teams outside your account
+      </Card>
+      <Card title="Emergency Contacts" icon="triangle-exclamation">
+        Escalate critical situations
+      </Card>
+    </CardGroup>
 
-**Costs:**
-- Outbound telephony charges apply
-- Rates vary by destination country
-- Check your pricing plan for specific rates
+    ### Configuration
 
-**Example:**
-```text wrap
-Agent: After-Hours Support
-Action: Transfer to On-Call Manager
+    <Steps>
+      <Step title="Select transfer type">
+        Choose **PHONE** as the transfer type
+      </Step>
+      <Step title="Enter phone number">
+        Enter destination in E.164 format: `+1-555-123-4567`
 
-Instructions:
-For urgent issues outside business hours:
-1. Verify the issue is truly urgent
-2. Collect key details (customer name, issue summary)
-3. Explain you're connecting to the on-call manager
-4. Use the 'Transfer to On-Call Manager' action (+1-555-987-6543)
-```
+        **Format requirements:**
+        - Must include country code (+1 for US/Canada)
+        - No spaces, dashes, or parentheses
+        - Examples: `+14155551234`, `+442071234567`, `+61398765432`
+      </Step>
+    </Steps>
 
-<Warning>
-**Important limitations:**
-- Phone transfers incur outbound calling costs. International transfers can be expensive.
-- **Phone transfers only work during active phone calls.** They cannot be used during web calls or widget conversations.
-- Verify phone numbers are correct to avoid unnecessary charges or failed transfers.
-</Warning>
+    ### Costs & Limitations
 
-### SIP Address Transfers
+    <Warning>
+    **Important:**
+    - Phone transfers incur outbound calling costs (rates vary by destination)
+    - **Only work during active phone calls** (not web calls or widget conversations)
+    - Verify phone numbers to avoid charges or failed transfers
+    </Warning>
 
-Transfer calls to SIP addresses (Session Initiation Protocol URIs) for integration with PBX systems and contact centers.
+    ### Example Instructions
 
-**Use cases:**
-- **PBX integration** - Route to internal extensions
-- **Contact center queues** - Transfer to ACD systems
-- **Enterprise telephony** - Connect to corporate phone systems
-- **VoIP platforms** - Integrate with existing voice infrastructure
+    ```
+    For urgent issues outside business hours:
+    1. Verify the issue is truly urgent
+    2. Collect key details (customer name, issue summary)
+    3. Explain you're connecting to the on-call manager
+    4. Use the 'Transfer to On-Call Manager' action
+    ```
+  </Tab>
 
-**Configuration:**
-```text wrap
-Transfer Type: SIP
-Destination: sip:1001@yourpbx.example.com
-```
+  <Tab title="SIP Address">
+    Transfer calls to SIP addresses (Session Initiation Protocol URIs) for integration with PBX systems and contact centers.
 
-**Format requirements:**
-- Must be valid SIP URI
-- Include username and domain
-- Examples: sip:support@pbx.company.com, sip:1234@10.0.1.50
+    ### Use Cases
 
-**Prerequisites:**
-- SIP trunk configured in itellicoAI
-- Destination SIP endpoint reachable
-- Proper authentication configured
-- Network routing in place
+    <CardGroup cols={2}>
+      <Card title="PBX Integration" icon="phone-office">
+        Route to internal extensions
+      </Card>
+      <Card title="Contact Centers" icon="users-viewfinder">
+        Transfer to ACD queue systems
+      </Card>
+      <Card title="Enterprise Telephony" icon="building-columns">
+        Connect to corporate phone systems
+      </Card>
+      <Card title="VoIP Platforms" icon="cloud">
+        Integrate with voice infrastructure
+      </Card>
+    </CardGroup>
 
-**Example:**
-```text wrap
-Agent: IVR Replacement Agent
-Action: Transfer to Support Queue
+    ### Configuration
 
-Instructions:
-For general support requests:
-1. Collect caller information
-2. Explain estimated wait time
-3. Use 'Transfer to Support Queue' action (sip:support-queue@pbx.company.com)
-```
+    <Steps>
+      <Step title="Prerequisites">
+        Before configuring SIP transfers:
+        - SIP trunk configured in itellicoAI
+        - Destination SIP endpoint reachable
+        - Proper authentication configured
+        - Network routing in place
+      </Step>
+      <Step title="Select transfer type">
+        Choose **SIP** as the transfer type
+      </Step>
+      <Step title="Enter SIP address">
+        Enter destination SIP URI: `sip:1001@yourpbx.example.com`
 
-<Tip>
-SIP transfers are ideal for enterprises with existing phone systems. They provide seamless integration between AI agents and traditional telephony infrastructure.
-</Tip>
+        **Format requirements:**
+        - Must be valid SIP URI
+        - Include username and domain
+        - Examples: `sip:support@pbx.company.com`, `sip:1234@10.0.1.50`
+      </Step>
+    </Steps>
 
-<Warning>
-**SIP transfers only work during active phone calls.** They cannot be used during web calls or widget conversations.
-</Warning>
+    <Tip>
+    SIP transfers are ideal for enterprises with existing phone systems. They provide seamless integration between AI agents and traditional telephony infrastructure.
+    </Tip>
+
+    <Warning>
+    **SIP transfers only work during active phone calls.** They cannot be used during web calls or widget conversations.
+    </Warning>
+
+    ### Example Instructions
+
+    ```
+    For general support requests:
+    1. Collect caller information
+    2. Explain estimated wait time
+    3. Use 'Transfer to Support Queue' action
+    ```
+  </Tab>
+</Tabs>
 
 ---
 
 ## Transfer Modes
 
-Transfer actions support two modes that control how the handoff occurs:
+Choose how the transfer is executed:
 
-### Cold Transfer
+<Tabs>
+  <Tab title="Cold Transfer" icon="phone-arrow-right">
+    The agent transfers the call immediately and disconnects. The customer connects directly to the destination without the agent introducing them. **(Default)**
 
-The agent transfers the call immediately and disconnects. The customer connects directly to the destination without the agent introducing them.
+    ### How It Works
 
-**How it works:**
-1. Agent explains the transfer
-2. Agent initiates transfer
-3. Agent disconnects
-4. Customer connects to destination
+    <Steps>
+      <Step title="Agent explains the transfer">
+        Agent tells customer they're being transferred
+      </Step>
+      <Step title="Transfer initiates">
+        Agent starts the transfer action
+      </Step>
+      <Step title="Agent disconnects">
+        Agent drops from the call
+      </Step>
+      <Step title="Customer connects">
+        Customer connects directly to destination
+      </Step>
+    </Steps>
 
-**When to use:**
-- Standard escalations
-- Department routing
-- Queue transfers
-- High-volume routing scenarios
+    ### When to Use
 
-**Advantages:**
-- Fast and efficient
-- No agent monitoring required
-- Scales easily
+    <CardGroup cols={2}>
+      <Card title="Standard Escalations" icon="arrow-up">
+        Typical support escalations
+      </Card>
+      <Card title="Department Routing" icon="buildings">
+        Route to specific departments
+      </Card>
+      <Card title="Queue Transfers" icon="people-line">
+        Transfer to contact center queues
+      </Card>
+      <Card title="High-Volume Scenarios" icon="gauge-high">
+        Fast routing for scale
+      </Card>
+    </CardGroup>
 
-**Disadvantages:**
-- No context provided to recipient
-- Recipient doesn't know why call is coming
-- Customer must re-explain their issue
+    ### Pros & Cons
 
-**Configuration:**
-```text wrap
-Transfer Mode: Cold (default)
-Transfer Message: "Let me connect you with our billing department."
-```
+    ✅ **Advantages:**
+    - Fast and efficient
+    - No agent monitoring required
+    - Scales easily
 
-**Example flow:**
-```text wrap
-Customer: "I have a billing question"
-Agent: "I'd be happy to help. Let me connect you with our billing
-        department who can access your account details."
-[Cold transfer to billing]
-[Agent disconnects]
-[Customer connects to billing agent]
-Billing Agent: "Hello, how can I help you?"
-Customer: "I have a question about my bill..."
-```
+    ❌ **Disadvantages:**
+    - No context provided to recipient
+    - Customer must re-explain their issue
 
-### Silent Transfer
+    ### Example Flow
 
-The agent transfers without saying anything - the call is immediately routed to the destination.
+    ```
+    Customer: "I have a billing question"
+    Agent: "I'd be happy to help. Let me connect you with our billing
+            department who can access your account details."
+    [Cold transfer to billing → Agent disconnects]
+    Billing Agent: "Hello, how can I help you?"
+    Customer: "I have a question about my bill..."
+    ```
+  </Tab>
 
-**How it works:**
-1. Agent determines transfer is needed
-2. Transfer executes silently
-3. Customer connects to destination
+  <Tab title="Silent Transfer" icon="phone-slash">
+    The agent transfers without saying anything - the call is immediately routed to the destination.
 
-**When to use:**
-- Routing logic only (no conversation yet)
-- IVR replacement scenarios
-- Menu-based routing
-- When silence is intentional
+    ### How It Works
 
-**Configuration:**
-```text wrap
-Silent Transfer: Enabled (checkbox)
-Transfer Message: [ignored when silent enabled]
-```
+    <Steps>
+      <Step title="Agent determines transfer">
+        Agent logic triggers transfer need
+      </Step>
+      <Step title="Silent execution">
+        Transfer executes without announcement
+      </Step>
+      <Step title="Customer connects">
+        Customer routed to destination silently
+      </Step>
+    </Steps>
 
-**Example scenario:**
-```text wrap
-Agent: Language Router (silent routing agent)
+    ### When to Use
 
-Instructions:
-Based on the language the customer speaks:
-- If Spanish detected, use 'Transfer to Spanish Agent' (silent)
-- If French detected, use 'Transfer to French Agent' (silent)
-- If English, continue conversation
+    <CardGroup cols={2}>
+      <Card title="Routing Logic" icon="route">
+        Pure routing, no conversation yet
+      </Card>
+      <Card title="IVR Replacement" icon="phone-volume">
+        Replace traditional IVR menus
+      </Card>
+      <Card title="Menu-Based Routing" icon="list">
+        Route based on selections
+      </Card>
+      <Card title="Language Detection" icon="language">
+        Auto-route by detected language
+      </Card>
+    </CardGroup>
 
-No need to explain transfer - just route silently.
-```
+    ### Configuration
 
-<Warning>
-Silent transfers can feel abrupt to customers. Use sparingly and only when appropriate for the use case.
-</Warning>
+    <Steps>
+      <Step title="Enable silent transfer">
+        Check the **Silent Transfer** checkbox
+      </Step>
+      <Step title="Transfer message ignored">
+        Any transfer message is ignored when silent mode is enabled
+      </Step>
+    </Steps>
+
+    ### Example Scenario
+
+    ```
+    Agent: Language Router (silent routing agent)
+
+    Instructions:
+    Based on the language the customer speaks:
+    - If Spanish detected, use 'Transfer to Spanish Agent' (silent)
+    - If French detected, use 'Transfer to French Agent' (silent)
+    - If English, continue conversation
+
+    No need to explain transfer - just route silently.
+    ```
+
+    <Warning>
+    Silent transfers can feel abrupt to customers. Use sparingly and only when appropriate for the use case.
+    </Warning>
+  </Tab>
+</Tabs>
 
 ---
 
 ## Advanced Transfer Settings
 
-### Hold Music
+Customize the transfer experience with audio settings:
 
-Play music while the customer waits for the transfer to connect.
+<AccordionGroup>
+  <Accordion title="Hold Music" icon="music">
+    Play music while the customer waits for the transfer to connect.
 
-**Configuration:**
-- **Play Music:** Checkbox to enable/disable
-- **Music Duration:** How long to play music (default: 6 seconds)
+    ### Configuration
 
-**Use cases:**
-- Cold transfers with connection delay
-- Professional experience during transfer
-- Indicating transfer in progress
+    | Setting | Options | Default |
+    |---------|---------|---------|
+    | **Play Music** | Checkbox (enable/disable) | Disabled |
+    | **Music Duration** | 1-30 seconds | 6 seconds |
 
-**Best practices:**
-- Keep duration reasonable (4-8 seconds)
-- Use when transfers take time to connect
-- Consider disabling for instant agent-to-agent transfers
+    ### When to Use
 
-```text wrap
+    - ✅ Cold transfers with connection delays
+    - ✅ Professional experience during transfer
+    - ✅ Indicating transfer is in progress
+    - ❌ Instant agent-to-agent transfers
 
- ☑ Play Music While Connecting  
- Music Duration: [6___] seconds  
+    ### Best Practices
 
-```
+    <Info>
+    Keep duration reasonable (4-8 seconds). Use when transfers take time to connect. Consider disabling for instant agent-to-agent transfers.
+    </Info>
+  </Accordion>
 
-### Ring Duration
+  <Accordion title="Ring Duration" icon="bell">
+    Play ringing sound while waiting for destination to answer.
 
-Play ringing sound while waiting for destination to answer.
+    ### Configuration
 
-**Configuration:**
-- **Should Ring:** Checkbox to enable/disable
-- **Ring Duration:** How long to ring (default: 4 seconds)
+    | Setting | Options | Default |
+    |---------|---------|---------|
+    | **Should Ring** | Checkbox (enable/disable) | Disabled |
+    | **Ring Duration** | 1-30 seconds | 4 seconds |
 
-**Use cases:**
-- Phone number transfers
-- Simulating normal calling experience
-- Indicating call is connecting
+    ### When to Use
 
-**Best practices:**
-- Use for phone transfers
-- Combine with hold music (music first, then ring)
-- Set realistic duration (4-10 seconds)
+    - ✅ Phone number transfers
+    - ✅ Simulating normal calling experience
+    - ✅ Indicating call is connecting
+    - ✅ SIP address transfers
 
-```text wrap
+    ### Best Practices
 
- ☑ Should Ring  
- Ring Duration: [4___] seconds  
+    <Info>
+    Use for phone transfers. Combine with hold music (music first, then ring). Set realistic duration (4-10 seconds).
+    </Info>
+  </Accordion>
 
-```
+  <Accordion title="Combined Audio Settings" icon="waveform">
+    You can use both hold music and ring duration together for a professional experience:
 
-### Combined Audio Settings
+    <Steps>
+      <Step title="Music plays">
+        **6 seconds** - Professional hold experience
+      </Step>
+      <Step title="Ringing plays">
+        **4 seconds** - Connection in progress
+      </Step>
+      <Step title="Destination answers">
+        Transfer completes
+      </Step>
+    </Steps>
 
-You can use both hold music and ring duration together:
+    **Total delay:** Music duration + Ring duration = **10 seconds**
 
-1. **Music plays** (6 seconds) - Professional hold experience
-2. **Ringing plays** (4 seconds) - Connection in progress
-3. **Destination answers** - Transfer completes
-
-**Total delay:** Music duration + Ring duration = 10 seconds
-
-<Tip>
-For agent-to-agent transfers, disable both music and ringing for instant connection. For phone transfers to humans, enable both for a professional experience.
-</Tip>
+    <Tip>
+    For **agent-to-agent** transfers, disable both music and ringing for instant connection. For **phone transfers to humans**, enable both for a professional experience.
+    </Tip>
+  </Accordion>
+</AccordionGroup>
 
 ---
 
