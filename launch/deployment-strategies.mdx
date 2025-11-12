@@ -1,0 +1,458 @@
+---
+title: "Deployment Strategies"
+description: "Scale safely with gradual rollouts, A/B testing, and load management"
+icon: "diagram-project"
+---
+
+## Strategic Deployment Philosophy
+
+Launching an AI agent to thousands of users simultaneously is risky. Issues that weren't caught in testing amplify at scale. Smart deployment strategies let you:
+
+- **Detect problems early** with small user cohorts
+- **Iterate quickly** based on real feedback
+- **Scale confidently** knowing the system is stable
+- **Measure impact** with controlled experiments
+
+## Gradual Rollout Strategy
+
+### Canary Deployment
+
+Start with a tiny fraction of traffic to catch critical issues:
+
+<Steps>
+  <Step title="Phase 1: Internal Testing (10-20 calls)">
+    **Who**: Your team, friendly customers, test accounts
+
+    **Duration**: 1-2 days
+
+    **Actions**:
+    - Deploy agent to a single phone number or widget on staging site
+    - Team members place test calls covering key scenarios
+    - Monitor every conversation in **Conversations → Live Monitor**
+    - Fix any critical issues before proceeding
+
+    **Success Criteria**:
+    - Zero crashes or call failures
+    - Agent instructions work as expected
+    - Actions (transfers, APIs) execute correctly
+    - Call quality is acceptable (latency <500ms, clear audio)
+  </Step>
+
+  <Step title="Phase 2: Limited Beta (1% of traffic)">
+    **Who**: Small segment of real users
+
+    **Duration**: 3-7 days
+
+    **Actions**:
+    - Route 1% of calls to new agent (99% to old system or human queue)
+    - For phone: Use round-robin or time-based routing
+    - For web: Enable widget for 1% of page loads (A/B test framework)
+    - Track metrics: answer rate, goal achievement, customer satisfaction
+
+    **Success Criteria**:
+    - Goal achievement rate ≥ baseline (or control group)
+    - No increase in support escalations
+    - Average handling time within acceptable range
+    - User feedback neutral or positive
+  </Step>
+
+  <Step title="Phase 3: Staged Expansion (10% → 50% → 100%)">
+    **Duration**: 2-4 weeks total
+
+    **Actions**:
+    - Increase traffic by 10-20% every few days if metrics stable
+    - Monitor key KPIs at each stage:
+      - Conversation completion rate
+      - Goal achievement
+      - Error rate (failed actions, dropped calls)
+      - Customer satisfaction (CSAT, NPS)
+    - Pause rollout if any metric degrades >10% from baseline
+
+    **Success Criteria**:
+    - All metrics within acceptable thresholds
+    - System capacity adequate (not hitting concurrency limits)
+    - No spikes in support tickets or complaints
+  </Step>
+</Steps>
+
+### Geographic Rollout
+
+Launch in specific regions before going global:
+
+<Tabs>
+  <Tab title="By Country/Region">
+    **Strategy**: Start with one country/timezone
+
+    **Implementation**:
+    - Provision local phone numbers for target region
+    - Configure agent business hours for local timezone
+    - Monitor first 100 calls closely
+    - Expand to adjacent timezones once stable
+
+    **Pros**: Easier to monitor during your business hours, localized language/cultural issues caught early
+
+    **Cons**: Slower global rollout
+  </Tab>
+
+  <Tab title="By Customer Segment">
+    **Strategy**: Launch to specific user cohorts
+
+    **Implementation**:
+    - Start with low-value or trial customers (lower risk)
+    - Expand to standard tier, then premium customers
+    - Use CRM tags to route calls to new vs old agent
+
+    **Pros**: Protects high-value relationships, easier rollback if issues
+
+    **Cons**: May bias results (different segments behave differently)
+  </Tab>
+
+  <Tab title="By Use Case">
+    **Strategy**: Deploy for simple use cases first
+
+    **Implementation**:
+    - Start with FAQ/support (lower stakes)
+    - Expand to sales qualification
+    - Finally deploy for high-value sales or complex support
+
+    **Pros**: Build confidence with easier scenarios first
+
+    **Cons**: Requires multiple agent configs per use case
+  </Tab>
+</Tabs>
+
+## A/B Testing Agents
+
+Compare agent performance scientifically:
+
+### Test Design
+
+<Accordion title="Agent variant testing">
+  **What to Test**:
+  - Different instructions/prompts
+  - Different AI models (GPT-4 vs Claude)
+  - Different voices
+  - Different action configurations
+
+  **Setup**:
+  1. Create two agents: Agent A (control) and Agent B (variant)
+  2. Route 50% of traffic to each (randomized per call)
+  3. Track same goals/metrics for both
+  4. Run for minimum 100 calls per variant (statistical significance)
+
+  **Code Example**:
+  ```python
+  import random
+
+  def get_agent_for_call(call_id):
+      # Hash call ID for consistent assignment
+      if hash(call_id) % 2 == 0:
+          return "agent_A_control"
+      else:
+          return "agent_B_variant"
+  ```
+</Accordion>
+
+<Accordion title="Metrics to compare">
+  **Primary Metrics**:
+  - Goal achievement rate (most important)
+  - Conversation completion rate
+  - Average handling time
+  - Customer satisfaction (CSAT)
+
+  **Secondary Metrics**:
+  - Action success rate
+  - Interruption frequency
+  - Transfer rate to humans
+  - Repeat caller rate
+
+  **Statistical Significance**:
+  - Need minimum ~100 calls per variant for 80% confidence
+  - Use chi-square test for goal rates: `scipy.stats.chi2_contingency`
+  - Only declare winner if p-value < 0.05
+</Accordion>
+
+<Accordion title="Interpreting results">
+  **Example Results**:
+  - Agent A: 42% goal achievement (210/500 calls)
+  - Agent B: 47% goal achievement (235/500 calls)
+  - Improvement: +5 percentage points (+12% relative)
+
+  **Decision Framework**:
+  - If improvement >10% and statistically significant → Promote variant to production
+  - If improvement 5-10% → Run longer test for more confidence
+  - If improvement <5% → Not meaningful, keep control
+  - If variant worse → Rollback immediately
+
+  **Qualitative Analysis**:
+  - Review 10-20 transcripts from each variant
+  - Look for patterns: Where does variant succeed/fail?
+  - Consider edge cases that metrics miss
+</Accordion>
+
+### A/B Test Implementation
+
+<Tabs>
+  <Tab title="Phone A/B Test">
+    **Round-Robin Routing**:
+    ```python
+    # In your routing logic
+    call_count = get_call_count_today()
+
+    if call_count % 2 == 0:
+        agent_id = "agent_A_control"
+    else:
+        agent_id = "agent_B_variant"
+
+    # Tag call for later analysis
+    metadata = {"ab_test_variant": "A" if call_count % 2 == 0 else "B"}
+    ```
+
+    **Time-Based Split** (if using platform routing):
+    - Odd hours → Agent A
+    - Even hours → Agent B
+    - Requires 24+ hour runtime for balance
+  </Tab>
+
+  <Tab title="Web Widget A/B Test">
+    **Client-Side Split**:
+    ```javascript
+    // Randomly assign variant
+    const variant = Math.random() < 0.5 ? 'A' : 'B';
+
+    ItellicoWidget.init({
+      agentId: variant === 'A' ? 'agent_A_control' : 'agent_B_variant',
+      userMetadata: {
+        ab_test_variant: variant
+      }
+    });
+
+    // Track in analytics
+    gtag('event', 'widget_loaded', { variant: variant });
+    ```
+
+    **Server-Side Split** (recommended):
+    ```python
+    # Determine variant on backend (more reliable)
+    variant = assign_variant(user_id)  # Consistent per user
+
+    return render_template('page.html',
+                          agent_id=variant['agent_id'],
+                          variant_name=variant['name'])
+    ```
+  </Tab>
+
+  <Tab title="Campaign A/B Test">
+    **Contact List Split**:
+    1. Divide contact list into two random samples
+    2. Create two campaigns with different agents
+    3. Launch simultaneously
+    4. Compare completion rates, goal achievement, cost per conversion
+
+    **Caution**: Ensure lists are truly randomized (check for demographic balance)
+  </Tab>
+</Tabs>
+
+## Volume Management & Scaling
+
+### Concurrency Planning
+
+Estimate your capacity needs:
+
+**Formula**:
+```
+Required Concurrency = (Calls per Hour × Avg Duration in Minutes) / 60
+
+Example:
+- 300 calls/hour expected
+- 4 minute average call duration
+- Required: (300 × 4) / 60 = 20 concurrent calls minimum
+- Recommend: 25-30 concurrent (buffer for spikes)
+```
+
+**Account Limits**:
+- Starter: 5 concurrent calls
+- Professional: 20 concurrent calls
+- Business: 50 concurrent calls
+- Enterprise: Unlimited (contact sales)
+
+### Load Balancing Strategies
+
+<Accordion title="Multi-agent distribution">
+  For high volume, create multiple identical agents:
+
+  **Setup**:
+  1. Clone your tested agent 3-5 times
+  2. Distribute phone numbers across agents
+  3. Each agent handles subset of total volume
+  4. Monitor per-agent metrics for imbalances
+
+  **Benefits**: Isolates failures (one agent down doesn't kill all traffic), easier capacity planning
+
+  **Drawback**: Must keep agent configs in sync (use API for bulk updates)
+</Accordion>
+
+<Accordion title="Time-based scaling">
+  Adjust capacity based on call patterns:
+
+  **Implementation**:
+  - Analyze historical call volume by hour/day
+  - Scale concurrent call limits during peak hours
+  - Reduce during low-traffic periods (cost savings)
+
+  **Example Schedule**:
+  - 9am-12pm: 50 concurrent calls (peak)
+  - 12pm-5pm: 30 concurrent calls (normal)
+  - 5pm-9am: 10 concurrent calls (off-peak)
+
+  Platform supports scheduled scaling in **Settings → Capacity**
+</Accordion>
+
+<Accordion title="Queue management">
+  When hitting concurrency limits:
+
+  **Options**:
+  1. **Queue Calls**: Hold callers in line (play music, announce wait time)
+  2. **Callback Offer**: "We'll call you back in 5 minutes"
+  3. **Voicemail**: Let callers leave message for human follow-up
+  4. **Graceful Reject**: "All agents busy, please call back"
+
+  **Configuration**:
+  - Max queue size: 10-20 callers (longer = higher abandon rate)
+  - Max wait time: 2-3 minutes (abandon rate spikes after 3min)
+  - Overflow action: Transfer to human queue or voicemail
+</Accordion>
+
+### Auto-Scaling (Enterprise)
+
+For enterprise customers, enable dynamic scaling:
+
+- **Trigger**: When concurrency reaches 80% of limit
+- **Action**: Automatically increase limit by 25%
+- **Cooldown**: Wait 5 minutes before scaling again
+- **Max Limit**: Set cap to prevent runaway costs
+
+Contact support to enable auto-scaling.
+
+## Blue-Green Deployment
+
+Zero-downtime agent updates:
+
+<Steps>
+  <Step title="Prepare green environment">
+    - Create new agent version ("green") with updated configuration
+    - Test thoroughly in Test mode
+    - Keep old agent ("blue") handling production traffic
+  </Step>
+
+  <Step title="Gradual cutover">
+    - Route 10% of traffic to green agent
+    - Monitor for 30-60 minutes
+    - If stable, increase to 50%, then 100%
+    - If issues, rollback to blue instantly
+  </Step>
+
+  <Step title="Retire blue">
+    - Once green is handling 100% for 24 hours without issues
+    - Archive blue agent (keep for emergency rollback)
+    - Green becomes new production baseline
+  </Step>
+</Steps>
+
+**Implementation**:
+```python
+# Simple traffic splitting
+current_rollout_percentage = 10  # Start at 10%
+
+if random.random() * 100 < current_rollout_percentage:
+    agent_id = "agent_green_v2"  # New version
+else:
+    agent_id = "agent_blue_v1"   # Old version
+```
+
+## Rollback Procedures
+
+When things go wrong, rollback quickly:
+
+### Emergency Rollback Triggers
+
+Execute immediate rollback if:
+- Goal achievement drops >20% from baseline
+- Error rate >10% (failed actions, dropped calls)
+- Customer complaints spike >5x normal
+- Security incident detected
+
+### Rollback Steps
+
+<Steps>
+  <Step title="Pause new agent">
+    - Stop routing traffic to problematic agent
+    - Switch phone numbers back to old agent or human queue
+    - Disable web widget or point to fallback agent
+    - Pause outbound campaigns
+  </Step>
+
+  <Step title="Communicate">
+    - Alert team in Slack/operations channel
+    - Update status page if customer-facing
+    - Document issue for post-mortem
+  </Step>
+
+  <Step title="Investigate">
+    - Review recent conversation logs for patterns
+    - Check system logs for errors
+    - Identify root cause (instructions, integration failure, model issue)
+  </Step>
+
+  <Step title="Fix and retest">
+    - Fix issue in Test environment
+    - Run full test suite again
+    - Re-launch with Phase 1 canary (start over)
+  </Step>
+</Steps>
+
+**Rollback Time Target**: <5 minutes from detection to old agent live
+
+### Rollback Automation
+
+Pre-configure one-click rollback:
+
+```bash
+# Emergency rollback script
+#!/bin/bash
+echo "EMERGENCY ROLLBACK: Routing all traffic to backup agent..."
+
+# Update phone numbers via API
+curl -X PATCH https://api.itellico.ai/v1/phone-numbers/+1234567890 \
+  -H "Authorization: Bearer $API_KEY" \
+  -d '{"agent_id": "agent_backup_safe"}'
+
+# Disable new agent
+curl -X PATCH https://api.itellico.ai/v1/agents/agent_new_version \
+  -H "Authorization: Bearer $API_KEY" \
+  -d '{"status": "disabled"}'
+
+echo "Rollback complete. New agent disabled, backup agent live."
+```
+
+Store in your runbooks with API keys in environment variables.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Go-Live Monitoring" icon="chart-line" href="/launch/go-live-monitoring">
+    Real-time dashboards and first-hour monitoring checklist
+  </Card>
+
+  <Card title="Production Best Practices" icon="star" href="/launch/production-best-practices">
+    Optimize for reliability and customer satisfaction
+  </Card>
+
+  <Card title="Troubleshooting" icon="wrench" href="/launch/troubleshooting-deployment">
+    Common deployment issues and debugging strategies
+  </Card>
+
+  <Card title="Analytics & Optimization" icon="chart-bar" href="/optimize/overview">
+    Measure and improve agent performance post-launch
+  </Card>
+</CardGroup>

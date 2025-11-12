@@ -1,0 +1,382 @@
+---
+title: "Go-Live Monitoring"
+description: "First-hour checklist and real-time monitoring for launch day"
+icon: "chart-line"
+---
+
+## Launch Day Philosophy
+
+The first hour after going live is critical. Most deployment issues surface immediately when real users hit the system. Active monitoring during this window lets you catch problems before they impact many customers.
+
+**Golden Rule**: Don't launch and walk away. Plan for hands-on monitoring for at least the first 1-2 hours.
+
+## Pre-Launch Final Check
+
+30 minutes before go-live, verify one last time:
+
+<Checklist>
+- [ ] **Agent tested** - Completed web + phone test calls in last 24 hours
+- [ ] **Team assembled** - Engineers, PM, and customer support standing by
+- [ ] **Rollback plan ready** - Emergency script tested, API keys valid
+- [ ] **Monitoring dashboard open** - Conversations → Live Monitor visible
+- [ ] **Communication channels active** - Slack/Teams room for rapid coordination
+- [ ] **Alert thresholds set** - Error rate, latency, capacity alerts configured
+- [ ] **Support trained** - Customer service knows agent capabilities and escalation path
+- [ ] **Baseline metrics captured** - Pre-launch metrics for comparison
+</Checklist>
+
+## First Hour Monitoring Checklist
+
+### Minutes 0-15: Critical Window
+
+<Steps>
+  <Step title="Watch first 3-5 calls live">
+    Open **Conversations → Live Monitor**:
+    - Verify agent greeting plays correctly
+    - Confirm transcription accuracy (no gibberish)
+    - Check that actions trigger at expected moments
+    - Listen for audio quality issues (echo, distortion, latency)
+
+    **Red Flags**:
+    - Agent doesn't respond or repeats itself
+    - Transcription completely wrong (language mismatch)
+    - Actions fail silently
+    - Calls drop after greeting
+  </Step>
+
+  <Step title="Check system health">
+    Navigate to **Dashboard → System Status**:
+    - **Call Success Rate**: Should be >95%
+    - **Average Latency**: Should be <500ms (response time)
+    - **Error Rate**: Should be <2% (failed actions, API errors)
+    - **Concurrency**: Should be within capacity (not hitting limits)
+
+    **Alert Conditions**:
+    - Success rate <90% → Investigate immediately
+    - Latency >1000ms → Check model provider status
+    - Error rate >10% → Potential integration failure
+  </Step>
+
+  <Step title="Verify goal tracking">
+    Open first completed conversation:
+    - Check **Goals** tab shows expected outcomes
+    - Verify custom data captured correctly
+    - Confirm post-call webhooks fired (check endpoint logs)
+
+    **Common Issues**:
+    - Goals not tracked → Check goal configuration in agent settings
+    - Webhooks not firing → Verify endpoint URL and auth
+    - Missing context data → Check dynamic context endpoint
+  </Step>
+</Steps>
+
+### Minutes 15-30: Pattern Detection
+
+<Accordion title="Review conversation transcripts">
+  Open **Conversations → Logs** and scan recent calls:
+
+  **Look For**:
+  - Similar failure points across multiple calls
+  - Unexpected agent responses or hallucinations
+  - Customers repeatedly asking "What?" (transcription issues)
+  - Transfers happening more than expected
+  - Long pauses or awkward silence
+
+  **Action Items**:
+  - If pattern found in >20% of calls → Consider rollback
+  - If isolated issues (1-2 calls) → Monitor closely, document
+  - If customer confusion → May need instruction tweaks
+</Accordion>
+
+<Accordion title="Check action success rates">
+  Navigate to **Analytics → Actions**:
+
+  **Metrics**:
+  - **API Call Success**: Should be >98% (external API reliability)
+  - **Transfer Success**: Should be >95% (SIP connectivity)
+  - **Booking Success**: Should be >90% (calendar integration)
+
+  **Failure Investigation**:
+  - Check action logs for error messages
+  - Verify external API status (Calendly, CRM, etc.)
+  - Test action manually via Test drawer
+  - Check API keys not expired
+</Accordion>
+
+<Accordion title="Monitor customer feedback">
+  Watch for early feedback signals:
+
+  **Channels**:
+  - Support tickets mentioning "bot" or "AI"
+  - Social media mentions
+  - Chat widget complaints
+  - Direct calls to support line
+
+  **Triage**:
+  - Critical complaints (agent gave wrong info, security concern) → Immediate rollback
+  - Minor complaints (voice too fast, didn't understand accent) → Document for iteration
+  - Positive feedback → Capture for case studies!
+</Accordion>
+
+### Minutes 30-60: Stability Confirmation
+
+<CardGroup cols={2}>
+  <Card title="Aggregate metrics" icon="chart-bar">
+    By 30 minutes, you should have ~10-30 calls (depending on volume):
+
+    **Key Metrics**:
+    - **Completion Rate**: % of calls that finish gracefully (target: >85%)
+    - **Goal Achievement**: % of calls meeting defined goals (compare to baseline)
+    - **Average Handling Time**: Typical call duration (should match testing)
+    - **Transfer Rate**: % transferred to humans (lower is often better)
+
+    **Comparison**:
+    If metrics within 10% of test results → Good sign
+    If metrics >20% worse → Investigate root cause
+  </Card>
+
+  <Card title="Capacity check" icon="gauge">
+    Ensure system can handle expected load:
+
+    **Monitor**:
+    - **Peak Concurrent Calls**: Highest simultaneous calls so far
+    - **Queue Length**: # of callers waiting (should be 0-2)
+    - **Capacity Utilization**: % of max concurrent used
+
+    **Action**:
+    - If hitting >80% capacity in first hour → Plan to scale before peak
+    - If queue building → Enable more concurrent calls or add agents
+  </Card>
+
+  <Card title="Error log review" icon="triangle-exclamation">
+    Check **Logs → Errors** for:
+    - SIP registration failures
+    - API timeout errors
+    - Model provider rate limits
+    - Database connection issues
+
+    Even 1-2 errors worth investigating (might indicate intermittent issue)
+  </Card>
+
+  <Card title="Team sync" icon="users">
+    Quick standup with launch team:
+    - Share observations from monitoring
+    - Decide: Continue, adjust, or rollback?
+    - Document any anomalies
+    - Plan for next check-in (2 hours, 4 hours, 24 hours)
+  </Card>
+</CardGroup>
+
+## Real-Time Monitoring Tools
+
+### Live Monitor Dashboard
+
+**Conversations → Live Monitor** shows:
+
+<Tabs>
+  <Tab title="Active Calls">
+    Real-time view of in-progress conversations:
+    - Caller ID and agent assigned
+    - Elapsed time
+    - Live transcript (updates every 2-3 seconds)
+    - Current action being executed
+
+    **Interventions**:
+    - **Whisper**: Speak to agent (caller can't hear) to guide response
+    - **Barge In**: Join call as 3-way participant
+    - **Takeover**: Disconnect agent, take over call yourself
+    - **End Call**: Force-end problematic call
+  </Tab>
+
+  <Tab title="Recent Completions">
+    Last 20 finished calls:
+    - Duration
+    - Outcome (goal achieved, transferred, hung up)
+    - Quick listen to recording
+    - Link to full transcript
+
+    **Quick Quality Checks**:
+    - Sample 1 in 5 calls to spot-check quality
+    - Listen at 1.5x speed to save time
+    - Mark calls for team review
+  </Tab>
+
+  <Tab title="System Metrics">
+    Live stats updated every 30 seconds:
+    - Calls in progress
+    - Calls waiting in queue
+    - Average latency (LLM response time)
+    - Error count (last 15 min)
+    - Success rate (last 15 min)
+
+    **Threshold Alerts** (configure in Settings):
+    - Red alert if error rate >10%
+    - Yellow warning if latency >800ms
+    - Orange warning if queue >5 callers
+  </Tab>
+
+  <Tab title="Geographic Map">
+    Visual of where calls are coming from:
+    - Useful for detecting geographic issues (e.g., carrier problems in specific region)
+    - Can filter logs by region for targeted debugging
+  </Tab>
+</Tabs>
+
+### Alert Configuration
+
+Set up proactive alerts in **Settings → Alerts**:
+
+<AccordionGroup>
+  <Accordion title="Error rate alerts">
+    **Trigger**: Error rate >5% over 5-minute window
+
+    **Notification**: Slack, email, PagerDuty
+
+    **Severity**: High
+
+    **Use Case**: Detect integration failures, API outages, model issues
+  </Accordion>
+
+  <Accordion title="Latency alerts">
+    **Trigger**: Average response latency >800ms for 10 consecutive calls
+
+    **Notification**: Slack
+
+    **Severity**: Medium
+
+    **Use Case**: Model provider slowness, network congestion
+  </Accordion>
+
+  <Accordion title="Capacity alerts">
+    **Trigger**: Concurrent calls >80% of limit
+
+    **Notification**: Email, Slack
+
+    **Severity**: Medium
+
+    **Use Case**: Need to scale up before hitting hard limit
+  </Accordion>
+
+  <Accordion title="Goal achievement alerts">
+    **Trigger**: Goal achievement rate drops >20% below baseline
+
+    **Notification**: Slack
+
+    **Severity**: High
+
+    **Use Case**: Agent behavior changed unexpectedly, instruction issues
+  </Accordion>
+</AccordionGroup>
+
+## Intervention Procedures
+
+### When to Take Over a Call
+
+Use **Live Monitor → Takeover** when:
+- Agent is clearly giving wrong information
+- Caller is frustrated and asking for human
+- Security/compliance issue detected
+- Agent stuck in loop (repeating same thing)
+
+**Process**:
+1. Click **Takeover** button in Live Monitor
+2. Agent disconnects instantly
+3. You're now connected to caller
+4. Apologize briefly: "Sorry for the technical issue. How can I help?"
+5. Assist caller normally
+6. Log issue for post-call analysis
+
+### When to Rollback
+
+Execute emergency rollback if:
+
+<Warning>
+**Critical Rollback Triggers**:
+- >25% of calls failing or dropping
+- Agent revealing sensitive data incorrectly
+- Security vulnerability discovered
+- Compliance violation detected
+- Goal achievement <50% of baseline
+- Customer complaints spike >10x normal
+</Warning>
+
+**Rollback Steps** (see [Deployment Strategies](/launch/deployment-strategies#rollback-procedures)):
+1. Run emergency rollback script (switches to backup agent)
+2. Post in team channel: "ROLLBACK EXECUTED: [reason]"
+3. Update status page if customer-facing
+4. Begin root cause analysis
+
+**Timing**: Complete rollback within 5 minutes of decision.
+
+## Post-First-Hour Actions
+
+### Continue Monitoring (Hours 2-4)
+
+Reduce intensity but stay vigilant:
+- Check dashboard every 15-20 minutes
+- Sample 1 in 10 calls instead of 1 in 3
+- Review aggregate metrics
+- Respond to alerts immediately
+
+### First-Day Report
+
+At end of launch day, compile:
+
+**Metrics Summary**:
+- Total calls handled
+- Success rate, error rate
+- Goal achievement rate vs baseline
+- Average handling time
+- Customer feedback summary
+
+**Issues Log**:
+- Any bugs or unexpected behavior
+- Workarounds applied
+- Items for iteration
+
+**Recommendations**:
+- Green light to continue? Or pause for fixes?
+- Adjustments needed (instructions, settings, capacity)
+- Next monitoring schedule (24 hours, 72 hours, 1 week)
+
+Share with team and stakeholders.
+
+## Monitoring Schedule Post-Launch
+
+### Week 1: Daily Check-Ins
+
+- **Morning**: Review overnight calls, check error logs
+- **Midday**: Sample live calls, verify metrics stable
+- **Evening**: Daily metrics summary, compare to Day 1
+
+### Week 2-4: Every 2-3 Days
+
+- Focus on trending metrics (improving or degrading?)
+- Deep dive on top failure modes
+- A/B test improvements if stable
+
+### Month 2+: Weekly Reviews
+
+- Shift to proactive optimization vs reactive monitoring
+- Focus on conversion improvements
+- Plan next iteration based on data
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Production Best Practices" icon="star" href="/launch/production-best-practices">
+    Long-term operational excellence for live agents
+  </Card>
+
+  <Card title="Troubleshooting Guide" icon="wrench" href="/launch/troubleshooting-deployment">
+    Debug common issues discovered during monitoring
+  </Card>
+
+  <Card title="Optimize Performance" icon="gauge-high" href="/optimize/overview">
+    Use analytics to improve agent over time
+  </Card>
+
+  <Card title="Deployment Strategies" icon="diagram-project" href="/launch/deployment-strategies">
+    Scale safely with gradual rollouts and A/B testing
+  </Card>
+</CardGroup>

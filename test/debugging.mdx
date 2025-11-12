@@ -1,0 +1,442 @@
+---
+title: "Debugging"
+description: "Tools and techniques for identifying and fixing agent issues"
+icon: "bug"
+---
+
+## Overview
+
+Debugging voice agents requires systematic investigation of multiple components working together—transcription, LLM reasoning, voice synthesis, and action execution. The itellicoAI dashboard provides detailed logs and tools to help you quickly identify the root cause of issues.
+
+---
+
+## Dashboard Debugging Tools
+
+<CardGroup cols={2}>
+  <Card title="Conversation Logs" icon="list">
+    Complete history of every conversation with transcripts, actions, and metadata
+  </Card>
+
+  <Card title="Real-Time Transcript" icon="closed-captioning">
+    Live view of transcription and agent responses during test calls
+  </Card>
+
+  <Card title="Action Payloads" icon="code">
+    Detailed JSON of every API call, tool execution, and webhook
+  </Card>
+
+  <Card title="Error Messages" icon="triangle-exclamation">
+    Specific error details when components fail
+  </Card>
+</CardGroup>
+
+---
+
+## Systematic Debugging Approach
+
+When something goes wrong, follow this systematic process:
+
+<Steps>
+  <Step title="Reproduce the issue">
+    Test again to confirm the problem is consistent
+
+    Note exact conditions when it occurs
+  </Step>
+
+  <Step title="Identify the component">
+    Determine which part of the pipeline failed:
+    - Transcriber (speech → text)
+    - LLM (understanding → response)
+    - TTS (text → speech)
+    - Action/Tool execution
+    - Knowledge retrieval
+  </Step>
+
+  <Step title="Review logs">
+    Open **Conversations → Logs** and find the problematic call
+
+    Examine transcripts, action payloads, and errors
+  </Step>
+
+  <Step title="Test components individually">
+    Isolate the failing component:
+    - Try different transcriber
+    - Test LLM with simpler prompts
+    - Try different voice
+    - Test actions directly via API
+  </Step>
+
+  <Step title="Fix and verify">
+    Make targeted changes based on findings
+
+    Test again to confirm the fix
+  </Step>
+</Steps>
+
+---
+
+## Component-Level Debugging
+
+### Transcriber Issues
+
+**How to identify:**
+- Check transcript in conversation logs
+- Compare what was said vs what was transcribed
+- Look for missing words, incorrect words, or gibberish
+
+**Common causes:**
+- Background noise
+- Accent or language mismatch
+- Audio quality problems
+- Wrong transcriber model selected
+
+**Debugging steps:**
+1. Navigate to **Models → Transcriber**
+2. Try different transcriber provider (Deepgram ↔ Azure)
+3. Try different model (e.g., Nova-2 ↔ Nova-3)
+4. Verify language setting matches speaker
+5. Test in quieter environment
+6. Check audio input quality
+
+**What to check in logs:**
+- Transcript accuracy
+- Timing of transcription (delays?)
+- Empty or partial transcriptions
+- Language detection issues
+
+---
+
+### LLM Response Issues
+
+**How to identify:**
+- Agent gives wrong answers
+- Agent goes off-topic
+- Agent repeats itself
+- Agent refuses to answer valid questions
+- Agent hallucinates information
+
+**Common causes:**
+- Instructions too vague or conflicting
+- Knowledge base missing information
+- Context window overflow
+- Model not suitable for task
+- Temperature too high/low
+
+**Debugging steps:**
+1. Review agent instructions in **Abilities → Instructions**
+2. Simplify instructions to isolate the issue
+3. Check knowledge base for missing information
+4. Try different LLM model (GPT-4 ↔ GPT-4o-mini)
+5. Adjust temperature in model settings
+6. Review conversation logs to see full context
+
+**What to check in logs:**
+- Full conversation history leading to bad response
+- Knowledge items retrieved (if using RAG)
+- System prompts and context injection
+- LLM reasoning (if available in logs)
+
+<Tip>
+Test problematic prompts in the web simulator first—it's faster than phone testing.
+</Tip>
+
+---
+
+### Voice/TTS Issues
+
+**How to identify:**
+- Unnatural speech patterns
+- Mispronunciations
+- Wrong emphasis or intonation
+- Robotic sound
+- Speed too fast/slow
+
+**Common causes:**
+- Voice not suited to content type
+- Punctuation affecting pacing
+- Numbers or acronyms not handled well
+- Voice provider limitations
+
+**Debugging steps:**
+1. Navigate to **Models → Voice**
+2. Try different voice from same provider
+3. Try different voice provider entirely
+4. Add custom pronunciations for problem words
+5. Adjust stability/clarity settings (ElevenLabs)
+6. Adjust speaking rate
+7. Modify text output to improve TTS
+
+**What to check in logs:**
+- Listen to audio recording
+- Compare text vs how it was spoken
+- Check for SSML tags (if used)
+- Verify voice settings applied
+
+---
+
+### Action/Tool Execution Issues
+
+**How to identify:**
+- Action doesn't trigger when expected
+- Action triggers but fails
+- Wrong data sent to action
+- Action returns error
+
+**Common causes:**
+- Action not properly configured
+- API endpoint down or slow
+- Authentication failure
+- Incorrect parameter extraction
+- Network timeout
+
+**Debugging steps:**
+1. Check if action was triggered in conversation logs
+2. Review action payload (JSON sent to API)
+3. Check API response and status code
+4. Test API endpoint directly (Postman, curl)
+5. Verify authentication credentials
+6. Check parameter extraction from conversation
+7. Review action instructions in agent prompt
+
+**What to check in logs:**
+- `custom_data.actions` or similar fields
+- API request payload
+- API response body
+- Error messages and stack traces
+- Timestamp (did it timeout?)
+
+<Note>
+Conversation logs show complete action payloads including request/response data.
+</Note>
+
+---
+
+### Knowledge Retrieval Issues
+
+**How to identify:**
+- Agent can't answer questions it should know
+- Agent retrieves wrong knowledge
+- Agent mixes irrelevant information into answers
+
+**Common causes:**
+- Knowledge not indexed yet
+- RAG retrieval not finding relevant items
+- Context mode injecting too much
+- Knowledge item titles unclear
+- Knowledge base not assigned to agent
+
+**Debugging steps:**
+1. Verify knowledge base assigned to agent
+2. Check knowledge items are **INDEXED** (not just COMPLETED)
+3. Review knowledge item titles—make them descriptive
+4. Test with smaller knowledge base
+5. Try Context mode vs RAG mode
+6. Check conversation logs for retrieved knowledge
+
+**What to check in logs:**
+- Which knowledge items were retrieved
+- Relevance scores (if shown)
+- Full knowledge context injected
+- Whether knowledge was used in response
+
+---
+
+## Using Conversation Logs for Debugging
+
+Every test call creates a detailed log accessible in **Conversations → Logs**.
+
+### What's in the logs:
+
+**Basic information:**
+- Call date, time, duration
+- Agent used
+- Phone number (if phone test)
+- Call status (completed, failed, etc.)
+
+**Conversation data:**
+- Full transcript (user + agent)
+- Timestamps for each message
+- Audio recording (if available)
+
+**Technical details:**
+- Actions triggered with payloads
+- DTMF inputs captured
+- Goal analysis results
+- Post-call analysis responses
+- Custom data fields
+- Error messages
+
+**How to debug with logs:**
+1. Filter by agent name to find test calls
+2. Open specific call to see full details
+3. Read transcript to identify where it went wrong
+4. Check action payloads if actions failed
+5. Listen to audio if transcript looks correct but audio was wrong
+6. Review timestamps to identify latency issues
+
+---
+
+## Provider-Specific Debugging
+
+### Debugging Transcriber Providers
+
+**Deepgram:**
+- Check model version (Nova-2 vs Nova-3)
+- Verify language code is correct
+- Review punctuation and formatting settings
+- Check if keywords/custom vocabulary might help
+
+**Azure Speech:**
+- Verify region matches SIP trunk region
+- Check language/locale setting
+- Review profanity filtering settings
+
+**Debugging steps:**
+1. Switch provider temporarily to isolate issue
+2. Test same audio with different providers
+3. Check provider status pages for outages
+4. Review provider-specific settings
+
+---
+
+### Debugging LLM Providers
+
+**OpenAI (GPT-4, GPT-4o-mini):**
+- Check API key is valid
+- Verify model availability in region
+- Review rate limits
+- Check temperature and other parameters
+
+**Azure OpenAI:**
+- Verify deployment name is correct
+- Check regional availability
+- Review quota and rate limits
+
+**Anthropic (Claude):**
+- Verify API key and model access
+- Check prompt length vs context window
+- Review rate limits
+
+**Debugging steps:**
+1. Test with different model from same provider
+2. Simplify prompt to minimum viable version
+3. Check provider status page
+4. Test API key directly via provider's tools
+5. Review error messages for specific codes
+
+---
+
+### Debugging Voice Providers
+
+**ElevenLabs:**
+- Verify voice ID is correct
+- Check stability and similarity settings
+- Review custom pronunciations
+- Test with different voice
+
+**Azure Neural Voices:**
+- Verify voice name and language
+- Check SSML support if used
+- Review regional availability
+
+**Cartesia:**
+- Verify voice model
+- Check streaming settings
+
+**Debugging steps:**
+1. Test with default voice from same provider
+2. Compare same text with different providers
+3. Simplify text to isolate pronunciation issues
+4. Check for special characters or formatting
+
+---
+
+## Quick Diagnostic Checks
+
+When debugging, run through this quick checklist:
+
+<AccordionGroup>
+  <Accordion title="Is the agent configuration complete?" icon="check">
+    - Model selected and configured
+    - Voice selected
+    - Transcriber configured
+    - Instructions provided
+    - Greeting message set
+  </Accordion>
+
+  <Accordion title="Are API keys valid?" icon="key">
+    - OpenAI/Azure/Anthropic API key working
+    - Voice provider API key working
+    - Transcriber provider API key working
+    - Custom API action keys working
+  </Accordion>
+
+  <Accordion title="Are providers operational?" icon="circle-check">
+    - Check status pages for outages
+    - Test each provider separately
+    - Verify regional availability
+  </Accordion>
+
+  <Accordion title="Is knowledge properly indexed?" icon="database">
+    - Knowledge base assigned to agent
+    - Items show INDEXED status
+    - Content is relevant to questions
+  </Accordion>
+
+  <Accordion title="Are actions properly configured?" icon="wrench">
+    - Action enabled in agent
+    - Endpoint URL correct
+    - Authentication configured
+    - Parameters defined correctly
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Getting Help
+
+When you need additional support:
+
+<CardGroup cols={2}>
+  <Card title="Review Documentation" icon="book">
+    Check specific feature docs for configuration details
+  </Card>
+
+  <Card title="Check Provider Status" icon="signal">
+    Visit status pages for OpenAI, Deepgram, ElevenLabs, Azure
+  </Card>
+
+  <Card title="Contact Support" icon="headset">
+    Email support@itellico.ai with call logs and error details
+  </Card>
+
+  <Card title="Community" icon="users">
+    Share issues and solutions with other developers
+  </Card>
+</CardGroup>
+
+**When contacting support, include:**
+- Agent ID or name
+- Conversation ID from logs
+- Specific error messages
+- Steps to reproduce
+- Screenshots if applicable
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Logs & Monitoring" icon="chart-line" href="/test/logs-and-monitoring">
+    Learn to read and analyze conversation logs in detail
+  </Card>
+  <Card title="Troubleshooting Guide" icon="life-ring" href="/test/troubleshooting">
+    Common issues and step-by-step solutions
+  </Card>
+  <Card title="Test Scenarios" icon="clipboard-check" href="/test/test-scenarios">
+    Create systematic test plans
+  </Card>
+  <Card title="Launch Checklist" icon="rocket" href="/launch/overview">
+    Pre-production validation steps
+  </Card>
+</CardGroup>
