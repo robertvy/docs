@@ -154,7 +154,7 @@ SIP transfers are ideal for enterprises with existing phone systems. They provid
 
 ## Transfer Modes
 
-Transfer actions support different modes that control how the handoff occurs:
+Transfer actions support two modes that control how the handoff occurs:
 
 ### Cold Transfer
 
@@ -199,63 +199,6 @@ Agent: "I'd be happy to help. Let me connect you with our billing
 Billing Agent: "Hello, how can I help you?"
 Customer: "I have a question about my bill..."
 ```
-
-### Warm Transfer
-
-The agent connects to the destination first, introduces the customer and provides context, then completes the transfer. The customer is placed on hold during the introduction.
-
-**How it works:**
-1. Agent explains the transfer to customer
-2. Customer placed on hold
-3. Agent connects to destination
-4. Agent introduces customer and explains situation
-5. Agent completes transfer
-6. Agent disconnects
-
-**When to use:**
-- Complex issues requiring context
-- High-value customers
-- Situations where background is important
-- When recipient needs preparation
-
-**Advantages:**
-- Context transferred verbally
-- Recipient knows why call is coming
-- Professional handoff experience
-- Customer doesn't repeat themselves
-
-**Disadvantages:**
-- Takes longer
-- Requires destination to answer
-- Uses more agent time
-
-**Configuration:**
-```text wrap
-Transfer Mode: Warm
-Hold Music: Enabled
-Transfer Message: "Let me connect you with our specialist.
-                   I'll briefly explain your situation to them."
-```
-
-**Example flow:**
-```text wrap
-Customer: "My premium widget isn't working correctly"
-Agent: "I understand how frustrating that must be. Let me connect
-        you with our technical specialist. I'll explain the situation
-        to them so you don't have to repeat yourself."
-[Customer placed on hold with music]
-Agent → Technical Specialist: "Hi, I have Mrs. Johnson on the line.
-        She purchased our premium widget last week and it's not
-        functioning correctly. She's mentioned it won't power on."
-Technical Specialist: "Got it, I can help with that."
-[Transfer completes]
-Technical Specialist → Customer: "Hi Mrs. Johnson, I understand
-        your premium widget isn't powering on. Let's troubleshoot..."
-```
-
-<Note>
-Warm transfers are not yet fully supported in all configurations. Check your account capabilities or contact support for availability.
-</Note>
 
 ### Silent Transfer
 
@@ -463,7 +406,7 @@ Route standard customers to 'Transfer to General Support'
   </Accordion>
 
   <Accordion title="Gather Information First" icon="clipboard">
-    Collect basic details before transferring so the recipient has context (or customer doesn't repeat themselves in warm transfer).
+    Collect basic details before transferring so the recipient has context and the customer doesn't need to repeat themselves.
 
     ```
     Before transferring:
