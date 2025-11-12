@@ -1,663 +1,173 @@
 ---
 title: "Call Control Actions"
-description: "Manage conversation flow with Transfer, End, and Inactivity actions"
+description: "Manage conversation flow with Transfer and End Conversation actions"
 icon: "phone"
 ---
 
 ## Overview
 
-Call control actions give your AI agents the ability to manage conversation lifecycle and routing. These essential actions enable agents to transfer calls when specialized help is needed, end conversations professionally when objectives are met, and handle natural pauses without awkward interruptions.
+Call control actions give your AI agents the ability to manage conversation lifecycle and routing. These essential actions enable agents to transfer calls when specialized help is needed and end conversations professionally when objectives are met.
 
-Every voice agent should have call control actions configured to handle common scenarios like escalation requests, conversation completion, and silent periods.
-
-<Note>
-Call control actions are foundational tools that work together to create smooth, professional conversation experiences. Configure all three for complete call management.
-</Note>
+Every voice agent should have call control actions configured to handle common scenarios like escalation requests and conversation completion.
 
 ---
 
-## Transfer Action
+## Transfer Call
 
-The Transfer action enables your agent to seamlessly route active calls to human specialists, other AI agents, or external phone systems when situations require expertise beyond the agent's capabilities.
+The Transfer action enables your agent to route active calls to other AI agents, phone numbers, or SIP addresses when situations require it.
 
-### When to Use Transfer
+### When to Use
 
-<CardGroup cols={2}>
-  <Card title="Escalation Requests" icon="hand-point-up">
-    Customer explicitly asks to speak with a human or supervisor
-  </Card>
-  <Card title="Complex Issues" icon="puzzle-piece">
-    Problem is beyond agent's knowledge or capabilities
-  </Card>
-  <Card title="Department Routing" icon="building">
-    Customer needs billing, sales, or specialized department
-  </Card>
-  <Card title="Authorization Required" icon="shield-check">
-    Request requires manager approval or verification
-  </Card>
-  <Card title="Technical Escalation" icon="screwdriver-wrench">
-    Issue requires hands-on technical support
-  </Card>
-  <Card title="Agent Handoff" icon="people-arrows">
-    Different AI agent better suited for the request
-  </Card>
-</CardGroup>
+- Customer asks to speak with a human or specific department
+- Issue is beyond agent's knowledge or capabilities
+- Request requires specialized expertise
+- Different AI agent is better suited for the request
 
-### Basic Configuration
+### Configuration
 
 <Steps>
   <Step title="Add Transfer Action">
-    Navigate to **Abilities → Actions** and click **Add Action**. Select **Transfer** from the action types.
+    Navigate to **Abilities → Actions** in Call Control category and click **Add** on **Transfer Call**
   </Step>
   <Step title="Name the Action">
-    Give it a clear, descriptive name like "Transfer to Support" or "Escalate to Billing"
-
-    This exact name will be referenced in your agent's instructions.
+    Give it a clear, descriptive name like "Transfer to Support" or "Transfer to Billing"
   </Step>
-  <Step title="Choose Transfer Type">
-    Select destination type:
-    - **AGENT** - Transfer to another AI agent in your account
-    - **PHONE** - Transfer to an external phone number
-    - **SIP** - Transfer to a SIP address (e.g., sip:1001@yourpbx.com)
+  <Step title="Add Description">
+    Describe what this transfer does: "Transfers to another AI agent, phone number, or SIP address"
   </Step>
-  <Step title="Set Destination">
-    Enter the transfer destination based on type selected:
-    - Agent: Select from dropdown or enter agent ID
-    - Phone: Enter number in E.164 format (+1-555-123-4567)
-    - SIP: Enter full SIP URI
+  <Step title="Configure Destination">
+    Set up your transfer destination (see [Transfer Details](/build/actions/transfer-details) for complete configuration options)
   </Step>
-  <Step title="Configure Transfer Message">
-    Optionally provide a default message the agent says before transferring:
-
-    "Let me connect you with someone who can help with that."
-
-    Leave blank to control via instructions, or check **Silent Transfer** to skip entirely.
-  </Step>
-  <Step title="Save Action">
+  <Step title="Save">
     Click **Save** to add the transfer action to your agent
   </Step>
 </Steps>
 
-### Transfer Configuration Interface
+### Using in Instructions
 
-```text wrap
+Reference the transfer action by its exact name in your agent's [instructions (system prompt)](/build/conversation/prompt-engineering-guide):
 
+```jinja
+When a customer asks to speak with a human:
+1. Explain why you're transferring them
+2. Ask "Would you like me to transfer you now?"
+3. Wait for confirmation
+4. Once confirmed, use the 'Transfer to Support' action
 
- Action Name*  
- [Transfer to Support Team__________________________]  
-
- Description (Optional)  
- [Escalate to human support for complex issues______]  
-
- Transfer Type*  
- ○ AGENT     ● PHONE     ○ SIP  
-
- Phone Number*  
- [+1-555-123-4567_________________________________]  
-
- Transfer Message (Optional)  
- [Let me connect you with our support team._________]  
- [____________________________________________]  
-
- □ Silent Transfer (skip message entirely)  
-
- Advanced Settings                            [Show ▼]  
-
-                                      [Cancel]  [Save Action]  
-
-```
-
-### Using Transfer in Instructions
-
-Reference the transfer action by its exact name in your agent's instructions:
-
-**Basic Usage:**
-```text wrap
-When a customer asks to speak with a human,
-use the 'Transfer to Support Team' action.
-```
-
-**With Custom Context:**
-```text wrap
-If you cannot resolve the issue after two attempts:
-1. Apologize for the difficulty
-2. Explain you're connecting them to a specialist
-3. Use the 'Transfer to Support Team' action
-```
-
-**With Conditions:**
-```text wrap
 If the customer mentions billing problems:
-- Use 'Transfer to Billing Department' action
-
-If the customer needs technical help:
-- Use 'Transfer to Technical Support' action
+- Use the 'Transfer to Billing' action
 ```
 
-<Tip>
-You can override the default transfer message in your instructions by providing context before executing the action. The agent will speak naturally based on your prompt.
-</Tip>
-
-### Transfer Status Indicators
-
-After configuration, your transfer actions appear in the Actions list with status:
-
-- **<Icon icon="check-circle" /> Configured** - Ready to use
-- **<Icon icon="triangle-exclamation" /> Incomplete** - Missing required destination
-- **❌ Error** - Invalid destination format
+<Note>
+See the [Transfer Details](/build/actions/transfer-details) page for advanced configuration including transfer modes, multiple destinations, and SIP routing.
+</Note>
 
 ---
 
-## End Conversation Action
+## End Conversation
 
 The End Conversation action allows your agent to terminate calls professionally when conversation objectives are met or when ending is appropriate.
 
-### When to Use End Conversation
+### When to Use
 
-<CardGroup cols={2}>
-  <Card title="Objective Complete" icon="circle-check">
-    Customer's question answered or task completed successfully
-  </Card>
-  <Card title="Booking Confirmed" icon="calendar-check">
-    Appointment scheduled and confirmed
-  </Card>
-  <Card title="No Further Questions" icon="hand">
-    Customer indicates they don't need additional help
-  </Card>
-  <Card title="Abusive Behavior" icon="ban">
-    Customer uses offensive language or behaves inappropriately
-  </Card>
-  <Card title="Out of Scope" icon="circle-xmark">
-    Request is completely outside agent's purpose
-  </Card>
-  <Card title="Follow-up Scheduled" icon="clock">
-    Issue logged and follow-up arranged
-  </Card>
-</CardGroup>
+- Customer's question answered or task completed successfully
+- Appointment scheduled and confirmed
+- Customer indicates they don't need additional help
+- Request is completely outside agent's purpose
 
-### Basic Configuration
+### Configuration
 
 <Steps>
   <Step title="Add End Conversation Action">
-    Go to **Abilities → Actions**, click **Add Action**, and select **End Conversation**
+    Go to **Abilities → Actions** in Call Control category and click **Add** on **End Conversation**
   </Step>
   <Step title="Name the Action">
-    Use a clear name like "End Call Politely" or "Hangup on Abuse"
-
-    Different scenarios may warrant different end actions with distinct names.
+    Use a clear name like "End Call Politely" or "End Call"
   </Step>
-  <Step title="Set Goodbye Message">
+  <Step title="Add Description">
+    Describe when this should be used: "Have the agent end the conversation with a custom message"
+  </Step>
+  <Step title="Set Goodbye Message (Optional)">
     Optionally provide a default farewell message:
 
     "Thank you for calling! Have a great day."
 
-    Leave blank to control the message entirely through instructions, or use different end actions for different scenarios.
+    Leave blank to control the message entirely through your agent instructions.
   </Step>
-  <Step title="Save Action">
+  <Step title="Save">
     Click **Save** to make the action available to your agent
   </Step>
 </Steps>
 
-### End Conversation Configuration Interface
+### Using in Instructions
 
-```text wrap
-
-
- Action Name*  
- [End Call Politely________________________________]  
-
- Description (Optional)  
- [Use when conversation objectives are complete_____]  
-
- Goodbye Message (Optional)  
- [Thank you for calling! Have a wonderful day.___]  
- [____________________________________________]  
- [____________________________________________]  
-
- ℹ️  Leave blank to control farewell message via instructions  
-
-                                      [Cancel]  [Save Action]  
-
-```
-
-### Using End Conversation in Instructions
-
-**After Task Completion:**
-```text wrap
-Once you've successfully booked the appointment:
-1. Confirm all details verbally
-2. Ask if there's anything else you can help with
-3. If no, thank them for calling
-4. Use the 'End Call Politely' action
-```
-
-**Conditional Ending:**
-```text wrap
-After answering their question:
+```jinja
+Once you've successfully completed their request:
 1. Ask "Is there anything else I can help you with?"
-2. If they say no, use the 'End Call Politely' action
+2. If they say no:
+   - Thank them for calling
+   - Use the 'End Call Politely' action
 3. If they say yes, continue helping
 ```
 
-**Immediate Ending:**
-```text wrap
-If a customer uses abusive or offensive language after one warning:
-1. Say "I'm unable to continue this conversation"
-2. Use the 'Hangup on Abuse' action immediately
-```
-
-**Custom Farewell:**
-```text wrap
-When the customer's issue is resolved:
-1. Say "I'm glad I could help! Thanks for calling, and have a great day!"
-2. Use the 'End Call Politely' action
-```
-
-<Note>
+<Warning>
 The End Conversation action terminates the call immediately after the agent finishes speaking. Ensure your agent says everything needed before invoking this action.
-</Note>
-
----
-
-## Inactivity Management Action
-
-The Inactivity Management action enables your agent to temporarily pause automated inactivity check-ins during natural conversation pauses, creating a more comfortable experience when customers need time to think or look up information.
-
-### Understanding Inactivity Management
-
-By default, agents are configured with inactivity timeouts in **Operational Controls → Inactivity**. When no speech is detected for a set duration, the agent checks in with phrases like "Are you still there?"
-
-The Inactivity Management action allows your agent to intelligently disable these check-ins when appropriate, then automatically resume them when the pause ends.
-
-### When to Use Inactivity Management
-
-<CardGroup cols={2}>
-  <Card title="Customer Needs Time" icon="clock">
-    "Let me check my calendar..."
-    "Hold on while I grab that information..."
-  </Card>
-  <Card title="Looking Up Data" icon="magnifying-glass">
-    "I need to find my account number..."
-    "Let me look at the email you sent..."
-  </Card>
-  <Card title="Consulting Others" icon="users">
-    "Let me ask my spouse..."
-    "I need to check with my manager..."
-  </Card>
-  <Card title="Processing Information" icon="brain">
-    "Give me a moment to think about that..."
-    "Let me review these options..."
-  </Card>
-</CardGroup>
-
-### How Inactivity Management Works
-
-1. **Agent detects need** - Customer indicates they need time
-2. **Action disables checks** - Automated inactivity prompts pause
-3. **Silence permitted** - Customer can be quiet without interruption
-4. **Automatic resume** - Checks re-enable when customer speaks twice OR max duration expires
-
-<Note>
-Inactivity checks automatically resume after the configured max pause duration OR when the customer speaks twice. You don't need to manually re-enable them.
-</Note>
-
-### Basic Configuration
-
-<Steps>
-  <Step title="Add Inactivity Action">
-    Navigate to **Abilities → Actions**, click **Add Action**, and select **Inactivity Management**
-  </Step>
-  <Step title="Name the Action">
-    Use a descriptive name like "Pause Inactivity Timer" or "Allow Silence"
-  </Step>
-  <Step title="Set Maximum Pause Duration">
-    Configure how long inactivity checks should remain disabled (default: 300 seconds / 5 minutes)
-
-    After this duration, checks automatically resume even if customer hasn't spoken.
-  </Step>
-  <Step title="Describe Usage Context">
-    Document when this action should be used for team reference:
-
-    "When customer needs time to check information or consult others"
-  </Step>
-  <Step title="Save Action">
-    Click **Save** to enable the inactivity management action
-  </Step>
-</Steps>
-
-### Inactivity Management Configuration Interface
-
-```text wrap
-
-
- Override Name*  
- [Pause Inactivity Timer____________________________]  
-
- When to pause inactivity check-ins  
- [When customer needs time to check information or___]  
- [consult with others_______________________________]  
-
- Maximum pause duration (seconds)*  
- [300________] (5 minutes)  
-
- ℹ️  Checks automatically resume after duration expires or  
-    when customer speaks twice  
-
-                                      [Cancel]  [Save Action]  
-
-```
-
-### Using Inactivity Management in Instructions
-
-**Triggering Pause:**
-```text wrap
-If the customer says they need time to check something
-(phrases like "hold on", "let me look that up", "give me a moment"):
-1. Acknowledge their request: "Of course, take your time"
-2. Immediately use the 'Pause Inactivity Timer' action
-3. Wait quietly until they respond
-```
-
-**With Explicit Requests:**
-```text wrap
-When a customer says "Let me ask my spouse" or "I need to check my calendar":
-1. Say "Absolutely, I'll wait while you check"
-2. Use the 'Pause Inactivity Timer' action
-3. Remain silent until they come back
-```
-
-**Context-Aware Usage:**
-```text wrap
-During appointment scheduling, if customer says they need to verify their schedule:
-1. Use the 'Pause Inactivity Timer' action
-2. Let them check without interruption
-3. When they come back, continue with booking
-```
-
-<Tip>
-The agent should invoke this action proactively when it detects signals that the customer needs time. Don't wait for explicit "please wait" requests.
-</Tip>
-
-### Relationship to Global Inactivity Settings
-
-The Inactivity Management action works in conjunction with your agent's global inactivity settings:
-
-**Global Settings (Operational Controls → Inactivity):**
-- Define default inactivity timeout duration
-- Set check-in messages ("Are you still there?")
-- Configure maximum silence before hangup
-
-**Inactivity Management Action:**
-- Temporarily overrides these settings
-- Pauses automated check-ins for specific situations
-- Automatically re-enables when appropriate
-
-<Note>
-Configure your global inactivity settings first in **Operational Controls**, then add Inactivity Management actions for scenarios where you want to override those defaults temporarily.
-</Note>
-
----
-
-## Using Multiple Actions Together
-
-Call control actions work best when used in combination to create smooth conversation flows:
-
-### Complete Support Flow
-
-```text wrap
-Agent: Sales & Support Agent
-
-Actions Configured:
-- Transfer to Sales
-- Transfer to Support
-- Pause Inactivity Timer
-- End Call Politely
-
-Instructions:
-When a customer calls:
-1. Greet them and ask how you can help
-
-For sales inquiries:
-- Qualify the lead
-- If qualified, use 'Transfer to Sales'
-- If not qualified, provide information and use 'End Call Politely'
-
-For support issues:
-- Attempt to resolve using knowledge base
-- If customer needs time to check something, use 'Pause Inactivity Timer'
-- If issue is resolved, use 'End Call Politely'
-- If issue requires escalation, use 'Transfer to Support'
-
-If customer asks for human immediately:
-- Use 'Transfer to Support' or 'Transfer to Sales' based on context
-```
-
-### Appointment Booking Flow
-
-```text wrap
-Agent: Appointment Scheduler
-
-Actions Configured:
-- Book Consultation (Cal.com)
-- Pause Inactivity Timer
-- Transfer to Scheduling Team
-- End Call Politely
-
-Instructions:
-For appointment booking:
-1. Ask what type of appointment they need
-2. Collect email if not in contact record
-3. If they say "let me check my calendar", use 'Pause Inactivity Timer'
-4. Present available time slots
-5. Attempt to use 'Book Consultation' action
-6. If booking succeeds, confirm details and use 'End Call Politely'
-7. If booking fails, use 'Transfer to Scheduling Team'
-```
+</Warning>
 
 ---
 
 ## Best Practices
 
 <AccordionGroup>
+  <Accordion title="Ask for Confirmation Before Actions" icon="comments">
+    Prompt agents to ask for user confirmation before executing actions to avoid announcing actions that execute on the next turn.
+
+    **Good:**
+    ```
+    "I can transfer you to our billing team. Would you like me to do that now?"
+    [Wait for response]
+    [Execute transfer after confirmation]
+    ```
+
+    **Poor:**
+    ```
+    "I'm transferring you now..."
+    [Action executes next turn, creating awkward delay]
+    ```
+  </Accordion>
+
   <Accordion title="Always Explain Before Transferring" icon="comment">
-    Never transfer calls without context. Agents should always explain why they're transferring and set expectations.
+    Never transfer calls without context. Agents should explain why they're transferring and set expectations.
 
     **Good:**
     ```
     "I understand you need help with billing. Let me connect you with
-    our billing department who can access your account details.
-    This should just take a moment."
-
-    [Use Transfer to Billing action]
-    ```
-
-    **Poor:**
-    ```
-    [Use Transfer to Billing action immediately]
+    our billing department who can access your account details."
     ```
   </Accordion>
 
   <Accordion title="Confirm Before Ending" icon="circle-check">
-    Always ask if there's anything else before ending calls. This prevents customers from feeling rushed.
+    Always ask if there's anything else before ending calls to prevent customers from feeling rushed.
 
     **Good:**
     ```
     "Is there anything else I can help you with today?"
-    [If no] "Great! Thanks for calling, have a wonderful day!"
-    [Use End Call Politely]
-    ```
-
-    **Poor:**
-    ```
-    "Your appointment is booked."
-    [Use End Call Politely immediately]
-    ```
-  </Accordion>
-
-  <Accordion title="Acknowledge Pause Requests" icon="hand">
-    When using Inactivity Management, verbally acknowledge that you'll wait. This creates a more natural interaction.
-
-    **Good:**
-    ```
-    Customer: "Let me grab my calendar"
-    Agent: "Of course, take your time!"
-    [Use Pause Inactivity Timer]
-    ```
-
-    **Poor:**
-    ```
-    Customer: "Let me grab my calendar"
-    [Use Pause Inactivity Timer with no acknowledgment]
+    [If no] "Great! Thanks for calling!"
+    [Use End Call action]
     ```
   </Accordion>
 
   <Accordion title="Use Descriptive Action Names" icon="tag">
-    Create multiple transfer actions for different destinations with clear names.
+    Create multiple actions for different scenarios with clear names that match how you'll reference them in instructions.
 
     **Good:**
     - "Transfer to Billing Department"
     - "Transfer to Technical Support"
-    - "Transfer to Sales Team"
-    - "Escalate to Manager"
+    - "End Call Politely"
 
     **Poor:**
     - "Transfer 1"
-    - "Transfer 2"
-    - "Phone Transfer"
-  </Accordion>
-
-  <Accordion title="Handle Transfer Failures" icon="triangle-exclamation">
-    Instruct agents what to do if transfers fail (destination busy, no answer, etc.).
-
-    ```
-    If the 'Transfer to Support' action fails:
-    1. Apologize: "I'm having trouble connecting you right now"
-    2. Offer alternative: "I can have someone call you back within the hour"
-    3. Collect callback number
-    4. Use 'End Call Politely'
-    ```
-  </Accordion>
-
-  <Accordion title="Set Reasonable Pause Durations" icon="clock">
-    Configure max pause durations that balance patience with efficiency.
-
-    **Recommendations:**
-    - Calendar checking: 180 seconds (3 minutes)
-    - Information lookup: 120 seconds (2 minutes)
-    - Consulting others: 300 seconds (5 minutes)
-    - Document review: 240 seconds (4 minutes)
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Testing Call Control Actions
-
-Test each action thoroughly before deploying your agent:
-
-<Steps>
-  <Step title="Test Transfer Actions">
-    **Success scenario:**
-    - Trigger transfer in test call
-    - Verify transfer message plays
-    - Confirm connection to destination
-
-    **Failure scenario:**
-    - Test with invalid destination
-    - Verify agent handles failure gracefully
-  </Step>
-
-  <Step title="Test End Conversation">
-    **Normal flow:**
-    - Complete a conversation objective
-    - Verify agent asks if anything else needed
-    - Trigger end action
-    - Confirm farewell message plays
-    - Verify call terminates cleanly
-
-    **Edge cases:**
-    - Test multiple end actions (polite vs. abusive)
-    - Verify correct action used in each scenario
-  </Step>
-
-  <Step title="Test Inactivity Management">
-    **Pause activation:**
-    - Simulate customer needing time
-    - Verify agent uses pause action
-    - Remain silent for 30-60 seconds
-    - Confirm no "are you still there?" prompts
-
-    **Auto-resume:**
-    - Speak twice to trigger resume
-    - Verify normal inactivity checks return
-
-    **Timeout:**
-    - Let max duration expire
-    - Verify checks automatically resume
-  </Step>
-
-  <Step title="Test Combined Flows">
-    Run complete scenarios using multiple actions:
-    - Support flow with pause and transfer
-    - Booking flow with pause and end
-    - Escalation flow with transfer fallback
-  </Step>
-</Steps>
-
----
-
-## Troubleshooting
-
-<AccordionGroup>
-  <Accordion title="Transfer Connects But Drops Immediately" icon="phone-slash">
-    **Cause:** Destination not configured to accept transfers
-
-    **Solutions:**
-    - Verify destination agent is active (for agent transfers)
-    - Ensure phone number can receive calls (for phone transfers)
-    - Check SIP trunk configuration (for SIP transfers)
-    - Test destination independently
-  </Accordion>
-
-  <Accordion title="End Action Doesn't Terminate Call" icon="phone-hangup">
-    **Cause:** Action may not be executing properly
-
-    **Solutions:**
-    - Check action status is "Configured" not "Error"
-    - Verify action name in instructions matches exactly
-    - Review transcript to see if action was called
-    - Test with explicit instruction to use action
-  </Accordion>
-
-  <Accordion title="Inactivity Checks Still Triggering" icon="bell">
-    **Cause:** Pause action not executing or settings misconfigured
-
-    **Solutions:**
-    - Verify action name matches in instructions
-    - Check action status is "Configured"
-    - Ensure max duration is set appropriately
-    - Review transcript to confirm action executed
-    - Verify global inactivity settings exist in Operational Controls
-  </Accordion>
-
-  <Accordion title="Agent Transfers Too Frequently" icon="right-left">
-    **Cause:** Instructions too permissive about when to transfer
-
-    **Solutions:**
-    - Add more specific conditions for transfers
-    - Instruct agent to attempt resolution first
-    - Require multiple failed attempts before transferring
-    - Add examples of resolvable vs. escalation-worthy issues
-  </Accordion>
-
-  <Accordion title="Agent Ends Calls Prematurely" icon="phone-xmark">
-    **Cause:** Instructions unclear about when conversation is complete
-
-    **Solutions:**
-    - Require explicit confirmation before ending
-    - Add "anything else?" check before end action
-    - Define clear completion criteria
-    - Review transcripts to identify premature endings
+    - "End"
   </Accordion>
 </AccordionGroup>
 
@@ -670,18 +180,12 @@ Test each action thoroughly before deploying your agent:
     Deep dive into transfer destinations, modes, and advanced configuration
   </Card>
   <Card title="Actions Overview" icon="bolt" href="/build/actions/overview">
-    Learn about all available action types and when to use them
+    Learn about all available action types
   </Card>
   <Card title="Booking Actions" icon="calendar" href="/build/actions/booking-calendar">
-    Set up appointment scheduling with Cal.com integration
+    Set up appointment scheduling with Cal.com
   </Card>
   <Card title="Custom API Actions" icon="code" href="/build/actions/custom-api-actions">
-    Connect to external systems and build custom integrations
-  </Card>
-  <Card title="Instructions Guide" icon="pen" href="/build/conversation/instructions">
-    Write effective instructions for action execution
-  </Card>
-  <Card title="Prompt Engineering" icon="book" href="/build/conversation/prompt-engineering-guide">
-    Master advanced techniques for reliable agent behavior
+    Connect to external systems
   </Card>
 </CardGroup>
