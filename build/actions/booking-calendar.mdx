@@ -6,806 +6,210 @@ icon: "calendar"
 
 ## Overview
 
-The Booking action transforms your AI agents into powerful scheduling assistants that can book appointments during live conversations. Integrated with Cal.com, your agents can check real availability, present time slots, confirm bookings, and send automatic notifications - all without handing the customer off to a human or separate booking system.
-
-Imagine calling a business and having your appointment scheduled, confirmed, and added to your calendar in a single conversation. That's the power of the Booking action.
+The Booking action lets your AI agents schedule appointments during live conversations. Integrated with Cal.com, your agents can check availability, present time slots, confirm bookings, and send automatic confirmations.
 
 <Note>
-Booking actions require a Cal.com account and active integration. The integration is free to set up and works with Cal.com's free tier.
+Requires a Cal.com account and active integration. Works with Cal.com's free tier.
 </Note>
 
 <Info>
-**Customization options:** The booking action is opinionated in how it works to provide a smooth out-of-the-box experience. For more customizability, you can disable the default prompt in the action settings. For full control over the booking flow, create your own [Custom API Actions](/build/actions/custom-api-actions) to integrate with Cal.com or any other scheduling system.
+**Customization:** The booking action provides an opinionated flow out-of-the-box. Disable the default prompt for more control, or use [Custom API Actions](/build/actions/custom-api-actions) for full flexibility.
 </Info>
 
 ---
 
-## Before You Start
-
-### Prerequisites
+## Setup
 
 <Steps>
-  <Step title="Cal.com Account">
-    Create a Cal.com account at [cal.com](https://cal.com) if you don't have one
-  </Step>
-  <Step title="Create Event Types">
-    Set up Cal.com event types for each type of appointment your agent should book:
-    - Define duration (15 min, 30 min, 60 min, etc.)
-    - Configure hosts/assignees
-    - Set meeting location (Zoom, Google Meet, phone, in-person)
-    - Define booking windows and availability
+  <Step title="Create Cal.com Event Types">
+    Set up event types in Cal.com for each appointment type:
+    - Duration (15 min, 30 min, 60 min, etc.)
+    - Meeting location (Zoom, Google Meet, phone, in-person)
+    - Availability windows
 
-    [Learn how to create event types in Cal.com](https://cal.com/docs/core-features/event-types)
-  </Step>
-  <Step title="Configure Meeting Platforms (Optional)">
-    If using virtual meetings, connect your meeting platforms in Cal.com:
-    - Zoom account
-    - Google Meet
-    - Microsoft Teams
-    - Phone
-    - Custom links
-
-    Each event type can use a different platform. Skip this if you're only doing in-person meetings or providing manual meeting links.
+    [Cal.com event types documentation](https://cal.com/docs/core-features/event-types)
   </Step>
   <Step title="Test Event Types">
-    Test your Cal.com event types manually by booking test appointments. This ensures availability windows, meeting links, and notifications work correctly before connecting to your AI agent.
+    Book a test appointment in Cal.com to verify availability, meeting links, and notifications work correctly.
   </Step>
-  <Step title="Connect Cal.com Integration">
-    Connect your Cal.com account to itellicoAI (see [Cal.com Integration Setup](#calcom-integration-setup) below for detailed instructions)
+  <Step title="Connect Cal.com">
+    Get your Cal.com API key and connect it to itellicoAI:
 
-    The booking action will remain hidden until this integration status shows "Connected"
-  </Step>
-  <Step title="Plan Notification Strategy">
-    Decide notification approach:
-    - Cal.com sends email confirmations automatically
-    - Optionally add SMS confirmations from itellicoAI
-    - Configure reminder settings in Cal.com
-    - Set up custom workflows and webhooks for advanced automation
-
-    [Learn about Cal.com workflows and webhooks](https://cal.com/docs/core-features/workflows)
-  </Step>
-</Steps>
-
----
-
-## Cal.com Integration Setup
-
-<Steps>
-  <Step title="Get Cal.com API Key">
     1. Go to [Cal.com Settings → Developer → API Keys](https://app.cal.com/settings/developer/api-keys)
-    2. Click **+ Add**
-    3. Name it (e.g., "itellicoAI")
-    4. Click **Save** and copy the key
-  </Step>
-  <Step title="Connect in itellicoAI">
+    2. Click **+ Add**, name it (e.g., "itellicoAI"), and save
+    3. In itellicoAI, go to **Integrations → Cal.com**
+    4. Paste your API key, click **Test Connection**, then **Connect**
+
     <div style={{ maxWidth: '400px', marginBottom: '1rem' }}>
       <Frame>
         <div className="block dark:hidden">
-          <img src="/images/cal/test-cal-light.png" alt="Cal.com Integration showing successful connection with API key and Connect button" />
+          <img src="/images/cal/test-cal-light.png" alt="Cal.com Integration" />
         </div>
         <div className="hidden dark:block">
-          <img src="/images/cal/test-cal-dark.png" alt="Cal.com Integration showing successful connection with API key and Connect button" />
+          <img src="/images/cal/test-cal-dark.png" alt="Cal.com Integration" />
         </div>
       </Frame>
     </div>
-
-    1. Go to **Integrations → Cal.com**
-    2. Paste your API key
-    3. Click **Test Connection**
-    4. If successful, click **Connect**
   </Step>
 </Steps>
 
-<Info>
-The **Connect** button is disabled until you successfully test the connection.
-</Info>
-
 ---
 
-## Adding a Booking Action
-
-Once Cal.com is connected, you can add booking actions to your agents:
+## Add Booking Action
 
 <Steps>
-  <Step title="Open Agent Editor">
-    Navigate to your agent and click **Abilities → Actions** tab
+  <Step title="Create Action">
+    1. Go to your agent → **Abilities → Actions**
+    2. Click **Add Action** → **Calendar Booking**
+    3. Name it clearly (e.g., "Book Consultation")
   </Step>
-  <Step title="Add Booking Action">
-    Click **Add Action** and select **Calendar Booking**
-
-    If Cal.com isn't connected, you'll be redirected to complete integration first
+  <Step title="Select Cal.com Event">
+    Choose which Cal.com event type to book from the dropdown
   </Step>
-  <Step title="Name Your Action">
-    Give it a clear name like "Book Consultation" or "Schedule Demo"
-
-    This exact name will be referenced in your agent's instructions
-  </Step>
-  <Step title="Configure Cal.com Event">
-    Complete the event configuration (detailed below)
-  </Step>
-  <Step title="Configure Email Handling">
-    Set up how email addresses are collected and used (detailed below)
-  </Step>
-  <Step title="Configure Scheduling Preferences">
-    Set timezone, date ranges, and slot preferences (detailed below)
-  </Step>
-  <Step title="Optional: Add SMS Notifications">
-    Configure SMS confirmations if desired (detailed below)
-  </Step>
-  <Step title="Save Action">
-    Click **Save** to make the booking action available to your agent
+  <Step title="Configure Settings">
+    See configuration options below
   </Step>
 </Steps>
 
 ---
 
-## Cal.com Event Configuration
+## Configuration
 
-### Event Type Selection
+### Event & Platform
 
-The first step is choosing which Cal.com event type this action should book:
+**Cal.com Event Type** (Required)
+- Select from dropdown or enter event ID manually
+- Each action maps to one Cal.com event type
 
-**Event Type Dropdown:**
-- Shows all event types fetched from your Cal.com account
-- Searchable for quick access
-- Displays event duration and meeting type
+**Meeting Platform** (Required)
+- Choose how meetings are hosted:
+  - **Cal Video** - Built-in Cal.com video
+  - **Zoom** - Requires Zoom connected in Cal.com
+  - **Google Meet** - Requires Google Meet connected
+  - **Microsoft Teams** - Requires Teams connected
+  - **Phone** - Phone call appointment
+  - **In Person** - Physical meeting (address required)
 
-**Manual Entry Option:**
-- Switch to "Enter Event ID manually"
-- Paste numeric event ID from Cal.com URL
-- Useful for specific event types or troubleshooting
+**Timezone** (Required)
+- Auto-populated with browser timezone
+- All suggested times use this timezone
 
-```text wrap
+### Scheduling Preferences
 
+**Days to Look Ahead** (1-3 days, default: 2)
+- How many future days the agent considers when finding slots
 
- Event Type*                                 [Dropdown ▼]  
- [30-Minute Discovery Call (Zoom)_________________]  
+**Time Slots Per Day** (2-5 slots, default: 3)
+- How many time slots per day the agent offers
 
- Other options:  
- - 60-Minute Consultation (Google Meet)  
- - 15-Minute Quick Call (Phone)  
- - In-Person Meeting (Office)  
+**Hours Between Suggestions** (1-4 hours, default: 3)
+- Minimum spacing between suggested times
 
- ⚙️  Configure in Cal.com  |  📝 Enter Event ID manually  
-
-
-```
-
-<Tip>
-Create separate booking actions for different event types. For example, "Book Discovery Call" for 30-minute calls and "Book Full Consultation" for 60-minute sessions.
-</Tip>
-
-### Meeting Platform Selection
-
-Choose how the meeting will be hosted:
-
-**Available platforms:**
-- **Zoom** - Automatic Zoom meeting creation
-- **Google Meet** - Auto-generated Google Meet link
-- **Microsoft Teams** - Teams meeting link
-- **Phone** - Phone call appointment
-- **In-person** - Physical meeting at location
-- **Custom** - Custom meeting link or instructions
-
-**Configuration states:**
-- **<Icon icon="check-circle" /> Available** - Platform is configured in Cal.com for this event type
-- **<Icon icon="gear" /> Configure in Cal.com** - Platform needs to be enabled in Cal.com first
-
-```text wrap
-
-
- How should this meeting be hosted?*
-
- ● Zoom Meeting                                    <Icon icon="check-circle" />
- ○ Google Meet                                     <Icon icon="check-circle" />
- ○ Microsoft Teams                    <Icon icon="gear" /> Configure in Cal.com
- ○ Phone Call                                      <Icon icon="check-circle" />
- ○ In Person (Address required)                   <Icon icon="check-circle" />
- ○ Custom Link                                     <Icon icon="check-circle" />  
-
-
-```
-
-### In-Person Address Handling
-
-When meeting platform is set to "In Person":
-
-**If event supports "attendee provides address":**
-- Address field appears in configuration
-- Customer can provide their preferred location during booking
-
-**If location is pre-defined:**
-- Address shown as read-only
-- Pulled from Cal.com event configuration
-- Customer sees this address in confirmation
-
-```text wrap
-
-
- Meeting Address  
-
- ● Customer provides address  
-   [Agent will ask during conversation____________]  
-
- ○ Fixed location  
-   123 Main St, Suite 200  
-   San Francisco, CA 94105  
-   (configured in Cal.com)  
-
-
-```
-
----
-
-## Email Handling
-
-Email addresses are required for booking confirmations. The platform uses a priority system to determine which email to use:
-
-### Email Priority Order
-
-The booking action checks for email addresses in this order:
-
-1. **Context endpoint data** - Email returned by your custom context API (field: `cal_email`)
-2. **Contact record** - Email stored on the itellicoAI contact
-3. **Fallback email** - Team inbox configured in action settings
-4. **Ask customer** - Agent politely requests email during conversation
-
-<Note>
-If no email is found through steps 1-3, your agent will ask the customer for their email address before completing the booking.
-</Note>
-
-### Fallback Email Configuration
-
-Configure a fallback email for situations where customer email is unknown:
-
-**Use cases:**
-- Anonymous callers
-- Customers without email in system
-- General inquiries where email isn't required upfront
-- Group bookings where organizer books on behalf of others
-
-**Configuration:**
-```text wrap
-
-
- Email Priority Order:  
- 1. Context API (cal_email field)  
- 2. Contact record (contact.email)  
- 3. Fallback email (below)  
- 4. Ask customer during call  
-
- Fallback Email (Optional)  
- [bookings@company.com_____________________]  
-
- ℹ️  Booking will be created under this email if customer's  
-    email is not available  
-
-
-```
-
-<Warning>
-Using a fallback email means bookings may not be properly attributed to the actual customer. Use for convenience, but encourage agents to collect real email addresses when possible.
-</Warning>
-
-### Asking for Email During Conversation
-
-When the agent needs to collect email:
-
-**Good prompting:**
-```text wrap
-Instructions for collecting email:
-
-If you need to book an appointment and don't have the customer's email:
-1. Explain why: "To send your confirmation and meeting details, I'll need your email address"
-2. Ask clearly: "What email address should I use?"
-3. Confirm: "Great, I'll send confirmation to [repeat email]"
-4. If they don't have email, offer fallback: "No problem, I can still book this for you"
-```
-
----
-
-## SMS Notifications (Optional)
-
-Enhance your booking experience with automatic SMS confirmations:
-
-### Enabling SMS Confirmations
-
-<Steps>
-  <Step title="Toggle SMS">
-    Enable "Send SMS confirmation" in booking action configuration
-  </Step>
-  <Step title="Create Template">
-    Write an SMS message template with placeholders for booking details
-  </Step>
-  <Step title="Use Placeholders">
-    Available placeholders:
-    - `{date}` - Appointment date
-    - `{time}` - Appointment time
-    - `{link}` - Meeting link (Zoom, Google Meet, etc.)
-    - `{location}` - In-person address
-    - `{duration}` - Meeting duration
-  </Step>
-  <Step title="Test Template">
-    Book a test appointment and verify SMS sends correctly
-  </Step>
-</Steps>
-
-### SMS Template Configuration
-
-```text wrap
-
-
- ☑ Send SMS confirmation after booking  
-
- SMS Template*  
-
- Your appointment is confirmed for {date} at {time}.  
-
- Meeting: 30-Minute Discovery Call  
- Join: {link}  
-
- Questions? Reply to this message or call us.  
-
-
- Character count: 156/160  
-
- ℹ️  Placeholders are replaced with actual booking details  
-
-
-```
-
-### SMS Best Practices
-
-<AccordionGroup>
-  <Accordion title="Keep it Concise" icon="compress">
-    SMS messages should be brief and scannable:
-    - Include essential info only (date, time, link)
-    - Keep under 160 characters when possible
-    - Use clear formatting
-  </Accordion>
-
-  <Accordion title="Include Meeting Link" icon="link">
-    Always include the `{link}` placeholder for virtual meetings:
-    ```
-    Your Zoom meeting is confirmed for {date} at {time}.
-    Join here: {link}
-    ```
-  </Accordion>
-
-  <Accordion title="Provide Context" icon="info">
-    Remind customer what the meeting is about:
-    ```
-    Confirmed: Discovery Call with Sarah
-    {date} at {time}
-    {link}
-    ```
-  </Accordion>
-
-  <Accordion title="Make it Actionable" icon="hand-pointer">
-    Include clear next steps:
-    ```
-    Your consultation is booked for {date} at {time}.
-    Add to calendar: {link}
-    Need to reschedule? Reply RESCHEDULE
-    ```
-  </Accordion>
-</AccordionGroup>
-
-<Note>
-SMS confirmations are sent in addition to Cal.com's email confirmations. Customers will receive both unless you disable email notifications in Cal.com.
-</Note>
-
----
-
-## Scheduling Preferences
-
-Fine-tune how your agent presents and books time slots:
-
-### Default Booking Instructions
-
-**Toggle: "Use default booking instructions"**
-- **Enabled (default):** Platform provides pre-built scheduling script for the agent
-- **Disabled:** You handle all scheduling logic manually in your instructions
-
-Most users should leave this enabled. Disable only if you need complete custom control over the booking flow.
-
-### Timezone Configuration
-
-Set the timezone for suggested time slots:
-
-**Options:**
-- **Specific timezone:** Anchor suggestions to a timezone (e.g., America/New_York)
-- **Blank/Default:** Use Cal.com event type's default timezone
-- **Customer timezone:** Use contact's timezone if available
-
-```text wrap
-
-
- ☑ Use default booking instructions  
-
- Timezone                                    [Dropdown ▼]  
- [America/New_York_____________________________]  
-
- Common timezones:  
- - America/New_York (EST/EDT)  
- - America/Chicago (CST/CDT)  
- - America/Los_Angeles (PST/PDT)  
- - Europe/London (GMT/BST)  
- - UTC  
-
-
-```
-
-<Tip>
-If your business operates in one timezone and most customers are local, set a specific timezone. If you serve customers globally, leave blank and let Cal.com handle timezone conversion.
-</Tip>
-
-### Scheduling Windows
-
-Control which dates your agent can offer:
-
-**Start Date:**
+**Start Date** (Optional)
 - Earliest date the agent can suggest
-- Useful for launches, seasonal availability, or advance booking minimums
 - Leave blank for immediate availability
 
-**Days to Look Ahead (1-3):**
-- How many future days the agent considers when finding slots
-- **1 day:** Today only (or tomorrow if outside hours)
-- **2 days:** Today and tomorrow
-- **3 days:** Today and next 2 days
+### Email Configuration
 
-```text wrap
+The agent uses this priority to find customer email:
 
+1. **Dynamic Context** - `cal_email` from your context API
+2. **Contact Record** - Email stored in itellicoAI contact
+3. **Fallback Email** - Team inbox (configure below)
+4. **Ask Customer** - Agent requests email during call
 
- Start Date (Optional)  
- [2025-02-01_______________________] 📅  
+**Fallback Email** (Optional)
+- Used when customer email is unavailable
+- Leave blank to force agent to always collect email
 
- Days to look ahead*  
+### SMS Notifications
 
- 1   2   3  
-     ●  
+**Send SMS Confirmation** (Default: enabled)
+- Sends SMS after booking completes
+- Includes meeting details and join link
 
- Agent will suggest slots from the next 2 days  
+**SMS Template**
+- Customize the message with placeholders:
+  - `{date}` - Appointment date
+  - `{time}` - Appointment time
+  - `{link}` - Meeting link
+  - `{location}` - In-person address
+  - `{duration}` - Meeting duration
 
-
-```
-
-### Slot Presentation Settings
-
-Control how many options the agent presents:
-
-**Time Slots Per Day (2-5):**
-- How many time slots per day the agent offers
-- Higher numbers give more choices
-- Lower numbers simplify decision-making
-
-**Hours Between Suggestions (1-4):**
-- Minimum spacing between suggested times
-- Prevents overwhelming customer with back-to-back options
-- Creates variety in presentation
-
-```text wrap
-
-
- Time slots per day*  
-
- 2   3   4   5  
-         ●  
-
- Hours between suggestions*  
-
- 1   2   3   4  
-     ●  
-
- Example: 10am, 12pm, 2pm, 4pm (3 slots, 2 hours apart)  
-
-
-```
-
-### Recommended Settings by Use Case
-
-**High-volume appointment setting:**
-- Days ahead: 1-2
-- Slots per day: 4-5
-- Hours between: 1-2
-- Goal: Fill calendar quickly with many options
-
-**Executive scheduling:**
-- Days ahead: 3
-- Slots per day: 2-3
-- Hours between: 3-4
-- Goal: Curated, spacious options
-
-**Same-day booking urgency:**
-- Days ahead: 1
-- Slots per day: 5
-- Hours between: 1
-- Goal: Maximize today's availability
-
-**Considered purchase consultation:**
-- Days ahead: 3
-- Slots per day: 3
-- Hours between: 2-3
-- Goal: Thoughtful scheduling with choice
+**Default Booking Instructions** (Default: enabled)
+- Pre-built scheduling script for the agent
+- Disable only if you need complete custom control
 
 ---
 
-## Using Booking Actions in Instructions
+## Using in Instructions
 
-### Basic Booking Flow
+Reference the action by exact name in your agent instructions:
 
-Reference the booking action by exact name in your instructions:
-
-```text wrap
+```
 When a customer wants to schedule a consultation:
 
-1. Confirm they want to book: "I'd be happy to schedule that for you"
-
-2. Ask about their availability:
-   "What days work best for you this week?"
-
-3. If email not in contact record, collect it:
-   "What email should I use for the confirmation?"
-
-4. Use the 'Book Consultation' action to present available times
-
-5. Once confirmed, verbally summarize:
-   "Perfect! You're all set for [day] at [time]. You'll receive
-   a confirmation email with the Zoom link."
-
-6. Ask if anything else needed, then end call politely
+1. Confirm: "I'd be happy to schedule that for you"
+2. Ask availability: "What days work best this week?"
+3. Collect email if needed
+4. Use 'Book Consultation' action to present times
+5. Confirm verbally: "Perfect! You're all set for [day] at [time].
+   You'll receive a confirmation email with the meeting link."
 ```
 
-### Collecting Required Information
+### Handle Booking Failures
 
-Ensure the agent gathers necessary data before booking:
-
-```text wrap
-Before using 'Book Consultation' action:
-
-Required information:
-<Icon icon="check-circle" /> Customer wants to book (not just asking about availability)
-<Icon icon="check-circle" /> Customer's email address (if not in system)
-<Icon icon="check-circle" /> General timeframe preference (this week, next week, mornings, etc.)
-
-Optional but helpful:
-- Specific reason for meeting
-- Any special requirements
-- Preferred meeting platform (if you offer options)
-
-Don't attempt booking without email address.
 ```
+If 'Book Consultation' fails:
 
-### Handling Booking Failures
-
-Instruct your agent what to do if bookings fail:
-
-```text wrap
-If the 'Book Consultation' action fails:
-
-Common reasons:
-- No availability in the requested timeframe
-- Cal.com service temporarily unavailable
-- Network connectivity issue
-
-Response:
-1. Apologize sincerely: "I apologize, I'm having trouble accessing
-   the calendar right now"
-
+1. Apologize: "I'm having trouble accessing the calendar right now"
 2. Offer alternative:
-   - "I can have someone from our team call you back to schedule"
+   - "I can have someone call you back to schedule"
    - Collect callback number and best time
-   - OR transfer to scheduling team if available
-
-3. If failure is "no availability":
-   - "Unfortunately, we're fully booked for [timeframe]"
-   - "I can check [alternative timeframe]"
-   - Or: "Would you like me to add you to our waitlist?"
+3. If no availability: "We're fully booked for [timeframe].
+   Would [alternative timeframe] work?"
 ```
 
-### Multiple Booking Actions
+### Multiple Event Types
 
-If you have multiple event types, guide the agent on which to use:
+```
+Booking Actions:
+- 'Book Quick Call' (15 min) - Brief questions
+- 'Book Consultation' (30 min) - Initial consultations, demos
+- 'Book Deep Dive' (60 min) - Detailed planning
 
-```text wrap
-Booking Actions Available:
-- 'Book 15-Min Quick Call' - For brief questions, account reviews
-- 'Book 30-Min Discovery Call' - For initial consultations, demos
-- 'Book 60-Min Deep Dive' - For detailed planning, implementations
-
-Selection criteria:
-
-Quick Call (15 min):
-- Simple questions
-- Account status checks
-- Brief follow-ups
-
-Discovery Call (30 min):
-- Product demos
-- Initial consultations
-- Qualification calls
-
-Deep Dive (60 min):
-- Implementation planning
-- Training sessions
-- Strategic reviews
-
-If unsure, ask customer: "Would a 30-minute discovery call work,
+If unsure, ask: "Would a 30-minute consultation work,
 or would you prefer a longer session?"
 ```
 
 ---
 
-## Reminders & Follow-Up
-
-### Cal.com Reminder Configuration
-
-Cal.com handles reminder emails automatically:
-
-**Configure in Cal.com:**
-1. Go to event type settings in Cal.com
-2. Navigate to "Email Notifications"
-3. Set up reminders:
-   - 24 hours before
-   - 1 hour before
-   - Custom timing
-
-**Email reminders can include:**
-- Meeting details (date, time, duration)
-- Meeting link (Zoom, Google Meet, etc.)
-- Reschedule/cancel links
-- Preparation instructions
-- Custom messages
-
-<Note>
-Reminder configuration happens in Cal.com, not itellicoAI. Changes to reminder timing require updating the Cal.com event type settings.
-</Note>
-
-### Fallback Email for Reminders
-
-If using a fallback email address:
-
-**Reminders will go to:**
-- The fallback email (your team inbox)
-- NOT the actual customer (since their email wasn't used)
-
-**Workarounds:**
-1. Always collect real customer email when possible
-2. Use SMS confirmations to reach customer directly
-3. Have team forward reminders manually
-4. Build custom reminder system via webhooks
-
----
-
-## Testing Booking Actions
-
-Thorough testing ensures reliable booking experiences:
+## Testing
 
 <Steps>
-  <Step title="Verify Cal.com Integration">
-    **Check integration status:**
-    - Status shows "Connected"
+  <Step title="Verify Integration">
+    - Cal.com integration shows "Connected"
     - Event types appear in dropdown
-    - Meeting platforms configured
-
-    **Test in Cal.com directly:**
-    - Book a test appointment manually
-    - Verify meeting link created
-    - Check email confirmation sent
-    - Confirm calendar updated
+    - Meeting platforms configured in Cal.com
   </Step>
-
-  <Step title="Test Complete Booking Flow">
-    **Start test call in agent dashboard:**
-    1. Request appointment booking
-    2. Provide email address (or test without)
-    3. Select from presented time slots
-    4. Confirm booking
-
-    **Verify:**
-    - <Icon icon="check-circle" /> Agent presents available times
-    - <Icon icon="check-circle" /> Agent collects email if needed
-    - <Icon icon="check-circle" /> Booking confirms successfully
-    - <Icon icon="check-circle" /> Agent verbally confirms details
+  <Step title="Test Booking Flow">
+    1. Start test call with your agent
+    2. Request appointment booking
+    3. Verify agent presents available times
+    4. Confirm booking completes
   </Step>
-
   <Step title="Check Confirmations">
-    **Email confirmation:**
-    - Check inbox for Cal.com confirmation email
-    - Verify meeting details correct
-    - Test meeting link works
-    - Confirm reschedule/cancel links work
-
-    **SMS confirmation (if enabled):**
-    - Verify SMS sends within 1-2 minutes
-    - Check placeholders populated correctly
-    - Test meeting link from SMS
+    - Email confirmation received
+    - SMS confirmation sent (if enabled)
+    - Meeting link works
+    - Calendar updated
   </Step>
-
-  <Step title="Verify Calendar Updates">
-    **In Cal.com dashboard:**
-    - Check booking appears in your calendar
-    - Verify correct time and duration
-    - Confirm customer email correct
-
-    **In connected calendars:**
-    - Google Calendar, Outlook, etc.
-    - Verify event created
-    - Check meeting link included
-  </Step>
-
   <Step title="Test Edge Cases">
-    **No availability:**
-    - Request dates outside availability window
-    - Verify agent handles gracefully
-
-    **No email available:**
+    - Request dates outside availability
     - Test without email in contact record
-    - Verify agent asks or uses fallback
-
-    **Booking failure:**
-    - Temporarily disconnect Cal.com
-    - Verify agent error handling
-
-    **Different timezones:**
-    - Test with different timezone settings
-    - Confirm times presented correctly
-  </Step>
-
-  <Step title="Test Rescheduling">
-    **From confirmation email:**
-    - Click reschedule link
-    - Select new time
-    - Verify update works
-
-    **Via agent:**
-    - Call agent about existing booking
-    - Request reschedule
-    - Test if agent can handle (or transfers)
+    - Verify failure handling
   </Step>
 </Steps>
-
-### Testing Checklist
-
-```text wrap
-
-
- Pre-Test Setup:  
- ☑ Cal.com integration connected  
- ☑ Event type created and configured  
- ☑ Meeting platform set up (Zoom/Meet/etc.)  
- ☑ Booking action added to agent  
-
- Basic Functionality:  
- ☑ Agent can check availability  
- ☑ Agent presents available time slots  
- ☑ Agent collects email when needed  
- ☑ Booking confirms successfully  
- ☑ Agent verbally confirms details  
-
- Confirmations:  
- ☑ Email confirmation received  
- ☑ Meeting link works  
- ☑ SMS confirmation sent (if enabled)  
- ☑ Calendar event created  
- ☑ Reschedule/cancel links work  
-
- Edge Cases:  
- ☑ No availability handled gracefully  
- ☑ Missing email handled correctly  
- ☑ Fallback email works  
- ☑ Booking failure handled  
- ☑ Timezone handling correct  
-
- Agent Instructions:  
- ☑ Agent references correct action name  
- ☑ Agent collects required info first  
- ☑ Agent handles failures per instructions  
- ☑ Conversation flow natural  
-
-
-```
 
 ---
 
@@ -813,139 +217,65 @@ Thorough testing ensures reliable booking experiences:
 
 <AccordionGroup>
   <Accordion title="Booking Action Not Appearing" icon="eye-slash">
-    **Symptom:** Can't find Calendar Booking in action list
-
-    **Cause:** Cal.com integration not connected
+    **Cause:** Cal.com not connected
 
     **Solution:**
     - Go to Integrations → Cal.com
-    - Click "Connect Cal.com"
-    - Complete OAuth authorization
-    - Return to agent and retry adding action
+    - Verify status shows "Connected"
+    - Refresh if needed
   </Accordion>
 
   <Accordion title="No Event Types in Dropdown" icon="calendar-xmark">
-    **Symptom:** Event type dropdown is empty
+    **Cause:** No event types in Cal.com or sync issue
 
-    **Causes:**
-    - No event types created in Cal.com
-    - Event types not synced yet
-    - Integration connection issue
-
-    **Solutions:**
-    - Create event types in Cal.com first
-    - Click "Refresh" in Cal.com integration settings
-    - Disconnect and reconnect integration
-    - Wait 30 seconds and retry
+    **Solution:**
+    - Create event types in Cal.com
+    - Click "Refresh" in integration settings
+    - Disconnect and reconnect if needed
   </Accordion>
 
   <Accordion title="Meeting Platform Disabled" icon="video-slash">
-    **Symptom:** "Configure in Cal.com" shown for meeting platform
-
-    **Cause:** Platform not enabled for this event type
+    **Cause:** Platform not connected in Cal.com
 
     **Solution:**
     - Go to Cal.com event type settings
-    - Click "Add location"
-    - Enable desired platform (Zoom, Google Meet, etc.)
-    - Connect platform account if needed
-    - Return to itellicoAI and refresh
+    - Connect the platform (Zoom, Google Meet, etc.)
+    - Refresh in itellicoAI
   </Accordion>
 
-  <Accordion title="Booking Fails with 'No Availability'" icon="calendar-slash">
-    **Symptom:** Agent reports no available times
+  <Accordion title="Email Confirmation Not Received" icon="envelope-open-text">
+    **Possible causes:**
+    - Wrong email address
+    - Spam folder
+    - Cal.com email settings
 
-    **Causes:**
-    - Availability windows too restrictive
-    - All slots already booked
-    - Date range outside scheduling window
-    - Timezone misconfiguration
-
-    **Solutions:**
-    - Check Cal.com availability settings
-    - Review existing bookings
-    - Adjust "days to look ahead" setting
-    - Verify timezone configuration
-    - Test booking manually in Cal.com
+    **Solution:**
+    - Check spam/junk folder
+    - Verify email in booking confirmation
+    - Check Cal.com notification settings
   </Accordion>
 
-  <Accordion title="Email Confirmation Not Received" icon="envelope-slash">
-    **Symptom:** Booking succeeds but no email arrives
-
-    **Causes:**
-    - Email in spam folder
-    - Cal.com email notifications disabled
-    - Wrong email address used
-    - Email service delay
-
-    **Solutions:**
-    - Check spam/junk folders
-    - Verify email notifications enabled in Cal.com event settings
-    - Check which email was used for booking
-    - Wait 5-10 minutes for delivery
-    - Check Cal.com activity log
-  </Accordion>
-
-  <Accordion title="SMS Confirmation Not Sending" icon="message-slash">
-    **Symptom:** Email arrives but SMS doesn't
-
-    **Causes:**
-    - SMS toggle not enabled
-    - No phone number in contact record
+  <Accordion title="SMS Not Sending" icon="comment-slash">
+    **Possible causes:**
+    - SMS disabled in action settings
     - Invalid phone number format
-    - SMS sending error
+    - Account SMS credits
 
-    **Solutions:**
-    - Verify "Send SMS confirmation" is checked
-    - Check contact has valid phone number
-    - Ensure number in E.164 format (+14155551234)
-    - Review SMS template for errors
-    - Check account SMS balance/settings
+    **Solution:**
+    - Enable "Send SMS confirmation"
+    - Verify phone number is E.164 format
+    - Check account SMS balance
   </Accordion>
 
-  <Accordion title="Meeting Link Not Working" icon="link-slash">
-    **Symptom:** Zoom/Meet link doesn't connect
-
-    **Causes:**
-    - Meeting platform not properly connected to Cal.com
-    - Link expired (for instant meetings)
-    - Platform account issue
-
-    **Solutions:**
-    - In Cal.com, disconnect and reconnect meeting platform
-    - Create test event in Cal.com to verify platform works
-    - Check Zoom/Google account status
-    - Try different meeting platform
-  </Accordion>
-
-  <Accordion title="Wrong Timezone for Appointments" icon="clock">
-    **Symptom:** Times are off by several hours
-
-    **Causes:**
-    - Timezone setting mismatch
-    - Customer timezone not considered
-    - Cal.com default timezone wrong
-
-    **Solutions:**
-    - Check timezone setting in booking action
-    - Verify Cal.com event type timezone
-    - Use customer's timezone if available
-    - Always confirm time verbally with customer
-  </Accordion>
-
-  <Accordion title="Agent Doesn't Use Booking Action" icon="robot">
-    **Symptom:** Agent doesn't attempt to book appointments
-
-    **Causes:**
+  <Accordion title="Agent Doesn't Use Action" icon="robot">
+    **Possible causes:**
     - Action name not referenced in instructions
-    - Instructions unclear about when to book
     - Agent doesn't recognize booking intent
 
-    **Solutions:**
-    - Add explicit instruction: "Use the 'Book Consultation' action"
-    - Reference action by exact name
-    - Add examples of booking scenarios
-    - Test with explicit request: "Book me an appointment"
+    **Solution:**
+    - Reference exact action name: 'Book Consultation'
+    - Add explicit booking flow to instructions
+    - Test with clear: "I want to book an appointment"
   </Accordion>
 </AccordionGroup>
 
@@ -954,84 +284,53 @@ Thorough testing ensures reliable booking experiences:
 ## Best Practices
 
 <AccordionGroup>
-  <Accordion title="Confirm Details Verbally" icon="microphone">
-    After booking, always have the agent verbally confirm the appointment:
+  <Accordion title="Confirm Details Verbally" icon="comment">
+    After booking, have the agent repeat the details:
 
     ```
-    After successful booking:
-    "Perfect! I've scheduled your [event type] for [day of week],
-    [month] [date] at [time] [timezone]. You'll receive a
-    confirmation email at [email] with the [Zoom/Meet] link.
-    The meeting will last [duration]."
+    "Perfect! You're all set for Tuesday, March 15th at 2:00 PM.
+    You'll receive a confirmation email with the Zoom link at
+    sarah@example.com. Is there anything else I can help with?"
     ```
-
-    This prevents miscommunication and builds confidence.
   </Accordion>
 
   <Accordion title="Collect Email Early" icon="envelope">
-    Get email addresses before checking availability:
+    Ask for email before checking availability:
 
     ```
-    Booking conversation flow:
-    1. Confirm customer wants to book
-    2. Collect email: "What email should I send the confirmation to?"
-    3. Ask about preferred dates/times
-    4. Use booking action to present options
-    5. Confirm selection
+    Before checking availability:
+    1. Confirm booking intent
+    2. Ask: "What email should I use for the confirmation?"
+    3. Then check available times
     ```
 
-    This prevents having to ask for email after finding perfect time.
+    This prevents having to restart if email collection fails.
   </Accordion>
 
-  <Accordion title="Set Clear Expectations" icon="bullseye">
-    Tell customers what will happen:
+  <Accordion title="Set Clear Expectations" icon="clock">
+    Tell customers what to expect:
 
     ```
-    "I'll check our calendar for available times this week,
-    then send you a confirmation email with the Zoom link.
-    You'll also get a reminder 24 hours before the meeting."
-    ```
-  </Accordion>
-
-  <Accordion title="Handle 'No Availability' Gracefully" icon="calendar-xmark">
-    Have a plan when no slots are available:
-
-    ```
-    If no availability in requested timeframe:
-    1. Apologize: "I'm sorry, we're fully booked for [timeframe]"
-    2. Offer alternatives:
-       - Check different dates: "I have openings next week"
-       - Offer waitlist: "Would you like me to add you to our waitlist?"
-       - Transfer: "Let me connect you with scheduling to find a time"
+    "I'll check our availability for next week and suggest a few
+    time slots that work. You'll receive a confirmation email with
+    the meeting link right after we book it."
     ```
   </Accordion>
 
-  <Accordion title="Use Appropriate Event Types" icon="calendar-check">
-    Create distinct event types for different purposes:
-
-    - 15-min Quick Calls
-    - 30-min Consultations
-    - 60-min Deep Dives
-    - In-Person Meetings
-
-    Give agents clear guidance on which to use when.
+  <Accordion title="Handle 'No Availability' Gracefully" icon="calendar-times">
+    ```
+    If no slots available:
+    1. "Unfortunately, we're fully booked for [timeframe]"
+    2. "Would [alternative timeframe] work for you?"
+    3. If still no: "I can add you to our waitlist"
+    ```
   </Accordion>
 
   <Accordion title="Test Regularly" icon="vial">
-    Schedule regular test bookings to ensure everything works:
-    - Weekly test bookings
-    - After Cal.com configuration changes
-    - Before high-volume campaigns
-    - When adding new event types
-    - After platform updates
-  </Accordion>
-
-  <Accordion title="Monitor Booking Success Rate" icon="chart-line">
-    Track how often bookings succeed vs. fail:
-    - Review conversation transcripts
-    - Check Cal.com booking completion rate
-    - Identify common failure patterns
-    - Adjust instructions based on data
+    - Book test appointments monthly
+    - Verify meeting links work
+    - Check email/SMS delivery
+    - Test from different phone numbers
   </Accordion>
 </AccordionGroup>
 
@@ -1041,21 +340,15 @@ Thorough testing ensures reliable booking experiences:
 
 <CardGroup cols={2}>
   <Card title="Actions Overview" icon="bolt" href="/build/actions/overview">
-    Learn about all action types and capabilities
-  </Card>
-  <Card title="Call Control Actions" icon="phone" href="/build/actions/call-control">
-    Configure Transfer, End, and Inactivity Management
+    Learn about all action types
   </Card>
   <Card title="Custom API Actions" icon="code" href="/build/actions/custom-api-actions">
-    Integrate with external systems and APIs
+    Build custom booking flows
   </Card>
-  <Card title="Instructions Guide" icon="pen" href="/build/conversation/instructions">
-    Write effective prompts for booking flows
-  </Card>
-  <Card title="Variables & Dynamic Content" icon="brackets-curly" href="/build/conversation/variables-dynamic-content">
-    Use customer data in booking confirmations
+  <Card title="Transfer Actions" icon="right-left" href="/build/actions/transfer-details">
+    Route to human schedulers if needed
   </Card>
   <Card title="Test Your Agent" icon="vial" href="/test/test-in-dashboard">
-    Comprehensive testing guide for booking agents
+    Comprehensive testing guide
   </Card>
 </CardGroup>
