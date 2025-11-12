@@ -1,0 +1,365 @@
+---
+title: "Test Scenarios"
+description: "Common test scenarios to validate before production launch"
+icon: "list-check"
+---
+
+## Why Test Scenarios Matter
+
+Repeatable test scenarios ensure consistent quality across agent updates. Build a test suite that covers:
+- **Happy paths** - Ideal customer interactions
+- **Edge cases** - Unusual but valid scenarios
+- **Error conditions** - How agent handles failures
+- **Regression tests** - Prevent breaking existing functionality
+
+## Core Test Scenarios
+
+### 1. Greeting & Introduction
+
+**Scenario**: Customer calls for the first time, needs to understand who they're speaking with.
+
+<Accordion title="Test steps">
+  1. Start call (web or phone test)
+  2. Wait for agent greeting
+  3. Don't speak immediately (test if agent prompts)
+  4. Ask: "Who am I speaking with?"
+  5. Verify agent introduces itself clearly
+
+  **Expected Results**:
+  - Greeting plays within 2 seconds of call start
+  - Agent states name/company clearly
+  - Agent offers help proactively
+  - Professional and friendly tone
+</Accordion>
+
+<Accordion title="Variations">
+  - Call during business hours vs after hours
+  - Call from different phone numbers (test caller ID recognition)
+  - Call with different languages enabled (multilingual test)
+</Accordion>
+
+---
+
+### 2. Information Lookup (Knowledge Base)
+
+**Scenario**: Customer asks question answered in knowledge base.
+
+<Accordion title="Test steps">
+  1. Ask question clearly answered in KB (e.g., "What are your business hours?")
+  2. Verify agent retrieves correct information
+  3. Ask follow-up question
+  4. Verify agent maintains context
+
+  **Expected Results**:
+  - Agent answers accurately from KB content
+  - Response is concise (not reading entire KB article)
+  - Agent offers related help
+  - Follow-up questions handled correctly
+</Accordion>
+
+<Accordion title="Edge cases">
+  - Ask question with slightly different wording than KB content
+  - Ask question combining multiple KB topics
+  - Ask question with ambiguous intent
+  - Ask question NOT in KB (agent should say "I don't know")
+</Accordion>
+
+---
+
+### 3. Action Execution (API Call)
+
+**Scenario**: Customer requests action requiring external API call.
+
+<Accordion title="Test steps">
+  1. Request action (e.g., "Check my order status for order 12345")
+  2. Verify agent confirms understanding
+  3. Wait for API call to complete
+  4. Verify agent communicates result correctly
+
+  **Expected Results**:
+  - Agent extracts required parameters (order number)
+  - Agent calls correct API endpoint
+  - Agent waits for response without timeout error
+  - Agent communicates result naturally
+  - If API fails, agent handles gracefully
+</Accordion>
+
+<Accordion title="Failure scenarios">
+  - API returns error (500, 404)
+  - API times out (slow response)
+  - API returns unexpected format
+  - Missing required parameter (agent should ask for it)
+</Accordion>
+
+---
+
+### 4. Call Transfer
+
+**Scenario**: Customer needs to speak with human agent.
+
+<Accordion title="Test steps">
+  1. Request transfer (e.g., "I need to speak with someone")
+  2. Verify agent confirms transfer
+  3. Verify agent announces who/what department
+  4. (Phone test only) Verify call actually transfers
+
+  **Expected Results**:
+  - Agent acknowledges request immediately
+  - Agent explains where you'll be transferred
+  - Agent attempts transfer
+  - Transfer completes successfully (phone test)
+</Accordion>
+
+<Accordion title="Edge cases">
+  - Request transfer to specific department
+  - Request transfer outside business hours
+  - Request transfer after failed action
+  - Multiple transfer requests in same call
+</Accordion>
+
+---
+
+### 5. Interruption Handling
+
+**Scenario**: Customer interrupts agent mid-sentence.
+
+<Accordion title="Test steps">
+  1. Ask question that prompts long response
+  2. While agent is speaking, interrupt with new question
+  3. Verify agent stops talking and listens
+  4. Verify agent addresses new question
+
+  **Expected Results**:
+  - Agent stops speaking immediately (<500ms)
+  - Agent processes new input
+  - Agent doesn't resume previous response
+  - Conversation flows naturally after interruption
+</Accordion>
+
+<Accordion title="Stress tests">
+  - Interrupt multiple times rapidly
+  - Interrupt with unrelated question
+  - Interrupt with just noise (not words)
+  - Stay silent after interrupting
+</Accordion>
+
+---
+
+### 6. Inactivity / Silence
+
+**Scenario**: Customer stops responding during conversation.
+
+<Accordion title="Test steps">
+  1. Start conversation normally
+  2. Agent asks a question
+  3. Stay completely silent (don't respond)
+  4. Wait 10-15 seconds
+  5. Verify agent prompts: "Are you still there?"
+  6. Stay silent again
+  7. Verify agent eventually ends call or transfers
+
+  **Expected Results**:
+  - First prompt after ~10 seconds
+  - Second prompt if still silent
+  - After 2-3 prompts, agent ends call gracefully
+  - Proper logging of inactivity timeout
+</Accordion>
+
+---
+
+### 7. DTMF Input (Keypad)
+
+**Scenario**: Customer uses phone keypad for input (if enabled).
+
+<Accordion title="Test steps">
+  1. Agent prompts: "Press 1 for sales, 2 for support"
+  2. Press key on phone keypad
+  3. Verify agent detects and responds
+  4. Test all keys: 0-9, *, #
+
+  **Expected Results**:
+  - All keys detected correctly
+  - Agent confirms input ("You pressed 1")
+  - Agent routes to correct action/department
+  - Invalid keys handled (e.g., pressing 9 when only 1-2 valid)
+</Accordion>
+
+---
+
+### 8. Multilingual Support
+
+**Scenario**: Customer speaks in different language (if multilingual enabled).
+
+<Accordion title="Test steps">
+  1. Start call in English
+  2. Switch to Spanish mid-call
+  3. Verify agent detects language and responds in Spanish
+  4. Switch back to English
+  5. Verify agent adapts
+
+  **Expected Results**:
+  - Language detection within 1-2 sentences
+  - Agent responds in detected language
+  - Transcription accurate for both languages
+  - Voice selection appropriate for language
+</Accordion>
+
+---
+
+### 9. Long Conversation (Endurance Test)
+
+**Scenario**: Extended conversation testing context retention.
+
+<Accordion title="Test steps">
+  1. Have conversation covering 10+ turns
+  2. Reference earlier conversation points
+  3. Ask complex multi-part questions
+  4. Verify agent remembers context
+
+  **Expected Results**:
+  - Agent retains conversation history
+  - Agent doesn't repeat information already provided
+  - Agent doesn't ask for info customer already provided
+  - Call quality remains stable for 10+ minutes
+</Accordion>
+
+---
+
+### 10. Adversarial / Edge Cases
+
+**Scenario**: Difficult customer scenarios.
+
+<Accordion title="Test steps">
+  **Confused Customer**:
+  - Give rambling, unclear responses
+  - Change topics mid-conversation
+  - Ask unrelated questions
+
+  **Frustrated Customer**:
+  - Express frustration: "This isn't working!"
+  - Demand to speak with human
+  - Use strong language (test guardrails)
+
+  **Testing Customer**:
+  - Try to make agent say inappropriate things
+  - Ask out-of-scope questions
+  - Test boundaries of agent's knowledge
+
+  **Expected Results**:
+  - Agent remains helpful and professional
+  - Agent offers to transfer when appropriate
+  - Agent doesn't engage with inappropriate requests
+  - Agent gracefully says "I can't help with that"
+</Accordion>
+
+## Building Your Test Suite
+
+<Steps>
+  <Step title="Document core scenarios">
+    Create a table of scenarios your agent must handle:
+
+    | Scenario | Priority | Pass Criteria |
+    |----------|----------|---------------|
+    | Greeting | P0 (critical) | Clear introduction, <2s |
+    | KB lookup | P0 | Accurate answer, retrieves from KB |
+    | API call | P1 (important) | Executes successfully, <5s |
+    | Transfer | P1 | Connects to correct destination |
+    | DTMF | P2 (nice-to-have) | Detects all keys correctly |
+  </Step>
+
+  <Step title="Create test scripts">
+    Write exact dialogue for each scenario:
+
+    **Example Script**:
+    ```
+    Scenario: Order Status Lookup
+    Tester: "Hi, what's the status of my order?"
+    Expected Agent: "I can help with that. What's your order number?"
+    Tester: "12345"
+    Expected Agent: "Let me check... [API call] Your order shipped and will arrive January 15th."
+    Result: PASS/FAIL
+    ```
+  </Step>
+
+  <Step title="Run full suite regularly">
+    **When to Test**:
+    - Before every production deployment
+    - After major instruction changes
+    - Weekly for critical agents
+    - After platform updates
+
+    **Tracking**:
+    Use spreadsheet or test management tool to track:
+    - Date tested
+    - Pass/fail per scenario
+    - Notes on failures
+    - Trends over time
+  </Step>
+
+  <Step title="Automate where possible">
+    For critical scenarios, automate testing:
+
+    ```python
+    # Automated test example
+    def test_greeting():
+        call = client.test_calls.create(
+            agent_id="agent_123",
+            scenario="greeting",
+            expected_keywords=["welcome", "help"]
+        )
+
+        assert call.duration_seconds < 5
+        assert "welcome" in call.transcript.lower()
+        assert call.status == "success"
+    ```
+
+    Run automated tests on schedule or pre-deployment.
+  </Step>
+</Steps>
+
+## Test Coverage Matrix
+
+Ensure you're testing all agent capabilities:
+
+| Capability | Test Scenario | Status |
+|------------|---------------|--------|
+| **Core Conversation** |
+| Greeting | First call greeting test | ✓ |
+| Instructions | Follow agent rules test | ✓ |
+| Context | Multi-turn conversation | ✓ |
+| **Knowledge** |
+| KB retrieval | FAQ question test | ✓ |
+| KB accuracy | Verify correct answers | ✓ |
+| Unknown handling | Ask unanswerable question | ✓ |
+| **Actions** |
+| API calls | Trigger each custom action | ⚠️ In progress |
+| Transfers | Test each transfer destination | ⚠️ In progress |
+| Booking | Complete calendar booking | ⏳ Not started |
+| **Voice Features** |
+| Interruptions | Barge-in test | ✓ |
+| Silence | Inactivity timeout test | ✓ |
+| DTMF | Keypad input test | N/A |
+| **Quality** |
+| Audio | Call quality metrics | ✓ |
+| Latency | Response time <2s | ✓ |
+| Accuracy | Transcription WER <10% | ✓ |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Web Simulator" icon="browser" href="/test/web-simulator">
+    Run test scenarios in the browser
+  </Card>
+
+  <Card title="Phone Testing" icon="phone" href="/test/phone-testing">
+    Validate with real PSTN calls
+  </Card>
+
+  <Card title="Debugging" icon="bug" href="/test/debugging">
+    Troubleshoot failing scenarios
+  </Card>
+
+  <Card title="Pre-Launch Checklist" icon="clipboard-check" href="/launch/pre-launch-checklist">
+    Complete final validation before launch
+  </Card>
+</CardGroup>

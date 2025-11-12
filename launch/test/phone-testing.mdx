@@ -1,0 +1,341 @@
+---
+title: "Phone Testing"
+description: "Validate your agent with real PSTN phone calls"
+icon: "phone"
+---
+
+## Why Phone Testing Matters
+
+While the web simulator catches most issues, phone testing validates the complete end-to-end experience including:
+- PSTN audio quality and latency
+- Real DTMF tones from phone keypads
+- Actual call transfers and routing
+- Voicemail detection (AMD)
+- Mobile and landline call behavior
+
+**Recommendation**: Complete web simulator testing first, then validate with 2-3 phone test calls before launch.
+
+## Running a Phone Test
+
+<Steps>
+  <Step title="Open Test Agent drawer">
+    In your agent editor, click **Test Agent** button (top-right). Switch to the **Phone Call** tab.
+  </Step>
+
+  <Step title="Configure test call">
+    **From Number**: Select one of your provisioned numbers as caller ID
+
+    **Destination**: Enter your phone number in E.164 format (`+12125551234`)
+
+    **AMD Setting** (for outbound):
+    - **Text-based**: Fast detection (~1-2s), 85-90% accuracy
+    - **ML-based**: Slower (~3-4s), 95%+ accuracy
+    - Choose based on your campaign needs
+  </Step>
+
+  <Step title="Start test">
+    Click **Start Test**. The platform immediately dials your phone.
+
+    **What Happens**:
+    - Your phone rings within 2-5 seconds
+    - Answer the call
+    - Agent plays greeting
+    - Speak naturally to test conversation
+  </Step>
+
+  <Step title="Monitor in real-time">
+    While on the call, open **Conversations → Live Monitor** in another tab to watch:
+    - Live transcript
+    - Action triggers
+    - Call quality metrics
+  </Step>
+
+  <Step title="Review after call">
+    Once complete, find the conversation in **Conversations → Logs**:
+    - Full audio recording
+    - Transcript with timestamps
+    - Goal outcomes
+    - Action payloads
+    - Quality metrics (latency, jitter, packet loss)
+  </Step>
+</Steps>
+
+## What to Test
+
+### Audio Quality Checks
+
+<Accordion title="Clarity and pronunciation">
+  **Listen For**:
+  - Is agent voice clear and natural?
+  - Are custom pronunciations working?
+  - Any robotic artifacts or glitches?
+  - Appropriate speaking speed?
+
+  **Test On**:
+  - Mobile phone (cellular network)
+  - Landline (if available)
+  - VoIP phone (Teams, Zoom Phone)
+
+  Different networks have different audio quality characteristics.
+</Accordion>
+
+<Accordion title="Echo and feedback">
+  **Test Scenarios**:
+  1. Use speakerphone mode → Listen for echo
+  2. Use headset/handset → Should be echo-free
+
+  **Issues**:
+  - Echo on speaker → Normal, AEC (echo cancellation) should handle it
+  - Echo on handset → Problem, check agent audio settings
+  - Feedback loop → Disable one audio source
+
+  **Configuration**: Enable echo cancellation in agent → **Voice Settings → Audio Processing**
+</Accordion>
+
+<Accordion title="Latency and delays">
+  **Measure Response Time**:
+  - Stop speaking and count seconds until agent responds
+  - Target: <1s for best experience
+  - Acceptable: <2s
+  - Poor: >3s (customers get frustrated)
+
+  **If High Latency**:
+  - Check model selection (GPT-3.5 faster than GPT-4)
+  - Reduce instruction length
+  - Simplify knowledge base retrieval
+  - Check network connectivity
+</Accordion>
+
+### DTMF (Keypad) Testing
+
+Test phone keypad input if your agent uses DTMF:
+
+<Steps>
+  <Step title="Enable DTMF">
+    In agent settings → **Advanced → DTMF Controls**, enable keypad detection.
+  </Step>
+
+  <Step title="Test key presses">
+    During phone call:
+    - Agent says: "Press 1 for sales, 2 for support"
+    - Press keys on your phone keypad
+    - Agent should detect and respond
+
+    Test all keys: 0-9, *, #
+  </Step>
+
+  <Step title="Verify in logs">
+    Check conversation log for `dtmf_input` field showing which keys were detected.
+
+    If keys not detected:
+    - Verify carrier supports RFC 2833 DTMF
+    - Check agent DTMF settings enabled
+    - Try different phone (some VoIP phones have issues)
+  </Step>
+</Steps>
+
+### Transfer Testing
+
+Validate call transfers work correctly:
+
+<Accordion title="Blind transfer">
+  **Setup**:
+  1. Configure transfer action with valid destination number
+  2. Trigger transfer during test call
+  3. Agent should announce transfer and connect you
+
+  **What to Check**:
+  - Transfer announcement is clear
+  - Call connects to destination number
+  - Audio quality maintained after transfer
+  - Proper call duration logging
+
+  **Note**: Use a second phone number you control to verify connection.
+</Accordion>
+
+<Accordion title="Attended transfer">
+  **Setup**:
+  - Set transfer type to "attended" in action config
+  - Agent should connect to destination first
+  - Brief destination before connecting caller
+
+  **Test Flow**:
+  1. Trigger transfer
+  2. Agent puts you on hold (hears music)
+  3. Agent connects to destination
+  4. Agent announces: "I have [customer] for you"
+  5. Agent connects both parties
+
+  More reliable than blind transfers, but slower.
+</Accordion>
+
+### Voicemail Detection (AMD)
+
+For outbound campaigns, test answering machine detection:
+
+<Steps>
+  <Step title="Call your voicemail">
+    Use Phone Test to call a number that goes to voicemail (your own VM, or test VM number).
+  </Step>
+
+  <Step title="Enable AMD">
+    In test settings, select either Text-based or ML-based AMD.
+  </Step>
+
+  <Step title="Verify detection">
+    - Call should detect voicemail within 1-4 seconds
+    - Agent should hang up (or leave message if configured)
+    - Check logs for `amd_result: "voicemail"`
+
+    **Accuracy Test**:
+    - Run 10 test calls
+    - 5 to real person (you answer)
+    - 5 to voicemail
+    - Calculate detection accuracy: Should be >85% (text) or >95% (ML)
+  </Step>
+</Steps>
+
+## Testing Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Test from multiple devices" icon="mobile">
+    - iPhone (iOS)
+    - Android phone
+    - Landline (if applicable)
+    - VoIP phone
+
+    Call quality varies by device and network.
+  </Card>
+
+  <Card title="Test different scenarios" icon="list-check">
+    - Quiet environment (office)
+    - Noisy environment (street, coffee shop)
+    - While moving (walking, driving)
+    - Poor signal (basement, rural area)
+  </Card>
+
+  <Card title="Time-of-day testing" icon="clock">
+    - Peak hours (network congestion)
+    - Off-peak hours (optimal conditions)
+    - Different timezones if serving global customers
+  </Card>
+
+  <Card title="Call from target locations" icon="earth-americas">
+    If serving customers in specific regions:
+    - Call from those area codes
+    - Test local number vs toll-free
+    - Verify caller ID displays correctly
+  </Card>
+</CardGroup>
+
+## Analyzing Phone Test Results
+
+After each test call, review metrics:
+
+### Call Quality Metrics
+
+Navigate to **Conversations → Logs** → Select test call → **Quality** tab:
+
+| Metric | Target | Action if Poor |
+|--------|--------|----------------|
+| **Jitter** | <30ms | Check network stability |
+| **Packet Loss** | <1% | Investigate network or carrier |
+| **RTT (Round Trip Time)** | <200ms | Check geographic routing |
+| **MOS (Mean Opinion Score)** | >3.5 | Overall quality indicator |
+
+### Transcription Accuracy
+
+Compare transcript to what you actually said:
+
+- **Word Error Rate (WER)**: Should be <10%
+- Common mistakes: Technical terms, names, accents
+- Fix with custom vocabulary in agent → **Transcriber → Custom Words**
+
+### Action Execution
+
+Verify all actions triggered correctly:
+- Check timestamps (did they fire at right moment?)
+- Review payloads (correct parameters sent?)
+- Confirm responses (API returned expected data?)
+
+## Common Issues & Fixes
+
+<AccordionGroup>
+  <Accordion title="Call doesn't connect">
+    **Causes**:
+    - Number not provisioned yet (wait 5-10 min)
+    - Wrong number format (must be E.164: +12125551234)
+    - Carrier blocking calls (check spam score)
+    - SIP trunk registration failed
+
+    **Fix**:
+    - Verify number shows "Active" status in Telephony → Numbers
+    - Check SIP trunk registration logs
+    - Test with different destination number
+  </Accordion>
+
+  <Accordion title="One-way audio">
+    **Symptom**: You hear agent, but agent doesn't hear you (or vice versa)
+
+    **Causes**:
+    - Firewall blocking RTP packets
+    - NAT traversal issue
+    - Codec mismatch
+
+    **Fix**:
+    - Enable TURN relay in agent settings
+    - Check firewall allows UDP ports 10000-60000
+    - Try different codec (Opus → PCMU)
+  </Accordion>
+
+  <Accordion title="Poor audio quality">
+    **Causes**:
+    - Network congestion
+    - Low bandwidth
+    - Packet loss
+    - Wrong codec settings
+
+    **Fix**:
+    - Check call quality metrics in logs
+    - Switch to higher quality codec
+    - Test at different time (less network load)
+    - Contact carrier if persistent
+  </Accordion>
+</AccordionGroup>
+
+## Phone Test Checklist
+
+Before launching to production, complete this phone test checklist:
+
+- [ ] Called from mobile phone - audio clear both directions
+- [ ] Called from landline (if applicable) - audio clear
+- [ ] Tested in noisy environment - agent transcribes accurately
+- [ ] Tested DTMF input - all keys detected correctly
+- [ ] Triggered transfer - successfully connected to destination
+- [ ] Tested AMD - voicemail detected accurately
+- [ ] Interrupted agent mid-sentence - barge-in works
+- [ ] Stayed silent - inactivity handling triggered
+- [ ] Triggered all custom actions - executed successfully
+- [ ] Asked KB questions - retrieved correct information
+- [ ] Reviewed call quality metrics - all within targets
+- [ ] Checked transcript accuracy - <10% word error rate
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Test Scenarios" icon="list-check" href="/test/test-scenarios">
+    Common test scenarios to validate
+  </Card>
+
+  <Card title="Debugging" icon="bug" href="/test/debugging">
+    Troubleshoot issues found during testing
+  </Card>
+
+  <Card title="Logs and Monitoring" icon="chart-mixed" href="/test/logs-and-monitoring">
+    Deep dive into call logs and metrics
+  </Card>
+
+  <Card title="Pre-Launch Checklist" icon="clipboard-check" href="/launch/pre-launch-checklist">
+    Ready for production? Complete pre-launch validation
+  </Card>
+</CardGroup>
