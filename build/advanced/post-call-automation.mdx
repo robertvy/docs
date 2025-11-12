@@ -178,55 +178,98 @@ The variable name guides the AI. More specific names = better extraction accurac
 
 ---
 
-## Example
+## Examples
 
-**Appointment Confirmation**
+<AccordionGroup>
+  <Accordion title="Appointment Confirmation" icon="calendar-check">
+    **Trigger:**
+    ```
+    Did the caller schedule, book, or confirm an appointment or meeting?
+    ```
 
-**Trigger:**
-```
-Did the caller schedule, book, or confirm an appointment or meeting?
-```
+    **Recipients:** Fixed - `team@company.com`
 
-**Subject:**
-```
-Appointment confirmed - {{dyn_appointment_date}}
-```
+    **Subject:** `Appointment confirmed - {{dyn_appointment_date}}`
 
-**Body:**
-```
-Hi {{customer_first_name}},
+    **Body:**
+    ```
+    Hi {{customer_first_name}},
 
-Your appointment is confirmed:
+    Your appointment is confirmed:
 
-📅 {{dyn_appointment_date}} at {{dyn_appointment_time}}
-📍 {{dyn_location}}
-🔗 {{dyn_meeting_link}}
+    📅 {{dyn_appointment_date}} at {{dyn_appointment_time}}
+    📍 {{dyn_location}}
+    🔗 {{dyn_meeting_link}}
 
-Need to reschedule? Call {{agent_number}}
+    Need to reschedule? Call {{agent_name}}
 
-Best,
-{{agent_name}}
-```
+    Best,
+    {{agent_name}}
+    ```
 
----
+    **Variables used:**
+    - System: `{{customer_first_name}}`, `{{agent_name}}`
+    - Dynamic: `{{dyn_appointment_date}}`, `{{dyn_appointment_time}}`, `{{dyn_location}}`, `{{dyn_meeting_link}}`
+  </Accordion>
 
-## Recipient Routing
+  <Accordion title="Callback Request" icon="phone">
+    **Trigger:**
+    ```
+    Did the customer request a callback, follow-up call, or ask to be contacted later?
+    ```
 
-**Fixed Recipients**
-```
-Send to: support@company.com, manager@company.com
-```
+    **Recipients:** Fixed - `support@company.com`
 
-**Dynamic Routing (AI-powered)**
-```
-Routing rules:
-- If legal threat → legal@company.com
-- If angry/canceling → retention@company.com
-- If product issue → quality@company.com
-- Otherwise → support@company.com
-```
+    **Subject:** `Callback requested`
 
-AI analyzes call and routes accordingly.
+    **Body:**
+    ```
+    Customer requested callback:
+
+    Phone: {{customer_number}}
+    Date: {{conversation_date}}
+    Reason: {{conversation_summary}}
+
+    View call: {{conversation_url}}
+    ```
+
+    **Variables used:**
+    - System: `{{customer_number}}`, `{{conversation_date}}`, `{{conversation_summary}}`, `{{conversation_url}}`
+  </Accordion>
+
+  <Accordion title="Smart Routing by Severity" icon="route">
+    **Trigger:**
+    ```
+    Did the customer express dissatisfaction, file a complaint, or report a problem?
+    ```
+
+    **Recipients:** Dynamic
+    ```
+    Route by severity:
+    - If legal threat → legal@company.com
+    - If angry/canceling → retention@company.com
+    - If product issue → quality@company.com
+    - Otherwise → support@company.com
+    ```
+
+    **Subject:** `Customer issue - {{dyn_severity}}`
+
+    **Body:**
+    ```
+    Issue reported:
+
+    Customer: {{customer_number}}
+    Severity: {{dyn_severity}}
+    Issue: {{dyn_issue_summary}}
+
+    View full call: {{conversation_url}}
+    ```
+
+    **Variables used:**
+    - System: `{{customer_number}}`, `{{conversation_url}}`
+    - Dynamic: `{{dyn_severity}}`, `{{dyn_issue_summary}}`
+  </Accordion>
+</AccordionGroup>
 
 ---
 
@@ -241,12 +284,6 @@ AI analyzes call and routes accordingly.
 
   <Accordion title="Test with Real Calls" icon="vial">
     Enable the notification and test with real or test calls to verify triggering and content.
-  </Accordion>
-
-  <Accordion title="Use Descriptive Dynamic Variables" icon="tag">
-    ❌ `{{dyn_info}}`, `{{dyn_data}}`, `{{dyn_thing}}`
-
-    ✅ `{{dyn_shipping_address}}`, `{{dyn_next_appointment_date}}`, `{{dyn_issue_category}}`
   </Accordion>
 
   <Accordion title="Keep Emails Short" icon="align-left">
