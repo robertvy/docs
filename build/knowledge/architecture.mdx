@@ -236,19 +236,23 @@ Adding too much knowledge increases the chance your agent retrieves irrelevant i
 
 **Best practice for large documents:**
 
-Instead of uploading entire manuals or policy documents, extract only the pages/sections your agent needs:
+Instead of uploading entire manuals or policy documents, extract only the pages/sections your agent needs.
 
-<CardGroup cols={2}>
-  <Card title="Avoid" icon="xmark">
-    Upload entire 200-page employee handbook
-
+<AccordionGroup>
+  <Accordion title="❌ Avoid: Upload entire 200-page employee handbook" icon="xmark">
     **Problem:**
     - Agent may retrieve irrelevant HR sections when customer asks about returns
     - Increases noise in RAG results
     - Wastes token budget on unrelated content
-  </Card>
-  <Card title="Better" icon="check">
-    Extract specific sections:
+
+    **Example:**
+    Customer asks: "What's your return policy?"
+
+    Agent might retrieve: HR vacation policies, internal procedures, employee benefits — none relevant to the customer's question.
+  </Accordion>
+
+  <Accordion title="✅ Better: Extract specific sections" icon="check">
+    **Approach:**
     - "Return Policy - Pages 45-48"
     - "Shipping Policy - Pages 52-55"
     - "Warranty Terms - Pages 89-92"
@@ -257,8 +261,13 @@ Instead of uploading entire manuals or policy documents, extract only the pages/
     - Agent retrieves only customer-relevant content
     - Higher precision in RAG results
     - More efficient token usage
-  </Card>
-</CardGroup>
+
+    **Example:**
+    Customer asks: "What's your return policy?"
+
+    Agent retrieves: Only the 4-page return policy section — exactly what's needed.
+  </Accordion>
+</AccordionGroup>
 
 **How to extract relevant sections:**
 - Export specific pages from PDF as separate files
