@@ -123,7 +123,14 @@ Post-call emails send automatically after conversations based on outcomes, goals
 
 ### System Variables
 
-Use the **variable picker** in the editor to insert these. Always available from call data:
+Use the **variable picker** in the editor to insert these.
+
+<Info>
+**Availability:** Some variables only populate under certain conditions:
+- Phone numbers (`customer_number`, `to_number`) - Phone calls only
+- Customer data (`customer_name`, `customer_email`) - Only if caller exists as a contact in your system
+- Conversation transcript - Only if transcription is enabled
+</Info>
 
 **Conversation Details:**
 - `{{conversation_date}}` - Full date/time in 24-hour format
@@ -132,7 +139,7 @@ Use the **variable picker** in the editor to insert these. Always available from
 - `{{conversation_status}}` - Status (Completed, Failed, etc.)
 - `{{conversation_direction}}` - Inbound/Outbound
 - `{{conversation_summary}}` - AI-generated summary
-- `{{conversation_transcript}}` - Full transcript
+- `{{conversation_transcript}}` - Full transcript (if transcription enabled)
 - `{{conversation_url}}` - Link to view conversation
 - `{{conversation_uuid}}` - Unique identifier
 
@@ -140,11 +147,11 @@ Use the **variable picker** in the editor to insert these. Always available from
 - `{{agent_name}}` - Name of AI agent
 - `{{account_name}}` - Your organization name
 
-**Customer Information:**
-- `{{customer_number}}` - Customer phone number
-- `{{customer_name}}` - Customer name (if known)
-- `{{customer_email}}` - Customer email (if known)
-- `{{to_number}}` - Called phone number
+**Customer Information** (only if contact exists):
+- `{{customer_number}}` - Customer phone number (phone calls only)
+- `{{customer_name}}` - Customer name (if contact exists)
+- `{{customer_email}}` - Customer email (if contact exists)
+- `{{to_number}}` - Called phone number (phone calls only)
 
 ### Dynamic Variables
 
