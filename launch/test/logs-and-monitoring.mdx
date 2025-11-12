@@ -1,0 +1,413 @@
+---
+title: "Logs and Monitoring"
+description: "Analyze test results with conversation logs and metrics"
+icon: "chart-mixed"
+---
+
+## Overview
+
+Every test call generates comprehensive logs that help you validate agent behavior, debug issues, and track quality metrics. Learn to effectively analyze logs to ensure your agent is production-ready.
+
+## Accessing Conversation Logs
+
+<Steps>
+  <Step title="Navigate to logs">
+    Go to **Conversations → Logs** in the dashboard. You'll see a list of all recent conversations (test and production).
+  </Step>
+
+  <Step title="Filter test calls">
+    Use filters to find your test calls:
+    - **Agent**: Select specific agent
+    - **Date Range**: Last hour, last 24 hours, custom range
+    - **Status**: Success, failed, in progress
+    - **Tags**: Filter for "test" tag
+    - **Direction**: Inbound vs outbound
+  </Step>
+
+  <Step title="Open conversation details">
+    Click any conversation to view full details:
+    - Audio playback
+    - Complete transcript
+    - Action execution logs
+    - Knowledge base retrievals
+    - Goal outcomes
+    - Quality metrics
+  </Step>
+</Steps>
+
+## Understanding Log Components
+
+### Transcript View
+
+**What You See**:
+```
+[00:03] Agent: Welcome to itellicoAI. How can I help you today?
+[00:05] Customer: What are your business hours?
+[00:07] Agent: We're open Monday through Friday, 9 AM to 5 PM Eastern Time.
+[00:10] Customer: Thank you.
+[00:11] Agent: You're welcome! Is there anything else I can help with?
+[00:13] Customer: No, that's all.
+[00:14] Agent: Have a great day!
+[Call ended - Duration: 00:11]
+```
+
+**Key Elements**:
+- **Timestamps**: Track response latency (time between turns)
+- **Speaker Labels**: Agent vs Customer clearly marked
+- **Confidence Scores**: Hover over transcript to see transcription confidence
+- **Edit Option**: Manually correct transcription errors for retraining
+
+<Accordion title="Analyzing response timing">
+  **Target Latency**:
+  - Agent response: <1 second (excellent), <2 seconds (acceptable)
+  - API calls: <3 seconds total (including agent processing)
+
+  **Red Flags**:
+  - >3 second gaps indicate latency issues
+  - Check **Quality** tab for network metrics
+  - Review model selection (GPT-4 slower than GPT-3.5)
+</Accordion>
+
+### Actions Tab
+
+**View Action Execution Details**:
+<CardGroup cols={2}>
+  <Card title="Request" icon="arrow-right">
+    - Action name (e.g., "getOrderStatus")
+    - Trigger timestamp
+    - Input parameters extracted
+    - API endpoint called
+    - Request headers & body
+  </Card>
+
+  <Card title="Response" icon="arrow-left">
+    - HTTP status code (200, 404, 500, etc.)
+    - Response body (JSON, XML, text)
+    - Processing time (ms)
+    - Success/failure status
+    - Error messages (if failed)
+  </Card>
+</CardGroup>
+
+**Example Action Log**:
+```json
+{
+  "action": "getOrderStatus",
+  "timestamp": "2024-01-12T15:23:45Z",
+  "input": {
+    "order_id": "12345",
+    "customer_phone": "+12125551234"
+  },
+  "request": {
+    "method": "POST",
+    "url": "https://api.example.com/orders/status",
+    "headers": {"Authorization": "Bearer ***"},
+    "body": {"order_id": "12345"}
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "status": "shipped",
+      "tracking": "1Z999AA10123456784",
+      "eta": "2024-01-15"
+    },
+    "duration_ms": 245
+  },
+  "result": "success"
+}
+```
+
+**Debugging Actions**:
+- Failed actions show error details
+- Test same request with curl to isolate issue
+- Check API key validity and permissions
+- Verify request payload format matches API spec
+
+### Knowledge Tab
+
+**View KB Retrieval**:
+```json
+{
+  "query": "what are your business hours",
+  "chunks_retrieved": 3,
+  "results": [
+    {
+      "content": "Our support team is available Monday-Friday, 9 AM to 5 PM EST...",
+      "similarity_score": 0.92,
+      "source": "kb_article_123",
+      "chunk_id": "chunk_456"
+    },
+    {
+      "content": "Holiday hours vary. We're closed on major US holidays...",
+      "similarity_score": 0.78,
+      "source": "kb_article_789"
+    }
+  ],
+  "retrieval_time_ms": 123
+}
+```
+
+**Analysis**:
+- **High Similarity (>0.85)**: Good match, agent should use this content
+- **Medium Similarity (0.7-0.85)**: Relevant but may need better content or query
+- **Low Similarity (<0.7)**: Poor match, agent might not have answer in KB
+
+**If Agent Says "I Don't Know"**:
+- Check if relevant content was retrieved (similarity >0.8)
+- If yes → Agent instruction issue (didn't use retrieved content)
+- If no → KB content missing or query mismatch
+
+### Goals Tab
+
+**Conversation Goal Tracking**:
+<Tabs>
+  <Tab title="Goal Outcomes">
+    ```json
+    {
+      "goals": [
+        {
+          "name": "appointment_scheduled",
+          "achieved": true,
+          "confidence": 0.94,
+          "entities": {
+            "date": "2024-01-15",
+            "time": "14:00",
+            "service": "consultation"
+          }
+        },
+        {
+          "name": "contact_info_collected",
+          "achieved": true,
+          "confidence": 0.88,
+          "entities": {
+            "email": "customer@example.com",
+            "phone": "+12125551234"
+          }
+        }
+      ]
+    }
+    ```
+
+    **Interpreting Confidence**:
+    - >0.9: Very confident, reliable
+    - 0.7-0.9: Confident, likely accurate
+    - <0.7: Low confidence, review transcript
+  </Tab>
+
+  <Tab title="Goal Debugging">
+    **Why Goals Aren't Achieved**:
+    1. **Goal Definition Too Strict**: Adjust trigger phrases
+    2. **Conversation Cut Short**: Customer hung up before completion
+    3. **Agent Didn't Follow Flow**: Instruction issue
+    4. **Entities Not Extracted**: Need clearer customer responses
+
+    **Example Fix**:
+    ```markdown
+    # Before (too strict)
+    Goal: "appointment_scheduled"
+    Trigger: Customer says "yes, book me for 2pm"
+
+    # After (more flexible)
+    Goal: "appointment_scheduled"
+    Trigger: Any confirmed date/time booking
+    ```
+  </Tab>
+</Tabs>
+
+### Quality Tab
+
+**Call Quality Metrics**:
+
+| Metric | Target | Indicates |
+|--------|--------|-----------|
+| **MOS (Mean Opinion Score)** | >3.5 | Overall call quality (1-5 scale) |
+| **Jitter** | <30ms | Network stability (variation in packet timing) |
+| **Packet Loss** | <1% | Network reliability |
+| **RTT (Round Trip Time)** | <200ms | Network latency |
+| **Bitrate** | 64kbps+ | Audio quality (higher = better) |
+
+**Audio Issues Diagnosis**:
+- High jitter + packet loss → Network congestion
+- High RTT → Geographic distance or routing issue
+- Low MOS score → Overall poor quality, investigate multiple factors
+
+## Monitoring Tools
+
+### Live Monitor
+
+**Real-Time Call Monitoring**:
+<Steps>
+  <Step title="Open live monitor">
+    Navigate to **Conversations → Live Monitor** to see active calls in real-time.
+  </Step>
+
+  <Step title="Watch active calls">
+    View list of in-progress calls with:
+    - Caller ID
+    - Agent assigned
+    - Call duration (live timer)
+    - Current transcript (updates every 2-3 seconds)
+    - Actions being executed
+  </Step>
+
+  <Step title="Intervene if needed">
+    **Intervention Options**:
+    - **Whisper**: Speak to agent without customer hearing (guide agent)
+    - **Barge In**: Join call as 3-way participant
+    - **Takeover**: Disconnect agent, take over call yourself
+    - **End Call**: Force-terminate call if needed
+
+    **Use Cases**:
+    - Agent giving wrong information
+    - Testing edge case requires guidance
+    - Emergency situation
+  </Step>
+</Steps>
+
+### Dashboard Metrics
+
+**High-Level Overview**:
+<CardGroup cols={2}>
+  <Card title="Test Call Volume" icon="phone">
+    - Total test calls today
+    - Calls per hour graph
+    - Peak testing times
+  </Card>
+
+  <Card title="Success Rate" icon="circle-check">
+    - % of calls completing successfully
+    - Failed call count
+    - Common failure reasons
+  </Card>
+
+  <Card title="Average Duration" icon="clock">
+    - Mean call length
+    - Duration distribution
+    - Outliers (very short or long)
+  </Card>
+
+  <Card title="Goal Achievement" icon="bullseye">
+    - % of calls achieving goals
+    - Goal breakdown (which goals most/least achieved)
+    - Trends over time
+  </Card>
+</CardGroup>
+
+## Analyzing Test Results
+
+### Quality Checklist
+
+After running test suite, review:
+
+<Accordion title="Transcript quality">
+  - [ ] Transcription accuracy >90%
+  - [ ] No major misheard words
+  - [ ] Agent responses relevant to customer input
+  - [ ] Conversation flows naturally
+  - [ ] No awkward pauses or delays
+</Accordion>
+
+<Accordion title="Action execution">
+  - [ ] All actions triggered at correct moments
+  - [ ] Actions completed successfully (no errors)
+  - [ ] API responses used correctly by agent
+  - [ ] Action latency <3 seconds
+  - [ ] Error handling works (test failures gracefully handled)
+</Accordion>
+
+<Accordion title="Knowledge accuracy">
+  - [ ] KB queries retrieve relevant content
+  - [ ] Agent uses retrieved content in responses
+  - [ ] Agent doesn't hallucinate facts not in KB
+  - [ ] Agent says "I don't know" when appropriate
+  - [ ] Retrieval time <500ms
+</Accordion>
+
+<Accordion title="Call quality">
+  - [ ] MOS score >3.5
+  - [ ] Jitter <30ms
+  - [ ] Packet loss <1%
+  - [ ] No audio dropouts or distortion
+  - [ ] Voice sounds natural and clear
+</Accordion>
+
+### Comparing Test Runs
+
+**Track Metrics Over Time**:
+```markdown
+| Date | Test Calls | Success Rate | Avg Duration | Goal Achievement |
+|------|-----------|--------------|--------------|------------------|
+| Jan 10 | 25 | 96% | 3:45 | 68% |
+| Jan 11 | 30 | 94% | 3:52 | 71% |
+| Jan 12 | 28 | 98% | 3:38 | 75% |
+```
+
+**Trend Analysis**:
+- Success rate improving → Good progress
+- Duration decreasing → Agent becoming more efficient
+- Goal achievement increasing → Instructions optimized
+
+**Regression Detection**:
+- Sudden drop in success rate → Recent change broke something
+- Duration spike → New latency issue introduced
+- Goal achievement drop → Instructions or KB changed negatively
+
+## Exporting Logs
+
+### For Team Review
+
+<Steps>
+  <Step title="Export conversation logs">
+    From Conversations → Logs, select conversations and click **Export**:
+    - Format: JSON, CSV
+    - Include: Transcript, actions, goals, metadata
+    - Download as file or send to email
+  </Step>
+
+  <Step title="Share with team">
+    **Use Cases**:
+    - QA team reviews for quality assurance
+    - Product team analyzes conversation patterns
+    - Engineering debugs specific issues
+    - Compliance team audits for regulatory requirements
+  </Step>
+</Steps>
+
+### Programmatic Access
+
+**API Export**:
+```bash
+# Export all test conversations from last 24 hours
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+     "https://api.itellico.ai/v1/conversations?start_date=2024-01-12&tag=test" \
+     > test_conversations.json
+
+# Analyze with jq
+cat test_conversations.json | jq '.[] | select(.status == "failed")'
+```
+
+**Use for**:
+- Automated test reporting
+- Integration with test frameworks
+- CI/CD pipeline validation
+- Custom analytics dashboards
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Debugging" icon="bug" href="/test/debugging">
+    Debug issues found in logs
+  </Card>
+
+  <Card title="Test Scenarios" icon="list-check" href="/test/test-scenarios">
+    Build comprehensive test suite
+  </Card>
+
+  <Card title="Troubleshooting" icon="screwdriver-wrench" href="/test/troubleshooting">
+    Resolve common testing issues
+  </Card>
+
+  <Card title="Pre-Launch Checklist" icon="clipboard-check" href="/launch/pre-launch-checklist">
+    Ready for production? Complete final checks
+  </Card>
+</CardGroup>
