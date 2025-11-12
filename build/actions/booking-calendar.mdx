@@ -13,7 +13,11 @@ Requires a Cal.com account and active integration. Works with Cal.com's free tie
 </Note>
 
 <Info>
-**Customization:** The booking action provides an opinionated flow out-of-the-box. Disable the default prompt for more control, or use [Custom API Actions](/build/actions/custom-api-actions) for full flexibility.
+**How it works:** The booking action provides two functions to your agent:
+1. **Get available slots** - Fetches available time slots from Cal.com
+2. **Book appointment** - Creates the booking with customer details
+
+This handles the core booking flow. For advanced workflows like confirming existing appointments, rescheduling, or cancelling, you'll need to build custom logic using [Custom API Actions](/build/actions/custom-api-actions) that integrate with the Cal.com API directly.
 </Info>
 
 ---
@@ -144,6 +148,10 @@ The agent uses this priority to find customer email:
 - Sends SMS after booking completes
 - Includes meeting details and join link
 
+<Warning>
+SMS confirmations only work on **phone calls** where the caller's phone number is available in the system. They will not send for web calls or when the phone number is unavailable.
+</Warning>
+
 **SMS Template**
 - Customize the message with placeholders:
   - `{date}` - Appointment date
@@ -154,7 +162,7 @@ The agent uses this priority to find customer email:
 
 **Default Booking Instructions** (Default: enabled)
 - Pre-built scheduling script for the agent
-- Disable only if you need complete custom control
+- Disable only if you need more control over the booking conversation flow
 
 ---
 
@@ -188,18 +196,6 @@ If 'Book 30-Minute Consultation' fails:
    - Collect callback number and best time
 3. If no availability: "We're fully booked for [timeframe].
    Would [alternative timeframe] work?"
-```
-
-### Multiple Event Types
-
-```
-Booking Actions (names auto-generated from Cal.com):
-- 'Book 15-Minute Quick Call' - Brief questions
-- 'Book 30-Minute Consultation' - Initial consultations, demos
-- 'Book 60-Minute Deep Dive' - Detailed planning
-
-If unsure, ask: "Would a 30-minute consultation work,
-or would you prefer a longer session?"
 ```
 
 ---
@@ -242,7 +238,6 @@ or would you prefer a longer session?"
     **Solution:**
     - Go to Integrations → Cal.com
     - Verify status shows "Connected"
-    - Refresh if needed
   </Accordion>
 
   <Accordion title="No Event Types in Dropdown" icon="calendar-xmark">
@@ -250,8 +245,7 @@ or would you prefer a longer session?"
 
     **Solution:**
     - Create event types in Cal.com
-    - Click "Refresh" in integration settings
-    - Disconnect and reconnect if needed
+    - Disconnect and reconnect integration if needed
   </Accordion>
 
   <Accordion title="Meeting Platform Disabled" icon="video-slash">
@@ -260,7 +254,7 @@ or would you prefer a longer session?"
     **Solution:**
     - Go to Cal.com event type settings
     - Connect the platform (Zoom, Google Meet, etc.)
-    - Refresh in itellicoAI
+    - Disconnect and reconnect integration to sync changes
   </Accordion>
 
   <Accordion title="Email Confirmation Not Received" icon="envelope-open-text">
@@ -297,61 +291,6 @@ or would you prefer a longer session?"
     - Check the Actions tab to see the actual name
     - Add explicit booking flow to instructions
     - Test with clear: "I want to book an appointment"
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Best Practices
-
-<AccordionGroup>
-  <Accordion title="Confirm Details Verbally" icon="comment">
-    After booking, have the agent repeat the details:
-
-    ```
-    "Perfect! You're all set for Tuesday, March 15th at 2:00 PM.
-    You'll receive a confirmation email with the Zoom link at
-    sarah@example.com. Is there anything else I can help with?"
-    ```
-  </Accordion>
-
-  <Accordion title="Collect Email Early" icon="envelope">
-    Ask for email before checking availability:
-
-    ```
-    Before checking availability:
-    1. Confirm booking intent
-    2. Ask: "What email should I use for the confirmation?"
-    3. Then check available times
-    ```
-
-    This prevents having to restart if email collection fails.
-  </Accordion>
-
-  <Accordion title="Set Clear Expectations" icon="clock">
-    Tell customers what to expect:
-
-    ```
-    "I'll check our availability for next week and suggest a few
-    time slots that work. You'll receive a confirmation email with
-    the meeting link right after we book it."
-    ```
-  </Accordion>
-
-  <Accordion title="Handle 'No Availability' Gracefully" icon="calendar-times">
-    ```
-    If no slots available:
-    1. "Unfortunately, we're fully booked for [timeframe]"
-    2. "Would [alternative timeframe] work for you?"
-    3. If still no: "I can add you to our waitlist"
-    ```
-  </Accordion>
-
-  <Accordion title="Test Regularly" icon="vial">
-    - Book test appointments monthly
-    - Verify meeting links work
-    - Check email/SMS delivery
-    - Test from different phone numbers
   </Accordion>
 </AccordionGroup>
 
