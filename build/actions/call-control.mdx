@@ -137,12 +137,20 @@ The End Conversation action terminates the call immediately after the agent fini
   </Accordion>
 
   <Accordion title="Always Explain Before Transferring" icon="comment">
-    Never transfer calls without context. Agents should explain why they're transferring and set expectations.
+    Never transfer calls without context. Agents should explain why they're transferring, set expectations, and confirm.
 
     **Good:**
     ```
-    "I understand you need help with billing. Let me connect you with
-    our billing department who can access your account details."
+    "I understand you need help with billing. Our billing department can access
+    your account details. Would you like me to transfer you now?"
+    [Wait for confirmation]
+    [Execute transfer after confirmation]
+    ```
+
+    **Poor:**
+    ```
+    "Let me transfer you to billing."
+    [Transfers without explanation or confirmation]
     ```
   </Accordion>
 
@@ -152,8 +160,15 @@ The End Conversation action terminates the call immediately after the agent fini
     **Good:**
     ```
     "Is there anything else I can help you with today?"
+    [Wait for response]
     [If no] "Great! Thanks for calling!"
     [Use End Call action]
+    ```
+
+    **Poor:**
+    ```
+    "Your appointment is booked. Thanks!"
+    [Uses End Call action without checking if they need anything else]
     ```
   </Accordion>
 
