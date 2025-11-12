@@ -198,133 +198,108 @@ itellicoAI supports three types of transfer destinations. Choose the one that fi
 
 ## Transfer Modes
 
-Choose how the transfer is executed:
+### Cold Transfer (Default)
 
-<Tabs>
-  <Tab title="Cold Transfer" icon="phone-arrow-right">
-    The agent transfers the call immediately and disconnects. The customer connects directly to the destination without the agent introducing them. **(Default)**
+The agent transfers the call immediately and disconnects. The customer connects directly to the destination without the agent introducing them.
 
-    ### How It Works
+#### How It Works
 
-    <Steps>
-      <Step title="Agent explains the transfer">
-        Agent tells customer they're being transferred
-      </Step>
-      <Step title="Transfer initiates">
-        Agent starts the transfer action
-      </Step>
-      <Step title="Agent disconnects">
-        Agent drops from the call
-      </Step>
-      <Step title="Customer connects">
-        Customer connects directly to destination
-      </Step>
-    </Steps>
+<Steps>
+  <Step title="Agent explains the transfer">
+    Agent tells customer they're being transferred
+  </Step>
+  <Step title="Transfer initiates">
+    Agent starts the transfer action
+  </Step>
+  <Step title="Agent disconnects">
+    Agent drops from the call
+  </Step>
+  <Step title="Customer connects">
+    Customer connects directly to destination
+  </Step>
+</Steps>
 
-    ### When to Use
+#### When to Use
 
-    <CardGroup cols={2}>
-      <Card title="Standard Escalations" icon="arrow-up">
-        Typical support escalations
-      </Card>
-      <Card title="Department Routing" icon="buildings">
-        Route to specific departments
-      </Card>
-      <Card title="Queue Transfers" icon="people-line">
-        Transfer to contact center queues
-      </Card>
-      <Card title="High-Volume Scenarios" icon="gauge-high">
-        Fast routing for scale
-      </Card>
-    </CardGroup>
+<CardGroup cols={2}>
+  <Card title="Standard Escalations" icon="arrow-up">
+    Typical support escalations
+  </Card>
+  <Card title="Department Routing" icon="buildings">
+    Route to specific departments
+  </Card>
+  <Card title="Queue Transfers" icon="people-line">
+    Transfer to contact center queues
+  </Card>
+  <Card title="High-Volume Scenarios" icon="gauge-high">
+    Fast routing for scale
+  </Card>
+</CardGroup>
 
-    ### Pros & Cons
+#### Pros & Cons
 
-    ✅ **Advantages:**
-    - Fast and efficient
-    - No agent monitoring required
-    - Scales easily
+✅ **Advantages:**
+- Fast and efficient
+- No agent monitoring required
+- Scales easily
 
-    ❌ **Disadvantages:**
-    - No context provided to recipient
-    - Customer must re-explain their issue
+❌ **Disadvantages:**
+- No context provided to recipient
+- Customer must re-explain their issue
 
-    ### Example Flow
+#### Example Flow
 
-    ```
-    Customer: "I have a billing question"
-    Agent: "I'd be happy to help. Let me connect you with our billing
-            department who can access your account details."
-    [Cold transfer to billing → Agent disconnects]
-    Billing Agent: "Hello, how can I help you?"
-    Customer: "I have a question about my bill..."
-    ```
-  </Tab>
+```
+Customer: "I have a billing question"
+Agent: "I'd be happy to help. Let me connect you with our billing
+        department who can access your account details."
+[Cold transfer to billing → Agent disconnects]
+Billing Agent: "Hello, how can I help you?"
+Customer: "I have a question about my bill..."
+```
 
-  <Tab title="Silent Transfer" icon="phone-slash">
-    The agent transfers without saying anything - the call is immediately routed to the destination.
+#### Silent Transfer Option
 
-    ### How It Works
+<Accordion title="Enable Silent Transfer (Optional)" icon="phone-slash">
+  You can enable **Silent Transfer** mode where the agent transfers without saying anything - the call is immediately routed to the destination.
 
-    <Steps>
-      <Step title="Agent determines transfer">
-        Agent logic triggers transfer need
-      </Step>
-      <Step title="Silent execution">
-        Transfer executes without announcement
-      </Step>
-      <Step title="Customer connects">
-        Customer routed to destination silently
-      </Step>
-    </Steps>
+  **How it works:**
+  1. Agent logic triggers transfer need
+  2. Transfer executes without announcement
+  3. Customer routed to destination silently
 
-    ### When to Use
+  **When to use:**
+  - Pure routing, no conversation yet (IVR replacement)
+  - Menu-based routing
+  - Language detection and auto-routing
 
-    <CardGroup cols={2}>
-      <Card title="Routing Logic" icon="route">
-        Pure routing, no conversation yet
-      </Card>
-      <Card title="IVR Replacement" icon="phone-volume">
-        Replace traditional IVR menus
-      </Card>
-      <Card title="Menu-Based Routing" icon="list">
-        Route based on selections
-      </Card>
-      <Card title="Language Detection" icon="language">
-        Auto-route by detected language
-      </Card>
-    </CardGroup>
+  **Configuration:**
+  - Check the **Silent Transfer** checkbox
+  - Any transfer message is ignored when silent mode is enabled
 
-    ### Configuration
+  **Example:**
+  ```
+  Agent: Language Router (silent routing agent)
 
-    <Steps>
-      <Step title="Enable silent transfer">
-        Check the **Silent Transfer** checkbox
-      </Step>
-      <Step title="Transfer message ignored">
-        Any transfer message is ignored when silent mode is enabled
-      </Step>
-    </Steps>
+  Instructions:
+  Based on the language the customer speaks:
+  - If Spanish detected, use 'Transfer to Spanish Agent' (silent)
+  - If French detected, use 'Transfer to French Agent' (silent)
+  - If English, continue conversation
+  ```
 
-    ### Example Scenario
+  <Warning>
+  Silent transfers can feel abrupt to customers. Use sparingly and only when appropriate for the use case.
+  </Warning>
+</Accordion>
 
-    ```
-    Agent: Language Router (silent routing agent)
+### Warm Transfer
 
-    Instructions:
-    Based on the language the customer speaks:
-    - If Spanish detected, use 'Transfer to Spanish Agent' (silent)
-    - If French detected, use 'Transfer to French Agent' (silent)
-    - If English, continue conversation
+<Card title="Coming Soon" icon="clock">
+  **Warm transfers** allow the agent to connect to the destination first, introduce the customer and provide context, then complete the transfer. The customer is placed on hold during the introduction.
 
-    No need to explain transfer - just route silently.
-    ```
-
-    <Warning>
-    Silent transfers can feel abrupt to customers. Use sparingly and only when appropriate for the use case.
-    </Warning>
-  </Tab>
-</Tabs>
+  This feature is currently in development and will be available in a future release.
+</Card>
 
 ---
 
