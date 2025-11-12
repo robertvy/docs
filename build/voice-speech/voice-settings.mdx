@@ -87,53 +87,24 @@ Adjust in small increments (0.05-0.1) and test with full conversations.
 
 Cartesia voices support the following adjustable parameter:
 
-### Speed
+### Speech Rate
 
-Controls how fast the voice speaks.
+Controls how fast the voice speaks (range: 0.5-2.0, default: 1.0)
 
-**Speed options:**
-- **slow:** Slower delivery for clarity
-- **normal:** Standard speed (default)
-- **fast:** Faster delivery for efficiency
+**Speech rate values:**
+- **0.5-0.8:** Slower delivery for clarity
+- **1.0:** Normal speed (default)
+- **1.2-2.0:** Faster delivery for efficiency
 
-**Recommended starting point:** normal
+**Recommended starting point:** 1.0
 
-<Note>
-Speed control availability is model-specific and may be experimental or deprecated depending on the Cartesia model.
-</Note>
+Cartesia's ultra-low latency makes speed adjustments feel responsive. Test with realistic conversation scenarios.
 
 ---
 
 ## Azure Speech Settings
 
 Azure Speech voices do not support adjustable settings through the itellico AI interface. Azure uses default voice configurations optimized by Microsoft for each neural voice.
-
-### Advanced Customization with SSML
-
-For fine-grained control over Azure voices, use SSML (Speech Synthesis Markup Language) in your agent's response templates:
-
-**Example SSML:**
-```xml
-<speak version="1.0" xml:lang="en-US">
-  <voice name="en-US-JennyNeural">
-    <mstts:express-as style="chat">
-      <prosody rate="+5%" pitch="+2st">
-        Thanks for calling. How can I help?
-      </prosody>
-    </mstts:express-as>
-  </voice>
-</speak>
-```
-
-**SSML capabilities:**
-- **Prosody:** Adjust rate (speed), pitch, volume
-- **Speaking styles:** chat, customerservice, newscast, cheerful, empathetic
-- **Emphasis:** Highlight specific words
-- **Breaks:** Add pauses for pacing
-
-<Note>
-Contact support for guidance on implementing SSML in your agent responses.
-</Note>
 
 ---
 
@@ -163,26 +134,22 @@ After adjusting voice settings:
 
 ### Customer Support
 - **ElevenLabs:** Stability 0.60-0.85, Similarity 0.75-0.85, Style 0.0, Speed 0.95-1.05
-- **Cartesia:** Speed normal
-- **Azure:** Use SSML style="customerservice" with rate="+0%" to "+5%"
+- **Cartesia:** Speech Rate 1.0
 - **Goal:** Clear, steady, professional
 
 ### Sales
 - **ElevenLabs:** Stability 0.45-0.70, Similarity 0.70-0.80, Style 0.0, Speed 1.05-1.15
-- **Cartesia:** Speed normal to fast
-- **Azure:** Use SSML style="cheerful" with rate="+5%" to "+10%"
+- **Cartesia:** Speech Rate 1.1-1.2
 - **Goal:** Energetic, confident, engaging
 
 ### Technical Support
 - **ElevenLabs:** Stability 0.60-0.85, Similarity 0.75-0.85, Style 0.0, Speed 0.95-1.0
-- **Cartesia:** Speed slow to normal
-- **Azure:** Use SSML style="assistant" with rate="-5%" to "+0%"
+- **Cartesia:** Speech Rate 0.9-0.95
 - **Goal:** Clear, patient, instructional
 
 ### Healthcare
 - **ElevenLabs:** Stability 0.70-0.85, Similarity 0.80-0.90, Style 0.0, Speed 0.9-1.0
-- **Cartesia:** Speed slow
-- **Azure:** Use SSML style="empathetic" or "calm" with rate="-5%" to "+0%"
+- **Cartesia:** Speech Rate 0.9
 - **Goal:** Calm, consistent, professional
 
 ---
