@@ -364,10 +364,10 @@ Create multiple transfer actions for different destinations to handle various ro
   <Accordion title="Conditional Routing" icon="code-branch">
     Use different transfers based on customer data or conversation context:
 
-    ```text wrap
-    {% if contact.account_type == "enterprise" %}
+    ```jinja
+    {% if contact_account_type == "enterprise" %}
     Route enterprise customers to 'Transfer to Enterprise Support'
-    {% elif contact.account_type == "premium" %}
+    {% elif contact_account_type == "premium" %}
     Route premium customers to 'Transfer to Premium Support'
     {% else %}
     Route standard customers to 'Transfer to General Support'
@@ -787,10 +787,10 @@ For agent transfers, verify conversation history transfers correctly. For phone/
 
 Use variables to dynamically determine transfer destinations:
 
-```text wrap
-{% if contact.region == "west" %}
+```jinja
+{% if contact_region == "west" %}
 Transfer destination: +1-555-WEST-001
-{% elif contact.region == "east" %}
+{% elif contact_region == "east" %}
 Transfer destination: +1-555-EAST-001
 {% else %}
 Transfer destination: +1-555-MAIN-001
@@ -803,7 +803,7 @@ When transferring, use the appropriate regional number.
 
 Route transfers based on time of day:
 
-```text wrap
+```jinja
 {% set current_hour = current_datetime | date('H') | int %}
 
 {% if current_hour >= 9 and current_hour < 17 %}
