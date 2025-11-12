@@ -6,664 +6,203 @@ icon: "spell-check"
 
 ## Overview
 
-Even premium AI voices occasionally mispronounce brand names, technical terms, acronyms, or industry-specific jargon. Custom pronunciations let you define exactly how specific words should sound, ensuring your agent always says them correctly.
-
-## What Are Custom Pronunciations?
-
-Custom pronunciations create text-replacement rules that modify what the voice synthesis engine receives:
+Custom pronunciations let you define how specific words should sound, ensuring your agent always pronounces brand names, technical terms, and acronyms correctly.
 
 **How it works:**
-1. Agent generates response text: "Call us at itellico AI for help"
-2. Pronunciation engine applies rules: "Call us at eye-tell-ee-co A I for help"
-3. Voice synthesizer speaks the modified text: "eye-tell-ee-co A I"
+1. Agent generates response: "Call us at itellico AI for help"
+2. System applies pronunciation rules: "Call us at eye-tell-ee-co A I for help"
+3. Voice synthesizer speaks the modified text
 4. Customer hears correct pronunciation
 
-**Key point:** The customer sees the original text in transcripts, but hears the corrected pronunciation.
-
----
-
-## Accessing Pronunciation Settings
-
-### Opening Pronunciation Manager
-
-1. Navigate to **Voice** tab
-2. Click **Pronunciations** or **Custom Pronunciations**
-3. Pronunciation management interface opens
-
----
-
-## Creating Pronunciation Rules
-
-### Inline Replacements
-
-The simplest way to add pronunciations is with inline text replacements.
-
-#### Simple Replacements
-
-**Format:** `Original → Replacement`
-
-**Examples:**
-```text wrap
-itellico AI → eye-tell-ee-co A I
-Nike → Nai-key
-SQL → sequel
-API → A P I
-Dr. → Doctor
-```
-
-**Creating a rule:**
-1. Click **Add Rule** or **New Pronunciation**
-2. Enter original text (exactly as it appears in responses)
-3. Enter phonetic replacement (how it should sound)
-4. Save
-
-<Tip>
-Write the replacement text exactly how you want the voice to say it. The voice will attempt to pronounce what you write, so use simple phonetic spelling.
-</Tip>
-
-#### Case Sensitivity
-
-Most pronunciation systems are case-insensitive:
-- `API → A P I` will replace "API", "api", and "Api"
-
-If your system is case-sensitive:
-- Create separate rules for different capitalizations
-- Check documentation or test both cases
-
-#### Word Boundaries
-
-Ensure your rules only match complete words:
-- `API → A P I` should match "API" but not "APIC" or "RAPID"
-
-Most systems automatically enforce word boundaries. If issues arise:
-- Test the rule in context
-- Add spaces or punctuation if needed: ` API ` or `API.`
-
-### Phonetic Spelling Best Practices
-
-When creating replacement text:
-
-<AccordionGroup>
-  <Accordion title="Use Simple Phonetic Spelling" icon="a">
-    Write how you'd spell it for a child to read aloud:
-    - **Good:** "Nai-key" (Nike)
-    - **Avoid:** "Naɪki" (too complex)
-
-    **Common phonetic patterns:**
-    - Long A: "ay" (day, say)
-    - Long E: "ee" (tree, bee)
-    - Long I: "eye" or "ai" (eye, aisle)
-    - Long O: "oh" (go, show)
-    - Short vowels: Use simple spelling (cat, bet, sit)
-  </Accordion>
-
-  <Accordion title="Separate Syllables with Hyphens" icon="grip-lines-vertical">
-    Hyphens create natural pauses between syllables:
-    - **Good:** "eye-tell-ee-co" (itellico AI)
-    - **Avoid:** "eyeteleeco" (may be mispronounced)
-
-    **When to use:**
-    - Multi-syllable words
-    - Complex brand names
-    - Words with unusual stress patterns
-  </Accordion>
-
-  <Accordion title="Spell Out Letters for Acronyms" icon="font-case">
-    For acronyms pronounced letter-by-letter, add spaces:
-    - **Good:** "A P I" (API)
-    - **Good:** "S Q L" (if pronounced as letters)
-    - **Alternative:** "sequel" (if pronounced as word)
-
-    Test both approaches to hear which sounds better.
-  </Accordion>
-
-  <Accordion title="Add Emphasis with Capitals" icon="text-size">
-    Some voices respond to capitalization for emphasis:
-    - **Standard:** "forty-two"
-    - **Emphasized:** "FORTY-two" (emphasizes first word)
-
-    Results vary by voice provider. Test to confirm effect.
-  </Accordion>
-
-  <Accordion title="Use Common Words for Sounds" icon="volume-high">
-    Base phonetics on common English words:
-    - "Claude" → "Clawd" (sounds like "awed")
-    - "Anthropic" → "An-throp-ick" (sounds like "topic")
-
-    Avoid: Unusual phonetic combinations the voice may struggle with.
-  </Accordion>
-</AccordionGroup>
-
----
-
-## IPA (International Phonetic Alphabet)
-
-For precise pronunciation control, some systems support IPA strings.
-
-### What is IPA?
-
-The International Phonetic Alphabet is a standardized system for representing sounds:
-- Each symbol represents one specific sound
-- Universal across languages
-- Precise and unambiguous
-
-**Example:**
-- "itellico AI" in IPA: `/aɪˈtɛlɪkoʊ eɪ aɪ/`
-- "schedule" (US): `/ˈskɛdʒuːl/`
-- "schedule" (UK): `/ˈʃɛdjuːl/`
-
-### Using IPA in itellico AI
-
-**Format:** Depends on provider
-
-**ElevenLabs IPA:**
-```xml wrap
-itellico AI → <phoneme alphabet="ipa" ph="aɪˈtɛlɪkoʊ eɪ aɪ">itellico AI</phoneme>
-```
-
-**Azure IPA:**
-```xml wrap
-itellico AI → <phoneme alphabet="ipa" ph="aɪˈtɛlɪkoʊ">itellico AI</phoneme>
-```
-
-### When to Use IPA
-
-**Use IPA when:**
-- Simple phonetic spelling doesn't work
-- You need precise control over pronunciation
-- The word has sounds not easily spelled in English
-- You're working with non-English words
-
-**Avoid IPA when:**
-- Simple phonetic spelling works (easier to maintain)
-- You're not familiar with IPA (high error risk)
-- The voice provider doesn't support it
-
-### Learning IPA Resources
-
-If you need IPA:
-- [IPA Chart](https://www.ipachart.com/) - Interactive IPA reference
-- [toPhonetics](https://tophonetics.com/) - Converts text to IPA
-- [Cambridge Dictionary](https://dictionary.cambridge.org/) - Shows IPA for English words
-
 <Note>
-IPA is powerful but complex. Start with simple phonetic spelling and use IPA only when necessary.
+Pronunciation replacements are available under **Voice > Pronunciations** in your agent configuration.
 </Note>
 
 ---
 
-## CSV Import and Export
+## Adding Pronunciations
 
-Manage large pronunciation dictionaries efficiently with CSV files.
+### Single Replacement
 
-### CSV File Format
+1. Click **Add Replacement**
+2. Enter the **target word** (the word to replace)
+3. Enter the **pronunciation** (how it should sound)
+4. Click **Add**
 
-**Basic format:**
-```csv wrap
-original,replacement
-itellico AI,eye-tell-ee-co A I
-Nike,Nai-key
-SQL,sequel
-API,A P I
-Dr.,Doctor
-```
-
-**With headers:**
-- First row: Column names (`original`, `replacement`)
-- Subsequent rows: One rule per row
-
-**Delimiters supported:**
-- Comma: `original,replacement`
-- Semicolon: `original;replacement`
-
-System auto-detects delimiter based on file content.
-
-### Importing CSV
-
-**Process:**
-1. Prepare CSV file with pronunciations
-2. Click **Import** in pronunciation interface
-3. Select your CSV file
-4. **Preview** appears showing:
-   - How many rules will be added
-   - Any detected issues (duplicates, formatting errors)
-   - Sample of rules to be imported
-5. Review preview carefully
-6. Click **Confirm Import**
-7. Rules are added to your pronunciation dictionary
-
-**Import preview highlights:**
-- Duplicate rules (warns if rule already exists)
-- Formatting issues (missing columns, empty rows)
-- Invalid characters or formatting
+**Examples:**
+- **Target:** Nike → **Pronunciation:** Nai-key
+- **Target:** API → **Pronunciation:** A-P-I
+- **Target:** 24/7 → **Pronunciation:** twenty-four seven
+- **Target:** EST → **Pronunciation:** Eastern Time
 
 <Warning>
-Importing replaces existing rules with the same original text. Review carefully before confirming to avoid overwriting intentional customizations.
+**Target words must be single words only** - spaces are not allowed. Use complete words like `Nike` or `API`, not phrases like `customer service`.
 </Warning>
 
-### Exporting CSV
+### Bulk Import via CSV
 
-Export your current pronunciation dictionary for:
-- Backup and version control
-- Sharing across multiple agents
-- Documentation
-- Bulk editing in spreadsheet software
+For importing many pronunciations at once:
 
-**Process:**
-1. Click **Export** in pronunciation interface
-2. Choose format (CSV recommended)
-3. File downloads: `pronunciations-[agent-name]-[date].csv`
-4. Open in Excel, Google Sheets, or text editor
+1. Click **Import CSV**
+2. Download the template if needed
+3. Prepare your CSV with two columns: `target`, `replacement`
+4. Drag and drop your CSV file or click to select
+5. Review the preview and click **Import**
 
-**Use cases:**
-- Export from Agent A, import to Agent B (share pronunciations)
-- Export, edit in Excel, re-import (bulk editing)
-- Export before major changes (backup)
+**CSV format:**
+```csv
+target,replacement
+Nike,Nai-key
+EST,Eastern Time
+24/7,twenty-four seven
+API,A-P-I
+```
 
-### Bulk Editing Workflow
-
-**Efficient process for many pronunciations:**
-
-1. **Export** current dictionary to CSV
-2. **Open** in spreadsheet software (Excel, Google Sheets)
-3. **Edit:**
-   - Add new rows for new rules
-   - Modify existing replacements
-   - Delete rows to remove rules
-   - Sort and organize as needed
-4. **Save** as CSV (ensure UTF-8 encoding)
-5. **Import** back into itellico AI
-6. **Review** preview before confirming
-7. **Test** with sample phrases
-
-<Tip>
-Keep a master CSV file in version control or shared drive. Update the file, then re-import to agents as needed. This creates a single source of truth for pronunciations.
-</Tip>
+**Limits:**
+- Maximum 500 pronunciations per agent
+- CSV file max size: 5MB
 
 ---
 
-## Managing Pronunciation Rules
+## Phonetic Spelling Tips
 
-### Viewing Active Rules
+### Simple Phonetic Spelling
 
-The pronunciation interface shows all active rules:
-- **Original text** column
-- **Replacement text** column
-- **Status** (enabled/disabled toggle)
-- **Actions** (edit, delete)
+Write replacements as simple, readable phonetic text:
 
-**Sorting and filtering:**
-- Sort alphabetically
-- Search for specific rules
-- Filter by enabled/disabled status
+**Good examples:**
+- Nike → Nai-key
+- SQL → sequel (or) S-Q-L
+- Wi-Fi → why-figh
+- iOS → eye-oh-ess
 
-### Editing Rules
+**Tips:**
+- Use hyphens to separate syllables: Nai-key, A-P-I
+- Spell it like you'd explain pronunciation to someone
+- Test with your voice to hear how it sounds
 
-To modify an existing rule:
-1. Find the rule in the list
-2. Click **Edit** or click the rule row
-3. Modify original or replacement text
-4. Save changes
+### Common Patterns
 
-**When to edit:**
-- Replacement doesn't sound quite right
-- You find a better phonetic spelling
-- Original text needs to match different capitalization
+**Acronyms (spell out each letter):**
+- API → A-P-I
+- URL → U-R-L
+- HTTP → H-T-T-P
+- AWS → A-W-S
 
-### Managing Rules
+**Brand names (phonetic spelling):**
+- Nike → Nai-key
+- Adidas → ah-dee-dahs
+- Chipotle → chih-poht-lay
 
-To modify pronunciation rules:
-1. Find the rule in the list
-2. Edit the pronunciation directly
-3. Or delete and recreate with new pronunciation
+**Numbers and time:**
+- 24/7 → twenty-four seven
+- 9am → nine A-M
+- EST → Eastern Time
+- 5pm → five P-M
 
-**Best practices:**
-- Test pronunciations in Test Call before deploying
-- Keep a backup of your CSV before making bulk changes
-- Use descriptive original text for easy identification
+**Technical terms:**
+- SQL → sequel (or) S-Q-L
+- API → A-P-I
+- URL → you-are-ell
+- WiFi → why-figh
 
-### Deleting Rules
+---
 
-Remove rules permanently:
-1. Select the rule
-2. Click **Delete** or trash icon
-3. Confirm deletion
+## Advanced: IPA Phonemes
 
-**Before deleting:**
-- Consider disabling instead (easier to restore)
-- Export dictionary as backup
+For precise pronunciation control, you can use International Phonetic Alphabet (IPA) notation with the `<< >>` format:
 
-### Clearing All Rules
+**Format:** `<<phoneme|phoneme|phoneme>>`
 
-To start fresh:
-1. Click **Clear All** or **Delete All**
-2. Confirm action (usually requires typing confirmation)
-3. All rules removed
+**Example:**
+```
+espresso → <<ɛ|s|p|r|ɛ|s|oʊ>>
+```
 
-<Warning>
-"Clear All" is permanent and affects all rules. Export a backup first if you might want to restore them later.
-</Warning>
+<Note>
+IPA phonemes provide precise control but require knowledge of phonetic notation. Simple phonetic spelling (Nai-key) works well for most cases.
+</Note>
+
+---
+
+## Managing Pronunciations
+
+### Editing Existing Replacements
+
+1. Click on any replacement chip in the list
+2. Modify the target or pronunciation
+3. Click **Save**
+
+### Deleting Replacements
+
+- Click the **trash icon** on any replacement chip to delete it
+- Or click **Clear All** to remove all pronunciations (requires confirmation)
+
+### Exporting Pronunciations
+
+1. Click **Export CSV**
+2. CSV file downloads with all your current pronunciations
+3. Filename format: `{agent_name}_pronunciations.csv`
+
+Use exported CSV files to back up your pronunciations or copy them to other agents.
 
 ---
 
 ## Testing Pronunciations
 
-### Preview Function
+After adding pronunciations:
 
-Test individual rules before saving:
-1. Create or edit a rule
-2. Click **Preview** or **Test**
-3. System generates audio with the replacement applied
-4. Listen to confirm pronunciation is correct
+1. Make a test call to your agent
+2. Trigger responses containing the target words
+3. Listen to verify the pronunciation sounds correct
+4. Adjust the phonetic spelling if needed
 
-### Testing in Context
-
-Always test pronunciations in full sentences, not isolation:
-
-**Isolated test:** "itellico AI" → May sound fine
-**In context:** "Contact itellico AI at 555-1234" → May reveal issues
-
-**Testing process:**
-1. Add pronunciation rule
-2. Create test phrases using the word:
-   - "Welcome to itellico AI"
-   - "itellico AI can help you with that"
-   - "Call itellico AI support at..."
-3. Use **Test Call** feature with these phrases
-4. Listen for:
-   - Correct pronunciation
-   - Natural flow (no awkward pauses)
-   - Appropriate emphasis
-   - Consistency across multiple occurrences
-
-### Common Test Scenarios
-
-Create test cases for:
-- **Beginning of sentence:** "API endpoints are available"
-- **Middle of sentence:** "You can use the API to access data"
-- **End of sentence:** "That requires an API"
-- **With punctuation:** "The API, which is well-documented, is available"
-- **Multiple occurrences:** "The API provides API keys for API authentication"
-
-If pronunciation works in all contexts, it's ready for production.
-
----
-
-## Common Pronunciation Challenges
-
-### Brand Names
-
-**Challenge:** Unique spellings that voices can't infer
-
-**Examples:**
-- Shopify → "Shop-ih-fai" (not "Shop-ify")
-- Squarespace → "Square-space" (often said correctly, but test)
-- Wix → "Wicks" (not "Wix" as in "wicks")
-
-**Solution:**
-```csv wrap
-Shopify,Shop-ih-fai
-Wix,Wicks
-```
-
-### Acronyms
-
-**Challenge:** Deciding letter-by-letter vs. word pronunciation
-
-**Letter-by-letter:**
-```csv wrap
-API,A P I
-FBI,F B I
-CEO,C E O
-```
-
-**Pronounced as words:**
-```csv wrap
-NASA,Nah-sah
-UNICEF,You-nih-sef
-SCUBA,Scoo-bah
-```
-
-**Mixed:**
-```csv wrap
-JPEG,Jay-peg
-HTML,H T M L
-```
-
-Test both approaches; some acronyms sound better pronounced as words.
-
-### Technical Terms
-
-**Challenge:** Jargon with multiple acceptable pronunciations
-
-**Examples:**
-```csv wrap
-SQL,sequel
-SQL,S Q L
-cache,cash
-cache,cash-ay
-OAuth,Oh-auth
-OAuth,O-auth
-```
-
-Choose the pronunciation standard in your industry or among your customers.
-
-### People Names
-
-**Challenge:** Diverse origins and pronunciations
-
-**Solution:** Add common customer or team names:
-```csv wrap
-Nguyen,Win
-Sejal,Say-jal
-Xiomara,See-oh-mah-rah
-```
-
-**Privacy note:** Only add names if commonly referenced. Avoid adding all customer names (too many rules reduce performance).
-
-### Geographic Locations
-
-**Challenge:** Place names with non-intuitive pronunciations
-
-**Examples:**
-```csv wrap
-Worcester,Wuss-ter
-Edinburgh,Ed-in-bur-uh
-Thames,Tems
-```
-
-Add locations you reference frequently (office locations, service areas).
-
-### Medical and Legal Terms
-
-**Challenge:** Latin-derived or complex terminology
-
-**Examples:**
-```csv wrap
-HIPAA,Hip-ah
-Subpoena,Suh-pee-nuh
-Prescription,Pre-scrip-shun
-```
-
-Critical in regulated industries where mispronunciation reduces credibility.
-
-### Numbers and Measurements
-
-**Challenge:** Contextual pronunciation (reading vs. speaking)
-
-**Examples:**
-```csv wrap
-$5,five dollars
-5kg,five kilograms
-3.14,three point one four
-```
-
-Usually automatic, but you can force specific phrasing if needed.
-
----
-
-## Advanced Pronunciation Techniques
-
-### Context-Aware Replacements
-
-Some words sound different depending on context:
-- "read" (present: "reed", past: "red")
-- "lead" (metal: "led", verb: "leed")
-
-**Limitation:** Most pronunciation systems can't handle context-dependent rules.
-
-**Workaround:**
-- Use instructions to rephrase: "I read" → "I am reading" or "I have read"
-- Accept the occasional mispronunciation for rare cases
-- Use more specific vocabulary that avoids ambiguity
-
-### Multi-Word Phrases
-
-Some systems allow replacing entire phrases:
-```csv wrap
-"New York","New York"
-"United States","United States"
-"real estate","real estate"
-```
-
-Useful for ensuring proper phrasing or emphasis on compound terms.
-
-### Punctuation and Formatting
-
-Control pauses and pacing with punctuation in replacements:
-```csv wrap
-API,A. P. I.
-U.S.A.,U S A
-```
-
-Adding periods can create micro-pauses between letters.
-
-### Stress and Emphasis
-
-While rare, some systems interpret capitals or special characters as emphasis:
-```csv wrap
-absolutely,AB-so-lute-ly
-important,im-POR-tant
-```
-
-Test with your voice provider; this feature is not universally supported.
+**Testing tips:**
+- Test in context, not isolation
+- Have team members listen
+- Adjust hyphenation or spelling if it doesn't sound right
 
 ---
 
 ## Best Practices
 
-<AccordionGroup>
-  <Accordion title="Start Small, Iterate" icon="seedling">
-    Don't try to add all possible pronunciations upfront:
-    1. Start with 5-10 critical terms (company name, products)
-    2. Test in real conversations
-    3. Review transcripts for additional mispronunciations
-    4. Add rules as issues are discovered
+**Start with common issues:** Add pronunciations for words you know are mispronounced in real calls.
 
-    Over-optimization wastes time. Focus on words actually causing problems.
-  </Accordion>
+**Keep it simple:** Use phonetic spelling (Nai-key) rather than complex IPA unless necessary.
 
-  <Accordion title="Test in Full Sentences" icon="comment">
-    Never approve a pronunciation based only on hearing the word in isolation:
-    - Test at beginning, middle, and end of sentences
-    - Test with different punctuation
-    - Test with multiple occurrences in one sentence
+**Test before deploying:** Always test pronunciations with real calls before going live.
 
-    Context matters. A rule that sounds good alone may sound awkward in conversation.
-  </Accordion>
+**Document your rules:** Export your CSV regularly as backup.
 
-  <Accordion title="Maintain a Master List" icon="list">
-    Keep a documented pronunciation guide:
-    - Export CSV regularly as backup
-    - Store in version control or shared drive
-    - Document rationale: "Nike → Nai-key (brand preference)"
-    - Share across teams for consistency
+**Use consistent spelling:** If you have "API" spelled out as "A-P-I", use that format consistently.
 
-    This becomes institutional knowledge.
-  </Accordion>
-
-  <Accordion title="Review After Voice Changes" icon="rotate">
-    When you change voices or voice providers:
-    - Different voices may pronounce words differently
-    - Some rules may no longer be necessary
-    - Other words may need new rules
-
-    Re-test all pronunciations when switching voices.
-  </Accordion>
-
-  <Accordion title="Use Simple Phonetics First" icon="gauge-simple">
-    Progression:
-    1. Try the word as-is (may already be correct)
-    2. Use simple phonetic spelling
-    3. Try IPA only if phonetic spelling fails
-
-    IPA is powerful but adds complexity. Save it for truly difficult cases.
-  </Accordion>
-
-  <Accordion title="Avoid Overloading" icon="triangle-exclamation">
-    Too many pronunciation rules can:
-    - Slow down voice synthesis
-    - Increase memory usage
-    - Make management unwieldy
-    - Cause unintended replacements
-
-    **Guideline:** Keep under 200 rules for most agents. If you need more, you may have a different problem (instructions too technical, wrong voice, etc.).
-  </Accordion>
-</AccordionGroup>
+**Single words only:** Remember that target words cannot contain spaces - only complete single words work.
 
 ---
 
-## Troubleshooting
+## Common Issues
 
-### Pronunciation Rule Not Applied
+### Pronunciation Not Applied
 
-**Possible causes:**
-1. Text doesn't match exactly (check case, spacing, punctuation)
-2. Rule added but agent not refreshed
-3. Voice provider doesn't support pronunciation overrides
+**Check:**
+- Target word matches exactly what's in your agent responses
+- No typos in target or replacement
+- Target is a single word (no spaces)
+- Pronunciation list has saved correctly
 
-**Solutions:**
-- Check exact text matching (copy from transcript)
-- Test with new conversation
-- Clear browser cache and test again
-- Try a different phonetic spelling
+### Sounds Wrong
 
-### Replacement Sounds Worse
+**Try:**
+- Adjust hyphenation: "Nai-key" vs "Naik-ee"
+- Spell it differently: "sequel" vs "S-Q-L"
+- Add pauses with commas: "A-P-I" vs "A, P, I"
+- Test with different phonetic spelling
 
-**Possible causes:**
-1. Phonetic spelling doesn't match voice's pronunciation
-2. Too many hyphens or breaks
-3. Voice struggles with specific phonetic patterns
+### Replaces Partial Matches
 
-**Solutions:**
-- Try different phonetic spelling
-- Remove or add hyphens
-- Test simpler spelling
-- Use IPA for precise control
-- Consider different voice (some pronounce certain patterns better)
-
-### Rule Causes Awkward Pauses
-
-**Possible causes:**
-1. Too many spaces or hyphens in replacement
-2. Punctuation in replacement creating unintended breaks
-
-**Solutions:**
-- Reduce spaces/hyphens
-- Remove punctuation from replacement
-- Test different formatting
-
-### Multiple Occurrences Sound Inconsistent
-
-**Possible causes:**
-1. Low stability setting (ElevenLabs) causing variation
-2. Different contexts affecting pronunciation
-3. Voice engine limitation
-
-**Solutions:**
-- Increase voice stability (see Voice Settings)
-- Test if inconsistency is acceptable or distracting
-- Try different voice if issue persists
+Pronunciation systems match complete words only. If you're seeing partial matches:
+- Verify your target word is spelled exactly as it appears
+- Check for any special characters or punctuation
 
 ---
 
@@ -671,15 +210,15 @@ Test with your voice provider; this feature is not universally supported.
 
 <CardGroup cols={2}>
   <Card title="Voice Settings" icon="sliders" href="/build/voice-speech/voice-settings">
-    Adjust speed, pitch, and other voice parameters
+    Fine-tune voice parameters
   </Card>
   <Card title="Select Voice" icon="microphone" href="/build/voice-speech/select-voice">
-    Choose a different voice that may pronounce words better
+    Choose a different voice
   </Card>
   <Card title="Ambient Sound" icon="volume" href="/build/voice-speech/ambient-sound">
-    Add background ambience and sound effects
+    Add background ambience
   </Card>
   <Card title="Test Your Agent" icon="vial" href="/test/test-in-dashboard">
-    Test your pronunciation rules with web calls
+    Test pronunciations with web calls
   </Card>
 </CardGroup>
