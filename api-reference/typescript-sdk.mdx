@@ -170,6 +170,207 @@ conversations.items.forEach((conv: any) => {
 
   </Accordion>
 
+  <Accordion title="Phone Numbers">
+
+### List Phone Numbers
+
+```typescript
+import { Itellicoai } from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'your-api-key',
+});
+
+const phoneNumbers = await client.accounts.phoneNumbers.list('account_id');
+
+console.log(phoneNumbers.count);
+```
+
+### Create Phone Number
+
+```typescript
+import { Itellicoai } from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'your-api-key',
+});
+
+const phoneNumber = await client.accounts.phoneNumbers.create('account_id', {
+  sipTrunkId: 'sip_trunk_id',
+});
+
+console.log(phoneNumber.id);
+```
+
+### Get Phone Number
+
+```typescript
+import { Itellicoai } from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'your-api-key',
+});
+
+const phoneNumber = await client.accounts.phoneNumbers.retrieve(
+  'account_id',
+  'phone_number_id'
+);
+
+console.log(phoneNumber.id);
+```
+
+### Update Phone Number
+
+```typescript
+import { Itellicoai } from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'your-api-key',
+});
+
+const phoneNumber = await client.accounts.phoneNumbers.update(
+  'account_id',
+  'phone_number_id'
+);
+
+console.log(phoneNumber.id);
+```
+
+### Delete Phone Number
+
+```typescript
+import { Itellicoai } from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'your-api-key',
+});
+
+await client.accounts.phoneNumbers.delete(
+  'account_id',
+  'phone_number_id'
+);
+```
+
+  </Accordion>
+
+  <Accordion title="Providers">
+
+### List Models
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'My API Key',
+});
+
+const response = await client.accounts.providers.listModels('account_id');
+
+console.log(response);
+```
+
+### List Transcribers
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'My API Key',
+});
+
+const response = await client.accounts.providers.listTranscribers('account_id');
+
+console.log(response);
+```
+
+### List Voices
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'My API Key',
+});
+
+const response = await client.accounts.providers.listVoices('account_id', { provider: 'provider' });
+
+console.log(response);
+```
+
+  </Accordion>
+
+  <Accordion title="SIP Trunks">
+
+### List SIP Trunks
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'My API Key',
+});
+
+const sipTrunks = await client.accounts.sipTrunks.list('account_id');
+
+console.log(sipTrunks.count);
+```
+
+### Create SIP Trunk
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'My API Key',
+});
+
+const sipTrunk = await client.accounts.sipTrunks.create('account_id');
+
+console.log(sipTrunk.id);
+```
+
+### Get SIP Trunk
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'My API Key',
+});
+
+const sipTrunk = await client.accounts.sipTrunks.retrieve('sip_trunk_id', { account_id: 'account_id' });
+
+console.log(sipTrunk.id);
+```
+
+### Update SIP Trunk
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'My API Key',
+});
+
+const sipTrunk = await client.accounts.sipTrunks.update('sip_trunk_id', { account_id: 'account_id' });
+
+console.log(sipTrunk.id);
+```
+
+### Delete SIP Trunk
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'My API Key',
+});
+
+await client.accounts.sipTrunks.delete('sip_trunk_id', { account_id: 'account_id' });
+```
+
+  </Accordion>
+
   <Accordion title="Analytics">
 
 ### Get Usage Analytics
