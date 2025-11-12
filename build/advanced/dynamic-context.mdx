@@ -52,6 +52,7 @@ Result:
 - Agent has generic knowledge
 - Agent cannot access account status, order history, preferences, etc.
 - Agent provides generalized responses, not personalized to customer's situation
+
 ```
 
 **With Dynamic Context:**
@@ -79,6 +80,7 @@ Result:
 - Can reference specific account details
 - Proactive problem-solving
 - Customer feels understood and valued
+
 ```
 
 ### How Dynamic Context Works
@@ -96,6 +98,7 @@ Result:
 7. Agent receives context and makes it available as variables
 8. Agent uses variables in instructions and conversation
 9. Call proceeds with full context
+
 ```
 
 <RequestExample>
@@ -163,7 +166,7 @@ sequenceDiagram
 ```
 
 **Using in instructions:**
-```text wrap
+```jinja wrap
 You are helping {{ contact.first_name }}, a {{ context.account.tier }}
 customer since {{ context.account.created_date }}.
 
@@ -190,6 +193,7 @@ Recent Orders:
 {% endif %}
 
 Account Balance: ${{ context.account.balance }}
+
 ```
 
 ---
@@ -289,11 +293,13 @@ Fetch personalized context from your API before calls begin. Returned JSON data 
 **Query parameters in URL:**
 ```text wrap
 https://api.company.com/context?phone={{ contact.phone_number }}&email={{ contact.email }}
+
 ```
 
 **Path parameters:**
 ```text wrap
 https://api.company.com/customers/{{ contact.customer_id }}/context
+
 ```
 
 **Fixed URL with body parameters (POST):**
@@ -304,6 +310,7 @@ Body: {
   "phone_number": "{{ contact.phone_number }}",
   "email": "{{ contact.email }}"
 }
+
 ```
 
 <Tip>
@@ -346,6 +353,7 @@ Token is masked in UI and logs for security
 **HTTP header sent:**
 ```text wrap
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
 ```
 
 **Use for:**
@@ -370,6 +378,7 @@ Password is masked in UI and logs for security
 **HTTP header sent:**
 ```text wrap
 Authorization: Basic YXBpX3VzZXI6cGFzc3dvcmQ=
+
 ```
 
 **Use for:**
@@ -394,6 +403,7 @@ Value is masked in UI and logs for security
 **HTTP header sent:**
 ```text wrap
 X-API-Key: sk-abc123def456ghi789jkl012mno345pqr678
+
 ```
 
 **Use for:**
@@ -462,6 +472,7 @@ Displayed in logs:
 
 Actual value used in requests:
 sk-abc123def456ghi789jkl012mno345pqr678 (full value)
+
 ```
 
 **Benefits:**
@@ -476,6 +487,7 @@ Password field shows: •••••••••••••••••••�
 (Number of dots = actual password length)
 
 Benefit: Can verify that credential is populated without revealing value
+
 ```
 
 <Note>
@@ -576,6 +588,7 @@ Headers:
   Content-Type: application/json
 
 Sent at: 2025-11-10 14:32:15
+
 ```
 
 **Response:**
@@ -595,6 +608,7 @@ Status: 200 OK (152ms)
 
 <Icon icon="check-circle" /> Valid JSON received
 <Icon icon="info-circle" />  Available as {{ context.account.tier }}, etc.
+
 ```
 
 ### Common Test Scenarios
@@ -612,6 +626,7 @@ If 401 Unauthorized:
 - Check that token/key is correct
 - Verify token hasn't expired
 - Confirm auth type matches API requirements
+
 ```
 
 **Scenario 2: Parameter validation**
@@ -628,6 +643,7 @@ If parameters missing:
 - Check template variable syntax {{ contact.field_name }}
 - Verify contact has values for those fields
 - Confirm parameter names match API expectations
+
 ```
 
 **Scenario 3: Response structure validation**
@@ -649,6 +665,7 @@ Variable paths:
 {{ context.account.tier }} → "VIP"
 {{ context.orders|length }} → number of orders
 {{ context.orders[0].order_id }} → first order ID
+
 ```
 
 ---
@@ -694,12 +711,13 @@ First Order Status: {{ context.orders[0].status }}
 
 Preferred Language: {{ context.preferences.language }}
 → "en-US"
+
 ```
 
 ### Conditional Logic Based on Context
 
 **Example 1: VIP customer treatment**
-```text wrap
+```jinja wrap
 {% if context.account.tier == "VIP" %}
 IMPORTANT: This is a VIP customer. Provide exceptional service:
 - Offer priority support
@@ -709,10 +727,11 @@ IMPORTANT: This is a VIP customer. Provide exceptional service:
 {% else %}
 Provide standard professional service.
 {% endif %}
+
 ```
 
 **Example 2: Proactive support for open tickets**
-```text wrap
+```jinja wrap
 {% if context.support_tickets|length > 0 %}
 Customer has {{ context.support_tickets|length }} open support ticket(s):
 
@@ -730,10 +749,11 @@ This shows you're informed and proactive.
 {% else %}
 No open tickets. Proceed with standard greeting.
 {% endif %}
+
 ```
 
 **Example 3: Account status handling**
-```text wrap
+```jinja wrap
 {% if context.account.status == "suspended" %}
 CRITICAL: Account is suspended due to {{ context.account.suspension_reason }}.
 
@@ -758,12 +778,13 @@ If appropriate during conversation:
 {% else %}
 Account status is normal. Proceed with standard service.
 {% endif %}
+
 ```
 
 ### Personalizing Greetings with Context
 
 **Dynamic greeting based on context:**
-```text wrap
+```jinja wrap
 Greeting configuration: AI-generated dynamic greeting
 
 Instructions for greeting:
@@ -798,6 +819,7 @@ If standard customer, no recent activity:
 you today?"
 
 Adapt the greeting to the customer's specific context.
+
 ```
 
 ---
@@ -844,7 +866,7 @@ Adapt the greeting to the customer's specific context.
 ```
 
 **Agent instructions using context:**
-```text wrap
+```jinja wrap
 You are a customer support agent for {{ company_name }}.
 
 You're helping {{ context.customer.name }}, a {{ context.customer.tier }}
@@ -868,6 +890,7 @@ If yes, review the ticket details and provide update or resolution.
 
 Customer has been with us for {{ days_since(context.customer.since) }} days
 and made {{ context.activity.total_purchases }} purchases. Treat them well!
+
 ```
 
 **Result:** Agent knows everything about customer before conversation starts
@@ -906,7 +929,7 @@ and made {{ context.activity.total_purchases }} purchases. Treat them well!
 ```
 
 **Agent instructions:**
-```text wrap
+```jinja wrap
 You help customers track their orders.
 
 {% if context.pending_orders|length > 0 %}
@@ -937,6 +960,7 @@ If they ask about an order:
 - Ask for order number
 - Use lookup_order action to retrieve details
 {% endif %}
+
 ```
 
 ### Account-Based Sales
@@ -975,7 +999,7 @@ If they ask about an order:
 ```
 
 **Agent instructions:**
-```text wrap
+```jinja wrap
 You're a sales development rep qualifying {{ contact.first_name }}
 from {{ context.account.company_name }}.
 
@@ -1006,6 +1030,7 @@ Be prepared to differentiate our solution.
 {% endif %}
 
 Goal: Schedule technical demo within next 5 business days.
+
 ```
 
 ---
