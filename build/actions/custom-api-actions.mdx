@@ -35,6 +35,55 @@ Agent: "Your order has shipped! Your tracking number is
        1Z999AA10123456789 and it should arrive by Friday."
 ```
 
+<Warning>
+**Security: Verify customer identity before exposing sensitive data.** Always authenticate customers before calling APIs that return personal information, order details, account data, or other sensitive information.
+</Warning>
+
+### Secure Example with Verification
+
+For sensitive data lookups, verify customer identity first:
+
+```
+Customer: "What's the status of my order?"
+
+Agent: "I'd be happy to check that. For security, I need to verify
+       your identity first. What's your customer number?"
+Customer: "12345"
+
+Agent: "And for verification, what's your phone PIN?"
+Customer: "5678"
+
+[Agent calls verification API first]
+→ POST https://api.company.com/auth/verify
+  Body: {"customer_id": "12345", "phone_pin": "5678"}
+← { "verified": true, "customer_name": "John Smith" }
+
+[Only if verified, then call order lookup]
+→ GET https://api.company.com/customers/12345/orders
+← { "orders": [{"id": "ORD-789", "status": "shipped", ...}] }
+
+Agent: "Thank you, John. I've verified your identity. Your order
+       ORD-789 has shipped and should arrive by Friday."
+```
+
+**Two-action pattern:**
+1. **First action:** "Verify Customer" - authenticates using customer ID + PIN/password
+2. **Second action:** "Lookup Order" - only executed if verification succeeds
+
+**In your agent instructions:**
+```
+Before looking up any sensitive customer information:
+
+1. Collect customer ID and phone PIN
+2. Use 'Verify Customer' action
+3. If verification fails:
+   - "I'm unable to verify that information. For security,
+      I'll need to transfer you to our verification team."
+   - Transfer to human agent
+4. If verification succeeds:
+   - Proceed with 'Lookup Order' or other sensitive actions
+```
+
 ---
 
 ## Creating a Custom Action
