@@ -22,70 +22,57 @@ Actions are pre-configured tools that your agent can invoke during conversations
 
 ### How Actions Work
 
-During conversations, your agent:
-1. **Evaluates context** - Understands what the customer needs
-2. **Identifies appropriate action** - Determines which tool to use
-3. **Executes with parameters** - Calls the action with relevant data
-4. **Processes response** - Handles the result and continues conversation
-5. **Incorporates results** - References outcomes naturally in dialogue
+During conversations, your agent autonomously decides whether to respond directly or execute an action:
 
-<Tip>
-Your agent only uses actions when you instruct it to in your prompt. Clear instructions about when and how to use each action are essential for reliable behavior.
-</Tip>
+```mermaid
+graph TD
+    A[Customer Message] --> B[AI Agent LLM<br/>Evaluates Context]
+    B --> C{Action Needed?}
+    C -->|No| D[Respond Directly]
+    C -->|Yes| E[Execute Action]
+    E --> F[Continue with Results]
+    D --> G[Continue Conversation]
+    F --> G
+```
+
+The agent uses **action names and descriptions** to understand what each action does. These are crucial for helping the LLM select the right tool.
+
+**Best practices:**
+- Give actions clear, descriptive names (e.g., "book_appointment" not "action1")
+- Write detailed descriptions explaining what the action does
+- Add explicit instructions in your [agent instructions (system prompt)](/build/conversation/prompt-engineering-guide) about **when** to use each action
+
+<Note>
+While action names and descriptions tell the agent **what** an action does, your agent instructions (system prompt) should specify **when** to use it. For example: "When a customer asks to speak to a human, use the transfer_to_support action."
+</Note>
 
 ---
 
 ## Action Categories
 
-itellicoAI provides five categories of actions, each designed for specific use cases:
+Actions are organized into two categories in the dashboard:
+
+### Call Control
 
 <CardGroup cols={2}>
-  <Card title="Transfer" icon="right-left" href="/build/actions/transfer-details">
-    Route calls to other agents, phone numbers, or SIP addresses when specialized expertise is needed
+  <Card title="Transfer Call" icon="phone" href="/build/actions/transfer-details">
+    Transfer to another AI agent, phone number, or SIP address
   </Card>
   <Card title="End Conversation" icon="phone-slash" href="/build/actions/call-control">
-    Terminate conversations professionally with custom farewell messages
-  </Card>
-  <Card title="Inactivity Management" icon="clock" href="/build/actions/call-control">
-    Handle conversation pauses intelligently without awkward check-ins
-  </Card>
-  <Card title="Booking" icon="calendar" href="/build/actions/booking-calendar">
-    Schedule appointments through Cal.com integration with automatic confirmations
-  </Card>
-  <Card title="Custom API" icon="code" href="/build/actions/custom-api-actions">
-    Connect to any external system via HTTP to retrieve or update data
+    Have the agent end the conversation with a custom message
   </Card>
 </CardGroup>
 
----
+### Integration
 
-## Built-in vs Custom Actions
-
-### Built-in Actions
-
-Pre-configured actions for common business needs:
-
-**Call Control Actions:**
-- **Transfer** - Hand off calls to humans or other AI agents
-- **End Conversation** - Close calls with custom farewell messages
-- **Inactivity Management** - Pause automated check-ins during natural pauses
-
-**Integration Actions:**
-- **Booking** - Schedule appointments via Cal.com
-
-These actions have structured configuration interfaces and handle common workflows out-of-the-box.
-
-### Custom Actions
-
-Flexible HTTP-based integrations for your specific needs:
-
-- Connect to your CRM, help desk, inventory system, or any API
-- Retrieve customer data during conversations
-- Update records in external systems
-- Trigger webhooks and automation workflows
-- Implement custom business logic
-
-Custom actions support all HTTP methods (GET, POST, PUT, PATCH, DELETE) and multiple authentication schemes.
+<CardGroup cols={2}>
+  <Card title="Custom Action" icon="code" href="/build/actions/custom-api-actions">
+    Create a custom API or webhook action
+  </Card>
+  <Card title="Calendar Booking" icon="calendar" href="/build/actions/booking-calendar">
+    Schedule appointments using Cal.com integration
+  </Card>
+</CardGroup>
 
 ---
 
@@ -105,13 +92,13 @@ If the customer says they need time to check something, use the 'Pause Inactivit
 ```
 
 **Conditional Triggers:**
-```text wrap
+```jinja
 If the customer reports a billing issue:
 1. Use the 'Lookup Account' action to retrieve their information
 2. If balance is overdue, transfer to billing department
 3. If balance is current, troubleshoot the issue
 
-{% if contact.vip_status == "platinum" %}
+{% if contact.contact_status == "vip" %}
 Always offer to transfer VIP customers to dedicated support immediately.
 {% endif %}
 ```
@@ -133,7 +120,7 @@ Actions execute in real-time during the call. Ensure your endpoints are reliable
 
 ---
 
-## Accessing Actions Configuration
+## Configuring Actions
 
 All action configuration happens in the agent editor under the **Abilities → Actions** tab.
 
@@ -141,55 +128,19 @@ All action configuration happens in the agent editor under the **Abilities → A
   <Step title="Navigate to Actions">
     Open your agent in the editor and click **Abilities** → **Actions** tab
   </Step>
-  <Step title="Add New Action">
-    Click **Add Action** to see all available action types
-  </Step>
   <Step title="Choose Action Type">
-    Select the action category that matches your need (Transfer, End, Inactivity, Booking, Custom)
+    Browse the **Call Control** and **Integration** categories and click **Add** on the action you want to configure
   </Step>
   <Step title="Configure Action">
-    Complete the action-specific configuration form with required parameters
+    Fill in the action-specific configuration form:
+    - **Name**: Give your action a clear, descriptive name
+    - **Description**: Explain what this action does
+    - **Action-specific settings**: Configure parameters based on the action type
   </Step>
-  <Step title="Name Your Action">
-    Give your action a clear, descriptive name - you'll reference this exact name in your instructions
-  </Step>
-  <Step title="Save Action">
+  <Step title="Save">
     Save the action to add it to your agent's toolkit
   </Step>
 </Steps>
-
-### Action Configuration Interface
-
-When you click **Add Action**, you'll see the action type selector:
-
-```text wrap
-
-
- Choose an action type:  
-
-
-  📞 Route calls to agents, phone numbers, or SIP addresses  
-
-
-
-  📴 Terminate calls with custom farewell messages  
-
-
-
-  ⏸️  Pause automated check-ins during natural silence  
-
-
-
-  📅 Schedule appointments via Cal.com integration  
-
-
-
-  🔌 Connect to external systems via HTTP  
-
-
-                                            [Cancel]  
-
-```
 
 ---
 
@@ -209,30 +160,6 @@ After adding actions, you'll see them listed in your agent's Actions tab with st
   </Card>
 </CardGroup>
 
-### Action List View
-
-```text wrap
-
-                                               [+ Add Action]  
-
- <Icon icon="check-circle" /> Transfer to Support
-    Type: Transfer → Phone Number
-    Destination: +1-555-123-4567                         [Edit]
-
- <Icon icon="check-circle" /> Book Consultation
-    Type: Booking → Cal.com
-    Event: 30-min Discovery Call                         [Edit]
-
- <Icon icon="triangle-exclamation" />  Lookup Customer Data
-    Type: Custom API → GET
-    Status: Authentication required                      [Edit]
-
- <Icon icon="check-circle" /> End Call Politely
-    Type: End Conversation
-    Goodbye: "Thanks for calling!"                       [Edit]  
-
-```
-
 ---
 
 ## Referencing Actions in Instructions
@@ -243,12 +170,6 @@ To use actions, reference them **by exact name** in your agent's instructions:
 ```text wrap
 When a customer asks to speak to someone about billing,
 use the 'Transfer to Billing Department' action.
-```
-
-### With Custom Messages
-```text wrap
-Before using the 'Transfer to Sales' action, say:
-"Let me connect you with our sales team who can help with pricing."
 ```
 
 ### With Conditions
@@ -271,58 +192,6 @@ Action names are case-sensitive and must match exactly as configured. If you ren
 
 ---
 
-## Context and Variables
-
-Actions have access to comprehensive conversation data that can be used in configurations:
-
-### Available Data
-
-**Contact Information:**
-- `{{ contact.first_name }}` - Customer's first name
-- `{{ contact.last_name }}` - Customer's last name
-- `{{ contact.email }}` - Email address
-- `{{ contact.phone_number }}` - Phone number
-- Custom contact fields
-
-**Agent Context:**
-- `{{ agent_number }}` - Agent's assigned phone number
-- `{{ agent_name }}` - Agent's display name
-- `{{ team }}` - Team assignment
-
-**Call Details:**
-- `{{ direction }}` - Call direction (inbound/outbound)
-- `{{ medium }}` - Communication channel (phone/web)
-- `{{ current_datetime }}` - Current timestamp
-- `{{ session_id }}` - Unique session identifier
-
-**External Data:**
-- Data retrieved from previous custom actions
-- Knowledge base content
-
-### Using Variables in Actions
-
-**In Custom API URLs:**
-```text wrap
-https://api.crm.com/customers/{{ contact.phone_number }}
-```
-
-**In Request Bodies:**
-```json wrap
-{
-  "customer_name": "{{ contact.first_name }} {{ contact.last_name }}",
-  "email": "{{ contact.email }}",
-  "call_time": "{{ current_datetime }}"
-}
-```
-
-**In SMS Templates:**
-```text wrap
-Hi {{ contact.first_name }}, your appointment is confirmed for {date} at {time}.
-Meeting link: {link}
-```
-
----
-
 ## Configuration Best Practices
 
 <AccordionGroup>
@@ -336,28 +205,39 @@ Meeting link: {link}
     4. Add Custom API actions
   </Accordion>
 
-  <Accordion title="Use Clear Names" icon="tag">
-    Action names should clearly describe what they do. Avoid generic names or abbreviations.
+  <Accordion title="Use Clear, Descriptive Names" icon="tag">
+    Action names are critical - the LLM uses them to understand what each tool does. Use descriptive, action-oriented names that clearly convey the function's purpose.
+
+    **Why this matters:** The model relies on function names and descriptions to detect when a function needs to be called and choose the right tool for the task.
 
     **Good names:**
-    - "Transfer to Billing Department"
-    - "Book 30-Minute Consultation"
-    - "Lookup Customer Account"
+    - "Get Customer Account" - Clear action verb + specific target
+    - "Transfer to Billing Department" - Specific destination included
+    - "Book 30-Minute Consultation" - Includes relevant details
 
     **Poor names:**
-    - "Action 1"
-    - "Transfer"
-    - "API Call"
+    - "Action 1" - No context about what it does
+    - "Transfer" - Too generic, unclear where
+    - "API Call" - Doesn't describe the action
   </Accordion>
 
-  <Accordion title="Provide Descriptions" icon="file-lines">
-    Use the description field to document when and how each action should be used. This helps your team understand the agent's capabilities.
+  <Accordion title="Write Detailed Descriptions" icon="file-lines">
+    Action descriptions help the LLM understand **what** the action does. The description should explain the action's purpose, what it returns, and what parameters it uses.
 
+    **Best practices from [OpenAI function calling](https://platform.openai.com/docs/guides/function-calling):**
+    - Clearly describe what the action does and what it returns
+    - Explain what parameters or data it uses
+    - Use precise language that guides the model's understanding
+    - Keep it concise yet comprehensive
+
+    **Example:**
     ```
-    Name: Lookup Customer Account
-    Description: Retrieves customer data from Salesforce using
-    phone number. Use before answering account-specific questions.
+    Name: Get Customer Account
+    Description: Retrieves customer account data from Salesforce CRM using
+    their phone number. Returns account status, balance, and recent orders.
     ```
+
+    **Note:** Describe **what** the action does in the description. Specify **when** to use it in your [agent instructions (system prompt)](/build/conversation/prompt-engineering-guide).
   </Accordion>
 
   <Accordion title="Test Thoroughly" icon="vial">
