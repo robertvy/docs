@@ -1,1003 +1,248 @@
 ---
 title: "Conversation Goals"
-description: "Define measurable objectives for AI agents and track performance outcomes through goal management and analysis"
+description: "Define and track measurable objectives for every conversation"
 icon: "bullseye"
 ---
 
 ## Overview
 
-Conversation goals transform your AI agents from simple chatbots into performance-driven business tools by defining clear, measurable objectives for every interaction. Whether you're qualifying leads, collecting customer information, driving sales conversions, or ensuring customer satisfaction, goals provide the framework for measuring success, optimizing agent performance, and demonstrating ROI.
+Conversation goals define measurable objectives for your AI agent to achieve during calls. Track what your agent accomplishes, measure success rates, and optimize performance.
 
-By establishing structured goals, you create accountability, enable data-driven optimization, and ensure your agents consistently work toward achieving specific business outcomes rather than just having conversations.
+**Access:** Agent editor → **Analytics → Goals**
 
----
-
-## Why Use Conversation Goals?
-
-### The Challenge Without Goals
-
-**Without defined goals:**
-```text wrap
-Agent has 100 conversations
-→ Some go well, some don't
-→ No clear success criteria
-→ Can't measure performance
-→ Don't know what to optimize
-→ Can't demonstrate ROI
-→ Unclear if agent is achieving business objectives
-```
-
-**With defined goals:**
-```text wrap
-Agent has 100 conversations
-→ Goals clearly defined (e.g., "Collect email address")
-→ 73 conversations achieved goal
-→ 27 conversations didn't achieve goal
-→ Performance: 73% success rate
-→ Analyze failures, optimize instructions
-→ Demonstrate ROI: "Agent collected 73 emails at $X cost per email"
-→ Clear alignment with business objectives
-```
-
-### Benefits of Goal Tracking
-
-<CardGroup cols={2}>
-  <Card title="Measure Performance" icon="chart-line">
-    Track success rates, completion percentages, and goal achievement over time
-  </Card>
-  <Card title="Optimize Agents" icon="sliders">
-    Identify what works and what doesn't, iterate on instructions and flows
-  </Card>
-  <Card title="Demonstrate ROI" icon="dollar-sign">
-    Show concrete business value through quantifiable outcomes
-  </Card>
-  <Card title="Align with Business" icon="building">
-    Ensure agents work toward specific business objectives, not just conversations
-  </Card>
-</CardGroup>
-
-**Use cases:**
-- **Sales:** Track lead qualification rate, meeting bookings, conversion percentages
-- **Support:** Measure issue resolution rate, customer satisfaction, first-call resolution
-- **Information Collection:** Monitor data completeness, validation accuracy
-- **Appointments:** Track booking rates, confirmation rates, no-show reduction
-- **Surveys:** Measure completion rate, response quality, satisfaction scores
+**Use cases:** Lead qualification, appointment booking, information collection, issue resolution, sales conversion
 
 ---
 
-## Goal Types
+## Setup
 
-### Information Collection Goals
+<Steps>
+  <Step title="Access Goals">
+    Agent editor → **Analytics → Goals** → **Add Goal**
+  </Step>
 
-**Purpose:** Gather specific data from customers during conversations
+  <Step title="Choose goal type">
+    **Primary Goals:** Main objectives (one required)
+    - Agent focuses on achieving this first
+    - Most important metric for success
+    - Example: "Book appointment"
 
-**Common information collection goals:**
+    **Secondary Goals:** Optional objectives
+    - Pursued if primary goal achieved
+    - Additional value captured
+    - Example: "Collect email address"
+  </Step>
+
+  <Step title="Configure goal">
+    **Name:** Clear, concise label
+    ```
+    Example: "Schedule Follow-up Meeting"
+    ```
+
+    **Description:** What success looks like (AI uses this to evaluate)
+    ```
+    Example: "Successfully schedule a follow-up meeting by
+    confirming date, time, and attendees"
+    ```
+  </Step>
+
+  <Step title="Save">
+    Goal is now tracked for all future conversations
+  </Step>
+</Steps>
+
+---
+
+## Primary vs Secondary Goals
+
+### Primary Goals
+
+**One primary goal required.** The main objective your agent should achieve.
+
+**Examples:**
+- Book appointment
+- Qualify lead
+- Resolve issue
+- Collect payment information
+- Schedule callback
+
+**AI behavior:**
+- Focuses on achieving primary goal first
+- Conversation success measured by primary goal achievement
+
+### Secondary Goals
+
+**Optional.** Additional objectives pursued opportunistically.
+
+**Examples:**
 - Collect email address
-- Gather phone number
-- Obtain mailing address
-- Get company name and size
-- Capture product preferences
-- Record budget range
-- Collect feedback or ratings
+- Gather feedback
+- Identify upsell opportunities
+- Update contact information
+- Confirm preferences
 
-**Goal configuration example:**
-```text wrap
-Goal: Collect Customer Email
-
-Definition of success:
-- Agent obtains valid email address from customer
-- Email format validated (contains @, valid domain)
-- Customer confirms email is correct
-- Email stored in contact record
-
-Measurement:
-- Goal achieved: Yes/No
-- Email quality score: Valid/Invalid
-- Time to collect: Seconds elapsed
-```
-
-**Instructions for information collection:**
-```text wrap
-Your primary goal is to collect the customer's email address.
-
-Process:
-1. Ask politely: "May I have your email address to send you information?"
-2. Listen carefully and capture email
-3. Repeat back for confirmation: "Just to confirm, that's [email]?"
-4. Validate format (contains @ and domain)
-5. If invalid format, politely ask to repeat
-6. Store email in contact record
-7. Mark goal as achieved when valid email collected and confirmed
-
-Do not move forward until email is collected, unless customer explicitly refuses.
-```
-
-### Sales & Conversion Goals
-
-**Purpose:** Drive revenue-generating outcomes
-
-**Common sales goals:**
-- Qualify lead (BANT criteria)
-- Book demo or meeting
-- Close sale or subscription
-- Upsell/cross-sell product
-- Get commitment or intent
-- Schedule follow-up call
-- Generate proposal request
-
-**Goal configuration example:**
-```text wrap
-Goal: Qualify Lead
-
-Definition of success:
-- Budget determined and within range ($10K+ annually)
-- Authority confirmed (decision-maker or influencer)
-- Need identified and matches our solution
-- Timeline established (within 6 months)
-
-Measurement:
-- Goal achieved: Fully qualified / Partially qualified / Not qualified
-- BANT score: 0-4 (one point per criterion met)
-- Lead quality: Hot / Warm / Cold
-```
-
-**Instructions for sales goals:**
-```text wrap
-Your goal is to qualify this lead using BANT criteria:
-
-Budget:
-- Ask: "What budget range have you allocated for this type of solution?"
-- Target: $10K+ annually
-- Record response
-
-Authority:
-- Ask: "Are you the decision-maker for this, or who else is involved?"
-- Target: Decision-maker or strong influencer
-- Record decision-making process
-
-Need:
-- Ask: "What specific challenges are you trying to solve?"
-- Identify if our product addresses their needs
-- Record pain points
-
-Timeline:
-- Ask: "When are you looking to implement a solution?"
-- Target: Within 6 months
-- Record timeline
-
-Mark goal as achieved only if all four criteria are met satisfactorily.
-If lead is qualified, offer to book demo or transfer to sales.
-```
-
-### Customer Satisfaction Goals
-
-**Purpose:** Ensure positive customer experiences
-
-**Common satisfaction goals:**
-- Achieve satisfaction rating (4+ stars)
-- Resolve customer issue completely
-- Reduce customer effort score
-- Get positive feedback
-- Prevent escalation
-- Receive recommendation/referral
-- Maintain professional interaction
-
-**Goal configuration example:**
-```text wrap
-Goal: Customer Satisfaction
-
-Definition of success:
-- Issue resolved to customer's satisfaction
-- Customer explicitly confirms satisfaction
-- Customer provides 4+ star rating when asked
-- No escalation or transfer to human required
-
-Measurement:
-- Goal achieved: Yes/No
-- CSAT score: 1-5 stars
-- Issue resolved: Yes/No/Partially
-- Escalation: Yes/No
-```
-
-**Instructions for satisfaction goals:**
-```text wrap
-Your goal is to ensure customer satisfaction throughout this interaction.
-
-Guidelines:
-1. Listen actively to understand full issue before proposing solutions
-2. Show empathy: "I understand how frustrating that must be"
-3. Provide clear, actionable solutions
-4. Confirm solution worked: "Did that resolve your issue?"
-5. If not resolved, try alternative approach
-6. Before ending: "Is there anything else I can help with?"
-7. Ask for satisfaction rating: "On a scale of 1-5 stars, how would
-   you rate this interaction?"
-
-Mark goal as achieved only if:
-- Customer explicitly confirms satisfaction ("Yes, that worked!")
-- Customer provides 4 or 5 star rating
-- No transfer to human agent was required
-```
-
-### Problem Solving Goals
-
-**Purpose:** Resolve customer issues effectively
-
-**Common problem-solving goals:**
-- Diagnose technical issue
-- Provide working solution
-- Fix account problem
-- Resolve billing dispute
-- Answer complex question
-- Troubleshoot product issue
-- Process return or refund
-
-**Goal configuration example:**
-```text wrap
-Goal: Resolve Technical Issue
-
-Definition of success:
-- Issue fully diagnosed (root cause identified)
-- Solution provided and implemented
-- Customer confirms issue is resolved
-- No additional support needed
-- Resolution documented for future reference
-
-Measurement:
-- Goal achieved: Resolved / Partially Resolved / Escalated
-- Resolution time: Minutes
-- First-call resolution: Yes/No
-- Solution type: Self-service / Agent-assisted / Escalated
-```
-
-**Instructions for problem-solving goals:**
-```text wrap
-Your goal is to resolve the customer's technical issue.
-
-Structured approach:
-1. Gather information:
-   - What exactly is happening?
-   - When did it start?
-   - What have you tried already?
-   - Error messages or codes?
-
-2. Diagnose issue:
-   - Search knowledge base for similar issues
-   - Check common causes
-   - Identify most likely root cause
-
-3. Provide solution:
-   - Walk through troubleshooting steps clearly
-   - One step at a time, confirm each completes
-   - Use simple language, avoid jargon
-
-4. Verify resolution:
-   - Ask customer to test
-   - Confirm issue is fully resolved
-   - Check if any related issues exist
-
-5. Document:
-   - Record issue and solution
-   - Mark goal as achieved if resolved
-
-If unable to resolve:
-- Escalate to technical team
-- Create support ticket
-- Set expectations for follow-up
-- Mark goal as "Escalated" (not achieved)
-```
-
-### Appointment & Booking Goals
-
-**Purpose:** Schedule meetings, appointments, or events
-
-**Common booking goals:**
-- Schedule demo or consultation
-- Book service appointment
-- Confirm upcoming appointment
-- Reschedule appointment
-- Cancel and reschedule
-- Send calendar invite
-- Get appointment confirmation
-
-**Goal configuration example:**
-```text wrap
-Goal: Schedule Demo
-
-Definition of success:
-- Calendar availability checked
-- Date and time selected by customer
-- Demo scheduled successfully
-- Calendar invite sent and received
-- Customer confirms receipt and attendance
-
-Measurement:
-- Goal achieved: Booked / Attempted / Customer declined
-- Time to book: Seconds from start to confirmation
-- Booking date: How far in future (days)
-- Attendance likelihood: High / Medium / Low (based on enthusiasm)
-```
-
-**Instructions for appointment goals:**
-```text wrap
-Your goal is to schedule a product demo with the customer.
-
-Process:
-1. Gauge interest: "Would you like to see a demo of how this works?"
-2. If yes, check their availability:
-   "What days and times work best for you this week or next?"
-3. Use booking action to check calendar availability
-4. Offer specific options:
-   "I have Tuesday at 2 PM or Wednesday at 10 AM available.
-   Which works better for you?"
-5. Confirm selection:
-   "Great! I've scheduled your demo for Tuesday, November 12th at 2 PM."
-6. Send calendar invite via booking action
-7. Confirm receipt:
-   "You should receive a calendar invite shortly. Can you confirm
-   you received it?"
-8. Mark goal as achieved when booking confirmed and invite sent
-
-If customer declines:
-- Ask if they'd prefer different format (video, documentation, trial)
-- Offer to follow up later
-- Mark goal as "Customer declined" (not achieved)
-```
+**AI behavior:**
+- Pursues if primary goal achieved or customer willing
+- Doesn't compromise primary goal
+- Adds value without extending call unnecessarily
 
 ---
 
-## Configuring Goals
-
-### Agent-Level Goals
-
-**Goals that apply to all conversations for an agent:**
-
-<Steps>
-  <Step title="Access Agent Goals">
-    Navigate to your agent
-
-    Go to **Goals** tab (or similar - may be under Analytics/Settings)
-
-    Click **Add Goal** or **Create Goal**
-  </Step>
-
-  <Step title="Define Goal">
-    **Goal Name:** Descriptive name (e.g., "Collect Email Address")
-
-    **Goal Type:** Select from predefined types or create custom
-
-    **Definition of Success:** Criteria for marking goal as achieved
-
-    **Priority:** Primary or Secondary goal
-  </Step>
-
-  <Step title="Set Measurement Criteria">
-    **Binary (Yes/No):** Goal achieved or not
-
-    **Scored (1-5, 1-10):** Goal achievement quality/degree
-
-    **Multi-value:** Different outcomes (Qualified / Not Qualified / Needs Follow-up)
-
-    **Timestamp:** When goal was achieved (for time-based metrics)
-  </Step>
-
-  <Step title="Configure Tracking">
-    **Automatic tracking:** System detects goal achievement based on rules
-
-    **Manual tracking:** Agent explicitly marks goal as achieved in instructions
-
-    **Hybrid:** System tracks with agent confirmation
-  </Step>
-
-  <Step title="Save and Activate">
-    Save goal configuration
-
-    Goal now tracks across all conversations for this agent
-
-    Review in Analytics/Reporting tabs
-  </Step>
-</Steps>
-
-**Agent goal configuration example:**
-
-**Goal Name:** Collect Email Address
-
-**Goal Type:** Information Collection
-
-**Success Criteria:**
-- Valid email format (contains @ and domain)
-- Customer confirmed email is correct
-- Email stored in contact record
-
-**Measurement:**
-- Binary (Achieved / Not Achieved)
-- Or Scored (1-5 quality rating)
-
-**Priority:**
-- Primary Goal or Secondary Goal
-
-**Tracking Method:**
-- Automatic (system detects email capture)
-- Or Manual (agent marks in instructions)
-
-### Campaign-Level Goals
-
-**Goals specific to individual campaigns:**
-
-Campaign goals are configured in the **Goals** tab of a campaign and track outcomes across all contacts in that campaign.
-
-**Differences from agent goals:**
-- **Scope:** Campaign-specific vs. all conversations
-- **Granularity:** Per-contact vs. per-conversation
-- **Use case:** Campaign ROI tracking vs. general agent performance
-
-<Steps>
-  <Step title="Navigate to Campaign Goals">
-    Open your campaign
-
-    Go to **Goals** tab
-
-    Click **Add Goal** or **Create Goal**
-  </Step>
-
-  <Step title="Define Campaign Goal">
-    Similar to agent goals, but specific to campaign objectives
-
-    **Examples:**
-    - Lead qualification rate
-    - Demo booking rate
-    - Conversion percentage
-    - Contact completion rate
-  </Step>
-
-  <Step title="Link to Agent Goals (Optional)">
-    Campaign goals can inherit or reference agent-level goals
-
-    Or define independent campaign-specific goals
-  </Step>
-
-  <Step title="Track Across Contacts">
-    Campaign tracks goal achievement per contact
-
-    Aggregates across all contacts for campaign-level metrics
-
-    **Example:**
-    - 500 contacts in campaign
-    - 350 achieved "Qualified Lead" goal
-    - Campaign qualification rate: 70%
-  </Step>
-</Steps>
-
-### Primary vs Secondary Goals
-
-**Primary goals:**
-- Main objective for the conversation
-- Agent should focus on achieving this first
-- Success often measured by primary goal achievement
-- Example: "Book demo" for sales agent
-
-**Secondary goals:**
-- Additional objectives, nice-to-have
-- Pursued if primary goal achieved or customer willing
-- Don't sacrifice primary goal for secondary
-- Example: "Collect feedback" for sales agent (secondary to booking demo)
-
-**Instructions for prioritization:**
-```text wrap
-Your primary goal is to book a product demo.
-Your secondary goal is to collect customer feedback.
-
-Priority:
-1. Always attempt to achieve primary goal first
-2. Only pursue secondary goal if:
-   - Primary goal achieved, OR
-   - Customer declines primary goal but is willing to engage on secondary
-
-Don't ask for feedback before attempting to book demo.
-Don't let feedback collection interfere with demo booking.
-
-If time limited, prioritize demo booking over feedback collection.
-```
-
----
-
-## Goal Tracking & Measurement
-
-### How Goals Are Tracked
-
-**Automatic tracking:**
-```text wrap
-System monitors conversation for goal achievement signals
-
-Example (Email Collection):
-1. Agent asks for email
-2. Customer provides: "It's john@example.com"
-3. System detects email pattern via NLP
-4. System validates format
-5. Email stored in contact record
-6. Goal automatically marked as "Achieved"
-
-No manual intervention required
-```
-
-**Manual tracking (via instructions):**
-```text wrap
-Agent explicitly marks goal achievement in conversation flow
-
-Instructions example:
-When you successfully collect a valid email address:
-1. Store email in contact record
-2. Mark goal "Collect Email" as achieved
-3. Set achievement timestamp to current time
-
-Implementation:
-[Agent uses specific syntax or action to mark goal]
-{{ mark_goal_achieved('Collect Email') }}
-```
-
-**Hybrid tracking:**
-```text wrap
-System detects potential achievement, agent confirms
-
-Example (Demo Booking):
-1. System detects booking action executed
-2. System flags goal as "Potentially Achieved"
-3. Agent confirms with customer: "I've scheduled your demo for Tuesday"
-4. Customer confirms: "Great, see you then"
-5. Agent marks goal as "Achieved"
-6. If customer says "Actually, I can't make it" → Goal not achieved
-```
-
-### Measurement Metrics
+## Examples
 
 <AccordionGroup>
-  <Accordion title="Achievement Rate" icon="percent">
-    **Definition:** Percentage of conversations where goal was achieved
+  <Accordion title="Appointment Booking" icon="calendar">
+    **Primary Goal:**
+    - Name: "Book Appointment"
+    - Description: "Schedule appointment by confirming date, time, service type, and contact information"
 
-    **Calculation:**
-    ```
-    Achievement Rate = (Goals Achieved / Total Conversations) × 100%
-
-    Example:
-    1000 conversations
-    730 achieved "Collect Email" goal
-    Achievement Rate = (730 / 1000) × 100% = 73%
-    ```
-
-    **Use for:**
-    - Overall agent performance
-    - Comparing agents or campaigns
-    - Tracking improvement over time
+    **Secondary Goal:**
+    - Name: "Collect Email"
+    - Description: "Obtain customer email address for appointment reminders"
   </Accordion>
 
-  <Accordion title="Time to Achievement" icon="clock">
-    **Definition:** Average time from conversation start to goal achievement
+  <Accordion title="Lead Qualification" icon="user-check">
+    **Primary Goal:**
+    - Name: "Qualify Lead"
+    - Description: "Determine if lead meets qualification criteria by gathering budget, timeline, decision-maker status, and pain points"
 
-    **Calculation:**
-    ```
-    For each conversation where goal achieved:
-    Time to Achievement = Goal Timestamp - Conversation Start Time
-
-    Average Time to Achievement = Sum of all times / Number of achievements
-
-    Example:
-    Conversation 1: 45 seconds to collect email
-    Conversation 2: 62 seconds to collect email
-    Conversation 3: 38 seconds to collect email
-
-    Average: (45 + 62 + 38) / 3 = 48.3 seconds
-    ```
-
-    **Use for:**
-    - Efficiency optimization
-    - Identifying bottlenecks
-    - Agent instruction refinement
+    **Secondary Goal:**
+    - Name: "Schedule Demo"
+    - Description: "Book product demo if lead is qualified"
   </Accordion>
 
-  <Accordion title="Partial Achievement" icon="chart-pie">
-    **Definition:** Goals partially completed (for multi-step goals)
+  <Accordion title="Customer Support" icon="headset">
+    **Primary Goal:**
+    - Name: "Resolve Issue"
+    - Description: "Address customer's problem and confirm resolution to their satisfaction"
 
-    **Example (BANT Lead Qualification):**
-    ```
-    Full achievement (4/4 criteria): 40% of conversations
-    Partial achievement (2-3 criteria): 35% of conversations
-    No achievement (0-1 criteria): 25% of conversations
-
-    Breakdown:
-    - Budget determined: 80%
-    - Authority identified: 70%
-    - Need confirmed: 75%
-    - Timeline established: 60%
-
-    Insight: Timeline is weakest criterion, needs instruction improvement
-    ```
-
-    **Use for:**
-    - Identifying specific failure points
-    - Optimizing multi-step processes
-    - Understanding conversation drop-off
+    **Secondary Goal:**
+    - Name: "Collect Feedback"
+    - Description: "Ask for feedback rating and any suggestions for improvement"
   </Accordion>
 
-  <Accordion title="Goal Quality Score" icon="star">
-    **Definition:** Quality rating for how well goal was achieved (1-5 or 1-10 scale)
+  <Accordion title="Information Collection" icon="clipboard-list">
+    **Primary Goal:**
+    - Name: "Collect Requirements"
+    - Description: "Gather complete project requirements including scope, budget, timeline, and decision process"
 
-    **Example (Customer Satisfaction):**
-    ```
-    Goal: Achieve customer satisfaction
-    Measurement: 1-5 star rating from customer
-
-    Results:
-    5 stars: 45% of conversations
-    4 stars: 30% of conversations (goal achieved)
-    3 stars: 15% of conversations (goal not achieved)
-    2 stars: 7% of conversations (goal not achieved)
-    1 star: 3% of conversations (goal not achieved)
-
-    Average score: 4.1 stars
-    Goal achievement rate (4+ stars): 75%
-    ```
-
-    **Use for:**
-    - Quality measurement beyond binary yes/no
-    - Customer experience tracking
-    - Fine-grained performance analysis
-  </Accordion>
-
-  <Accordion title="Goal Correlation Analysis" icon="chart-network">
-    **Definition:** How achieving one goal affects others
-
-    **Example:**
-    ```
-    Primary Goal: Book Demo
-    Secondary Goal: Collect Email
-
-    Analysis:
-    - Demo booked: 60% of conversations
-    - Of those, email collected: 95%
-    - Demo not booked: 40% of conversations
-    - Of those, email collected: 40%
-
-    Insight: Email collection much higher when demo is booked.
-    Strategy: Focus on demo booking, email will follow naturally.
-    ```
-
-    **Use for:**
-    - Understanding goal dependencies
-    - Optimizing goal prioritization
-    - Refining multi-goal strategies
+    **Secondary Goal:**
+    - Name: "Identify Urgency"
+    - Description: "Determine project urgency and ideal start date"
   </Accordion>
 </AccordionGroup>
 
 ---
 
-## Post-Call Analysis Setup
+## Viewing Results
 
-### Configuring Goal Analysis
+### Dashboard
 
-Post-call analysis evaluates goal achievement after conversations complete:
+View goal achievement across all conversations:
 
-<Steps>
-  <Step title="Access Analysis Configuration">
-    For agents: Go to **Analytics** or **Goals** tab
+1. Go to **Analytics Dashboard**
+2. See goal completion rates
+3. Filter by date range, tags, or agent
+4. Export data for reporting
 
-    For campaigns: Go to **Analyses** tab
+[Learn more about Analytics Dashboard →](/optimize/analytics-dashboard)
 
-    Click **Add Analysis** or **Configure Analysis**
-  </Step>
+### Individual Conversations
 
-  <Step title="Define Analysis Criteria">
-    **Analysis Name:** Descriptive name (e.g., "Lead Qualification Analysis")
+Check goal status for each call:
 
-    **Goals to Analyze:** Select which goals to evaluate
-
-    **Analysis Type:**
-    - Goal achievement verification
-    - Conversation quality assessment
-    - Outcome classification
-    - Performance scoring
-  </Step>
-
-  <Step title="Set Analysis Triggers">
-    **When to run:**
-    - Immediately after call ends
-    - After X minutes (for reflection/manual marking)
-    - On demand (manual trigger)
-
-    **Conditions:**
-    - Run on all conversations
-    - Run only if specific conditions met (e.g., call duration > 60 seconds)
-  </Step>
-
-  <Step title="Configure Reporting">
-    **Outputs:**
-    - Goal achievement confirmation (Yes/No)
-    - Quality scores (1-5, 1-10)
-    - Categorization (Qualified/Not Qualified/Follow-up)
-    - Free-form analysis (AI-generated summary)
-
-    **Destination:**
-    - Store in conversation record
-    - Export to CRM
-    - Trigger webhooks
-    - Update contact fields
-  </Step>
-
-  <Step title="Review and Activate">
-    Test analysis on sample conversations
-
-    Verify outputs are accurate and useful
-
-    Activate for production use
-  </Step>
-</Steps>
-
-### Example Analysis Configuration
-
-**Lead Qualification Analysis:**
-```text wrap
-Analysis Name: BANT Lead Qualification
-
-Goals Analyzed:
-- Determine Budget
-- Identify Authority
-- Confirm Need
-- Establish Timeline
-
-Analysis Process:
-1. Review conversation transcript
-2. Identify mentions of budget, authority, need, timeline
-3. Score each criterion: Met / Partially Met / Not Met
-4. Calculate overall qualification score: 0-4
-
-Outputs:
-- Lead Status: Qualified / Partially Qualified / Not Qualified
-- BANT Score: 0-4
-- Next Action: Book demo / Follow up / Disqualify
-- Summary: AI-generated 2-3 sentence summary of qualification
-
-Trigger: Immediately after call ends (if duration > 2 minutes)
-
-Destination:
-- Update contact record with Lead Status and BANT Score
-- Send webhook to CRM with qualification data
-- Create task in project management tool if follow-up needed
-```
-
-**Customer Satisfaction Analysis:**
-```text wrap
-Analysis Name: CSAT and Resolution Quality
-
-Goals Analyzed:
-- Resolve Customer Issue
-- Achieve 4+ Star Rating
-- First-Call Resolution
-
-Analysis Process:
-1. Check if customer explicitly confirmed issue resolved
-2. Identify any explicit satisfaction ratings provided
-3. Determine if escalation or transfer occurred
-4. Assess conversation tone and customer sentiment
-
-Outputs:
-- Issue Resolved: Yes / No / Partially
-- CSAT Score: 1-5 stars (if provided)
-- Sentiment: Positive / Neutral / Negative
-- First-Call Resolution: Yes / No
-- Escalation: Yes / No
-
-Trigger: Immediately after call ends
-
-Destination:
-- Store in conversation analytics
-- Export to customer support dashboard
-- Trigger alert if CSAT < 3 stars (for quality review)
-```
+1. Go to **Conversations**
+2. Click on a conversation
+3. View **Goals** section
+4. See which goals were achieved
 
 ---
 
 ## Best Practices
 
 <AccordionGroup>
-  <Accordion title="Start with Clear, Simple Goals" icon="bullseye">
-    **For initial deployments:**
+  <Accordion title="Write Clear Descriptions" icon="pencil">
+    The AI uses your description to evaluate goal completion.
 
-    Start with 1-2 simple, binary goals
+    ❌ Vague: "Get customer info"
 
-    **Good starting goals:**
-    - Collect email address (Yes/No)
-    - Schedule appointment (Booked/Not Booked)
-    - Resolve issue (Resolved/Not Resolved)
-
-    **Avoid initially:**
-    - Complex multi-step goals
-    - Subjective quality assessments
-    - Too many simultaneous goals
-
-    **Progression:**
-    1. Deploy with simple goal, measure baseline
-    2. Optimize instructions until goal achievement acceptable
-    3. Add second goal
-    4. Add complexity (scoring, quality measures)
-    5. Add advanced analysis
+    ✅ Clear: "Collect customer's full name, email address, phone number, and reason for inquiry"
   </Accordion>
 
-  <Accordion title="Align Goals with Business Objectives" icon="building">
-    **Goals should reflect actual business value**
+  <Accordion title="Start with One Primary Goal" icon="target">
+    Don't try to accomplish too much in one call.
 
-    **Bad goal:**
-    - "Have a pleasant conversation" (vague, not tied to outcomes)
+    ✅ Focus: One clear primary objective
 
-    **Good goal:**
-    - "Qualify lead using BANT criteria" (specific, measurable, business-relevant)
-
-    **How to align:**
-    1. Identify business objective (increase demo bookings by 20%)
-    2. Define agent goal that drives objective (book demos)
-    3. Set target (60% of qualified leads book demo)
-    4. Measure and optimize toward target
-    5. Demonstrate ROI (cost per demo booked)
-
-    **Example alignment:**
-    ```
-    Business Objective: Increase sales pipeline by $1M/quarter
-
-    Agent Goals:
-    - Primary: Qualify leads (50+ conversations/day × 70% qualified = 35 qualified leads/day)
-    - Secondary: Book demos (35 qualified leads × 60% book demo = 21 demos/day)
-
-    ROI Calculation:
-    - 21 demos/day × 20 business days = 420 demos/month
-    - 420 demos × 30% close rate = 126 new customers/month
-    - 126 customers × $8K average deal = $1.008M/month pipeline
-
-    Goal directly drives business objective
-    ```
+    ❌ Overload: Multiple competing primary goals
   </Accordion>
 
-  <Accordion title="Track Goals Separately by Context" icon="layer-group">
-    **Segment goal performance for better insights**
+  <Accordion title="Use Secondary Goals Strategically" icon="list-check">
+    Secondary goals should complement, not compete with, primary goal.
 
-    **Segment by:**
-    - Inbound vs. outbound calls
-    - Campaign type
-    - Customer segment (new vs. existing)
-    - Time of day / day of week
-    - Agent version (if A/B testing)
+    ✅ Good pairing:
+    - Primary: "Book appointment"
+    - Secondary: "Collect email for reminders"
 
-    **Example:**
-    ```
-    Goal: Book Demo
-
-    Overall achievement rate: 45%
-
-    Segmented:
-    - Inbound calls: 65% (customers called us, higher intent)
-    - Outbound calls: 35% (cold calls, lower intent)
-    - Existing customers: 70% (trust established)
-    - New customers: 40% (building trust needed)
-    - Morning calls: 50%
-    - Afternoon calls: 42%
-
-    Insights:
-    - Focus outbound calls on existing customers (70% vs. 40%)
-    - Schedule important calls in morning (50% vs. 42%)
-    - Different approach needed for inbound vs. outbound
-    ```
+    ❌ Bad pairing:
+    - Primary: "Resolve technical issue"
+    - Secondary: "Sell premium support plan" (conflicts during troubleshooting)
   </Accordion>
 
-  <Accordion title="Set Realistic Targets" icon="chart-target">
-    **Don't expect 100% goal achievement**
+  <Accordion title="Archive Outdated Goals" icon="archive">
+    Don't delete old goals (preserves historical data). Archive them instead.
 
-    **Realistic targets by goal type:**
+    **To archive:** Click archive icon next to goal
+    **To restore:** Click "View Archived" → Restore
+  </Accordion>
+</AccordionGroup>
 
-    **Information collection (email, phone):**
-    - Target: 70-85% achievement
-    - Some customers will decline to provide
+---
 
-    **Sales (demo booking, qualification):**
-    - Target: 40-60% achievement
-    - Not all leads are qualified or ready
+## Tips
 
-    **Customer satisfaction (4+ stars):**
-    - Target: 75-90% achievement
-    - Some issues are inherently frustrating
+- **Reference goals in instructions** - Mention goals in your agent instructions for better alignment
+- **Review regularly** - Check goal achievement rates weekly to identify optimization opportunities
+- **A/B test goals** - Try different goal definitions to see what works best
+- **Combine with analysis** - Use [Post-Call Analysis](/build/analytics/post-call-analysis) for detailed quality scoring
 
-    **Problem resolution:**
-    - Target: 60-80% first-call resolution
-    - Some issues require escalation
+---
 
-    **How to set targets:**
-    1. Deploy without target initially
-    2. Measure baseline for 2-4 weeks
-    3. Set target 5-10% above baseline
-    4. Optimize toward target
-    5. Once achieved, set new target 5-10% higher
-    6. Continue iterative improvement
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Goals not showing in conversations" icon="eye-slash">
+    **Causes:**
+    - Goals created after conversations took place
+    - Goals archived or deleted
+
+    **Solutions:**
+    - Goals only apply to new conversations after creation
+    - Check archived goals (click "View Archived")
   </Accordion>
 
-  <Accordion title="Review Goal Performance Weekly" icon="calendar">
-    **Regular review and optimization cycle**
+  <Accordion title="Inaccurate goal evaluation" icon="triangle-exclamation">
+    **Causes:**
+    - Vague goal description
+    - Description doesn't match actual success criteria
 
-    **Weekly review process:**
-
-    **Monday: Review previous week's data**
-    - Goal achievement rates
-    - Trends (improving/declining)
-    - Outliers (unusually good/bad days)
-
-    **Tuesday: Analyze failures**
-    - Listen to conversations where goal not achieved
-    - Identify common failure patterns
-    - Categorize reasons (customer refusal, agent error, technical issue)
-
-    **Wednesday: Identify improvements**
-    - Update instructions to address failure patterns
-    - Adjust goal definitions if needed
-    - Fix technical issues
-
-    **Thursday: Deploy changes**
-    - Update agent with improvements
-    - Test in low-volume period
-    - Monitor for regressions
-
-    **Friday: Monitor initial results**
-    - Check if changes improving performance
-    - Quick iteration if issues identified
-    - Prepare for next week's review
+    **Solutions:**
+    - Make description more specific and detailed
+    - Provide clear success criteria
+    - Test with a few calls and refine
   </Accordion>
 
-  <Accordion title="Use Goals to Guide Instructions" icon="pen">
-    **Write instructions with goals in mind**
+  <Accordion title="Low achievement rates" icon="chart-line-down">
+    **Causes:**
+    - Goal too ambitious for conversation type
+    - Agent instructions don't align with goal
+    - Primary and secondary goals conflict
 
-    **Goal-driven instruction structure:**
-    ```
-    You are [Agent Name].
-
-    YOUR PRIMARY GOAL: [State goal explicitly]
-
-    To achieve this goal:
-    1. [Specific step to advance toward goal]
-    2. [Specific step to advance toward goal]
-    3. [Specific step to advance toward goal]
-
-    Mark goal as achieved when: [Explicit achievement criteria]
-
-    If customer declines: [Fallback approach]
-
-    Secondary goals: [List if applicable]
-    ```
-
-    **Example:**
-    ```
-    You are a sales qualification agent.
-
-    YOUR PRIMARY GOAL: Qualify this lead using BANT criteria
-
-    To achieve this goal:
-    1. Determine Budget:
-       Ask: "What budget have you allocated for this solution?"
-       Target: $10K+ annually
-
-    2. Identify Authority:
-       Ask: "Are you the decision-maker, or who else is involved?"
-       Target: Decision-maker or strong influencer
-
-    3. Confirm Need:
-       Ask: "What challenges are you trying to solve?"
-       Verify: Our product addresses their needs
-
-    4. Establish Timeline:
-       Ask: "When do you need to implement a solution?"
-       Target: Within 6 months
-
-    Mark goal "Qualify Lead" as achieved when all 4 criteria are met.
-
-    If not all criteria met:
-    - If 2-3 met: Mark as "Partially Qualified," schedule follow-up
-    - If 0-1 met: Mark as "Not Qualified," politely conclude
-
-    Secondary goal: Collect email address for future outreach
-    ```
+    **Solutions:**
+    - Review if goal is realistic for your use case
+    - Update agent instructions to focus on goal
+    - Simplify or adjust goal definition
+    - Consider making it a secondary goal instead
   </Accordion>
 </AccordionGroup>
 
@@ -1006,19 +251,16 @@ Destination:
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Campaign Goals" icon="rocket" href="/launch/campaigns/campaign-goals">
-    Set up campaign-specific goals and tracking
+  <Card title="Post-Call Analysis" icon="magnifying-glass-chart" href="/build/analytics/post-call-analysis">
+    Extract detailed insights
   </Card>
-  <Card title="Analytics & Reporting" icon="chart-line" href="/optimize/analytics/conversation-analytics">
-    View goal achievement metrics and dashboards
+  <Card title="Post-Call Emails" icon="envelope-open-text" href="/build/analytics/post-call-automation">
+    Trigger emails from goals
   </Card>
-  <Card title="Post-Call Analysis" icon="magnifying-glass-chart" href="/optimize/analytics/post-call-analysis">
-    Configure automated conversation analysis
+  <Card title="Analytics Dashboard" icon="chart-line" href="/optimize/analytics-dashboard">
+    View performance metrics
   </Card>
-  <Card title="Instructions" icon="pen" href="/build/conversation/instructions">
-    Write goal-driven agent instructions
-  </Card>
-  <Card title="Actions" icon="bolt" href="/build/actions/overview">
-    Use actions to achieve goals (booking, transfers, etc.)
+  <Card title="Goal Tracking" icon="chart-mixed" href="/optimize/goal-tracking">
+    Deep dive into goal data
   </Card>
 </CardGroup>
