@@ -70,13 +70,10 @@ Requires a Cal.com account and active integration. Works with Cal.com's free tie
   <Step title="Create Action">
     1. Go to your agent → **Abilities → Actions**
     2. Click **Add Action** → **Calendar Booking**
-    3. Name it clearly (e.g., "Book Consultation")
-  </Step>
-  <Step title="Select Cal.com Event">
-    Choose which Cal.com event type to book from the dropdown
+    3. Select your Cal.com event type
   </Step>
   <Step title="Configure Settings">
-    See configuration options below
+    The action is automatically named "Book [Event Type]" based on your Cal.com event. See configuration options below.
   </Step>
 </Steps>
 
@@ -100,8 +97,9 @@ Requires a Cal.com account and active integration. Works with Cal.com's free tie
   - **In Person** - Physical meeting (address required)
 
 **Timezone** (Required)
-- Auto-populated with browser timezone
-- All suggested times use this timezone
+- Defaults to your browser's timezone (can be changed)
+- All suggested times are presented in this timezone
+- Searchable dropdown with all available timezones
 
 ### Scheduling Preferences
 
@@ -153,7 +151,7 @@ The agent uses this priority to find customer email:
 
 ## Using in Instructions
 
-Reference the action by exact name in your agent instructions:
+Reference the action by its auto-generated name (e.g., "Book 30-Minute Consultation") in your agent instructions:
 
 ```
 When a customer wants to schedule a consultation:
@@ -161,15 +159,19 @@ When a customer wants to schedule a consultation:
 1. Confirm: "I'd be happy to schedule that for you"
 2. Ask availability: "What days work best this week?"
 3. Collect email if needed
-4. Use 'Book Consultation' action to present times
+4. Use 'Book 30-Minute Consultation' action to present times
 5. Confirm verbally: "Perfect! You're all set for [day] at [time].
    You'll receive a confirmation email with the meeting link."
 ```
 
+<Info>
+The action name is automatically generated from your Cal.com event type title (e.g., "30-Minute Consultation" becomes "Book 30-Minute Consultation").
+</Info>
+
 ### Handle Booking Failures
 
 ```
-If 'Book Consultation' fails:
+If 'Book 30-Minute Consultation' fails:
 
 1. Apologize: "I'm having trouble accessing the calendar right now"
 2. Offer alternative:
@@ -182,10 +184,10 @@ If 'Book Consultation' fails:
 ### Multiple Event Types
 
 ```
-Booking Actions:
-- 'Book Quick Call' (15 min) - Brief questions
-- 'Book Consultation' (30 min) - Initial consultations, demos
-- 'Book Deep Dive' (60 min) - Detailed planning
+Booking Actions (names auto-generated from Cal.com):
+- 'Book 15-Minute Quick Call' - Brief questions
+- 'Book 30-Minute Consultation' - Initial consultations, demos
+- 'Book 60-Minute Deep Dive' - Detailed planning
 
 If unsure, ask: "Would a 30-minute consultation work,
 or would you prefer a longer session?"
@@ -282,7 +284,8 @@ or would you prefer a longer session?"
     - Agent doesn't recognize booking intent
 
     **Solution:**
-    - Reference exact action name: 'Book Consultation'
+    - Reference exact auto-generated name (e.g., 'Book 30-Minute Consultation')
+    - Check the Actions tab to see the actual name
     - Add explicit booking flow to instructions
     - Test with clear: "I want to book an appointment"
   </Accordion>
