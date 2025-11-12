@@ -1,0 +1,554 @@
+---
+title: "Goal Tracking"
+description: "Configure and optimize conversation goals for measurable success"
+icon: "bullseye"
+---
+
+## Overview
+
+Conversation goals are the most powerful way to measure whether your agent is achieving its purpose. Goals automatically evaluate each conversation against success criteria you define, providing quantifiable metrics on agent effectiveness.
+
+**Access:** Configure in agent editor under **Operations → Goals**
+
+---
+
+## What Are Conversation Goals?
+
+Goals are automated evaluations that determine if a conversation was successful based on criteria you define.
+
+**Example goals:**
+- "Resolve customer issue"
+- "Book an appointment"
+- "Collect customer information"
+- "Qualify sales lead"
+- "Answer question accurately"
+
+After each conversation, an AI evaluator reviews the transcript and determines if the goal was achieved, along with reasoning explaining why.
+
+---
+
+## How Goals Work
+
+<Steps>
+  <Step title="Configure goal">
+    Define what success looks like for your use case
+
+    Set clear, measurable criteria
+  </Step>
+
+  <Step title="Agent has conversation">
+    Agent interacts with customer normally
+
+    No changes to agent behavior
+  </Step>
+
+  <Step title="Goal evaluation (automatic)">
+    After call ends, AI evaluator reviews full transcript
+
+    Checks if goal criteria were met
+  </Step>
+
+  <Step title="Result recorded">
+    Goal marked as Achieved or Not Achieved
+
+    Reasoning stored explaining the decision
+  </Step>
+
+  <Step title="View in analytics">
+    See goal achievement rate in dashboard
+
+    Filter conversations by goal status
+
+    Review reasoning for failed goals
+  </Step>
+</Steps>
+
+---
+
+## Configuring Goals
+
+### Creating a Goal
+
+<Steps>
+  <Step title="Open agent editor">
+    Navigate to your agent
+  </Step>
+
+  <Step title="Go to Operations → Goals">
+    Find the Goals configuration section
+  </Step>
+
+  <Step title="Add new goal">
+    Click "Add Goal" or similar button
+  </Step>
+
+  <Step title="Name your goal">
+    Give it a clear, descriptive name
+
+    Examples: "Resolve Issue", "Book Appointment", "Qualify Lead"
+  </Step>
+
+  <Step title="Define success criteria">
+    Describe what "achieved" means
+
+    Be specific and measurable
+
+    Focus on observable outcomes
+  </Step>
+
+  <Step title="Save and test">
+    Save goal configuration
+
+    Make test calls to verify evaluation accuracy
+  </Step>
+</Steps>
+
+### Goal Definition Examples
+
+<AccordionGroup>
+  <Accordion title="Support: Resolve Customer Issue" icon="headset">
+    **Goal name:** "Resolve Customer Issue"
+
+    **Success criteria:**
+    ```
+    The goal is achieved if ALL of the following are true:
+    1. Customer stated a problem or question
+    2. Agent provided a solution or answer
+    3. Customer confirmed the issue was resolved OR expressed satisfaction
+    4. No transfer to human agent occurred
+
+    The goal is NOT achieved if:
+    - Customer was transferred
+    - Issue remained unresolved at end of call
+    - Customer expressed continued frustration
+    - Agent couldn't provide an answer
+    ```
+
+    **Why this works:**
+    - Clear, specific conditions
+    - Observable in transcript
+    - Captures true success (not just call completion)
+  </Accordion>
+
+  <Accordion title="Sales: Qualify Lead" icon="user-plus">
+    **Goal name:** "Qualify Sales Lead"
+
+    **Success criteria:**
+    ```
+    The goal is achieved if the agent successfully collected:
+    1. Company name
+    2. Contact's role/title
+    3. Company size or budget range
+    4. Timeline for decision
+    5. Customer interest level (interested, not interested, maybe)
+
+    AND the call ended with next steps defined (meeting booked, follow-up scheduled, or disqualified with reason)
+
+    The goal is NOT achieved if:
+    - Customer hung up before providing information
+    - Agent failed to ask qualifying questions
+    - No next step was established
+    ```
+
+    **Why this works:**
+    - Specific data points to collect
+    - Includes process completion
+    - Clear negative cases
+  </Accordion>
+
+  <Accordion title="Booking: Schedule Appointment" icon="calendar-check">
+    **Goal name:** "Book Appointment"
+
+    **Success criteria:**
+    ```
+    The goal is achieved if:
+    1. Agent collected customer contact information
+    2. Agent offered available time slots
+    3. Customer selected a time
+    4. Booking action was executed successfully
+    5. Agent confirmed appointment details to customer
+
+    The goal is NOT achieved if:
+    - Booking action failed
+    - Customer didn't select a time
+    - No available times matched customer needs
+    - Customer declined to book
+    ```
+
+    **Why this works:**
+    - Measurable outcome (booking completed)
+    - Verifiable via action logs
+    - Captures full process
+  </Accordion>
+
+  <Accordion title="General: Answer Question Accurately" icon="circle-question">
+    **Goal name:** "Answer Question Accurately"
+
+    **Success criteria:**
+    ```
+    The goal is achieved if:
+    1. Customer asked a clear question
+    2. Agent provided a direct answer
+    3. Answer was accurate (matched knowledge base or known facts)
+    4. Customer acknowledged understanding OR thanked agent
+
+    The goal is NOT achieved if:
+    - Agent said "I don't know" or couldn't answer
+    - Answer contradicted knowledge base
+    - Customer asked follow-up clarifications repeatedly
+    - Agent went off-topic
+    ```
+
+    **Why this works:**
+    - Focuses on quality of answer
+    - Verifiable against knowledge base
+    - Includes customer comprehension
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Goal Best Practices
+
+### Write Clear Criteria
+
+<CardGroup cols={2}>
+  <Card title="✅ Good Criteria" icon="check">
+    - Specific and measurable
+    - Observable in transcript
+    - Unambiguous conditions
+    - Clear success AND failure cases
+  </Card>
+
+  <Card title="❌ Vague Criteria" icon="xmark">
+    - "Customer was happy"
+    - "Call went well"
+    - "Agent did a good job"
+    - "Everything worked"
+  </Card>
+</CardGroup>
+
+**Good example:**
+```
+Customer confirmed appointment was booked AND
+agent sent confirmation email AND
+customer said "thank you" or expressed satisfaction
+```
+
+**Vague example:**
+```
+Call was successful
+```
+
+### Focus on Outcomes, Not Process
+
+**Good** (outcome-focused):
+- "Customer's issue was resolved"
+- "Appointment was booked"
+- "Lead was qualified"
+
+**Less good** (process-focused):
+- "Agent asked all the questions"
+- "Agent followed the script"
+- "Call lasted at least 2 minutes"
+
+Outcomes matter more than process compliance.
+
+### Make Goals Achievable
+
+Set realistic goals for your agent's capabilities:
+
+**Too ambitious:**
+- "Solve any technical problem" (agent has limits)
+- "Book 100% of callers" (some won't want to book)
+- "Never transfer" (some cases require humans)
+
+**Realistic:**
+- "Solve common technical problems from knowledge base"
+- "Book qualified callers who want appointments"
+- "Transfer when issue is outside agent scope"
+
+### Test Goal Accuracy
+
+After creating a goal:
+
+1. Make 10-20 test calls with various scenarios
+2. Review goal evaluations
+3. Check if evaluation matches your judgment
+4. Refine criteria if evaluations are inaccurate
+5. Iterate until goals evaluate consistently
+
+---
+
+## Viewing Goal Results
+
+### In Analytics Dashboard
+
+**Navigate to:** Analytics → Goals or Analytics → Conversations (with goal filter)
+
+**Metrics shown:**
+- Total conversations evaluated
+- Goals achieved count
+- Goals not achieved count
+- Achievement rate percentage
+- Trends over time
+
+**Filters available:**
+- By agent
+- By date range
+- By goal (if multiple goals)
+- By achievement status
+
+### In Conversation Logs
+
+Each conversation log shows:
+
+**Goal status:**
+- ✅ **Achieved** - Green checkmark
+- ❌ **Not Achieved** - Red X
+- ⏳ **Pending** - Evaluation in progress
+- ➖ **No Goal** - No goal configured
+
+**Goal reasoning:**
+Detailed explanation of why goal was/wasn't achieved
+
+**Example reasoning (achieved):**
+```
+Goal: Resolve Customer Issue
+Status: ✅ Achieved
+
+Reasoning: Customer called about password reset. Agent
+successfully sent password reset email to customer's
+confirmed email address. Customer stated "perfect, I got
+the email, thank you" and ended call satisfied. Issue was
+fully resolved without transfer.
+```
+
+**Example reasoning (not achieved):**
+```
+Goal: Resolve Customer Issue
+Status: ❌ Not Achieved
+
+Reasoning: Customer had a complex billing dispute that
+required manual review. Agent attempted to help but
+determined issue was beyond automated resolution
+capabilities. Agent transferred to billing department.
+Transfer was appropriate but original issue not resolved
+by agent.
+```
+
+---
+
+## Using Goal Data for Optimization
+
+### Identify Patterns in Failures
+
+Review conversations where goals weren't achieved:
+
+<Steps>
+  <Step title="Filter for failed goals">
+    In Conversations, filter by "Goal Not Achieved"
+  </Step>
+
+  <Step title="Read 10-20 transcripts">
+    Look for common themes in failures
+  </Step>
+
+  <Step title="Categorize failure reasons">
+    Examples:
+    - Missing knowledge
+    - Broken actions
+    - Poor instructions
+    - Unrealistic goal criteria
+    - Appropriate transfers (not actual failures)
+  </Step>
+
+  <Step title="Address top failure causes">
+    - Add missing knowledge
+    - Fix broken actions
+    - Update instructions
+    - Refine goal criteria
+  </Step>
+</Steps>
+
+### Track Improvement Over Time
+
+Create a goal achievement tracking sheet:
+
+```
+Week | Total Calls | Goals Achieved | Rate | Changes Made
+-----|-------------|----------------|------|-------------
+W1   | 1,247       | 1,089          | 87%  | Baseline
+W2   | 1,301       | 1,157          | 89%  | Added 10 FAQs
+W3   | 1,285       | 1,181          | 92%  | Updated prompt
+W4   | 1,334       | 1,254          | 94%  | Fixed booking action
+```
+
+**Look for:**
+- Upward trends (good!)
+- Sudden drops (investigate immediately)
+- Plateau (may need new optimization approach)
+- Day of week patterns (Mondays harder than Fridays?)
+
+### Set Improvement Targets
+
+**Current:** 72% goal achievement
+**Target:** 85% goal achievement in 4 weeks
+
+**Action plan:**
+- Week 1: Address top 3 failure reasons (target: 77%)
+- Week 2: Add missing knowledge (target: 81%)
+- Week 3: Improve instructions (target: 83%)
+- Week 4: Fix edge cases (target: 85%)
+
+---
+
+## Multiple Goals
+
+You can configure multiple goals on the same agent to track different success dimensions:
+
+**Example: Support Agent Goals**
+1. **"Resolve Issue"** - Primary success metric
+2. **"Customer Satisfied"** - Quality metric
+3. **"Followed Procedures"** - Compliance metric
+4. **"Collected Feedback"** - Data collection metric
+
+**Benefits:**
+- Track multiple success dimensions
+- Identify trade-offs (fast vs thorough)
+- Measure different aspects of performance
+
+**View in analytics:**
+- See achievement rates for each goal
+- Compare goal performance
+- Identify which goals are easier/harder
+
+---
+
+## Goal vs Post-Call Analysis
+
+**Goals** and **Post-Call Analysis** are different but complementary:
+
+| Feature | Goals | Post-Call Analysis |
+|---------|-------|-------------------|
+| **Purpose** | Measure success | Extract structured data |
+| **Output** | Achieved / Not Achieved + Reasoning | Answer to specific questions |
+| **Use Case** | Performance metrics | Categorization, QA, reporting |
+| **Examples** | "Resolved issue?", "Booked appointment?" | "What was primary issue?", "Was customer satisfied?" |
+
+**Use both together:**
+- **Goal:** "Resolve Customer Issue"
+- **Post-call questions:**
+  - "What type of issue? (password / billing / technical)"
+  - "Was customer satisfied? (yes / no)"
+  - "Did agent follow company procedures? (yes / no)"
+
+Goals measure success, post-call analysis provides context and categorization.
+
+---
+
+## Common Goal Patterns by Use Case
+
+### Customer Support
+
+**Primary goal:** "Resolve Customer Issue"
+**Secondary goals:**
+- "First Call Resolution"
+- "Customer Satisfaction"
+- "No Escalation Required"
+
+### Sales
+
+**Primary goal:** "Qualify Lead"
+**Secondary goals:**
+- "Meeting Booked"
+- "Budget Confirmed"
+- "Decision Timeline Identified"
+
+### Appointment Booking
+
+**Primary goal:** "Appointment Booked"
+**Secondary goals:**
+- "Confirmation Sent"
+- "Customer Information Collected"
+- "Preferred Time Accommodated"
+
+### Information Collection
+
+**Primary goal:** "Complete Data Collection"
+**Secondary goals:**
+- "All Required Fields Obtained"
+- "Contact Information Verified"
+- "Follow-up Scheduled"
+
+---
+
+## Troubleshooting Goals
+
+<AccordionGroup>
+  <Accordion title="Goals always show 'Not Achieved'">
+    **Causes:**
+    - Criteria too strict
+    - Unrealistic expectations
+    - Agent capabilities don't match goals
+
+    **Solutions:**
+    - Review and relax criteria
+    - Ensure agent has needed knowledge/actions
+    - Test with successful calls manually
+  </Accordion>
+
+  <Accordion title="Goals always show 'Achieved' (even for bad calls)">
+    **Causes:**
+    - Criteria too vague
+    - Missing failure conditions
+    - Not checking for negative outcomes
+
+    **Solutions:**
+    - Add specific conditions
+    - Define what "not achieved" looks like
+    - Include quality checks, not just completion
+  </Accordion>
+
+  <Accordion title="Goal reasoning doesn't make sense">
+    **Causes:**
+    - Ambiguous criteria
+    - Conflicting conditions
+    - Evaluator misunderstanding intent
+
+    **Solutions:**
+    - Rewrite criteria more clearly
+    - Add examples of achieved/not achieved
+    - Test with more conversations
+  </Accordion>
+
+  <Accordion title="Goal evaluation takes too long">
+    **Normal behavior:**
+    - Goals evaluate after call ends
+    - Usually completes within 30-60 seconds
+    - May take longer for very long calls
+
+    **If consistently slow:**
+    - Simplify goal criteria
+    - Contact support if persistent
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Analytics Dashboard" icon="chart-bar" href="/optimize/analytics-dashboard">
+    View goal achievement metrics and trends
+  </Card>
+  <Card title="Key Metrics" icon="gauge-high" href="/optimize/key-metrics">
+    Understand how goals fit into overall performance
+  </Card>
+  <Card title="Conversation Analysis" icon="comments" href="/optimize/conversation-analysis">
+    Analyze conversations to improve goal achievement
+  </Card>
+  <Card title="Continuous Improvement" icon="arrows-rotate" href="/optimize/continuous-improvement">
+    Build optimization processes around goal data
+  </Card>
+</CardGroup>

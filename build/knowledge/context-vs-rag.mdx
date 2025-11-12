@@ -163,7 +163,7 @@ Context Mode is **limited to 10,000 tokens total** across all assigned knowledge
 
 ### How It Works
 
-In RAG Mode, your knowledge base is stored separately. When the agent needs information:
+In RAG Mode, your knowledge base is stored in a vector database. When the agent needs information:
 
 1. **User asks a question:** "What's your return policy?"
 2. **Agent identifies need:** Agent determines it needs knowledge about returns
@@ -175,7 +175,7 @@ The agent only sees the knowledge it needs, when it needs it.
 
 ### Intelligent Retrieval
 
-RAG uses semantic search to find relevant knowledge:
+RAG uses semantic search with vector embeddings to find relevant knowledge:
 
 ```text wrap
 User: "I need to send back the shoes I bought last week"
@@ -196,69 +196,14 @@ NOT retrieved:
 - Account Management
 ```
 
-### When to Use RAG Mode
-
-<AccordionGroup>
-  <Accordion title="Large knowledge bases (> 10,000 words)" icon="database">
-    When your knowledge base is too large to fit comfortably in context.
-
-    **Example use case:**
-    E-commerce support agent with knowledge base containing:
-    - 200+ product descriptions
-    - 50 FAQ items
-    - Complete policy documentation
-    - Troubleshooting guides
-
-    Total: 50,000+ words - RAG retrieves only relevant sections per conversation.
-  </Accordion>
-
-  <Accordion title="Topic-specific information" icon="tags">
-    When conversations typically focus on one topic at a time.
-
-    **Example use case:**
-    Technical support agent where customers call about:
-    - Specific error messages
-    - Particular features
-    - Individual products
-
-    RAG retrieves only the relevant troubleshooting guide or product doc.
-  </Accordion>
-
-  <Accordion title="Many separate topics" icon="layer-group">
-    When your knowledge covers diverse areas that don't often overlap.
-
-    **Example use case:**
-    General customer service with:
-    - HR policies
-    - IT support docs
-    - Facilities information
-    - Travel guidelines
-    - Expense policies
-
-    Employees call about one specific topic - RAG finds just that policy.
-  </Accordion>
-
-  <Accordion title="Want to preserve context for conversation" icon="message">
-    When you need maximum context window for long conversation history.
-
-    **Example use case:**
-    Complex troubleshooting agent that needs to:
-    - Remember 20+ conversation turns
-    - Track multiple attempts at solutions
-    - Maintain context of entire issue history
-
-    RAG mode preserves context tokens for conversation rather than knowledge.
-  </Accordion>
-</AccordionGroup>
-
 ### RAG Mode Advantages
 
 <CardGroup cols={2}>
   <Card title="Scales Infinitely" icon="up-right-and-down-left-from-center">
     Support massive knowledge bases without context limits
   </Card>
-  <Card title="Preserves Context" icon="clock-rotate-left">
-    More tokens available for conversation history
+  <Card title="Faster for Large Knowledge" icon="clock-rotate-left">
+    Reduces system prompt tokens for large knowledge bases
   </Card>
   <Card title="Efficient" icon="gauge-high">
     Only retrieves what's needed for current topic
@@ -271,7 +216,7 @@ NOT retrieved:
 ### RAG Mode Considerations
 
 <Note>
-RAG relies on semantic search quality. If your knowledge items aren't well-titled and clearly written, retrieval may miss relevant information.
+RAG relies on vector embedding quality. If your knowledge items aren't clearly written, retrieval may miss relevant information.
 </Note>
 
 **Retrieval quality depends on:**
@@ -310,33 +255,6 @@ The dashboard shows your context usage:
 
 Use this decision guide to select the best access method:
 
-### Decision Tree
-
-```text wrap
-How large is your knowledge base?
-├─ Small (< 1,000 words)
-  └─ Do you need it on every call?
-     ├─ Yes → Context Mode
-     └─ No → RAG Mode
-└─ Large (> 1,000 words)
-   └─ Are conversations focused on specific topics?
-      ├─ Yes (one topic per call) → RAG Mode
-      └─ No (need everything) → Split into multiple smaller bases + Context Mode
-```
-
-### Quick Reference Table
-
-| Scenario | Recommended Mode | Why |
-|----------|-----------------|-----|
-| Knowledge base < 1,000 words | Context | Efficient, always available |
-| Knowledge base > 5,000 words | RAG | Preserves context for conversation |
-| Critical info needed every call | Context | Guaranteed availability |
-| Topic-specific conversations | RAG | Only retrieves relevant sections |
-| Structured, interconnected info | Context | Agent sees relationships |
-| Many unrelated topics | RAG | Efficient retrieval |
-| Long conversation history needed | RAG | Saves context tokens |
-| Using knowledge variables | Context | Variables resolve in context |
-
 ### Hybrid Approach
 
 You can use both modes for different knowledge bases on the same agent:
@@ -351,11 +269,9 @@ This gives you the best of both worlds.
 
 ## Testing Your Configuration
 
-### Test Context Mode
-
 <Steps>
-  <Step title="Assign knowledge in Context Mode">
-    Configure your agent with a knowledge base in Context Mode.
+  <Step title="Assign knowledge base">
+    Configure your agent with a knowledge base in either Context or RAG Mode.
   </Step>
 
   <Step title="Start test call">
@@ -364,39 +280,15 @@ This gives you the best of both worlds.
 
   <Step title="Ask about knowledge content">
     Ask questions that should be answered from your knowledge base.
-  </Step>
 
-  <Step title="Verify responses">
-    Confirm the agent is correctly using knowledge content in responses.
-  </Step>
-
-  <Step title="Check context usage">
-    Review the remaining context tokens indicator to ensure you have sufficient conversation space.
-  </Step>
-</Steps>
-
-### Test RAG Mode
-
-<Steps>
-  <Step title="Assign knowledge in RAG Mode">
-    Configure your agent with a knowledge base in RAG Mode.
-  </Step>
-
-  <Step title="Start test call">
-    Use the Test Call feature in the dashboard.
-  </Step>
-
-  <Step title="Ask specific questions">
-    Ask questions about different topics in your knowledge base.
-
-    **Example:**
+    **Example questions:**
     - "What's your return policy?"
     - "How much does the Pro plan cost?"
     - "What are your business hours?"
   </Step>
 
-  <Step title="Verify retrieval">
-    Confirm the agent finds and uses relevant knowledge for each topic.
+  <Step title="Verify responses">
+    Confirm the agent is correctly using knowledge content in responses.
   </Step>
 
   <Step title="Test edge cases">
@@ -439,22 +331,18 @@ This gives you the best of both worlds.
     **Check:**
     - Are all knowledge items in COMPLETED status?
     - Is remaining context sufficient (not truncated)?
-    - Are agent instructions referencing the knowledge?
 
     **Solution:**
     - Fix failed items
     - Reduce knowledge size or switch to RAG
-    - Add explicit instructions to reference knowledge
   </Accordion>
 
   <Accordion title="Agent isn't finding knowledge (RAG Mode)">
     **Check:**
-    - Are knowledge item titles descriptive?
     - Is content well-organized?
     - Are you asking questions that match the knowledge?
 
     **Solution:**
-    - Improve titles to match likely questions
     - Add more detailed content
     - Test with different phrasings
     - Consider adding keywords to content
@@ -464,12 +352,10 @@ This gives you the best of both worlds.
     **Check:**
     - Is the knowledge content correct and current?
     - Do you have conflicting information in multiple items?
-    - Is the agent using old cached knowledge?
 
     **Solution:**
     - Update knowledge content
     - Remove duplicates and conflicts
-    - Delete and recreate knowledge items
   </Accordion>
 
   <Accordion title="Context usage too high">
