@@ -719,6 +719,10 @@ For phone/SIP transfers, confirm proper E.164 formatting and destination reachab
   <Accordion title="After-Hours Routing" icon="moon">
     Handle calls outside business hours:
 
+    <Tip>
+    **Best practice:** If you have a PBX system, handle after-hours routing at the PBX level for superior reliability and control.
+    </Tip>
+
     ```text wrap
     Agent: After-Hours Support
 
@@ -754,52 +758,58 @@ For phone/SIP transfers, confirm proper E.164 formatting and destination reachab
 
 ## Advanced Configurations
 
-### Dynamic Destination Routing
+<AccordionGroup>
+  <Accordion title="Dynamic Destination Routing" icon="globe">
+    Use variables to dynamically determine transfer destinations:
 
-Use variables to dynamically determine transfer destinations:
+    ```jinja
+    {% if contact_region == "west" %}
+    Transfer destination: +1-555-WEST-001
+    {% elif contact_region == "east" %}
+    Transfer destination: +1-555-EAST-001
+    {% else %}
+    Transfer destination: +1-555-MAIN-001
+    {% endif %}
 
-```jinja
-{% if contact_region == "west" %}
-Transfer destination: +1-555-WEST-001
-{% elif contact_region == "east" %}
-Transfer destination: +1-555-EAST-001
-{% else %}
-Transfer destination: +1-555-MAIN-001
-{% endif %}
+    When transferring, use the appropriate regional number.
+    ```
+  </Accordion>
 
-When transferring, use the appropriate regional number.
-```
+  <Accordion title="Time-Based Routing" icon="clock">
+    Route transfers based on time of day:
 
-### Time-Based Routing
+    ```jinja
+    {% set current_hour = current_datetime | date('H') | int %}
 
-Route transfers based on time of day:
+    {% if current_hour >= 9 and current_hour < 17 %}
+    Business hours: Use 'Transfer to Support Team'
+    {% else %}
+    After hours: Use 'Transfer to On-Call Support'
+    {% endif %}
+    ```
 
-```jinja
-{% set current_hour = current_datetime | date('H') | int %}
+    <Info>
+    The `current_datetime` variable must be passed to your agent via [Dynamic Context](/build/advanced/dynamic-context). Configure a context endpoint that returns this data in your agent's operational settings.
+    </Info>
+  </Accordion>
 
-{% if current_hour >= 9 and current_hour < 17 %}
-Business hours: Use 'Transfer to Support Team'
-{% else %}
-After hours: Use 'Transfer to On-Call Support'
-{% endif %}
-```
+  <Accordion title="Skill-Based Routing" icon="user-gear">
+    Route based on required expertise:
 
-### Skill-Based Routing
+    ```text wrap
+    Determine required skill:
+    - Billing question → 'Transfer to Billing Specialist'
+    - Technical issue → 'Transfer to Technical Support'
+    - Product question → 'Transfer to Product Expert'
+    - Account management → 'Transfer to Account Manager'
 
-Route based on required expertise:
-
-```text wrap
-Determine required skill:
-- Billing question → 'Transfer to Billing Specialist'
-- Technical issue → 'Transfer to Technical Support'
-- Product question → 'Transfer to Product Expert'
-- Account management → 'Transfer to Account Manager'
-
-Use customer's account type to influence routing:
-- VIP accounts always get priority queue transfers
-- Enterprise accounts route to dedicated support
-- Standard accounts route to general support queue
-```
+    Use customer's account type to influence routing:
+    - VIP accounts always get priority queue transfers
+    - Enterprise accounts route to dedicated support
+    - Standard accounts route to general support queue
+    ```
+  </Accordion>
+</AccordionGroup>
 
 ---
 
