@@ -286,6 +286,83 @@ URL scraping works best with simple, text-based web pages. Complex JavaScript ap
 
 ---
 
+## Understanding Processing Statuses
+
+After adding a knowledge item, it goes through two separate processing pipelines. You'll see both statuses in the interface:
+
+### Content Processing Status
+
+This tracks whether the content was successfully extracted from your source.
+
+<AccordionGroup>
+  <Accordion title="PENDING" icon="clock">
+    Item created and queued for processing. Usually takes just a few seconds.
+  </Accordion>
+
+  <Accordion title="PROCESSING" icon="spinner">
+    Content is being extracted right now:
+    - **Files**: Extracting text from PDF, Word, etc.
+    - **URLs**: Fetching and scraping the web page
+    - **Text**: Skips this (goes directly to COMPLETED)
+  </Accordion>
+
+  <Accordion title="COMPLETED" icon="check">
+    Content successfully extracted and stored. Vector indexing will begin automatically.
+  </Accordion>
+
+  <Accordion title="FAILED" icon="xmark">
+    Content extraction failed. Common causes:
+    - File is corrupted or password-protected
+    - URL requires authentication or uses complex JavaScript
+    - File exceeds 10MB limit
+
+    **Solution**: Check the error message and try uploading as TEXT instead, or fix the source file/URL.
+  </Accordion>
+</AccordionGroup>
+
+### Vector Indexing Status
+
+After content is extracted, it must be indexed for RAG (Retrieval-Augmented Generation). This allows your agent to find relevant knowledge based on meaning.
+
+<AccordionGroup>
+  <Accordion title="PENDING" icon="clock">
+    Waiting for vector indexing to start. Content processing completed successfully.
+  </Accordion>
+
+  <Accordion title="INDEXING" icon="spinner">
+    Creating vector embeddings for RAG:
+    - Content is split into chunks
+    - AI embeddings are generated
+    - Vectors are stored in the database
+
+    This can take several minutes for large documents.
+  </Accordion>
+
+  <Accordion title="INDEXED" icon="check">
+    Item is fully ready! The agent can now find and use this knowledge via semantic search.
+  </Accordion>
+
+  <Accordion title="FAILED" icon="xmark">
+    Vector indexing failed. The content is extracted but won't appear in RAG search results.
+
+    **Solution**: Contact support or try re-creating the item.
+  </Accordion>
+
+  <Accordion title="REMOVED" icon="trash">
+    Vectors were deleted (item was removed from the knowledge base).
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+**Both statuses must succeed for full functionality:**
+- Content Status: **COMPLETED**
+- Vector Status: **INDEXED**
+
+Only then can your agent use the knowledge in conversations.
+</Note>
+
+---
+
 ## Content Quality Guidelines
 
 ### Write Clear, Comprehensive Content
