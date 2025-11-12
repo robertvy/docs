@@ -14,99 +14,73 @@ Post-call emails send automatically after conversations based on outcomes, goals
 
 ---
 
-## Choose Your Path
+## Setup
 
-<Tabs>
-  <Tab title="Use Template (Recommended)">
-    **Best for:** Common use cases, faster setup
+<Steps>
+  <Step title="Access Post-Call Emails">
+    Agent editor → **Analytics → Post-Call Emails** → **Create Email**
+  </Step>
 
-    Choose from 10 ready-to-use templates:
+  <Step title="Choose starting point (optional)">
+    **Templates** provide pre-configured triggers and content for common use cases:
 
-    **Customer Service**
-    - **Callback Requested** - When customer asks for follow-up
-    - **Appointment Booked** - When meeting/consultation scheduled
-
-    **Support**
-    - **Customer Complaint** - Escalates dissatisfaction to appropriate team
-    - **Unanswered Question** - When agent couldn't answer
+    - **Callback Requested** - Customer asks for follow-up
+    - **Appointment Booked** - Meeting/consultation scheduled
+    - **Customer Complaint** - Escalates dissatisfaction
+    - **Unanswered Question** - Agent couldn't answer
     - **Technical Issue** - Routes bugs/errors to tech teams
     - **Billing Inquiry** - Payment/invoice questions
     - **Escalation Needed** - Requires management attention
-
-    **Sales**
-    - **Order Placed** - New purchase confirmation
+    - **Order Placed** - Purchase confirmation
     - **Demo Request** - Product demonstration interest
-
-    **Feedback**
     - **Positive Feedback** - Share compliments with team
 
     <Info>
-    All templates include smart routing, pre-written triggers, and email content. Fully customizable.
+    Templates are fully customizable starting points. You can also start from scratch.
     </Info>
+  </Step>
 
-    ### Setup with Template
+  <Step title="Configure notification name">
+    **Name:** Internal identifier (e.g., "Callback Request Alert")
+  </Step>
 
-    <Steps>
-      <Step title="Select template">
-        **Analytics → Post-Call Emails** → Choose template
-      </Step>
+  <Step title="Set trigger condition">
+    Describe when to send (AI analyzes this against call transcript):
 
-      <Step title="Customize trigger (optional)">
-        Templates come with pre-configured triggers. Adjust if needed:
+    ```
+    Example: "Did the customer request a callback, ask to be
+    contacted later, or want someone to follow up with them?"
+    ```
 
-        ```
-        Example: "Did the customer request a callback, ask to be
-        contacted later, or want someone to follow up?"
-        ```
-      </Step>
+    <Tip>
+    Be specific. The more detailed your trigger description, the more accurate the AI matching.
+    </Tip>
 
-      <Step title="Adjust email content">
-        Modify subject/body to match your brand voice
-      </Step>
+    **Or:** Toggle "Always send after every call" to bypass condition checking
+  </Step>
 
-      <Step title="Save and enable">
-        Save notification → Toggle **Enabled** switch
-      </Step>
-    </Steps>
-  </Tab>
+  <Step title="Configure recipients">
+    **Fixed Recipients:** Enter specific email addresses
 
-  <Tab title="Start from Scratch">
-    **Best for:** Custom workflows, unique use cases
+    **Dynamic Recipients (AI-powered):** AI extracts email from call based on prompt:
+    ```
+    Example: "Extract the manager's email mentioned in the conversation"
+    ```
+  </Step>
 
-    Full control over triggers, routing, and content.
+  <Step title="Design email template">
+    **Subject:** `Callback requested`
 
-    ### Setup from Scratch
+    **Body:** Use rich text editor with variables
 
-    <Steps>
-      <Step title="Create new email">
-        **Analytics → Post-Call Emails** → **Create Email**
-      </Step>
+    - System variables: `{{customer_name}}`, `{{agent_name}}`, `{{conversation_summary}}`
+    - Dynamic variables: `{{dyn_appointment_date}}`, `{{dyn_issue_summary}}`
+  </Step>
 
-      <Step title="Write trigger description">
-        Describe when to send (AI analyzes transcript against your description):
-
-        ```
-        Example: "Did the customer request a callback, ask to be
-        contacted later, or want someone to follow up with them?"
-        ```
-
-        <Tip>
-        Be specific. The more detailed your trigger description, the more accurate the AI matching.
-        </Tip>
-      </Step>
-
-      <Step title="Design email">
-        - **Subject:** `Callback requested`
-        - **Body:** Use variables + dynamic content
-        - **Recipients:** Fixed emails or AI-extracted from call
-      </Step>
-
-      <Step title="Save and enable">
-        Save notification → Toggle **Enabled** switch
-      </Step>
-    </Steps>
-  </Tab>
-</Tabs>
+  <Step title="Save and enable">
+    Save notification → Toggle **Enabled** switch
+  </Step>
+</Steps>
 
 ---
 
