@@ -559,13 +559,18 @@ URL scraping works best with simple, text-based web pages. Complex web applicati
 
 ## Processing Status Flow
 
-All knowledge items go through a processing lifecycle. Understanding these statuses helps you monitor and troubleshoot.
+Knowledge items go through two separate processing pipelines:
 
-### Status Definitions
+1. **Content Processing** - Extracting text from files/URLs
+2. **Vector Indexing** - Preparing content for RAG (semantic search)
+
+### Content Processing Status
+
+This tracks the extraction of text content from your source.
 
 <Steps>
   <Step title="PENDING">
-    **Meaning:** Item created, queued for processing
+    **Meaning:** Item created, queued for content extraction
 
     **What's happening:**
     - Item has been saved to database
@@ -576,44 +581,114 @@ All knowledge items go through a processing lifecycle. Understanding these statu
   </Step>
 
   <Step title="PROCESSING">
-    **Meaning:** Item is being processed right now
+    **Meaning:** Item content is being extracted right now
 
     **What's happening:**
-    - For PDFs: Extracting text from file
-    - For URLs: Fetching and scraping web page
+    - For FILES: Extracting text from PDF, Word, etc.
+    - For URLs: Fetching and scraping the specific web page
     - For TEXT: N/A (skips directly to COMPLETED)
 
     **Action needed:** Wait for processing to complete
   </Step>
 
   <Step title="COMPLETED">
-    **Meaning:** Item is ready to use
+    **Meaning:** Content extraction finished successfully
 
     **What's happening:**
     - Content has been extracted and stored
-    - Item is available for agents to reference
-    - Knowledge base can be activated
+    - Vector indexing will begin automatically
+    - Item will be available once indexing completes
 
-    **Action needed:** None - item is ready
+    **Action needed:** None - wait for vector indexing
   </Step>
 
   <Step title="FAILED">
-    **Meaning:** Processing encountered an error
+    **Meaning:** Content extraction encountered an error
 
     **What's happening:**
-    - PDF extraction failed
-    - URL scraping failed
+    - File extraction failed (corrupted PDF, unsupported format)
+    - URL scraping failed (page not found, blocked, requires auth)
     - Content is not available to agents
 
-    **Action needed:** Investigate and fix the issue
+    **Action needed:** Check error message and fix the issue
   </Step>
 </Steps>
 
-### Processing Flow
+**Content Processing Flow:**
+CREATED → PENDING → PROCESSING → COMPLETED or FAILED
 
-**CREATED** → **PENDING** → **PROCESSING** → **COMPLETED** or **FAILED**
+---
 
-Note: TEXT items skip directly from CREATED to COMPLETED
+### Vector Indexing Status
+
+After content is extracted, it must be indexed for RAG (semantic search). This allows agents to find relevant knowledge based on meaning, not just keywords.
+
+<Steps>
+  <Step title="PENDING">
+    **Meaning:** Waiting for vector indexing to start
+
+    **What's happening:**
+    - Content processing completed successfully
+    - Queued for embedding generation
+    - Usually brief (seconds to minutes)
+
+    **Action needed:** None
+  </Step>
+
+  <Step title="INDEXING">
+    **Meaning:** Creating vector embeddings for RAG
+
+    **What's happening:**
+    - Content is being split into chunks
+    - AI embeddings being generated for each chunk
+    - Vectors being stored in the knowledge base
+
+    **Action needed:** Wait - this can take several minutes for large documents
+  </Step>
+
+  <Step title="INDEXED">
+    **Meaning:** Item is fully ready for RAG retrieval
+
+    **What's happening:**
+    - Vector embeddings stored successfully
+    - Item can be retrieved via semantic search
+    - Agents can now use this knowledge
+
+    **Action needed:** None - item is fully ready
+  </Step>
+
+  <Step title="FAILED">
+    **Meaning:** Vector indexing failed
+
+    **What's happening:**
+    - Embedding generation encountered an error
+    - Item won't appear in RAG results
+    - May be available for context injection only
+
+    **Action needed:** Try re-indexing or contact support
+  </Step>
+
+  <Step title="REMOVED">
+    **Meaning:** Vectors were deleted
+
+    **What's happening:**
+    - Item was deleted or explicitly removed from index
+    - No longer available for RAG
+
+    **Action needed:** Re-index if needed
+  </Step>
+</Steps>
+
+**Vector Indexing Flow:**
+PENDING → INDEXING → INDEXED or FAILED
+
+<Note>
+**Both statuses must succeed for full functionality:**
+- Content Status: COMPLETED
+- Vector Status: INDEXED
+
+Only then can the item be used in both context injection and RAG retrieval.
+</Note>
 
 ---
 
