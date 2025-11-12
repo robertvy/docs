@@ -6,262 +6,127 @@ icon: "envelope-open-text"
 
 ## Overview
 
-Post-call email automation sends targeted follow-up emails based on conversation outcomes. Emails trigger automatically when calls meet specific criteria like goal achievement, sentiment analysis, or custom conditions you define.
+Automatically send follow-up emails after calls based on outcomes, goals, sentiment, or custom conditions.
 
-**Access:** Configure in agent editor under **Analytics → Post-Call Emails**
+**Access:** Agent editor → **Analytics → Post-Call Emails**
+
+**Use cases:** Appointment confirmations, callback requests, complaint escalations, feedback collection, sales follow-ups, unresolved issue tracking
 
 ---
 
-## How It Works
+## Choose Your Path
 
-<Steps>
-  <Step title="Configure trigger conditions">
-    Define when emails should send:
-    - Goal achieved/not achieved
-    - Specific analysis outputs
-    - Tags matched during conversation
-    - Custom criteria combinations
+```mermaid
+graph TD
+    A[Post-Call Email Automation] --> B{Starting Point?}
+    B -->|Use Template| C[Choose from 10 Templates]
+    B -->|Build Custom| D[Start from Scratch]
+
+    C --> E[Customize Trigger]
+    D --> F[Write Trigger Description]
+
+    E --> G[Adjust Email Content]
+    F --> H[Design Email]
+
+    G --> I[Preview & Enable]
+    H --> I
+
+    style C fill:#e1f5e1
+    style D fill:#e1f5e1
+    style I fill:#fff4e1
+```
+
+<Tabs>
+  <Tab title="Use Template (Recommended)">
+    **Best for:** Common use cases, faster setup
+
+    Choose from 10 ready-to-use templates:
+
+    **Customer Service**
+    - **Callback Requested** - When customer asks for follow-up
+    - **Appointment Booked** - When meeting/consultation scheduled
+
+    **Support**
+    - **Customer Complaint** - Escalates dissatisfaction to appropriate team
+    - **Unanswered Question** - When agent couldn't answer
+    - **Technical Issue** - Routes bugs/errors to tech teams
+    - **Billing Inquiry** - Payment/invoice questions
+    - **Escalation Needed** - Requires management attention
+
+    **Sales**
+    - **Order Placed** - New purchase confirmation
+    - **Demo Request** - Product demonstration interest
+
+    **Feedback**
+    - **Positive Feedback** - Share compliments with team
 
     <Info>
-    Provide a detailed description when configuring triggers. The AI analyzes this description against the call transcript to determine if conditions are met.
+    All templates include smart routing, pre-written triggers, and email content. Fully customizable.
     </Info>
-  </Step>
 
-  <Step title="Design email template">
-    Create email with:
-    - Subject line with variables
-    - HTML or plain text body
-    - Dynamic content from conversation
-    - System and custom variables
-  </Step>
-
-  <Step title="Enable automation">
-    Turn on the notification
-
-    Test with preview feature before going live
-  </Step>
-
-  <Step title="Emails send automatically">
-    After each matching call:
-    - System checks conditions
-    - If met, renders email template
-    - Sends to customer's email address
-  </Step>
-</Steps>
-
----
-
-## Built-In Email Templates
-
-itellicoAI provides ready-to-use email templates for common use cases. You can use them as-is or customize them for your needs.
-
-### Customer Service Templates
-
-<AccordionGroup>
-  <Accordion title="Callback Requested" icon="phone">
-    **When to use:** Customer requests a callback or follow-up
-
-    **Trigger:** "Did the caller request a callback, follow-up call, or ask to be contacted later?"
-
-    **Sends to:** Your team (configurable)
-
-    **Contains:** Customer phone, call date/time, reason for callback, full transcript
-  </Accordion>
-
-  <Accordion title="Appointment Booked" icon="calendar">
-    **When to use:** Customer schedules an appointment or meeting
-
-    **Trigger:** "Did the caller schedule, book, or confirm an appointment, meeting, or consultation?"
-
-    **Sends to:** Customer's email (extracted from call)
-
-    **Contains:** Customer information, appointment details, confirmation request
-  </Accordion>
-</AccordionGroup>
-
-### Support Templates
-
-<AccordionGroup>
-  <Accordion title="Customer Complaint" icon="triangle-exclamation">
-    **When to use:** Customer expresses dissatisfaction or files a complaint
-
-    **Trigger:** "Did the customer express dissatisfaction, file a complaint, mention being unhappy, or report a problem?"
-
-    **Sends to:** Escalated based on severity (legal, retention, quality, or support team)
-
-    **Contains:** Urgent flag, customer details, issue description, full transcript
-  </Accordion>
-
-  <Accordion title="Unanswered Question" icon="circle-question">
-    **When to use:** Agent couldn't answer a customer question
-
-    **Trigger:** "Did the agent fail to answer a question, say they don't know, or promise to find out information?"
-
-    **Sends to:** Your support team (configurable)
-
-    **Contains:** Customer question, action required checklist, transcript
-  </Accordion>
-
-  <Accordion title="Technical Issue" icon="wrench">
-    **When to use:** Customer reports a technical problem
-
-    **Trigger:** "Did the customer report a technical issue, bug, error, system problem, or mention something not working?"
-
-    **Sends to:** Routed by issue type (dev, billing-tech, integrations, or general tech support)
-
-    **Contains:** Issue description, investigation request, 24-hour SLA reminder
-  </Accordion>
-
-  <Accordion title="Billing Inquiry" icon="credit-card">
-    **When to use:** Customer has questions about billing or payment
-
-    **Trigger:** "Did the customer ask about billing, payment, invoice, refund, or any financial matters?"
-
-    **Sends to:** Your billing team (configurable)
-
-    **Contains:** Customer phone, inquiry details, transcript
-  </Accordion>
-
-  <Accordion title="Escalation Needed" icon="triangle-exclamation">
-    **When to use:** Situation requires management attention
-
-    **Trigger:** "Did the customer ask to speak to a manager, supervisor, or someone in charge? Or did the situation become heated or complex?"
-
-    **Sends to:** Escalated by type (legal, PR, VIP support, or management)
-
-    **Contains:** Immediate attention flag, escalation reason, current status
-  </Accordion>
-</AccordionGroup>
-
-### Sales Templates
-
-<AccordionGroup>
-  <Accordion title="Order Placed" icon="cart-shopping">
-    **When to use:** Customer places an order during the call
-
-    **Trigger:** "Did the customer place an order, make a purchase, or confirm they want to buy something?"
-
-    **Sends to:** Routed by order value/type (sales manager for >$1000, international orders, or general orders team)
-
-    **Contains:** Customer information, order details, processing request
-  </Accordion>
-
-  <Accordion title="Demo Request" icon="presentation-screen">
-    **When to use:** Customer requests a product demo
-
-    **Trigger:** "Did the customer request a demo, trial, or want to see how the product/service works?"
-
-    **Sends to:** Your sales team (configurable)
-
-    **Contains:** Lead information, interest areas, 48-hour scheduling reminder
-  </Accordion>
-</AccordionGroup>
-
-### Feedback Templates
-
-<AccordionGroup>
-  <Accordion title="Positive Feedback" icon="star">
-    **When to use:** Customer provides positive feedback or compliments
-
-    **Trigger:** "Did the customer express satisfaction, give compliments, praise our service/product, or mention they are happy?"
-
-    **Sends to:** Shared with team, product team, or support team based on feedback topic
-
-    **Contains:** Feedback summary, specific mentions, follow-up suggestions (testimonial request, team recognition)
-  </Accordion>
-</AccordionGroup>
-
-<Info>
-**Customize templates:** All templates can be modified. Change trigger conditions, recipient routing, email content, and subject lines to match your workflow.
-</Info>
-
----
-
-## Creating Email Automations
-
-### Step 1: Access Post-Call Emails
-
-1. Open your agent in the editor
-2. Go to **Analytics → Post-Call Emails**
-3. Click **Create Email** or choose from templates
-
-### Step 2: Configure Trigger Conditions
-
-Choose when this email should send:
-
-<Tip>
-**Important:** Write detailed, specific trigger descriptions. The AI analyzes your description against the full call transcript to determine if conditions are met. More detailed descriptions = more accurate triggering.
-</Tip>
-
-**Goal-based triggers:**
-```
-Send when: "Book Appointment" goal is achieved
-```
-
-**Analysis-based triggers:**
-```
-Send when: Sentiment = "Negative" AND Issue = "Unresolved"
-
-Description: "Did the customer express frustration, dissatisfaction, or
-negative sentiment, AND did the conversation end without fully resolving
-their issue or answering their question?"
-```
-
-**Tag-based triggers:**
-```
-Send when: Conversation tagged with "follow-up-needed"
-
-Description: "Did the agent promise to follow up, send information later,
-or tell the customer someone would contact them?"
-```
-
-**Combined conditions:**
-```
-Send when:
-- Goal "Collect Information" achieved
-- AND contact.email is present
-- AND conversation_duration > 60 seconds
-
-Description: "Did the agent successfully collect the required information
-from the customer (name, email, phone, reason for inquiry), and did the
-customer provide an email address?"
-```
-
-### Step 3: Design Your Email
-
-**Subject line example:**
-```
-Thanks for calling {{agent_name}}, {{customer_name}}!
-```
-
-**Email body example:**
-```html
-Hi {{customer_name}},
-
-Thanks for speaking with us today. Here's a summary of our conversation:
-
-{{conversation_summary}}
-
-Your appointment is confirmed for {{dyn_appointment_date}} at {{dyn_appointment_time}}.
-
-Meeting link: {{dyn_meeting_link}}
-
-If you need to reschedule, reply to this email or call us at {{agent_number}}.
-
-Best regards,
-{{agent_name}}
-```
-
-### Step 4: Preview and Test
-
-1. Click **Preview** to see rendered output
-2. System shows example with sample data
-3. Verify formatting and variable replacement
-4. Make adjustments if needed
-
-### Step 5: Enable
-
-Toggle the notification **On** to activate it.
+    ### Setup with Template
+
+    <Steps>
+      <Step title="Select template">
+        **Analytics → Post-Call Emails** → Choose template
+      </Step>
+
+      <Step title="Customize trigger (optional)">
+        Templates come with pre-configured triggers. Adjust if needed:
+
+        ```
+        Example: "Did the customer request a callback, ask to be
+        contacted later, or want someone to follow up?"
+        ```
+      </Step>
+
+      <Step title="Adjust email content">
+        Modify subject/body to match your brand voice
+      </Step>
+
+      <Step title="Preview and enable">
+        Click **Preview** → Toggle **On**
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="Start from Scratch">
+    **Best for:** Custom workflows, unique use cases
+
+    Full control over triggers, routing, and content.
+
+    ### Setup from Scratch
+
+    <Steps>
+      <Step title="Create new email">
+        **Analytics → Post-Call Emails** → **Create Email**
+      </Step>
+
+      <Step title="Write trigger description">
+        Describe when to send (AI analyzes transcript against your description):
+
+        ```
+        Example: "Did the customer request a callback, ask to be
+        contacted later, or want someone to follow up with them?"
+        ```
+
+        <Tip>
+        Be specific. The more detailed your trigger description, the more accurate the AI matching.
+        </Tip>
+      </Step>
+
+      <Step title="Design email">
+        - **Subject:** `Thanks for calling, {{customer_name}}`
+        - **Body:** Use variables + dynamic content
+        - **Recipients:** Fixed emails or AI-extracted from call
+      </Step>
+
+      <Step title="Preview and enable">
+        Click **Preview** to test → Toggle **On** to activate
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
 
 ---
 
@@ -269,67 +134,44 @@ Toggle the notification **On** to activate it.
 
 ### System Variables
 
-Always available from conversation and contact data:
+Always available from call data:
 
-**Conversation Details:**
-- `{{conversation_date}}` - Date of call (e.g., "2025-11-12")
-- `{{conversation_time}}` - Time of call (e.g., "14:30")
-- `{{conversation_duration}}` - Length in seconds
-- `{{conversation_summary}}` - AI-generated summary
-- `{{conversation_url}}` - Link to view in dashboard
-- `{{conversation_status}}` - ended, transferred, etc.
-
-**Contact Information:**
-- `{{customer_name}}` - Contact's full name
-- `{{customer_first_name}}` - Contact's first name
-- `{{customer_email}}` - Contact's email address
-- `{{customer_number}}` - Contact's phone number
-- `{{contact.company}}` - Company name (if available)
-
-**Agent & Account:**
-- `{{agent_name}}` - Name of the AI agent
-- `{{agent_number}}` - Agent's phone number
-- `{{account_name}}` - Your company name
+```
+{{customer_name}}, {{customer_email}}, {{customer_number}}
+{{conversation_date}}, {{conversation_time}}, {{conversation_duration}}
+{{conversation_summary}}, {{conversation_transcript}}, {{conversation_url}}
+{{agent_name}}, {{agent_number}}, {{account_name}}
+```
 
 ### Dynamic Variables
 
-Extract custom information from transcripts using the `dyn_` prefix:
+AI extracts from transcript using `dyn_` prefix:
 
-**How dynamic variables work:**
-1. You reference `{{dyn_issue_summary}}` in your email
-2. System uses conversation transcript + post-call analysis
-3. AI extracts the specific information requested
-4. Populates the variable in the email
+```
+{{dyn_appointment_date}} - AI finds mentioned date
+{{dyn_issue_summary}} - AI extracts problem description
+{{dyn_ticket_number}} - AI locates ticket reference
+{{dyn_action_items}} - AI lists next steps discussed
+```
 
-**Example dynamic variables:**
-- `{{dyn_issue_summary}}` - AI extracts issue description
-- `{{dyn_action_items}}` - AI lists next steps discussed
-- `{{dyn_appointment_date}}` - AI extracts mentioned date
-- `{{dyn_ticket_number}}` - AI finds ticket reference
-- `{{dyn_product_interest}}` - AI identifies product discussed
-- `{{dyn_followup_owner}}` - AI determines who should follow up
-
-**Naming rules:**
-- Must start with `dyn_`
-- Only letters, numbers, underscores
-- No spaces, hyphens, or special characters
-- Examples: `dyn_order_id`, `dyn_next_meeting`, `dyn_issue_type`
-
-<Info>
-**Tip:** Make dynamic variable names descriptive. The clearer the name, the better the AI understands what to extract. Use `{{dyn_resolved_issue_summary}}` instead of `{{dyn_info}}`.
-</Info>
+<Warning>
+Variable names must be descriptive. Use `{{dyn_shipping_address}}` not `{{dyn_address}}`.
+</Warning>
 
 ---
 
-## Use Cases and Examples
+## Example
 
-### Appointment Confirmation
+**Appointment Confirmation**
 
-**Trigger:** "Book Appointment" goal achieved
+**Trigger:**
+```
+Did the caller schedule, book, or confirm an appointment or meeting?
+```
 
 **Subject:**
 ```
-Your appointment is confirmed - {{dyn_appointment_date}}
+Appointment confirmed - {{dyn_appointment_date}}
 ```
 
 **Body:**
@@ -338,296 +180,62 @@ Hi {{customer_first_name}},
 
 Your appointment is confirmed:
 
-📅 Date: {{dyn_appointment_date}}
-⏰ Time: {{dyn_appointment_time}}
-📍 Location: {{dyn_appointment_location}}
-🔗 Join link: {{dyn_meeting_link}}
+📅 {{dyn_appointment_date}} at {{dyn_appointment_time}}
+📍 {{dyn_location}}
+🔗 {{dyn_meeting_link}}
 
-We're looking forward to meeting with you!
-
-Need to reschedule? Reply to this email or call {{agent_number}}.
+Need to reschedule? Call {{agent_number}}
 
 Best,
 {{agent_name}}
 ```
 
-### Unresolved Issue Follow-up
+---
 
-**Trigger:** Goal "Resolve Issue" NOT achieved
+## Recipient Routing
 
-**Subject:**
+**Fixed Recipients**
 ```
-We're still working on your issue - Ticket #{{dyn_ticket_number}}
-```
-
-**Body:**
-```
-Hi {{customer_name}},
-
-Thanks for contacting us about:
-{{dyn_issue_summary}}
-
-We've created ticket #{{dyn_ticket_number}} and assigned it to our {{dyn_specialist_team}} team.
-
-Expected resolution: {{dyn_estimated_resolution_time}}
-
-You can track progress here: {{dyn_ticket_url}}
-
-We'll follow up within 24 hours with an update.
-
-Sorry for the inconvenience,
-{{account_name}} Support Team
+Send to: support@company.com, manager@company.com
 ```
 
-### Resource Sharing After Call
-
-**Trigger:** Tag contains "share-resources"
-
-**Subject:**
+**Dynamic Routing (AI-powered)**
 ```
-Resources from your call with {{agent_name}}
-```
-
-**Body:**
-```
-Hi {{customer_first_name}},
-
-As discussed in our conversation, here are the resources:
-
-{{dyn_resource_list}}
-
-You also mentioned interest in:
-{{dyn_topics_discussed}}
-
-Additional resources:
-- {{dyn_documentation_link}}
-- {{dyn_tutorial_video_link}}
-
-Feel free to reach out if you have questions!
-
-Best,
-{{agent_name}}
+Routing rules:
+- If legal threat → legal@company.com
+- If angry/canceling → retention@company.com
+- If product issue → quality@company.com
+- Otherwise → support@company.com
 ```
 
-### Feedback Request
-
-**Trigger:** Goal "Resolve Issue" achieved AND conversation_duration > 120
-
-**Subject:**
-```
-How did we do today?
-```
-
-**Body:**
-```
-Hi {{customer_name}},
-
-Thanks for calling us today. We hope we were able to help with:
-{{dyn_resolution_summary}}
-
-Would you mind taking 30 seconds to rate your experience?
-
-[Rate your experience] (links to survey)
-
-Your feedback helps us improve!
-
-Thanks,
-{{account_name}} Team
-```
-
-### Sales Follow-up
-
-**Trigger:** Goal "Qualify Lead" achieved
-
-**Subject:**
-```
-Next steps - {{dyn_product_name}} demo
-```
-
-**Body:**
-```
-Hi {{customer_first_name}},
-
-Great speaking with you about {{dyn_product_name}}!
-
-Based on our conversation, here's what we discussed:
-
-Needs:
-{{dyn_customer_needs}}
-
-Recommended solution:
-{{dyn_recommended_plan}}
-
-Next steps:
-1. {{dyn_next_step_1}}
-2. {{dyn_next_step_2}}
-
-I'll reach out {{dyn_followup_date}} to schedule a demo.
-
-In the meantime, check out: {{dyn_resource_url}}
-
-Best,
-{{dyn_sales_rep_name}}
-{{account_name}}
-```
+AI analyzes call and routes accordingly.
 
 ---
 
-## Managing Email Automations
-
-### Edit Existing Email
-
-1. Go to **Analytics → Post-Call Emails**
-2. Click the email automation you want to edit
-3. Modify conditions, subject, or body
-4. Click **Preview** to test changes
-5. **Save** to apply updates
-
-### Duplicate Notification
-
-Create variants for A/B testing:
-1. Click menu (⋮) next to notification
-2. Select **Duplicate**
-3. Modify subject or body
-4. Enable one version at a time to test
-
-### Disable Temporarily
-
-Keep configuration but stop sending:
-1. Toggle notification to **Off**
-2. Notification saved but won't trigger
-3. Toggle back **On** when ready
-
-### Delete Notification
-
-Permanently remove:
-1. Click menu (⋮) next to notification
-2. Select **Delete**
-3. Confirm deletion
-
----
-
-## Best Practices
+## Tips
 
 <AccordionGroup>
-  <Accordion title="Start Simple" icon="seedling">
-    Begin with basic system variables before adding dynamic variables.
+  <Accordion title="Write Specific Triggers" icon="bullseye">
+    ❌ Bad: "Customer unhappy"
 
-    **Simple first version:**
-    ```
-    Hi {{customer_name}},
-
-    Thanks for calling us today.
-
-    Conversation summary:
-    {{conversation_summary}}
-
-    View full details: {{conversation_url}}
-    ```
-
-    **Add dynamic variables after testing:**
-    ```
-    Hi {{customer_name}},
-
-    Issue discussed: {{dyn_issue_type}}
-    Resolution: {{dyn_resolution_steps}}
-    Ticket: {{dyn_ticket_number}}
-    ```
+    ✅ Good: "Did the customer express dissatisfaction, frustration, mention being unhappy, or threaten to cancel/leave negative review?"
   </Accordion>
 
   <Accordion title="Test Before Enabling" icon="vial">
-    Always use the **Preview** feature:
-
-    1. Click **Preview** in notification editor
-    2. Review rendered email with sample data
-    3. Check for:
-       - Formatting issues
-       - Missing variables
-       - Unclear dynamic variables
-    4. Make adjustments
-    5. Preview again
-    6. Only then enable
+    Always click **Preview** to see rendered email with sample data before enabling.
   </Accordion>
 
-  <Accordion title="Verify Email Addresses" icon="envelope-circle-check">
-    Ensure contacts have valid emails:
+  <Accordion title="Use Descriptive Dynamic Variables" icon="tag">
+    ❌ `{{dyn_info}}`, `{{dyn_data}}`, `{{dyn_thing}}`
 
-    **Priority order** (system checks in this order):
-    1. Email from context API (`cal_email` or custom field)
-    2. Email stored in contact record
-    3. Email collected during conversation
-
-    **In agent instructions:**
-    ```
-    If the customer needs a follow-up email:
-    1. Check if we have their email on file
-    2. If not, ask: "What email should I send this to?"
-    3. Confirm the email address is correct
-    ```
+    ✅ `{{dyn_shipping_address}}`, `{{dyn_next_appointment_date}}`, `{{dyn_issue_category}}`
   </Accordion>
 
-  <Accordion title="Make Dynamic Variables Descriptive" icon="tag">
-    Clear variable names help AI extract correctly:
-
-    ✅ **Good:**
-    - `{{dyn_appointment_date_and_time}}`
-    - `{{dyn_unresolved_issue_description}}`
-    - `{{dyn_recommended_next_steps}}`
-
-    ❌ **Bad:**
-    - `{{dyn_info}}`
-    - `{{dyn_data}}`
-    - `{{dyn_thing}}`
-
-    The variable name itself guides the AI on what to extract.
-  </Accordion>
-
-  <Accordion title="Keep Emails Concise" icon="align-left">
-    Shorter emails have higher engagement:
-
-    - One clear purpose per email
-    - 3-5 short paragraphs maximum
+  <Accordion title="Keep Emails Short" icon="align-left">
+    - 3-5 paragraphs max
+    - One clear purpose
+    - Single call-to-action
     - Bullet points for multiple items
-    - Single clear call-to-action
-
-    **Example structure:**
-    1. Greeting with name
-    2. Reference to conversation (1-2 lines)
-    3. Key information (3-5 bullets)
-    4. Next steps (1-2 actions)
-    5. Contact info/signature
-  </Accordion>
-
-  <Accordion title="Handle Missing Data Gracefully" icon="circle-question">
-    Dynamic variables might not always extract successfully.
-
-    **Fallback patterns:**
-
-    Instead of:
-    ```
-    Your appointment: {{dyn_appointment_date}}
-    ```
-
-    Use:
-    ```
-    {% if dyn_appointment_date %}
-    Your appointment: {{dyn_appointment_date}}
-    {% else %}
-    We discussed scheduling an appointment. I'll follow up shortly to confirm the date.
-    {% endif %}
-    ```
-
-    **Note:** Check if conditional logic is supported in your template system. If not, ensure critical info is captured in system variables or contact fields.
-  </Accordion>
-
-  <Accordion title="Monitor Delivery" icon="chart-line">
-    Track email automation performance:
-
-    - Check conversation details for sent emails
-    - Monitor bounce rates
-    - Review customer replies
-    - Test periodically with your own email
-    - Update templates based on engagement
   </Accordion>
 </AccordionGroup>
 
@@ -635,118 +243,20 @@ Permanently remove:
 
 ## Troubleshooting
 
-<AccordionGroup>
-  <Accordion title="Email Not Sending" icon="envelope-open-text">
-    **Possible causes:**
-    - Notification is disabled (toggle is Off)
-    - Trigger conditions not met
-    - Customer has no email address
-    - Email address is invalid
+**Email not sending?**
+- Verify notification is enabled (toggle On)
+- Check trigger condition matches call content
+- Ensure customer has valid email
 
-    **Solution:**
-    1. Verify notification is enabled (toggle On)
-    2. Check conversation matches trigger conditions
-    3. Verify contact has valid email in system
-    4. Review conversation logs for errors
-  </Accordion>
+**Variables not populating?**
+- Use exact variable names (check picker)
+- Make dynamic variables more specific
+- Preview before enabling
 
-  <Accordion title="Variables Not Populating" icon="brackets-curly">
-    **Possible causes:**
-    - Typo in variable name
-    - Variable doesn't exist in system
-    - Dynamic variable too vague
-    - Data not available in conversation
-
-    **Solution:**
-    - Use exact variable names from picker
-    - Verify variable is supported
-    - Make dynamic variables more descriptive
-    - Use **Preview** to test before enabling
-  </Accordion>
-
-  <Accordion title="Dynamic Variables Extracting Wrong Data" icon="robot">
-    **Possible causes:**
-    - Variable name not clear enough
-    - Multiple similar pieces of information in transcript
-    - Conversation ambiguous about the data
-
-    **Solution:**
-    - Make variable names more specific:
-      - `{{dyn_next_appointment_date}}` not `{{dyn_date}}`
-      - `{{dyn_shipping_address}}` not `{{dyn_address}}`
-    - Add context in post-call analysis configuration
-    - Have agent confirm details during call
-  </Accordion>
-
-  <Accordion title="Emails Going to Spam" icon="shield-exclamation">
-    **Possible causes:**
-    - No SPF/DKIM configured for sending domain
-    - Too many links in email
-    - Spam-trigger words in subject/body
-
-    **Solution:**
-    - Contact support to verify email authentication
-    - Reduce number of links
-    - Avoid all-caps, excessive punctuation
-    - Test with multiple email providers
-  </Accordion>
-
-  <Accordion title="Customer Didn't Receive Email" icon="inbox">
-    **Quick checks:**
-    1. Check conversation details - was email sent?
-    2. Verify customer's email address is correct
-    3. Ask customer to check spam/junk folder
-    4. Verify notification was enabled at time of call
-    5. Check trigger conditions were met
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Advanced: Linking to Post-Call Analysis
-
-Dynamic variables become even more powerful when combined with post-call analysis.
-
-**Setup flow:**
-
-<Steps>
-  <Step title="Configure post-call analysis">
-    In **Analytics → Call Analysis**, define structured questions:
-
-    ```json
-    {
-      "issue_category": "string",
-      "resolution_status": "resolved | pending | escalated",
-      "action_items": "array of strings",
-      "followup_needed": "boolean"
-    }
-    ```
-  </Step>
-
-  <Step title="Reference analysis in email">
-    Use analysis results directly:
-
-    ```
-    Issue Category: {{analytics.issue_category}}
-    Status: {{analytics.resolution_status}}
-
-    Next steps:
-    {{analytics.action_items}}
-    ```
-  </Step>
-
-  <Step title="Trigger based on analysis">
-    Set conditions using analysis outputs:
-
-    ```
-    Send when: analytics.followup_needed = true
-    ```
-  </Step>
-</Steps>
-
-<Info>
-This creates a tight feedback loop: analysis identifies patterns → emails automate follow-up → you optimize based on results.
-</Info>
+**Wrong routing?**
+- Review routing rules description
+- Make criteria more explicit
+- Test with sample calls
 
 ---
 
@@ -754,15 +264,15 @@ This creates a tight feedback loop: analysis identifies patterns → emails auto
 
 <CardGroup cols={2}>
   <Card title="Goal Tracking" icon="bullseye" href="/optimize/goal-tracking">
-    Configure goals that trigger email automations
+    Set goals that trigger emails
   </Card>
   <Card title="Analytics Dashboard" icon="chart-line" href="/optimize/analytics-dashboard">
-    Monitor email automation performance
+    Monitor email performance
   </Card>
   <Card title="Conversation Goals" icon="target" href="/build/advanced/conversation-goals">
-    Set up goals for trigger conditions
+    Configure trigger conditions
   </Card>
   <Card title="Dynamic Context" icon="brackets-curly" href="/build/advanced/dynamic-context">
-    Pass custom data for email variables
+    Pass data for variables
   </Card>
 </CardGroup>
