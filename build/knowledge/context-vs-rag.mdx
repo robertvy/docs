@@ -148,21 +148,14 @@ This formatting helps the agent understand the structure and organization of the
 ### Context Mode Limitations
 
 <Warning>
-Context Mode uses tokens from your available context window. Large knowledge bases consume significant tokens, leaving less room for conversation history.
+Context Mode is **limited to 10,000 tokens total** across all assigned knowledge.
 </Warning>
 
-**Token consumption example:**
-- Total context window: 128,000 tokens
-- Agent instructions: 2,000 tokens
-- Knowledge base (Context Mode): 15,000 tokens
-- **Remaining for conversation: 111,000 tokens**
-
-As conversations get longer, older messages are removed to fit within the window.
-
-**Additional Context Mode costs:**
-- **Higher latency**: Injecting large knowledge bases increases response time
-- **Higher costs**: All knowledge tokens are processed with every request
-- **Token inefficiency**: Entire knowledge base is sent even if only small portion is relevant
+**Limitations:**
+- Keep knowledge bases small (< 1,000 words)
+- All knowledge is sent with every request (higher cost)
+- All knowledge is processed every time (higher latency)
+- Entire knowledge base is included even if only a small portion is relevant
 
 ---
 
