@@ -6,7 +6,7 @@ icon: "brackets-curly"
 
 ## Overview
 
-Variables let you personalize your agent's instructions with dynamic data. itellico AI uses Jinja2 templating.
+Variables let you personalize your agent's instructions with dynamic data. itellico AI uses [Jinja2 templating](https://jinja.palletsprojects.com/en/stable/).
 
 ---
 
@@ -36,7 +36,9 @@ Your email is {{ contact.email }}.
 
 ### Everything Else: Dynamic Context API
 
-**All other data** must come from your Dynamic Context API endpoint as **top-level variables**:
+**All other data** must come from your [Dynamic Context API endpoint](/build/advanced/dynamic-context) as **top-level variables**.
+
+You can return any fields you want. For example:
 
 ```jinja wrap
 {{ language }}
@@ -44,6 +46,7 @@ Your email is {{ contact.email }}.
 {{ company_name }}
 {{ order_id }}
 {{ customer_since }}
+{{ any_field_you_need }}
 ```
 
 **Example - Your API returns:**
@@ -55,7 +58,7 @@ Your email is {{ contact.email }}.
 }
 ```
 
-**Your agent can use:**
+**Then your agent can use:**
 ```jinja wrap
 {% if language == "de" %}
 Guten Tag! Sie arbeiten für {{ company_name }}.
@@ -66,33 +69,7 @@ Priority support available.
 {% endif %}
 ```
 
-⚙️ Requires setup - see [Dynamic Context API](#dynamic-context-variables)
-
----
-
-## Complete Example
-
-Combining built-in contact data with your custom data:
-
-```jinja wrap
-Hello {{ contact.first_name | default("there") }},
-
-{% if account_tier == "enterprise" %}
-As an enterprise customer at {{ company_name }}, you have priority support.
-{% endif %}
-
-Contact information on file:
-- Email: {{ contact.email | default("not provided") }}
-- Phone: {{ contact.phone | default("not provided") }}
-
-{% if language == "de" %}
-Sie können auch auf Deutsch sprechen.
-{% endif %}
-```
-
-**What you need:**
-- `contact.*` variables → Contact must exist in itellico AI
-- `account_tier`, `company_name`, `language` → Your Dynamic Context API must return these
+⚙️ Requires setup - see [Dynamic Context API](/build/advanced/dynamic-context)
 
 ---
 
@@ -119,7 +96,7 @@ Their phone number is {{ contact.phone }}.
 ```
 
 <Note>
-**Custom fields** are NOT nested under `contact.` — they're top-level variables like `{{ language }}` or `{{ account_tier }}`. You must provide these through your [Dynamic Context API](#dynamic-context-variables).
+**Custom fields** are NOT nested under `contact.` — they're top-level variables like `{{ language }}` or `{{ account_tier }}`. You must provide these through your [Dynamic Context API](/build/advanced/dynamic-context).
 </Note>
 
 ### Dynamic Context Variables
@@ -153,23 +130,30 @@ Set up a Dynamic Context API endpoint to provide custom variables. Any JSON fiel
 
 ### Date & Time
 
+The current datetime is automatically available as `current_datetime`:
+
 ```jinja wrap
-{{ now() }}                    # Current timestamp
-{{ now().hour }}               # Current hour (0-23)
-{{ now().strftime("%A") }}     # Day name
+{{ current_datetime }}                      # Current timestamp
+{{ current_datetime.hour }}                 # Current hour (0-23)
+{{ current_datetime | datetime("%H:%M") }}  # Format with datetime filter
+{{ current_datetime | datetime("%A") }}     # Day name (Monday, Tuesday, etc.)
 ```
 
 **Example usage:**
 
 ```jinja wrap
-{% if now().hour < 12 %}
+{% if current_datetime.hour < 12 %}
 Good morning, {{ contact.first_name }}!
-{% elif now().hour < 17 %}
+{% elif current_datetime.hour < 17 %}
 Good afternoon, {{ contact.first_name }}!
 {% else %}
 Good evening, {{ contact.first_name }}!
 {% endif %}
 ```
+
+<Note>
+Use the `datetime` filter for formatting. The `.strftime()` method is not available due to security restrictions.
+</Note>
 
 ---
 
@@ -186,7 +170,7 @@ Good evening, {{ contact.first_name }}!
 ### If-Else
 
 ```jinja wrap
-{% if contact.account_type == "VIP" %}
+{% if account_tier == "VIP" %}
   Provide VIP service
 {% else %}
   Provide standard service
@@ -196,9 +180,9 @@ Good evening, {{ contact.first_name }}!
 ### If-Elif-Else
 
 ```jinja wrap
-{% if contact.account_value > 10000 %}
+{% if account_value > 10000 %}
   Enterprise tier customer
-{% elif contact.account_value > 1000 %}
+{% elif account_value > 1000 %}
   Professional tier customer
 {% else %}
   Standard tier customer
@@ -208,9 +192,9 @@ Good evening, {{ contact.first_name }}!
 ### Real-World Example
 
 ```jinja wrap
-{% if contact.language == "es" %}
+{% if language == "es" %}
 Respond in Spanish. Use formal addressing (usted).
-{% elif contact.language == "fr" %}
+{% elif language == "fr" %}
 Respond in French. Use formal addressing (vous).
 {% elif language == "de" %}
 Respond in German. Use formal addressing (Sie).
@@ -259,6 +243,14 @@ Filters transform variable values.
 {% endif %}
 ```
 
+**datetime:** Format datetime objects
+
+```jinja wrap
+{{ current_datetime | datetime("%H:%M") }}         # 14:30
+{{ current_datetime | datetime("%d.%m.%Y") }}      # 24.01.2025
+{{ current_datetime | datetime("%A, %B %d") }}     # Monday, January 24
+```
+
 ### Chaining Filters
 
 ```jinja wrap
@@ -277,30 +269,22 @@ Iterate over lists (advanced use case):
 {% endfor %}
 ```
 
-**Example with knowledge:**
-
-```jinja wrap
-Your available products:
-{% for product in context.products %}
-- {{ product.name }}: {{ product.price }}
-{% endfor %}
-```
-
 ---
 
 ## Practical Examples
 
-### Example 1: Personalized Greeting (Built-in Variables)
+### Example 1: Personalized Greeting
 
 ```jinja wrap
 {% if contact.first_name %}
-Hello {{ contact.first_name }}, thanks for calling!
+Hello {{ contact.first_name }}, great to hear from you!
 {% else %}
 Hello! Thanks for calling!
 {% endif %}
 
-Your phone number: {{ contact.phone | default("not on file") }}
-Email: {{ contact.email | default("not provided") }}
+{% if contact.email %}
+I have your contact information on file, so I can send you a confirmation after our call.
+{% endif %}
 ```
 
 ### Example 2: Custom Business Logic (Requires Dynamic Context API)
@@ -326,9 +310,9 @@ Variables like `company_name` and `account_tier` must be provided by your Dynami
 ### Example 3: Time-Based Instructions
 
 ```jinja wrap
-Current time: {{ now().strftime("%H:%M") }}
+Current time: {{ current_datetime | datetime("%H:%M") }}
 
-{% if now().hour >= 17 or now().hour < 9 %}
+{% if current_datetime.hour >= 17 or current_datetime.hour < 9 %}
 Outside normal business hours. If customer needs immediate assistance:
 "Our regular support hours are 9 AM to 5 PM. For urgent issues, I can take your information and have someone call you first thing in the morning, or you can reach our emergency line at [number]."
 {% else %}
@@ -362,15 +346,15 @@ Knowledge collection: "FAQ English"
 ### Example 5: Account Tier Logic
 
 ```jinja wrap
-Account value: ${{ contact.account_value | default(0) }}
+Account value: ${{ account_value | default(0) }}
 
-{% if contact.account_value >= 50000 %}
+{% if account_value >= 50000 %}
 🌟 ENTERPRISE CUSTOMER
 - Offer white-glove service
 - Direct access to account manager
 - Priority response times
 - Custom solutions available
-{% elif contact.account_value >= 10000 %}
+{% elif account_value >= 10000 %}
 💼 PROFESSIONAL CUSTOMER
 - Premium support tier
 - Dedicated support team
@@ -396,22 +380,11 @@ Account value: ${{ contact.account_value | default(0) }}
    - Different languages
    - Different timezone
 
-### Debug Variables
-
-Add debug output temporarily:
-
-```jinja wrap
-<!-- DEBUG INFO (remove after testing) -->
-Name: {{ contact.first_name | default("MISSING") }}
-Account Type: {{ contact.account_type | default("MISSING") }}
-<!-- END DEBUG -->
-```
-
 ### Common Issues
 
 | Issue | Cause | Fix |
 |-------|-------|-----|
-| Variable shows as blank | No default provided | Add `| default("fallback")` |
+| Variable shows as blank | No default provided | Add `\| default("fallback")` |
 | Syntax error | Typo in variable name | Check spelling against available variables |
 | Condition not working | Wrong comparison operator | Use `==` not `=` |
 | Filter not applying | Filter doesn't exist | Check filter name spelling |
@@ -424,21 +397,28 @@ Account Type: {{ contact.account_type | default("MISSING") }}
   <Accordion title="Always Use Defaults" icon="shield">
     Never assume a variable has a value. Always provide defaults.
 
+    ❌ **Bad:**
     ```jinja
-    ❌ Hello {{ contact.first_name }}!
-    <Icon icon="check" /> Hello {{ contact.first_name | default("there") }}!
+    Hello {{ contact.first_name }}!
+    ```
+
+    ✅ **Good:**
+    ```jinja
+    Hello {{ contact.first_name | default("there") }}!
     ```
   </Accordion>
 
   <Accordion title="Keep Logic Simple" icon="lightbulb">
     Complex nested conditions are hard to debug. Keep it simple.
 
+    ❌ **Too complex:**
     ```jinja
-    ❌ Too complex:
-    {% if contact.account_type == "VIP" and contact.account_value > 10000 and contact.region == "US" and now().hour < 17 %}
+    {% if account_tier == "VIP" and account_value > 10000 and region == "US" %}
+    ```
 
-    <Icon icon="check" /> Simpler:
-    {% if contact.account_type == "VIP" %}
+    ✅ **Simpler:**
+    ```jinja
+    {% if account_tier == "VIP" %}
     ```
   </Accordion>
 
@@ -449,55 +429,7 @@ Account Type: {{ contact.account_type | default("MISSING") }}
     - Very long strings
     - Special characters
   </Accordion>
-
-  <Accordion title="Document Your Variables" icon="file-text">
-    In your agent description or notes, document which variables you're using and why.
-
-    ```
-    Variables used:
-    - contact.first_name (personalization)
-    - contact.account_type (VIP detection)
-    - context.custom_field (additional context data)
-    ```
-  </Accordion>
 </AccordionGroup>
-
----
-
-## Quick Reference
-
-### Syntax Cheat Sheet
-
-```jinja wrap
-{# Comments (not rendered) #}
-
-{{ variable }}                                    # Output variable
-{{ variable | default("fallback") }}             # With default
-{{ variable | upper }}                           # With filter
-
-{% if condition %}...{% endif %}                 # Conditional
-{% if condition %}...{% else %}...{% endif %}    # If-else
-
-{% for item in list %}...{% endfor %}            # Loop
-```
-
-### Common Patterns
-
-```jinja wrap
-# Safe name display
-{{ contact.first_name | default("there") }}
-
-# VIP detection
-{% if contact.account_type == "VIP" %}
-  VIP instructions
-{% endif %}
-
-# Time-based greeting
-{% if now().hour < 12 %}Good morning{% else %}Good afternoon{% endif %}
-
-# Multi-language
-{% if contact.language == "es" %}Spanish instructions{% else %}English instructions{% endif %}
-```
 
 ---
 
