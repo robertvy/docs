@@ -1,77 +1,72 @@
 ---
 title: "Test Overview"
-description: "How to validate agents across the dashboard, APIs, and the real-time calling service"
+description: "Validate your voice agents before going live with customers"
 icon: "vial"
 ---
 
-## Why testing matters
+## Why Testing Matters
 
-Every release touches multiple services: the customer-facing dashboard, the backend API, and the real-time calling layer that drives live conversations. A solid test pass exercises all three so we catch prompt issues, regressions in API contracts, and call quality problems before they reach customers.
+Testing your voice agent ensures it handles conversations correctly, responds appropriately to customer questions, and executes actions reliably. A thorough test catches issues with instructions, knowledge retrieval, and integrations before your agent goes live.
 
-## Test surfaces
+## How to Test Your Agent
 
 <CardGroup cols={2}>
-  <Card title="Web Call (Dashboard)" icon="browser" href="/test/web-simulator">
-    Launch a browser-based session from the Test Agent drawer to check prompts, instructions, and context injection without touching phone carriers.
+  <Card title="Web Simulator" icon="browser" href="/test/web-simulator">
+    Test in your browser with text or microphone input - fastest way to iterate on instructions and responses
   </Card>
-  <Card title="Phone Call (PSTN)" icon="phone" href="/test/phone-testing">
-    Dial a real number through the same SIP trunk we use in production to confirm latency, carrier audio, AMD, and transfer flows.
+  <Card title="Phone Testing" icon="phone" href="/test/phone-testing">
+    Make real phone calls to test the complete experience your customers will have
   </Card>
   <Card title="Conversation Logs" icon="list" href="/test/logs-and-monitoring">
-    Replay any run inside Conversations to inspect transcripts, tool executions, and goal outcomes.
+    Review transcripts, actions, and goals from every test call
   </Card>
-  <Card title="Automated Suites" icon="terminal" href="#automated-test-suites">
-    Run the internal test suites so UI, API, and calling-service changes are validated before manual QA begins.
+  <Card title="Test Scenarios" icon="clipboard-check" href="/test/test-scenarios">
+    Use structured test cases to validate different conversation paths
   </Card>
 </CardGroup>
 
-## Recommended workflow
+## Recommended Testing Workflow
 
 <Steps>
-  <Step title="Prepare the agent">
-    Fill required test variables, confirm the correct knowledge bases are attached, and make a small scripted scenario for what you expect to hear.
+  <Step title="Set up your agent">
+    Complete your agent's instructions, attach knowledge bases, and configure any actions like transfers or bookings.
   </Step>
-  <Step title="Run a web call">
-    Use the Test Agent drawer (Web Call tab) for fast iteration. Confirm greetings, instructions, and dynamic context responses.
+  <Step title="Test with Web Simulator">
+    Open the Test Agent drawer and start a web call. Verify greetings, instructions, and responses work as expected. Iterate quickly by editing and retesting.
   </Step>
-  <Step title="Trigger a phone call">
-    Switch to the Phone Call tab once the web run is clean. Call from the number your customers will see and listen for latency, audio artifacts, or AMD issues.
+  <Step title="Test with Phone Calls">
+    Call your agent's phone number to test the complete phone experience - listen for voice quality, timing, and natural conversation flow.
   </Step>
-  <Step title="Review the log">
-    Open Conversations → Recent, confirm the transcript, goals, and post-call automations look correct, and jot down any follow-up fixes.
+  <Step title="Review Conversation Logs">
+    Open your test calls in the Conversations tab. Review transcripts, verify goals were tracked, and check that post-call automations triggered correctly.
   </Step>
-  <Step title="Run automated tests">
-    Before opening a pull request, execute the stack-specific test commands listed below so CI sees a clean run.
+  <Step title="Test Edge Cases">
+    Try interrupting the agent, providing unexpected answers, and triggering error scenarios to ensure graceful handling.
   </Step>
 </Steps>
 
-## Automated test suites
+## What to Test
 
-Manual QA only sticks if the automated coverage stays green. Before sharing results:
+Make sure to validate these key aspects before launching:
 
-- **Frontend UI** – run the full UI script your engineering team provides so type-checking, linting, unit tests, and production builds all pass.
-- **Backend API** – run the containerized backend test suite to verify endpoints and business logic before releasing new prompt or action behavior.
-- **Real-time calling layer** – run the unit + integration suite with coverage enabled to ensure signaling, audio, and action dispatching continue to work at scale.
+- **Greeting & Introduction** - Agent introduces itself correctly and sets context
+- **Instructions & Responses** - Agent follows your instructions and answers questions accurately
+- **Knowledge Base Access** - Agent retrieves and uses information from your knowledge bases
+- **Actions & Integrations** - Transfers, bookings, and API calls work reliably
+- **Error Handling** - Agent handles misunderstandings and unexpected inputs gracefully
+- **Conversation Flow** - Natural back-and-forth without awkward pauses or interruptions
+- **Goal Tracking** - Conversation goals are marked correctly for analytics
 
-<Note>Use the internal engineering scripts or CI pipelines for these suites; we intentionally omit repository-specific commands in public documentation.</Note>
-
-## Manual QA exit criteria
-
-- ✅ Web and phone calls match the scripted scenarios (greetings, instructions, fallbacks)
-- ✅ Conversation log shows the right metadata, actions, and post-call workflows
-- ✅ Relevant automated suites pass locally for the service you touched
-- ✅ Outstanding issues are documented in the ticket before handing off to launch or production monitoring
-
-## Next steps
+## Next Steps
 
 <CardGroup cols={3}>
-  <Card title="Run a Web Call" icon="browser" href="/test/web-simulator">
-    Learn how to configure the Test Agent drawer for browser sessions.
+  <Card title="Web Simulator" icon="browser" href="/test/web-simulator">
+    Start testing with text or voice in your browser
   </Card>
-  <Card title="Phone Call Checklist" icon="phone" href="/test/phone-testing">
-    Validate the entire PSTN path with your real numbers.
+  <Card title="Phone Testing" icon="phone" href="/test/phone-testing">
+    Make real test calls to your agent's phone number
   </Card>
-  <Card title="Inspect Logs" icon="list" href="/test/logs-and-monitoring">
-    Use Conversations to debug transcripts, actions, and goal tracking.
+  <Card title="Test Scenarios" icon="clipboard-check" href="/test/test-scenarios">
+    Build comprehensive test cases for your agent
   </Card>
 </CardGroup>
