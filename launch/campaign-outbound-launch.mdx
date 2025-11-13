@@ -4,306 +4,291 @@ description: "Deploy automated outbound calling campaigns at scale"
 icon: "bullhorn"
 ---
 
-## Campaign Overview
-
 Outbound campaigns automate high-volume calling for sales, reminders, surveys, and notifications. Each campaign connects your agent to a contact list, manages dialing schedules, and tracks outcomes.
 
-The campaign engine handles:
-- **Progressive dialing** with configurable concurrency
-- **Answering Machine Detection (AMD)** to skip voicemails
-- **Retry logic** for no-answers and busy signals
-- **Goal tracking** and conversion analytics per campaign
+## Key Features
+
+<CardGroup cols={3}>
+  <Card title="Automated Dialing" icon="phone-volume">
+    Progressive dialing with configurable retry logic
+  </Card>
+
+  <Card title="Business Hours" icon="clock">
+    Enforce calling windows and timezone scheduling
+  </Card>
+
+  <Card title="Smart AMD" icon="voicemail">
+    Skip voicemails with text or ML detection
+  </Card>
+
+  <Card title="Contact Lifecycle" icon="arrows-spin">
+    Automatic status tracking with retry management
+  </Card>
+
+  <Card title="Analytics & Reporting" icon="chart-line">
+    Heat map, goals, and per-contact analysis
+  </Card>
+
+  <Card title="Export & History" icon="file-export">
+    Export contacts with metrics and track jobs
+  </Card>
+</CardGroup>
 
 ## Creating Your First Campaign
 
 <Steps>
   <Step title="Navigate to Campaigns">
-    Go to **Launch → Campaigns** and click **+ New Campaign**.
+    Go to **Campaigns** and click **Create Campaign** (or **Create First Campaign** if this is your first one).
   </Step>
 
-  <Step title="Configure basic settings">
-    **Campaign Details**:
-    - **Name**: Internal identifier (e.g., "Q1 Sales Outreach")
-    - **Agent**: Select your tested agent
-    - **From Number**: Choose a caller ID from your phone numbers
-    - **Description**: Notes for your team
+  <Step title="Configure required settings">
+    **Campaign Name**: Descriptive name for internal use (e.g., "Q1 Sales Outreach")
 
-    **Schedule**:
-    - **Business Hours**: When calls can be placed (respects timezone)
-    - **Start Date**: Campaign activation date
-    - **End Date**: Optional automatic stop date
+    **Agent**: Select which AI agent will handle the calls
+
+    **Phone Number**: Choose a phone number for this campaign. Numbers already assigned to active or paused campaigns won't appear in the list.
+
+    **Answering Machine Detection (AMD)**:
+    - **Text-based**: Fastest (~1-2 sec), uses transcript analysis, works well for B2B lists
+    - **ML-based**: Higher accuracy, better for consumer voicemail detection
   </Step>
 
-  <Step title="Configure dialing behavior">
-    **Concurrency Settings**:
-    - **Max Concurrent Calls**: How many simultaneous dials (start low, e.g., 5)
-    - **Dial Rate**: Calls per minute (pacing to avoid carrier throttling)
+  <Step title="Configure optional settings">
+    **Business Hours**: Limit calling to a specific schedule (default is 24/7). You can create schedules in **Settings → Business Hours**.
 
-    **Answering Machine Detection**:
-    - **Text-based AMD**: Fast (~1-2 sec), uses transcript analysis, 85-90% accuracy
-    - **ML-based AMD**: Slower (~3-4 sec), uses audio patterns, 95%+ accuracy
-    - **Action on VM**: Hang up, leave pre-recorded message, or attempt conversation
+    Click **Create Campaign** to continue.
+  </Step>
+
+  <Step title="Configure campaign settings">
+    After creation, go to the **Settings** tab:
+
+    **Scheduling**:
+    - **Start Date & Time**: When to begin calling (leave blank to start immediately)
+    - **Call Interval**: Wait time between calls (5 seconds → 30 minutes)
+    - **Ring Timeout**: How long to let the phone ring (10-60 seconds)
+    - **Business Hours**: Update or change the schedule anytime
 
     **Retry Logic**:
-    - **Max Attempts**: Total tries per contact (default: 3)
-    - **Retry Delay**: Time between attempts (e.g., 4 hours, 1 day)
-    - **Retry on No-Answer**: Yes/No
-    - **Retry on Busy**: Yes/No
+    - **Max Retry Attempts**: How many times to retry (0-10, default: 2)
+    - **Retry Interval**: Time between retries (minutes, hours, or days)
+    - **Contact Completion Timeout**: Maximum time for a contact to reach completed state after analysis
+
+    **Notes**: Add internal notes for your team
   </Step>
 
-  <Step title="Upload contact list">
-    **Import Methods**:
-    - **CSV Upload**: Bulk upload with required fields: `phone_number`, `name` (optional: custom fields)
-    - **CRM Integration**: Sync from HubSpot, Salesforce, or custom API
-    - **Manual Entry**: Add individual contacts for small campaigns
+  <Step title="Add contacts">
+    Go to the **Contacts** tab to manage your campaign contacts.
 
-    **CSV Format**:
-    ```csv
-    phone_number,name,email,custom_field
-    +14155551234,Jane Doe,jane@example.com,premium_customer
-    +14155555678,John Smith,john@example.com,trial_user
-    ```
+    The interface has two panels:
+    - **Left Panel**: Available contacts from your contact list
+    - **Right Panel**: Contacts added to this campaign
 
-    Click **Upload** and verify contact count before proceeding.
+    **Adding contacts**:
+    - Click **+ Add** next to individual contacts
+    - Select multiple contacts and click **Add Selected**
+    - Use **Add All** to add all filtered contacts (large batches run in background)
+
+    You can search, filter by tags, and view contact details before adding.
   </Step>
 
-  <Step title="Review and launch">
-    **Pre-Launch Validation**:
-    - Campaign summary shows total contacts, estimated duration, and cost
-    - Review agent assignment and caller ID
-    - Confirm business hours and AMD settings
+  <Step title="Set goals and analyses">
+    **Goals Tab**: Create campaign-level goals that track success across all conversations and contacts. These are separate from agent-level goals.
 
-    Click **Start Campaign** to begin dialing.
-  </Step>
-</Steps>
-
-## Pilot Testing with Small Batches
-
-<Warning>
-**Best Practice**: Always start with a pilot batch of 10-20 contacts before scaling to thousands. This validates configuration and prevents large-scale mistakes.
-</Warning>
-
-### Pilot Campaign Workflow
-
-1. **Create pilot list**: Export 10-20 friendly contacts (colleagues, test numbers)
-2. **Launch small campaign**: Set max concurrent calls to 2-3
-3. **Monitor in real-time**: Open **Conversations → Live Monitor**
-4. **Review outcomes**:
-   - Answer rate (target: >40% for B2B, >20% for B2C)
-   - AMD accuracy (check for false positives/negatives)
-   - Goal achievement rate
-   - Average call duration
-5. **Iterate and adjust**:
-   - Tweak agent instructions if conversations aren't converting
-   - Adjust AMD sensitivity if too many voicemails are skipped
-   - Optimize caller ID (local numbers improve answer rates)
-6. **Scale gradually**: 50 contacts → 200 → 1,000+
-
-## Campaign Dashboard & Monitoring
-
-### Real-Time Metrics
-
-The campaign dashboard shows:
-
-<CardGroup cols={2}>
-  <Card title="Dialing Status" icon="phone-arrow-up-right">
-    - Active calls in progress
-    - Calls queued
-    - Dial rate (calls/min)
-    - Concurrency utilization
-  </Card>
-
-  <Card title="Outcome Breakdown" icon="chart-pie">
-    - Answered (human)
-    - Answered (voicemail)
-    - No answer
-    - Busy
-    - Failed (carrier errors)
-  </Card>
-
-  <Card title="Goal Performance" icon="bullseye">
-    - Conversion rate by goal type
-    - Average call duration
-    - Goal completion time
-    - Top performing scripts
-  </Card>
-
-  <Card title="Contact Progress" icon="list-check">
-    - Contacts attempted
-    - Contacts remaining
-    - Retry queue size
-    - Completion ETA
-  </Card>
-</CardGroup>
-
-### Adjusting Live Campaigns
-
-You can modify running campaigns:
-
-- **Pause/Resume**: Stop dialing temporarily (preserves progress)
-- **Change Concurrency**: Scale up/down based on performance
-- **Update Schedule**: Adjust business hours if needed
-- **Add Contacts**: Import additional lists mid-campaign
-- **Exclude Numbers**: DNC (Do Not Call) list management
-
-## Answering Machine Detection (AMD)
-
-### AMD Mode Comparison
-
-| Feature | Text-based AMD | ML-based AMD |
-|---------|---------------|--------------|
-| **Detection Speed** | 1-2 seconds | 3-4 seconds |
-| **Accuracy** | 85-90% | 95%+ |
-| **False Positive Rate** | ~10% (human marked as VM) | ~3% |
-| **False Negative Rate** | ~15% (VM marked as human) | ~5% |
-| **Cost** | Standard rate | +$0.01/call |
-| **Best For** | High-volume, cost-sensitive | High-value, accuracy-critical |
-
-### AMD Actions
-
-When voicemail is detected:
-
-<Accordion title="Hang Up (Default)">
-  Most common for sales campaigns. Saves minutes and avoids leaving awkward partial messages.
-
-  **Settings**:
-  - Hangup delay: 0-2 seconds (gives VM time to beep)
-  - Mark contact for retry: Yes/No
-</Accordion>
-
-<Accordion title="Leave Pre-Recorded Message">
-  Play a pre-recorded audio file after VM beep.
-
-  **Requirements**:
-  - Upload MP3/WAV file (max 30 sec, 16kHz recommended)
-  - Message must include callback number and opt-out instructions (compliance)
-
-  **Use Cases**: Appointment reminders, payment notifications, service updates
-</Accordion>
-
-<Accordion title="Attempt AI Conversation">
-  Agent tries to leave a dynamic message (experimental).
-
-  **Limitations**:
-  - No guarantee the beep is detected correctly
-  - VM systems may cut off mid-message
-  - Not recommended for most use cases
-</Accordion>
-
-## Campaign Best Practices
-
-### Contact List Hygiene
-
-<Steps>
-  <Step title="DNC list scrubbing">
-    Before upload:
-    - Check against your internal DNC list
-    - Verify against national DNC registry (if applicable)
-    - Remove duplicate numbers
-    - Validate E.164 format (`+1234567890`)
+    **Analyses Tab**: Define analyses that combine conversation transcripts, contact history, and campaign metadata. These run on every conversation and enable detailed contact-level reporting.
   </Step>
 
-  <Step title="Timezone optimization">
-    - Tag contacts with timezone data
-    - Configure business hours per timezone (e.g., 9am-5pm local)
-    - Avoid calling too early or too late
-  </Step>
-
-  <Step title="Segmentation">
-    Create separate campaigns for:
-    - Different customer segments (trial vs paid)
-    - Different scripts/goals
-    - Different languages
-    - A/B testing variations
+  <Step title="Launch the campaign">
+    The campaign begins automatically at the configured start time. Monitor progress in the **Dashboard** and **Reporting** tabs.
   </Step>
 </Steps>
 
-### Caller ID Strategy
+## Campaign Management
 
-Answer rates vary significantly by caller ID:
-
-- **Local Presence**: Match area code to contact's region (+20-30% answer rate)
-- **Toll-Free Numbers**: Recognizable for support, may reduce answer rate for sales
-- **Branded Caller ID**: Register your business name with carriers (CNAM, STIR/SHAKEN)
-
-**Implementation**:
-1. Purchase local numbers in target area codes (**Telephony → Purchase Numbers**)
-2. Assign different caller IDs per campaign based on contact geography
-3. Monitor answer rates per number and rotate low-performers
-
-### Compliance & Regulations
-
-<Warning>
-**Legal Requirements**: Outbound calling is heavily regulated. Violations can result in fines up to $43,792 per call (U.S. TCPA).
-</Warning>
+Once created, your campaign has six main tabs:
 
 <AccordionGroup>
-  <Accordion title="U.S. TCPA Compliance">
-    - **Prior Express Consent**: Required for marketing calls (opt-in checkbox, signature)
-    - **Caller ID Accuracy**: Must display valid, callable number
-    - **DNC Registry**: Scrub against national list every 31 days
-    - **Time Restrictions**: 8am-9pm recipient's local time
-    - **Opt-Out Mechanism**: Honor "stop calling" requests immediately
+  <Accordion title="Dashboard" icon="gauge">
+    Overview of campaign performance and metrics including:
+    - Contact status breakdown
+    - Progress indicators
+    - Key campaign statistics
+    - Real-time performance data
   </Accordion>
 
-  <Accordion title="EU GDPR & ePrivacy">
-    - **Explicit Consent**: Required for marketing calls
-    - **Right to Erasure**: Delete contact data upon request
-    - **Data Minimization**: Only collect necessary fields
-    - **Call Recording Consent**: Inform recipients before recording
+  <Accordion title="Reporting" icon="chart-bar">
+    Detailed analytics including:
+    - Call volume over time
+    - Goal outcome tracking
+    - **Human Answer Rate by Time** heat map showing the best hours and days for live connections
+    - Campaign-level metrics
   </Accordion>
 
-  <Accordion title="Canada CASL">
-    - **Express Consent**: Written or electronic consent required
-    - **Identification**: Clearly state caller organization
-    - **Unsubscribe Mechanism**: Provide easy opt-out
-    - **Keep Records**: Maintain consent records for 3 years
+  <Accordion title="Contacts" icon="users">
+    Manage contacts and track status:
+    - Filter by status, goal result, or retry count
+    - Retry selected contacts in bulk
+    - Export to CSV (current selection, filtered set, or full campaign)
+    - View per-contact metrics powered by campaign goals and analyses
+  </Accordion>
+
+  <Accordion title="Goals" icon="bullseye">
+    Set and monitor campaign-level conversation objectives that score success across all conversations.
+  </Accordion>
+
+  <Accordion title="Analyses" icon="microscope">
+    Configure conversation analysis that runs on every conversation, with results rolled up per contact for detailed reporting.
+  </Accordion>
+
+  <Accordion title="Settings" icon="gear">
+    Adjust campaign parameters including timing, retry logic, business hours, and notes.
   </Accordion>
 </AccordionGroup>
 
-**Platform Tools**:
-- DNC list management in **Campaigns → DNC**
-- Consent tracking via custom fields
-- Automatic timezone calculation based on area code
-- Call time restriction enforcement
+## Contact Lifecycle
 
-## Scaling to High Volume
+Contacts progress through these statuses:
 
-### Progressive Dial Optimization
+1. **Pending**: Contact added but not yet called
+2. **Dialing**: Call attempt currently in progress
+3. **Called**: Call completed, awaiting analysis or timeout
+4. **Retry**: Scheduled for another attempt due to unsuccessful call
+5. **Completed**: Successful conversation achieved, campaign objective met
+6. **No Conversation**: Maximum retries exhausted without meaningful interaction
+7. **Failed**: Technical issues or invalid number prevented call completion
 
-As your campaign grows:
+The system manages status transitions automatically based on call outcomes. You can manually retry contacts or update status when needed.
 
-1. **Start Conservative**: 5-10 concurrent calls
-2. **Monitor Drop Rate**: Keep < 3% (drops harm reputation)
-3. **Increase Gradually**: Add +5 every hour if stable
-4. **Watch Answer Rate**: If it drops >10%, you're dialing too fast
-5. **Carrier Throttling**: Some carriers limit to 5-10 CPS (calls per second)
+## Answering Machine Detection
 
-### Carrier Relationships
+Choose the AMD mode that fits your use case:
 
-For campaigns >10,000 calls/day:
+<AccordionGroup>
+  <Accordion title="Text-based AMD">
+    **Speed**: 1-2 seconds
+    **Accuracy**: 85-90%
+    **Best for**: High-volume campaigns, B2B lists, cost-sensitive scenarios
 
-- **Register with Carriers**: CNAM, STIR/SHAKEN attestation improves answer rates
-- **Dedicated Trunk**: Use dedicated SIP trunk instead of shared numbers
-- **Monitor Reputation**: Check **Free Carrier Lookup** for spam flagging
-- **Warm-Up Numbers**: New numbers need gradual volume increase (start with 100/day)
+    Uses transcript analysis to detect voicemails quickly.
+  </Accordion>
 
-### Cost Optimization
+  <Accordion title="ML-based AMD">
+    **Speed**: 3-4 seconds
+    **Accuracy**: 95%+
+    **Best for**: High-value contacts, consumer lists, accuracy-critical campaigns
 
-Campaign costs scale with:
-- **Connected Minutes**: Pay per minute of conversation (varies by destination)
-- **AMD Detection**: ML-based AMD adds per-call fee
-- **Carrier Fees**: Some destinations have regulatory surcharges
+    Uses audio pattern recognition for more reliable detection.
+  </Accordion>
+</AccordionGroup>
 
-**Optimization Tactics**:
-- Use text-based AMD for non-critical campaigns (saves ~$0.01/call)
-- Filter low-quality leads before upload (improves connect rate)
-- Optimize script to reduce call duration without sacrificing quality
-- Negotiate volume discounts for >100,000 calls/month (contact sales)
+## Managing Active Campaigns
+
+### Pausing and Resuming
+
+- **Pause Campaign**: Stop dialing temporarily while preserving all progress
+- **Resume Campaign**: Continue from where you left off
+- Navigate to campaign → click **Pause** or **Resume**
+
+### Adding Contacts Mid-Campaign
+
+You can add more contacts to a running campaign:
+1. Go to **Contacts** tab
+2. Use the two-panel interface to add new contacts
+3. New contacts enter the queue automatically
+
+### Updating Settings
+
+Modify campaign settings at any time:
+- Update **Business Hours** to adjust calling windows
+- Change **Retry Logic** based on performance
+- Modify **Call Interval** or **Ring Timeout**
+- Changes apply immediately to queued calls
+
+## Export and Reporting
+
+### Contact Exports
+
+From the **Contacts** tab:
+- Export current selection
+- Export filtered contacts
+- Export entire campaign
+- CSV format with all contact data and metrics
+
+### Export History
+
+Track export jobs:
+- View in-progress exports
+- Download completed files
+- Continue working while exports run in background
+
+### Answer Rate Heat Map
+
+The **Reporting** tab shows a weekly heat map of answer rates by hour. Use this to:
+- Identify best calling times
+- Optimize business hours configuration
+- Improve connection rates
+
+After 50-100 calls, check the heat map and adjust your business hours to focus on high-performing time windows.
+
+## Inbound Call Integration
+
+When contacts call back using your campaign caller ID:
+- **Automatic Linking**: Inbound calls are associated with the right campaign contact
+- **Context Continuity**: Agent has access to previous campaign interactions
+- **Status Updates**: Inbound calls can update contact status and completion
+- **Unified Reporting**: All interactions tracked together
+
+## Best Practices
+
+### Start Small
+
+<Warning>
+Always start with a pilot batch of 10-20 contacts before scaling to thousands. This validates configuration and prevents large-scale mistakes.
+</Warning>
+
+**Pilot workflow**:
+1. Create a test list with friendly contacts (colleagues, test numbers)
+2. Launch the campaign and monitor in **Conversations → Live monitor**
+3. Review outcomes:
+   - Answer rate
+   - AMD accuracy
+   - Goal achievement rate
+   - Average call duration
+4. Adjust agent instructions, AMD settings, or business hours as needed
+5. Scale gradually: 50 → 200 → 1,000+ contacts
+
+### Contact List Quality
+
+Before uploading contacts:
+- Remove duplicate numbers
+- Validate phone number format (E.164: +1234567890)
+- Check against your internal Do Not Call list
+- Verify against national DNC registries if applicable
+
+### Timezone Optimization
+
+For contacts across multiple time zones:
+1. Include timezone data in your contact list
+2. Create business hours in **Settings → Business Hours** with appropriate timezone
+3. Assign to campaign so calls happen during local business hours
+4. Use the answer rate heat map to find optimal calling windows per region
+
+### Segmentation
+
+Create separate campaigns for:
+- Different customer segments (trial vs. paid customers)
+- Different scripts or objectives
+- Different languages
+- A/B testing variations
+
+This allows you to track performance and optimize each segment independently.
 
 ## Next Steps
 
 <CardGroup cols={2}>
+  <Card title="Business Hours" icon="clock" href="/launch/business-hours">
+    Configure calling schedules and timezone handling
+  </Card>
+
   <Card title="Production Best Practices" icon="star" href="/launch/production-best-practices">
     Optimize campaign performance and customer satisfaction
   </Card>
