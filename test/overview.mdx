@@ -1,6 +1,6 @@
 ---
 title: "Test Overview"
-description: "Validate your agent with the same tools we use internally"
+description: "Test and validate your agent before going live"
 icon: "vial"
 ---
 
@@ -8,8 +8,8 @@ icon: "vial"
 
 Every agent in the dashboard ships with two integrated test surfaces:
 
-- **Web Simulator** – the right-hand panel inside the agent editor. It uses the exact the voice infrastructure pipeline (LLM + TTS + STT) that production calls use, so you can hear timing, barge-in, and interruptions exactly as your callers would.
-- **Phone Test Call** – click **Call test number** to spin up a temporary PSTN line. The call is routed through the same telephony stack (`backend/voice worker` + `telephony` service), which makes it ideal for verifying carrier audio, latency, and IVR navigation.
+- **Web Simulator** – the right-hand panel inside the agent editor. It uses the same voice technology that production calls use, so you can hear timing, barge-in, and interruptions exactly as your callers would.
+- **Phone Test Call** – click **Call test number** to spin up a temporary PSTN line. The call is routed through the same phone infrastructure, which makes it ideal for verifying carrier audio, latency, and IVR navigation.
 
 <Frame>
   <div className="block dark:hidden">
@@ -20,7 +20,7 @@ Every agent in the dashboard ships with two integrated test surfaces:
   </div>
 </Frame>
 
-Both surfaces log transcripts, DTMF events, goal analytics, and tool calls. You can open any test run in **Conversations → Logs** to replay audio or inspect JSON payloads.
+Both surfaces log transcripts, DTMF events, goal analytics, and tool calls. You can open any test run in **Conversations** to replay audio or inspect details.
 
 ## Testing Checklist
 
@@ -28,14 +28,17 @@ Both surfaces log transcripts, DTMF events, goal analytics, and tool calls. You 
   <Step title="Baseline web run">
     Use the simulator to confirm greetings, instructions, and initial actions. Fix prompt issues here before dialing a phone.
   </Step>
-  <Step title="Phone run with headset + speaker">
-    Call the test number twice: once with a headset/mic, once on speaker. Listen for echo cancellation, barge-in reliability, and DTMF capture.
+  <Step title="Phone testing">
+    Call the test number twice: once with phone on ear, once on speakerphone.
+  </Step>
+  <Step title="Test in real environments">
+    Test in environments where your customers will call from (e.g., restaurant, car, office). This validates performance with background noise and real-world conditions.
   </Step>
   <Step title="Edge cases">
     Interrupt the agent mid-sentence, stay silent for inactivity handling, and trigger each configured action (transfer, booking, custom API) at least once.
   </Step>
   <Step title="Review call log">
-    Open **Conversations → Logs**, filter by agent name, and review the transcript, goal analysis, and action payloads to ensure data is being captured correctly.
+    Open **Conversations**, filter by agent name, and review the transcript, goal analysis, and action details to ensure data is being captured correctly.
 
 <Frame>
   <div className="block dark:hidden">

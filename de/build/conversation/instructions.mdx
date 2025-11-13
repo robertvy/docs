@@ -1,0 +1,216 @@
+---
+title: "Anweisungen (System-Prompt)"
+description: "Definieren Sie die Persönlichkeit, das Wissen und das Gesprächsverhalten Ihres Agenten"
+icon: "pen"
+---
+
+## Überblick
+
+Das Anweisungsfeld (auch System-Prompt genannt) ist der Ort, an dem Sie die Persönlichkeit, den Gesprächsstil, die Ziele und die Verhaltensregeln Ihres Agenten definieren. Dies ist die wichtigste Konfiguration für den Erfolg Ihres Agenten.
+
+Anweisungen sind ein Textblock, der mit jeder Gesprächsrunde an das KI-Modell gesendet wird. Sie teilen dem Modell mit:
+
+- **Wer es ist** (Rolle und Identität)
+- **Wie es sich verhalten soll** (Ton, Stil, Leitplanken)
+- **Was es erreichen soll** (Ziele und Vorgaben)
+- **Wann Tools verwendet werden sollen** (Aktionen, Wissen, Weiterleitungen)
+
+<Note>
+  Die Plattform stellt automatisch Gesprächsverlauf, Kontaktdaten und Wissensbank-Inhalte bereit. Konzentrieren Sie Ihre Anweisungen auf Regeln und Anleitungen, die nur Sie bereitstellen können.
+</Note>
+
+---
+
+## Der Prompteditor
+
+Der Prompteditor enthält hilfreiche Funktionen, um das Schreiben von Anweisungen zu erleichtern:
+
+<CardGroup cols={2}>
+  <Card title="Großer Text-Editor" icon="text">
+    Geräumiger Editor zum Schreiben detaillierter Anweisungen
+  </Card>
+  <Card title="Jinja-Unterstützung" icon="code">
+    Vollständiges Jinja2-Templating mit Variablen und Bedingungen
+  </Card>
+  <Card title="Prompt-Vorlagen" icon="book">
+    Vorgefertigte Vorlagen für häufige Anwendungsfälle
+  </Card>
+  <Card title="Syntax-Hervorhebung" icon="code">
+    Jinja-Syntaxhervorhebung und Fehlererkennung
+  </Card>
+</CardGroup>
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/agent/agent-instruction-light.png" alt="Agenten-Prompteditor mit Textbereich, Vorlagen- und Schreibhilfe-Buttons, Variablen-Helfer, Token-Zähler und Speicher-Steuerelementen" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/agent/agent-instruction-dark.png" alt="Agenten-Prompteditor mit Textbereich, Vorlagen- und Schreibhilfe-Buttons, Variablen-Helfer, Token-Zähler und Speicher-Steuerelementen" />
+  </div>
+</Frame>
+
+---
+
+## Verwendung von Prompt-Vorlagen
+
+Der Prompteditor enthält eine **Prompt-Bibliothek** mit sofort einsatzbereiten Vorlagen:
+
+- **Lead-Qualifizierung** - B2B-Vertrieb mit BANT-Framework
+- **Terminbuchung** - Service-Terminplanung mit Bestätigungen
+- **Kunden-Feedback** - NPS-Umfragen mit Recovery-Workflows
+- **Informationssammlung** - Recherche und Datenerfassung
+- **Kundenansprache** - Kaltakquise mit Value-First-Ansatz
+- **Branchenspezifisch** - Gesundheitswesen, Immobilien, Hausdienstleistungen und mehr
+
+**So verwenden Sie eine Vorlage:**
+
+1. Klicken Sie im Prompteditor auf "Vorlagen durchsuchen"
+2. Wählen Sie eine Vorlage aus, die zu Ihrem Anwendungsfall passt
+3. Passen Sie die Platzhalter an (`firmenname`, `dienstleistungsart` usw.)
+4. Testen und verfeinern Sie basierend auf Ihren spezifischen Anforderungen
+
+<Frame>
+  <img
+    className="block dark:hidden rounded-lg my-4"
+    src="/images/prompt_templates.png"
+    alt="Prompt-Vorlagen-Bibliothek mit verfügbaren Vorlagen im Hellmodus"
+  />
+  <img
+    className="hidden dark:block rounded-lg my-4"
+    src="/images/prompt_templates_dark.png"
+    alt="Prompt-Vorlagen-Bibliothek mit verfügbaren Vorlagen im Dunkelmodus"
+  />
+</Frame>
+
+<Tip>
+  Vorlagen folgen einer bewährten Struktur: Rolle → Ziel → Gesprächsablauf → Kurzreferenz. Beginnen Sie mit einer Vorlage und passen Sie diese an, anstatt von Grund auf neu zu beginnen.
+</Tip>
+
+---
+
+## Grundlegende Anweisungsstruktur
+
+Hier ist eine einfache Vorlage für den Einstieg:
+
+```text wrap
+Sie sind [NAME/ROLLE] für [FIRMENNAME].
+
+Ihre Rolle:
+- [Hauptverantwortung]
+- [Nebenverantwortung]
+- [Zusätzliche Aufgaben]
+
+Tonfall: [Beschreiben Sie den Kommunikationsstil]
+
+Wichtige Richtlinien:
+- [Wichtige Regel 1]
+- [Wichtige Regel 2]
+- [Wichtige Regel 3]
+
+Wenn [SITUATION], sollten Sie [AKTION].
+```
+
+### Beispiel: Kundensupport-Agent
+
+```text wrap
+Sie sind Alex, ein freundlicher Kundensupport-Agent für Acme Software.
+
+Ihre Rolle:
+- Beantworten Sie Kundenfragen zu unseren Produkten und Dienstleistungen
+- Beheben Sie häufige technische Probleme
+- Stellen Sie Kontoinformationen auf Anfrage bereit
+- Eskalieren Sie komplexe Probleme an den menschlichen Support
+
+Tonfall: Professionell, aber herzlich, geduldig und hilfsbereit. Halten Sie Antworten prägnant und klar.
+
+Wichtige Richtlinien:
+- Begrüßen Sie Kunden immer herzlich und fragen Sie, wie Sie helfen können
+- Machen Sie niemals Versprechen über Funktionen oder Preise, bei denen Sie sich nicht sicher sind
+- Wenn Sie etwas nicht wissen, geben Sie es ehrlich zu und bieten Sie eine Weiterleitung an
+- Bestätigen Sie das Verständnis, bevor Sie zu Lösungen übergehen
+- Beenden Sie das Gespräch mit der Frage, ob Sie noch etwas helfen können
+
+Wenn ein Kunde Abrechnungsprobleme erwähnt, geben Sie grundlegende Informationen, bieten Sie aber immer eine Weiterleitung zur Abrechnungsabteilung für detaillierte Hilfe an.
+```
+
+---
+
+## Was der Agent bereits weiß
+
+Die Plattform stellt Ihrem Agenten bei jeder Gesprächsrunde automatisch den folgenden Kontext zur Verfügung. **Sie müssen diese nicht in Ihre Anweisungen aufnehmen:**
+
+<AccordionGroup>
+  <Accordion title="Gesprächstranskript" icon="messages">
+    Der vollständige Gesprächsverlauf zwischen dem Agenten und dem Kontakt, einschließlich aller Nachrichten und Tool-Aufrufe.
+  </Accordion>
+  <Accordion title="Kontaktinformationen" icon="user">
+    Kontaktdaten wie Name, E-Mail und Telefonnummer. Zugriff über Variablen wie `{{ contact.first_name }}`.
+  </Accordion>
+  <Accordion title="Wissensbank-Inhalte" icon="book">
+    Bei Relevanz ruft die Plattform automatisch Inhalte aus Ihren Wissensbanken ab und fügt sie ein.
+  </Accordion>
+  <Accordion title="Verfügbare Aktionen" icon="bolt">
+    Die Plattform teilt dem Agenten mit, welche Aktionen verfügbar sind (Weiterleitung, Terminbuchung, benutzerdefinierte API-Aktionen). Sie müssen nur erklären, wann diese verwendet werden sollen.
+  </Accordion>
+  <Accordion title="Aktuelles Datum/Uhrzeit" icon="clock">
+    Der Agent kennt automatisch das aktuelle Datum, die Uhrzeit und die Zeitzone.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Häufige Fehler
+
+<AccordionGroup>
+  <Accordion title="Anweisungen zu lang" icon="text-size">
+    Halten Sie Anweisungen unter 3000 Wörtern. Lange Anweisungen verwirren das Modell und verlangsamen die Reaktionszeiten.
+
+    **Lösung:** Konzentrieren Sie sich auf wesentliche Regeln und Gesprächsabläufe. Verschieben Sie Fakten und Richtlinien in Wissensbanken.
+  </Accordion>
+  <Accordion title="Zu vage" icon="circle-question">
+    "Seien Sie hilfreich" bietet keine umsetzbare Anleitung.
+
+    **Lösung:** Seien Sie spezifisch. Schreiben Sie stattdessen: "Beantworten Sie Fragen in unter 30 Sekunden, stellen Sie jeweils eine klärende Frage und bestätigen Sie das Verständnis, bevor Sie Lösungen anbieten."
+  </Accordion>
+  <Accordion title="Widersprüchliche Regeln" icon="triangle-exclamation">
+    Widersprüchliche Anweisungen verwirren den Agenten.
+
+    **Lösung:** Überprüfen Sie sorgfältig, ob sich Richtlinien nicht widersprechen. Testen Sie gründlich.
+  </Accordion>
+  <Accordion title="Fest codierte Fakten" icon="database">
+    Fakten, Produktdetails und Richtlinien gehören in Wissensbanken, nicht in Anweisungen.
+
+    **Lösung:** Verschieben Sie alle sachlichen Inhalte in Wissensbanken. Anweisungen sollten nur Verhaltensregeln und Gesprächsanleitungen enthalten.
+  </Accordion>
+  <Accordion title="Übermäßig komplexe Logik" icon="code">
+    Tief verschachtelte Bedingungen und komplexe Jinja-Logik scheitern oft.
+
+    **Lösung:** Halten Sie die Logik einfach und klar. Verwenden Sie einfache Wenn/Dann-Anweisungen.
+
+    **Alternative:** Erstellen Sie ein Team von Agenten, die sich gegenseitig weiterleiten können, jeder mit einer dedizierten Aufgabe und einfacheren Anweisungen.
+  </Accordion>
+  <Accordion title="Falsche Aktionsnamen" icon="bolt">
+    Nicht übereinstimmende Aktionsnamen verhindern, dass der Agent Aktionen korrekt verwendet.
+
+    **Lösung:** Verweisen Sie immer auf exakte Aktionsnamen aus dem Aktions-Bereich. Kopieren Sie sie direkt aus der Benutzeroberfläche.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Prompt Engineering Leitfaden" icon="book" href="/build/conversation/prompt-engineering-guide">
+    Fortgeschrittene Techniken zum Schreiben effektiver Anweisungen
+  </Card>
+  <Card title="Begrüßungsnachrichten" icon="hand-wave" href="/build/conversation/greeting-messages">
+    Konfigurieren Sie, wie Gespräche beginnen
+  </Card>
+  <Card title="Variablen & Dynamischer Inhalt" icon="brackets-curly" href="/build/conversation/variables-dynamic-content">
+    Beherrschen Sie Jinja-Templating und Variablen
+  </Card>
+  <Card title="Testen Sie Ihren Agenten" icon="vial" href="/test/test-in-dashboard">
+    Erfahren Sie, wie Sie Ihren Agenten effektiv testen
+  </Card>
+</CardGroup>

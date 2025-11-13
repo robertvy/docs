@@ -1,0 +1,499 @@
+---
+title: "Aktionen & Tools Übersicht"
+description: "Ermöglichen Sie Ihren KI-Agenten, während Gesprächen echte Geschäftsaufgaben auszuführen"
+icon: "bolt"
+---
+
+## Übersicht
+
+Aktionen verwandeln Ihre KI-Agenten von reinen Gesprächsassistenten in leistungsstarke Tools zur Geschäftsautomatisierung. Über das Beantworten von Fragen hinaus können Ihre Agenten Termine planen, Anrufe weiterleiten, Systeme aktualisieren und sich in Ihre bestehenden Geschäftsabläufe integrieren - alles während sie einen natürlichen Gesprächsfluss aufrechterhalten.
+
+Stellen Sie sich Aktionen als Werkzeugkasten Ihres Agenten vor. So wie ein menschlicher Mitarbeiter verschiedene Tools zur Erledigung von Aufgaben nutzt, führt Ihr KI-Agent Aktionen aus, um während Kundeninteraktionen echte Arbeit zu leisten.
+
+<Note>
+Aktionen werden automatisch basierend auf dem Gesprächskontext und den Anweisungen ausgeführt, die Sie in der Aufforderung Ihres Agenten angeben. Sie definieren wann und wie Aktionen verwendet werden sollten durch [Prompt Engineering](/build/conversation/prompt-engineering-guide).
+</Note>
+
+---
+
+## Was sind Aktionen?
+
+Aktionen sind vorkonfigurierte Tools, die Ihr Agent während Gesprächen aufrufen kann, um bestimmte Aufgaben zu erledigen. Wenn ein Kunde etwas anfordert, das eine Aktion erfordert - wie die Buchung eines Termins oder das Gespräch mit einem Spezialisten - kann Ihr Agent die entsprechende Aktion nahtlos ausführen.
+
+### Wie Aktionen funktionieren
+
+Während Gesprächen entscheidet Ihr Agent autonom, ob er direkt antworten oder eine Aktion ausführen soll:
+
+```mermaid
+graph TD
+    A[Kundennachricht] --> B[KI-Agent LLM<br/>Bewertet Kontext]
+    B --> C{Aktion nötig?}
+    C -->|Nein| D[Direkt antworten]
+    C -->|Ja| E[Aktion ausführen]
+    E --> F[Mit Ergebnissen fortfahren]
+    D --> G[Gespräch fortsetzen]
+    F --> G
+```
+
+Der Agent verwendet **Aktionsnamen und Beschreibungen**, um zu verstehen, was jede Aktion tut. Diese sind entscheidend dafür, dass das LLM das richtige Tool auswählt.
+
+**Best Practices:**
+- Geben Sie Aktionen klare, beschreibende Namen (z.B. "termin_buchen" nicht "aktion1")
+- Schreiben Sie detaillierte Beschreibungen, die erklären, was die Aktion tut
+- Fügen Sie explizite Anweisungen in Ihren [Agentenanweisungen (System-Prompt)](/build/conversation/prompt-engineering-guide) hinzu, **wann** jede Aktion verwendet werden soll
+
+<Note>
+Während Aktionsnamen und Beschreibungen dem Agenten mitteilen, **was** eine Aktion tut, sollten Ihre Agentenanweisungen (System-Prompt) angeben, **wann** sie verwendet werden soll. Zum Beispiel: "Wenn ein Kunde darum bittet, mit einem Menschen zu sprechen, verwenden Sie die Aktion transfer_to_support."
+</Note>
+
+---
+
+## Aktionskategorien
+
+Aktionen sind im Dashboard in zwei Kategorien organisiert:
+
+### Anrufsteuerung
+
+<CardGroup cols={2}>
+  <Card title="Anruf weiterleiten" icon="phone" href="/build/actions/transfer-details">
+    Weiterleiten an einen anderen KI-Agenten, eine Telefonnummer oder SIP-Adresse
+  </Card>
+  <Card title="Gespräch beenden" icon="phone-slash" href="/build/actions/call-control">
+    Lassen Sie den Agenten das Gespräch mit einer benutzerdefinierten Nachricht beenden
+  </Card>
+</CardGroup>
+
+### Integration
+
+<CardGroup cols={2}>
+  <Card title="Benutzerdefinierte Aktion" icon="code" href="/build/actions/custom-api-actions">
+    Erstellen Sie eine benutzerdefinierte API- oder Webhook-Aktion
+  </Card>
+  <Card title="Kalenderbuchung" icon="calendar" href="/build/actions/booking-calendar">
+    Planen Sie Termine mit Cal.com-Integration
+  </Card>
+</CardGroup>
+
+---
+
+## Wann Aktionen ausgeführt werden
+
+Aktionen werden **während des Gesprächs** ausgeführt, wenn sie von Ihrem Agenten basierend auf seinen Anweisungen ausgelöst werden. Im Gegensatz zu traditionellen IVR-Systemen, die starren Skripten folgen, nutzen KI-Agenten kontextuelles Verständnis, um zu bestimmen, wann Aktionen angemessen sind.
+
+### Auslösemechanismen
+
+**Anweisungsbasierte Auslöser:**
+```text wrap
+Wenn der Kunde darum bittet, mit einem Menschen zu sprechen, verwenden Sie die Aktion 'Transfer zum Support'.
+
+Nach erfolgreicher Terminbuchung verwenden Sie die Aktion 'Anruf höflich beenden'.
+
+Wenn der Kunde sagt, dass er Zeit braucht, um etwas zu überprüfen, verwenden Sie die Aktion 'Inaktivitäts-Timer pausieren'.
+```
+
+**Bedingte Auslöser:**
+```jinja
+Wenn der Kunde ein Abrechnungsproblem meldet:
+1. Verwenden Sie die Aktion 'Konto nachschlagen', um seine Informationen abzurufen
+2. Wenn Saldo überfällig ist, weiterleiten an Abrechnungsabteilung
+3. Wenn Saldo aktuell ist, Problem beheben
+
+{% if contact.contact_status == "vip" %}
+Bieten Sie VIP-Kunden immer sofort an, sie zu einem dedizierten Support zu verbinden.
+{% endif %}
+```
+
+**Mehrstufige Workflows:**
+```text wrap
+Terminbuchungsablauf:
+1. Erforderliche Informationen sammeln (Name, E-Mail, bevorzugtes Datum)
+2. Verwenden Sie die Aktion 'Verfügbarkeit prüfen', um Cal.com abzufragen
+3. Optionen dem Kunden präsentieren
+4. Verwenden Sie die Aktion 'Termin buchen', um zu bestätigen
+5. Verwenden Sie die Aktion 'SMS-Bestätigung senden', wenn der Kunde eine Telefonnummer angegeben hat
+6. Verwenden Sie die Aktion 'Anruf höflich beenden', um abzuschließen
+```
+
+<Warning>
+Aktionen werden in Echtzeit während des Anrufs ausgeführt. Stellen Sie sicher, dass Ihre Endpunkte zuverlässig sind und schnell antworten, um unangenehme Pausen im Gespräch zu vermeiden.
+</Warning>
+
+---
+
+## Aktionen konfigurieren
+
+Die gesamte Aktionskonfiguration erfolgt im Agenteneditor unter dem Tab **Fähigkeiten → Aktionen**.
+
+<Steps>
+  <Step title="Zu Aktionen navigieren">
+    Öffnen Sie Ihren Agenten im Editor und klicken Sie auf **Fähigkeiten** → Tab **Aktionen**
+  </Step>
+  <Step title="Aktionstyp wählen">
+    Durchsuchen Sie die Kategorien **Anrufsteuerung** und **Integration** und klicken Sie auf **Hinzufügen** bei der Aktion, die Sie konfigurieren möchten
+  </Step>
+  <Step title="Aktion konfigurieren">
+    Füllen Sie das aktionsspezifische Konfigurationsformular aus:
+    - **Name**: Geben Sie Ihrer Aktion einen klaren, beschreibenden Namen
+    - **Beschreibung**: Erklären Sie, was diese Aktion tut
+    - **Aktionsspezifische Einstellungen**: Konfigurieren Sie Parameter basierend auf dem Aktionstyp
+  </Step>
+  <Step title="Speichern">
+    Speichern Sie die Aktion, um sie dem Werkzeugkasten Ihres Agenten hinzuzufügen
+  </Step>
+</Steps>
+
+---
+
+## Aktionsstatusanzeigen
+
+Nach dem Hinzufügen von Aktionen sehen Sie diese im Aktionen-Tab Ihres Agenten mit Statusanzeigen aufgelistet:
+
+<CardGroup cols={3}>
+  <Card title="Konfiguriert" icon="circle-check">
+    Aktion ist ordnungsgemäß konfiguriert und einsatzbereit
+  </Card>
+  <Card title="Unvollständig" icon="circle-exclamation">
+    Fehlende erforderliche Konfiguration oder Anmeldeinformationen
+  </Card>
+  <Card title="Fehler" icon="circle-xmark">
+    Konfigurationsfehler oder Authentifizierungsfehler
+  </Card>
+</CardGroup>
+
+---
+
+## Aktionen in Anweisungen referenzieren
+
+Um Aktionen zu verwenden, referenzieren Sie diese **mit dem exakten Namen** in den Anweisungen Ihres Agenten:
+
+### Direkte Referenz
+```text wrap
+Wenn ein Kunde darum bittet, mit jemandem über die Abrechnung zu sprechen,
+verwenden Sie die Aktion 'Transfer zur Abrechnungsabteilung'.
+```
+
+### Mit Bedingungen
+```text wrap
+Wenn das Problem des Kunden nicht gelöst werden kann:
+1. Entschuldigen Sie sich für die Unannehmlichkeiten
+2. Erklären Sie, dass Sie ihn mit einem Spezialisten verbinden
+3. Verwenden Sie die Aktion 'Transfer zum Support'
+```
+
+### Mit Parametern
+```text wrap
+Nachdem Sie die E-Mail und das bevorzugte Datum des Kunden gesammelt haben,
+verwenden Sie die Aktion 'Beratungstermin buchen', um das Treffen zu planen.
+```
+
+<Note>
+Aktionsnamen sind case-sensitive und müssen genau wie konfiguriert übereinstimmen. Wenn Sie eine Aktion umbenennen, aktualisieren Sie alle Referenzen in Ihren Anweisungen.
+</Note>
+
+---
+
+## Best Practices für die Konfiguration
+
+<AccordionGroup>
+  <Accordion title="Einfach beginnen" icon="seedling">
+    Beginnen Sie mit grundlegenden Aktionen, bevor Sie komplexe Integrationen hinzufügen. Fügen Sie eine Aktion nach der anderen hinzu, testen Sie gründlich, dann fügen Sie die nächste hinzu.
+
+    **Beispiel-Reihenfolge:**
+    1. Aktion "Gespräch beenden" hinzufügen
+    2. Aktion "Transfer zum Support" hinzufügen
+    3. Buchungsaktion hinzufügen
+    4. Benutzerdefinierte API-Aktionen hinzufügen
+  </Accordion>
+
+  <Accordion title="Verwenden Sie klare, beschreibende Namen" icon="tag">
+    Aktionsnamen sind entscheidend - das LLM verwendet sie, um zu verstehen, was jedes Tool tut. Verwenden Sie beschreibende, aktionsorientierte Namen, die den Zweck der Funktion klar vermitteln.
+
+    **Warum dies wichtig ist:** Das Modell verlässt sich auf Funktionsnamen und Beschreibungen, um zu erkennen, wann eine Funktion aufgerufen werden muss und das richtige Tool für die Aufgabe auszuwählen.
+
+    **Gute Namen:**
+    - "Kundenkonto abrufen" - Klares Aktionsverb + spezifisches Ziel
+    - "Transfer zur Abrechnungsabteilung" - Spezifisches Ziel enthalten
+    - "30-Minuten-Beratung buchen" - Enthält relevante Details
+
+    **Schlechte Namen:**
+    - "Aktion 1" - Kein Kontext darüber, was sie tut
+    - "Transfer" - Zu allgemein, unklar wohin
+    - "API-Aufruf" - Beschreibt die Aktion nicht
+  </Accordion>
+
+  <Accordion title="Schreiben Sie detaillierte Beschreibungen" icon="file-lines">
+    Aktionsbeschreibungen helfen dem LLM zu verstehen, **was** die Aktion tut. Die Beschreibung sollte den Zweck der Aktion, was sie zurückgibt und welche Parameter sie verwendet, erklären.
+
+    **Best Practices von [OpenAI function calling](https://platform.openai.com/docs/guides/function-calling):**
+    - Beschreiben Sie klar, was die Aktion tut und was sie zurückgibt
+    - Erklären Sie, welche Parameter oder Daten sie verwendet
+    - Verwenden Sie präzise Sprache, die das Verständnis des Modells leitet
+    - Halten Sie es prägnant und dennoch umfassend
+
+    **Beispiel:**
+    ```
+    Name: Kundenkonto abrufen
+    Beschreibung: Ruft Kundenkontodaten aus Salesforce CRM mit
+    ihrer Telefonnummer ab. Gibt Kontostatus, Saldo und letzte Bestellungen zurück.
+    ```
+
+    **Hinweis:** Beschreiben Sie **was** die Aktion in der Beschreibung tut. Geben Sie **wann** sie verwendet werden soll in Ihren [Agentenanweisungen (System-Prompt)](/build/conversation/prompt-engineering-guide) an.
+  </Accordion>
+
+  <Accordion title="Gründlich testen" icon="vial">
+    Testen Sie jede Aktion in der Agenten-Testoberfläche, bevor Sie live gehen:
+    - Überprüfen Sie, ob die Aktion korrekt ausgeführt wird
+    - Testen Sie Erfolgsszenarien
+    - Testen Sie Fehlerszenarien
+    - Überprüfen Sie die Fehlerbehandlung
+    - Überprüfen Sie den Gesprächsfluss
+  </Accordion>
+
+  <Accordion title="Fehler elegant behandeln" icon="shield-check">
+    Konfigurieren Sie Fallback-Verhaltensweisen für den Fall, dass Aktionen fehlschlagen. Weisen Sie Ihren Agenten an, was zu tun ist, wenn Aktionen nicht funktionieren.
+
+    ```
+    Wenn die Aktion 'Termin buchen' fehlschlägt:
+    1. Entschuldigen Sie sich aufrichtig
+    2. Bieten Sie an, dass jemand zurückruft, um einen Termin zu vereinbaren
+    3. Sammeln Sie ihre bevorzugte Rückrufnummer
+    4. Verwenden Sie die Aktion 'Anruf höflich beenden'
+    ```
+  </Accordion>
+
+  <Accordion title="Sammeln Sie zuerst Informationen" icon="clipboard-check">
+    Stellen Sie sicher, dass Agenten erforderliche Daten sammeln, bevor sie Aktionen ausführen. Versuchen Sie nicht, Termine ohne E-Mail-Adressen zu buchen oder Anrufe weiterzuleiten, ohne zu erklären warum.
+
+    ```
+    Vor Verwendung der Aktion 'Beratungstermin buchen':
+    1. Bestätigen Sie, dass der Kunde einen Termin vereinbaren möchte
+    2. Fragen Sie nach seiner E-Mail-Adresse, wenn nicht im Kontaktdatensatz vorhanden
+    3. Besprechen Sie seine bevorzugten Daten und Zeiten
+    4. Erklären Sie, was die Beratung abdecken wird
+    5. Erst dann die Buchungsaktion ausführen
+    ```
+  </Accordion>
+
+  <Accordion title="Anmeldeinformationen sichern" icon="lock">
+    Verwenden Sie geeignete Authentifizierung für alle benutzerdefinierten Aktionen. Exponieren Sie niemals API-Schlüssel oder Anmeldeinformationen in URLs oder unverschlüsselten Feldern.
+
+    - Verwenden Sie Bearer-Token für API-Authentifizierung
+    - Verwenden Sie Basic Auth nur über HTTPS
+    - Speichern Sie sensible Anmeldeinformationen sicher
+    - Rotieren Sie Anmeldeinformationen regelmäßig
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Aktionen testen
+
+Vor der Bereitstellung von Agenten mit Aktionen testen Sie gründlich in der Dashboard-Testoberfläche:
+
+<Steps>
+  <Step title="Testoberfläche öffnen">
+    Klicken Sie auf **Testanruf** in der oberen rechten Ecke des Agenteneditors
+  </Step>
+  <Step title="Web-Anruf starten">
+    Klicken Sie auf **Web-Anruf starten**, um ein Testgespräch zu beginnen
+  </Step>
+  <Step title="Jede Aktion auslösen">
+    Durchlaufen Sie Szenarien, die jede konfigurierte Aktion auslösen
+  </Step>
+  <Step title="Ausführung überprüfen">
+    Überprüfen Sie, dass Aktionen korrekt ausgeführt werden und Antworten angemessen behandeln
+  </Step>
+  <Step title="Fehlerfälle testen">
+    Simulieren Sie Fehler, um zu überprüfen, dass die Fehlerbehandlung wie erwartet funktioniert
+  </Step>
+  <Step title="Transkript überprüfen">
+    Untersuchen Sie das Gesprächstranskript, um sicherzustellen, dass der Fluss natürlich ist und Aktionen sich nahtlos integrieren
+  </Step>
+</Steps>
+
+### Was zu testen ist
+
+**Für Transfer-Aktionen:**
+- Transfer wird zum richtigen Ziel ausgeführt
+- Wartemusik wird abgespielt, wenn konfiguriert
+- Transfer-Nachricht ist angemessen
+- Kalt- vs. Warmtransfer-Modi funktionieren korrekt
+
+**Für Buchungsaktionen:**
+- Verfügbarkeit wird korrekt abgerufen
+- Buchung wird erfolgreich bestätigt
+- E-Mail/SMS-Benachrichtigungen werden ordnungsgemäß gesendet
+- Zeitzonen-Behandlung ist genau
+
+**Für benutzerdefinierte Aktionen:**
+- API-Aufrufe erfolgreich
+- Authentifizierung funktioniert
+- Antwortdaten sind für den Agenten verfügbar
+- Fehlerantworten werden elegant behandelt
+
+**Für alle Aktionen:**
+- Agent referenziert Aktion mit korrektem Namen
+- Agent sammelt zuerst erforderliche Informationen
+- Gesprächsfluss bleibt natürlich
+- Fehler brechen das Gespräch nicht ab
+
+<Warning>
+Testanrufe verwenden echte Integrationen. Wenn Sie eine Buchungsaktion testen, werden echte Termine in Ihrem Cal.com-Konto erstellt. Bereinigen Sie danach Testdaten.
+</Warning>
+
+---
+
+## Häufige Anwendungsfälle
+
+### Kundensupport-Workflow
+
+```text wrap
+Agentenkonfiguration:
+- Transfer zum Support (für komplexe Probleme)
+- Kundenkonto nachschlagen (benutzerdefinierte API)
+- Support-Ticket erstellen (benutzerdefinierte API)
+- Anruf höflich beenden
+
+Anweisungen:
+Wenn ein Kunde anruft:
+1. Begrüßen Sie ihn herzlich
+2. Verwenden Sie 'Kundenkonto nachschlagen', um seine Informationen abzurufen
+3. Fragen Sie nach seinem Problem
+4. Wenn Sie es lösen können, tun Sie dies mit der Wissensdatenbank
+5. Wenn es komplex ist, verwenden Sie 'Support-Ticket erstellen' und geben Sie die Ticket-Nummer an
+6. Wenn der Kunde einen Menschen wünscht, verwenden Sie 'Transfer zum Support'
+7. Wenn gelöst, verwenden Sie 'Anruf höflich beenden'
+```
+
+### Terminbuchungs-Workflow
+
+```text wrap
+Agentenkonfiguration:
+- Beratungstermin buchen (Cal.com-Buchung)
+- SMS-Bestätigung senden (optional)
+- Transfer zur Terminplanung (Fallback)
+- Anruf höflich beenden
+
+Anweisungen:
+Wenn ein Kunde buchen möchte:
+1. Fragen Sie, welche Art von Termin er benötigt
+2. Sammeln Sie die E-Mail-Adresse, wenn nicht im Kontaktdatensatz vorhanden
+3. Besprechen Sie seine bevorzugten Daten
+4. Verwenden Sie 'Beratungstermin buchen', um Verfügbarkeit anzuzeigen und zu bestätigen
+5. Wenn Buchung erfolgreich, bestätigen Sie Details mündlich
+6. Wenn Buchung fehlschlägt, verwenden Sie 'Transfer zur Terminplanung'
+7. Verwenden Sie 'Anruf höflich beenden', um abzuschließen
+```
+
+### Vertriebsqualifizierungs-Workflow
+
+```text wrap
+Agentenkonfiguration:
+- Unternehmensdaten nachschlagen (benutzerdefinierte API)
+- CRM-Lead aktualisieren (benutzerdefinierte API)
+- Transfer zum Vertrieb (für qualifizierte Leads)
+- Anruf höflich beenden
+
+Anweisungen:
+Für ausgehende Vertriebsanrufe:
+1. Stellen Sie sich und Ihren Zweck vor
+2. Verwenden Sie 'Unternehmensdaten nachschlagen', um Firmendaten abzurufen
+3. Stellen Sie qualifizierende Fragen (Budget, Zeitplan, Autorität)
+4. Verwenden Sie 'CRM-Lead aktualisieren' mit Qualifizierungsstatus
+5. Wenn qualifiziert, verwenden Sie 'Transfer zum Vertrieb' mit Kontext
+6. Wenn nicht qualifiziert, bedanken Sie sich und verwenden Sie 'Anruf höflich beenden'
+```
+
+---
+
+## Fehlerbehebung häufiger Probleme
+
+<AccordionGroup>
+  <Accordion title="Aktion wird nicht ausgelöst" icon="circle-exclamation">
+    **Problem:** Agent verwendet die Aktion nicht, obwohl er sollte.
+
+    **Lösungen:**
+    - Überprüfen Sie, ob der Aktionsname in den Anweisungen genau übereinstimmt (case-sensitive)
+    - Überprüfen Sie, ob der Aktionsstatus "Konfiguriert" ist, nicht "Unvollständig" oder "Fehler"
+    - Machen Sie Anweisungen expliziter darüber, wann die Aktion verwendet werden soll
+    - Testen Sie isoliert, indem Sie den Agenten explizit auffordern, die Aktion zu verwenden
+    - Überprüfen Sie das Gesprächstranskript, um die Argumentation des Agenten zu sehen
+  </Accordion>
+
+  <Accordion title="Agent sagt, Aktion wird ausgeführt, aber tut es nicht" icon="comments">
+    **Problem:** Agent bestätigt mündlich, dass er eine Aktion ausführt (z.B. "Ich verbinde Sie jetzt"), aber die Aktion wird erst im nächsten Gesprächszug ausgeführt.
+
+    **Warum dies passiert:** Der Agent generiert eine Antwort und führt die Aktion im selben Zug aus, aber nur eines kann pro Zug passieren.
+
+    **Lösung:** Fordern Sie den Agenten auf, vor der Ausführung von Aktionen um Benutzerbestätigung zu bitten:
+
+    ```jinja
+    Vor Verwendung der Aktion 'Transfer zum Support':
+    1. Erklären Sie, warum Sie ihn weiterleiten
+    2. Fragen Sie "Möchten Sie, dass ich Sie jetzt verbinde?"
+    3. Warten Sie auf Bestätigung
+    4. Sobald bestätigt, führen Sie die Aktion 'Transfer zum Support' aus
+    ```
+
+    Dies stellt sicher, dass der Agent die Aktion unmittelbar nach Erhalt der Bestätigung ausführt, nicht im selben Zug wie die Ankündigung.
+  </Accordion>
+
+  <Accordion title="Authentifizierungsfehler" icon="key">
+    **Problem:** Benutzerdefinierte Aktionen schlagen mit 401/403-Fehlern fehl.
+
+    **Lösungen:**
+    - Überprüfen Sie, ob die Anmeldeinformationen korrekt sind und nicht abgelaufen sind
+    - Überprüfen Sie, ob der Authentifizierungstyp den API-Anforderungen entspricht
+    - Stellen Sie sicher, dass Bearer-Token das Präfix "Bearer" enthalten, falls erforderlich
+    - Testen Sie den Endpunkt unabhängig mit Postman oder curl
+    - Überprüfen Sie die API-Dokumentation zum Authentifizierungsformat
+  </Accordion>
+
+  <Accordion title="Buchungsaktion schlägt fehl" icon="calendar-xmark">
+    **Problem:** Cal.com-Buchungsaktion gibt Fehler zurück.
+
+    **Lösungen:**
+    - Überprüfen Sie, ob die Cal.com-Integration verbunden ist
+    - Überprüfen Sie, ob der Ereignistyp existiert und aktiv ist
+    - Stellen Sie sicher, dass die Meeting-Plattform in Cal.com konfiguriert ist
+    - Überprüfen Sie, ob Planungsfenster angeforderte Daten zulassen
+    - Überprüfen Sie die Zeitzonenkonfiguration
+    - Testen Sie die Buchung manuell in Cal.com, um die Verfügbarkeit zu überprüfen
+  </Accordion>
+
+  <Accordion title="Transfer verbindet nicht" icon="phone-slash">
+    **Problem:** Transfer-Aktion wird ausgeführt, aber verbindet nicht.
+
+    **Lösungen:**
+    - Überprüfen Sie, ob das Ziel im korrekten E.164-Format ist (z.B. +15551234567)
+    - Stellen Sie sicher, dass die Telefonnummer erreichbar ist (für Telefontransfers)
+    - Überprüfen Sie, ob die SIP-Adresse korrekt ist (für SIP-Transfers)
+    - Testen Sie das Ziel unabhängig
+  </Accordion>
+
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Anrufsteuerungsaktionen" icon="phone" href="/build/actions/call-control">
+    Konfigurieren Sie Transfer-, Gesprächsbeendigungs- und Inaktivitätsverwaltungsaktionen
+  </Card>
+  <Card title="Transfer-Details" icon="right-left" href="/build/actions/transfer-details">
+    Meistern Sie Transfer-Ziele, Modi und erweiterte Einstellungen
+  </Card>
+  <Card title="Buchungsintegration" icon="calendar" href="/build/actions/booking-calendar">
+    Richten Sie Cal.com-Terminplanung mit E-Mail- und SMS-Benachrichtigungen ein
+  </Card>
+  <Card title="Benutzerdefinierte API-Aktionen" icon="code" href="/build/actions/custom-api-actions">
+    Verbinden Sie Ihre Agenten mit externen Systemen und APIs
+  </Card>
+  <Card title="Anweisungsleitfaden" icon="pen" href="/build/conversation/instructions">
+    Erfahren Sie, wie Sie effektive Agentenanweisungen schreiben
+  </Card>
+  <Card title="Prompt Engineering" icon="book" href="/build/conversation/prompt-engineering-guide">
+    Meistern Sie fortgeschrittene Prompting-Techniken für zuverlässiges Agentenverhalten
+  </Card>
+</CardGroup>
