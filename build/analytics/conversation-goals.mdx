@@ -10,7 +10,26 @@ Conversation goals define measurable objectives for your AI agent to achieve dur
 
 **Access:** Agent editor → **Analytics → Goals**
 
-**Use cases:** Lead qualification, appointment booking, information collection, issue resolution, sales conversion
+<CardGroup cols={3}>
+  <Card title="Lead Qualification" icon="user-check">
+    Identify qualified prospects
+  </Card>
+  <Card title="Appointment Booking" icon="calendar">
+    Schedule meetings and demos
+  </Card>
+  <Card title="Information Collection" icon="clipboard-list">
+    Gather customer data
+  </Card>
+  <Card title="Issue Resolution" icon="wrench">
+    Solve customer problems
+  </Card>
+  <Card title="Sales Conversion" icon="hand-holding-dollar">
+    Close deals and upsells
+  </Card>
+  <Card title="Callback Scheduling" icon="phone">
+    Book follow-up calls
+  </Card>
+</CardGroup>
 
 ---
 
@@ -55,39 +74,66 @@ Conversation goals define measurable objectives for your AI agent to achieve dur
 
 ## Primary vs Secondary Goals
 
-### Primary Goal
+```mermaid
+graph TD
+    A[Conversation Starts] --> B[Primary Goal]
+    B -->|Focus Here First| C{Goal Achieved?}
+    C -->|Yes| D[Pursue Secondary Goals]
+    C -->|No| E[Continue Working on Primary]
 
-**One primary goal required.** Choose the single most important outcome.
+    D --> F[Secondary Goal 1]
+    D --> G[Secondary Goal 2]
+    D --> H[Secondary Goal 3]
 
-**Why only one?** Having one primary goal keeps the agent focused and prevents it from trying to accomplish too many things in one conversation. This leads to higher success rates and better customer experience.
+    F --> I[End Conversation]
+    G --> I
+    H --> I
+    E --> I
 
-**Examples:**
-- Book appointment
-- Qualify lead
-- Resolve issue
-- Collect payment information
-- Schedule callback
+    style B fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+    style D fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style F fill:#fff9c4,stroke:#f57f17
+    style G fill:#fff9c4,stroke:#f57f17
+    style H fill:#fff9c4,stroke:#f57f17
+```
 
-**AI behavior:**
-- Focuses on achieving this goal first
-- Conversation success measured by primary goal achievement
-- Won't pursue conflicting objectives that could derail the main goal
+<Tabs>
+  <Tab title="Primary Goal">
+    **One primary goal required.** Choose the single most important outcome.
 
-### Secondary Goals
+    <Info>
+    **Why only one?** Having one primary goal keeps the agent focused and prevents it from trying to accomplish too many things in one conversation. This leads to higher success rates and better customer experience.
+    </Info>
 
-**Optional. Multiple allowed.** Additional objectives pursued opportunistically.
+    **Examples:**
+    - 📅 Book appointment
+    - ✅ Qualify lead
+    - 🔧 Resolve issue
+    - 💳 Collect payment information
+    - 📞 Schedule callback
 
-**Examples:**
-- Collect email address
-- Gather feedback
-- Identify upsell opportunities
-- Update contact information
-- Confirm preferences
+    **AI behavior:**
+    - Focuses on achieving this goal first
+    - Conversation success measured by primary goal achievement
+    - Won't pursue conflicting objectives that could derail the main goal
+  </Tab>
 
-**AI behavior:**
-- Pursues if primary goal achieved or customer willing
-- Doesn't compromise primary goal
-- Adds value without extending call unnecessarily
+  <Tab title="Secondary Goals">
+    **Optional. Multiple allowed.** Additional objectives pursued opportunistically.
+
+    **Examples:**
+    - 📧 Collect email address
+    - ⭐ Gather feedback
+    - 💰 Identify upsell opportunities
+    - 📝 Update contact information
+    - ✓ Confirm preferences
+
+    **AI behavior:**
+    - Pursues if primary goal achieved or customer willing
+    - Doesn't compromise primary goal
+    - Adds value without extending call unnecessarily
+  </Tab>
+</Tabs>
 
 ---
 
