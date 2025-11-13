@@ -4,65 +4,29 @@ description: "Move from testing to live phone numbers and widgets"
 icon: "rocket"
 ---
 
-## Launch Flow at a Glance
+Once your agent is tested and ready, choose how you want to deploy it. You can launch on phone lines, run outbound campaigns, or embed a web widget on your site.
 
-Launching an agent means wiring the same configuration you tested to production entry points:
+## Deployment Methods
 
-1. **Phone numbers or SIP trunks** (handled in **Telephony → Numbers** or by connecting your carrier credentials).
-2. **Campaigns / dialers** for outbound sequences.
-3. **Web or widget embeds** for browser-based voice calls.
-
-All three surfaces talk to the same the voice infrastructure worker, so once the agent passes the Test checklist you only need to point callers to it.
-
-## Phone & SIP Launch
-
-<Steps>
-  <Step title="Attach a number">
-    Navigate to **Telephony → Numbers**, pick a provisioned DID, and assign your agent. Incoming calls now resolve to that agent automatically.
-  </Step>
-  <Step title="Verify carrier settings">
-    If you BYO carrier, confirm SIP credentials in `backend/telephony` are live (we use FreeSWITCH + the voice infrastructure). Run a live test call and watch the log for SIP registration errors.
-  </Step>
-  <Step title="Monitor first hour">
-    Keep the **Conversations → Live monitor** tab open during rollout. You can join a call, whisper, or take over if the agent needs help.
-  </Step>
-</Steps>
-
-## Campaign / Outbound Launch
-
-- Create or open a campaign in **Launch → Campaigns**.
-- Pick the agent, caller ID number, business hours, and AMD mode (Text vs ML; see `backend/campaigns/models.py`).
-- Upload contacts or import from CRM.
-- Start with a small batch (e.g., 10 contacts) and watch the campaign dashboard for success rates, retries, and goal achievement.
-
-## Web & Widget Launch
-
-<CardGroup cols={2}>
-  <Card title="Embed the widget" icon="browser">
-    Copy the snippet from **Web Widget → Install** and drop it on your site. The widget hits the same agent instructions you configured in the dashboard.
+<CardGroup cols={3}>
+  <Card title="Phone & SIP" icon="phone" href="/launch/phone-sip-deployment">
+    Connect phone numbers and SIP trunks for inbound calling
   </Card>
-  <Card title="Authentication" icon="shield">
-    Use signed JWTs if you need to associate web callers with your user IDs. See the `web-widget` README for payload details.
+  <Card title="Outbound Campaigns" icon="phone-arrow-up-right" href="/launch/campaign-outbound-launch">
+    Launch automated outbound calling campaigns
   </Card>
-  <Card title="Traffic controls" icon="gauge">
-    Limit concurrent sessions via the widget settings or by assigning the agent to a dedicated the voice infrastructure room.
-  </Card>
-  <Card title="Observability" icon="chart-line">
-    Web calls still appear in Conversations → Logs with transcripts, actions, and goal stats, so QA works the same as phone launches.
+  <Card title="Web Widget" icon="browser" href="/launch/web-widget-deployment">
+    Embed voice and chat with your agent on your website
   </Card>
 </CardGroup>
 
-## Launch Checklist
+## After Launch
 
-- <Icon icon="check-circle" /> Agent tested via simulator + phone test call
-- <Icon icon="check-circle" /> DTMF, actions, and custom APIs verified in logs
-- <Icon icon="check-circle" /> Phone number (or SIP trunk) assigned
-- <Icon icon="check-circle" /> Monitoring plan in place (live monitor + alerting)
-- <Icon icon="check-circle" /> Outbound campaign seeded with a pilot contact list
-- <Icon icon="check-circle" /> Web widget snippet deployed (if applicable)
-
-## Next Steps
-
-<Card title="Optimize Overview" icon="gauge-high" href="/optimize/overview">
-  After launch, use analytics to keep improving conversion and CSAT.
-</Card>
+<CardGroup cols={2}>
+  <Card title="Production Best Practices" icon="shield-check" href="/launch/production-best-practices">
+    Keep your agent running smoothly in production
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/launch/troubleshooting-deployment">
+    Fix common deployment and production issues
+  </Card>
+</CardGroup>

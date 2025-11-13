@@ -1,508 +1,220 @@
 ---
 title: "Web Widget Deployment"
-description: "Embed voice calling directly in your website or web application"
+description: "Embed voice and chat with your AI agent on your website"
 icon: "browser"
 ---
 
-## Web Widget Overview
+The web widget lets visitors interact with your AI agent through voice, chat, or both at the same time. Configure everything through the visual editor—no coding required—then copy and paste a single embed script.
 
-The itellicoAI web widget adds voice calling to any website. Visitors can click a button and immediately talk to your AI agent—no phone required. The widget uses WebRTC for browser-based audio, connecting to the same the voice infrastructure pipeline as phone calls.
-
-**Key Features**:
-- One-click voice conversations (no app download)
-- Mobile and desktop browser support
-- Customizable UI and positioning
-- Works with same agent config as phone deployment
-- Full transcript and analytics in dashboard
-
-## Installation
-
-### Step 1: Get Widget Code
+## Create Your Widget
 
 <Steps>
-  <Step title="Navigate to Web Widget settings">
-    Go to **Integrations → Web Widget** in the dashboard.
+  <Step title="Open the widget manager">
+    Navigate to **Web → Widgets** in the dashboard
   </Step>
-
-  <Step title="Select your agent">
-    Choose which agent the widget will connect to. You can create separate widgets for different pages/agents.
+  <Step title="Create a new widget">
+    Click **Create Widget** and provide:
+    - **Widget name** - Internal label for your reference
+    - **Agent** - Select which agent powers this widget
   </Step>
-
-  <Step title="Copy installation code">
-    Click **Generate Code** to get your unique snippet:
-
-    ```html
-    <!-- itellicoAI Widget -->
-    <script src="https://widget.itellico.ai/v1/widget.js"></script>
-    <script>
-      ItellicoWidget.init({
-        agentId: 'agent_abc123xyz',
-        position: 'bottom-right',
-        theme: 'light'
-      });
-    </script>
-    ```
+  <Step title="Configure the widget">
+    Use the visual editor tabs to customize your widget (see sections below)
   </Step>
+  <Step title="Save your changes">
+    Click **Save Changes** in the bottom-right to persist all updates
+  </Step>
+  <Step title="Get the embed code">
+    Go to the **Export** tab and copy your unique embed script
+  </Step>
+</Steps>
 
+## Configuration Tabs
+
+The widget editor includes six tabs on the left with a live preview on the right that updates as you make changes.
+
+<AccordionGroup>
+  <Accordion title="Setup" icon="gear">
+    - **Widget name** - Internal label shown in your widget list
+    - **Agent** - Switch to a different agent anytime
+    - **Display name** - Customer-facing name shown in the widget
+    - **Allowed domains** - Restrict where the widget can load (leave empty to allow all domains)
+  </Accordion>
+
+  <Accordion title="Appearance" icon="palette">
+    **Theme Presets**
+    - Start from curated color palettes
+    - Scroll through preset options
+
+    **Layout**
+    - Position: bottom-left or bottom-right
+    - Widget size and offsets from edges
+    - Initial state: collapsed, expanded, or always open
+
+    **Avatar**
+    - Animated "AI Pulse" effect
+    - Upload custom image
+    - Link to external image URL
+
+    **Colors & Gradients**
+    - Backgrounds and CTA colors
+    - Transcript bubble styling
+    - Status colors and orb gradients
+
+    **Border Radius**
+    - Launcher button roundness
+    - Chat window corners
+    - Message bubbles
+    - Input field and CTA button
+
+    **Animations**
+    - Optional wiggle or ripple effect on call button
+  </Accordion>
+
+  <Accordion title="Content" icon="language">
+    **Language Presets**
+    - Pre-configured English and German bundles
+    - Sets all widget labels and legal copy
+
+    **Welcome Messages**
+    - Welcome prompt text
+    - Placeholder text
+    - Status messages (listening, speaking, thinking, connecting)
+
+    **Feedback Copy**
+    - Feedback prompt
+    - Submit button text
+    - Thank you message
+
+    **Label Overrides**
+    - Customize individual UI strings
+    - Groups: Chat, Controls, Transcript, Audio, Accessibility
+  </Accordion>
+
+  <Accordion title="Features" icon="sliders">
+    - **Chat-only mode** - Disable voice, chat only
+    - **Allow text during call** - Keep text input active during voice calls
+    - **Transcript toggle** - Show/hide live transcript
+    - **Mute control** - Show mute button to allow user to mute their microphone
+    - **Call timer** - Display elapsed time
+    - **Branding** - Show/hide "Powered by itellicoAI"
+    - **Skip greeting** - Avoid greeting if user types first
+    - **Feedback collection** - Enable post-call feedback (not stored yet, coming soon)
+  </Accordion>
+
+  <Accordion title="Actions" icon="link">
+    Configure client-side tools that your agent can invoke during conversations to show links, open pages, or trigger phone calls in the user's browser.
+
+    <Note>
+    **Client Tools**: Unlike API actions that run on your server, client tools execute directly in the user's browser. The LLM decides when to call these tools based on the conversation context and the trigger description you provide.
+    </Note>
+
+    Add up to five client tools:
+
+    - **Button text** - Label shown to the user (e.g., "View pricing", "Call support")
+    - **URL** - Web link (`https://`) or phone number (`tel:`)
+    - **Trigger** - Describe when the agent should invoke this tool (e.g., "When user asks about pricing", "When user wants to speak to a human")
+    - **Behavior**:
+      - **Auto-click** - Automatically open the link when tool is invoked
+      - **Wait for response** - Show button and wait for user to click (with optional timeout)
+      - **End call on click** - Automatically end the conversation after user clicks
+
+    Phone number links (`tel:`) automatically end the call after the user clicks.
+  </Accordion>
+
+  <Accordion title="Privacy" icon="shield-check">
+    **Terms & Privacy**
+    - Markdown editor for custom legal text
+    - Default copy provided for new widgets
+
+    **Consent Settings**
+    - Accept/dismiss button labels
+    - Local storage key to remember consent
+    - Require consent before activation
+  </Accordion>
+
+  <Accordion title="Export" icon="code">
+    **Embed Script**
+    - Unique loader URL for your widget
+    - Copy and paste before `</body>` tag
+
+    **Installation Guides**
+    - Step-by-step instructions
+    - Platform-specific tips:
+      - Google Tag Manager
+      - WordPress
+      - Webflow
+      - Shopify
+      - Wix
+      - Squarespace
+  </Accordion>
+</AccordionGroup>
+
+## Deploy Your Widget
+
+<Steps>
+  <Step title="Test in the preview">
+    Use the live preview on the right side of the configurator to test your widget. Click the refresh icon if needed.
+  </Step>
+  <Step title="Copy the embed script">
+    Go to the **Export** tab and copy your unique embed script.
+  </Step>
   <Step title="Add to your website">
-    Paste the code snippet before the closing `</body>` tag on pages where you want the widget to appear.
-
-    **Testing**: Load your page and verify the widget button appears in the configured position.
+    Paste the script just before the closing `</body>` tag on your website.
+  </Step>
+  <Step title="Test it live">
+    Load your site, click the widget, and test a voice or chat conversation. Check **Conversations** to verify the session was recorded.
   </Step>
 </Steps>
 
-### Step 2: Widget Configuration
-
-Customize the widget's appearance and behavior:
-
-<CodeGroup>
-```javascript Basic Configuration
-ItellicoWidget.init({
-  agentId: 'agent_abc123xyz',
-  position: 'bottom-right',  // bottom-right, bottom-left, top-right, top-left
-  theme: 'light',            // light, dark, auto
-  primaryColor: '#E10489',   // Brand color
-  buttonText: 'Talk to AI',  // Custom button label
-  greeting: 'Hi! How can I help you today?'
-});
-```
-
-```javascript Advanced Configuration
-ItellicoWidget.init({
-  agentId: 'agent_abc123xyz',
-  position: 'bottom-right',
-  theme: 'auto',
-
-  // Custom styling
-  customStyles: {
-    buttonSize: 60,          // Button diameter in pixels
-    zIndex: 9999,            // Stack order
-    offset: { x: 20, y: 20 } // Distance from edge
-  },
-
-  // Behavior
-  autoOpen: false,           // Auto-expand on page load
-  openOnHover: false,        // Expand on mouse hover
-  showUnreadBadge: true,     // Show notification badge
-
-  // Audio settings
-  echoCancellation: true,    // Enable AEC (recommended)
-  noiseSuppression: true,    // Enable noise reduction
-
-  // Events
-  onReady: () => console.log('Widget ready'),
-  onCallStart: () => console.log('Call started'),
-  onCallEnd: (data) => console.log('Call ended', data)
-});
-```
-
-```javascript With User Authentication
-// Pass user context to agent (requires JWT signing)
-ItellicoWidget.init({
-  agentId: 'agent_abc123xyz',
-  position: 'bottom-right',
-
-  // User identification
-  userId: 'user_12345',
-  userToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-
-  // User metadata (passed to agent's dynamic context)
-  userMetadata: {
-    name: 'Jane Doe',
-    email: 'jane@example.com',
-    plan: 'premium',
-    accountId: 'acct_789'
-  }
-});
-```
-</CodeGroup>
-
-## Authentication & Security
-
-### Public Widget (No Auth)
-
-For general support or sales use cases where user identity doesn't matter:
-
-- No authentication required
-- Widget works immediately after installation
-- User metadata is optional (can pass anonymous analytics IDs)
-- Conversations are logged but not associated with user accounts
-
-### Authenticated Widget (JWT)
-
-For logged-in users accessing account-specific features:
-
-<Steps>
-  <Step title="Generate user tokens">
-    Create a JWT on your backend signing endpoint:
-
-    ```python Python Example
-    import jwt
-    import time
-
-    def generate_widget_token(user_id, user_metadata):
-        payload = {
-            'userId': user_id,
-            'userMetadata': user_metadata,
-            'exp': int(time.time()) + 3600  # 1 hour expiry
-        }
-
-        token = jwt.encode(
-            payload,
-            'YOUR_WIDGET_SECRET',  # From dashboard
-            algorithm='HS256'
-        )
-
-        return token
-    ```
-
-    ```javascript Node.js Example
-    const jwt = require('jsonwebtoken');
-
-    function generateWidgetToken(userId, userMetadata) {
-      const payload = {
-        userId: userId,
-        userMetadata: userMetadata,
-        exp: Math.floor(Date.now() / 1000) + 3600  // 1 hour
-      };
-
-      return jwt.sign(payload, process.env.WIDGET_SECRET, {
-        algorithm: 'HS256'
-      });
-    }
-    ```
-  </Step>
-
-  <Step title="Pass token to widget">
-    On your frontend (after user logs in):
-
-    ```javascript
-    // Fetch token from your backend
-    const response = await fetch('/api/widget-token');
-    const { token, userId } = await response.json();
-
-    // Initialize widget with auth
-    ItellicoWidget.init({
-      agentId: 'agent_abc123xyz',
-      userId: userId,
-      userToken: token,
-      userMetadata: {
-        name: currentUser.name,
-        email: currentUser.email,
-        plan: currentUser.plan
-      }
-    });
-    ```
-  </Step>
-
-  <Step title="Access user data in agent">
-    The agent receives user metadata via dynamic context:
-
-    ```json Example Context Payload
-    {
-      "user_id": "user_12345",
-      "user_metadata": {
-        "name": "Jane Doe",
-        "email": "jane@example.com",
-        "plan": "premium",
-        "accountId": "acct_789"
-      },
-      "call_source": "web_widget"
-    }
-    ```
-
-    Reference in agent instructions: `"You're speaking with {{user_metadata.name}}, a {{user_metadata.plan}} customer..."`
-  </Step>
-</Steps>
-
-<Warning>
-**Security**: Never expose your `WIDGET_SECRET` client-side. Always generate tokens server-side.
-</Warning>
-
-## Widget Customization
-
-### Styling & Branding
-
-<Tabs>
-  <Tab title="Colors">
-    ```javascript
-    ItellicoWidget.init({
-      agentId: 'agent_abc123xyz',
-      primaryColor: '#E10489',      // Button & accents
-      secondaryColor: '#FFFFFF',    // Text on buttons
-      backgroundColor: '#F9FAFB',   // Widget background
-      textColor: '#111827',         // Body text
-      borderRadius: 12              // Corner roundness
-    });
-    ```
-  </Tab>
-
-  <Tab title="Position & Size">
-    ```javascript
-    ItellicoWidget.init({
-      agentId: 'agent_abc123xyz',
-      position: 'bottom-right',
-      customStyles: {
-        buttonSize: 60,             // Widget button diameter
-        expandedWidth: 380,         // Width when open
-        expandedHeight: 600,        // Height when open
-        offset: { x: 20, y: 20 },  // Margin from edges
-        zIndex: 9999                // Stack order
-      }
-    });
-    ```
-  </Tab>
-
-  <Tab title="Text & Language">
-    ```javascript
-    ItellicoWidget.init({
-      agentId: 'agent_abc123xyz',
-      language: 'en',                // Widget UI language
-      strings: {
-        buttonText: 'Talk to Sales',
-        greeting: 'Hi there! Ready to chat?',
-        placeholder: 'Click to start voice call',
-        callActive: 'Listening...',
-        callEnded: 'Call ended. Thanks!',
-        errorMic: 'Microphone access required'
-      }
-    });
-    ```
-  </Tab>
-
-  <Tab title="Custom CSS">
-    Override widget styles with your own CSS:
-
-    ```css
-    /* Target widget container */
-    #itellico-widget-container {
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Custom button hover state */
-    #itellico-widget-button:hover {
-      transform: scale(1.1);
-      transition: transform 0.2s ease;
-    }
-
-    /* Custom expanded widget */
-    #itellico-widget-expanded {
-      border: 2px solid var(--primary-color);
-    }
-    ```
-  </Tab>
-</Tabs>
-
-### Mobile Responsiveness
-
-The widget automatically adapts to mobile screens:
-
-- **Desktop**: Fixed position button + expandable panel
-- **Mobile**: Full-screen takeover when opened
-- **Tablet**: Adaptive sizing based on viewport
-
-**Manual Overrides**:
-```javascript
-ItellicoWidget.init({
-  agentId: 'agent_abc123xyz',
-  mobileBreakpoint: 768,        // Mobile mode threshold (px)
-  mobileFullscreen: true,       // Force fullscreen on mobile
-  hideOnMobile: false,          // Hide widget on small screens
-  mobilePosition: 'bottom'      // bottom, top (mobile only)
-});
-```
-
-## Traffic & Concurrency Controls
-
-### Rate Limiting
-
-Prevent abuse with built-in rate limits:
-
-<Accordion title="Per-visitor limits">
-  Configure in **Integrations → Web Widget → Rate Limits**:
-  - **Max calls per hour**: Limit per IP address (default: 5)
-  - **Max concurrent calls per user**: Prevent tab spam (default: 1)
-  - **Cooldown period**: Seconds between calls (default: 30)
-</Accordion>
-
-<Accordion title="Global limits">
-  Set platform-wide widget limits:
-  - **Max concurrent widget calls**: Cap across all visitors (default: account plan limit)
-  - **Queue overflow**: Enable queue or show "Agents busy" message
-  - **Business hours**: Only allow calls during specific times
-</Accordion>
-
-### Capacity Management
-
-When approaching concurrent call limits:
-
-1. **Queue Mode**: Visitors wait in line, widget shows estimated wait time
-2. **Busy Mode**: Widget shows "All agents busy" with callback form
-3. **Fallback Mode**: Switch to text chat or email form when capacity reached
-
-Configure in **Integrations → Web Widget → Overflow Behavior**.
-
-## Testing Widget in Staging
-
-Before production deployment:
-
-<Steps>
-  <Step title="Create staging widget">
-    Generate a separate widget code with `stagingMode: true`:
-
-    ```javascript
-    ItellicoWidget.init({
-      agentId: 'agent_abc123xyz_staging',
-      stagingMode: true,  // Uses staging backend
-      debugMode: true     // Verbose console logging
-    });
-    ```
-  </Step>
-
-  <Step title="Test on staging site">
-    Deploy to your staging/dev environment first:
-    - Test on multiple browsers (Chrome, Safari, Firefox)
-    - Test on mobile devices (iOS Safari, Android Chrome)
-    - Verify microphone permissions flow
-    - Check WebRTC connectivity through corporate firewalls
-  </Step>
-
-  <Step title="Validate conversation flow">
-    Run full test scenarios:
-    - Start call, verify greeting plays
-    - Test interruptions and barge-in
-    - Trigger actions (transfers, API calls)
-    - End call gracefully, check transcript in dashboard
-  </Step>
-
-  <Step title="Review logs">
-    Check **Conversations → Logs** for staging calls:
-    - Verify user metadata passed correctly (if using auth)
-    - Confirm goal tracking works
-    - Check for WebRTC errors or quality issues
-  </Step>
-</Steps>
-
-## Production Deployment
-
-### Deployment Checklist
-
-- <Icon icon="square" /> Widget tested on staging with multiple browsers/devices
-- <Icon icon="square" /> Authentication flow validated (if using JWT)
-- <Icon icon="square" /> Rate limits configured to prevent abuse
-- <Icon icon="square" /> Overflow behavior set (queue vs busy message)
-- <Icon icon="square" /> Mobile responsiveness tested on iOS and Android
-- <Icon icon="square" /> Firewall/VPN compatibility verified (WebRTC ports)
-- <Icon icon="square" /> Analytics tracking confirmed in dashboard
-- <Icon icon="square" /> Fallback content for browsers without WebRTC support
-
-### Gradual Rollout
-
-For high-traffic sites, roll out incrementally:
-
-1. **Soft Launch**: Deploy to one low-traffic page (e.g., /pricing)
-2. **Monitor**: Watch for errors, call quality issues, capacity problems
-3. **Expand**: Add to more pages if stable
-4. **A/B Test**: Compare conversion with/without widget
-5. **Full Deploy**: Add to all relevant pages once validated
-
-### CDN & Performance
-
-The widget script (~50KB gzipped) loads from our global CDN:
-- Cached at edge for &lt;50ms load times
-- Async loading doesn't block page render
-- Fallback to primary if CDN unavailable
-
-**Optimize Loading**:
-```html
-<!-- Async load for faster page speed -->
-<script async src="https://widget.itellico.ai/v1/widget.js"></script>
-<script>
-  window.addEventListener('ItellicoWidgetLoaded', () => {
-    ItellicoWidget.init({ agentId: 'agent_abc123xyz' });
-  });
-</script>
-```
-
-## Analytics & Observability
-
-Widget calls appear in **Conversations → Logs** with:
-- Source: `web_widget`
-- User metadata (if provided)
-- Full transcript and audio recording
-- Goal outcomes and action logs
-- Session duration and quality metrics
-
-**Custom Events**:
-```javascript
-ItellicoWidget.on('callStarted', (data) => {
-  // Track in your analytics (Google Analytics, Mixpanel, etc.)
-  gtag('event', 'call_started', {
-    agent_id: data.agentId,
-    user_id: data.userId
-  });
-});
-
-ItellicoWidget.on('callEnded', (data) => {
-  gtag('event', 'call_ended', {
-    duration: data.durationSeconds,
-    goals_achieved: data.goalsAchieved
-  });
-});
-
-ItellicoWidget.on('error', (error) => {
-  console.error('Widget error:', error);
-  // Send to error tracking (Sentry, Rollbar, etc.)
-});
-```
+<Note>
+Configuration changes you make in the dashboard automatically apply to your embedded widget. No need to update the embed script. If changes don't appear immediately, do a hard refresh (Ctrl+Shift+R or Cmd+Shift+R).
+</Note>
+
+**Notes:**
+- **Domain restrictions** apply immediately. If configured, the widget only loads on allowed domains.
+- **HTTPS required** for microphone access (except localhost).
+- **Mobile responsive** - The widget automatically adapts to mobile screens.
+- Create separate widgets for different sites or branding needs.
 
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="Widget not appearing">
+  <Accordion title="Widget not appearing" icon="eye-slash">
     - Check browser console for JavaScript errors
-    - Verify `agentId` is correct
-    - Ensure script loaded before `init()` called
-    - Check if CSP (Content Security Policy) blocks widget domain
+    - Verify allowed domains include your site
+    - Ensure script is placed before `</body>` tag
+    - Check Content Security Policy settings
   </Accordion>
 
-  <Accordion title="Microphone access denied">
-    - Browsers require HTTPS for microphone access (except localhost)
-    - User must explicitly grant permission (can't be bypassed)
-    - Some browsers block mic on first visit (security)
-    - Check browser mic settings: chrome://settings/content/microphone
+  <Accordion title="Microphone access denied" icon="microphone-slash">
+    - HTTPS required (except localhost)
+    - User must grant permission manually
+    - Check browser microphone settings
+    - Some browsers block on first visit
   </Accordion>
 
-  <Accordion title="No audio / poor quality">
-    - WebRTC requires UDP ports 10000-60000 open (firewall issue)
-    - Corporate VPNs often block WebRTC (try TURN relay)
-    - Enable TURN servers in widget config for restrictive networks
-    - Check browser WebRTC stats: chrome://webrtc-internals
+  <Accordion title="No audio or poor quality" icon="volume-xmark">
+    - WebRTC requires UDP ports open
+    - Corporate VPNs may block WebRTC
+    - Test from different network
+    - Check browser WebRTC stats at `chrome://webrtc-internals`
   </Accordion>
 
-  <Accordion title="Widget blocked by ad blockers">
-    - Some ad blockers flag widget domains
-    - Workaround: Self-host widget script (contact support)
-    - Educate users to allowlist your site
+  <Accordion title="Changes not updating" icon="arrows-rotate">
+    - Click **Save Changes** in the configurator
+    - Hard refresh your site (Ctrl+Shift+R or Cmd+Shift+R)
+    - Clear browser cache if needed
+    - Verify you're editing the correct widget
   </Accordion>
 </AccordionGroup>
 
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Go-Live Monitoring" icon="chart-line" href="/launch/go-live-monitoring">
-    Monitor widget usage and call quality after launch
+  <Card title="Production Best Practices" icon="shield-check" href="/launch/production-best-practices">
+    Learn how to maintain and scale your widget deployment
   </Card>
-
-  <Card title="Deployment Strategies" icon="diagram-project" href="/launch/deployment-strategies">
-    A/B testing and gradual rollout strategies
-  </Card>
-
-  <Card title="Troubleshooting" icon="wrench" href="/launch/troubleshooting-deployment">
-    Common widget issues and WebRTC debugging
-  </Card>
-
-  <Card title="Optimize Widget Performance" icon="gauge-high" href="/optimize/overview">
-    Improve conversion rates and user experience
+  <Card title="Optimize Conversion" icon="gauge-high" href="/optimize/overview">
+    Improve engagement and user experience
   </Card>
 </CardGroup>

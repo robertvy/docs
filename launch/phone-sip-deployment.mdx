@@ -12,7 +12,7 @@ Phone deployment routes live PSTN calls through your tested agent. You can assig
 - **SIP trunks** connecting your existing carrier infrastructure
 - **IVR systems** for multi-agent routing scenarios
 
-All configurations use the same the voice infrastructure + FreeSWITCH telephony stack that Test mode uses, ensuring consistent behavior.
+All configurations use the same real-time calling stack that Test Mode uses, ensuring consistent behavior.
 
 ## Inbound Phone Deployment
 
@@ -37,15 +37,13 @@ All configurations use the same the voice infrastructure + FreeSWITCH telephony 
   </Step>
 
   <Step title="Test the live number">
-    Call the number from your phone. The agent should answer immediately using the greeting you configured in Test mode.
-
-    Monitor the call in **Conversations → Live Monitor** to watch transcripts and actions in real-time.
+    Call the number from your phone. The agent should answer immediately using the greeting you configured in Test mode. Review the call logs in **Conversations → Logs** to verify proper call flow.
   </Step>
 </Steps>
 
 ### Step 2: Configure SIP Trunk (BYOC)
 
-If you're bringing your own carrier, connect via SIP trunk:
+If you're bringing your own carrier, configure it to send calls to the itellicoAI SIP endpoint:
 
 <Frame>
   <div className="block dark:hidden">
@@ -56,16 +54,19 @@ If you're bringing your own carrier, connect via SIP trunk:
   </div>
 </Frame>
 
+<br />
+
 <Accordion title="SIP trunk configuration">
   1. Navigate to **Telephony → SIP Trunks** and click **+ Add Trunk**
-  2. Enter your carrier's details:
-     - **SIP Host**: Your carrier's SIP gateway (e.g., `sip.yourcarrier.com`)
-     - **Username**: SIP authentication username
-     - **Password**: SIP authentication password
-     - **Port**: Usually 5060 (UDP) or 5061 (TLS)
-  3. **Test Registration**: Click **Test Connection** to verify SIP registration succeeds
+  2. Configure your carrier to send calls to itellicoAI's SIP endpoint:
+     - **Destination SIP URI**: `sip:50ebbp4vhpr.sip.livekit.cloud`
+     - **Port**: 5060 (UDP) or 5061 (TLS)
+     - **Codec**: Opus, PCMU, or PCMA
+  3. In itellicoAI dashboard, create a trunk with:
+     - **Trunk Name**: A descriptive name for your carrier
+     - **Allowed IPs** (optional): Restrict to your carrier's IP ranges for security
   4. **Assign Agent**: Select which agent handles calls from this trunk
-  5. **Save** and monitor logs for SIP REGISTER success messages
+  5. **Test**: Make a test call through your carrier to verify routing
 </Accordion>
 
 <Accordion title="Carrier compatibility">
@@ -82,199 +83,19 @@ If you're bringing your own carrier, connect via SIP trunk:
   - Reinvite support for transfers
 </Accordion>
 
-<Accordion title="Troubleshooting SIP registration">
-  If registration fails:
+<Accordion title="Troubleshooting call routing">
+  If calls aren't reaching your agent:
 
-  - **Check credentials**: Verify username/password with carrier
-  - **Firewall rules**: Ensure UDP 5060 and RTP ports (10000-20000) are open
-  - **IP allowlisting**: Some carriers require you to allowlist our signaling IPs (contact support)
-  - **Logs**: Check `backend/telephony/logs` for SIP error codes (401, 403, etc.)
+  - **Verify SIP URI**: Ensure your carrier is sending calls to `sip:50ebbp4vhpr.sip.livekit.cloud`
+  - **Check codec support**: Verify your carrier supports Opus, PCMU, or PCMA
+  - **Firewall rules**: Ensure your carrier can reach the LiveKit SIP endpoint
+  - **Logs**: Check **Conversations → Logs** or your carrier portal for SIP error codes
 
-  Common error codes:
-  - `401 Unauthorized`: Wrong username/password
-  - `403 Forbidden`: IP not allowlisted with carrier
-  - `503 Service Unavailable`: Carrier endpoint down
+  Common issues:
+  - `404 Not Found`: Incorrect SIP URI configuration
+  - `488 Not Acceptable Here`: Codec mismatch (enable Opus/PCMU/PCMA on carrier)
+  - `503 Service Unavailable`: Temporary connectivity issue
 </Accordion>
-
-### Step 3: IVR Integration
-
-For multi-agent routing, integrate with your IVR:
-
-<CodeGroup>
-```xml IVR Transfer Example
-<!-- Transfer to itellicoAI agent from Twilio IVR -->
-<Response>
-  <Dial>
-    <Sip>sip:agent-123@your-tenant.itellico.ai</Sip>
-  </Dial>
-</Response>
-```
-
-```javascript API Transfer
-// Programmatic transfer to agent via API
-await itellicoClient.calls.transfer({
-  call_id: "call_abc123",
-  destination: "agent_uuid_xyz",
-  transfer_type: "warm" // or "cold"
-});
-```
-</CodeGroup>
-
-SIP URI format: `sip:{agent_uuid}@{tenant}.itellico.ai`
-
-## Outbound Phone Deployment
-
-### API-Triggered Outbound Calls
-
-Initiate calls programmatically via API:
-
-<CodeGroup>
-```bash cURL
-curl -X POST https://api.itellico.ai/v1/calls \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "agent_id": "agent_123abc",
-    "to_number": "+14155551234",
-    "from_number": "+14155559999",
-    "context_metadata": {
-      "customer_name": "Jane Doe",
-      "order_id": "ORD-456"
-    }
-  }'
-```
-
-```python Python SDK
-from itellico import ItellicoClient
-
-client = ItellicoClient(api_key="YOUR_API_KEY")
-
-call = client.calls.create(
-    agent_id="agent_123abc",
-    to_number="+14155551234",
-    from_number="+14155559999",
-    context_metadata={
-        "customer_name": "Jane Doe",
-        "order_id": "ORD-456"
-    }
-)
-
-print(f"Call initiated: {call.id}")
-```
-
-```typescript TypeScript SDK
-import { ItellicoClient } from '@itellico/sdk';
-
-const client = new ItellicoClient({ apiKey: 'YOUR_API_KEY' });
-
-const call = await client.calls.create({
-  agentId: 'agent_123abc',
-  toNumber: '+14155551234',
-  fromNumber: '+14155559999',
-  contextMetadata: {
-    customerName: 'Jane Doe',
-    orderId: 'ORD-456'
-  }
-});
-
-console.log(`Call initiated: ${call.id}`);
-```
-</CodeGroup>
-
-<Note>
-The `context_metadata` object is passed to your agent's dynamic context endpoint, allowing you to customize the conversation based on CRM data, order status, etc.
-</Note>
-
-### Integration Examples
-
-<CardGroup cols={2}>
-  <Card title="Zapier Integration" icon="bolt" href="/integrations/zapier">
-    Trigger outbound calls from 6,000+ apps via Zapier workflows
-  </Card>
-
-  <Card title="Make.com Integration" icon="diagram-project" href="/integrations/make">
-    Build complex automation scenarios with Make.com modules
-  </Card>
-
-  <Card title="HubSpot Integration" icon="hubspot" href="/integrations/hubspot">
-    Auto-dial from HubSpot contacts and log call outcomes
-  </Card>
-
-  <Card title="Custom Webhooks" icon="webhook" href="/accounts/webhooks">
-    Receive call events and trigger actions in your own systems
-  </Card>
-</CardGroup>
-
-## Deployment Configuration
-
-### Concurrency & Scaling
-
-Configure how many simultaneous calls your agent can handle:
-
-<Steps>
-  <Step title="Check account limits">
-    Navigate to **Accounts → Usage** to see your concurrent call capacity. Plans range from 5 concurrent calls (Starter) to unlimited (Enterprise).
-  </Step>
-
-  <Step title="Set per-agent limits">
-    In the agent settings, configure:
-    - **Max Concurrent Calls**: Cap per-agent concurrency (useful for agents with expensive integrations)
-    - **Queue Overflow**: Enable queueing when capacity is reached
-    - **Overflow Behavior**: Route to voicemail, play busy signal, or transfer to human backup
-  </Step>
-
-  <Step title="Monitor capacity">
-    Watch real-time concurrency in **Conversations → Live Monitor**. Set alerts when approaching 80% capacity.
-  </Step>
-</Steps>
-
-### Business Hours & Availability
-
-Restrict when your agent answers calls:
-
-1. Go to agent settings → **Availability**
-2. Configure timezone and business hours
-3. Set **After-Hours Behavior**:
-   - Play custom message and hangup
-   - Send to voicemail
-   - Transfer to emergency contact
-   - Route to alternate agent
-
-### Geographic Routing
-
-For international deployments:
-
-- Provision local numbers in target countries (**Telephony → Purchase Numbers**)
-- Assign different agents per region for language/timezone optimization
-- Configure SIP trunks with geo-redundant carriers for failover
-
-## First Call Monitoring
-
-<Warning>
-**Critical**: Monitor your first 10-20 production calls closely. This catches configuration issues before they impact many customers.
-</Warning>
-
-### Real-Time Monitoring
-
-1. Open **Conversations → Live Monitor** before routing live traffic
-2. Watch for:
-   - Agent greeting plays correctly
-   - Transcription accuracy (check for misheard words)
-   - Actions trigger at expected points
-   - Call quality indicators (latency, packet loss)
-3. Use **Whisper** or **Takeover** features if agent needs help
-
-### Post-Call Review
-
-After each early call:
-
-1. Open the conversation log in **Conversations → Logs**
-2. Review full transcript for:
-   - Goal achievement
-   - Unexpected agent responses
-   - Failed action attempts
-   - Customer satisfaction signals
-3. Export and share with team for QA review
 
 ## Security Best Practices
 
@@ -302,13 +123,9 @@ After each early call:
 
 ## Next Steps
 
-<CardGroup cols={2}>
+<CardGroup cols={3}>
   <Card title="Campaign Launch" icon="bullhorn" href="/launch/campaign-outbound-launch">
     Set up automated outbound calling campaigns
-  </Card>
-
-  <Card title="Go-Live Monitoring" icon="chart-line" href="/launch/go-live-monitoring">
-    Launch day checklist and monitoring procedures
   </Card>
 
   <Card title="Troubleshooting" icon="wrench" href="/launch/troubleshooting-deployment">
