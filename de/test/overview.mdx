@@ -1,52 +1,63 @@
 ---
 title: "Testübersicht"
-description: "So prüfst du deinen Agenten vor dem Go-Live"
+description: "Validieren Sie Ihre Voice-Agenten vor dem Live-Gang mit Kunden"
 icon: "vial"
 ---
 
-## Testflächen in der App
+## Warum Testen wichtig ist
 
-- **Web-Simulator** – direkt im Agenteneditor. Nutzt denselben the voice infrastructure-Stack wie Produktion, inkl. Barge-In, DTMF und Aktionen.
-- **Telefonischer Testanruf** – generiert eine temporäre Rufnummer. Ideal, um Carrier-Audio, Latenz und IVR-Navigation zu prüfen.
+Das Testen Ihres Voice-Agenten stellt sicher, dass er Gespräche korrekt führt, angemessen auf Kundenfragen reagiert und Aktionen zuverlässig ausführt. Ein gründlicher Test deckt Probleme mit Anweisungen, Wissensabruf und Integrationen auf, bevor Ihr Agent live geht.
 
-Beide Varianten schreiben Gesprächsprotokolle. Unter **Konversationen → Logs** kannst du Audio anhören, Transkripte prüfen und Tool-Aufrufe einsehen.
-
-## Checkliste
-
-<Steps>
-  <Step title="Simulatortest">
-    Gruß, Einstiegsfrage und Aktionen prüfen – Probleme lassen sich hier am schnellsten beheben.
-  </Step>
-  <Step title="Telefonie-Test">
-    Zwei Anrufe (Headset & Lautsprecher). Auf Echo, Lautstärke und Unterbrechungen achten.
-  </Step>
-  <Step title="Edge Cases">
-    Kunden schweigen lassen, mitten im Satz unterbrechen und jede Aktion einmal auslösen.
-  </Step>
-  <Step title="Log prüfen">
-    In den Logs nach DTMF-Werten, Aktionen und Goal-Analysen schauen. Fehlende Daten sofort fixen.
-  </Step>
-</Steps>
-
-## Tipps
+## So testen Sie Ihren Agenten
 
 <CardGroup cols={2}>
-  <Card title="Kontext zurücksetzen" icon="repeat">
-    Mit **Reset test** im Simulator lässt sich das Gespräch sofort neu starten.
+  <Card title="Web-Simulator" icon="browser" href="/de/test/web-simulator">
+    Testen Sie im Browser mit Text- oder Mikrofon-Eingabe - der schnellste Weg, um Anweisungen und Antworten zu iterieren
   </Card>
-  <Card title="DTMF-Debugging" icon="phone-keypad">
-    Im Log steht `conversation_data.custom_data.last_dtmf_input`. Ist der Wert leer, prüfe die DTMF-Einstellungen des Agents.
-  </Card>
-  <Card title="Provider vergleichen" icon="arrows-left-right">
-    Zwischen Deepgram und Azure wechseln, Testskript wiederholen und den besseren Wert beibehalten.
-  </Card>
-  <Card title="Ergebnisse teilen" icon="share-nodes">
-    Log-Link posten – Teammitglieder können die Aufnahme im Browser anhören.
+  <Card title="Telefon-Tests" icon="phone" href="/de/test/phone-testing">
+    Führen Sie echte Telefonanrufe durch, um die vollständige Erfahrung zu testen, die Ihre Kunden haben werden
   </Card>
 </CardGroup>
 
+## Empfohlener Test-Workflow
+
+<Steps>
+  <Step title="Richten Sie Ihren Agenten ein">
+    Vervollständigen Sie die Anweisungen Ihres Agenten, fügen Sie Wissensdatenbanken hinzu und konfigurieren Sie Aktionen wie Weiterleitungen oder Buchungen.
+  </Step>
+  <Step title="Testen Sie mit dem Web-Simulator">
+    Klicken Sie auf **Agent testen** im Agenten-Header und starten Sie einen Web-Anruf. Überprüfen Sie, ob Begrüßungen, Anweisungen und Antworten wie erwartet funktionieren. Iterieren Sie schnell, indem Sie bearbeiten und erneut testen.
+  </Step>
+  <Step title="Testen Sie mit Telefonanrufen">
+    Rufen Sie die Telefonnummer Ihres Agenten an, um die vollständige Telefonerfahrung zu testen - achten Sie auf Sprachqualität, Timing und natürlichen Gesprächsfluss.
+  </Step>
+  <Step title="Überprüfen Sie Gesprächsprotokolle">
+    Öffnen Sie Ihre Testanrufe im Tab "Konversationen". Überprüfen Sie Transkripte, verifizieren Sie, dass Ziele nachverfolgt wurden, und prüfen Sie, ob Post-Call-Automatisierungen korrekt ausgelöst wurden.
+  </Step>
+  <Step title="Testen Sie Grenzfälle">
+    Versuchen Sie, den Agenten zu unterbrechen, unerwartete Antworten zu geben und Fehlerszenarien auszulösen, um eine elegante Handhabung sicherzustellen.
+  </Step>
+</Steps>
+
+## Was Sie testen sollten
+
+Stellen Sie sicher, dass Sie diese wichtigen Aspekte validieren, bevor Sie starten:
+
+- **Begrüßung & Vorstellung** - Agent stellt sich korrekt vor und setzt den Kontext
+- **Anweisungen & Antworten** - Agent folgt Ihren Anweisungen und beantwortet Fragen präzise
+- **Wissensdatenbank-Zugriff** - Agent ruft Informationen aus Ihren Wissensdatenbanken ab und nutzt sie
+- **Aktionen & Integrationen** - Weiterleitungen, Buchungen und API-Aufrufe funktionieren zuverlässig
+- **Fehlerbehandlung** - Agent behandelt Missverständnisse und unerwartete Eingaben elegant
+- **Gesprächsfluss** - Natürliches Hin und Her ohne unangenehme Pausen oder Unterbrechungen
+- **Zielverfolgung** - Gesprächsziele werden korrekt für Analytics markiert
+
 ## Nächste Schritte
 
-<Card title="Launch-Übersicht" icon="rocket" href="/de/launch/overview">
-  Prüfe, wie du Rufnummern, Kampagnen oder Widgets live schaltest.
-</Card>
+<CardGroup cols={2}>
+  <Card title="Web-Simulator" icon="browser" href="/de/test/web-simulator">
+    Beginnen Sie mit dem Testen mit Text oder Sprache in Ihrem Browser
+  </Card>
+  <Card title="Telefon-Tests" icon="phone" href="/de/test/phone-testing">
+    Führen Sie echte Testanrufe an die Telefonnummer Ihres Agenten durch
+  </Card>
+</CardGroup>
