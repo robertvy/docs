@@ -1,275 +1,72 @@
 ---
-title: "Web Simulator"
-description: "Test your agent with real-time voice interactions in your browser"
+title: "Web Call Testing"
+description: "Use the Test Agent drawer for fast browser-based QA"
 icon: "browser"
 ---
 
-## Overview
+## Test Agent drawer
 
-The web simulator is built into the agent editor and provides real-time testing using the same technology as production calls. This means you can hear timing, barge-in behavior, and interruptions exactly as your callers would experience them.
+Open any agent, click **Test Agent** in the header, and keep the drawer pinned to the right side of the editor. The drawer exposes two tabs—**Web Call** and **Phone Call**—plus all the inputs your team needs to configure a realistic scenario. Staying inside this drawer keeps prompt tweaks and QA runs in the same place.
 
-**Location:** Right-hand panel inside the agent editor
-
-**Key benefit:** Test instantly without phone numbers or external tools
-
----
-
-## How to Use the Web Simulator
+## Configure a web call
 
 <Steps>
-  <Step title="Open your agent">
-    Navigate to **AI Agents** and open the agent you want to test
+  <Step title="Open the agent">
+    Go to **AI Agents → Select Agent** and ensure the latest instructions are saved.
   </Step>
-
-  <Step title="Start the simulator">
-    Click **Test Call** in the top-right corner of the agent editor
+  <Step title="Choose Web Call">
+    In the Test Agent drawer, keep **Web Call** selected in the segmented control.
   </Step>
-
-  <Step title="Grant microphone access">
-    Allow your browser to access your microphone when prompted
+  <Step title="Set direction">
+    Pick **Inbound** to pretend a caller is dialing in or **Outbound** to emulate the agent calling a contact. This value is injected into the real-time calling service context when a context endpoint exists.
   </Step>
-
-  <Step title="Start speaking">
-    The agent will greet you based on your configured greeting settings
-
-    Speak naturally to test the conversation flow
+  <Step title="Provide contact data">
+    Add a phone number if your instructions rely on `contact.phone_number` or if your Dynamic Context endpoint branches on it. Leave it blank for purely prompt-driven tests.
   </Step>
-
-  <Step title="Review transcript">
-    Watch the real-time transcript appear as you speak
-
-    See the agent's responses in text and audio
+  <Step title="Start the session">
+    Press **Start Test**. The drawer closes automatically and the floating call widget appears so you can monitor the run.
   </Step>
 </Steps>
 
----
+## Working with test variables
 
-## What You Can Test
+- All variables defined on the agent appear once (duplicates by UUID are deduplicated in the UI).
+- Update values inline and click **Save Changes** to persist them via `useUpdateAgentVariables`.
+- Saved defaults travel with the agent so the next tester sees the same presets.
+- Use clear, self-describing sample values ("VIP caller", "Trial plan") so everyone can reproduce the scenario quickly.
 
-<CardGroup cols={2}>
-  <Card title="Greeting Messages" icon="hand-wave">
-    Verify your agent starts conversations correctly with the right greeting and timing
-  </Card>
+## Context-aware testing
 
-  <Card title="Instructions & Prompts" icon="message">
-    Test how well your agent follows instructions and stays on topic
-  </Card>
+If the agent has a **Context API endpoint**, the drawer sends a `testContext` payload whenever you fill the optional contact and agent numbers. Use this to:
 
-  <Card title="Barge-In & Interruptions" icon="volume-xmark">
-    Interrupt the agent mid-sentence to test how it handles being cut off
-  </Card>
+- Simulate CRM lookups without deploying a campaign
+- Test different routing branches by changing `direction`
+- Verify the backend receives the metadata it expects before you touch the phone network
 
-  <Card title="Actions & Tools" icon="wrench">
-    Trigger API calls, transfers, bookings, and custom actions during the conversation
-  </Card>
+## Floating call widget
 
-  <Card title="Knowledge Retrieval" icon="book">
-    Ask questions that should pull from your knowledge bases
-  </Card>
+The widget that appears after you click **Start Test** gives you live call controls:
 
-  <Card title="Response Timing" icon="clock">
-    Evaluate latency between your speech and the agent's response
-  </Card>
+- Shows connection status (Connecting, Listening, Speaking, or On Call)
+- Displays live transcription with speaker labels and function-call dumps for tool executions
+- Lets you minimize or end the call without reopening the drawer
+- Keeps running even if you navigate to a different page so you can inspect other screens during a call
 
-  <Card title="Voice Quality" icon="volume-high">
-    Hear how your selected voice sounds with your prompts
-  </Card>
+Use it to capture screenshots or note-taking timestamps while the call is in progress.
 
-  <Card title="Conversation Goals" icon="bullseye">
-    Test whether goal conditions are met during conversations
-  </Card>
-</CardGroup>
+## After the run
 
----
+1. Go to **Conversations → Recent**.
+2. Filter by the agent you just tested.
+3. Open the latest entry, replay audio if needed, and confirm goal tracking plus action payloads look correct.
+4. Delete or tag the record if you want to keep production analytics clean.
 
-## Real-Time Transcript
+## When to escalate to phone testing
 
-The simulator shows a live transcript of the conversation:
+Move to the **Phone Call** tab when any of the following are true:
 
-**User input** (your speech):
-- Shown in one color/style
-- Transcribed in real-time by your selected transcriber (Deepgram, Azure, etc.)
+- You changed audio/voice parameters and need to hear the PSTN leg
+- You added AMD, transfers, or webhook actions that only fire on real calls
+- You saw latency issues that could be browser-specific and want to confirm the carrier path
 
-**Agent responses** (AI output):
-- Shown in a different color/style
-- Includes both text and audio output
-- Shows when actions are triggered
-
-**System events**:
-- Tool/action executions
-- DTMF inputs (if configured)
-- Transfers or call control events
-
----
-
-## Testing Best Practices
-
-<AccordionGroup>
-  <Accordion title="Test in a quiet environment first" icon="volume-off">
-    Start testing in a quiet room with a good microphone to eliminate audio quality variables.
-
-    Once basic functionality works, test with background noise to verify robustness.
-  </Accordion>
-
-  <Accordion title="Test interruptions deliberately" icon="hand">
-    Real callers will interrupt your agent:
-    - Cut off the agent mid-sentence
-    - Speak while the agent is still talking
-    - Verify the agent handles it gracefully
-
-    This tests your barge-in settings and response handling.
-  </Accordion>
-
-  <Accordion title="Test edge cases" icon="triangle-exclamation">
-    Don't just test happy paths:
-    - Ask questions the agent shouldn't know
-    - Request actions that aren't configured
-    - Stay silent to test inactivity handling
-    - Provide unclear or ambiguous input
-    - Ask off-topic questions
-  </Accordion>
-
-  <Accordion title="Test all configured actions" icon="bolt">
-    Trigger every action at least once:
-    - Custom API calls
-    - Transfers (won't actually transfer, but will show the intent)
-    - Bookings
-    - Call control actions
-
-    Verify the agent properly invokes each tool.
-  </Accordion>
-
-  <Accordion title="Reset between test runs" icon="rotate">
-    Click **Reset** to clear conversation history and start fresh.
-
-    This ensures you're testing from a clean state without cached context.
-  </Accordion>
-
-  <Accordion title="Test with different microphones" icon="microphone">
-    Try different devices:
-    - Built-in laptop mic
-    - USB headset
-    - Bluetooth headphones
-    - Phone speaker (if using phone browser)
-
-    Audio quality affects transcription accuracy.
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Reset and Restart
-
-**Reset button** - Clears the conversation context and restarts the test session without reloading the page.
-
-Use this to:
-- Start a fresh conversation
-- Test greeting behavior again
-- Clear any cached conversation data
-- Verify changes you just made to the agent
-
-<Tip>
-Reset frequently during testing to ensure you're testing from a clean state.
-</Tip>
-
----
-
-## Web Simulator vs Phone Testing
-
-| Feature | Web Simulator | Phone Test Call |
-|---------|---------------|-----------------|
-| **Setup** | Instant - no configuration | Requires test number |
-| **Audio Path** | Browser → Platform → Browser | PSTN → Phone Network → Platform |
-| **Latency** | Lower (direct connection) | Higher (carrier routing) |
-| **Echo/Noise** | Controlled environment | Real-world carrier conditions |
-| **DTMF Testing** | Not available | Full DTMF support |
-| **Carrier Testing** | No | Yes - tests actual telephony |
-| **Use Case** | Quick iteration, prompt testing | Final validation, carrier testing |
-
-<Note>
-The web simulator uses the same voice technology as phone calls, so most behavior is identical. However, phone testing is essential for validating carrier audio quality, latency, and DTMF functionality.
-</Note>
-
----
-
-## Common Issues
-
-<AccordionGroup>
-  <Accordion title="Microphone not working" icon="microphone-slash">
-    **Causes:**
-    - Browser permissions denied
-    - Another app using the microphone
-    - Hardware issue
-
-    **Solutions:**
-    1. Check browser permissions (click lock icon in address bar)
-    2. Close other apps that might use the microphone (Zoom, Teams, etc.)
-    3. Refresh the page and grant permissions again
-    4. Try a different browser
-  </Accordion>
-
-  <Accordion title="Agent doesn't respond" icon="comment-slash">
-    **Causes:**
-    - Microphone not picking up audio
-    - Transcriber not configured
-    - LLM API error
-    - Instructions blocking responses
-
-    **Solutions:**
-    1. Check that your microphone is working (see visual input indicator)
-    2. Verify transcriber is configured in **Models → Transcriber**
-    3. Check conversation logs for errors
-    4. Review your instructions for overly restrictive rules
-  </Accordion>
-
-  <Accordion title="Poor transcription accuracy" icon="closed-captioning">
-    **Causes:**
-    - Background noise
-    - Poor microphone quality
-    - Fast or unclear speech
-    - Accent or language mismatch
-
-    **Solutions:**
-    1. Test in a quieter environment
-    2. Use a better microphone (headset recommended)
-    3. Speak clearly and at moderate pace
-    4. Verify correct language/model in transcriber settings
-    5. Try a different transcriber provider (Deepgram vs Azure)
-  </Accordion>
-
-  <Accordion title="High latency" icon="gauge">
-    **Causes:**
-    - Slow internet connection
-    - LLM provider latency
-    - Complex prompts causing slow inference
-    - Large knowledge bases
-
-    **Solutions:**
-    1. Check your internet speed
-    2. Try a faster LLM model (e.g., GPT-4o-mini instead of GPT-4)
-    3. Simplify your instructions
-    4. Reduce knowledge base size or use RAG mode
-    5. Test with different provider regions
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Next Steps
-
-After testing in the web simulator:
-
-<CardGroup cols={2}>
-  <Card title="Phone Testing" icon="phone" href="/test/phone-testing">
-    Validate with real phone calls to test carrier audio and DTMF
-  </Card>
-  <Card title="Review Logs" icon="list" href="/test/logs-and-monitoring">
-    Inspect detailed conversation logs and action payloads
-  </Card>
-  <Card title="Debug Issues" icon="bug" href="/test/debugging">
-    Troubleshoot problems discovered during testing
-  </Card>
-  <Card title="Test Scenarios" icon="clipboard-check" href="/test/test-scenarios">
-    Create comprehensive test plans for your use case
-  </Card>
-</CardGroup>
+Head to [/test/phone-testing](/test/phone-testing) for the full checklist once the web session behaves as expected.

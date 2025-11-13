@@ -1,425 +1,88 @@
 ---
 title: "Phone Testing"
-description: "Validate your agent with real phone calls through the telephony stack"
+description: "Validate the full PSTN path before launch"
 icon: "phone"
 ---
 
-## Overview
+## When to run phone tests
 
-Phone testing validates your agent through the complete production telephony stack—from PSTN carriers through your SIP trunk to the voice infrastructure. This is essential for catching issues that only appear in real phone call scenarios.
+Web calls are perfect for fast iteration, but they bypass carriers. Run at least one real phone call before every release so you can hear codec changes, latency, AMD behaviour, and transfer flows through the exact telephony stack we ship to production.
 
-**Why phone testing matters:**
-- Tests actual carrier audio quality
-- Validates DTMF/IVR functionality
-- Exposes latency from phone routing
-- Verifies echo cancellation
-- Tests voicemail detection
-- Confirms transfer functionality
-
----
-
-## How to Test by Phone
+## Launch a phone test
 
 <Steps>
-  <Step title="Click 'Call test number'">
-    In the agent editor, click **Call test number** button
-
-    This provisions a temporary phone number for testing
+  <Step title="Open the Test Agent drawer">
+    From the agent header, click **Test Agent**.
   </Step>
-
-  <Step title="Dial the test number">
-    Use any phone to call the test number displayed
-
-    The call routes through the same telephony stack as production
+  <Step title="Switch to Phone Call">
+    Use the segmented control to select the **Phone Call** tab.
   </Step>
-
-  <Step title="Test your scenarios">
-    Speak naturally and test all conversation paths
-
-    Try interruptions, DTMF inputs, and actions
+  <Step title="Pick a From number">
+    Choose one of your imported numbers. The combobox uses the same list shown under Telephony → Numbers, including friendly labels so you know what the caller ID will be.
   </Step>
-
-  <Step title="Review the call log">
-    After the call, find it in **Conversations**
-
-    Review transcripts, actions, and audio quality
+  <Step title="Enter the destination">
+    Add the contact's phone number in E.164 format so the call reaches the right person.
+  </Step>
+  <Step title="Tune AMD">
+    Select **Text** for fast keyword-based detection or **ML** for higher accuracy when you expect voicemail.
+  </Step>
+  <Step title="Start the call">
+    Click **Start Test**. The floating widget indicates the dial/outbound state until the callee picks up.
   </Step>
 </Steps>
 
-<Note>
-Test phone numbers are temporary and may expire after a period of inactivity. Request a new one if needed.
-</Note>
-
----
-
-## What to Test
+## What to verify during the call
 
 <CardGroup cols={2}>
-  <Card title="Audio Quality" icon="waveform">
-    Listen for clarity, distortion, echo, or background noise in both directions
+  <Card title="Audio path" icon="waveform">
+    Listen for clipping, low volume, or echo while switching between handset and speakerphone.
   </Card>
-
-  <Card title="Latency & Timing" icon="clock">
-    Notice delays between speaking and agent response - should feel natural
+  <Card title="Latency" icon="clock">
+    Count the beats between speaking and hearing the agent. Flag anything over ~600 ms.
   </Card>
-
-  <Card title="Barge-In Behavior" icon="hand">
-    Interrupt the agent mid-sentence to test how it handles being cut off
+  <Card title="AMD" icon="robot">
+    Let voicemail answer to check whether the selected AMD mode behaves correctly.
   </Card>
-
-  <Card title="DTMF/IVR Input" icon="phone-keypad">
-    Press phone keys to test DTMF capture if configured
+  <Card title="Actions & transfers" icon="bolt">
+    Trigger custom actions, bookings, or transfers to confirm they still fire when audio flows through PSTN.
   </Card>
-
-  <Card title="Echo Cancellation" icon="volume">
-    Test with speaker phone vs headset to verify echo handling
+  <Card title="Context accuracy" icon="id-card">
+    Confirm caller-specific prompts or knowledge lookups still work when the call is initiated with real metadata.
   </Card>
-
-  <Card title="Noise Handling" icon="wind">
-    Call from noisy environments (street, car, office) to test transcription
-  </Card>
-
-  <Card title="Transfer Functionality" icon="right-left">
-    Trigger transfers to verify routing works correctly
-  </Card>
-
-  <Card title="Voicemail Detection" icon="voicemail">
-    If enabled, test that voicemail beeps are properly detected
+  <Card title="End-of-call handling" icon="flag-checkered">
+    Ensure wrap-up messaging, automations, and transcripts finalize even if the caller hangs up first.
   </Card>
 </CardGroup>
 
----
-
-## Testing Checklist
+## Scenario checklists
 
 <AccordionGroup>
-  <Accordion title="Quiet environment test" icon="volume-off">
-    **Setup:** Call from a quiet room with a headset
-
-    **What to test:**
-    - Clear audio in both directions
-    - Accurate transcription
-    - Natural response timing
-    - All greeting variations
-    - Basic conversation paths
-
-    **Goal:** Establish baseline performance without environmental variables
+  <Accordion title="Baseline speaker test" icon="headphones">
+    Call from a quiet room on speakerphone, then on a headset. Note volume differences, and verify barging/interruption feels natural.
   </Accordion>
-
-  <Accordion title="Speaker phone test" icon="phone-volume">
-    **Setup:** Call using speaker phone in a quiet room
-
-    **What to test:**
-    - Echo cancellation effectiveness
-    - Audio feedback loops
-    - Barge-in reliability
-    - Volume levels
-
-    **Goal:** Verify echo handling doesn't cause issues
+  <Accordion title="Mobile network mix" icon="tower-cell">
+    Place calls from different carriers (if available) to surface jitter or codec quirks specific to a network.
   </Accordion>
-
-  <Accordion title="Noisy environment test" icon="wind">
-    **Setup:** Call from noisy locations (street, cafe, car)
-
-    **What to test:**
-    - Transcription accuracy with background noise
-    - Voice activity detection
-    - Whether agent speaks over background sounds
-
-    **Goal:** Ensure robustness in real-world conditions
+  <Accordion title="Voicemail/AMD run" icon="voicemail">
+    Let the call go to voicemail, capture how AMD classifies it, and ensure the agent does not leave a garbled message.
   </Accordion>
-
-  <Accordion title="Mobile carrier test" icon="mobile">
-    **Setup:** Call from different mobile carriers (if possible)
-
-    **What to test:**
-    - Audio quality variations by carrier
-    - Latency differences
-    - Compression artifacts
-    - Connection stability
-
-    **Goal:** Identify carrier-specific issues
-  </Accordion>
-
-  <Accordion title="DTMF input test" icon="phone-keypad">
-    **Setup:** Configure DTMF actions in agent settings
-
-    **What to test:**
-    - Press keys during conversation
-    - Verify agent captures and responds to input
-    - Test all configured DTMF options
-    - Test invalid key presses
-
-    **Goal:** Validate IVR functionality
-  </Accordion>
-
-  <Accordion title="Interruption test" icon="hand">
-    **Setup:** Call and let agent speak
-
-    **What to test:**
-    - Cut off agent mid-sentence
-    - Speak over agent continuously
-    - Rapid back-and-forth exchanges
-    - Agent recovery after interruption
-
-    **Goal:** Test barge-in behavior matches expectations
-  </Accordion>
-
-  <Accordion title="Transfer test" icon="right-left">
-    **Setup:** Configure transfer actions
-
-    **What to test:**
-    - Trigger transfer through conversation
-    - Verify transfer intent is logged
-    - If transferred, test audio quality continues
-    - Test fallback if transfer fails
-
-    **Goal:** Confirm transfer routing works
-  </Accordion>
-
-  <Accordion title="Long conversation test" icon="message">
-    **Setup:** Have an extended conversation (5-10 minutes)
-
-    **What to test:**
-    - Context retention throughout call
-    - Audio quality stability
-    - Latency consistency
-    - Memory/context limits
-
-    **Goal:** Verify performance over extended calls
-  </Accordion>
-
-  <Accordion title="Silence and timeout test" icon="clock-rotate-left">
-    **Setup:** Call and remain silent at various points
-
-    **What to test:**
-    - Inactivity timeout triggers correctly
-    - Agent handles silence gracefully
-    - Timeout warnings (if configured)
-    - End-of-call handling
-
-    **Goal:** Validate timeout and silence handling
-  </Accordion>
-
-  <Accordion title="Edge case scenarios" icon="triangle-exclamation">
-    **Setup:** Test unusual situations
-
-    **What to test:**
-    - Multiple people speaking simultaneously
-    - Speaking in different accents
-    - Speaking very quietly or loudly
-    - Speaking very fast or slow
-    - Switching languages mid-call
-    - Background conversations
-
-    **Goal:** Identify edge case failures
+  <Accordion title="Long call stability" icon="hourglass">
+    Stay on the line for 5+ minutes to confirm context retention and absence of drift or disconnects.
   </Accordion>
 </AccordionGroup>
 
----
+## After the call
 
-## Device Testing Matrix
+1. Open **Conversations → Recent**.
+2. Filter by agent and look for the `phone` badge in the call list.
+3. Verify transcript accuracy, goal completion, and any downstream webhooks.
+4. Document issues in your ticket before running another iteration.
 
-Test with different device types to ensure compatibility:
+## Troubleshooting quick reference
 
-| Device Type | Test Priority | Key Focus |
-|-------------|--------------|-----------|
-| **Mobile Phone** | High | Most common caller device |
-| **Landline** | Medium | Audio quality, no echo |
-| **VoIP Phone** | Medium | Codec compatibility |
-| **Headset** | High | Best audio quality baseline |
-| **Speaker Phone** | High | Echo cancellation |
-| **Bluetooth Headset** | Low | Wireless audio quality |
+- The call never connects → double-check the selected From number is assigned and active.
+- The call fails immediately → ensure the `django` API has the right SIP credentials loaded; redeploy if credentials changed.
+- No transcript shows up → inspect the calling-service logs for that call ID and confirm the process was running when you placed the call.
+- Audio sounds different from the web test → capture the timestamp and carrier so we can reproduce with the same setup.
 
-<Tip>
-Test with at least 2-3 different device types before going to production.
-</Tip>
-
----
-
-## After Each Test Call
-
-<Steps>
-  <Step title="Review the call log">
-    Navigate to **Conversations**
-
-    Filter by agent name to find your test call
-  </Step>
-
-  <Step title="Listen to the recording">
-    Play back the full call audio
-
-    Listen for quality issues you may have missed live
-  </Step>
-
-  <Step title="Check the transcript">
-    Read the full transcript
-
-    Verify transcription accuracy and agent responses
-  </Step>
-
-  <Step title="Inspect actions">
-    Review any tool calls or actions triggered
-
-    Check API payloads and responses
-  </Step>
-
-  <Step title="Document issues">
-    Note any problems discovered
-
-    Create a list of fixes needed before production
-  </Step>
-</Steps>
-
----
-
-## Common Phone Testing Issues
-
-<AccordionGroup>
-  <Accordion title="Poor audio quality" icon="volume-xmark">
-    **Symptoms:**
-    - Distortion, static, or crackling
-    - One-way audio
-    - Volume too low/high
-
-    **Causes:**
-    - Carrier codec mismatch
-    - SIP trunk configuration issue
-    - Network bandwidth problems
-    - Phone hardware quality
-
-    **Solutions:**
-    - Verify SIP trunk codec settings
-    - Test from different locations
-    - Try a different phone
-    - Check network quality (if using VoIP)
-    - Contact telephony provider
-  </Accordion>
-
-  <Accordion title="Echo or feedback" icon="repeat">
-    **Symptoms:**
-    - Hearing your own voice delayed
-    - Agent's voice feeds back
-    - Audio loops
-
-    **Causes:**
-    - Speaker phone without echo cancellation
-    - Multiple devices on same call
-    - Poor acoustic environment
-
-    **Solutions:**
-    - Use headset instead of speaker
-    - Reduce volume
-    - Test from different environment
-    - Verify echo cancellation is enabled in settings
-  </Accordion>
-
-  <Accordion title="High latency" icon="clock">
-    **Symptoms:**
-    - Long delays between speech and response
-    - Awkward conversation timing
-    - Overlapping speech
-
-    **Causes:**
-    - Geographic distance to servers
-    - Network congestion
-    - Slow LLM inference
-    - Carrier routing delays
-
-    **Solutions:**
-    - Test at different times of day
-    - Try faster LLM model
-    - Simplify agent instructions
-    - Check carrier routing path
-  </Accordion>
-
-  <Accordion title="DTMF not captured" icon="phone-keypad">
-    **Symptoms:**
-    - Key presses not recognized
-    - Agent doesn't respond to DTMF
-
-    **Causes:**
-    - DTMF not enabled in agent settings
-    - Carrier not passing DTMF tones
-    - In-band vs out-of-band DTMF mismatch
-
-    **Solutions:**
-    - Enable DTMF in **Abilities → Actions → Call Control**
-    - Verify SIP trunk DTMF method (RFC2833 recommended)
-    - Test with different phone/carrier
-    - Check conversation logs for DTMF events
-  </Accordion>
-
-  <Accordion title="Call drops unexpectedly" icon="phone-slash">
-    **Symptoms:**
-    - Call disconnects mid-conversation
-    - Sudden hangups
-
-    **Causes:**
-    - Max duration reached
-    - Inactivity timeout triggered
-    - Carrier disconnect
-    - Error in conversation flow
-
-    **Solutions:**
-    - Check max duration setting
-    - Review inactivity timeout configuration
-    - Check logs for error messages
-    - Test with longer conversations
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Comparing Test Results
-
-Track test results to measure improvements:
-
-**Create a test log:**
-- Date and time of test
-- Device and carrier used
-- Environment (quiet, noisy, etc.)
-- Issues discovered
-- Audio quality rating (1-5)
-- Transcription accuracy rating (1-5)
-- Overall experience rating (1-5)
-
-**Example test log:**
-```
-Date: 2025-01-15 14:30
-Device: iPhone 13 (AT&T)
-Environment: Quiet office, headset
-Issues: None
-Audio Quality: 5/5
-Transcription: 5/5
-Overall: 5/5
-Notes: Perfect baseline test
----
-Date: 2025-01-15 14:45
-Device: Same as above
-Environment: Busy street, no headset
-Issues: Some transcription errors with traffic noise
-Audio Quality: 4/5
-Transcription: 3/5
-Overall: 4/5
-Notes: Acceptable in noisy conditions
-```
-
----
-
-## Next Steps
-
-<CardGroup cols={2}>
-  <Card title="Review Logs" icon="list" href="/test/logs-and-monitoring">
-    Analyze detailed call logs and transcripts
-  </Card>
-  <Card title="Debug Issues" icon="bug" href="/test/debugging">
-    Troubleshoot problems discovered during phone testing
-  </Card>
-  <Card title="Test Scenarios" icon="clipboard-check" href="/test/test-scenarios">
-    Create comprehensive test plans
-  </Card>
-  <Card title="Troubleshooting" icon="wrench" href="/test/troubleshooting">
-    Common issues and solutions
-  </Card>
-</CardGroup>
+When the phone pass is clean, you are ready to follow the launch checklist.

@@ -1,693 +1,83 @@
 ---
 title: "Test Scenarios"
-description: "Systematic testing approach to validate your agent before production"
+description: "Repeatable QA flows for agents before production"
 icon: "clipboard-check"
 ---
 
-## Overview
+## How to use this guide
 
-Systematic testing ensures your agent handles both expected interactions and edge cases gracefully. This guide provides test scenarios and checklists organized by use case and functionality.
+Pick one scenario from each section below every time you ship a change. The scenarios mirror the way our stack is built: web simulation for rapid loops, real phone calls for the PSTN path, and targeted edge cases that exercise context, actions, and clean-up logic.
 
-**Testing philosophy:**
-- Test happy paths first (expected user behavior)
-- Then test edge cases (unexpected inputs)
-- Always test with real audio (web simulator or phone)
-- Document results for regression testing
-- Re-test after any significant changes
-
----
-
-## Core Functionality Testing
-
-### Greeting and Introduction
+## 1. Web call smoke tests
 
 <AccordionGroup>
-  <Accordion title="Standard greeting" icon="hand-wave">
-    **Test scenario:**
-    1. Start a fresh conversation
-    2. Allow agent to speak first
-    3. Verify greeting matches configuration
-    4. Check timing of greeting delivery
-
-    **Expected behavior:**
-    - Greeting starts at configured delay
-    - Message matches configured text
-    - Voice quality is clear
-    - Appropriate tone and pacing
-
-    **Test variations:**
-    - Inbound call greeting
-    - Outbound call greeting (if different)
-    - After reset in web simulator
+  <Accordion title="Greeting + instructions" icon="hand-wave">
+    - Start a fresh web call from the Test Agent drawer
+    - Let the agent speak first, then interrupt midway
+    - Confirm greeting timing, voice, and the initial instruction block
   </Accordion>
-
-  <Accordion title="User speaks first" icon="user">
-    **Test scenario:**
-    1. Start conversation
-    2. Speak before agent greets you
-    3. Verify agent handles interruption
-
-    **Expected behavior:**
-    - Agent stops greeting
-    - Agent responds appropriately to user input
-    - No greeting heard after user interrupts
-
-    **Common issue:**
-    - Agent continues greeting despite interruption
+  <Accordion title="Prompt change regression" icon="wand-magic-sparkles">
+    - Ask two questions the latest prompt edits were meant to solve
+    - Confirm the agent now answers correctly and nothing else regressed
+  </Accordion>
+  <Accordion title="Context API injection" icon="id-card">
+    - Provide contact + agent numbers so the drawer sends a `testContext`
+    - Verify the API-derived metadata is mentioned or used in the flow
   </Accordion>
 </AccordionGroup>
 
----
-
-### Conversation Flow
+## 2. Phone call validation
 
 <AccordionGroup>
-  <Accordion title="Happy path conversation" icon="message">
-    **Test scenario:**
-    1. Follow the intended conversation flow
-    2. Provide clear, expected inputs
-    3. Complete the primary goal
-    4. Verify success
-
-    **Example for support agent:**
-    ```
-    Agent: "How can I help you?"
-    User: "I need help resetting my password"
-    Agent: "I can help with that. What's your email address?"
-    User: "user@example.com"
-    Agent: [Provides reset instructions]
-    User: "Thank you"
-    Agent: [Ends appropriately]
-    ```
-
-    **Verify:**
-    - Agent stays on topic
-    - Clear step-by-step guidance
-    - Goal marked as achieved
-    - Natural ending
+  <Accordion title="Baseline PSTN run" icon="phone">
+    - Place a call using the same From number customers see
+    - Capture latency observations and compare to the last release
   </Accordion>
-
-  <Accordion title="Multi-turn conversation" icon="comments">
-    **Test scenario:**
-    1. Have extended conversation (5+ exchanges)
-    2. Reference previous context
-    3. Verify memory retention
-
-    **Example:**
-    ```
-    User: "What are your business hours?"
-    Agent: [Provides hours]
-    User: "And what about holidays?"
-    Agent: [Should remember we're discussing hours]
-    User: "Great, when do you close on Friday?"
-    Agent: [Should still be in context of hours]
-    ```
-
-    **Verify:**
-    - Agent maintains context
-    - References made to earlier conversation
-    - No repetition of information already shared
+  <Accordion title="AMD + voicemail" icon="voicemail">
+    - Switch AMD to **ML**, send the call to voicemail, and confirm the agent exits gracefully without leaving noise
   </Accordion>
-
-  <Accordion title="Topic changes" icon="turn-up">
-    **Test scenario:**
-    1. Start on one topic
-    2. Suddenly change to different topic
-    3. Verify agent adapts
-
-    **Example:**
-    ```
-    User: "What's your return policy?"
-    Agent: [Explains returns]
-    User: "Actually, I want to place an order"
-    Agent: [Switches to order placement]
-    ```
-
-    **Verify:**
-    - Agent pivots smoothly
-    - Doesn't force return to previous topic
-    - Maintains professionalism
+  <Accordion title="Action under load" icon="bolt">
+    - Trigger at least one booking, transfer, or webhook while on a real call
+    - Check Conversations afterwards to confirm payloads were delivered
   </Accordion>
 </AccordionGroup>
 
----
-
-### Interruptions and Barge-In
-
-<AccordionGroup>
-  <Accordion title="User interruption" icon="hand">
-    **Test scenario:**
-    1. Let agent start speaking
-    2. Interrupt mid-sentence
-    3. Verify agent stops and listens
-
-    **Expected behavior:**
-    - Agent stops speaking immediately
-    - Agent processes user input
-    - Agent responds to interruption content
-    - No audio artifacts or cutoffs
-
-    **Test variations:**
-    - Interrupt at beginning of response
-    - Interrupt in middle of response
-    - Interrupt at end of response
-    - Interrupt multiple times rapidly
-  </Accordion>
-
-  <Accordion title="Talking over agent" icon="volume-high">
-    **Test scenario:**
-    1. Speak continuously while agent talks
-    2. Don't pause for agent
-    3. Verify agent behavior
-
-    **Expected behavior:**
-    - Agent should detect speech and stop
-    - Agent should wait for user to finish
-    - Agent should respond when user pauses
-
-    **Common issues:**
-    - Agent keeps talking despite user speech
-    - Agent cuts user off prematurely
-    - Both speaking at once
-  </Accordion>
-</AccordionGroup>
-
----
-
-### Knowledge Base Testing
-
-<AccordionGroup>
-  <Accordion title="Known information" icon="check">
-    **Test scenario:**
-    1. Ask questions agent should know from knowledge base
-    2. Verify accurate responses
-    3. Check if answer cites knowledge
-
-    **Example questions:**
-    - "What is your return policy?"
-    - "What are your business hours?"
-    - "How do I reset my password?"
-
-    **Verify:**
-    - Answer is accurate
-    - Answer is concise
-    - Answer matches knowledge base content
-    - No hallucination or made-up details
-  </Accordion>
-
-  <Accordion title="Unknown information" icon="question">
-    **Test scenario:**
-    1. Ask questions agent shouldn't know
-    2. Verify graceful handling
-    3. Check for hallucination
-
-    **Example questions:**
-    - "What's the weather today?"
-    - "Tell me about [competitor product]"
-    - "What's the meaning of life?"
-
-    **Verify:**
-    - Agent admits it doesn't know
-    - Agent doesn't make up answers
-    - Agent offers to help with something else
-    - Agent stays professional
-  </Accordion>
-
-  <Accordion title="Ambiguous questions" icon="circle-question">
-    **Test scenario:**
-    1. Ask vague or unclear questions
-    2. Verify agent asks for clarification
-
-    **Example questions:**
-    - "I have a problem"
-    - "Can you help me with that thing?"
-    - "What about returns?"
-
-    **Verify:**
-    - Agent asks clarifying questions
-    - Agent doesn't assume intent
-    - Agent guides user to specificity
-  </Accordion>
-</AccordionGroup>
-
----
-
-### Action and Tool Testing
-
-<AccordionGroup>
-  <Accordion title="Trigger each action" icon="bolt">
-    **Test scenario:**
-    For each configured action:
-    1. Trigger through natural conversation
-    2. Verify action executes
-    3. Check data sent to action
-    4. Verify response handling
-
-    **Example for booking action:**
-    ```
-    User: "I want to schedule an appointment"
-    Agent: "What time works for you?"
-    User: "Tomorrow at 2pm"
-    Agent: [Triggers booking action]
-    Agent: "You're booked for tomorrow at 2pm"
-    ```
-
-    **Verify:**
-    - Action triggered at right time
-    - Correct parameters extracted
-    - API call succeeds
-    - Agent confirms action result
-    - Conversation continues naturally
-  </Accordion>
-
-  <Accordion title="Action with missing data" icon="circle-exclamation">
-    **Test scenario:**
-    1. Trigger action without providing all required data
-    2. Verify agent requests missing information
-
-    **Example:**
-    ```
-    User: "Book me an appointment"
-    Agent: "I can help with that. What day works for you?"
-    User: "Tomorrow"
-    Agent: "What time would you like?"
-    [etc]
-    ```
-
-    **Verify:**
-    - Agent collects all required fields
-    - Agent doesn't proceed without necessary data
-    - Agent asks questions naturally
-  </Accordion>
-
-  <Accordion title="Action failure handling" icon="triangle-exclamation">
-    **Test scenario:**
-    1. Trigger action when the external service is unavailable (or simulate failure)
-    2. Verify graceful error handling
-
-    **Expected behavior:**
-    - Agent acknowledges the issue
-    - Agent apologizes professionally
-    - Agent offers alternative (e.g., callback, manual process)
-    - Agent doesn't expose technical errors to user
-
-    **Test by:**
-    - Temporarily breaking API endpoint
-    - Using invalid credentials
-    - Causing timeout
-  </Accordion>
-</AccordionGroup>
-
----
-
-### Transfer Testing
-
-<AccordionGroup>
-  <Accordion title="Successful transfer" icon="right-left">
-    **Test scenario:**
-    1. Trigger transfer through conversation
-    2. Verify transfer intent is captured
-    3. If testing with actual transfer, verify audio continues
-
-    **Example:**
-    ```
-    User: "I need to speak with a supervisor"
-    Agent: "I'll transfer you to a supervisor now"
-    [Transfer occurs]
-    ```
-
-    **Verify:**
-    - Transfer logged in conversation
-    - Transfer reason captured
-    - Agent announces transfer
-    - Audio quality maintained (if actual transfer)
-  </Accordion>
-
-  <Accordion title="Transfer conditions" icon="filter">
-    **Test scenario:**
-    1. Test each configured transfer trigger
-    2. Verify conditions work correctly
-
-    **Example triggers:**
-    - Specific keywords ("supervisor", "manager")
-    - After failed attempts to help
-    - Request for human agent
-    - Complex issues beyond agent scope
-
-    **Verify:**
-    - Correct transfer destination
-    - Appropriate timing
-    - Context preserved (if applicable)
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Edge Case Testing
-
-### Silence and Timeouts
-
-<AccordionGroup>
-  <Accordion title="Long silence from user" icon="clock">
-    **Test scenario:**
-    1. Start conversation
-    2. Remain completely silent
-    3. Verify timeout handling
-
-    **Expected behavior:**
-    - Agent provides prompt after configured delay
-    - Agent eventually ends call gracefully
-    - Inactivity timeout triggers correctly
-
-    **Test variations:**
-    - Silence after greeting
-    - Silence mid-conversation
-    - Silence after agent question
-  </Accordion>
-
-  <Accordion title="Repeated silence" icon="repeat">
-    **Test scenario:**
-    1. Respond to agent
-    2. Go silent
-    3. Respond again
-    4. Go silent again
-    5. Verify escalation
-
-    **Expected behavior:**
-    - Agent prompts multiple times
-    - Agent offers help
-    - Agent eventually ends call
-    - No infinite loop of prompts
-  </Accordion>
-</AccordionGroup>
-
----
-
-### Unclear or Problematic Input
-
-<AccordionGroup>
-  <Accordion title="Mumbling or unclear speech" icon="microphone-slash">
-    **Test scenario:**
-    1. Speak unclearly or mumble
-    2. Verify agent handles gracefully
-
-    **Expected behavior:**
-    - Agent asks user to repeat
-    - Agent doesn't guess or assume
-    - Agent remains patient
-  </Accordion>
-
-  <Accordion title="Background noise" icon="wind">
-    **Test scenario:**
-    1. Test with background noise (TV, music, traffic)
-    2. Verify transcription and responses
-
-    **Expected behavior:**
-    - Agent still understands primary speech
-    - Agent doesn't respond to background sounds
-    - Agent may ask user to speak up
-  </Accordion>
-
-  <Accordion title="Multiple people speaking" icon="users">
-    **Test scenario:**
-    1. Have multiple people talk simultaneously
-    2. Verify agent behavior
-
-    **Expected behavior:**
-    - Agent asks for one person at a time
-    - Agent doesn't get confused
-    - Agent maintains professionalism
-  </Accordion>
-
-  <Accordion title="Off-topic or inappropriate content" icon="ban">
-    **Test scenario:**
-    1. Ask off-topic questions
-    2. Try inappropriate requests
-    3. Verify agent boundaries
-
-    **Expected behavior:**
-    - Agent politely declines
-    - Agent redirects to appropriate topics
-    - Agent doesn't engage with inappropriate content
-    - Agent maintains professionalism
-  </Accordion>
-</AccordionGroup>
-
----
-
-### Stress Testing
-
-<AccordionGroup>
-  <Accordion title="Very long conversation" icon="message">
-    **Test scenario:**
-    1. Have extended conversation (10-15 minutes)
-    2. Cover multiple topics
-    3. Verify consistent performance
-
-    **Verify:**
-    - No degradation in quality
-    - Context maintained throughout
-    - No memory issues
-    - Consistent response times
-  </Accordion>
-
-  <Accordion title="Rapid exchanges" icon="forward-fast">
-    **Test scenario:**
-    1. Speak very quickly
-    2. Don't pause between sentences
-    3. Interrupt frequently
-    4. Verify agent keeps up
-
-    **Verify:**
-    - Agent doesn't fall behind
-    - Transcription remains accurate
-    - Responses stay relevant
-    - No audio artifacts
-  </Accordion>
-
-  <Accordion title="Complex multi-step process" icon="list">
-    **Test scenario:**
-    1. Complete multi-step task (e.g., booking with many details)
-    2. Provide all information over multiple exchanges
-    3. Verify all data captured correctly
-
-    **Verify:**
-    - Agent remembers all details
-    - Agent doesn't ask for same information twice
-    - Agent confirms all details before proceeding
-    - Final action contains all correct data
-  </Accordion>
-</AccordionGroup>
-
----
-
-## DTMF/IVR Testing
-
-(If your agent uses DTMF)
-
-<AccordionGroup>
-  <Accordion title="Valid DTMF input" icon="phone-keypad">
-    **Test scenario:**
-    1. Agent prompts for DTMF input
-    2. Press configured keys
-    3. Verify agent responds correctly
-
-    **Test all configured options:**
-    - Press 1 for option A
-    - Press 2 for option B
-    - etc.
-
-    **Verify:**
-    - Agent detects key press
-    - Agent responds to specific key
-    - Agent confirms selection
-  </Accordion>
-
-  <Accordion title="Invalid DTMF input" icon="xmark">
-    **Test scenario:**
-    1. Press keys not in configured options
-    2. Verify agent handles gracefully
-
-    **Expected behavior:**
-    - Agent says key is invalid
-    - Agent repeats options
-    - Agent doesn't break or error
-  </Accordion>
-
-  <Accordion title="DTMF during speech" icon="keyboard">
-    **Test scenario:**
-    1. Press keys while agent is speaking
-    2. Press keys while you're speaking
-    3. Verify proper capture
-
-    **Verify:**
-    - DTMF captured correctly
-    - Agent stops speaking when key pressed
-    - Agent responds to DTMF appropriately
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Testing by Use Case
-
-### Support Agent Testing
-
-**Core scenarios:**
-1. Simple question with knowledge base answer
-2. Multi-step troubleshooting
-3. Issue requiring escalation/transfer
-4. Request for information agent doesn't have
-5. Angry or frustrated customer
-
-**Actions to test:**
-- Knowledge retrieval
-- Transfer to human
-- Ticket creation
-- FAQ responses
-
----
-
-### Sales Agent Testing
-
-**Core scenarios:**
-1. Product inquiry
-2. Pricing questions
-3. Feature comparison
-4. Booking demo/meeting
-5. Objection handling
-
-**Actions to test:**
-- Qualification questions
-- Calendar booking
-- CRM integration
-- Lead capture
-
----
-
-### Appointment Agent Testing
-
-**Core scenarios:**
-1. New appointment booking
-2. Appointment modification
-3. Appointment cancellation
-4. Check existing appointment
-5. No availability handling
-
-**Actions to test:**
-- Calendar check
-- Booking creation
-- Confirmation sending
-- Reminder logic
-
----
-
-## Test Documentation Template
-
-Create a simple test log to track results:
-
-```markdown
-## Test Session: [Date]
-
-**Agent:** [Agent Name/ID]
-**Tester:** [Your Name]
-**Test Type:** [Web Simulator / Phone]
-**Environment:** [Quiet/Noisy/Mobile/etc]
-
-### Test Results
-
-| Scenario | Result | Notes |
-|----------|--------|-------|
-| Standard greeting | ✅ Pass | Timing perfect |
-| Knowledge Q&A | ✅ Pass | Accurate answers |
-| DTMF capture | ❌ Fail | Keys not detected |
-| Transfer | ✅ Pass | Smooth transition |
-| Long silence | ⚠️ Partial | Timeout too short |
-
-### Issues Found
-1. DTMF not capturing - need to enable in settings
-2. Timeout = 10s too short, increase to 15s
-3. Transfer message could be friendlier
-
-### Action Items
-- [ ] Enable DTMF in Call Control settings
-- [ ] Increase inactivity timeout to 15s
-- [ ] Revise transfer message
-- [ ] Re-test all three issues
-```
-
----
-
-## Pre-Production Test Checklist
-
-Before launching to production:
-
-<AccordionGroup>
-  <Accordion title="Core functionality" icon="check">
-    - [ ] Greeting works correctly (inbound & outbound)
-    - [ ] Instructions are followed
-    - [ ] Voice quality is acceptable
-    - [ ] Transcription is accurate in quiet conditions
-    - [ ] Basic conversation flow works
-    - [ ] Agent stays on topic
-  </Accordion>
-
-  <Accordion title="Knowledge & responses" icon="brain">
-    - [ ] Agent answers known questions correctly
-    - [ ] Agent admits when it doesn't know
-    - [ ] No hallucinations observed
-    - [ ] Knowledge retrieval is relevant
-    - [ ] Responses are concise and natural
-  </Accordion>
-
-  <Accordion title="Actions & integrations" icon="plug">
-    - [ ] All actions tested and working
-    - [ ] API integrations functioning
-    - [ ] Error handling is graceful
-    - [ ] Data extraction is accurate
-    - [ ] Transfers work correctly
-  </Accordion>
-
-  <Accordion title="Edge cases" icon="triangle-exclamation">
-    - [ ] Handles interruptions well
-    - [ ] Timeout behavior is appropriate
-    - [ ] Unclear input handled gracefully
-    - [ ] Background noise doesn't break it
-    - [ ] Off-topic requests handled
-  </Accordion>
-
-  <Accordion title="Quality & performance" icon="gauge">
-    - [ ] Response latency acceptable (&lt;2s)
-    - [ ] Audio quality is clear
-    - [ ] No echo or feedback
-    - [ ] DTMF works (if applicable)
-    - [ ] Long conversations work (10+ min)
-  </Accordion>
-
-  <Accordion title="Phone testing" icon="phone">
-    - [ ] Tested from mobile phone
-    - [ ] Tested from landline
-    - [ ] Tested with headset
-    - [ ] Tested with speaker phone
-    - [ ] Tested in noisy environment
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Next Steps
-
-<CardGroup cols={2}>
-  <Card title="Debugging Guide" icon="bug" href="/test/debugging">
-    Fix issues discovered during testing
+## 3. Integration & data checks
+
+<CardGroup cols={3}>
+  <Card title="Knowledge sources" icon="book">
+    Ask one question per attached knowledge base. Confirm the answer references the right source or gracefully declines.
   </Card>
-  <Card title="Logs & Monitoring" icon="chart-line" href="/test/logs-and-monitoring">
-    Analyze test results in detail
+  <Card title="Dynamic instructions" icon="gears">
+    Change a test variable value, re-run the web call, and make sure the agent acknowledges the new state.
   </Card>
-  <Card title="Troubleshooting" icon="life-ring" href="/test/troubleshooting">
-    Common problems and solutions
-  </Card>
-  <Card title="Launch Checklist" icon="rocket" href="/launch/overview">
-    Final steps before going live
+  <Card title="Campaign prep" icon="calendar">
+    If the agent will be used in an outbound campaign, run an outbound web call followed by a phone call to mimic the exact flow campaigns will use.
   </Card>
 </CardGroup>
+
+## 4. Failure handling
+
+<AccordionGroup>
+  <Accordion title="Silence + timeout" icon="hourglass">
+    Stay silent for longer than the configured inactivity window. Confirm the agent follows the escalation/closing message you configured.
+  </Accordion>
+  <Accordion title="API/tool failure" icon="triangle-exclamation">
+    Force an error (e.g., revoke a staging API key) and ensure the agent communicates the failure clearly without exposing stack traces.
+  </Accordion>
+  <Accordion title="Network drop" icon="plug-circle-xmark">
+    Hang up mid-sentence or close the browser to verify wrap-up logic still runs and the conversation record completes.
+  </Accordion>
+</AccordionGroup>
+
+## 5. Sign-off checklist
+
+Use this quick list to capture results in your ticket or PR description:
+
+- [ ] Web call smoke test passed (notes + timestamp)
+- [ ] Phone call validation passed (carrier + device noted)
+- [ ] Critical integrations verified (knowledge, APIs, transfers)
+- [ ] Failure scenario tested with expected messaging
+- [ ] Conversation log reviewed and archived if necessary
+
+Documenting each run means we can reproduce issues quickly and build a regression history for future releases.

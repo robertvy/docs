@@ -1,75 +1,77 @@
 ---
 title: "Test Overview"
-description: "Test and validate your agent before going live"
+description: "How to validate agents across the dashboard, APIs, and the real-time calling service"
 icon: "vial"
 ---
 
-## How Test Mode Works
+## Why testing matters
 
-Every agent in the dashboard ships with two integrated test surfaces:
+Every release touches multiple services: the customer-facing dashboard, the backend API, and the real-time calling layer that drives live conversations. A solid test pass exercises all three so we catch prompt issues, regressions in API contracts, and call quality problems before they reach customers.
 
-- **Web Simulator** – the right-hand panel inside the agent editor. It uses the same voice technology that production calls use, so you can hear timing, barge-in, and interruptions exactly as your callers would.
-- **Phone Test Call** – click **Call test number** to spin up a temporary PSTN line. The call is routed through the same phone infrastructure, which makes it ideal for verifying carrier audio, latency, and IVR navigation.
-
-<Frame>
-  <div className="block dark:hidden">
-    <img src="/images/web-call/web-call-light.png" alt="Test Agent dialog showing Web Call and Phone Call options with Start Web Call button" />
-  </div>
-  <div className="hidden dark:block">
-    <img src="/images/web-call/web-call-dark.png" alt="Test Agent dialog showing Web Call and Phone Call options with Start Web Call button" />
-  </div>
-</Frame>
-
-Both surfaces log transcripts, DTMF events, goal analytics, and tool calls. You can open any test run in **Conversations** to replay audio or inspect details.
-
-## Testing Checklist
-
-<Steps>
-  <Step title="Baseline web run">
-    Use the simulator to confirm greetings, instructions, and initial actions. Fix prompt issues here before dialing a phone.
-  </Step>
-  <Step title="Phone testing">
-    Call the test number twice: once with phone on ear, once on speakerphone.
-  </Step>
-  <Step title="Test in real environments">
-    Test in environments where your customers will call from (e.g., restaurant, car, office). This validates performance with background noise and real-world conditions.
-  </Step>
-  <Step title="Edge cases">
-    Interrupt the agent mid-sentence, stay silent for inactivity handling, and trigger each configured action (transfer, booking, custom API) at least once.
-  </Step>
-  <Step title="Review call log">
-    Open **Conversations**, filter by agent name, and review the transcript, goal analysis, and action details to ensure data is being captured correctly.
-
-<Frame>
-  <div className="block dark:hidden">
-    <img src="/images/conversations/conversation-light.png" alt="Conversations list showing call history with status, duration, and filter options" />
-  </div>
-  <div className="hidden dark:block">
-    <img src="/images/conversations/conversation-dark.png" alt="Conversations list showing call history with status, duration, and filter options" />
-  </div>
-</Frame>
-  </Step>
-</Steps>
-
-## Quick Tips
+## Test surfaces
 
 <CardGroup cols={2}>
-  <Card title="Reset context fast" icon="repeat">
-    Use **Reset test** in the simulator to drop any cached conversation data and restart the pipeline without reloading the page.
+  <Card title="Web Call (Dashboard)" icon="browser" href="/test/web-simulator">
+    Launch a browser-based session from the Test Agent drawer to check prompts, instructions, and context injection without touching phone carriers.
   </Card>
-  <Card title="DTMF debugging" icon="hashtag">
-    Check the log for DTMF input data. If it's empty, re-check the agent's DTMF settings in **Abilities → Actions → Call Control**.
+  <Card title="Phone Call (PSTN)" icon="phone" href="/test/phone-testing">
+    Dial a real number through the same SIP trunk we use in production to confirm latency, carrier audio, AMD, and transfer flows.
   </Card>
-  <Card title="Compare providers" icon="arrows-left-right">
-    Switch between Deepgram and Azure in **Models → Transcriber**, run identical scripts, and save the best performer as the agent default.
+  <Card title="Conversation Logs" icon="list" href="/test/logs-and-monitoring">
+    Replay any run inside Conversations to inspect transcripts, tool executions, and goal outcomes.
   </Card>
-  <Card title="Share results" icon="share-nodes">
-    Forward the log link to teammates. Access is scoped by team permissions, so other editors can replay audio without exporting files.
+  <Card title="Automated Suites" icon="terminal" href="#automated-test-suites">
+    Run the internal test suites so UI, API, and calling-service changes are validated before manual QA begins.
   </Card>
 </CardGroup>
 
-## Next Steps
+## Recommended workflow
 
-<Card title="Launch Overview" icon="rocket" href="/launch/overview">
-  Ready to expose the agent to real callers? Follow the launch checklist.
-</Card>
+<Steps>
+  <Step title="Prepare the agent">
+    Fill required test variables, confirm the correct knowledge bases are attached, and make a small scripted scenario for what you expect to hear.
+  </Step>
+  <Step title="Run a web call">
+    Use the Test Agent drawer (Web Call tab) for fast iteration. Confirm greetings, instructions, and dynamic context responses.
+  </Step>
+  <Step title="Trigger a phone call">
+    Switch to the Phone Call tab once the web run is clean. Call from the number your customers will see and listen for latency, audio artifacts, or AMD issues.
+  </Step>
+  <Step title="Review the log">
+    Open Conversations → Recent, confirm the transcript, goals, and post-call automations look correct, and jot down any follow-up fixes.
+  </Step>
+  <Step title="Run automated tests">
+    Before opening a pull request, execute the stack-specific test commands listed below so CI sees a clean run.
+  </Step>
+</Steps>
+
+## Automated test suites
+
+Manual QA only sticks if the automated coverage stays green. Before sharing results:
+
+- **Frontend UI** – run the full UI script your engineering team provides so type-checking, linting, unit tests, and production builds all pass.
+- **Backend API** – run the containerized backend test suite to verify endpoints and business logic before releasing new prompt or action behavior.
+- **Real-time calling layer** – run the unit + integration suite with coverage enabled to ensure signaling, audio, and action dispatching continue to work at scale.
+
+<Note>Use the internal engineering scripts or CI pipelines for these suites; we intentionally omit repository-specific commands in public documentation.</Note>
+
+## Manual QA exit criteria
+
+- ✅ Web and phone calls match the scripted scenarios (greetings, instructions, fallbacks)
+- ✅ Conversation log shows the right metadata, actions, and post-call workflows
+- ✅ Relevant automated suites pass locally for the service you touched
+- ✅ Outstanding issues are documented in the ticket before handing off to launch or production monitoring
+
+## Next steps
+
+<CardGroup cols={3}>
+  <Card title="Run a Web Call" icon="browser" href="/test/web-simulator">
+    Learn how to configure the Test Agent drawer for browser sessions.
+  </Card>
+  <Card title="Phone Call Checklist" icon="phone" href="/test/phone-testing">
+    Validate the entire PSTN path with your real numbers.
+  </Card>
+  <Card title="Inspect Logs" icon="list" href="/test/logs-and-monitoring">
+    Use Conversations to debug transcripts, actions, and goal tracking.
+  </Card>
+</CardGroup>
