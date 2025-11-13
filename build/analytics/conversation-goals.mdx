@@ -6,7 +6,11 @@ icon: "bullseye"
 
 ## Overview
 
-Conversation goals define measurable objectives for your AI agent to achieve during calls. Track what your agent accomplishes, measure success rates, and optimize performance.
+Conversation goals define measurable objectives to track after calls. The AI analyzes each conversation transcript and determines if goals were achieved. This enables performance reporting, success rate tracking, and optimization insights.
+
+<Warning>
+**Goals are for reporting only.** The agent doesn't know about goals during the conversation. Goals are evaluated by AI after the call ends by analyzing the transcript.
+</Warning>
 
 **Access:** Agent editor → **Analytics → Goals**
 
@@ -41,14 +45,14 @@ Conversation goals define measurable objectives for your AI agent to achieve dur
   </Step>
 
   <Step title="Choose goal type">
-    **Primary Goal:** Your main objective (one required)
-    - Choose the single most important outcome for this agent
-    - Having one primary goal keeps conversations focused and prevents the agent from trying to accomplish too much
+    **Primary Goal:** Your main success metric (one required)
+    - The most important outcome to measure for this agent
+    - Used to calculate overall conversation success rate
     - Example: "Book appointment"
 
-    **Secondary Goals:** Optional objectives (multiple allowed)
-    - Pursued opportunistically without compromising primary goal
-    - Additional value captured when appropriate
+    **Secondary Goals:** Additional metrics (multiple allowed)
+    - Track extra outcomes without affecting primary success rate
+    - Measure additional value delivered
     - Example: "Collect email address"
   </Step>
 
@@ -74,35 +78,12 @@ Conversation goals define measurable objectives for your AI agent to achieve dur
 
 ## Primary vs Secondary Goals
 
-```mermaid
-graph TD
-    A[Conversation Starts] --> B[Primary Goal]
-    B -->|Focus Here First| C{Goal Achieved?}
-    C -->|Yes| D[Pursue Secondary Goals]
-    C -->|No| E[Continue Working on Primary]
-
-    D --> F[Secondary Goal 1]
-    D --> G[Secondary Goal 2]
-    D --> H[Secondary Goal 3]
-
-    F --> I[End Conversation]
-    G --> I
-    H --> I
-    E --> I
-
-    style B fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
-    style D fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    style F fill:#fff9c4,stroke:#f57f17
-    style G fill:#fff9c4,stroke:#f57f17
-    style H fill:#fff9c4,stroke:#f57f17
-```
-
 <Tabs>
   <Tab title="Primary Goal">
-    **One primary goal required.** Choose the single most important outcome.
+    **One primary goal required.** Choose the single most important outcome to measure.
 
     <Info>
-    **Why only one?** Having one primary goal keeps the agent focused and prevents it from trying to accomplish too many things in one conversation. This leads to higher success rates and better customer experience.
+    **Why only one?** Having one primary goal provides a clear success metric for your agent. Conversation success rate is calculated based on primary goal achievement.
     </Info>
 
     **Examples:**
@@ -112,14 +93,14 @@ graph TD
     - 💳 Collect payment information
     - 📞 Schedule callback
 
-    **AI behavior:**
-    - Focuses on achieving this goal first
-    - Conversation success measured by primary goal achievement
-    - Won't pursue conflicting objectives that could derail the main goal
+    **Reporting:**
+    - Used to calculate overall success rate
+    - Primary metric in analytics dashboard
+    - Determines if conversation was successful
   </Tab>
 
   <Tab title="Secondary Goals">
-    **Optional. Multiple allowed.** Additional objectives pursued opportunistically.
+    **Optional. Multiple allowed.** Additional outcomes to track.
 
     **Examples:**
     - 📧 Collect email address
@@ -128,10 +109,10 @@ graph TD
     - 📝 Update contact information
     - ✓ Confirm preferences
 
-    **AI behavior:**
-    - Pursues if primary goal achieved or customer willing
-    - Doesn't compromise primary goal
-    - Adds value without extending call unnecessarily
+    **Reporting:**
+    - Tracked separately from primary goal
+    - Doesn't affect overall success rate
+    - Measures additional value delivered
   </Tab>
 </Tabs>
 
@@ -250,9 +231,9 @@ Check goal status for each call:
 
 ## Tips
 
-- **Reference goals in instructions** - Mention goals in your agent instructions for better alignment
+- **Align instructions with goals** - While the agent doesn't see goals during calls, write your agent instructions to guide conversations toward achieving your defined goals
 - **Review regularly** - Check goal achievement rates weekly to identify optimization opportunities
-- **A/B test goals** - Try different goal definitions to see what works best
+- **Refine definitions** - Adjust goal descriptions if AI evaluation doesn't match your expectations
 - **Combine with analysis** - Use [Post-Call Analysis](/build/analytics/post-call-analysis) for detailed quality scoring
 
 ---
