@@ -222,28 +222,72 @@ Once created, your campaign has six main tabs:
 
 ## Contact Lifecycle
 
-Contacts progress through these statuses (shown with colored badges and icons):
+Contacts progress through these statuses, shown with colored badges and icons throughout the UI:
 
-**Active States:**
-1. **Pending** (gray, clock icon): Contact is queued and waiting to be dialed
-2. **Dialing** (yellow, phone icon): Call is currently in progress - dialing the contact
-3. **Called** (violet, phone-check icon): Call has been made, awaiting next step
-4. **Retry** (blue, refresh icon): No meaningful conversation occurred, call scheduled for retry
+### Active States
 
-**Final States:**
-5. **Completed** (green, check-circle icon): Contact successfully completed all campaign objectives
-6. **Failed** (red, X-circle icon): Call permanently failed and won't be retried
-7. **No Conversation** (gray, phone-X icon): Contact didn't pick up or didn't respond
+<CardGroup cols={2}>
+  <Card title="Pending" icon="clock">
+    **Gray badge with clock icon**
 
+    Contact is queued and waiting to be dialed
+  </Card>
+
+  <Card title="Dialing" icon="phone">
+    **Yellow badge with phone icon**
+
+    Call is currently in progress - dialing the contact
+  </Card>
+
+  <Card title="Called" icon="phone">
+    **Violet badge**
+
+    Call has been made, awaiting next step
+  </Card>
+
+  <Card title="Retry" icon="arrows-rotate">
+    **Blue badge with refresh icon**
+
+    No meaningful conversation occurred, call scheduled for retry
+  </Card>
+</CardGroup>
+
+### Final States
+
+<CardGroup cols={3}>
+  <Card title="Completed" icon="circle-check">
+    **Green badge with check-circle icon**
+
+    Contact successfully completed all campaign objectives
+  </Card>
+
+  <Card title="Failed" icon="circle-xmark">
+    **Red badge with X-circle icon**
+
+    Call permanently failed and won't be retried
+  </Card>
+
+  <Card title="No Conversation" icon="phone-slash">
+    **Gray badge with phone-X icon**
+
+    Contact didn't pick up or didn't respond
+  </Card>
+</CardGroup>
+
+<Note>
 The system manages status transitions automatically based on call outcomes. You can manually retry contacts from the Contacts or Reporting tabs. Only contacts in **Pending** status can be removed from the campaign.
+</Note>
 
 ## Managing Active Campaigns
 
-### Pausing and Resuming
+### Changing Campaign Status
 
-- **Pause Campaign**: Stop dialing temporarily while preserving all progress
-- **Resume Campaign**: Continue from where you left off
-- Navigate to campaign → click **Pause** or **Resume**
+Navigate to **Campaigns** list and click the status badge to change:
+
+- **Active**: Campaign is actively dialing contacts
+- **Paused**: Stop dialing temporarily while preserving all progress
+- **Completed**: Mark campaign as finished
+- **Cancelled**: Cancel the campaign
 
 ### Adding Contacts Mid-Campaign
 
@@ -305,17 +349,43 @@ Modify campaign settings at any time:
     - Download completed files (format shown: .xlsx, .csv (,), or .csv (;))
     - Continue working while exports run in background
 
-    Large exports are processed asynchronously so you can keep managing your campaign. Each export shows its format icon (Excel or CSV) for quick identification.
+    Large exports are processed in the background so you can keep managing your campaign. Each export shows its format icon (Excel or CSV) for quick identification.
   </Accordion>
 </AccordionGroup>
 
 ## Inbound Call Integration
 
-When contacts call back using your campaign caller ID:
-- **Automatic Linking**: Inbound calls are associated with the right campaign contact
-- **Context Continuity**: Agent has access to previous campaign interactions
-- **Status Updates**: Inbound calls can update contact status and completion
-- **Unified Reporting**: All interactions tracked together
+When contacts call back, the system automatically links the call to the campaign contact using a two-tier matching strategy:
+
+### Matching Logic
+
+**Primary Match (DID-based)**:
+- Matches contact's phone number (calling number) with campaign's phone number (called number)
+- Works for active or paused campaigns
+- Most reliable method - doesn't require agent match
+
+**Fallback Match (Agent-based)**:
+- Only activates if:
+  - No DID match found, AND
+  - Contact has a recent outbound call (within 30 days) from any campaign
+- Matches contact's phone number with campaigns using the same agent
+- Uses most recently updated campaign contact
+
+### Status Updates
+
+When an inbound call is matched to a campaign contact in these statuses, it automatically updates to **Called**:
+- Retry → Called
+- Completed → Called
+- No Conversation → Called
+
+This allows callbacks to reopen contact opportunities and continue the campaign workflow.
+
+### Benefits
+
+- **Automatic Linking**: No manual intervention needed
+- **Context Continuity**: Agent has access to all previous campaign interactions
+- **Status Updates**: Contact lifecycle automatically adjusts for callbacks
+- **Unified Reporting**: All interactions (outbound + inbound) tracked together per contact
 
 ## Best Practices
 
