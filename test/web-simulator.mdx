@@ -1,72 +1,86 @@
 ---
 title: "Web Call Testing"
-description: "Use the Test Agent drawer for fast browser-based QA"
+description: "Test your agent in your browser with text or voice"
 icon: "browser"
 ---
 
-## Test Agent drawer
+## Testing in Your Browser
 
-Open any agent, click **Test Agent** in the header, and keep the drawer pinned to the right side of the editor. The drawer exposes two tabs—**Web Call** and **Phone Call**—plus all the inputs your team needs to configure a realistic scenario. Staying inside this drawer keeps prompt tweaks and QA runs in the same place.
+The web simulator lets you test your agent quickly without making phone calls. Click **Test Agent** in the agent header to open the test panel on the right side. You can switch between **Web Call** and **Phone Call** tabs to test different scenarios.
 
-## Configure a web call
+## How to Run a Web Test
 
 <Steps>
-  <Step title="Open the agent">
-    Go to **AI Agents → Select Agent** and ensure the latest instructions are saved.
+  <Step title="Open your agent">
+    Go to **AI Agents** and select the agent you want to test. Make sure your latest instructions are saved.
+  </Step>
+  <Step title="Open Test Agent">
+    Click **Test Agent** in the top right corner. The test panel opens on the right side of the screen.
   </Step>
   <Step title="Choose Web Call">
-    In the Test Agent drawer, keep **Web Call** selected in the segmented control.
+    Make sure **Web Call** is selected at the top of the test panel.
   </Step>
-  <Step title="Set direction">
-    Pick **Inbound** to pretend a caller is dialing in or **Outbound** to emulate the agent calling a contact. This value is injected into the real-time calling service context when a context endpoint exists.
+  <Step title="Set call direction">
+    Choose **Inbound** to simulate a customer calling your agent, or **Outbound** to simulate your agent calling a customer.
   </Step>
-  <Step title="Provide contact data">
-    Add a phone number if your instructions rely on `contact.phone_number` or if your Dynamic Context endpoint branches on it. Leave it blank for purely prompt-driven tests.
+  <Step title="Add contact information (optional)">
+    If your agent uses contact variables like `contact.phone_number` or if you have a Dynamic Context API configured, add a phone number. Otherwise, leave it blank.
   </Step>
-  <Step title="Start the session">
-    Press **Start Test**. The drawer closes automatically and the floating call widget appears so you can monitor the run.
+  <Step title="Start testing">
+    Click **Start Test**. A call widget appears so you can talk with your agent using your microphone or by typing messages.
   </Step>
 </Steps>
 
-## Working with test variables
+## Using Test Variables
 
-- All variables defined on the agent appear once (duplicates by UUID are deduplicated in the UI).
-- Update values inline and click **Save Changes** to persist them via `useUpdateAgentVariables`.
-- Saved defaults travel with the agent so the next tester sees the same presets.
-- Use clear, self-describing sample values ("VIP caller", "Trial plan") so everyone can reproduce the scenario quickly.
+Test variables let you simulate different scenarios without changing your agent's instructions:
 
-## Context-aware testing
+- All variables you've defined in your agent appear in the test panel
+- Update values to test different situations (e.g., "VIP customer", "Trial account")
+- Click **Save Changes** to keep these values for future tests
+- Use descriptive values so it's easy to understand what each test represents
 
-If the agent has a **Context API endpoint**, the drawer sends a `testContext` payload whenever you fill the optional contact and agent numbers. Use this to:
+## Testing with Dynamic Context
 
-- Simulate CRM lookups without deploying a campaign
-- Test different routing branches by changing `direction`
-- Verify the backend receives the metadata it expects before you touch the phone network
+If you've configured a **Dynamic Context API**, the test panel will send contact and agent information to your endpoint:
 
-## Floating call widget
+- Test how your agent behaves with different CRM data
+- Verify routing logic without making real calls
+- Check that your API returns the expected data
 
-The widget that appears after you click **Start Test** gives you live call controls:
+## During the Test Call
 
-- Shows connection status (Connecting, Listening, Speaking, or On Call)
-- Displays live transcription with speaker labels and function-call dumps for tool executions
-- Lets you minimize or end the call without reopening the drawer
-- Keeps running even if you navigate to a different page so you can inspect other screens during a call
+After clicking **Start Test**, a call widget appears with these features:
 
-Use it to capture screenshots or note-taking timestamps while the call is in progress.
+- **Connection status** - See if the call is connecting, listening, or speaking
+- **Live transcription** - Read what you and the agent are saying in real-time
+- **Action tracking** - See when the agent triggers actions like transfers or bookings
+- **Call controls** - Minimize, maximize, or end the call
+- **Stays active** - Widget remains open even if you navigate to other pages
 
-## After the run
+You can continue working in the dashboard while the test call is active.
 
-1. Go to **Conversations → Recent**.
-2. Filter by the agent you just tested.
-3. Open the latest entry, replay audio if needed, and confirm goal tracking plus action payloads look correct.
-4. Delete or tag the record if you want to keep production analytics clean.
+## Reviewing Test Results
 
-## When to escalate to phone testing
+After ending a test call:
 
-Move to the **Phone Call** tab when any of the following are true:
+1. Go to the **Conversations** tab in the main navigation
+2. Find your test call (most recent at the top)
+3. Review the transcript, goals achieved, and any actions triggered
+4. Listen to audio playback if needed
+5. Check that everything worked as expected
 
-- You changed audio/voice parameters and need to hear the PSTN leg
-- You added AMD, transfers, or webhook actions that only fire on real calls
-- You saw latency issues that could be browser-specific and want to confirm the carrier path
+<Tip>
+You can delete test conversations to keep your conversation history focused on real customer interactions.
+</Tip>
 
-Head to [/test/phone-testing](/test/phone-testing) for the full checklist once the web session behaves as expected.
+## When to Switch to Phone Testing
+
+Use the web simulator for fast iteration, but switch to phone testing when you need to:
+
+- Test voice quality and natural speech timing
+- Verify answering machine detection (AMD) settings
+- Test call transfers to real phone numbers
+- Confirm the experience matches what customers will hear
+
+See the [phone testing guide](/test/phone-testing) for detailed instructions on testing with real phone calls.
