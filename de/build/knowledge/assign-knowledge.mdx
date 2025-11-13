@@ -1,0 +1,246 @@
+---
+title: "Wissen Agenten zuweisen"
+description: "Verknüpfen Sie Wissensdatenbanken mit Ihren Agenten und kontrollieren Sie, auf welche Informationen sie zugreifen können"
+icon: "link"
+---
+
+## Überblick
+
+Nach dem Erstellen Ihrer Wissensdatenbank besteht der nächste Schritt darin, sie mit Ihren Agenten zu verbinden. Sie kontrollieren genau, auf welches Wissen jeder Agent zugreifen kann - von ganzen Wissensdatenbanken bis zu einzelnen Elementen.
+
+Diese Flexibilität ermöglicht es Ihnen:
+- Verschiedenen Agenten Zugriff auf verschiedene Informationen zu geben
+- Sicherzustellen, dass Agenten nur relevante, genehmigte Inhalte referenzieren
+- Agentenwissen zu aktualisieren, ohne die Agentenkonfiguration zu ändern
+
+---
+
+## Zuweisungsebenen
+
+Sie können Wissen auf drei verschiedenen Granularitätsebenen Agenten zuweisen:
+
+<CardGroup cols={3}>
+  <Card title="Gesamte Wissensdatenbank" icon="database">
+    Agent hat Zugriff auf alle Ordner und Elemente innerhalb der Wissensdatenbank.
+
+    **Am besten für:** Agenten, die umfassenden Zugriff auf alle Informationen in einer Kategorie benötigen.
+
+    **Beispiel:** Kundensupport-Agent mit Zugriff auf die gesamte "Support-Ressourcen"-Wissensdatenbank.
+  </Card>
+  <Card title="Spezifischer Ordner" icon="folder">
+    Agent greift nur auf einen Ordner innerhalb einer Wissensdatenbank zu.
+
+    **Am besten für:** Spezialisierte Agenten, die nur Informationen aus einer Kategorie benötigen.
+
+    **Beispiel:** Abrechnungsagent mit Zugriff nur auf den Ordner "Abrechnung & Zahlungen".
+  </Card>
+  <Card title="Einzelne Elemente" icon="file">
+    Agent hat nur Zugriff auf spezifische Wissenselemente.
+
+    **Am besten für:** Agenten, die sehr spezifische, kontrollierte Informationen benötigen.
+
+    **Beispiel:** Terminagent mit Zugriff nur auf die Elemente "Stornierungsrichtlinie" und "Planungsrichtlinien".
+  </Card>
+</CardGroup>
+
+---
+
+## So weisen Sie Wissen zu
+
+### Schritt 1: Zur Agentenkonfiguration navigieren
+
+<Steps>
+  <Step title="Ihren Agent öffnen">
+    Gehen Sie zu **Agents** in der linken Seitenleiste und wählen Sie den Agent aus, den Sie konfigurieren möchten.
+  </Step>
+
+  <Step title="Zu Abilities → Knowledge gehen">
+    Klicken Sie auf **Abilities** in der linken Navigation und wählen Sie dann den Abschnitt **Knowledge** aus.
+  </Step>
+</Steps>
+
+### Schritt 2: Wissen hinzufügen
+
+<Steps>
+  <Step title="Auf 'Add Knowledge' klicken">
+    Klicken Sie auf die Schaltfläche **+ Add Knowledge**, um den Wissensauswahlbereich zu öffnen.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/knowledge/knowledge-light.png" alt="Add Knowledge dialog showing knowledge selection options (Entire Base, Folder, Specific Item) and access method configuration (RAG vs Context Mode)" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/knowledge/knowledge-dark.png" alt="Add Knowledge dialog showing knowledge selection options (Entire Base, Folder, Specific Item) and access method configuration (RAG vs Context Mode)" />
+  </div>
+</Frame>
+  </Step>
+
+  <Step title="Zuweisungsebene wählen">
+    Wählen Sie, was Sie zuweisen möchten:
+    - **Knowledge Base** - Gesamte Wissensdatenbank
+    - **Folder** - Spezifischer Ordner innerhalb einer Datenbank
+    - **Item** - Einzelnes Wissenselement
+  </Step>
+
+  <Step title="Das Wissen auswählen">
+    Durchsuchen oder suchen Sie, um die Wissensdatenbank, den Ordner oder das Element zu finden, das Sie zuweisen möchten.
+  </Step>
+
+  <Step title="Zugriffsmodus wählen">
+    Wählen Sie, wie der Agent auf dieses Wissen zugreifen soll:
+    - **Context Mode** - Alle Wissensinhalte in den System-Prompt einfügen (begrenzt auf 10k Token insgesamt)
+    - **RAG Mode** - Relevantes Wissen basierend auf der Konversation dynamisch abrufen
+
+    Mehr erfahren: [Context vs RAG](/build/knowledge/context-vs-rag)
+  </Step>
+
+  <Step title="Speichern">
+    Klicken Sie auf **Add**, um das Wissen Ihrem Agent zuzuweisen.
+  </Step>
+</Steps>
+
+---
+
+## Agentenwissen verwalten
+
+### Zugewiesenes Wissen anzeigen
+
+Im Wissensbereich des Agenten sehen Sie alle zugewiesenen Wissensdatenbanken, Ordner und Elemente mit ihren Zugriffsmodi.
+
+### Zuweisung ändern
+
+- **Zugriffsmodus ändern:** Entfernen Sie das Wissen und fügen Sie es mit dem gewünschten Modus (Context oder RAG) erneut hinzu
+- **Wissen entfernen:** Klicken Sie auf das Entfernen-Symbol, um die Verknüpfung des Wissens vom Agent zu trennen
+- **Mehr hinzufügen:** Klicken Sie auf **+ Add Knowledge**, um zusätzliches Wissen zuzuweisen
+
+### Wissenszugriff testen
+
+Nach dem Zuweisen von Wissen:
+
+<Steps>
+  <Step title="Einen Testanruf durchführen">
+    Verwenden Sie die Funktion **Test**, um Ihren Agent anzurufen.
+  </Step>
+
+  <Step title="Wissensbasierte Fragen stellen">
+    Stellen Sie Fragen, die mithilfe des zugewiesenen Wissens beantwortet werden sollten.
+  </Step>
+
+  <Step title="Antworten überprüfen">
+    Bestätigen Sie, dass der Agent das Wissen korrekt abruft und verwendet.
+  </Step>
+
+  <Step title="Bei Bedarf anpassen">
+    Wenn die Antworten nicht korrekt sind, prüfen Sie:
+    - Ist das richtige Wissen zugewiesen?
+    - Ist der Zugriffsmodus angemessen (Context vs RAG)?
+    - Ist der Wissensinhalt korrekt und aktuell?
+  </Step>
+</Steps>
+
+---
+
+## Best Practices
+
+### Klein anfangen, dann erweitern
+
+<AccordionGroup>
+  <Accordion title="Beginnen Sie mit essentiellem Wissen" icon="circle-1">
+    Beginnen Sie damit, nur das kritischste Wissen zuzuweisen, das Ihr Agent benötigt.
+
+    **Beispiel:**
+    - Start: Rückgaberichtlinie, Geschäftszeiten, Kontaktinformationen (3 Elemente)
+    - Später: Produktdetails, FAQs, Fehlerbehebung hinzufügen (20+ Elemente)
+
+    **Warum:** Einfacher, Genauigkeit zu überprüfen und Probleme mit weniger Wissen zu beheben.
+  </Accordion>
+
+  <Accordion title="Gründlich nach jeder Hinzufügung testen" icon="circle-2">
+    Jedes Mal, wenn Sie Wissen hinzufügen, testen Sie, um sicherzustellen, dass der Agent es korrekt verwendet.
+
+    **Test-Checkliste:**
+    - Stellen Sie direkte Fragen über das neue Wissen
+    - Stellen Sie Grenzfälle oder knifflige Szenarien
+    - Überprüfen Sie, dass der Agent nicht halluziniert oder Informationen erfindet
+    - Bestätigen Sie, dass der Agent korrekt "Ich weiß es nicht" sagt, wenn das Wissen ein Thema nicht abdeckt
+  </Accordion>
+
+  <Accordion title="Überwachen und verfeinern" icon="circle-3">
+    Nach der Bereitstellung überwachen Sie echte Gespräche, um zu sehen, wie Wissen verwendet wird.
+
+    **Achten Sie auf:**
+    - Fragen, die der Agent nicht beantworten konnte (fehlendes Wissen)
+    - Falsche Antworten (Wissen muss aktualisiert werden)
+    - Verwirrte Antworten (zu viel ähnliches Wissen)
+  </Accordion>
+</AccordionGroup>
+
+### Die richtige Zuweisungsebene wählen
+
+- **Gesamte Wissensdatenbank** - Wenn der Agent alles in einer Kategorie benötigt
+- **Spezifischer Ordner** - Wenn der Agent eine spezialisierte Rolle hat
+- **Einzelne Elemente** - Wenn Sie präzise Kontrolle darüber benötigen, was der Agent weiß
+
+<Warning>
+Vermeiden Sie es, überlappendes Wissen auf verschiedenen Ebenen zuzuweisen. Weisen Sie zum Beispiel nicht sowohl "Kundensupport KB" (gesamte Datenbank) UND "Rücksendungen Ordner" (aus derselben Datenbank) zu. Dies schafft Redundanz.
+</Warning>
+
+---
+
+## Fehlerbehebung
+
+<AccordionGroup>
+  <Accordion title="Agent verwendet zugewiesenes Wissen nicht" icon="triangle-exclamation">
+    **Prüfen:**
+    1. Ist das Wissen tatsächlich dem Agent zugewiesen?
+    2. Ist der Vektorindizierungsstatus "INDEXED"? (Prüfen in Knowledge Base > Items)
+    3. Ist der Zugriffsmodus angemessen? (Versuchen Sie Context/RAG zu wechseln)
+    4. Ist die Frage so formuliert, dass das Wissen sie beantworten kann?
+
+    **Test:** Stellen Sie eine sehr direkte Frage, die eindeutig im Wissen ist. Wenn der Agent es immer noch nicht verwendet, gibt es ein Konfigurationsproblem.
+  </Accordion>
+
+  <Accordion title="Agent gibt falsche Informationen" icon="triangle-exclamation">
+    **Prüfen:**
+    1. Ist der Wissensinhalt selbst korrekt?
+    2. Gibt es widersprüchliche Elemente in der Wissensdatenbank?
+    3. Ist veraltetes Wissen noch zugewiesen?
+
+    **Beheben:**
+    - Überprüfen und aktualisieren Sie den Wissensinhalt, entfernen Sie widersprüchliche/veraltete Elemente
+    - **Senken Sie die Temperatur-Einstellung** (in KI-Modell-Einstellungen), damit der Agent näher am Wissen bleibt
+    - **Fügen Sie kritisches Wissen zum Context Mode hinzu** anstatt RAG für garantierte Einbeziehung in jedem Gespräch
+    - **Wechseln Sie zu einem leistungsfähigeren Modell** in KI-Modell-Einstellungen (z.B. GPT-4.1 statt GPT-4.1 Mini oder Claude Sonnet statt Haiku)
+  </Accordion>
+
+  <Accordion title="Agent sagt 'Ich weiß es nicht', aber Wissen existiert" icon="triangle-exclamation">
+    **Mögliche Ursachen:**
+    1. Wissen ist noch nicht indiziert (prüfen Sie Vektorstatus)
+    2. RAG-Modus kann keine relevanten Übereinstimmungen finden (versuchen Sie Context-Modus)
+    3. Wissenstitel/-inhalt passt nicht zu den Frageschlüsselwörtern
+
+    **Beheben:**
+    - Warten Sie, bis die Indizierung abgeschlossen ist
+    - Verbessern Sie Wissenselement-Titel und -Inhalte, um häufige Frageschlüsselwörter einzuschließen
+    - Erwägen Sie die Verwendung des Context-Modus für kritische Informationen
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Context vs RAG" icon="brain" href="/build/knowledge/context-vs-rag">
+    Tiefgehende Betrachtung der Wahl der richtigen Zugriffsmethode
+  </Card>
+  <Card title="Wissensdatenbanken erstellen" icon="plus" href="/build/knowledge/create-knowledge-bases">
+    Erfahren Sie, wie Sie Ihr Wissen aufbauen und organisieren
+  </Card>
+  <Card title="Ihren Agent testen" icon="flask" href="/test/overview">
+    Testen Sie das Wissen Ihres Agenten in Aktion
+  </Card>
+  <Card title="Variablen & Dynamische Inhalte" icon="brackets-curly" href="/build/conversation/variables-dynamic-content">
+    Referenzieren Sie Wissen in Agentenanweisungen
+  </Card>
+</CardGroup>
