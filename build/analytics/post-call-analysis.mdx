@@ -1,29 +1,18 @@
 ---
 title: "Post-Call Analysis"
-description: "Extract structured insights from conversations automatically"
+description: "Extract structured insights and quality metrics from conversations"
 icon: "magnifying-glass-chart"
 ---
 
 ## Overview
 
-Post-call analysis uses AI to automatically extract structured information from conversations. Define custom questions that analyze every call and generate consistent, structured data for reporting and automation.
+Post-call analysis are optional questions that AI answers after each call by analyzing the transcript. Use analysis to extract information, judge quality, measure sentiment, and gather business insights beyond simple goal tracking.
 
-**Access:** Agent editor � **Analytics � Call Analysis**
+**Access:** Agent editor → **Analytics → Call Analysis**
 
-**Use cases:** Quality scoring, sentiment tracking, issue categorization, outcome measurement, compliance verification, custom business metrics
-
----
-
-## How It Works
-
-1. **Define analysis questions** - Create questions the AI should answer after each call
-2. **Choose question type** - Yes/No, Open-ended, or Rating (1-5 stars)
-3. **AI analyzes transcript** - After each call, AI reads transcript and answers questions
-4. **View results** - Structured data appears in conversation details and analytics
-
-<Info>
-Analysis runs automatically after each conversation. Results are available immediately in the conversation view and aggregate in your analytics dashboard.
-</Info>
+<Warning>
+**Analysis vs Goals:** Analysis extracts information and judges quality (e.g., "How satisfied was the customer?"). Goals track conversions (e.g., "Was appointment booked?"). Use both together for complete reporting.
+</Warning>
 
 ---
 
@@ -31,46 +20,44 @@ Analysis runs automatically after each conversation. Results are available immed
 
 <Steps>
   <Step title="Access Call Analysis">
-    Agent editor � **Analytics � Call Analysis** � **Add Analysis Question**
+    Agent editor → **Analytics → Call Analysis** → **Add Analysis Question**
   </Step>
 
   <Step title="Configure question">
-    **Name:** Internal identifier (e.g., "Customer Satisfaction")
+    **Name:** Internal identifier
 
-    **Description:** The question AI will answer (be specific):
     ```
-    Example: "On a scale of 1-5 stars, how satisfied was the customer
-    with the resolution provided during this call?"
+    Example: "Customer Satisfaction Score"
     ```
+
+    **Description:** The question AI will answer (be as specific as possible)
+
+    ```
+    Example: "On a scale of 1-5 stars, rate the customer's overall
+    satisfaction based on their tone, language, and whether their
+    issue was fully resolved during the call."
+    ```
+
+    <Tip>
+    More specific descriptions = more accurate AI analysis
+    </Tip>
   </Step>
 
   <Step title="Choose question type">
-    **Yes/No** - Binary outcome
+    **Yes/No** - Binary answer
     ```
     Example: "Was the customer's issue fully resolved?"
-    � Answer: Yes or No
     ```
 
     **Open** - Text response
     ```
-    Example: "What was the primary reason for the customer's call?"
-    � Answer: "Billing inquiry about overcharge"
+    Example: "What was the main topic discussed?"
     ```
 
     **Rating** - 1-5 stars
     ```
-    Example: "How professional was the agent during the call?"
-    � Answer: 1-5 stars
+    Example: "How professional was the agent?"
     ```
-  </Step>
-
-  <Step title="Set category (optional)">
-    Group related analyses:
-    - Quality
-    - Compliance
-    - Outcomes
-    - Sentiment
-    - Custom
   </Step>
 
   <Step title="Save and enable">
@@ -82,73 +69,73 @@ Analysis runs automatically after each conversation. Results are available immed
 
 ## Question Types
 
-### Yes/No Questions
+<Tabs>
+  <Tab title="Yes/No">
+    **Binary answer questions** for clear metrics.
 
-Binary outcomes for clear metrics.
+    **Best for:**
+    - Compliance checks
+    - Quality verification
+    - Feature usage detection
 
-**Best for:**
-- Goal achievement tracking
-- Compliance verification
-- Feature usage detection
+    **Examples:**
+    - ✅ "Was payment information collected?"
+    - ✅ "Did the agent follow the script?"
+    - ✅ "Was the caller transferred?"
+    - ✅ "Did customer agree to the offer?"
+  </Tab>
 
-**Examples:**
-```
-"Did the customer agree to the upsell offer?"
-"Was payment information collected?"
-"Did the agent follow the script?"
-"Was the caller transferred to another department?"
-```
+  <Tab title="Open">
+    **Text response questions** for detailed insights.
 
-### Open Questions
+    **Best for:**
+    - Issue categorization
+    - Information extraction
+    - Root cause analysis
+    - Conversation summaries
 
-Free-text responses for detailed insights.
+    **Examples:**
+    - 📝 "What was the primary topic discussed?"
+    - 📝 "What objections did the customer raise?"
+    - 📝 "Which product was discussed?"
+    - 📝 "Summarize the customer's technical issue"
+  </Tab>
 
-**Best for:**
-- Issue categorization
-- Root cause analysis
-- Conversation summaries
-- Custom data extraction
+  <Tab title="Rating">
+    **1-5 star scale** for qualitative assessment.
 
-**Examples:**
-```
-"What was the main topic discussed during the call?"
-"What objections did the customer raise?"
-"Summarize the customer's technical issue in one sentence"
-"Which product was the customer inquiring about?"
-```
+    **Best for:**
+    - Quality scoring
+    - Sentiment analysis
+    - Performance evaluation
+    - Satisfaction measurement
 
-### Rating Questions
+    **Examples:**
+    - ⭐ "Rate customer sentiment (1=very negative, 5=very positive)"
+    - ⭐ "How well did agent handle objections?"
+    - ⭐ "Rate call quality (1=poor, 5=excellent)"
+    - ⭐ "Customer satisfaction score"
 
-1-5 star scale for qualitative assessment.
-
-**Best for:**
-- Quality scoring
-- Sentiment analysis
-- Performance evaluation
-- Satisfaction measurement
-
-**Examples:**
-```
-"On a scale of 1-5, rate the customer's sentiment during the call"
-"How well did the agent handle objections? (1-5 stars)"
-"Rate the clarity of the information provided (1-5)"
-"Overall call quality score (1-5)"
-```
+    <Tip>
+    For ratings, always define what each star level means in your description
+    </Tip>
+  </Tab>
+</Tabs>
 
 ---
 
 ## Examples
 
 <AccordionGroup>
-  <Accordion title="Customer Satisfaction Tracking" icon="star">
+  <Accordion title="Customer Satisfaction" icon="face-smile">
     **Name:** Customer Satisfaction Score
 
-    **Type:** Rating
+    **Type:** Rating (1-5 stars)
 
     **Description:**
     ```
-    On a scale of 1-5 stars, rate the customer's overall satisfaction
-    based on their tone, responses, and whether their needs were met.
+    Rate the customer's overall satisfaction based on their tone,
+    language, and responses (1-5 stars):
 
     5 stars = Very satisfied, enthusiastic, all needs met
     4 stars = Satisfied, positive interaction
@@ -156,22 +143,19 @@ Free-text responses for detailed insights.
     2 stars = Somewhat dissatisfied, some frustration
     1 star = Very dissatisfied, angry, unresolved issues
     ```
-
-    **Category:** Quality
   </Accordion>
 
-  <Accordion title="Issue Resolution Tracking" icon="check-circle">
-    **Name:** Issue Resolved
+  <Accordion title="Issue Resolution" icon="check-circle">
+    **Name:** Issue Fully Resolved
 
     **Type:** Yes/No
 
     **Description:**
     ```
     Was the customer's issue, question, or request fully resolved
-    by the end of the call?
+    by the end of the call? Answer Yes only if the customer confirmed
+    satisfaction or explicitly agreed the issue was resolved.
     ```
-
-    **Category:** Outcomes
   </Accordion>
 
   <Accordion title="Call Topic Classification" icon="tag">
@@ -181,8 +165,7 @@ Free-text responses for detailed insights.
 
     **Description:**
     ```
-    Identify the main topic or reason for this call from the following
-    categories:
+    Identify the main topic or reason for this call. Choose from:
     - Billing inquiry
     - Technical support
     - Product information
@@ -191,60 +174,113 @@ Free-text responses for detailed insights.
     - Cancellation request
     - General question
 
-    If multiple topics discussed, select the primary one that took
-    most of the conversation time.
+    Return only the category name. If multiple topics were discussed,
+    return the one that took the most conversation time.
     ```
+  </Accordion>
 
-    **Category:** Custom
+  <Accordion title="Agent Performance" icon="user-check">
+    **Name:** Agent Professionalism
+
+    **Type:** Rating (1-5 stars)
+
+    **Description:**
+    ```
+    Rate the agent's professionalism during the call (1-5 stars):
+
+    5 = Exceptionally professional, courteous, and helpful
+    4 = Very professional with minor room for improvement
+    3 = Professional and appropriate
+    2 = Somewhat unprofessional (interrupting, impatient)
+    1 = Unprofessional (rude, dismissive, inappropriate)
+    ```
+  </Accordion>
+
+  <Accordion title="Sentiment Analysis" icon="chart-line">
+    **Name:** Customer Sentiment
+
+    **Type:** Rating (1-5 stars)
+
+    **Description:**
+    ```
+    Rate the customer's emotional state throughout the call:
+
+    5 = Very positive (happy, excited, grateful, enthusiastic)
+    4 = Positive (satisfied, friendly, pleased)
+    3 = Neutral (businesslike, matter-of-fact, calm)
+    2 = Negative (frustrated, disappointed, annoyed)
+    1 = Very negative (angry, hostile, threatening)
+    ```
   </Accordion>
 
   <Accordion title="Compliance Verification" icon="shield-check">
-    **Name:** Compliance Check
+    **Name:** Proper Identification
 
     **Type:** Yes/No
 
     **Description:**
     ```
-    Did the agent properly identify themselves and ask for consent
-    before collecting payment information, as required by company policy?
+    Did the agent properly identify themselves with name and company
+    at the beginning of the call, as required by company policy?
     ```
-
-    **Category:** Compliance
-  </Accordion>
-
-  <Accordion title="Sentiment Analysis" icon="face-smile">
-    **Name:** Customer Sentiment
-
-    **Type:** Rating
-
-    **Description:**
-    ```
-    Rate the customer's emotional state during the call (1-5):
-
-    5 = Very positive (happy, excited, grateful)
-    4 = Positive (satisfied, friendly)
-    3 = Neutral (businesslike, matter-of-fact)
-    2 = Negative (frustrated, disappointed)
-    1 = Very negative (angry, hostile, threatening)
-    ```
-
-    **Category:** Sentiment
   </Accordion>
 </AccordionGroup>
+
+---
+
+## Analysis vs Goals
+
+Use both together for complete conversation tracking:
+
+| Feature | Goals | Analysis |
+|---------|-------|----------|
+| **Purpose** | Track conversions | Extract insights & judge quality |
+| **Example** | "Appointment booked" | "How satisfied was customer?" |
+| **Answer Type** | Achieved/Not achieved | Yes/No, Text, or 1-5 rating |
+| **Use For** | Success metrics | Quality scoring, categorization |
+| **Best For** | Business outcomes | Detailed reporting |
+
+**Example combination:**
+- **Goal:** "Appointment booked" (Did we achieve the conversion?)
+- **Analysis:** "Customer Satisfaction" (How well did we do it?)
+- **Analysis:** "Primary Call Topic" (What did they want?)
+
+---
+
+## Viewing Results
+
+### Individual Conversations
+
+View analysis results for each call:
+
+1. Go to **Conversations**
+2. Click on a conversation
+3. View **Call Analysis** section
+4. See all analysis questions with AI answers
+
+### Analytics Dashboard
+
+View aggregate data across all conversations:
+
+Go to **Analytics Dashboard** to see analysis trends and metrics.
+
+[Learn more about Analytics Dashboard →](/optimize/analytics-dashboard)
 
 ---
 
 ## Best Practices
 
 <AccordionGroup>
-  <Accordion title="Write Specific Questions" icon="bullseye">
-    L Vague: "Was the call good?"
+  <Accordion title="Write Specific Questions" icon="pen">
+    The AI uses your description to answer. Be detailed.
 
-     Specific: "Did the agent provide accurate information, address all customer questions, and maintain a professional tone throughout the call?"
+    ❌ Vague: "Was the call good?"
+
+    ✅ Specific: "Did the agent provide accurate information, address all customer questions, and maintain a professional tone throughout the call?"
   </Accordion>
 
-  <Accordion title="Provide Context for Ratings" icon="star-half-stroke">
-    For rating questions, define what each star level means:
+  <Accordion title="Define Rating Scales" icon="star">
+    For rating questions, always define what each level means.
 
     ```
     Rate agent professionalism (1-5):
@@ -256,108 +292,34 @@ Free-text responses for detailed insights.
     ```
   </Accordion>
 
-  <Accordion title="Use Categories to Organize" icon="folder">
-    Group related analyses for easier management:
-    - **Quality** - Agent performance, call quality
-    - **Compliance** - Policy adherence, legal requirements
-    - **Outcomes** - Resolution, goals achieved
-    - **Sentiment** - Customer emotions, satisfaction
-  </Accordion>
-
-  <Accordion title="Start with Key Metrics" icon="chart-line">
+  <Accordion title="Start with Key Questions" icon="list">
     Don't create too many analyses at once. Start with 3-5 critical questions:
+
     1. Issue resolved (Yes/No)
     2. Customer satisfaction (Rating)
     3. Call topic (Open)
     4. Sentiment (Rating)
-    5. Compliance check (Yes/No)
 
     Add more as needed.
   </Accordion>
 
-  <Accordion title="Test and Refine" icon="flask">
-    After adding analysis questions:
-    1. Make a few test calls
-    2. Review AI responses in conversation details
-    3. Adjust question wording if answers aren't accurate
-    4. Provide more context in descriptions if needed
+  <Accordion title="Archive Old Analyses" icon="folder">
+    Archive outdated analysis questions to keep them out of the way while preserving historical data.
+
+    **To archive:** Click archive icon next to analysis
+
+    **To restore:** Click "View Archived" → Restore
   </Accordion>
 </AccordionGroup>
-
----
-
-## Viewing Results
-
-### Individual Conversations
-
-View analysis results for each call:
-
-1. Go to **Conversations** in your dashboard
-2. Click on a conversation
-3. Scroll to **Call Analysis** section
-4. See all analysis questions with AI-generated answers
-
-### Analytics Dashboard
-
-Aggregate analysis across all conversations:
-
-1. Go to **Analytics Dashboard**
-2. Filter by date range, agent, or tags
-3. View charts and metrics for each analysis question
-4. Export data for reporting
-
-[Learn more about Analytics Dashboard �](/optimize/analytics-dashboard)
-
----
-
-## Use Cases
-
-**Quality Assurance:**
-- Track agent performance scores
-- Monitor compliance with scripts
-- Identify training opportunities
-- Measure improvement over time
-
-**Customer Insights:**
-- Track satisfaction trends
-- Identify common issues
-- Measure sentiment patterns
-- Understand call topics
-
-**Business Metrics:**
-- Measure conversion rates
-- Track upsell success
-- Monitor resolution rates
-- Analyze objections
-
-**Automation Triggers:**
-- Trigger follow-up emails based on analysis results
-- Route to different teams based on topic
-- Escalate based on satisfaction scores
-- Flag compliance violations
 
 ---
 
 ## Tips
 
-<AccordionGroup>
-  <Accordion title="Archive Old Analyses" icon="archive">
-    Remove outdated analysis questions instead of deleting them to preserve historical data. Click the archive icon to stop running without losing past results.
-  </Accordion>
-
-  <Accordion title="Use Analysis with Goals" icon="target">
-    Combine with [Conversation Goals](/build/analytics/conversation-goals) for comprehensive tracking:
-    - Goals = What agent should accomplish
-    - Analysis = How well they did it
-  </Accordion>
-
-  <Accordion title="Trigger Emails from Analysis" icon="envelope">
-    Use analysis results to trigger [Post-Call Emails](/build/analytics/post-call-automation):
-    ```
-    Example: Send escalation email when satisfaction rating < 3 stars
-    ```
-  </Accordion>
-</AccordionGroup>
+- **Combine with goals** - Use goals for conversions, analysis for quality insights
+- **Test and refine** - Review AI answers on a few calls and adjust descriptions if needed
+- **Use categories** - Group related analyses (Quality, Compliance, Sentiment, Custom)
+- **Be consistent** - Use same analysis questions across similar agents for comparable data
 
 ---
 
@@ -365,37 +327,37 @@ Aggregate analysis across all conversations:
 
 <AccordionGroup>
   <Accordion title="Inaccurate answers" icon="triangle-exclamation">
-    **Possible causes:**
-    - Question too vague or ambiguous
+    **Causes:**
+    - Question description too vague
     - Multiple interpretations possible
-    - Context missing from description
+    - Missing context in description
 
     **Solutions:**
-    - Make question more specific and detailed
-    - Provide examples of good/bad answers in description
-    - Add context about what to look for
-    - For ratings, define each star level explicitly
+    - Make description more specific and detailed
+    - Provide examples in description
+    - For ratings, define each level explicitly
+    - Test with sample calls and refine
   </Accordion>
 
-  <Accordion title="Inconsistent ratings" icon="chart-mixed">
-    **Possible causes:**
+  <Accordion title="Inconsistent ratings" icon="chart-column">
+    **Causes:**
     - Rating criteria not clearly defined
     - Subjective interpretation by AI
 
     **Solutions:**
     - Define exact criteria for each rating level
     - Provide specific examples for each star rating
-    - Use more objective Yes/No questions instead
+    - Use Yes/No questions for more objective answers
   </Accordion>
 
   <Accordion title="Analysis not showing" icon="eye-slash">
-    **Possible causes:**
-    - Analysis question is disabled
+    **Causes:**
+    - Analysis question disabled
     - Created after calls took place
     - Transcription not enabled
 
     **Solutions:**
-    - Verify question is Active (toggle on)
+    - Verify analysis is Active (toggle on)
     - Analysis only runs on new calls after creation
     - Ensure transcription is enabled for agent
   </Accordion>
@@ -406,8 +368,8 @@ Aggregate analysis across all conversations:
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Conversation Goals" icon="target" href="/build/analytics/conversation-goals">
-    Set goals to measure
+  <Card title="Conversation Goals" icon="bullseye" href="/build/analytics/conversation-goals">
+    Track conversions and outcomes
   </Card>
   <Card title="Post-Call Emails" icon="envelope-open-text" href="/build/analytics/post-call-automation">
     Trigger emails from analysis
@@ -415,7 +377,7 @@ Aggregate analysis across all conversations:
   <Card title="Analytics Dashboard" icon="chart-line" href="/optimize/analytics-dashboard">
     View aggregate insights
   </Card>
-  <Card title="Goal Tracking" icon="bullseye" href="/optimize/goal-tracking">
-    Measure performance
+  <Card title="Agent Instructions" icon="pen-to-square" href="/build/conversation/instructions">
+    Guide agent behavior
   </Card>
 </CardGroup>
