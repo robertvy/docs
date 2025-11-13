@@ -1,17 +1,19 @@
 ---
 title: "Voicemail Handling"
-description: "Configure Answering Machine Detection (AMD) and voicemail message strategies for outbound campaigns"
+description: "Configure Answering Machine Detection (AMD) to identify and handle voicemail systems in outbound campaigns"
 icon: "voicemail"
 ---
 
 ## Overview
 
-Answering Machine Detection (AMD) enables your AI agents to automatically detect when outbound calls reach voicemail instead of a live person, allowing you to configure different behaviors for each scenario. This critical feature prevents wasted agent time talking to answering machines, reduces negative customer experiences from inappropriate voicemail interactions, and optimizes campaign efficiency by focusing resources on live conversations.
+Answering Machine Detection (AMD) enables your AI agents to automatically detect when outbound calls reach voicemail instead of a live person. When voicemail is detected, the agent hangs up and logs the outcome, allowing you to retry at different times to maximize chances of reaching a live person.
 
-Effective voicemail handling transforms your outbound campaigns from basic autodialers into intelligent communication systems that respect customer preferences, maintain professional brand standards, and maximize connection rates with decision-makers.
+This critical feature prevents wasted agent time talking to answering machines and optimizes campaign efficiency by focusing resources on live conversations rather than voicemail systems.
 
 <Note>
-AMD configuration is primarily accessed during campaign creation and in campaign settings. Different AMD methods (text-based vs. ML-based) offer trade-offs between speed, accuracy, and use case fit.
+**Phone Calls Only:** AMD applies to phone calls via SIP/PSTN connections. Web-based conversations without a phone leg do not support DTMF interaction.
+
+AMD configuration is accessed during campaign creation and test calls. Text-Based AMD is always active. You can optionally enable ML-Based AMD as an addon for faster detection (~1.5s vs 5-15s).
 </Note>
 
 ---
@@ -32,7 +34,7 @@ Phone rings → Person answers → "Hello?"
 **Scenario 2: Voicemail**
 ```text wrap
 Phone rings → Voicemail system answers → "You've reached John Smith..."
-→ Agent should either leave brief message or hang up
+→ Agent should hang up and retry later
 → Don't waste time with full conversation script
 → Don't create awkward interaction talking over voicemail greeting
 ```
@@ -53,8 +55,8 @@ AMD analyzes the audio in the first few seconds after call connection to determi
 
 **Benefits:**
 - **Efficiency:** Don't waste agent time on voicemail
-- **Professionalism:** Leave appropriate messages, not awkward partial scripts
-- **Higher connect rates:** Focus retry attempts on different times rather than immediate reattempts
+- **Better targeting:** Focus retry attempts on different times to reach live person
+- **Higher connect rates:** Optimize call timing based on voicemail patterns
 - **Better analytics:** Separate "reached voicemail" from "no answer" in reporting
 
 ---
@@ -65,60 +67,68 @@ AMD analyzes the audio in the first few seconds after call connection to determi
 
 <CardGroup cols={2}>
   <Card title="Text-Based AMD" icon="text">
-    Fast, keyword-based detection using transcriber
+    Keyword-based detection using transcriber and LLM - always active
   </Card>
-  <Card title="ML-Based AMD" icon="brain">
-    Intelligent pattern recognition using machine learning models
+  <Card title="ML-Based AMD (Optional)" icon="brain">
+    Fast pattern recognition using Deep Neural Network - optional addon for speed
   </Card>
 </CardGroup>
 
 ### Text-Based AMD
 
+**Role:** Base detection layer that always runs. Uses your agent's transcriber and LLM to identify voicemail keywords.
+
 **How it works:**
 ```text wrap
 1. Call connects
-2. Speech-to-text transcribes first few seconds
-3. Scans for voicemail keywords:
+2. Agent's AI voice pipeline (transcriber) receives audio
+3. Agent waits for first turn/utterance to complete (pause detected)
+4. LLM analyzes transcription for voicemail-like patterns:
    - "You've reached"
    - "Leave a message"
    - "Not available"
    - "Voicemail"
    - "After the beep"
-4. If keywords detected → MACHINE
-5. If no keywords in first 2-3 seconds → HUMAN
+5. If voicemail detected → Agent hangs up
+6. If live person detected → Agent continues normal conversation
 ```
 
 **Characteristics:**
 
 <AccordionGroup>
-  <Accordion title="Speed" icon="gauge-high">
-    **Very fast:** ~500ms-1.5 seconds
+  <Accordion title="Speed" icon="gauge">
+    **Slower:** Waits for complete turn/utterance to finish
 
-    Begins processing immediately upon connection, provides classification quickly
+    Must wait for the entire voicemail greeting to complete (pause detected), then transcribe and analyze the full text. Typical detection occurs after 5-15+ seconds depending on length of voicemail message.
 
-    **Best for:** Time-sensitive campaigns where speed matters
+    **Limitation:** Long voicemail greetings mean longer wait times before detection
+
+    **Best for:** Campaigns where accuracy is more important than immediate detection
   </Accordion>
 
   <Accordion title="Accuracy" icon="chart-line">
-    **Good accuracy:** 85-92% in typical scenarios
-
     **High accuracy when:**
     - Standard voicemail greetings with common phrases
     - Clear audio quality
-    - English language voicemails
+    - Voicemail language matches transcriber language
     - B2B environments with professional greetings
+
+    **Will NOT detect:**
+    - Voicemail greetings in languages the transcriber doesn't support
+    - Voicemail systems with no greeting (just beeps)
+    - Non-verbal voicemail indicators
 
     **Lower accuracy when:**
     - Custom greetings without standard keywords
     - Short greetings ("Hi, leave a message" - very brief)
-    - Non-English voicemails
+    - Poor audio quality or background noise
     - Background noise interfering with transcription
   </Accordion>
 
   <Accordion title="Best Use Cases" icon="briefcase">
     **Ideal for:**
     - **B2B campaigns** - Business voicemails typically use standard phrasing
-    - **High-volume campaigns** - Speed advantage compounds across thousands of calls
+    - **Campaigns prioritizing accuracy** - Reduces false positives by analyzing full utterance context
     - **Budget-conscious deployments** - Lower computational cost
     - **English-language markets** - Keyword detection optimized for English
 
@@ -132,7 +142,7 @@ AMD analyzes the audio in the first few seconds after call connection to determi
     **May struggle with:**
     - Personal, creative voicemail greetings ("Hey, it's Mike, you know what to do")
     - Very short greetings
-    - Non-English greetings
+    - Voicemail language doesn't match transcriber language
     - Greetings that sound conversational ("Hello? Hello? Just kidding, leave a message")
     - Background music or noise in greeting
 
@@ -142,46 +152,49 @@ AMD analyzes the audio in the first few seconds after call connection to determi
   </Accordion>
 </AccordionGroup>
 
-### ML-Based AMD
+### ML-Based AMD (Optional Addon)
+
+**Role:** Optional fast detection layer you can enable for speed. Works in parallel with text-based AMD.
 
 **How it works:**
 ```text wrap
 1. Call connects
-2. ML model analyzes audio characteristics:
+2. Deep Neural Network (DNN) analyzes audio in real-time:
    - Speech patterns and cadence
-   - Intonation and naturalness
-   - Background characteristics
-   - Timing and pacing
-   - Acoustic features
-3. Classification based on learned patterns
-4. Returns: HUMAN or MACHINE with confidence score
+   - Voicemail audio patterns
+   - Acoustic characteristics
+   - Timing and rhythm
+   - Natural vs. recorded speech indicators
+3. Model trained on tens of thousands of audio recordings
+4. Classification: HUMAN or MACHINE
+5. Language-independent detection
 ```
 
 **Characteristics:**
 
 <AccordionGroup>
-  <Accordion title="Speed" icon="gauge">
-    **Moderate speed:** ~1.5-3 seconds
+  <Accordion title="Speed" icon="gauge-high">
+    **Fast:** ~1.5 seconds
 
-    Requires slightly more audio to analyze patterns
+    Identifies live human responses within 1.5 seconds
 
-    **Trade-off:** Slower than text-based, but higher accuracy
+    **Much faster than text-based AMD** which must wait for complete utterance
   </Accordion>
 
   <Accordion title="Accuracy" icon="chart-line">
-    **Higher accuracy:** 92-97% in most scenarios
+    **Very high accuracy** in real-world conditions
 
-    **Advantages over text-based:**
-    - Doesn't rely on specific keywords
-    - Detects machine-like speech patterns regardless of content
-    - Better with non-standard greetings
-    - Works across languages
-    - Handles creative/personal greetings better
+    **Why enable ML-Based AMD:**
+    - **Language-independent:** Works across all languages (text-based only works if transcriber language matches)
+    - **Detects beep-only voicemail:** Catches voicemail systems with no greeting (text-based cannot)
+    - **Handles creative greetings:** Detects personal/non-standard greetings without keywords
+    - **Pattern-based detection:** Doesn't rely on specific voicemail keywords
+    - **Fast detection:** ~1.5 seconds vs 5-15+ seconds for text-only
+    - **Better for multi-language campaigns:** No language configuration needed
 
-    **Still challenging:**
-    - Very short greetings (< 1 second of audio)
+    **Limitations:**
+    - Extremely short connections (< 0.5 seconds of audio)
     - Highly degraded audio quality
-    - Extreme edge cases (person mimicking voicemail)
   </Accordion>
 
   <Accordion title="Best Use Cases" icon="briefcase">
@@ -216,64 +229,112 @@ AMD analyzes the audio in the first few seconds after call connection to determi
   </Accordion>
 </AccordionGroup>
 
-### Choosing the Right AMD Method
+### How AMD Works
 
-**Decision matrix:**
+**Text-Based AMD (Base Layer):**
+- Always active
+- Analyzes transcription for voicemail keywords
+- Waits for complete utterance (5-15+ seconds)
+- More conservative - rarely hangs up on live people
 
-| Factor | Text-Based AMD | ML-Based AMD |
-|--------|---------------|--------------|
-| **Campaign Type** | B2B | Consumer |
-| **Priority** | Speed | Accuracy |
-| **Typical Greeting Style** | Standard/Professional | Creative/Personal |
-| **Language** | English | Multi-language |
-| **Volume** | Very high | Moderate-high |
-| **Voicemail Keyword Usage** | Common | Varies widely |
-| **Cost Sensitivity** | Budget-conscious | Quality-focused |
+**ML-Based AMD (Optional Addon):**
+- You can optionally enable this for faster detection
+- Analyzes audio patterns in ~1.5 seconds
+- Works in parallel with text-based AMD
+- Faster but may occasionally hang up on live people
 
-**Recommendation:**
-```text wrap
-Use Text-Based AMD if:
-✓ Primarily B2B calling
-✓ English language only
-✓ Need fastest possible detection
-✓ Standard professional greetings expected
-✓ Budget/cost is priority
+**Configuration Options:**
 
-Use ML-Based AMD if:
-✓ Consumer calling
-✓ Multi-language support needed
-✓ Creative/personal greetings common
-✓ Accuracy is critical
-✓ Willing to accept slightly slower detection
-```
+**Text-Based Only (Conservative):**
+- Only text-based detection active
+- Slower detection (5-15+ seconds)
+- Rarely hangs up on live people
+- **Trade-off:** Might miss some voicemails and talk to them
+- Best for: When you want to avoid hanging up on live people at all cost
+
+**Text-Based + ML-Based (Fast & Recommended):**
+- ML detects in ~1.5 seconds
+- Text-based validates in parallel
+- Very high accuracy
+- **Trade-off:** Occasionally might hang up on a live person
+- Best for: Campaigns where talking to voicemail incurs additional cost
 
 <Tip>
-When in doubt, start with ML-based AMD for higher accuracy. The 1-2 second speed difference is minimal compared to the cost of misclassification (talking to voicemail or hanging up on humans).
+**Which should you choose?**
+
+**Text-Based + ML-Based (recommended):** If talking to voicemail wastes time and incurs additional cost, and you can tolerate occasionally hanging up on a live person.
+
+**Text-Based Only:** If hanging up on a real person in rare occurrences is worse than the additional cost of talking to voicemail.
 </Tip>
 
 ---
 
 ## Configuring AMD
 
-### Setting AMD Method (Campaign Creation)
+AMD can be configured in two places:
 
-AMD is configured when creating a new outbound campaign:
+<CardGroup cols={2}>
+  <Card title="Test Phone Calls" icon="phone-volume" href="#test-phone-calls">
+    Enable AMD when testing your agent with phone calls
+  </Card>
+  <Card title="Campaign Settings" icon="megaphone" href="#campaign-settings">
+    Configure AMD for outbound campaigns
+  </Card>
+</CardGroup>
+
+### Test Phone Calls
+
+Configure AMD when testing your agent via phone:
 
 <Steps>
-  <Step title="Navigate to Campaign Creation">
-    Go to **Campaigns** section
+  <Step title="Open Agent">
+    Go to your **Agent** page
 
-    Click **Create Campaign** (or **Create First Campaign**)
+    Click **Test Call** button
   </Step>
 
-  <Step title="Select AMD Method">
-    In the campaign creation form, find **Answering Machine Detection (AMD)** field
+  <Step title="Select Phone Call">
+    Choose **Phone Call** as test type
+  </Step>
 
-    **Options:**
-    - **Text-based** - Fast keyword detection
-    - **ML-based** - Machine learning pattern recognition
+  <Step title="Configure AMD">
+    Find the **Answering Machine Detection (AMD)** setting
 
-    Select the method appropriate for your use case
+    Choose between:
+    - **Text-based** (default) - Avoids hanging up on live people at all cost
+    - **ML-based** - Fast detection (~1.5s) but may occasionally hang up on live people
+  </Step>
+
+  <Step title="Make Test Call">
+    Select your From Number
+
+    Enter To Number (your phone number for testing)
+
+    Click **Start Phone Call**
+
+    If voicemail is detected, agent will hang up
+  </Step>
+</Steps>
+
+### Campaign Settings
+
+Configure AMD for outbound campaigns:
+
+<Steps>
+  <Step title="Campaign Creation">
+    Go to **Campaigns** section
+
+    Click **Create Campaign**
+  </Step>
+
+  <Step title="Select AMD Strategy">
+    Find **Answering Machine Detection (AMD)** dropdown
+
+    *Choose voicemail detection strategy for this campaign*
+
+    Select one:
+    - **Text-based** - Avoids hanging up on live people at all cost (slower, 5-15s)
+    - **ML-based** - Fast detection (~1.5s) but may occasionally hang up on live people
   </Step>
 
   <Step title="Complete Campaign Setup">
@@ -284,369 +345,26 @@ AMD is configured when creating a new outbound campaign:
 
     Click **Create Campaign**
   </Step>
-
-  <Step title="Configure Voicemail Behavior">
-    After campaign creation, configure how agent handles detected voicemail:
-    - Leave message
-    - Hang up silently
-    - Schedule retry
-
-    (Detailed in sections below)
-  </Step>
 </Steps>
 
-### Changing AMD Method (Existing Campaign)
-
-To change AMD method for existing campaign:
+**Changing AMD settings for existing campaigns:**
 
 1. Navigate to campaign **Settings** tab
-2. Locate **Answering Machine Detection** section
-3. Select different AMD method
+2. Locate **Answering Machine Detection (AMD)** dropdown
+3. Select different strategy (Text-based or ML-based)
 4. Save changes
-5. Note: Change applies to future calls only, not in-progress calls
 
 <Warning>
-Changing AMD method mid-campaign may affect analytics consistency. Consider creating a new campaign if you need to A/B test AMD methods.
+Changing AMD settings mid-campaign may affect analytics consistency. Consider creating a new campaign if you need to A/B test AMD configurations.
 </Warning>
 
 ---
 
-## Voicemail Message Configuration
+## AMD Behavior
 
-### Configuring Agent Behavior for Voicemail
+When AMD detects voicemail, the agent automatically hangs up and logs the outcome.
 
-When AMD detects voicemail, configure how your agent responds:
-
-**Option 1: Leave voicemail message**
-```text wrap
-Instructions example:
-
-When voicemail detected:
-1. Wait for beep (listen for tone indicating recording started)
-2. Deliver brief, professional message:
-
-   "Hi, this is [Agent Name] calling from [Company Name].
-   I'm reaching out regarding [brief reason].
-   Please call us back at [phone number].
-   Again, that's [phone number slowly].
-   Thank you, and have a great day."
-
-3. End call after message delivery
-```
-
-**Option 2: Hang up silently**
-```text wrap
-Instructions example:
-
-When voicemail detected:
-1. End call immediately without leaving message
-2. Mark contact for retry at different time
-3. Log "reached voicemail" in campaign analytics
-
-Use when:
-- Multiple retry attempts planned (will try different times)
-- Voicemail messages not effective for campaign type
-- Avoiding voicemail spam concerns
-```
-
-**Option 3: Conditional based on attempt number**
-```text wrap
-Instructions example:
-
-{% if campaign_contact_attempt_count == 1 %}
-First attempt - hang up silently, will retry
-{% elif campaign_contact_attempt_count == 2 %}
-Second attempt - hang up silently, will retry once more
-{% elif campaign_contact_attempt_count == 3 %}
-Final attempt - leave voicemail message:
-"This is our final attempt to reach you regarding [topic].
-Please call [number] if you're interested."
-{% endif %}
-```
-
-### Beep Detection
-
-**Challenge:** Voicemail systems play greeting before the recording beep. Agent should wait for beep before speaking to ensure message is recorded.
-
-**Beep detection process:**
-```text wrap
-1. AMD detects MACHINE
-2. Agent enters "wait for beep" mode
-3. Listens for characteristic tone (usually 1-2 seconds of 1000Hz tone)
-4. Beep detected → Begin speaking message
-5. Beep not detected after 10 seconds → Assume recording started, begin message
-```
-
-**Instructions for beep handling:**
-```text wrap
-When voicemail is detected:
-
-1. Listen carefully for the recording beep (usually a single tone)
-2. Wait up to 8 seconds for the beep
-3. Once beep is heard, immediately begin your message
-4. If no beep detected after 8 seconds, begin message anyway
-   (some systems don't have distinct beep)
-
-Do NOT start speaking during the voicemail greeting - wait for
-the beep so your message is actually recorded.
-```
-
-### Crafting Effective Voicemail Messages
-
-**Best practices for agent voicemail scripts:**
-
-<AccordionGroup>
-  <Accordion title="Keep It Brief" icon="clock">
-    **Target length:** 15-25 seconds maximum
-
-    **Why:** Long voicemails are often deleted without full listening
-
-    **Structure:**
-    ```
-    1. Greeting (2 seconds): "Hi, this is [Name] from [Company]"
-    2. Reason (5 seconds): "I'm calling about [specific topic]"
-    3. Call to action (5 seconds): "Please call me back at [number]"
-    4. Repeat number slowly (5 seconds): "Again, that's [number]"
-    5. Closing (2 seconds): "Thank you, goodbye"
-
-    Total: ~20 seconds
-    ```
-  </Accordion>
-
-  <Accordion title="Speak Clearly and Slowly" icon="volume">
-    **Especially important for:**
-    - Company name
-    - Your name
-    - Phone number (say each digit clearly)
-    - Reason for call
-
-    **Instructions example:**
-    ```
-    When leaving voicemail:
-    - Speak at 90% of normal conversation speed
-    - Pause briefly between name and company
-    - When stating phone number, pause between digit groups:
-      "Five five five (pause) twelve thirty-four"
-    - Enunciate clearly, especially for names/numbers
-    ```
-  </Accordion>
-
-  <Accordion title="Include Specific Information" icon="circle-info">
-    **Make it relevant and actionable:**
-
-    **Good:**
-    ```
-    "Hi Sarah, this is Mike from Acme Software. I'm calling about
-    the product demo you requested on our website last Tuesday.
-    I have your demo link ready. Please call me back at
-    555-123-4567. That's 555-123-4567. Thanks!"
-    ```
-
-    **Bad:**
-    ```
-    "This is a call from Acme Software. Please call us back."
-    [No name, no specific reason, no number]
-    ```
-
-    **Include:**
-    - Agent name (builds trust)
-    - Company name
-    - Specific reason (not generic)
-    - Clear call to action
-    - Callback number (slowly, twice)
-  </Accordion>
-
-  <Accordion title="Set Appropriate Tone" icon="face-smile">
-    **Match tone to campaign type:**
-
-    **Professional (B2B):**
-    ```
-    "Good morning, this is Jennifer from TechCorp Solutions.
-    I'm reaching out regarding your inquiry about our enterprise
-    platform. I'd like to schedule a brief demo at your convenience.
-    Please call me at 555-123-4567. Again, 555-123-4567.
-    Looking forward to speaking with you."
-    ```
-
-    **Friendly (Consumer):**
-    ```
-    "Hi! This is Mark calling from Sunshine Solar. We're offering
-    free home energy assessments in your neighborhood this week.
-    I'd love to see if we can help lower your electric bill.
-    Give me a call back at 555-123-4567. That's 555-123-4567.
-    Talk to you soon!"
-    ```
-
-    **Urgent (Time-sensitive):**
-    ```
-    "Hi, this is calling from City Hospital regarding your
-    appointment tomorrow at 2 PM. We need to confirm. Please
-    call us back as soon as possible at 555-123-4567.
-    Again, 555-123-4567. Thank you."
-    ```
-  </Accordion>
-
-  <Accordion title="Avoid Common Mistakes" icon="triangle-exclamation">
-    **Don't:**
-    - ❌ Speak too fast (especially phone number)
-    - ❌ Leave voicemail longer than 30 seconds
-    - ❌ Forget to include callback number
-    - ❌ Say number only once (always repeat)
-    - ❌ Use overly salesy language
-    - ❌ Include too much information (keep it simple)
-    - ❌ Sound robotic or unnatural
-    - ❌ Start speaking before beep (message won't be recorded)
-
-    **Do:**
-    - <Icon icon="check-circle" /> Speak clearly at moderate pace
-    - <Icon icon="check-circle" /> Include name, company, reason, number
-    - <Icon icon="check-circle" /> Repeat number twice, slowly
-    - <Icon icon="check-circle" /> Keep message under 25 seconds
-    - <Icon icon="check-circle" /> Sound professional and friendly
-    - <Icon icon="check-circle" /> Wait for beep before speaking
-    - <Icon icon="check-circle" /> End with clear call to action
-  </Accordion>
-</AccordionGroup>
-
----
-
-## AMD in Campaign Workflows
-
-### Campaign-Level AMD Strategy
-
-**Integrating AMD with campaign retry logic:**
-
-```text wrap
-Campaign AMD Configuration:
-
-Attempt 1:
-- AMD detects voicemail → Hang up
-- Schedule retry for +24 hours, different time of day
-- Reasoning: Try to reach person at different time
-
-Attempt 2:
-- AMD detects voicemail → Hang up
-- Schedule retry for +48 hours, different time/day
-- Reasoning: One more attempt at different time
-
-Attempt 3 (Final):
-- AMD detects voicemail → Leave message
-- Include "final attempt" language
-- Mark contact as "Voicemail - Message Left"
-- No additional retries
-
-This strategy:
-- Maximizes chance of live conversation (attempts 1-2)
-- Leaves professional impression (attempt 3 message)
-- Respects customer's time (limits voicemail spam)
-- Provides closure (clear final message)
-```
-
-### AMD and Contact Status
-
-**How AMD affects contact lifecycle:**
-
-```text wrap
-Contact Status Flow with AMD:
-
-Pending
-  ↓
-Dialing
-  ↓
-AMD Classification
-  ├─ HUMAN DETECTED
-  │    → Called (conversation proceeds)
-  │    → Agent achieves goal or not
-  │    → Completed or Retry
-  │
-  └─ MACHINE DETECTED
-       → Mark as "Voicemail"
-       ├─ Leave message → Retry or Completed
-       └─ Hang up → Retry (different time)
-```
-
-**Analytics impact:**
-- Separate "reached voicemail" from "no answer" in reporting
-- Track voicemail rate by time of day (optimize calling schedule)
-- Measure callback rate from voicemail messages
-- Identify contacts who always go to voicemail (adjust strategy)
-
-### Optimizing Based on AMD Data
-
-**Use AMD analytics to improve campaigns:**
-
-<AccordionGroup>
-  <Accordion title="Identify Best Calling Times" icon="clock">
-    **Analysis:**
-    Review "Human Answer Rate by Time" in campaign reporting
-
-    **Metrics to track:**
-    - Voicemail rate by hour of day
-    - Voicemail rate by day of week
-    - Human answer rate by time slot
-
-    **Optimization:**
-    ```
-    If data shows:
-    - 8-10 AM: 70% voicemail rate
-    - 12-2 PM: 60% voicemail rate
-    - 4-6 PM: 40% voicemail rate ← Best time
-
-    Action:
-    - Adjust campaign business hours to focus on 4-6 PM
-    - Reduce calling during 8-10 AM
-    - Schedule retries for high-answer time slots
-    ```
-  </Accordion>
-
-  <Accordion title="Segment by Voicemail Behavior" icon="users">
-    **Create contact segments:**
-
-    **"Always Voicemail" segment:**
-    - 3+ attempts, all reached voicemail
-    - Strategy: Try drastically different time (early morning/evening)
-    - Or: Remove from campaign, try different channel (email)
-
-    **"Sometimes Answers" segment:**
-    - Mix of voicemail and human answers
-    - Strategy: Continue normal retry cadence
-    - Higher priority than "always voicemail"
-
-    **"Usually Answers" segment:**
-    - Majority of attempts reach human
-    - Strategy: Standard retry schedule works well
-  </Accordion>
-
-  <Accordion title="Test Message Effectiveness" icon="flask">
-    **A/B test voicemail messages:**
-
-    **Test variables:**
-    - Message length (15 sec vs. 25 sec)
-    - Tone (professional vs. casual)
-    - Content (specific vs. generic reason)
-    - Number repetition (once vs. twice)
-
-    **Measure:**
-    - Callback rate
-    - Conversion rate from voicemail
-    - Time to callback
-
-    **Example:**
-    ```
-    Version A (Control):
-    "Hi, this is Mike from Acme. Please call back at 555-1234."
-    Callback rate: 3%
-
-    Version B (Test):
-    "Hi, this is Mike from Acme regarding your software inquiry
-    from our website. I have information ready for you.
-    Call me at 555-1234. That's 555-1234."
-    Callback rate: 7%
-
-    Result: Version B performs 2.3x better, make it standard
-    ```
-  </Accordion>
-</AccordionGroup>
+The call is marked as **MACHINE** in campaign analytics, allowing you to schedule retries at different times to increase chances of reaching a live person.
 
 ---
 
@@ -655,338 +373,120 @@ AMD Classification
 ### AMD Test Plan
 
 <Steps>
-  <Step title="Test Text-Based AMD">
-    **Setup:**
-    1. Create test campaign with text-based AMD
-    2. Prepare test numbers:
-       - Your own voicemail (standard greeting)
-       - Business line voicemail
-       - Cell phone voicemail
-
-    **Test:**
-    1. Add test numbers to campaign
-    2. Launch campaign
-    3. Let calls reach voicemail
-    4. Review campaign logs for AMD classification
-
-    **Validation:**
-    - Text-based AMD correctly identifies voicemail
-    - Agent executes voicemail behavior (leave message or hang up)
-    - Campaign marks contact as "voicemail" status
-    - No false negatives (voicemail classified as human)
-  </Step>
-
   <Step title="Test ML-Based AMD">
     **Setup:**
-    1. Create test campaign with ML-based AMD
-    2. Prepare varied test voicemails:
-       - Standard greeting ("You've reached...")
-       - Short greeting ("Leave a message")
-       - Creative greeting ("Hey, you know what to do")
-       - Non-English greeting
+    1. Configure agent with ML-Based AMD enabled
+    2. Prepare test phone number with voicemail
 
     **Test:**
-    1. Add numbers to campaign
-    2. Launch campaign
-    3. Review AMD classifications
+    1. Start test call to voicemail number
+    2. Let call go to voicemail
+    3. Monitor agent behavior
 
     **Validation:**
-    - ML-based AMD handles varied greetings correctly
-    - Higher accuracy than text-based on non-standard greetings
-    - Slightly slower but more reliable
+    - Agent hangs up within ~1.5 seconds
+    - Call marked as MACHINE in logs
+    - No conversation attempt with voicemail greeting
   </Step>
 
-  <Step title="Test Human vs. Machine Classification">
-    **Critical test:**
-    1. Have team member answer test call
-    2. Verify AMD classifies as HUMAN
-    3. Ensure agent engages in conversation (not voicemail behavior)
-
-    **Edge case:**
-    - Team member answers with "You've reached John" (mimicking voicemail)
-    - Text-based might misclassify as MACHINE
-    - ML-based should correctly identify as HUMAN based on patterns
-
-    **Validation:**
-    - No false positives (human classified as machine)
-    - Agent treats human answers appropriately
-  </Step>
-
-  <Step title="Test Beep Detection">
+  <Step title="Test Text-Based AMD">
     **Setup:**
-    1. Configure agent to leave voicemail message
-    2. Call test voicemail numbers
+    1. Configure agent with Text-Based AMD only
+    2. Use same voicemail test number
 
     **Test:**
-    1. Observe timing of agent's message
-    2. Check if agent waits for beep
-    3. Verify message is recorded (call voicemail to listen)
+    1. Start test call
+    2. Let call go to voicemail with standard greeting
 
     **Validation:**
-    - Agent waits for beep before speaking
-    - Message is fully recorded (not cut off)
-    - Message starts after beep (not during greeting)
+    - Agent waits for complete greeting (5-15+ seconds)
+    - Agent hangs up after detecting keywords
+    - Call marked as MACHINE
   </Step>
 
-  <Step title="Test Voicemail Message Quality">
-    **Evaluation:**
-    1. Listen to voicemail messages left by agent
-    2. Check clarity and professionalism
+  <Step title="Test Live Person Detection">
+    **Setup:**
+    1. Test with both AMD methods
+    2. Answer call personally
 
-    **Quality checklist:**
-    - [ ] Agent clearly states name
-    - [ ] Company name pronounced correctly
-    - [ ] Reason for call is specific
-    - [ ] Phone number stated clearly and slowly
-    - [ ] Number repeated twice
-    - [ ] Message length under 25 seconds
-    - [ ] Tone is appropriate (professional/friendly)
-    - [ ] No awkward pauses or stumbles
+    **Test:**
+    1. Start test call
+    2. Answer and say "Hello?"
+    3. Verify agent continues conversation normally
+
+    **Validation:**
+    - Agent does NOT hang up
+    - Normal conversation proceeds
+    - Call NOT marked as MACHINE
+  </Step>
+
+  <Step title="Test Edge Cases">
+    **Scenarios to test:**
+
+    **Silent answer:**
+    - Answer but don't speak
+    - Verify AMD doesn't misclassify
+
+    **Quick greeting:**
+    - Answer with very brief "Hi"
+    - Verify conversation continues
+
+    **Voicemail without keywords:**
+    - Test with non-standard greeting
+    - Monitor ML vs text-based performance
+
+    **Beep-only voicemail:**
+    - Voicemail system with no greeting
+    - Verify ML-based detects, text-based may miss
   </Step>
 </Steps>
-
----
-
-## Best Practices
-
-<AccordionGroup>
-  <Accordion title="Choose AMD Method Based on Campaign Type" icon="filter">
-    **B2B campaigns:**
-    - Use text-based AMD for speed
-    - Professional voicemails typically use standard keywords
-    - High volume benefits from faster detection
-
-    **Consumer campaigns:**
-    - Use ML-based AMD for accuracy
-    - Personal greetings vary widely
-    - Accuracy more important than speed difference
-
-    **Multi-language campaigns:**
-    - Always use ML-based AMD
-    - Text-based keyword detection doesn't work across languages
-  </Accordion>
-
-  <Accordion title="Don't Spam Voicemail" icon="ban">
-    **Avoid leaving message on every attempt**
-
-    **Bad strategy:**
-    ```
-    Attempt 1: Voicemail → Leave message
-    Attempt 2 (24 hours later): Voicemail → Leave message
-    Attempt 3 (48 hours later): Voicemail → Leave message
-
-    Result: Customer has 3 voicemails from same company in 3 days
-    → Annoying, unprofessional, spam-like
-    ```
-
-    **Good strategy:**
-    ```
-    Attempt 1: Voicemail → Hang up (try different time)
-    Attempt 2: Voicemail → Hang up (one more try)
-    Attempt 3: Voicemail → Leave single professional message
-
-    Result: Customer has 1 voicemail, not overwhelmed
-    → Professional, respectful of their time
-    ```
-  </Accordion>
-
-  <Accordion title="Optimize Calling Times Based on Data" icon="chart-line">
-    **Use AMD data to find best times:**
-
-    **Track voicemail rate by time:**
-    - High voicemail rate (70%+) → Bad time to call
-    - Moderate voicemail rate (40-60%) → Okay time
-    - Low voicemail rate (20-30%) → Best time to call
-
-    **Adjust campaign schedule:**
-    - Focus calling hours on low-voicemail times
-    - Reduce or eliminate high-voicemail time slots
-    - Schedule retries for optimal times
-
-    **Example optimization:**
-    ```
-    Original schedule: 9 AM - 5 PM (uniform distribution)
-    Voicemail analysis shows:
-    - 9-11 AM: 75% voicemail (people in meetings)
-    - 11 AM-1 PM: 60% voicemail (lunch)
-    - 1-3 PM: 35% voicemail (best window)
-    - 3-5 PM: 50% voicemail
-
-    Optimized schedule: Focus 70% of calls in 1-3 PM window
-    Result: 40% reduction in voicemail rate, more live conversations
-    ```
-  </Accordion>
-
-  <Accordion title="Test Both AMD Methods" icon="flask">
-    **Before committing to large campaign:**
-
-    1. Create two small test campaigns (100 contacts each)
-    2. One with text-based AMD, one with ML-based AMD
-    3. Use same agent, same contacts type, same time
-    4. Compare results:
-       - Classification accuracy
-       - Human answer rate
-       - False positive/negative rate
-       - Speed difference impact
-    5. Choose method with best results for your specific use case
-
-    **Don't assume:** Test with your actual contact list and geography
-  </Accordion>
-
-  <Accordion title="Monitor and Improve Messages" icon="message">
-    **Treat voicemail messages as ongoing optimization:**
-
-    **Quarterly review:**
-    1. Listen to sample of voicemail messages left
-    2. Review callback rate from voicemail
-    3. Test message variations
-    4. Update agent instructions based on learnings
-
-    **A/B test systematically:**
-    - Test one variable at a time (length, tone, content)
-    - Measure callback rate and conversion
-    - Implement winning variations
-    - Continue iterating
-  </Accordion>
-
-  <Accordion title="Respect Do Not Call and Voicemail Preferences" icon="shield">
-    **Compliance and ethics:**
-
-    **Do Not Call lists:**
-    - Scrub voicemail-only contacts against DNC lists
-    - Even if leaving message (not live call), respect DNC
-
-    **Voicemail preferences:**
-    - If contact calls back and asks not to leave voicemails, update record
-    - Track "no voicemail" preference in contact metadata
-    - Instructions: Check preference before leaving message
-
-    **Frequency caps:**
-    - Don't leave more than 1-2 voicemails per campaign
-    - Space voicemails at least 7 days apart
-    - After 2-3 voicemails with no response, stop
-
-    **Example instruction:**
-    ```
-    {% if contact.no_voicemail_preference == true %}
-    Do not leave voicemail message. Hang up and schedule retry.
-    {% elif campaign_voicemails_left >= 2 %}
-    Maximum voicemails reached for this contact. Do not leave message.
-    {% else %}
-    Proceed with voicemail message.
-    {% endif %}
-    ```
-  </Accordion>
-</AccordionGroup>
 
 ---
 
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="False Positives (Human Classified as Machine)" icon="user-xmark">
-    **Symptoms:** Live person answers but AMD classifies as voicemail
+  <Accordion title="Wrong AMD Method Selected" icon="circle-question">
+    **Symptoms:** Performance not matching expectations
 
-    **Possible causes:**
-    1. Person answers with greeting that sounds like voicemail
-    2. Text-based AMD detects keywords ("You've reached John")
-    3. Very scripted/formal greeting sounds machine-like
+    **Check:**
+    - Review campaign AMD setting
+    - Compare expected vs actual detection speed
+    - Check false positive/negative rates in logs
 
-    **Impact:**
-    - Agent hangs up on live person or leaves voicemail message
-    - Lost opportunity for conversation
-    - Poor customer experience
-
-    **Solutions:**
-    - Switch to ML-based AMD (better at distinguishing patterns)
-    - Add fallback: If customer responds during "voicemail message," switch to conversation
-    - Instruction example:
-      ```
-      If delivering voicemail message and customer interrupts
-      or responds, immediately switch to conversation mode:
-      "Oh, hi! I apologize, I thought I reached voicemail.
-      Let me start over - this is [name] from [company]..."
-      ```
+    **Solution:**
+    - Switch between Text-based and ML-based
+    - Test both methods with your call patterns
+    - Choose based on your priority (speed vs conservative)
   </Accordion>
 
-  <Accordion title="False Negatives (Machine Classified as Human)" icon="robot">
-    **Symptoms:** Voicemail answers but AMD classifies as human
+  <Accordion title="High False Positive Rate" icon="user-xmark">
+    **Symptoms:** Hanging up on live people frequently
 
-    **Possible causes:**
-    1. Unconventional voicemail greeting without keywords
-    2. Very short greeting
-    3. Text-based AMD doesn't detect keywords
-    4. Poor audio quality affecting ML model
+    **Analysis:**
+    - Review call recordings of false positives
+    - Check if ML-based AMD is being too aggressive
+    - Identify common patterns (background noise, specific greetings)
 
-    **Impact:**
-    - Agent starts conversation with voicemail system
-    - Awkward recording of agent's opening
-    - Wasted agent time
-    - Unprofessional voicemail
-
-    **Solutions:**
-    - Switch to ML-based AMD for better accuracy
-    - Add detection in agent instructions:
-      ```
-      If you say hello and don't receive response within 3 seconds,
-      or if you hear typical voicemail sounds (beep, silence, echo),
-      switch to voicemail mode and deliver brief message.
-      ```
-    - Review AMD logs for patterns, report systematic issues
+    **Solution:**
+    - Switch to Text-based AMD (more conservative)
+    - Improve call quality/reduce background noise
+    - Test from different phone numbers
+    - Contact support if persistent
   </Accordion>
 
-  <Accordion title="Agent Speaks Before Beep" icon="volume-xmark">
-    **Symptoms:** Voicemail message is partially cut off or not recorded
+  <Accordion title="High False Negative Rate" icon="voicemail">
+    **Symptoms:** Agent frequently talks to voicemail
 
-    **Possible causes:**
-    1. Beep detection not working
-    2. Agent starts speaking too quickly
-    3. Voicemail system doesn't have standard beep
+    **Analysis:**
+    - Check if voicemails have non-standard greetings
+    - Review if beep-only voicemail systems
+    - Verify transcriber language matches voicemail language
 
-    **Solutions:**
-    - Increase wait time for beep in instructions:
-      ```
-      Wait up to 10 seconds for recording beep before speaking.
-      Listen for characteristic tone (usually 1000Hz, 1-2 seconds).
-      If no beep after 10 seconds, begin message anyway.
-      ```
-    - Add explicit pause instruction:
-      ```
-      After voicemail detected, pause for 3 full seconds before
-      beginning message, regardless of beep detection.
-      ```
-    - Test with various voicemail systems to ensure compatibility
-  </Accordion>
-
-  <Accordion title="AMD Takes Too Long" icon="hourglass">
-    **Symptoms:** Noticeable delay after call connects before agent responds
-
-    **Possible causes:**
-    1. Using ML-based AMD (inherently slower)
-    2. Poor audio quality requiring more analysis time
-    3. Network latency
-
-    **Solutions:**
-    - If speed critical and B2B campaign, switch to text-based AMD
-    - Optimize network connection to reduce latency
-    - Accept trade-off: Slower AMD = higher accuracy
-    - Consider if 1-2 second delay actually matters for use case
-  </Accordion>
-
-  <Accordion title="Inconsistent AMD Performance" icon="chart-mixed">
-    **Symptoms:** AMD works well sometimes, poorly other times
-
-    **Possible causes:**
-    1. Varying call quality (different networks, VoIP vs landline)
-    2. Different types of voicemail systems
-    3. Time of day affecting answering patterns
-
-    **Solutions:**
-    - Review AMD logs for patterns (specific contact types failing)
-    - Test both AMD methods on problematic contacts
-    - Monitor by contact type (mobile vs landline)
-    - Check if certain phone number prefixes have issues
-    - May need to segment campaign by phone type and use different AMD methods
+    **Solution:**
+    - Switch to ML-based AMD (better for non-standard greetings)
+    - ML-based detects beep-only systems
+    - Ensure agent speaks same language as target audience
   </Accordion>
 </AccordionGroup>
 
@@ -995,19 +495,16 @@ AMD Classification
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Create Outbound Campaign" icon="rocket" href="/launch/campaigns/create-campaign">
-    Set up your first campaign with AMD configuration
+  <Card title="Campaign Management" icon="megaphone" href="/launch/campaigns">
+    Create and manage outbound calling campaigns
   </Card>
-  <Card title="Campaign Settings" icon="gear" href="/launch/campaigns/campaign-settings">
-    Configure retry logic and calling schedules
+  <Card title="Analytics & Reporting" icon="chart-line" href="/analyze/overview">
+    Track AMD performance and optimize campaigns
   </Card>
-  <Card title="Instructions" icon="pen" href="/build/conversation/instructions">
-    Write effective voicemail message scripts
+  <Card title="Agent Instructions" icon="pen" href="/build/conversation/instructions">
+    Write effective prompts for call handling
   </Card>
-  <Card title="Campaign Analytics" icon="chart-line" href="/optimize/analytics/campaign-reporting">
-    Analyze AMD performance and optimize calling times
-  </Card>
-  <Card title="Contact Management" icon="users" href="/launch/contacts/contacts-overview">
-    Manage contact lists and preferences
+  <Card title="Business Hours" icon="clock" href="/launch/business-hours">
+    Configure optimal calling times based on AMD data
   </Card>
 </CardGroup>

@@ -1,600 +1,153 @@
 ---
 title: "Dynamic Context"
-description: "Configure context endpoints to fetch real-time data and personalize conversations with external system integration"
+description: "Fetch personalized data from your systems before conversations begin"
 icon: "database"
 ---
 
 ## Overview
 
-Dynamic Context transforms your AI agents from static scripts into intelligent, data-driven systems by fetching personalized information from your external APIs before and during conversations. Instead of relying solely on contact records, agents can pull real-time account data, order status, customer preferences, and business context from your CRM, databases, and backend systems - delivering truly personalized, informed customer experiences.
-
-This capability bridges the gap between your AI agents and your business systems, enabling agents to access the same information your human representatives use, resulting in more accurate, helpful, and contextually relevant conversations.
+Dynamic Context lets you fetch customer data from your external APIs **once, before each conversation starts**. Instead of relying only on contact records, your agents can access account status, order history, support tickets, and business context from your CRM, databases, and backend systems.
 
 <Note>
-Dynamic Context is configured in the Operations or Operational Controls section of agent settings. It allows you to specify an external endpoint that returns JSON data used to personalize the agent's instructions and conversation.
+Dynamic Context is configured in **Agent Settings → Operations → Dynamic Context**. The returned JSON data is available directly as variables (e.g., `{{ field_name }}`) in your agent's [greeting](/build/conversation/greeting) and [instructions](/build/conversation/instructions).
 </Note>
 
-<Panel>
-  <Info>
-    Dynamic context requests fire before the greeting. Keep your API low-latency (&lt;1s) and return only the data you need for prompts.
-  </Info>
-  <Columns cols={1}>
-    <Card title="Quick checklist" icon="list-check">
-      <Icon icon="check-circle" /> HTTPS endpoint reachable from the backend<br/>
-      <Icon icon="check-circle" /> Secret stored in **Core → Secrets**<br/>
-      <Icon icon="check-circle" /> JSON payload under 32 KB<br/>
-      <Icon icon="check-circle" /> Safe fallbacks when data is missing
-    </Card>
-  </Columns>
-</Panel>
+<Info>
+**The context API is called once before the conversation begins.** The data is available for rendering the greeting and throughout the conversation. It does not refresh during the conversation. Keep your endpoint fast (&lt;1s response time) and return only data needed for the conversation.
+</Info>
+
+**Quick Requirements:**
+- HTTPS endpoint
+- JSON response under 32 KB
+- Response time under 1 second (ideally)
+- Authentication via Bearer token, API key, or Basic auth
 
 ---
 
-## What is Dynamic Context?
+## How It Works
 
-### The Problem Without Dynamic Context
-
-**Static agent configuration:**
-```text wrap
-Agent Instructions:
-"You are a customer service agent. Help customers with their questions."
-
-Contact Record:
-- Name: John Smith
-- Phone: +1-555-123-4567
-- Email: john@example.com
-
-Agent Knowledge:
-[Limited to what's in contact record and knowledge bases]
-
-Result:
-- Agent knows customer name
-- Agent has generic knowledge
-- Agent cannot access account status, order history, preferences, etc.
-- Agent provides generalized responses, not personalized to customer's situation
-
-```
-
-**With Dynamic Context:**
-```text wrap
-Before call starts:
-1. Agent calls context endpoint: GET https://api.company.com/context
-2. Endpoint queries CRM/database for customer data
-3. Returns rich JSON with:
-   - Account status and tier (VIP, standard, etc.)
-   - Recent order history and status
-   - Open support tickets
-   - Product preferences
-   - Account balance or subscription status
-   - Custom business data
-
-Agent Instructions (now personalized):
-"You are helping {{ contact.first_name }}, a {{ context.account.tier }} customer
-since {{ context.account.created_date }}. They have {{ context.support_tickets|length }} open
-support tickets and {{ context.pending_orders|length }} pending orders. Their
-account status is {{ context.account.status }}."
-
-Result:
-- Agent has full business context
-- Personalized, informed responses
-- Can reference specific account details
-- Proactive problem-solving
-- Customer feels understood and valued
-
-```
-
-### How Dynamic Context Works
-
-**Request flow:**
-```text wrap
-1. Call initiated (inbound) or about to start (outbound)
-2. Agent triggers context endpoint request
-3. Request includes:
-   - Contact information (phone, email, name, etc.)
-   - Any custom parameters you configure
-4. Your API receives request
-5. Your API queries relevant systems (CRM, database, etc.)
-6. Your API returns JSON with context data
-7. Agent receives context and makes it available as variables
-8. Agent uses variables in instructions and conversation
-9. Call proceeds with full context
-
-```
-
-<RequestExample>
-  ```http Customer Context Request theme={null}
-  GET https://api.company.com/customer-context
-  Authorization: Bearer your_api_token_here
-  Content-Type: application/json
-
-  Query Parameters:
-    phone_number=+15551234567
-    email=john@example.com
-    customer_id=12345
-  ```
-</RequestExample>
-
-<ResponseExample>
-  ```json Customer Context Response theme={null}
-  {
-    "account": {
-      "customer_id": "12345",
-      "tier": "VIP",
-      "status": "active",
-      "created_date": "2022-03-15",
-      "lifetime_value": 15680.0,
-      "balance": 0.0
-    },
-    "recent_orders": [
-      {
-        "order_id": "ORD-789",
-        "status": "shipped",
-        "tracking": "1Z999AA1234567890",
-        "items": ["Blue Widget", "Widget Stand"],
-        "total": 127.99
-      }
-    ],
-    "support_tickets": [
-      {
-        "ticket_id": "TKT-456",
-        "status": "open",
-        "subject": "Billing question",
-        "opened_date": "2025-11-08",
-        "priority": "normal"
-      }
-    ],
-    "preferences": {
-      "contact_method": "email",
-      "language": "en-US",
-      "marketing_opt_in": true
-    }
-  }
-  ```
-</ResponseExample>
-
-```mermaid theme={null}
-sequenceDiagram
-    participant Agent
-    participant ContextAPI
-    participant CRM
-    participant Billing
-    Agent->>ContextAPI: GET /customer-context
-    ContextAPI->>CRM: Lookup contact
-    ContextAPI->>Billing: Fetch balance
-    ContextAPI-->>Agent: Context JSON
-    Agent->>Agent: Render personalized prompt
-```
-
-**Using in instructions:**
-```jinja wrap
-You are helping {{ contact.first_name }}, a {{ context.account.tier }}
-customer since {{ context.account.created_date }}.
-
-{% if context.support_tickets|length > 0 %}
-IMPORTANT: Customer has {{ context.support_tickets|length }} open support
-ticket(s). Be proactive:
-
-{% for ticket in context.support_tickets %}
-- Ticket #{{ ticket.ticket_id }}: {{ ticket.subject }}
-  Status: {{ ticket.status }}, Priority: {{ ticket.priority }}
-{% endfor %}
-
-Ask if they're calling about any of these issues.
-{% endif %}
-
-{% if context.recent_orders|length > 0 %}
-Recent Orders:
-{% for order in context.recent_orders %}
-- Order #{{ order.order_id }}: {{ order.status }}
-  {% if order.status == "shipped" %}
-  Tracking: {{ order.tracking }}
-  {% endif %}
-{% endfor %}
-{% endif %}
-
-Account Balance: ${{ context.account.balance }}
-
-```
-
----
-
-## Configuring Dynamic Context
-
-### Accessing Context Configuration
+**Request Flow:**
 
 <Steps>
-  <Step title="Navigate to Operations Settings">
-    Open your agent configuration
-
-    Go to **Operations** or **Operational Controls** tab
-
-    Scroll to **Dynamic Context** or **Integrations** section
+  <Step title="Call initiated">
+    Call initiated (inbound) or about to start (outbound)
   </Step>
 
-  <Step title="Enable Dynamic Context">
-    Toggle **Dynamic Context** to ON
-
-    Context endpoint configuration options appear
+  <Step title="Context API called">
+    **BEFORE conversation begins:** System sends POST request to your endpoint
   </Step>
 
-  <Step title="Configure Endpoint">
-    Enter your context API endpoint URL
-
-    Configure authentication (detailed below)
-
-    Set request parameters
-
-    Configure error handling
+  <Step title="Query your systems">
+    Your API queries CRM/database for customer data
   </Step>
 
-  <Step title="Test Request">
-    Use **Test Request** modal to verify configuration
-
-    Review request/response payloads
-
-    Validate JSON structure
+  <Step title="Return JSON">
+    Your API returns JSON with context data
   </Step>
 
-  <Step title="Save and Activate">
-    Save configuration
+  <Step title="Context available">
+    Context data made available as template variables
+  </Step>
 
-    Context fetching now active for all calls
+  <Step title="Greeting rendered">
+    Greeting rendered (uses context variables if referenced in greeting)
+  </Step>
+
+  <Step title="Conversation begins">
+    Conversation begins (context variables available if referenced in instructions)
+
+    Context remains static throughout conversation (no refresh)
   </Step>
 </Steps>
 
-<Columns cols={2}>
+<Columns cols={3}>
   <Card title="Inbound calls" icon="phone">
-    Includes caller ANI/CLI, SIP headers, ring group, and IVR selections. Prefetch billing data, outage status, or loyalty tier before the agent speaks.
+    `direction: "inbound"` with caller's contact_number. Look up customer data in your CRM.
   </Card>
-  <Card title="Outbound campaigns" icon="arrow-up-right-dots">
-    Adds campaign identifiers (`campaign_id`, `attempt`, `list_id`). Use them to select the right script, suppression rules, or follow-up reminders.
+  <Card title="Outbound calls" icon="arrow-up-right-dots">
+    `direction: "outbound"` with contact_number you're calling. Fetch campaign context.
+  </Card>
+  <Card title="Web widget" icon="window">
+    `medium: "web"` with optional external_id. Identify user in your system.
   </Card>
 </Columns>
 
-### Context Endpoint Configuration
-
-**Dynamic Context Configuration:**
-
-**Enable Dynamic Context:** ON/OFF toggle
-
-Fetch personalized context from your API before calls begin. Returned JSON data is available as variables in instructions.
-
-**Endpoint URL:** `https://api.company.com/customer-context`
-
-**HTTP Method:** GET or POST
-
-**Request Parameters (Query or Body):**
-- phone_number: `{{ contact.phone_number }}`
-- email: `{{ contact.email }}`
-- customer_id: `{{ contact.custom_customer_id }}`
-- [+ Add more parameters]
-
-**Authentication:** Configure authentication method
-
-**Request Headers:**
-- Content-Type: application/json
-- X-API-Version: v2
-- [+ Add more headers]
-
-**Advanced Settings:**
-- Timeout (seconds): 5
-- Retry on failure: Yes (1 retry)
-
-### Endpoint URL Configuration
-
-**Requirements:**
-- Must be HTTPS (not HTTP) for security
-- Must return valid JSON
-- Should respond within 5 seconds (configurable timeout)
-- Should be idempotent (safe to retry)
-
-**URL format options:**
-
-**Query parameters in URL:**
-```text wrap
-https://api.company.com/context?phone={{ contact.phone_number }}&email={{ contact.email }}
-
-```
-
-**Path parameters:**
-```text wrap
-https://api.company.com/customers/{{ contact.customer_id }}/context
-
-```
-
-**Fixed URL with body parameters (POST):**
-```text wrap
-Endpoint: https://api.company.com/customer-context
-Method: POST
-Body: {
-  "phone_number": "{{ contact.phone_number }}",
-  "email": "{{ contact.email }}"
-}
-
-```
-
-<Tip>
-Use template variables like `{{ contact.phone_number }}` to include dynamic data in your API requests. Any contact field is available.
-</Tip>
-
 ---
 
-## Authentication Options
-
-Dynamic Context supports multiple authentication schemes:
-
-### None - No Authentication
-
-**Use when:**
-- Internal API on private network
-- IP whitelisting provides security
-- Testing/development endpoints
-
-**Authentication Type:** None
-
-No authentication required for this endpoint
-
-<Warning>
-Only use NONE authentication for truly internal endpoints. Production APIs should use authentication to prevent unauthorized access.
-</Warning>
-
-### Bearer Token Authentication
-
-**Most common for modern APIs**
-
-**Authentication Type:** Bearer
-
-**Bearer Token:** `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIx•••`
-
-Token will be sent as: `Authorization: Bearer {token}`
-
-Token is masked in UI and logs for security
-
-**HTTP header sent:**
-```text wrap
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-
-```
-
-**Use for:**
-- JWT authentication
-- OAuth 2.0 access tokens
-- API keys in bearer format
-
-### Basic Authentication
-
-**Traditional username/password authentication**
-
-**Authentication Type:** Basic
-
-**Username:** api_user
-
-**Password:** ••••••••
-
-Credentials will be Base64 encoded and sent in Authorization header
-
-Password is masked in UI and logs for security
-
-**HTTP header sent:**
-```text wrap
-Authorization: Basic YXBpX3VzZXI6cGFzc3dvcmQ=
-
-```
-
-**Use for:**
-- Legacy APIs
-- Simple internal services
-- Basic API authentication
-
-### Header-Based Authentication
-
-**Custom authentication via HTTP headers (e.g., API keys)**
-
-**Authentication Type:** Header
-
-**Header Name:** X-API-Key
-
-**Header Value:** `sk-abc123def456ghi789•••••••••••••••••`
-
-Custom header will be added to all requests
-
-Value is masked in UI and logs for security
-
-**HTTP header sent:**
-```text wrap
-X-API-Key: sk-abc123def456ghi789jkl012mno345pqr678
-
-```
-
-**Use for:**
-- API key authentication
-- Custom auth schemes
-- Vendor-specific authentication
-
-**Common header names:**
-- `X-API-Key`
-- `X-Auth-Token`
-- `X-Access-Token`
-- `Api-Key`
-
-### Body-Based Authentication
-
-**Credentials included in request body (typically for POST requests)**
-
-**Authentication Type:** Body
-
-**Parameter Name:** api_key
-
-**Parameter Value:** `sk-xyz789abc123•••••••••••••••••••••`
-
-Authentication parameter will be included in request body JSON
-
-Value is masked in UI and logs for security
-
-**Request body includes:**
-```json wrap
-{
-  "api_key": "sk-xyz789abc123",
-  "phone_number": "+15551234567",
-  "...other parameters..."
-}
-```
-
-**Use for:**
-- APIs requiring credentials in body
-- Non-standard auth schemes
-- Legacy system integration
-
----
-
-## Masked Fields
-
-### Security for Sensitive Data
-
-Sensitive authentication values are automatically masked in the UI and logs:
-
-**What gets masked:**
-- Bearer tokens
-- Passwords (Basic auth)
-- API keys (Header and Body auth)
-- Any field marked as sensitive
-
-**How masking works:**
-```text wrap
-Actual value:
-sk-abc123def456ghi789jkl012mno345pqr678
-
-Displayed in UI:
-sk-abc123def456ghi789•••••••••••••••••
-
-Displayed in logs:
-[REDACTED]
-
-Actual value used in requests:
-sk-abc123def456ghi789jkl012mno345pqr678 (full value)
-
-```
-
-**Benefits:**
-- Prevents credential exposure in screenshots
-- Safe to share UI with team members for review
-- Audit logs don't contain sensitive data
-- Credentials remain secure while visible that they exist
-
-**Field length indicator:**
-```text wrap
-Password field shows: ••••••••••••••••••••••••••
-(Number of dots = actual password length)
-
-Benefit: Can verify that credential is populated without revealing value
-
-```
-
-<Note>
-Masked values retain their original length in dots/bullets so you can verify a credential is configured without exposing the actual value.
-</Note>
-
----
-
-## Test Request Modal
-
-### Testing Context Configuration
-
-Before enabling context fetching in production, test your configuration:
+## Configuration
 
 <Steps>
-  <Step title="Open Test Request Modal">
-    In Dynamic Context configuration section
-
-    Click **Test Request** button
-
-    Modal opens with test interface
+  <Step title="Navigate to Dynamic Context">
+    1. Open your agent settings
+    2. Click the **Operations** navigation group (on the left sidebar)
+    3. Select **Dynamic Context** from the sections
   </Step>
 
-  <Step title="Provide Test Data">
-    **Test contact data:**
-    - Phone number: Enter test customer's phone
-    - Email: Enter test customer's email
-    - Customer ID: Enter test customer ID
-    - (Any parameters your endpoint expects)
+  <Step title="Configure Endpoint">
+    **Endpoint URL:** `https://api.company.com/context`
 
-    **Or use sample contact:**
-    - Select existing contact from dropdown
-    - Uses real contact data for testing
+    **Authentication:** Choose Bearer Token, Basic, API Key, or None
+
+    The request will include: agent_uuid, direction, agent_number, contact_number (and external_id for web widget)
   </Step>
 
-  <Step title="Execute Test Request">
-    Click **Send Test Request**
-
-    System executes actual API call using configured settings
-
-    Wait for response (or timeout)
+  <Step title="Test">
+    Use **Test Request** to verify your endpoint responds correctly
   </Step>
 
-  <Step title="Review Results">
-    **Request Payload:**
-    - See exact HTTP request sent
-    - Verify URL, headers, parameters
-    - Check authentication is included
-
-    **Response Payload:**
-    - View JSON response received
-    - Verify structure matches expectations
-    - Check for errors or missing fields
-
-    **Status:**
-    - HTTP status code (200 = success)
-    - Response time (milliseconds)
-    - Any errors or warnings
-  </Step>
-
-  <Step title="Validate and Debug">
-    **Success (200 OK):**
-    - Review JSON structure
-    - Verify all expected fields present
-    - Note variable names for use in instructions
-
-    **Error (4xx, 5xx):**
-    - Check authentication credentials
-    - Verify endpoint URL is correct
-    - Review error message in response
-    - Fix configuration and retry
+  <Step title="Save">
+    Enable and save. Context will be fetched before each conversation.
   </Step>
 </Steps>
 
-### Test Request Modal Interface
+---
 
-**Test Context Request**
+## Request & Response Format
 
-Test your context endpoint configuration before enabling in production.
+### What We Send (POST Request)
 
-**Test Data:**
-- Use Sample Contact: John Smith (555-1234) - dropdown
-- Or manually enter:
-  - Phone Number: +15551234567
-  - Email: john@example.com
-  - Customer ID: 12345
+<RequestExample>
+```http
+POST https://api.company.com/context
+Authorization: Bearer your_api_token
+Content-Type: application/json
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36...
+X-Agent-UUID: 550e8400-e29b-41d4-a716-446655440000
+X-Agent-Number: +15551234000
+X-Contact-Number: +15551234567
+X-Direction: inbound
+X-Medium: phone
+X-Room-SID: RM_abc123
 
-**Send Test Request** button
-
-**Results:**
-
-**Request:**
-```text wrap
-GET https://api.company.com/customer-context?phone=%2B15551234567&email=john@example.com
-
-Headers:
-  Authorization: Bearer eyJhbG... [REDACTED]
-  Content-Type: application/json
-
-Sent at: 2025-11-10 14:32:15
-
+{
+  "agent_uuid": "550e8400-e29b-41d4-a716-446655440000",
+  "direction": "inbound",
+  "agent_number": "+15551234000",
+  "contact_number": "+15551234567"
+}
 ```
+</RequestExample>
 
-**Response:**
-```text wrap
-Status: 200 OK (152ms)
+**Body parameters:**
+- `agent_uuid` (string, always included) - The UUID of the agent handling the call
+- `direction` (string, always included) - "inbound" or "outbound"
+- `agent_number` (string, optional) - The phone number the agent is using
+- `contact_number` (string, optional) - The customer's phone number
+- `external_id` (string/int, optional) - Only for web widget calls, if provided by your integration
 
+**Additional headers:**
+- `X-Agent-UUID`, `X-Agent-Number`, `X-Contact-Number`, `X-Direction`, `X-Medium` (phone/web)
+- `X-Room-SID` - Unique identifier for this conversation session
+- `X-External-ID` - For web widget calls only
+
+<Note>
+**Typical usage:** Your endpoint uses `contact_number` or `external_id` to look up the customer in your CRM/database, then returns relevant account data, order history, tickets, etc. The `agent_uuid` can be used to customize responses per agent if needed.
+</Note>
+
+### What You Return (JSON Response)
+
+<ResponseExample>
+```json
 {
   "account": {
     "customer_id": "12345",
@@ -602,690 +155,206 @@ Status: 200 OK (152ms)
     "status": "active",
     "created_date": "2022-03-15"
   },
-  "recent_orders": [ ... ],
-  "support_tickets": [ ... ]
+  "recent_orders": [
+    {
+      "order_id": "ORD-789",
+      "status": "shipped",
+      "tracking": "1Z999AA1234567890"
+    }
+  ],
+  "support_tickets": [
+    {
+      "ticket_id": "TKT-456",
+      "status": "open",
+      "subject": "Billing question"
+    }
+  ]
 }
-
-<Icon icon="check-circle" /> Valid JSON received
-<Icon icon="info-circle" />  Available as {{ context.account.tier }}, etc.
-
 ```
+</ResponseExample>
 
-### Common Test Scenarios
+**Requirements:**
+- Valid JSON format
+- Under 32 KB
+- Return only necessary fields (keeps response fast)
+- Handle missing data gracefully (return `null` or omit fields)
 
-**Scenario 1: Authentication test**
-```text wrap
-Purpose: Verify credentials are valid
-
-Test:
-1. Configure authentication (Bearer token, API key, etc.)
-2. Send test request with valid contact data
-3. Expected: 200 OK response
-
-If 401 Unauthorized:
-- Check that token/key is correct
-- Verify token hasn't expired
-- Confirm auth type matches API requirements
-
-```
-
-**Scenario 2: Parameter validation**
-```text wrap
-Purpose: Ensure parameters are passed correctly
-
-Test:
-1. Configure parameters (phone_number, email, etc.)
-2. Use test contact data
-3. Check request payload in Test Request modal
-4. Verify parameters appear in query string or body
-
-If parameters missing:
-- Check template variable syntax {{ contact.field_name }}
-- Verify contact has values for those fields
-- Confirm parameter names match API expectations
-
-```
-
-**Scenario 3: Response structure validation**
-```text wrap
-Purpose: Verify JSON structure matches expectations
-
-Test:
-1. Send test request to endpoint
-2. Review response JSON
-3. Document field paths for use in instructions
-
-Example response:
-{
-  "account": { "tier": "VIP" },
-  "orders": [...]
-}
-
-Variable paths:
-{{ context.account.tier }} → "VIP"
-{{ context.orders|length }} → number of orders
-{{ context.orders[0].order_id }} → first order ID
-
-```
+<Info>
+**How variables are accessed:** All top-level keys in your JSON response become template variables. If you return `{"account": {"tier": "VIP"}}`, you access it as `{{ account.tier }}`, not `{{ context.account.tier }}`.
+</Info>
 
 ---
 
-## Using Context Data in Instructions
+## Using Context Variables
 
-### Accessing Context Variables
+All returned data from your API is available directly as top-level variables in your agent's greeting and instructions.
 
-All data returned by your context endpoint is available under the `context` namespace:
-
-**Response structure:**
-```json wrap
-{
-  "account": {
-    "tier": "VIP",
-    "status": "active"
-  },
-  "orders": [
-    {"order_id": "123", "status": "shipped"}
-  ],
-  "preferences": {
-    "language": "en-US"
-  }
-}
-```
-
-**Accessing in instructions:**
-```text wrap
-Account Tier: {{ context.account.tier }}
+**Accessing fields:**
+```jinja
+Account Tier: {{ account.tier }}
 → "VIP"
 
-Account Status: {{ context.account.status }}
-→ "active"
-
-Number of Orders: {{ context.orders|length }}
-→ 1
-
-First Order ID: {{ context.orders[0].order_id }}
-→ "123"
-
-First Order Status: {{ context.orders[0].status }}
+Order Status: {{ recent_orders[0].status }}
 → "shipped"
 
-Preferred Language: {{ context.preferences.language }}
-→ "en-US"
-
+Number of Tickets: {{ support_tickets|length }}
+→ 1
 ```
 
-### Conditional Logic Based on Context
-
-**Example 1: VIP customer treatment**
-```jinja wrap
-{% if context.account.tier == "VIP" %}
-IMPORTANT: This is a VIP customer. Provide exceptional service:
-- Offer priority support
-- Waive standard fees if reasonable
-- Be extra helpful and accommodating
-- Thank them for their loyalty
-{% else %}
-Provide standard professional service.
-{% endif %}
-
+**Example greeting with context:**
+```jinja
+Thanks for calling! I see you're a {{ account.tier }} customer with us.
+How can I help you today?
 ```
 
-**Example 2: Proactive support for open tickets**
-```jinja wrap
-{% if context.support_tickets|length > 0 %}
-Customer has {{ context.support_tickets|length }} open support ticket(s):
+**Example instructions with context:**
+```jinja
+You are helping a {{ account.tier }} customer since {{ account.created_date }}.
 
-{% for ticket in context.support_tickets %}
-- Ticket #{{ ticket.ticket_id }}: {{ ticket.subject }}
-  Opened: {{ ticket.opened_date }}, Priority: {{ ticket.priority }}
+{% if support_tickets|length > 0 %}
+IMPORTANT: Customer has {{ support_tickets|length }} open ticket(s):
+{% for ticket in support_tickets %}
+- Ticket #{{ ticket.ticket_id }}: {{ ticket.subject }} ({{ ticket.status }})
 {% endfor %}
 
-START THE CONVERSATION by asking:
-"Hi {{ contact.first_name }}, I see you have an open support ticket
-about {{ context.support_tickets[0].subject }}. Are you calling
-about that, or something else?"
-
-This shows you're informed and proactive.
-{% else %}
-No open tickets. Proceed with standard greeting.
+Ask if they're calling about ticket #{{ support_tickets[0].ticket_id }}.
 {% endif %}
 
+{% if recent_orders|length > 0 %}
+Recent order #{{ recent_orders[0].order_id }} is {{ recent_orders[0].status }}.
+{% if recent_orders[0].tracking %}
+Tracking: {{ recent_orders[0].tracking }}
+{% endif %}
+{% endif %}
+
+Account Status: {{ account.status | default("active") }}
 ```
 
-**Example 3: Account status handling**
-```jinja wrap
-{% if context.account.status == "suspended" %}
-CRITICAL: Account is suspended due to {{ context.account.suspension_reason }}.
-
-Inform customer:
-"I see your account is currently on hold due to {{ context.account.suspension_reason }}.
-Let me help you resolve this."
-
-If payment issue:
-- Offer to process payment immediately
-- Explain reinstatement process
-
-Do NOT provide other services until account reinstated.
-
-{% elif context.account.status == "trial" %}
-Customer is on trial (expires {{ context.account.trial_end_date }}).
-
-If appropriate during conversation:
-- Highlight value they're getting
-- Offer to answer questions about full subscription
-- Make transition to paid plan easy
-
-{% else %}
-Account status is normal. Proceed with standard service.
-{% endif %}
-
-```
-
-### Personalizing Greetings with Context
-
-**Dynamic greeting based on context:**
-```jinja wrap
-Greeting configuration: AI-generated dynamic greeting
-
-Instructions for greeting:
-Generate a personalized greeting based on the following context:
-
-Customer: {{ contact.first_name }} {{ contact.last_name }}
-Account Tier: {{ context.account.tier }}
-Member Since: {{ context.account.created_date }}
-
-{% if context.recent_orders|length > 0 %}
-Last Order: {{ context.recent_orders[0].order_id }}
-Last Order Status: {{ context.recent_orders[0].status }}
-{% endif %}
-
-{% if context.support_tickets|length > 0 %}
-Open Tickets: {{ context.support_tickets|length }}
-{% endif %}
-
-Examples of good greetings:
-
-If VIP with recent order:
-"Hi {{ contact.first_name }}, thank you for calling! I see your
-recent order #{{ context.recent_orders[0].order_id }} is
-{{ context.recent_orders[0].status }}. How can I help you today?"
-
-If has open ticket:
-"Hi {{ contact.first_name }}, I see you have an open support ticket.
-Are you calling about that, or is this something new?"
-
-If standard customer, no recent activity:
-"Hi {{ contact.first_name }}, thanks for calling. How can I help
-you today?"
-
-Adapt the greeting to the customer's specific context.
-
-```
+<Tip>
+Use the `| default("value")` filter to provide fallbacks when data is missing. See [Greeting](/build/conversation/greeting) and [Instructions](/build/conversation/instructions) for more templating syntax and usage examples.
+</Tip>
 
 ---
 
-## Use Cases
+## Authentication
 
-### Customer Support with Full Context
+### Bearer Token (Recommended)
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+Use for JWT, OAuth 2.0 access tokens, or modern API keys.
 
-**Scenario:** Support agent with complete customer view
+### API Key (Header)
+```
+X-API-Key: sk-abc123def456...
+```
+Custom header name with your API key.
 
-**Context endpoint returns:**
-```json wrap
+### Basic Auth
+```
+Authorization: Basic YXBpX3VzZXI6cGFzc3dvcmQ=
+```
+Username/password, base64 encoded.
+
+### None
+No authentication (only for internal/private networks).
+
+<Warning>
+Always use HTTPS.
+</Warning>
+
+---
+
+## Example Use Case
+
+**Customer Support with Full Context**
+
+**Scenario:** Support agent needs complete customer view before conversation starts.
+
+**Your API returns:**
+```json
 {
   "customer": {
-    "id": "12345",
     "name": "John Smith",
     "tier": "Premium",
     "since": "2022-01-15"
   },
   "account": {
     "status": "active",
-    "balance": 0.00,
-    "subscription": "Pro Plan - Monthly",
+    "subscription": "Pro Plan",
     "renewal_date": "2025-12-01"
-  },
-  "recent_activity": {
-    "last_login": "2025-11-09",
-    "last_purchase": "2025-10-15",
-    "total_purchases": 23
   },
   "support": {
     "open_tickets": [
       {
         "id": "TKT-789",
         "subject": "Can't export reports",
-        "priority": "high",
-        "opened": "2025-11-08",
-        "assigned_to": "Sarah J."
+        "priority": "high"
       }
-    ],
-    "ticket_history": 5
+    ]
   }
 }
 ```
 
-**Agent instructions using context:**
-```jinja wrap
-You are a customer support agent for {{ company_name }}.
-
-You're helping {{ context.customer.name }}, a {{ context.customer.tier }}
-customer since {{ context.customer.since }}.
-
-Account Information:
-- Subscription: {{ context.account.subscription }}
-- Status: {{ context.account.status }}
-- Balance: ${{ context.account.balance }}
-
-{% if context.support.open_tickets|length > 0 %}
-IMPORTANT - Open Support Tickets:
-{% for ticket in context.support.open_tickets %}
-- #{{ ticket.id }}: {{ ticket.subject }} ({{ ticket.priority }} priority)
-  Opened: {{ ticket.opened }}, Assigned to: {{ ticket.assigned_to }}
-{% endfor %}
-
-Start by asking if they're calling about ticket #{{ context.support.open_tickets[0].id }}.
-If yes, review the ticket details and provide update or resolution.
-{% endif %}
-
-Customer has been with us for {{ days_since(context.customer.since) }} days
-and made {{ context.activity.total_purchases }} purchases. Treat them well!
-
-```
-
-**Result:** Agent knows everything about customer before conversation starts
-
-### E-Commerce Order Status
-
-**Scenario:** Order tracking and status inquiries
-
-**Context endpoint returns:**
-```json wrap
-{
-  "customer_id": "67890",
-  "pending_orders": [
-    {
-      "order_id": "ORD-123456",
-      "order_date": "2025-11-05",
-      "status": "shipped",
-      "tracking_number": "1Z999AA1234567890",
-      "carrier": "FedEx",
-      "estimated_delivery": "2025-11-12",
-      "items": [
-        {"name": "Blue Widget", "quantity": 2},
-        {"name": "Widget Stand", "quantity": 1}
-      ],
-      "total": 157.99
-    }
-  ],
-  "recent_deliveries": [
-    {
-      "order_id": "ORD-123400",
-      "delivered_date": "2025-10-28",
-      "items": ["Red Widget"]
-    }
-  ]
-}
-```
-
 **Agent instructions:**
-```jinja wrap
-You help customers track their orders.
+```jinja
+You're helping {{ customer.name }}, a {{ customer.tier }} customer
+since {{ customer.since }}.
 
-{% if context.pending_orders|length > 0 %}
-This customer has {{ context.pending_orders|length }} order(s) in progress:
+{% if support.open_tickets|length > 0 %}
+Customer has an open {{ support.open_tickets[0].priority }} priority ticket
+about "{{ support.open_tickets[0].subject }}".
 
-{% for order in context.pending_orders %}
-Order #{{ order.order_id }}:
-- Status: {{ order.status }}
-- Ordered: {{ order.order_date }}
-{% if order.status == "shipped" %}
-- Tracking: {{ order.tracking_number }} ({{ order.carrier }})
-- Expected delivery: {{ order.estimated_delivery }}
-{% endif %}
-- Items: {{ order.items|map(attribute='name')|join(', ') }}
-{% endfor %}
-
-If customer asks about "their order" (singular):
-- Assume they mean the most recent: Order #{{ context.pending_orders[0].order_id }}
-- Provide tracking information immediately
-
-If customer asks about specific order number:
-- Search pending_orders for matching order_id
-- Provide detailed status
-{% else %}
-Customer has no pending orders.
-
-If they ask about an order:
-- Ask for order number
-- Use lookup_order action to retrieve details
+Start by asking: "I see you have a ticket open about
+{{ support.open_tickets[0].subject }}. Is that what you're calling about today?"
 {% endif %}
 
+Account: {{ account.subscription }}, renews {{ account.renewal_date }}
 ```
 
-### Account-Based Sales
-
-**Scenario:** B2B sales with account intelligence
-
-**Context endpoint returns:**
-```json wrap
-{
-  "account": {
-    "company_name": "Acme Corp",
-    "industry": "Manufacturing",
-    "employee_count": 450,
-    "annual_revenue": "50M-100M"
-  },
-  "contact": {
-    "role": "IT Director",
-    "decision_authority": "high",
-    "department": "Technology"
-  },
-  "engagement": {
-    "lifecycle_stage": "qualified_lead",
-    "lead_source": "website_demo_request",
-    "lead_score": 85,
-    "engagement_level": "high"
-  },
-  "history": {
-    "previous_interactions": 3,
-    "last_interaction": "2025-11-01",
-    "demo_requested": true,
-    "pricing_requested": false
-  },
-  "products_of_interest": ["Enterprise Platform", "Advanced Analytics"],
-  "competitors_evaluated": ["CompetitorA", "CompetitorB"]
-}
-```
-
-**Agent instructions:**
-```jinja wrap
-You're a sales development rep qualifying {{ contact.first_name }}
-from {{ context.account.company_name }}.
-
-Company Profile:
-- Industry: {{ context.account.industry }}
-- Size: {{ context.account.employee_count }} employees
-- Revenue: {{ context.account.annual_revenue }}
-
-Contact Role: {{ context.contact.role }} ({{ context.contact.decision_authority }} authority)
-
-Lead Intelligence:
-- Lead Score: {{ context.engagement.lead_score }}/100 (HIGH PRIORITY)
-- Stage: {{ context.engagement.lifecycle_stage }}
-- Source: {{ context.engagement.lead_source }}
-- Products of Interest: {{ context.products_of_interest|join(', ') }}
-
-{% if context.history.demo_requested %}
-IMPORTANT: They already requested a demo. This is warm outreach.
-
-Opening: "Hi {{ contact.first_name }}, I'm calling about the
-{{ context.products_of_interest[0] }} demo you requested. I'd like
-to schedule that and make sure we cover exactly what you need to see."
-{% endif %}
-
-{% if context.competitors_evaluated|length > 0 %}
-Note: They're also evaluating {{ context.competitors_evaluated|join(' and ') }}.
-Be prepared to differentiate our solution.
-{% endif %}
-
-Goal: Schedule technical demo within next 5 business days.
-
-```
+**Result:** Agent knows about the open ticket before the conversation starts, allowing for a personalized greeting and informed conversation throughout.
 
 ---
 
 ## Best Practices
 
 <AccordionGroup>
-  <Accordion title="Keep Response Times Fast" icon="gauge-high">
-    **Target: under 2 seconds for context API response**
-
-    **Optimization strategies:**
-
-    **1. Cache frequently accessed data**
-    ```python
-    # Bad: Query database every time
-    @app.get("/context")
-    def get_context(customer_id):
-        # Queries database on every call (slow)
-        account = db.query_account(customer_id)
-        orders = db.query_orders(customer_id)
-        return {"account": account, "orders": orders}
-
-    # Good: Use caching
-    @app.get("/context")
-    @cache(ttl=300)  # Cache for 5 minutes
-    def get_context(customer_id):
-        # Cached result returned immediately for repeat calls
-        account = db.query_account(customer_id)
-        orders = db.query_orders(customer_id)
-        return {"account": account, "orders": orders}
-    ```
-
-    **2. Return only necessary data**
-    ```python
-    # Bad: Return entire customer object (large payload)
-    return customer.to_json()  # 50 KB
-
-    # Good: Return only fields needed for conversation
-    return {
-        "tier": customer.tier,
-        "status": customer.status,
-        "balance": customer.balance
-    }  # 0.5 KB (100x smaller, faster)
-    ```
-
-    **3. Use database indexes**
-    - Index customer_id, phone_number, email (lookup fields)
-    - Optimize queries for speed
-    - Use connection pooling
-
-    **4. Implement timeouts**
-    - Set reasonable timeout (5 seconds)
-    - Return partial data if some queries slow
-    - Fail gracefully if timeout exceeded
+  <Accordion title="Keep responses fast" icon="gauge-high">
+    - Target under 1 second response time
+    - Cache frequently accessed data (5-10 minute TTL)
+    - Return only fields you'll use in instructions
+    - Use database indexes on lookup fields (contact_number, external_id, or your internal customer IDs)
   </Accordion>
 
-  <Accordion title="Handle Missing Data Gracefully" icon="shield-check">
-    **Always account for null/missing fields**
+  <Accordion title="Handle missing data gracefully" icon="shield-check">
+    - Use `| default("value")` filters in instructions
+    - Return `null` for missing fields (don't error)
+    - Test with contacts that have minimal data
 
-    **Problem:**
-    ```
-    Instructions:
-    Customer tier: {{ context.account.tier }}
+    ```jinja
+    {# Safe - provides fallback #}
+    Tier: {{ account.tier | default("Standard") }}
 
-    If context.account is null → Error, conversation fails
-    ```
-
-    **Solution: Use defaults and conditionals**
-    ```
-    {% if context.account %}
-      Customer tier: {{ context.account.tier | default("Standard") }}
-    {% else %}
-      Customer tier: Standard (account data unavailable)
-    {% endif %}
-
-    Or shorter:
-    Customer tier: {{ context.account.tier | default("Standard") }}
-    ```
-
-    **Best practice: Defensive data access**
-    ```
-    {% if context.pending_orders and context.pending_orders|length > 0 %}
-      Recent order: {{ context.pending_orders[0].order_id }}
-    {% else %}
-      No recent orders found.
+    {# Safer - checks existence #}
+    {% if support_tickets and support_tickets|length > 0 %}
+      Has open tickets
     {% endif %}
     ```
   </Accordion>
 
-  <Accordion title="Secure Sensitive Data" icon="lock">
-    **Don't expose unnecessary sensitive information**
-
-    **Bad: Return full customer record**
-    ```json
-    {
-      "customer": {
-        "ssn": "123-45-6789",  // ← Don't include!
-        "credit_card_last_4": "4242",
-        "full_address": "123 Main St, City, State, ZIP",
-        "date_of_birth": "1985-01-15",
-        ...
-      }
-    }
-    ```
-
-    **Good: Return only necessary, non-sensitive data**
-    ```json
-    {
-      "customer": {
-        "tier": "VIP",
-        "account_status": "active",
-        "city": "New York",  // General location, not full address
-        "age_range": "30-40"  // Range, not exact DOB
-      }
-    }
-    ```
-
-    **Security checklist:**
-    - ☐ No SSN, credit card numbers, passwords
-    - ☐ No full addresses (city/state only if needed)
-    - ☐ No exact dates of birth (age range acceptable)
-    - ☐ No account numbers (last 4 digits only)
-    - ☐ Use HTTPS for all context endpoint requests
-    - ☐ Implement authentication (don't allow unauthenticated access)
-    - ☐ Log access for audit trail
+  <Accordion title="Secure sensitive data" icon="lock">
+    - Don't return SSN, credit cards, passwords
+    - Use HTTPS only
+    - Implement authentication (Bearer token recommended)
+    - Return only necessary fields (e.g., last 4 of account number, not full)
+    - Log access for audit trails
   </Accordion>
 
-  <Accordion title="Version Your API" icon="code-branch">
-    **Use API versioning for context endpoints**
-
-    **Why versioning matters:**
-    ```
-    Scenario without versioning:
-    1. You change context API response structure
-    2. Remove a field agents depend on
-    3. All active calls fail immediately
-    4. Customer experience disrupted
-
-    Scenario with versioning:
-    1. Create v2 of context API with new structure
-    2. Agents continue using v1 (no disruption)
-    3. Test v2 thoroughly with test agents
-    4. Gradually migrate agents from v1 to v2
-    5. Deprecate v1 after all agents migrated
-    ```
-
-    **Versioning strategies:**
-
-    **URL versioning:**
-    ```
-    v1: https://api.company.com/v1/customer-context
-    v2: https://api.company.com/v2/customer-context
-    ```
-
-    **Header versioning:**
-    ```
-    Request header: X-API-Version: 2
-    ```
-
-    **Query parameter versioning:**
-    ```
-    https://api.company.com/customer-context?version=2
-    ```
-  </Accordion>
-
-  <Accordion title="Test with Real Data" icon="vial">
-    **Always test with actual customer data before deploying**
-
-    **Testing process:**
-
-    <Steps>
-      <Step title="Test with known customer">
-        1. Select customer you know well (maybe your own test account)
-        2. Use Test Request modal with that customer's phone/email
-        3. Verify response contains expected data
-        4. Check all fields you reference in instructions exist
-      </Step>
-
-      <Step title="Test edge cases">
-        **New customer (minimal data):**
-        - No order history
-        - No support tickets
-        - Basic contact info only
-
-        **VIP customer (maximal data):**
-        - Extensive order history
-        - Multiple support tickets
-        - Complex account structure
-
-        **Problematic customer:**
-        - Suspended account
-        - Overdue balance
-        - Open disputes
-
-        Verify instructions handle all scenarios gracefully
-      </Step>
-
-      <Step title="Test failure scenarios">
-        **Context API unavailable:**
-        - Turn off context endpoint temporarily
-        - Verify agent handles missing context gracefully
-        - Ensure conversation doesn't fail completely
-
-        **Slow response:**
-        - Add artificial delay to context API (3-5 seconds)
-        - Verify timeout handling works
-        - Check if partial data is usable
-
-        **Invalid JSON:**
-        - Return malformed JSON from test endpoint
-        - Verify agent doesn't crash
-        - Ensure fallback behavior activates
-      </Step>
-
-      <Step title="Production pilot">
-        1. Enable context for single test agent
-        2. Route small percentage of traffic (5-10%)
-        3. Monitor for errors, slow responses
-        4. Review sample conversations for quality
-        5. If successful, expand to more agents
-      </Step>
-    </Steps>
-  </Accordion>
-
-  <Accordion title="Monitor Context API Performance" icon="chart-line">
-    **Track key metrics for context endpoint**
-
-    **Metrics to monitor:**
-
-    **Response time:**
-    - Average: Should be under 1 second
-    - P95: Should be under 2 seconds
-    - P99: Should be under 3 seconds
-    - Timeout rate: Should be under 1%
-
-    **Error rate:**
-    - Success rate (200 OK): Should be > 99%
-    - 4xx errors: Should be under 0.5% (client errors)
-    - 5xx errors: Should be under 0.5% (server errors)
-    - Network errors: Should be under 0.1%
-
-    **Data quality:**
-    - Missing field rate: Track how often expected fields are null
-    - Stale data: Monitor age of cached data
-    - Partial response rate: How often partial data returned
-
-    **Business impact:**
-    - Conversation success rate: With vs. without context
-    - Average handle time: Does context make conversations faster?
-    - Goal achievement: Are contextualized conversations more successful?
-
-    **Alerting:**
-    - Alert if error rate over 5% for 5 minutes
-    - Alert if P95 latency over 3 seconds for 5 minutes
-    - Alert if timeout rate over 5%
+  <Accordion title="Test before production" icon="vial">
+    1. Use **Test Request** modal with real customer data
+    2. Test edge cases (new customer, VIP, suspended account)
+    3. Verify instructions handle missing fields gracefully
+    4. Pilot with small traffic percentage before full rollout
   </Accordion>
 </AccordionGroup>
 
@@ -1294,93 +363,33 @@ Goal: Schedule technical demo within next 5 business days.
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="401 Unauthorized Error" icon="lock-open">
-    **Symptoms:** Context requests fail with 401 error
-
-    **Possible causes:**
-    1. Invalid credentials (wrong API key, token, password)
-    2. Expired token
-    3. Wrong authentication type configured
-    4. Missing authentication header
-
-    **Solutions:**
-    - Verify credentials are correct and current
-    - Check authentication type matches API requirements (Bearer vs. Basic vs. Header)
-    - Test endpoint with Postman using same credentials
-    - Check if token/key has expiration (refresh if needed)
-    - Review API documentation for authentication requirements
+  <Accordion title="401 Unauthorized" icon="lock-open">
+    - Verify credentials are correct
+    - Check authentication type matches your API (Bearer vs. Basic vs. API Key)
+    - Test with same credentials in Postman
+    - Check if token has expired
   </Accordion>
 
-  <Accordion title="Context Variables Not Available in Instructions" icon="brackets-curly">
-    **Symptoms:** `{{ context.field }}` shows as empty or undefined
-
-    **Possible causes:**
-    1. Context request failing silently
-    2. JSON structure different than expected
-    3. Field name misspelled in instructions
-    4. Context request disabled
-
-    **Solutions:**
-    - Use Test Request modal to verify response received
-    - Review actual JSON structure in test response
-    - Copy field names exactly from test response
+  <Accordion title="Context variables empty" icon="brackets-curly">
+    - Use **Test Request** to verify endpoint is responding
+    - Check JSON structure matches what you're accessing
     - Verify Dynamic Context toggle is ON
-    - Check logs for context request errors
-    - Add default values: `{{ context.field | default("N/A") }}`
+    - Use `| default("fallback")` for missing fields
   </Accordion>
 
-  <Accordion title="Slow Context Response" icon="hourglass">
-    **Symptoms:** Long pause at call start, timeout errors
-
-    **Possible causes:**
-    1. Database queries slow
-    2. API doing too much work
-    3. Network latency
-    4. No caching implemented
-
-    **Solutions:**
-    - Add database indexes on lookup fields (customer_id, phone, email)
-    - Implement caching (Redis, in-memory)
-    - Return only necessary fields (reduce payload size)
+  <Accordion title="Slow or timeout" icon="hourglass">
+    - Add database indexes
+    - Implement caching
+    - Return only necessary fields
     - Optimize database queries
-    - Increase timeout if response time acceptable but hitting limit
-    - Consider async pattern: fetch minimal data first, more later
+    - Check network latency to your API
   </Accordion>
 
-  <Accordion title="Context Request Failing Intermittently" icon="circle-exclamation">
-    **Symptoms:** Works sometimes, fails other times
-
-    **Possible causes:**
-    1. API server capacity issues
-    2. Database connection pool exhausted
-    3. Rate limiting
-    4. Network instability
-
-    **Solutions:**
-    - Monitor API server resources (CPU, memory, connections)
-    - Increase database connection pool size
-    - Implement retry logic (already available in platform)
-    - Check for rate limiting on external APIs
-    - Add circuit breaker pattern to context API
-    - Scale API infrastructure if needed
-  </Accordion>
-
-  <Accordion title="Wrong Data Returned" icon="triangle-exclamation">
-    **Symptoms:** Context data doesn't match customer
-
-    **Possible causes:**
-    1. Wrong parameter passed (phone number, email, customer_id)
-    2. Template variable not resolving correctly
-    3. Data quality issue in source system
-    4. Caching returning stale data for wrong customer
-
-    **Solutions:**
-    - Review Test Request modal - check parameters in request
-    - Verify template variables: `{{ contact.phone_number }}` resolves correctly
-    - Test with known customer - confirm data matches
-    - Check cache key includes customer identifier (don't cache globally)
-    - Add customer_id to response for verification
-    - Log mismatches for investigation
+  <Accordion title="Wrong data returned" icon="triangle-exclamation">
+    - Check parameters in **Test Request** modal
+    - Verify template variables resolve correctly: `{{ account.tier }}`
+    - Ensure cache keys include customer identifier
+    - Test with known customer to confirm data matches
   </Accordion>
 </AccordionGroup>
 
@@ -1389,19 +398,16 @@ Goal: Schedule technical demo within next 5 business days.
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Custom API Actions" icon="code" href="/build/actions/custom-api-actions">
-    Create actions that use context data for operations
+  <Card title="Greeting" icon="hand-wave" href="/build/conversation/greeting">
+    Use context variables to personalize your agent's greeting
   </Card>
   <Card title="Instructions" icon="pen" href="/build/conversation/instructions">
-    Write effective prompts using context variables
+    Learn how to use context variables with Jinja templating
   </Card>
   <Card title="Variables & Dynamic Content" icon="brackets-curly" href="/build/conversation/variables-dynamic-content">
-    Master Jinja templating with context data
+    Master templating syntax for dynamic prompts
   </Card>
-  <Card title="MCP Servers" icon="server" href="/build/advanced/mcp-servers">
-    Alternative integration approach using Model Context Protocol
-  </Card>
-  <Card title="Test Your Agent" icon="vial" href="/test/test-in-dashboard">
-    Test context fetching in live conversations
+  <Card title="Custom API Actions" icon="code" href="/build/actions/custom-api-actions">
+    Create actions that use context data during conversations
   </Card>
 </CardGroup>
