@@ -1,33 +1,33 @@
 ---
 title: "Phone Testing"
-description: "Validate the full PSTN path before launch"
+description: "Test your agent with real phone calls"
 icon: "phone"
 ---
 
-## When to run phone tests
+## Why Test with Phone Calls
 
-Web calls are perfect for fast iteration, but they bypass carriers. Run at least one real phone call before every release so you can hear codec changes, latency, AMD behaviour, and transfer flows through the exact telephony stack we ship to production.
+Web testing is great for quick iteration, but phone testing validates the complete customer experience. Make real test calls to verify voice quality, timing, answering machine detection, and transfer flows work exactly as your customers will experience them.
 
-## Launch a phone test
+## How to Make a Test Call
 
 <Steps>
-  <Step title="Open the Test Agent drawer">
-    From the agent header, click **Test Agent**.
+  <Step title="Open Test Agent">
+    Go to your agent and click **Test Agent** in the top right corner.
   </Step>
   <Step title="Switch to Phone Call">
-    Use the segmented control to select the **Phone Call** tab.
+    Click the **Phone Call** tab at the top of the test panel.
   </Step>
-  <Step title="Pick a From number">
-    Choose one of your imported numbers. The combobox uses the same list shown under Telephony → Numbers, including friendly labels so you know what the caller ID will be.
+  <Step title="Choose your caller ID">
+    Select which phone number to call from. This will be the caller ID your contact sees.
   </Step>
-  <Step title="Enter the destination">
-    Add the contact's phone number in E.164 format so the call reaches the right person.
+  <Step title="Enter destination number">
+    Type the phone number you want to call. Use international format with country code (e.g., +1 for US).
   </Step>
-  <Step title="Tune AMD">
-    Select **Text** for fast keyword-based detection or **ML** for higher accuracy when you expect voicemail.
+  <Step title="Configure AMD (optional)">
+    Choose answering machine detection mode: **Text** for speed or **ML** for accuracy. Leave default if unsure.
   </Step>
   <Step title="Start the call">
-    Click **Start Test**. The floating widget indicates the dial/outbound state until the callee picks up.
+    Click **Start Test**. Your agent will call the number and you can have a real conversation.
   </Step>
 </Steps>
 
@@ -71,18 +71,33 @@ Web calls are perfect for fast iteration, but they bypass carriers. Run at least
   </Accordion>
 </AccordionGroup>
 
-## After the call
+## After the Call
 
-1. Open **Conversations → Recent**.
-2. Filter by agent and look for the `phone` badge in the call list.
-3. Verify transcript accuracy, goal completion, and any downstream webhooks.
-4. Document issues in your ticket before running another iteration.
+1. Go to the **Conversations** tab in your dashboard
+2. Find your test call (look for the phone icon)
+3. Review the transcript for accuracy
+4. Check that goals were tracked correctly
+5. Verify any actions or automations triggered as expected
 
-## Troubleshooting quick reference
+<Tip>
+Keep notes on what worked and what needs improvement for each test call.
+</Tip>
 
-- The call never connects → double-check the selected From number is assigned and active.
-- The call fails immediately → ensure the `django` API has the right SIP credentials loaded; redeploy if credentials changed.
-- No transcript shows up → inspect the calling-service logs for that call ID and confirm the process was running when you placed the call.
-- Audio sounds different from the web test → capture the timestamp and carrier so we can reproduce with the same setup.
+## Common Issues
 
-When the phone pass is clean, you are ready to follow the launch checklist.
+<AccordionGroup>
+  <Accordion title="Call doesn't connect" icon="phone-xmark">
+    Check that your selected phone number is active and properly configured in **Telephony → Numbers**.
+  </Accordion>
+  <Accordion title="Poor audio quality" icon="volume-xmark">
+    Try calling from a different location or device. Check your internet connection quality if calling from a mobile app.
+  </Accordion>
+  <Accordion title="No transcript appears" icon="file-slash">
+    Wait a few moments after the call ends for processing. If it still doesn't appear, try another test call.
+  </Accordion>
+  <Accordion title="Agent sounds different than web test" icon="waveform">
+    This is normal - phone networks process audio differently than web calls. Test multiple times to ensure consistency.
+  </Accordion>
+</AccordionGroup>
+
+Once your phone tests are successful, you're ready to launch your agent to customers!
