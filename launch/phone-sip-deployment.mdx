@@ -6,44 +6,19 @@ icon: "phone-volume"
 
 ## Deployment Overview
 
-Phone deployment routes live PSTN calls through your tested agent. You can assign agents to:
+Phone deployment routes live PSTN calls through your tested agent using a **Bring Your Own Carrier (BYOC)** approach. You import your existing phone numbers and connect them to your carrier via SIP trunks.
 
-- **Provisioned phone numbers** managed directly in the platform
-- **SIP trunks** connecting your existing carrier infrastructure
-- **IVR systems** for multi-agent routing scenarios
+**Setup process:**
+1. Configure your SIP trunk with carrier credentials
+2. Import your phone numbers and link them to the trunk
+3. Assign agents to handle inbound calls
+4. Test the connection
 
 All configurations use the same real-time calling stack that Test Mode uses, ensuring consistent behavior.
 
 ## Inbound Phone Deployment
 
-### Step 1: Assign a Phone Number
-
-<Steps>
-  <Step title="Navigate to Telephony">
-    Go to **Telephony → Numbers** in the dashboard. You'll see all provisioned numbers and their current assignments.
-  </Step>
-
-  <Step title="Select your number">
-    Click on the phone number you want to assign. If you don't have a number yet, click **+ Purchase Number** to provision a new DID.
-  </Step>
-
-  <Step title="Assign the agent">
-    In the number configuration:
-    - **Inbound Agent**: Select your tested agent from the dropdown
-    - **Business Hours**: Optionally restrict when the agent answers (default: 24/7)
-    - **Fallback**: Configure what happens when agent is unavailable (voicemail, transfer, etc.)
-
-    Click **Save** to activate the assignment.
-  </Step>
-
-  <Step title="Test the live number">
-    Call the number from your phone. The agent should answer immediately using the greeting you configured in Test mode. Review the call logs in **Conversations → Logs** to verify proper call flow.
-  </Step>
-</Steps>
-
-### Step 2: Configure SIP Trunk (BYOC)
-
-If you're bringing your own carrier, configure it to send calls to the itellicoAI SIP endpoint:
+### Step 1: Configure SIP Trunk
 
 <Frame>
   <div className="block dark:hidden">
@@ -82,6 +57,44 @@ If you're bringing your own carrier, configure it to send calls to the itellicoA
   - DTMF via RFC 2833 (for keypad input)
   - Reinvite support for transfers
 </Accordion>
+
+### Step 2: Import Phone Numbers
+
+Once your SIP trunk is configured, import your existing phone numbers:
+
+<Steps>
+  <Step title="Navigate to Phone Numbers">
+    Go to **Telephony → Phone Numbers** and click **Import Number**
+  </Step>
+
+  <Step title="Configure number details">
+    Provide:
+    - **Phone Number**: E.164 format (e.g., `+14155552671`)
+    - **Friendly Name**: Optional label (e.g., "Support Line")
+    - **SIP Trunk**: Select the trunk you configured in Step 1
+    - **Inbound Agent**: Optionally assign an agent now (or do it later)
+  </Step>
+
+  <Step title="Save and verify">
+    Click **Save** to import the number. The number is now linked to your SIP trunk and ready for inbound calls.
+  </Step>
+</Steps>
+
+### Step 3: Assign Agents to Numbers
+
+<Steps>
+  <Step title="Open Phone Numbers list">
+    Go to **Telephony → Phone Numbers** to see all imported numbers
+  </Step>
+
+  <Step title="Assign or update agent">
+    Use the inline agent picker to select which agent should answer calls to this number
+  </Step>
+
+  <Step title="Configure carrier forwarding and test">
+    Configure your carrier to forward calls to the **Inbound URI** shown on your SIP trunk (in **Telephony → SIP Trunks**). Once carrier forwarding is active, call the number from your phone to test. The agent should answer using the greeting you configured. Review call logs in **Conversations** to verify proper call flow.
+  </Step>
+</Steps>
 
 <Accordion title="Troubleshooting call routing">
   If calls aren't reaching your agent:
@@ -144,30 +157,6 @@ For outbound calling through your own carrier (campaigns, proactive calls), conf
 
   See [Campaign Launch](/launch/campaign-outbound-launch) for detailed outbound campaign setup.
 </Accordion>
-
-## Security Best Practices
-
-<AccordionGroup>
-  <Accordion title="Caller authentication">
-    For sensitive operations (account lookups, payments):
-    - Enable caller ID verification
-    - Implement PIN/password challenges via DTMF
-    - Use dynamic context to verify caller against CRM records
-  </Accordion>
-
-  <Accordion title="PCI compliance (if handling payments)">
-    - Never log or record full credit card numbers
-    - Use DTMF masking for payment input
-    - Integrate with PCI-compliant payment gateways via custom actions
-    - Disable transcript recording during payment flows
-  </Accordion>
-
-  <Accordion title="Call recording & consent">
-    - Enable recording consent prompts if required by local laws (e.g., two-party consent states)
-    - Configure recording settings in agent → **Abilities → Recording**
-    - Ensure GDPR/CCPA compliance for stored recordings
-  </Accordion>
-</AccordionGroup>
 
 ## Next Steps
 
