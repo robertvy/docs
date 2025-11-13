@@ -47,10 +47,10 @@ If you're bringing your own carrier, configure it to send calls to the itellicoA
 
 <Frame>
   <div className="block dark:hidden">
-    <img src="/images/sip/create-sip-light.png" alt="Create SIP Trunk dialog showing trunk name, inbound URI, and IP security configuration" />
+    <img src="/images/sip/inbound-sip-light.png" alt="Create SIP Trunk dialog showing SIP Trunk Name field with placeholder text, Inbound Calls and Outbound Calls tabs with Inbound selected, Inbound URI configuration showing SIP provider forward address, IP Security optional field for restricting IP addresses, Contact support link, Cancel and Create SIP Trunk buttons" />
   </div>
   <div className="hidden dark:block">
-    <img src="/images/sip/create-sip-dark.png" alt="Create SIP Trunk dialog showing trunk name, inbound URI, and IP security configuration" />
+    <img src="/images/sip/inbound-sip-dark.png" alt="Create SIP Trunk dialog showing SIP Trunk Name field with placeholder text, Inbound Calls and Outbound Calls tabs with Inbound selected, Inbound URI configuration showing SIP provider forward address, IP Security optional field for restricting IP addresses, Contact support link, Cancel and Create SIP Trunk buttons" />
   </div>
 </Frame>
 
@@ -95,6 +95,54 @@ If you're bringing your own carrier, configure it to send calls to the itellicoA
   - `404 Not Found`: Incorrect SIP URI configuration
   - `488 Not Acceptable Here`: Codec mismatch (enable Opus/PCMU/PCMA on carrier)
   - `503 Service Unavailable`: Temporary connectivity issue
+</Accordion>
+
+## Outbound Phone Deployment
+
+### Configure Outbound SIP Trunk
+
+For outbound calling through your own carrier (campaigns, proactive calls), configure the outbound SIP trunk with authentication:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/sip/outbound-sip-light.png" alt="Create SIP Trunk dialog showing SIP Trunk Name field, Inbound Calls and Outbound Calls tabs with Outbound selected, Authentication Recommendation section, Provider Domain field with example.com:5060 placeholder, Username field for SIP authentication, Password field for SIP authentication, Contact support link, Cancel and Create SIP Trunk buttons" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/sip/outbound-sip-dark.png" alt="Create SIP Trunk dialog showing SIP Trunk Name field, Inbound Calls and Outbound Calls tabs with Outbound selected, Authentication Recommendation section, Provider Domain field with example.com:5060 placeholder, Username field for SIP authentication, Password field for SIP authentication, Contact support link, Cancel and Create SIP Trunk buttons" />
+  </div>
+</Frame>
+
+<br />
+
+<Accordion title="Outbound SIP configuration">
+  1. Navigate to **Telephony → SIP Trunks** and click **+ Add Trunk**
+  2. Switch to the **Outbound Calls** tab
+  3. Configure authentication for your carrier:
+     - **Provider Domain**: Your carrier's SIP domain (e.g., `sip.example.com:5060`)
+     - **Username**: SIP authentication username from your carrier
+     - **Password**: SIP authentication password from your carrier
+  4. **Save** the trunk configuration
+  5. **Assign to campaigns**: Use this trunk when creating outbound campaigns
+
+  <Note>
+  We highly recommend using username/password authentication for outbound calls. IP-based authentication is not supported out of the box but can be implemented. Contact support if needed.
+  </Note>
+</Accordion>
+
+<Accordion title="Outbound calling use cases">
+  **Automated Campaigns**:
+  - Sales outreach and lead qualification
+  - Appointment reminders
+  - Payment reminders
+  - Survey calls
+
+  **Proactive Notifications**:
+  - Order status updates
+  - Delivery notifications
+  - Service alerts
+  - Follow-up calls
+
+  See [Campaign Launch](/launch/campaign-outbound-launch) for detailed outbound campaign setup.
 </Accordion>
 
 ## Security Best Practices
