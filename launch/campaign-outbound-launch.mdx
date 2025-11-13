@@ -69,16 +69,24 @@ Outbound campaigns automate high-volume calling for sales, reminders, surveys, a
   <Step title="Configure campaign settings">
     After creation, go to the **Settings** tab:
 
+    **Basic Settings**:
+    - **Campaign Name**: Update the campaign name anytime
+    - **Phone Number**: Cannot be changed after creation
+    - **Agent**: Switch to a different agent if needed
+
     **Scheduling**:
-    - **Start Date & Time**: When to begin calling (leave blank to start immediately)
-    - **Call Interval**: Wait time between calls (5 seconds → 30 minutes)
-    - **Ring Timeout**: How long to let the phone ring (10-60 seconds)
-    - **Business Hours**: Update or change the schedule anytime
+    - **Start Date & Time**: When to begin calling (leave blank to start immediately, allows dates up to 24 hours in past)
+    - **Call Interval**: Wait time between calls - choose from: 5s, 10s, 20s, 30s, 1min, 2min, 5min, 10min, 20min, 30min
+    - **Ring Timeout**: How long to let the phone ring - choose from: 10s, 15s, 20s, 25s, 30s, 45s, 60s
+    - **Business Hours**: Update or change the schedule anytime (shows real-time open/closed status with visual indicator)
+
+    **Detection**:
+    - **AMD Mode**: Switch between Text-based (fast) or ML-based (accurate) answering machine detection
 
     **Retry Logic**:
     - **Max Retry Attempts**: How many times to retry (0-10, default: 2)
-    - **Retry Interval**: Calendar time between retries (not business hours, minimum applies)
-    - **Contact Completion Timeout**: Maximum time for a contact to reach completed state after analysis
+    - **Retry Interval**: Calendar time between retries (not business hours). Configure with unit selector (minutes, hours, or days)
+    - **Contact Completion Timeout**: Maximum time for a contact to reach completed state after analysis. Configure with unit selector (minutes, hours, or days)
   </Step>
 
   <Step title="Add contacts">
@@ -97,9 +105,18 @@ Outbound campaigns automate high-volume calling for sales, reminders, surveys, a
   </Step>
 
   <Step title="Set goals and analyses">
-    **Goals Tab**: Create campaign goals that evaluate each contact based on all their conversations in the campaign. Unlike agent goals that score individual conversations, campaign goals assess overall contact outcomes.
+    **Goals Tab**: Create campaign-level goals with two types:
+    - **Primary Goal** (limit: 1): Main success criterion for the campaign
+    - **Secondary Goals** (unlimited): Additional objectives to track
 
-    **Analyses Tab**: Define analyses that run per contact, combining all conversation transcripts and metadata to provide comprehensive contact-level insights.
+    Goals evaluate each contact based on all their conversations. Results show as: Achieved, Partially Achieved, Not Achieved, or Unknown.
+
+    **Analyses Tab**: Define custom analyses using question types:
+    - **Yes/No**: Binary outcome questions
+    - **Open Text**: Free-form analysis responses
+    - **Rating Scale**: 1-5 rating (Low/Poor to High/Excellent)
+
+    Each analysis can be toggled active/inactive and runs per contact across all conversations.
   </Step>
 
   <Step title="Launch the campaign">
@@ -113,55 +130,112 @@ Once created, your campaign has six main tabs:
 
 <AccordionGroup>
   <Accordion title="Dashboard" icon="gauge">
-    Campaign overview and real-time metrics:
-    - Contact status breakdown (pending, dialing, completed, etc.)
-    - Progress indicators and completion stats
-    - **Human Answer Rate by Time** heat map showing best calling hours
-    - Goal achievement overview
+    Campaign overview in a 2x2 grid layout:
+
+    **Quick Stats** (top-left):
+    - Primary Goal Achievement Rate
+    - Total Conversations
+    - Average Call Duration
+    - Human Answer Rate
+
+    **Contact Status** (top-right):
+    - All 7 statuses with counts and percentages
+    - Visual separation between active and final states
+
+    **Goal Analysis** (bottom-left):
+    - Achieved (green) / Partially Achieved (yellow) / Not Achieved (red) / Unknown (gray)
+    - Progress bars showing distribution
+
+    **Answer Rate Heat Map** (bottom-right):
+    - Weekly 7-day x 24-hour grid
+    - Color intensity shows answer rates (0-30%+)
+    - Identify best calling hours and days
   </Accordion>
 
   <Accordion title="Reporting" icon="chart-bar">
-    Per-contact detailed analytics:
-    - Contact-level metrics combining all conversations
-    - Goal and analysis results per contact
-    - Filter and search across all contact data
-    - Deep-dive into individual contact performance
+    Per-contact detailed analytics table with advanced filtering:
+
+    **Table Columns**: Contact name/tags, phone with flag, status badge, primary goal indicator, goal achievement ring, conversation count/duration, last called timestamp, actions
+
+    **Filter Options**:
+    - Tags (multi-select, searchable)
+    - Status (all 7 types)
+    - Min/Max Retry Attempts
+    - Primary Goal Status (achieved, partially achieved, not achieved, unknown)
+    - Search by name/phone
+
+    **Actions**:
+    - Bulk retry selected contacts
+    - View detailed analytics per contact
+    - Export with format selection (XLSX, CSV)
   </Accordion>
 
   <Accordion title="Contacts" icon="users">
-    Manage contacts and track status:
-    - Filter by status, goal result, or retry count
-    - Retry selected contacts in bulk
-    - Export to CSV (current selection, filtered set, or full campaign)
-    - Add contacts to running campaigns
+    Two-panel interface for managing campaign contacts:
+
+    **Left Panel (Available Contacts)**:
+    - Search and filter by tags
+    - Add individual contacts or bulk add
+    - "Add All Filtered" for large batches (runs in background)
+
+    **Right Panel (Campaign Contacts)**:
+    - Filter by tags and status
+    - Remove only **Pending** contacts (others locked)
+    - Bulk remove with confirmation
+    - Click contact for quick analytics view
   </Accordion>
 
   <Accordion title="Goals" icon="bullseye">
-    Set and monitor campaign-level goals that evaluate each contact based on all their conversations (separate from agent-level goals that score individual conversations).
+    Create and manage campaign-level goals with two tabs:
+
+    **Primary Goal Tab**:
+    - Limit: 1 primary goal maximum
+    - Archive/restore previous primary goals
+
+    **Secondary Goals Tab**:
+    - Unlimited secondary goals
+    - Archive/restore workflow
+
+    All goals evaluate contacts based on all their conversations (not per-conversation like agent goals). Results: Achieved, Partially Achieved, Not Achieved, Unknown.
   </Accordion>
 
   <Accordion title="Analyses" icon="microscope">
-    Configure analyses that run per contact, combining all conversation transcripts and metadata to provide comprehensive contact-level insights.
+    Configure custom analyses with three question types:
+    - **Yes/No**: Binary outcomes
+    - **Open Text**: Free-form responses
+    - **Rating Scale**: 1-5 ratings
+
+    **Features**:
+    - Toggle analyses active/inactive without deleting
+    - Archive/restore workflow
+    - Each analysis runs per contact across all conversations
   </Accordion>
 
   <Accordion title="Settings" icon="gear">
-    Adjust campaign parameters including timing, retry logic, business hours, and AMD mode.
+    Adjust all campaign parameters organized in two columns:
+
+    **Left Column**: Campaign name, phone number (locked), agent, start date/time, business hours (with real-time open/closed indicator)
+
+    **Right Column**: Call interval (10 options), ring timeout (7 options), AMD mode, max retry attempts, completion timeout (with unit selector), retry interval (with unit selector)
   </Accordion>
 </AccordionGroup>
 
 ## Contact Lifecycle
 
-Contacts progress through these statuses:
+Contacts progress through these statuses (shown with colored badges and icons):
 
-1. **Pending**: Contact added but not yet called
-2. **Dialing**: Call attempt currently in progress
-3. **Called**: Call completed, awaiting analysis or timeout
-4. **Retry**: Scheduled for another attempt due to unsuccessful call
-5. **Completed**: Successful conversation achieved, campaign objective met
-6. **No Conversation**: Maximum retries exhausted without meaningful interaction
-7. **Failed**: Technical issues or invalid number prevented call completion
+**Active States:**
+1. **Pending** (gray, clock icon): Contact is queued and waiting to be dialed
+2. **Dialing** (yellow, phone icon): Call is currently in progress - dialing the contact
+3. **Called** (violet, phone-check icon): Call has been made, awaiting next step
+4. **Retry** (blue, refresh icon): No meaningful conversation occurred, call scheduled for retry
 
-The system manages status transitions automatically based on call outcomes. You can manually retry contacts or update status when needed.
+**Final States:**
+5. **Completed** (green, check-circle icon): Contact successfully completed all campaign objectives
+6. **Failed** (red, X-circle icon): Call permanently failed and won't be retried
+7. **No Conversation** (gray, phone-X icon): Contact didn't pick up or didn't respond
+
+The system manages status transitions automatically based on call outcomes. You can manually retry contacts from the Contacts or Reporting tabs. Only contacts in **Pending** status can be removed from the campaign.
 
 ## Managing Active Campaigns
 
