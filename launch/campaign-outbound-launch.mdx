@@ -46,15 +46,13 @@ Outbound campaigns automate high-volume calling for sales, reminders, surveys, a
 
     **Agent**: Select which AI agent will handle the calls
 
-    **Phone Number**: Choose a phone number for this campaign. Numbers already assigned to active or paused campaigns won't appear in the list.
+    **Phone Number**: Choose a phone number for this campaign. Numbers already assigned to active or paused campaigns won't appear in the list. If you haven't set up a phone number yet, see [Phone & SIP Deployment](/launch/phone-sip-deployment).
 
-    **Answering Machine Detection (AMD)**:
-    - **Text-based**: Fastest (~1-2 sec), uses transcript analysis, works well for B2B lists
-    - **ML-based**: Higher accuracy, better for consumer voicemail detection
+    **Answering Machine Detection (AMD)**: Choose text-based (fast) or ML-based (accurate). [Learn more about AMD](#answering-machine-detection).
   </Step>
 
   <Step title="Configure optional settings">
-    **Business Hours**: Limit calling to a specific schedule (default is 24/7). You can create schedules in **Settings → Business Hours**.
+    **Business Hours**: Limit calling to a specific schedule (default is 24/7). You can create schedules in **Settings → Business Hours**. [Learn more about Business Hours](/launch/business-hours).
 
     Click **Create Campaign** to continue.
   </Step>
@@ -70,10 +68,8 @@ Outbound campaigns automate high-volume calling for sales, reminders, surveys, a
 
     **Retry Logic**:
     - **Max Retry Attempts**: How many times to retry (0-10, default: 2)
-    - **Retry Interval**: Time between retries (minutes, hours, or days)
+    - **Retry Interval**: Calendar time between retries (not business hours, minimum applies)
     - **Contact Completion Timeout**: Maximum time for a contact to reach completed state after analysis
-
-    **Notes**: Add internal notes for your team
   </Step>
 
   <Step title="Add contacts">
@@ -88,17 +84,17 @@ Outbound campaigns automate high-volume calling for sales, reminders, surveys, a
     - Select multiple contacts and click **Add Selected**
     - Use **Add All** to add all filtered contacts (large batches run in background)
 
-    You can search, filter by tags, and view contact details before adding.
+    Use search and tag filters to narrow down contacts before adding.
   </Step>
 
   <Step title="Set goals and analyses">
-    **Goals Tab**: Create campaign-level goals that track success across all conversations and contacts. These are separate from agent-level goals.
+    **Goals Tab**: Create campaign goals that evaluate each contact based on all their conversations in the campaign. Unlike agent goals that score individual conversations, campaign goals assess overall contact outcomes.
 
-    **Analyses Tab**: Define analyses that combine conversation transcripts, contact history, and campaign metadata. These run on every conversation and enable detailed contact-level reporting.
+    **Analyses Tab**: Define analyses that run per contact, combining all conversation transcripts and metadata to provide comprehensive contact-level insights.
   </Step>
 
   <Step title="Launch the campaign">
-    The campaign begins automatically at the configured start time. Monitor progress in the **Dashboard** and **Reporting** tabs.
+    Campaigns are created in **Paused** status by default. Set the status to **Active** to start dialing. Once active, the campaign begins at the configured start time. Monitor progress in the **Dashboard** and **Reporting** tabs.
   </Step>
 </Steps>
 
@@ -108,19 +104,19 @@ Once created, your campaign has six main tabs:
 
 <AccordionGroup>
   <Accordion title="Dashboard" icon="gauge">
-    Overview of campaign performance and metrics including:
-    - Contact status breakdown
-    - Progress indicators
-    - Key campaign statistics
-    - Real-time performance data
+    Campaign overview and real-time metrics:
+    - Contact status breakdown (pending, dialing, completed, etc.)
+    - Progress indicators and completion stats
+    - **Human Answer Rate by Time** heat map showing best calling hours
+    - Goal achievement overview
   </Accordion>
 
   <Accordion title="Reporting" icon="chart-bar">
-    Detailed analytics including:
-    - Call volume over time
-    - Goal outcome tracking
-    - **Human Answer Rate by Time** heat map showing the best hours and days for live connections
-    - Campaign-level metrics
+    Per-contact detailed analytics:
+    - Contact-level metrics combining all conversations
+    - Goal and analysis results per contact
+    - Filter and search across all contact data
+    - Deep-dive into individual contact performance
   </Accordion>
 
   <Accordion title="Contacts" icon="users">
@@ -128,19 +124,19 @@ Once created, your campaign has six main tabs:
     - Filter by status, goal result, or retry count
     - Retry selected contacts in bulk
     - Export to CSV (current selection, filtered set, or full campaign)
-    - View per-contact metrics powered by campaign goals and analyses
+    - Add contacts to running campaigns
   </Accordion>
 
   <Accordion title="Goals" icon="bullseye">
-    Set and monitor campaign-level conversation objectives that score success across all conversations.
+    Set and monitor campaign-level goals that evaluate each contact based on all their conversations (separate from agent-level goals that score individual conversations).
   </Accordion>
 
   <Accordion title="Analyses" icon="microscope">
-    Configure conversation analysis that runs on every conversation, with results rolled up per contact for detailed reporting.
+    Configure analyses that run per contact, combining all conversation transcripts and metadata to provide comprehensive contact-level insights.
   </Accordion>
 
   <Accordion title="Settings" icon="gear">
-    Adjust campaign parameters including timing, retry logic, business hours, and notes.
+    Adjust campaign parameters including timing, retry logic, business hours, and AMD mode.
   </Accordion>
 </AccordionGroup>
 
@@ -157,28 +153,6 @@ Contacts progress through these statuses:
 7. **Failed**: Technical issues or invalid number prevented call completion
 
 The system manages status transitions automatically based on call outcomes. You can manually retry contacts or update status when needed.
-
-## Answering Machine Detection
-
-Choose the AMD mode that fits your use case:
-
-<AccordionGroup>
-  <Accordion title="Text-based AMD">
-    **Speed**: 1-2 seconds
-    **Accuracy**: 85-90%
-    **Best for**: High-volume campaigns, B2B lists, cost-sensitive scenarios
-
-    Uses transcript analysis to detect voicemails quickly.
-  </Accordion>
-
-  <Accordion title="ML-based AMD">
-    **Speed**: 3-4 seconds
-    **Accuracy**: 95%+
-    **Best for**: High-value contacts, consumer lists, accuracy-critical campaigns
-
-    Uses audio pattern recognition for more reliable detection.
-  </Accordion>
-</AccordionGroup>
 
 ## Managing Active Campaigns
 
@@ -203,31 +177,54 @@ Modify campaign settings at any time:
 - Modify **Call Interval** or **Ring Timeout**
 - Changes apply immediately to queued calls
 
-## Export and Reporting
+## Campaign Reporting
 
-### Contact Exports
+<CardGroup cols={2}>
+  <Card title="Answer Rate Heat Map" icon="chart-line">
+    Weekly heat map showing answer rates by hour and day. After 50-100 calls, use this to identify the best calling times and optimize your business hours configuration.
+  </Card>
 
-From the **Contacts** tab:
-- Export current selection
-- Export filtered contacts
-- Export entire campaign
-- CSV format with all contact data and metrics
+  <Card title="Goal Performance" icon="bullseye">
+    Track campaign goal achievement rates per contact. See which contacts completed objectives and analyze success patterns.
+  </Card>
 
-### Export History
+  <Card title="Contact Analytics" icon="users">
+    Per-contact metrics combining all conversations, status history, and analysis results for comprehensive insights.
+  </Card>
 
-Track export jobs:
-- View in-progress exports
-- Download completed files
-- Continue working while exports run in background
+  <Card title="Call Volume" icon="phone-volume">
+    Monitor call attempts, connection rates, and contact progression over time.
+  </Card>
+</CardGroup>
 
-### Answer Rate Heat Map
+## Contact Exports
 
-The **Reporting** tab shows a weekly heat map of answer rates by hour. Use this to:
-- Identify best calling times
-- Optimize business hours configuration
-- Improve connection rates
+<AccordionGroup>
+  <Accordion title="Export Options" icon="file-export">
+    From the **Contacts** tab or **Reporting** tab, export contact data with flexible format options:
 
-After 50-100 calls, check the heat map and adjust your business hours to focus on high-performing time windows.
+    **Scope**:
+    - **Export current selection**: Selected contacts only
+    - **Export filtered contacts**: All contacts matching active filters
+    - **Export entire campaign**: Complete contact list with all metrics
+
+    **Format Options**:
+    - **XLSX (recommended)**: Excel format with full formatting support
+    - **CSV comma-separated**: Standard CSV with comma delimiters
+    - **CSV semicolon-separated**: European CSV format for regions using comma decimal separators
+
+    Exports include contact details, status, conversation data, goal results, and analysis outcomes.
+  </Accordion>
+
+  <Accordion title="Export History" icon="clock">
+    Track all export jobs from the **Contacts** tab:
+    - View in-progress exports with status updates and file format
+    - Download completed files (format shown: .xlsx, .csv (,), or .csv (;))
+    - Continue working while exports run in background
+
+    Large exports are processed asynchronously so you can keep managing your campaign. Each export shows its format icon (Excel or CSV) for quick identification.
+  </Accordion>
+</AccordionGroup>
 
 ## Inbound Call Integration
 
@@ -267,10 +264,9 @@ Before uploading contacts:
 ### Timezone Optimization
 
 For contacts across multiple time zones:
-1. Include timezone data in your contact list
-2. Create business hours in **Settings → Business Hours** with appropriate timezone
-3. Assign to campaign so calls happen during local business hours
-4. Use the answer rate heat map to find optimal calling windows per region
+1. Create business hours in **Settings → Business Hours** with appropriate timezone
+2. Assign to campaign so calls happen during local business hours
+3. Use the answer rate heat map to find optimal calling windows per region
 
 ### Segmentation
 
