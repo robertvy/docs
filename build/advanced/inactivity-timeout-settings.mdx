@@ -63,14 +63,14 @@ Check-ins help ensure users haven't dropped off, are still paying attention, or 
 
         How long the agent waits in silence before sending a reminder to the user.
 
-        - **Lower values (5-15s):** Quick check-ins, good for fast-paced interactions
-        - **Medium values (20-45s):** Balanced for most conversations
-        - **Higher values (60-300s):** Patient, allows users time to think or act
+        - **Typical recommendation (5-15s):** Good for most conversations, maintains engagement
+        - **Extended timeout (20-45s):** For scenarios where users may need time to think
+        - **Long timeout (60-300s):** When users need to look up information or complete actions
 
-        **Default:** 30 seconds
+        **Default:** 10 seconds
 
         <Tip>
-        For scenarios where users need to look up information (account numbers, addresses, etc.), use higher timeout values to avoid interrupting them.
+        For scenarios where users need to look up information (account numbers, addresses, etc.), use extended or long timeout values to avoid interrupting them.
         </Tip>
       </Accordion>
 
@@ -101,13 +101,13 @@ Check-ins help ensure users haven't dropped off, are still paying attention, or 
         User->>Agent: Hello, I need help
         Agent->>User: How can I help you?
         Note over User,Agent: User stops responding
-        Note over Agent: Wait 30 seconds (check-in timeout)
+        Note over Agent: Wait 10 seconds (check-in timeout)
         Agent->>User: "Are you still there?" (Check-in #1)
         Note over User,Agent: Still no response
-        Note over Agent: Wait another 30 seconds
+        Note over Agent: Wait another 10 seconds
         Agent->>User: "Hello? Can you hear me?" (Check-in #2)
         Note over User,Agent: Still no response
-        Note over Agent: Wait another 30 seconds
+        Note over Agent: Wait another 10 seconds
         Agent->>User: "I'll end the call now" (Check-in #3)
         Agent->>User: Ends conversation gracefully
     ```
@@ -476,7 +476,7 @@ Conversation timeout sets an absolute maximum duration for the entire conversati
 
     | Setting | Value | Reasoning |
     |---------|-------|-----------|
-    | Check-in Timeout | 30-45s | Users may need time to explain issues |
+    | Check-in Timeout | 10-15s | Maintain engagement while allowing pauses |
     | Max Check-ins | 3-4 | Balance patience with efficiency |
     | Enable Pause | Yes | Users often need to gather info |
     | Default Pause Duration | 240s (4min) | Sufficient for finding account details |
@@ -488,7 +488,7 @@ Conversation timeout sets an absolute maximum duration for the entire conversati
 
     | Setting | Value | Reasoning |
     |---------|-------|-----------|
-    | Check-in Timeout | 60-90s | Users need time to check calendars |
+    | Check-in Timeout | 30-45s | Allow time before pause detection kicks in |
     | Max Check-ins | 4-5 | Be patient while they schedule |
     | Enable Pause | Yes | Essential for calendar checking |
     | Default Pause Duration | 300s (5min) | Extended time for complex schedules |
@@ -500,7 +500,7 @@ Conversation timeout sets an absolute maximum duration for the entire conversati
 
     | Setting | Value | Reasoning |
     |---------|-------|-----------|
-    | Check-in Timeout | 15-20s | Fast-paced interactions |
+    | Check-in Timeout | 8-12s | Fast-paced, keep momentum |
     | Max Check-ins | 2-3 | Quick exit for disengaged users |
     | Enable Pause | No | Minimal pause needs |
     | Default Pause Duration | N/A | Not applicable |
@@ -512,7 +512,7 @@ Conversation timeout sets an absolute maximum duration for the entire conversati
 
     | Setting | Value | Reasoning |
     |---------|-------|-----------|
-    | Check-in Timeout | 20s | Keep momentum in survey flow |
+    | Check-in Timeout | 10-15s | Keep momentum in survey flow |
     | Max Check-ins | 2 | Avoid extending abandoned surveys |
     | Enable Pause | No | Linear survey flow |
     | Default Pause Duration | N/A | Not applicable |
@@ -524,7 +524,7 @@ Conversation timeout sets an absolute maximum duration for the entire conversati
 
     | Setting | Value | Reasoning |
     |---------|-------|-----------|
-    | Check-in Timeout | 45s | Allow thoughtful responses |
+    | Check-in Timeout | 20-30s | Allow thoughtful responses |
     | Max Check-ins | 5-7 | Persistent but not pushy |
     | Enable Pause | Yes | Users consult decision makers |
     | Default Pause Duration | 600s (10min) | Extended consultation time |
@@ -544,7 +544,7 @@ Conversation timeout sets an absolute maximum duration for the entire conversati
     **Symptoms:** Check-ins interrupt users who are still engaged
 
     **Solutions:**
-    - Increase check-in timeout (try 45-60s instead of 30s)
+    - Increase check-in timeout (try 20-30s instead of 10s)
     - Enable pause detection if not already active
     - Review if users are naturally pausing (thinking time)
     - Consider if voice activity detection settings are cutting users off
@@ -584,7 +584,7 @@ Conversation timeout sets an absolute maximum duration for the entire conversati
     **Symptoms:** High abandonment rate during check-ins
 
     **Solutions:**
-    - Reduce check-in timeout (try 20-30s instead of 45-60s)
+    - Reduce check-in timeout (try 5-8s instead of 15s)
     - Reduce max check-ins (try 2-3 instead of 5+)
     - Review check-in messages for clarity
     - Ensure pause detection is working properly
@@ -719,7 +719,7 @@ agent = client.agents.update(
     uuid="agent_uuid",
     inactivity_settings={
         "is_enabled": True,
-        "check_in_timeout": 30,  # seconds
+        "check_in_timeout": 10,  # seconds (typical: 5-15s)
         "max_inactivity_checks": 3,
         "max_monologue_duration": 60,  # seconds
         "conversation_timeout": 300,  # seconds
@@ -755,7 +755,7 @@ const client = new Itellico({
 const agent = await client.agents.update('agent_uuid', {
   inactivitySettings: {
     isEnabled: true,
-    checkInTimeout: 30,  // seconds
+    checkInTimeout: 10,  // seconds (typical: 5-15s)
     maxInactivityChecks: 3,
     maxMonologueDuration: 60,  // seconds
     conversationTimeout: 300,  // seconds
