@@ -1,0 +1,363 @@
+---
+title: "Testszenarien"
+description: "Häufige Testszenarien zur Validierung vor dem Produktivstart"
+icon: "list-check"
+keywords: "Testszenarien, Agententests, Testsuite, Regressionstests, QA-Tests, Konversationstests, Grenzfälle, Testautomatisierung, Qualitätssicherung"
+og:description: "Umfassende Testszenarien für KI-Agenten vor der Produktion. Erstellen Sie Testsuiten, die Happy Paths, Grenzfälle und Fehlerbedingungen mit automatisierten Tests abdecken."
+---
+
+## Warum Testszenarien wichtig sind
+
+Wiederholbare Testszenarien gewährleisten konsistente Qualität über Agentenaktualisierungen hinweg. Erstellen Sie eine Testsuite, die Folgendes abdeckt:
+- **Happy Paths** - Ideale Kundeninteraktionen
+- **Grenzfälle** - Ungewöhnliche, aber gültige Szenarien
+- **Fehlerbedingungen** - Wie der Agent mit Fehlern umgeht
+- **Regressionstests** - Verhindern Sie das Brechen vorhandener Funktionalität
+
+## Kern-Testszenarien
+
+### 1. Begrüßung & Vorstellung
+
+**Szenario**: Kunde ruft zum ersten Mal an und muss verstehen, mit wem er spricht.
+
+<Accordion title="Testschritte">
+  1. Anruf starten (Web- oder Telefontest)
+  2. Auf Agentenbegrüßung warten
+  3. Nicht sofort sprechen (testen, ob Agent auffordert)
+  4. Fragen: "Mit wem spreche ich?"
+  5. Überprüfen, ob sich der Agent klar vorstellt
+
+  **Erwartete Ergebnisse**:
+  - Begrüßung erfolgt innerhalb von 2 Sekunden nach Anrufbeginn
+  - Agent nennt Name/Unternehmen deutlich
+  - Agent bietet proaktiv Hilfe an
+  - Professioneller und freundlicher Ton
+</Accordion>
+
+<Accordion title="Variationen">
+  - Anruf während vs. außerhalb der Geschäftszeiten
+  - Anruf von verschiedenen Telefonnummern (Test der Anrufer-ID-Erkennung)
+  - Anruf mit verschiedenen aktivierten Sprachen (mehrsprachiger Test)
+</Accordion>
+
+---
+
+### 2. Informationssuche (Wissensdatenbank)
+
+**Szenario**: Kunde stellt Frage, die in der Wissensdatenbank beantwortet wird.
+
+<Accordion title="Testschritte">
+  1. Frage stellen, die eindeutig in der KB beantwortet wird (z. B. "Was sind Ihre Geschäftszeiten?")
+  2. Überprüfen, ob Agent korrekte Informationen abruft
+  3. Anschlussfrage stellen
+  4. Überprüfen, ob Agent Kontext beibehält
+
+  **Erwartete Ergebnisse**:
+  - Agent antwortet präzise aus KB-Inhalten
+  - Antwort ist prägnant (liest nicht den gesamten KB-Artikel vor)
+  - Agent bietet verwandte Hilfe an
+  - Anschlussfragen werden korrekt behandelt
+</Accordion>
+
+<Accordion title="Grenzfälle">
+  - Frage mit leicht abweichender Formulierung als KB-Inhalt stellen
+  - Frage stellen, die mehrere KB-Themen kombiniert
+  - Frage mit mehrdeutiger Absicht stellen
+  - Frage stellen, die NICHT in KB ist (Agent sollte "Ich weiß es nicht" sagen)
+</Accordion>
+
+---
+
+### 3. Aktionsausführung (API-Aufruf)
+
+**Szenario**: Kunde fordert Aktion an, die externen API-Aufruf erfordert.
+
+<Accordion title="Testschritte">
+  1. Aktion anfordern (z. B. "Prüfen Sie meinen Bestellstatus für Bestellung 12345")
+  2. Überprüfen, ob Agent Verständnis bestätigt
+  3. Auf Abschluss des API-Aufrufs warten
+  4. Überprüfen, ob Agent Ergebnis korrekt kommuniziert
+
+  **Erwartete Ergebnisse**:
+  - Agent extrahiert erforderliche Parameter (Bestellnummer)
+  - Agent ruft korrekten API-Endpunkt auf
+  - Agent wartet auf Antwort ohne Timeout-Fehler
+  - Agent kommuniziert Ergebnis natürlich
+  - Bei API-Fehler behandelt Agent dies elegant
+</Accordion>
+
+<Accordion title="Fehlerszenarien">
+  - API gibt Fehler zurück (500, 404)
+  - API-Timeout (langsame Antwort)
+  - API gibt unerwartetes Format zurück
+  - Fehlender erforderlicher Parameter (Agent sollte danach fragen)
+</Accordion>
+
+---
+
+### 4. Anrufweiterleitung
+
+**Szenario**: Kunde möchte mit menschlichem Agenten sprechen.
+
+<Accordion title="Testschritte">
+  1. Weiterleitung anfordern (z. B. "Ich muss mit jemandem sprechen")
+  2. Überprüfen, ob Agent Weiterleitung bestätigt
+  3. Überprüfen, ob Agent ankündigt, an wen/welche Abteilung
+  4. (Nur Telefontest) Überprüfen, ob Anruf tatsächlich weitergeleitet wird
+
+  **Erwartete Ergebnisse**:
+  - Agent bestätigt Anfrage sofort
+  - Agent erklärt, wohin Sie weitergeleitet werden
+  - Agent versucht Weiterleitung
+  - Weiterleitung wird erfolgreich abgeschlossen (Telefontest)
+</Accordion>
+
+<Accordion title="Grenzfälle">
+  - Weiterleitung zu bestimmter Abteilung anfordern
+  - Weiterleitung außerhalb der Geschäftszeiten anfordern
+  - Weiterleitung nach fehlgeschlagener Aktion anfordern
+  - Mehrere Weiterleitungsanfragen im selben Anruf
+</Accordion>
+
+---
+
+### 5. Unterbrechungsbehandlung
+
+**Szenario**: Kunde unterbricht Agent mitten im Satz.
+
+<Accordion title="Testschritte">
+  1. Frage stellen, die lange Antwort hervorruft
+  2. Während Agent spricht, mit neuer Frage unterbrechen
+  3. Überprüfen, ob Agent aufhört zu sprechen und zuhört
+  4. Überprüfen, ob Agent neue Frage beantwortet
+
+  **Erwartete Ergebnisse**:
+  - Agent hört sofort auf zu sprechen (&lt;500ms)
+  - Agent verarbeitet neue Eingabe
+  - Agent setzt vorherige Antwort nicht fort
+  - Konversation fließt nach Unterbrechung natürlich weiter
+</Accordion>
+
+<Accordion title="Stresstests">
+  - Mehrmals schnell hintereinander unterbrechen
+  - Mit unabhängiger Frage unterbrechen
+  - Nur mit Geräuschen unterbrechen (keine Worte)
+  - Nach Unterbrechung still bleiben
+</Accordion>
+
+---
+
+### 6. Inaktivität / Stille
+
+**Szenario**: Kunde hört während Konversation auf zu antworten.
+
+<Accordion title="Testschritte">
+  1. Konversation normal starten
+  2. Agent stellt eine Frage
+  3. Völlig still bleiben (nicht antworten)
+  4. 10-15 Sekunden warten
+  5. Überprüfen, ob Agent auffordert: "Sind Sie noch da?"
+  6. Wieder still bleiben
+  7. Überprüfen, ob Agent schließlich Anruf beendet oder weiterleitet
+
+  **Erwartete Ergebnisse**:
+  - Erste Aufforderung nach ~10 Sekunden
+  - Zweite Aufforderung bei anhaltender Stille
+  - Nach 2-3 Aufforderungen beendet Agent Anruf höflich
+  - Ordnungsgemäße Protokollierung des Inaktivitäts-Timeouts
+</Accordion>
+
+---
+
+### 7. DTMF-Eingabe (Tastatur)
+
+**Szenario**: Kunde verwendet Telefontastatur für Eingabe (falls aktiviert).
+
+<Accordion title="Testschritte">
+  1. Agent fordert auf: "Drücken Sie 1 für Vertrieb, 2 für Support"
+  2. Taste auf Telefontastatur drücken
+  3. Überprüfen, ob Agent erkennt und reagiert
+  4. Alle Tasten testen: 0-9, *, #
+
+  **Erwartete Ergebnisse**:
+  - Alle Tasten werden korrekt erkannt
+  - Agent bestätigt Eingabe ("Sie haben 1 gedrückt")
+  - Agent leitet zur korrekten Aktion/Abteilung weiter
+  - Ungültige Tasten werden behandelt (z. B. 9 drücken, wenn nur 1-2 gültig)
+</Accordion>
+
+---
+
+### 8. Mehrsprachiger Support
+
+**Szenario**: Kunde spricht in verschiedener Sprache (wenn mehrsprachig aktiviert).
+
+<Accordion title="Testschritte">
+  1. Anruf auf Englisch beginnen
+  2. Mitten im Anruf zu Spanisch wechseln
+  3. Überprüfen, ob Agent Sprache erkennt und auf Spanisch antwortet
+  4. Zurück zu Englisch wechseln
+  5. Überprüfen, ob Agent sich anpasst
+
+  **Erwartete Ergebnisse**:
+  - Spracherkennung innerhalb von 1-2 Sätzen
+  - Agent antwortet in erkannter Sprache
+  - Transkription präzise für beide Sprachen
+  - Stimmenauswahl passend für Sprache
+</Accordion>
+
+---
+
+### 9. Lange Konversation (Belastungstest)
+
+**Szenario**: Ausgedehnte Konversation zum Testen der Kontextbeibehaltung.
+
+<Accordion title="Testschritte">
+  1. Konversation mit 10+ Wechseln führen
+  2. Frühere Konversationspunkte referenzieren
+  3. Komplexe mehrteilige Fragen stellen
+  4. Überprüfen, ob Agent Kontext behält
+
+  **Erwartete Ergebnisse**:
+  - Agent behält Konversationsverlauf bei
+  - Agent wiederholt keine bereits bereitgestellten Informationen
+  - Agent fragt nicht nach Informationen, die Kunde bereits gegeben hat
+  - Anrufqualität bleibt über 10+ Minuten stabil
+</Accordion>
+
+---
+
+### 10. Adversarial / Grenzfälle
+
+**Szenario**: Schwierige Kundenszenarien.
+
+<Accordion title="Testschritte">
+  **Verwirrter Kunde**:
+  - Unklare, weitschweifige Antworten geben
+  - Themen mitten in Konversation wechseln
+  - Unzusammenhängende Fragen stellen
+
+  **Frustrierter Kunde**:
+  - Frustration ausdrücken: "Das funktioniert nicht!"
+  - Verlangen, mit einem Menschen zu sprechen
+  - Starke Sprache verwenden (Test der Leitplanken)
+
+  **Testender Kunde**:
+  - Versuchen, Agent unangemessene Dinge sagen zu lassen
+  - Fragen außerhalb des Geltungsbereichs stellen
+  - Grenzen des Agentenwissens testen
+
+  **Erwartete Ergebnisse**:
+  - Agent bleibt hilfsbereit und professionell
+  - Agent bietet Weiterleitung an, wenn angebracht
+  - Agent lässt sich nicht auf unangemessene Anfragen ein
+  - Agent sagt höflich "Damit kann ich nicht helfen"
+</Accordion>
+
+## Aufbau Ihrer Testsuite
+
+<Steps>
+  <Step title="Kernszenarien dokumentieren">
+    Erstellen Sie eine Tabelle mit Szenarien, die Ihr Agent bewältigen muss:
+
+    | Szenario | Priorität | Bestehkriterien |
+    |----------|----------|---------------|
+    | Begrüßung | P0 (kritisch) | Klare Vorstellung, &lt;2s |
+    | KB-Suche | P0 | Präzise Antwort, Abruf aus KB |
+    | API-Aufruf | P1 (wichtig) | Erfolgreiche Ausführung, &lt;5s |
+    | Weiterleitung | P1 | Verbindung zu korrektem Ziel |
+    | DTMF | P2 (nice-to-have) | Erkennt alle Tasten korrekt |
+  </Step>
+
+  <Step title="Testskripte erstellen">
+    Schreiben Sie exakte Dialoge für jedes Szenario:
+
+    **Beispielskript**:
+    ```
+    Szenario: Bestellstatusabfrage
+    Tester: "Hallo, wie ist der Status meiner Bestellung?"
+    Erwarteter Agent: "Ich kann Ihnen dabei helfen. Was ist Ihre Bestellnummer?"
+    Tester: "12345"
+    Erwarteter Agent: "Lassen Sie mich nachsehen... [API-Aufruf] Ihre Bestellung wurde verschickt und kommt am 15. Januar an."
+    Ergebnis: BESTANDEN/NICHT BESTANDEN
+    ```
+  </Step>
+
+  <Step title="Vollständige Suite regelmäßig ausführen">
+    **Wann zu testen**:
+    - Vor jeder Produktionsbereitstellung
+    - Nach größeren Instruktionsänderungen
+    - Wöchentlich für kritische Agenten
+    - Nach Plattform-Updates
+
+    **Nachverfolgung**:
+    Verwenden Sie Tabellenkalkulation oder Test-Management-Tool zur Nachverfolgung:
+    - Testdatum
+    - Bestanden/Nicht bestanden pro Szenario
+    - Notizen zu Fehlschlägen
+    - Trends über Zeit
+  </Step>
+
+  <Step title="Wo möglich automatisieren">
+    Für kritische Szenarien Tests automatisieren:
+
+    ```python
+    # Beispiel für automatisierten Test
+    def test_greeting():
+        call = client.test_calls.create(
+            agent_id="agent_123",
+            scenario="greeting",
+            expected_keywords=["willkommen", "hilfe"]
+        )
+
+        assert call.duration_seconds < 5
+        assert "willkommen" in call.transcript.lower()
+        assert call.status == "success"
+    ```
+
+    Führen Sie automatisierte Tests nach Zeitplan oder vor Bereitstellung aus.
+  </Step>
+</Steps>
+
+## Testabdeckungsmatrix
+
+Stellen Sie sicher, dass Sie alle Agentenfähigkeiten testen:
+
+| Fähigkeit | Testszenario | Status |
+|------------|---------------|--------|
+| **Kernkonversation** |
+| Begrüßung | Erste Anrufbegrüßungstest | ✓ |
+| Instruktionen | Agentenregeln-Befolgungs-Test | ✓ |
+| Kontext | Mehrwechsel-Konversation | ✓ |
+| **Wissen** |
+| KB-Abruf | FAQ-Fragetest | ✓ |
+| KB-Genauigkeit | Korrekte Antworten überprüfen | ✓ |
+| Unbekanntes-Handling | Unbeantwortbare Frage stellen | ✓ |
+| **Aktionen** |
+| API-Aufrufe | Jede benutzerdefinierte Aktion auslösen | ⚠️ In Bearbeitung |
+| Weiterleitungen | Jedes Weiterleitungsziel testen | ⚠️ In Bearbeitung |
+| Buchung | Kalenderbuchung abschließen | ⏳ Nicht begonnen |
+| **Sprachfunktionen** |
+| Unterbrechungen | Barge-In-Test | ✓ |
+| Stille | Inaktivitäts-Timeout-Test | ✓ |
+| DTMF | Tastatureingabe-Test | N/A |
+| **Qualität** |
+| Audio | Anrufqualitätsmetriken | ✓ |
+| Latenz | Antwortzeit &lt;2s | ✓ |
+| Genauigkeit | Transkriptions-WER &lt;10% | ✓ |
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Web-Simulator" icon="browser" href="/launch/test/web-simulator">
+    Testszenarien im Browser ausführen
+  </Card>
+
+  <Card title="Telefontests" icon="phone" href="/launch/test/phone-testing">
+    Mit echten PSTN-Anrufen validieren
+  </Card>
+
+  <Card title="Debugging" icon="bug" href="/launch/test/debugging">
+    Fehlgeschlagene Szenarien beheben
+  </Card>
+</CardGroup>

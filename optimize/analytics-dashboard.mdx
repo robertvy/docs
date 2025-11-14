@@ -1,610 +1,266 @@
 ---
-title: "Analytics Dashboard"
-description: "Track performance metrics and export data for deeper analysis"
-icon: "chart-bar"
+title: "Dashboard"
+description: "Track metrics, spot trends, and measure agent performance over time"
+icon: "chart-line"
+keywords: "AI agent dashboard, conversation metrics, goal achievement rate, transfer rate, call duration analytics, action success rate, campaign analytics, answer rate heat map, voice AI KPIs, agent performance tracking"
+og:description: "Track key metrics and measure AI agent performance over time. Monitor goal achievement, transfer rates, call duration, and campaign analytics with comprehensive dashboards."
 ---
 
-## Overview
+The **Dashboard** gives you quantitative insights into agent performance. Track key metrics over time, identify trends, and measure the impact of changes.
 
-The itellicoAI analytics dashboard provides real-time insights into agent performance, conversation outcomes, and operational metrics. Use these tools to measure success, identify improvement opportunities, and optimize your voice AI operations.
+**Access:** Navigate to **Dashboard** in the main menu, or check campaign-specific metrics in **Campaigns → [Campaign] → Dashboard** and **Reporting** tabs
 
-**Access:** Navigate to **Analytics → Conversations** in the dashboard
+## Key Metrics
 
----
+<AccordionGroup>
+  <Accordion title="Goal Achievement Rate" icon="bullseye">
+    **What it measures:** Percentage of conversations where configured goals were achieved
 
-## Dashboard Components
+    **Target benchmarks:**
+    - ✅ Excellent: &gt;85%
+    - 👍 Good: 70-85%
+    - ⚠️ Needs improvement: &lt;70%
+
+    **How to improve:**
+    - Review failed conversations to spot patterns
+    - Add missing knowledge for common failure reasons
+    - Refine goal definitions for accuracy
+    - Update instructions to handle edge cases
+
+    Configure goals in **Agent Settings → Analytics → Goals**. See [Conversation Goals](/build/analytics/conversation-goals).
+  </Accordion>
+
+  <Accordion title="Answer Rate (Campaigns)" icon="phone">
+    **What it measures:** Percentage of campaign contacts who answered the phone
+
+    **Target:** Varies by industry (30-60% typical)
+
+    **How to improve:**
+    - Use the answer rate heat map to find best calling times
+    - Update business hours to focus on high-performing windows
+    - Avoid early mornings, late evenings, and weekends unless data supports it
+    - Test different days/times for your specific audience
+
+    Only available for campaigns. View in campaign **Dashboard** tab under Answer Rate Heat Map.
+  </Accordion>
+
+  <Accordion title="Transfer Rate" icon="phone-arrow-up-right">
+    **What it measures:** Percentage of conversations transferred to humans
+
+    **Target benchmarks:**
+    - ✅ Excellent: &lt;15%
+    - 👍 Good: 15-25%
+    - ⚠️ Needs improvement: &gt;25%
+
+    **How to improve:**
+    - Review transcripts that led to transfers
+    - Add knowledge or actions to handle common transfer reasons
+    - Update instructions to handle more scenarios in automation
+    - Set clearer criteria for when transfers are appropriate
+
+    Note: Some transfers are expected (e.g., legal questions, escalations). Focus on reducing unnecessary transfers.
+  </Accordion>
+
+  <Accordion title="Average Call Duration" icon="clock">
+    **What it measures:** Mean length of all conversations
+
+    **Target:** Varies by use case (2-4 min support, 3-8 min sales, 1-3 min booking)
+
+    **How to interpret:**
+    - ⬆️ Increasing: Agent may be verbose, slow knowledge retrieval, or handling complex issues
+    - ⬇️ Decreasing: Agent more efficient OR dropping calls early
+    - 📊 Stable: Consistent performance
+
+    **How to improve:**
+    - Shorten agent responses (remove repetitive phrases)
+    - Optimize knowledge base structure
+    - Streamline conversation flow (ask for info upfront)
+    - Create shortcuts for frequent scenarios
+  </Accordion>
+
+  <Accordion title="Action Success Rate" icon="wrench">
+    **What it measures:** Percentage of triggered actions that execute successfully
+
+    **Target benchmarks:**
+    - ✅ Excellent: &gt;95%
+    - 👍 Good: 90-95%
+    - ⚠️ Needs improvement: &lt;90%
+
+    **Common failures:**
+    - API endpoints down or slow
+    - Authentication failures
+    - Incorrect parameters
+    - Network timeouts
+
+    **How to improve:**
+    - Monitor API health and response times
+    - Improve parameter extraction instructions
+    - Add retry logic for transient failures
+    - Better error handling in actions
+  </Accordion>
+
+  <Accordion title="Completion Rate" icon="circle-check">
+    **What it measures:** Percentage of conversations that complete normally (vs drop/error)
+
+    **Target:** &gt;95%
+
+    **Low completion indicates:**
+    - Technical issues (audio, connectivity)
+    - Poor user experience causing hang-ups
+    - Confusing conversation flow
+    - Long wait times or latency issues
+  </Accordion>
+
+  <Accordion title="Cost Per Conversation" icon="dollar-sign">
+    **What it measures:** Average cost to handle one complete conversation
+
+    **Typical ranges:**
+    - Simple Q&A: $0.10 - $0.30
+    - Support: $0.20 - $0.50
+    - Sales: $0.40 - $1.00+
+
+    **Cost components:**
+    - LLM inference (40-60%)
+    - Text-to-Speech (20-35%)
+    - Speech-to-Text (15-25%)
+    - Knowledge operations (small %)
+
+    Track trends over time to spot cost increases and measure optimization impact.
+  </Accordion>
+</AccordionGroup>
+
+## Filters and Date Ranges
+
+Use filters to analyze specific slices of your data:
+
+**Date Range:**
+- Today, Yesterday, Last 7 days, Last 30 days
+- This month, Last month
+- Custom range
+
+**Agent Filter:** Isolate performance of specific agents or compare multiple
+
+**Phone Number Filter:** Track calls to/from specific numbers
+
+**Status Filter:** Filter by outcome (completed, failed, transferred)
+
+**Campaign Filter:** For campaign calls, filter by campaign name
+
+## Campaign Dashboard & Reporting
+
+For outbound campaigns, each campaign has **Dashboard** and **Reporting** tabs with campaign-specific insights:
 
 <CardGroup cols={2}>
-  <Card title="Conversation Metrics" icon="comments">
-    Track call volume, duration, completion rates, and outcomes across all agents
+  <Card title="Answer Rate Heat Map" icon="chart-line">
+    Weekly heat map showing answer rates by hour and day. After 50-100 calls, use this to identify the best calling times and optimize your business hours configuration.
   </Card>
 
-  <Card title="Goal Analytics" icon="bullseye">
-    Monitor conversation goal achievement rates and review goal reasoning
+  <Card title="Goal Performance" icon="bullseye">
+    Track campaign goal achievement rates per contact. See which contacts completed objectives and analyze success patterns.
   </Card>
 
-  <Card title="Action Performance" icon="bolt">
-    Analyze success rates and execution times for all configured actions
+  <Card title="Contact Analytics" icon="users">
+    Per-contact metrics combining all conversations, status history, and analysis results for comprehensive insights.
   </Card>
 
-  <Card title="Export Tools" icon="download">
-    Export conversation data and campaign reports for external analysis
+  <Card title="Call Volume" icon="phone-volume">
+    Monitor call attempts, connection rates, and contact progression over time.
   </Card>
 </CardGroup>
 
----
+## Dashboard Exports
 
-## Key Metrics Overview
+Export data for deeper analysis:
 
-### High-Level Performance
+**From Dashboard (Conversations):**
+- Export filtered conversation data
+- Choose CSV or Excel format
+- Include transcripts, goals, actions, costs
 
-The dashboard displays key performance indicators at a glance:
+**From Campaign Dashboard/Reporting:**
+- Export campaign performance summary
+- Export contacts with all conversation data
+- Choose XLSX, CSV comma, or CSV semicolon format
 
-**Conversation Volume:**
-- Total conversations (inbound + outbound)
-- Conversations per agent
-- Daily/weekly/monthly trends
-- Peak call times
+See [Review Conversations](/optimize/review-conversations) for details on what's included in exports and how to use them.
 
-**Conversation Outcomes:**
-- Goal achievement rate
-- Transfer rate
-- Average duration
-- Completion rate
+## Weekly Review Routine
 
-**Action Metrics:**
-- Total actions triggered
-- Action success rate
-- Most used actions
-- Failed action count
-
-**Cost Tracking:**
-- Total cost per period
-- Cost per conversation
-- Cost by agent
-- Cost trends
-
----
-
-## Filtering and Analysis
-
-### Date Range Filtering
-
-Select custom date ranges to analyze specific periods:
+Make dashboard review a habit:
 
 <Steps>
-  <Step title="Click date selector">
-    At the top of the analytics dashboard
+  <Step title="Check for anomalies">
+    Look for sudden drops or spikes in any metric. Did something change recently?
   </Step>
 
-  <Step title="Choose range">
-    Options include:
-    - Today
-    - Yesterday
-    - Last 7 days
-    - Last 30 days
-    - This month
-    - Last month
-    - Custom range
+  <Step title="Compare to last week">
+    Are metrics trending up or down? What changed between periods?
   </Step>
 
-  <Step title="Apply filter">
-    All metrics update automatically
+  <Step title="Dig into outliers">
+    If a metric is off, switch to **Conversations** view to review specific calls and understand why.
+  </Step>
+
+  <Step title="Adjust based on data">
+    Use insights to update instructions, knowledge, business hours, or actions. Test changes and monitor impact next week.
   </Step>
 </Steps>
 
-**Use cases for date filtering:**
-- Compare before/after changes
-- Analyze launch day performance
-- Monthly reporting
-- Identify seasonal patterns
-
----
-
-### Agent Filtering
-
-Filter metrics by specific agent(s):
-
-**Single agent view:**
-- Isolate performance of one agent
-- Useful for testing new configurations
-- Compare against historical performance
-
-**Multi-agent comparison:**
-- Side-by-side agent performance
-- Identify top performers
-- Spot outliers
-- Benchmark similar agents
-
-**All agents view:**
-- Organization-wide metrics
-- Total operational performance
-- Aggregate trends
-
----
-
-### Phone Number Filtering
-
-Filter conversations by phone number:
-
-**By caller number:**
-- Track specific customer interactions
-- Analyze VIP customer experience
-- Identify problematic callers
-
-**By agent phone number:**
-- Compare performance across different lines
-- Analyze geographic patterns
-- Test number routing
-
----
-
-## Conversation Goal Analytics
-
-Track and analyze conversation goal completion across your agents.
-
-### Goal Dashboard
-
-**Access:** **Analytics → Goals** or filter in Conversations
-
-**Metrics displayed:**
-- Total goals evaluated
-- Goals achieved count
-- Goals not achieved count
-- Achievement rate (%)
-- Trends over time
-
-### Goal Performance by Agent
-
-Compare goal achievement across agents:
-
-| Agent | Total Calls | Goals Achieved | Achievement Rate |
-|-------|-------------|----------------|------------------|
-| Support Agent | 1,247 | 1,089 | 87.3% |
-| Sales Agent | 892 | 756 | 84.8% |
-| Booking Agent | 2,103 | 1,998 | 95.0% |
-
-### Goal Reasoning Analysis
-
-For each conversation, view:
-- Goal name and criteria
-- Achievement status (✅ Achieved / ❌ Not achieved)
-- AI-generated reasoning explaining the outcome
-- Relevant conversation excerpts
-
-**Example goal reasoning:**
-```
-Goal: "Resolve customer issue"
-Status: ✅ Achieved
-Reasoning: "Customer stated their password reset problem
-was successfully resolved. Agent sent reset email and
-customer confirmed receipt. Call ended with customer
-thanking the agent."
-```
-
-**Use goal reasoning to:**
-- Understand why goals failed
-- Identify edge cases
-- Improve goal definitions
-- Train team on successful patterns
-
----
-
-## Post-Call Analysis Data
-
-View structured data from post-call analysis questions.
-
-### Analysis Questions Dashboard
-
-**Access:** Filter conversations with post-call analysis
-
-**Question types supported:**
-- Yes/No questions
-- Multiple choice
-- Free-form text responses
-- Rating scales (if configured)
-
-### Example Analysis View
-
-**Question:** "Was the customer satisfied?"
-- Yes: 1,089 (87%)
-- No: 158 (13%)
-
-**Question:** "Did the agent follow procedures?"
-- Yes: 1,198 (96%)
-- No: 49 (4%)
-
-**Question:** "What was the primary issue?"
-- Password reset: 456
-- Account access: 328
-- Billing inquiry: 298
-- Other: 165
-
-### Using Analysis Data
-
-<AccordionGroup>
-  <Accordion title="Quality assurance" icon="clipboard-check">
-    Track compliance with company procedures
-
-    Identify training needs for edge cases
-
-    Monitor customer satisfaction trends
-  </Accordion>
-
-  <Accordion title="Categorization" icon="tags">
-    Automatically categorize conversations by issue type
-
-    Understand distribution of call reasons
-
-    Allocate resources to common issues
-  </Accordion>
-
-  <Accordion title="Performance tracking" icon="chart-line">
-    Measure soft skills (empathy, patience, clarity)
-
-    Track improvement over time
-
-    Compare agents on qualitative dimensions
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Exporting Data
-
-### Conversation Exports
-
-Export detailed conversation data for external analysis.
-
-<Steps>
-  <Step title="Navigate to Conversations">
-    Go to **Conversations → Logs**
-  </Step>
-
-  <Step title="Apply filters">
-    Filter by agent, date range, status, etc.
-
-    Only export the conversations you need
-  </Step>
-
-  <Step title="Click Export">
-    Look for the Export button at the top of the conversation list
-  </Step>
-
-  <Step title="Select format">
-    Choose export format:
-    - **CSV** - For spreadsheets and BI tools
-    - **JSON** - For programmatic analysis
-  </Step>
-
-  <Step title="Select data fields">
-    Choose what to include:
-    - Basic metadata (date, duration, agent)
-    - Full transcripts
-    - Action payloads and responses
-    - Goal results and reasoning
-    - Post-call analysis responses
-    - Custom data fields
-    - Cost data
-  </Step>
-
-  <Step title="Download">
-    File downloads immediately
-
-    Large exports may take a few moments
-  </Step>
-</Steps>
-
-**Exported data includes:**
-- Conversation ID
-- Date and time
-- Agent name and ID
-- Phone numbers (caller and agent)
-- Duration
-- Status (completed, failed, etc.)
-- Full transcript with timestamps
-- Actions triggered with full payloads
-- Goal evaluation results
-- Post-call analysis answers
-- Cost breakdown
-- Custom metadata
-
-### CSV Export Structure
-
-```csv
-conversation_id,date,agent_name,duration_seconds,status,goal_achieved,goal_reasoning,primary_issue,customer_satisfied,cost_total
-conv_abc123,2025-01-15 10:30:00,Support Agent,142,completed,true,"Customer issue resolved...",password_reset,yes,0.23
-conv_def456,2025-01-15 10:35:00,Support Agent,89,completed,false,"Customer hung up...",billing,no,0.15
-```
-
-### JSON Export Structure
-
-```json
-[
-  {
-    "conversation_id": "conv_abc123",
-    "date": "2025-01-15T10:30:00Z",
-    "agent": {
-      "id": "agent_123",
-      "name": "Support Agent"
-    },
-    "duration_seconds": 142,
-    "status": "completed",
-    "transcript": [
-      {"speaker": "agent", "text": "Hello, how can I help?", "timestamp": 0},
-      {"speaker": "user", "text": "I need to reset my password", "timestamp": 3}
-    ],
-    "actions": [
-      {
-        "name": "send_password_reset",
-        "status": "success",
-        "parameters": {"email": "user@example.com"},
-        "response": {"success": true}
-      }
-    ],
-    "goals": [
-      {
-        "name": "Resolve customer issue",
-        "achieved": true,
-        "reasoning": "Customer confirmed issue resolved..."
-      }
-    ],
-    "post_call_analysis": {
-      "customer_satisfied": "yes",
-      "followed_procedures": "yes",
-      "primary_issue": "password_reset"
-    },
-    "cost": {
-      "total": 0.23,
-      "llm": 0.15,
-      "tts": 0.05,
-      "stt": 0.03
-    }
-  }
-]
-```
-
----
-
-## Campaign Reporting Exports
-
-For outbound campaigns, export comprehensive campaign performance data.
-
-### Campaign Analytics
-
-**Access:** **Campaigns → [Your Campaign] → Analytics**
-
-**Metrics available:**
-- Total calls attempted
-- Calls completed
-- Calls failed (with failure reasons)
-- Average call duration
-- Goal achievement rate
-- Action success rate
-- Cost per call
-- ROI metrics (if configured)
-
-### Campaign Export
-
-<Steps>
-  <Step title="Open campaign">
-    Navigate to the specific campaign
-  </Step>
-
-  <Step title="Go to Analytics tab">
-    Click the Analytics or Reporting tab
-  </Step>
-
-  <Step title="Click Export Report">
-    Export button typically at top-right
-  </Step>
-
-  <Step title="Choose level of detail">
-    Options:
-    - **Summary** - High-level campaign metrics
-    - **Detailed** - Per-call breakdown
-    - **Full** - Includes transcripts and analysis
-  </Step>
-
-  <Step title="Download">
-    Campaign report downloads as CSV or Excel
-  </Step>
-</Steps>
-
-**Campaign export includes:**
-- Campaign name and dates
-- Contact list details
-- Call outcomes (completed, failed, no answer, voicemail, etc.)
-- Conversation duration per call
-- Goals achieved per call
-- Actions executed per call
-- Post-call analysis per call
-- Cost per call and total campaign cost
-- Timestamps for each call attempt
-
-### Campaign Performance Report Example
-
-```
-Campaign: January Sales Outreach
-Period: 2025-01-01 to 2025-01-31
-Agent: Sales Agent
-
-Summary:
-- Total contacts: 1,000
-- Calls completed: 847 (84.7%)
-- Average duration: 3m 24s
-- Goals achieved: 623 (73.6% of completed)
-- Total cost: $423.50
-- Cost per completed call: $0.50
-
-Outcomes:
-- Interested (meeting booked): 312 (36.8%)
-- Not interested: 298 (35.2%)
-- Call back later: 147 (17.4%)
-- Voicemail left: 90 (10.6%)
-
-Failed calls: 153 (15.3%)
-- No answer: 89
-- Busy: 34
-- Invalid number: 18
-- Technical error: 12
-```
-
----
-
-## Using Exports for Analysis
-
-### Import into BI Tools
-
-Export data integrates with:
-- **Excel/Google Sheets** - Pivot tables, charts
-- **Tableau/Power BI** - Advanced visualizations
-- **SQL Databases** - Long-term storage and querying
-- **Python/R** - Statistical analysis
-- **Custom dashboards** - Build your own reporting
-
-### Common Analysis Workflows
-
-<AccordionGroup>
-  <Accordion title="Monthly reporting" icon="calendar">
-    1. Export all conversations for the month
-    2. Import into Excel/Sheets
-    3. Create pivot tables for key metrics
-    4. Generate charts for stakeholder presentations
-    5. Compare to previous months
-  </Accordion>
-
-  <Accordion title="Agent performance comparison" icon="users">
-    1. Export conversations filtered by date range
-    2. Group by agent in analysis tool
-    3. Compare metrics:
-       - Goal achievement rates
-       - Average duration
-       - Transfer rates
-       - Customer satisfaction
-    4. Identify top performers and training opportunities
-  </Accordion>
-
-  <Accordion title="Cost analysis" icon="dollar-sign">
-    1. Export with cost data included
-    2. Analyze cost drivers:
-       - Which agents are most expensive?
-       - Which conversations cost most?
-       - Where can we optimize?
-    3. Calculate ROI for different use cases
-    4. Project future costs based on trends
-  </Accordion>
-
-  <Accordion title="Quality assurance" icon="shield-check">
-    1. Export random sample of conversations
-    2. Review post-call analysis responses
-    3. Listen to audio for sample calls
-    4. Score quality on custom criteria
-    5. Identify training and improvement needs
-  </Accordion>
-
-  <Accordion title="Trend analysis" icon="chart-line">
-    1. Export data from multiple time periods
-    2. Plot metrics over time
-    3. Identify:
-       - Seasonal patterns
-       - Impact of changes
-       - Performance degradation
-       - Growth trends
-    4. Forecast future performance
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Real-Time Monitoring
-
-For active monitoring, use the dashboard real-time view:
-
-**Live metrics update:**
-- Conversations happening now
-- Today's totals
-- Current success rates
-- Recent failures/errors
-
-**Use real-time monitoring for:**
-- Launch day observation
-- Incident response
-- Peak traffic management
-- Immediate quality checks
-
-<Tip>
-Set up a dedicated monitor during launch or major updates to catch issues immediately.
-</Tip>
-
----
+## Metric Combinations
+
+Look at metrics together for deeper insights:
+
+**Goal Achievement + Transfer Rate:**
+- Low goals, high transfers → Agent can't handle scope
+- High goals, low transfers → Excellent automation ✅
+- Low both → Fundamental issues
+
+**Duration + Goal Achievement:**
+- Long duration, high goals → Thorough but slow
+- Short duration, high goals → Efficient and effective ✅
+- Long duration, low goals → Struggling to help
+- Short duration, low goals → Failing fast
+
+**Action Success + Goal Achievement:**
+- High action success, high goals → Actions driving success ✅
+- Low action success, low goals → Broken integrations hurting outcomes
 
 ## Best Practices
 
 <AccordionGroup>
-  <Accordion title="Export regularly" icon="calendar-check">
-    Schedule regular exports for archival:
-    - Weekly for active monitoring
-    - Monthly for reporting
-    - Quarterly for trend analysis
-
-    Don't rely solely on dashboard—export for long-term records
+  <Accordion title="Focus on trends, not absolutes" icon="chart-line">
+    Weekly changes matter more than single-day numbers. Look for patterns over 2-4 weeks.
   </Accordion>
 
-  <Accordion title="Use consistent date ranges" icon="ruler">
-    Compare apples to apples:
-    - Same day of week (avoid Mon vs Fri comparisons)
-    - Same time ranges
-    - Account for holidays/seasonality
-
-    Makes trend analysis more accurate
+  <Accordion title="Combine quantitative + qualitative" icon="chart-mixed">
+    Dashboard shows what's happening. Conversations view shows why. Use both.
   </Accordion>
 
-  <Accordion title="Combine with qualitative review" icon="headphones">
-    Numbers don't tell the full story:
-    - Listen to sample calls
-    - Read transcripts
-    - Understand context behind metrics
-
-    Quantitative + qualitative = complete picture
+  <Accordion title="Set baselines before optimizing" icon="ruler">
+    Run for 1-2 weeks to establish baselines. Then make one change at a time and measure impact.
   </Accordion>
 
-  <Accordion title="Share insights widely" icon="share-nodes">
-    Don't silo analytics:
-    - Share reports with stakeholders
-    - Present trends to team
-    - Use data for training
-    - Celebrate wins publicly
-
-    Data-driven culture improves outcomes
+  <Accordion title="Export for long-term tracking" icon="file-export">
+    Don't rely solely on dashboard. Export monthly for records and trend analysis in Excel or BI tools.
   </Accordion>
 
-  <Accordion title="Act on insights" icon="rocket">
-    Analytics without action is wasted:
-    - Set improvement targets based on data
-    - Test changes and measure impact
-    - Iterate based on results
-    - Close the feedback loop
-
-    Measurement → Insight → Action → Improvement
+  <Accordion title="Act on insights" icon="bolt">
+    Measurement without action is wasted. Set improvement targets, make changes, test, iterate.
   </Accordion>
 </AccordionGroup>
-
----
 
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Key Metrics" icon="gauge-high" href="/optimize/key-metrics">
-    Deep dive into the most important metrics to track
+  <Card title="Review Conversations" icon="messages" href="/optimize/review-conversations">
+    Switch from metrics to qualitative: dig into specific calls
   </Card>
-  <Card title="Goal Tracking" icon="bullseye" href="/optimize/goal-tracking">
-    Learn to configure and optimize conversation goals
+
+  <Card title="Conversation Goals" icon="bullseye" href="/build/analytics/conversation-goals">
+    Configure goals to track what matters for your use case
   </Card>
-  <Card title="Conversation Analysis" icon="comments" href="/optimize/conversation-analysis">
-    Techniques for analyzing conversations at scale
-  </Card>
-  <Card title="Continuous Improvement" icon="arrows-rotate" href="/optimize/continuous-improvement">
-    Build a sustainable optimization process
+
+  <Card title="Post-Call Analysis" icon="clipboard-list" href="/build/analytics/post-call-analysis">
+    Set up custom questions to extract structured insights
   </Card>
 </CardGroup>

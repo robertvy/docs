@@ -1,0 +1,450 @@
+---
+title: "Lanzamiento de Campañas y Llamadas Salientes"
+description: "Implemente campañas de llamadas salientes automatizadas a escala"
+icon: "bullhorn"
+keywords: "campañas salientes, llamadas automatizadas, gestión de campañas, detección de contestador automático, AMD, ciclo de vida de contactos, analíticas de campañas, marcación progresiva, seguimiento de objetivos"
+og:description: "Lance campañas de llamadas salientes automatizadas con marcación progresiva, AMD y analíticas. Gestione contactos, haga seguimiento de objetivos y optimice el rendimiento de llamadas a escala."
+---
+
+Las campañas salientes automatizan llamadas de alto volumen para ventas, recordatorios, encuestas y notificaciones. Cada campaña conecta su agente a una lista de contactos, gestiona los horarios de marcación y hace seguimiento de los resultados.
+
+## Características Principales
+
+<CardGroup cols={3}>
+  <Card title="Marcación Automatizada" icon="phone-volume">
+    Marcación progresiva con lógica de reintentos configurable
+  </Card>
+
+  <Card title="Horario Comercial" icon="clock">
+    Aplicar ventanas de llamadas y programación por zona horaria
+  </Card>
+
+  <Card title="AMD Inteligente" icon="voicemail">
+    Omitir buzones de voz con detección de texto o ML
+  </Card>
+
+  <Card title="Ciclo de Vida de Contactos" icon="arrows-spin">
+    Seguimiento automático de estado con gestión de reintentos
+  </Card>
+
+  <Card title="Analíticas e Informes" icon="chart-line">
+    Mapa de calor, objetivos y análisis por contacto
+  </Card>
+
+  <Card title="Exportación e Historial" icon="file-export">
+    Exporte contactos con métricas y seguimiento de trabajos
+  </Card>
+</CardGroup>
+
+## Creando Su Primera Campaña
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/campaigns/create-campaign-light.png" alt="Diálogo Crear Campaña mostrando menú desplegable de Detección de Contestador Automático (AMD) con Basado en texto seleccionado, campo Nombre de Campaña con descripción, menú desplegable de Agente para seleccionar agente para llamadas de campaña, menú desplegable de Número de Teléfono para seleccionar número de teléfono saliente, sección de Horario Comercial mostrando disponibilidad 24/7 con estado Abierto, botones Cancelar y Crear Campaña" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/campaigns/create-campaign-dark.png" alt="Diálogo Crear Campaña mostrando menú desplegable de Detección de Contestador Automático (AMD) con Basado en texto seleccionado, campo Nombre de Campaña con descripción, menú desplegable de Agente para seleccionar agente para llamadas de campaña, menú desplegable de Número de Teléfono para seleccionar número de teléfono saliente, sección de Horario Comercial mostrando disponibilidad 24/7 con estado Abierto, botones Cancelar y Crear Campaña" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Navegar a Campañas">
+    Vaya a **Campañas** y haga clic en **Crear Campaña** (o **Crear Primera Campaña** si es su primera).
+  </Step>
+
+  <Step title="Configurar ajustes requeridos">
+    **Nombre de Campaña**: Nombre descriptivo para uso interno (ej., "Alcance de Ventas Q1")
+
+    **Agente**: Seleccione qué agente de IA manejará las llamadas
+
+    **Número de Teléfono**: Elija un número de teléfono para esta campaña. Los números ya asignados a campañas activas o pausadas no aparecerán en la lista. Si aún no ha configurado un número de teléfono, consulte [Implementación de Teléfono y SIP](/es/launch/phone-sip-deployment).
+
+    **Detección de Contestador Automático (AMD)**: Elija basado en texto (rápido) o basado en ML (preciso). [Más información sobre AMD](#deteccion-de-contestador-automatico).
+  </Step>
+
+  <Step title="Configurar ajustes opcionales">
+    **Horario Comercial**: Limite las llamadas a un horario específico (el predeterminado es 24/7). Puede crear horarios en **Configuración → Horario Comercial**. [Más información sobre Horario Comercial](/es/launch/business-hours).
+
+    Haga clic en **Crear Campaña** para continuar.
+  </Step>
+
+  <Step title="Configurar ajustes de campaña">
+    Después de la creación, vaya a la pestaña **Configuración**:
+
+    **Ajustes Básicos**:
+    - **Nombre de Campaña**: Actualice el nombre de la campaña en cualquier momento
+    - **Número de Teléfono**: No se puede cambiar después de la creación
+    - **Agente**: Cambie a un agente diferente si es necesario
+
+    **Programación**:
+    - **Fecha y Hora de Inicio**: Cuándo comenzar a llamar (deje en blanco para comenzar inmediatamente, permite fechas hasta 24 horas en el pasado)
+    - **Intervalo de Llamada**: Tiempo de espera entre llamadas - elija entre: 5s, 10s, 20s, 30s, 1min, 2min, 5min, 10min, 20min, 30min
+    - **Tiempo de Espera de Timbre**: Cuánto tiempo dejar que el teléfono suene - elija entre: 10s, 15s, 20s, 25s, 30s, 45s, 60s
+    - **Horario Comercial**: Actualice o cambie el horario en cualquier momento (muestra estado abierto/cerrado en tiempo real con indicador visual)
+
+    **Detección**:
+    - **Modo AMD**: Cambie entre detección de contestador automático Basado en texto (rápido) o Basado en ML (preciso)
+
+    **Lógica de Reintentos**:
+    - **Máximo de Intentos de Reintento**: Cuántas veces reintentar (0-10, predeterminado: 2)
+    - **Intervalo de Reintento**: Tiempo de calendario entre reintentos (no horario comercial). Configure con selector de unidad (minutos, horas o días)
+    - **Tiempo de Espera de Finalización de Contacto**: Tiempo máximo para que un contacto alcance el estado completado después del análisis. Configure con selector de unidad (minutos, horas o días)
+  </Step>
+
+  <Step title="Agregar contactos">
+    Vaya a la pestaña **Contactos** para gestionar los contactos de su campaña.
+
+    La interfaz tiene dos paneles:
+    - **Panel Izquierdo**: Contactos disponibles de su lista de contactos
+    - **Panel Derecho**: Contactos agregados a esta campaña
+
+    **Agregando contactos**:
+    - Haga clic en **+ Agregar** junto a contactos individuales
+    - Seleccione múltiples contactos y haga clic en **Agregar Seleccionados**
+    - Use **Agregar Todos** para agregar todos los contactos filtrados (lotes grandes se ejecutan en segundo plano)
+
+    Use búsqueda y filtros de etiquetas para reducir contactos antes de agregar.
+  </Step>
+
+  <Step title="Establecer objetivos y análisis">
+    **Pestaña de Objetivos**: Cree objetivos a nivel de campaña con dos tipos:
+    - **Objetivo Primario** (límite: 1): Criterio de éxito principal para la campaña
+    - **Objetivos Secundarios** (ilimitados): Objetivos adicionales para rastrear
+
+    Los objetivos evalúan cada contacto basándose en todas sus conversaciones. Los resultados se muestran como: Logrado, Parcialmente Logrado, No Logrado o Desconocido.
+
+    **Pestaña de Análisis**: Defina análisis personalizados usando tipos de preguntas:
+    - **Sí/No**: Preguntas de resultado binario
+    - **Texto Abierto**: Respuestas de análisis de forma libre
+    - **Escala de Valoración**: Valoración 1-5 (Bajo/Pobre a Alto/Excelente)
+
+    Cada análisis puede activarse/desactivarse y se ejecuta por contacto en todas las conversaciones.
+  </Step>
+
+  <Step title="Lanzar la campaña">
+    Las campañas se crean en estado **Pausado** por defecto. Establezca el estado en **Activo** para comenzar a marcar. Una vez activa, la campaña comienza en la hora de inicio configurada. Monitoree el progreso en las pestañas **Panel de Control** e **Informes**.
+  </Step>
+</Steps>
+
+## Gestión de Campañas
+
+Una vez creada, su campaña tiene seis pestañas principales:
+
+<AccordionGroup>
+  <Accordion title="Panel de Control" icon="gauge">
+    Resumen de campaña en diseño de cuadrícula 2x2:
+
+    **Estadísticas Rápidas** (arriba-izquierda):
+    - Tasa de Logro del Objetivo Primario
+    - Total de Conversaciones
+    - Duración Promedio de Llamada
+    - Tasa de Respuesta Humana
+
+    **Estado de Contacto** (arriba-derecha):
+    - Los 7 estados con conteos y porcentajes
+    - Separación visual entre estados activos y finales
+
+    **Análisis de Objetivos** (abajo-izquierda):
+    - Logrado (verde) / Parcialmente Logrado (amarillo) / No Logrado (rojo) / Desconocido (gris)
+    - Barras de progreso mostrando distribución
+
+    **Mapa de Calor de Tasa de Respuesta** (abajo-derecha):
+    - Cuadrícula semanal de 7 días x 24 horas
+    - Intensidad de color muestra tasas de respuesta (0-30%+)
+    - Identifique las mejores horas y días para llamar
+  </Accordion>
+
+  <Accordion title="Informes" icon="chart-bar">
+    Tabla de analíticas detalladas por contacto con filtrado avanzado:
+
+    **Columnas de Tabla**: Nombre/etiquetas de contacto, teléfono con bandera, insignia de estado, indicador de objetivo primario, anillo de logro de objetivo, conteo/duración de conversación, marca de tiempo de última llamada, acciones
+
+    **Opciones de Filtro**:
+    - Etiquetas (multi-selección, con búsqueda)
+    - Estado (los 7 tipos)
+    - Mín/Máx de Intentos de Reintento
+    - Estado del Objetivo Primario (logrado, parcialmente logrado, no logrado, desconocido)
+    - Búsqueda por nombre/teléfono
+
+    **Acciones**:
+    - Reintentar contactos seleccionados en lote
+    - Ver analíticas detalladas por contacto
+    - Exportar con selección de formato (XLSX, CSV)
+  </Accordion>
+
+  <Accordion title="Contactos" icon="users">
+    Interfaz de dos paneles para gestionar contactos de campaña:
+
+    **Panel Izquierdo (Contactos Disponibles)**:
+    - Buscar y filtrar por etiquetas
+    - Agregar contactos individuales o agregar en lote
+    - "Agregar Todos Filtrados" para lotes grandes (se ejecuta en segundo plano)
+
+    **Panel Derecho (Contactos de Campaña)**:
+    - Filtrar por etiquetas y estado
+    - Eliminar solo contactos en **Pendiente** (otros bloqueados)
+    - Eliminación en lote con confirmación
+    - Haga clic en contacto para vista rápida de analíticas
+  </Accordion>
+
+  <Accordion title="Objetivos" icon="bullseye">
+    Crear y gestionar objetivos a nivel de campaña con dos pestañas:
+
+    **Pestaña de Objetivo Primario**:
+    - Límite: 1 objetivo primario máximo
+    - Archivar/restaurar objetivos primarios anteriores
+
+    **Pestaña de Objetivos Secundarios**:
+    - Objetivos secundarios ilimitados
+    - Flujo de trabajo archivar/restaurar
+
+    Todos los objetivos evalúan contactos basándose en todas sus conversaciones (no por conversación como los objetivos del agente). Resultados: Logrado, Parcialmente Logrado, No Logrado, Desconocido.
+  </Accordion>
+
+  <Accordion title="Análisis" icon="microscope">
+    Configure análisis personalizados con tres tipos de preguntas:
+    - **Sí/No**: Resultados binarios
+    - **Texto Abierto**: Respuestas de forma libre
+    - **Escala de Valoración**: Valoraciones 1-5
+
+    **Características**:
+    - Activar/desactivar análisis sin eliminar
+    - Flujo de trabajo archivar/restaurar
+    - Cada análisis se ejecuta por contacto en todas las conversaciones
+  </Accordion>
+
+  <Accordion title="Configuración" icon="gear">
+    Ajuste todos los parámetros de campaña organizados en dos columnas:
+
+    **Columna Izquierda**: Nombre de campaña, número de teléfono (bloqueado), agente, fecha/hora de inicio, horario comercial (con indicador abierto/cerrado en tiempo real)
+
+    **Columna Derecha**: Intervalo de llamada (10 opciones), tiempo de espera de timbre (7 opciones), modo AMD, máximo de intentos de reintento, tiempo de espera de finalización (con selector de unidad), intervalo de reintento (con selector de unidad)
+  </Accordion>
+</AccordionGroup>
+
+## Ciclo de Vida de Contactos
+
+Los contactos progresan a través de estos estados, mostrados con insignias de colores e iconos en toda la interfaz:
+
+### Estados Activos
+
+<CardGroup cols={2}>
+  <Card title="Pendiente" icon="clock">
+    **Insignia gris con icono de reloj**
+
+    El contacto está en cola y esperando ser marcado
+  </Card>
+
+  <Card title="Marcando" icon="phone">
+    **Insignia amarilla con icono de teléfono**
+
+    La llamada está actualmente en progreso - marcando el contacto
+  </Card>
+
+  <Card title="Llamado" icon="phone">
+    **Insignia violeta**
+
+    Se ha realizado la llamada, esperando siguiente paso
+  </Card>
+
+  <Card title="Reintentar" icon="arrows-rotate">
+    **Insignia azul con icono de actualización**
+
+    No ocurrió conversación significativa, llamada programada para reintento
+  </Card>
+</CardGroup>
+
+### Estados Finales
+
+<CardGroup cols={3}>
+  <Card title="Completado" icon="circle-check">
+    **Insignia verde con icono de círculo de verificación**
+
+    Contacto completó exitosamente todos los objetivos de la campaña
+  </Card>
+
+  <Card title="Fallido" icon="circle-xmark">
+    **Insignia roja con icono de círculo X**
+
+    Llamada falló permanentemente y no se reintentará
+  </Card>
+
+  <Card title="Sin Conversación" icon="phone-slash">
+    **Insignia gris con icono de teléfono-X**
+
+    Contacto no contestó o no respondió
+  </Card>
+</CardGroup>
+
+<Note>
+El sistema gestiona las transiciones de estado automáticamente según los resultados de llamada. Puede reintentar contactos manualmente desde las pestañas Contactos o Informes. Solo los contactos en estado **Pendiente** pueden eliminarse de la campaña.
+</Note>
+
+## Gestionando Campañas Activas
+
+### Cambiando el Estado de la Campaña
+
+Navegue a la lista de **Campañas** y haga clic en la insignia de estado para cambiar:
+
+- **Activo**: La campaña está marcando contactos activamente
+- **Pausado**: Detener la marcación temporalmente mientras preserva todo el progreso
+- **Completado**: Marcar campaña como finalizada
+- **Cancelado**: Cancelar la campaña
+
+### Agregando Contactos a Media Campaña
+
+Puede agregar más contactos a una campaña en ejecución:
+1. Vaya a la pestaña **Contactos**
+2. Use la interfaz de dos paneles para agregar nuevos contactos
+3. Los nuevos contactos entran en la cola automáticamente
+
+### Actualizando Configuración
+
+Modifique la configuración de campaña en cualquier momento:
+- Actualice **Horario Comercial** para ajustar ventanas de llamadas
+- Cambie **Lógica de Reintentos** según el rendimiento
+- Modifique **Intervalo de Llamada** o **Tiempo de Espera de Timbre**
+- Los cambios se aplican inmediatamente a las llamadas en cola
+
+## Informes de Campaña
+
+<CardGroup cols={2}>
+  <Card title="Mapa de Calor de Tasa de Respuesta" icon="chart-line">
+    Mapa de calor semanal mostrando tasas de respuesta por hora y día. Después de 50-100 llamadas, úselo para identificar los mejores momentos para llamar y optimizar su configuración de horario comercial.
+  </Card>
+
+  <Card title="Rendimiento de Objetivos" icon="bullseye">
+    Rastree las tasas de logro de objetivos de campaña por contacto. Vea qué contactos completaron objetivos y analice patrones de éxito.
+  </Card>
+
+  <Card title="Analíticas de Contactos" icon="users">
+    Métricas por contacto que combinan todas las conversaciones, historial de estado y resultados de análisis para conocimientos integrales.
+  </Card>
+
+  <Card title="Volumen de Llamadas" icon="phone-volume">
+    Monitoree intentos de llamada, tasas de conexión y progresión de contactos a lo largo del tiempo.
+  </Card>
+</CardGroup>
+
+## Exportaciones de Contactos
+
+<AccordionGroup>
+  <Accordion title="Opciones de Exportación" icon="file-export">
+    Desde la pestaña **Contactos** o **Informes**, exporte datos de contactos con opciones de formato flexibles:
+
+    **Alcance**:
+    - **Exportar selección actual**: Solo contactos seleccionados
+    - **Exportar contactos filtrados**: Todos los contactos que coinciden con filtros activos
+    - **Exportar campaña completa**: Lista completa de contactos con todas las métricas
+
+    **Opciones de Formato**:
+    - **XLSX (recomendado)**: Formato Excel con soporte completo de formateo
+    - **CSV separado por comas**: CSV estándar con delimitadores de coma
+    - **CSV separado por punto y coma**: Formato CSV europeo para regiones que usan separadores decimales de coma
+
+    Las exportaciones incluyen detalles de contacto, estado, datos de conversación, resultados de objetivos y resultados de análisis.
+  </Accordion>
+
+  <Accordion title="Historial de Exportación" icon="clock">
+    Rastree todos los trabajos de exportación desde la pestaña **Contactos**:
+    - Ver exportaciones en progreso con actualizaciones de estado y formato de archivo
+    - Descargar archivos completados (formato mostrado: .xlsx, .csv (,), o .csv (;))
+    - Continuar trabajando mientras las exportaciones se ejecutan en segundo plano
+
+    Las exportaciones grandes se procesan en segundo plano para que pueda seguir gestionando su campaña. Cada exportación muestra su icono de formato (Excel o CSV) para identificación rápida.
+  </Accordion>
+</AccordionGroup>
+
+## Integración de Llamadas Entrantes
+
+Cuando los contactos llaman de vuelta, el sistema vincula automáticamente la llamada al contacto de campaña usando una estrategia de coincidencia de dos niveles:
+
+### Lógica de Coincidencia
+
+**Coincidencia Primaria (basada en DID)**:
+- Coincide el número de teléfono del contacto (número llamante) con el número de teléfono de la campaña (número llamado)
+- Funciona para campañas activas o pausadas
+- Método más confiable - no requiere coincidencia de agente
+
+**Coincidencia de Respaldo (basada en Agente)**:
+- Solo se activa si:
+  - No se encuentra coincidencia DID, Y
+  - El contacto tiene una llamada saliente reciente (dentro de 30 días) de cualquier campaña
+- Coincide el número de teléfono del contacto con campañas que usan el mismo agente
+- Usa el contacto de campaña actualizado más recientemente
+
+### Actualizaciones de Estado
+
+Cuando una llamada entrante coincide con un contacto de campaña en estos estados, se actualiza automáticamente a **Llamado**:
+- Reintentar → Llamado
+- Completado → Llamado
+- Sin Conversación → Llamado
+
+Esto permite que las devoluciones de llamada reabran oportunidades de contacto y continúen el flujo de trabajo de la campaña.
+
+### Beneficios
+
+- **Vinculación Automática**: No se necesita intervención manual
+- **Continuidad de Contexto**: El agente tiene acceso a todas las interacciones de campaña anteriores
+- **Actualizaciones de Estado**: El ciclo de vida del contacto se ajusta automáticamente para devoluciones de llamada
+- **Informes Unificados**: Todas las interacciones (salientes + entrantes) rastreadas juntas por contacto
+
+## Mejores Prácticas
+
+### Comenzar Pequeño
+
+<Warning>
+Comience siempre con un lote piloto de 10-20 contactos antes de escalar a miles. Esto valida la configuración y previene errores a gran escala.
+</Warning>
+
+**Flujo de trabajo piloto**:
+1. Cree una lista de prueba con contactos amigables (colegas, números de prueba)
+2. Lance la campaña y monitoree en **Conversaciones → Monitor en vivo**
+3. Revise resultados:
+   - Tasa de respuesta
+   - Precisión de AMD
+   - Tasa de logro de objetivos
+   - Duración promedio de llamada
+4. Ajuste instrucciones de agente, configuración de AMD u horario comercial según sea necesario
+5. Escale gradualmente: 50 → 200 → 1,000+ contactos
+
+### Calidad de Lista de Contactos
+
+Antes de subir contactos:
+- Elimine números duplicados
+- Valide formato de número de teléfono (E.164: +1234567890)
+- Verifique contra su lista interna de No Llamar
+- Verifique contra registros nacionales DNC si aplica
+
+### Optimización de Zona Horaria
+
+Para contactos en múltiples zonas horarias:
+1. Cree horario comercial en **Configuración → Horario Comercial** con zona horaria apropiada
+2. Asigne a campaña para que las llamadas ocurran durante horario comercial local
+3. Use el mapa de calor de tasa de respuesta para encontrar ventanas de llamada óptimas por región
+
+### Segmentación
+
+Cree campañas separadas para:
+- Diferentes segmentos de clientes (clientes de prueba vs. clientes de pago)
+- Diferentes guiones u objetivos
+- Diferentes idiomas
+- Variaciones de pruebas A/B
+
+Esto le permite rastrear rendimiento y optimizar cada segmento independientemente.
+
+## Próximos Pasos
+
+<CardGroup cols={2}>
+  <Card title="Horario Comercial" icon="clock" href="/es/launch/business-hours">
+    Configure horarios de llamadas y manejo de zona horaria
+  </Card>
+
+  <Card title="Mejores Prácticas de Producción" icon="star" href="/es/launch/production-best-practices">
+    Optimice el rendimiento de campaña y satisfacción del cliente
+  </Card>
+
+  <Card title="Analíticas e Informes" icon="chart-bar" href="/es/optimize/overview">
+    Analíticas de campaña profundas y seguimiento de conversión
+  </Card>
+</CardGroup>

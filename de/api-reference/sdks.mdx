@@ -2,6 +2,8 @@
 title: 'SDKs'
 description: 'Offizielle itellicoAI SDKs zum Erstellen von Voice-AI-Anwendungen'
 icon: 'code'
+keywords: 'itellicoAI SDK, Python SDK, TypeScript SDK, Voice AI SDK, API-Client-Bibliothek, Server SDK, itellicoai npm, itellicoai pypi'
+og:description: 'Offizielle Python- und TypeScript-SDKs für itellicoAI. Erstellen Sie Voice-AI-Anwendungen mit typsicheren Bibliotheken, vereinfachter Authentifizierung und besserer Fehlerbehandlung.'
 ---
 
 ## Server-SDKs
@@ -19,6 +21,43 @@ Erstellen Sie Backend-Integrationen mit typsicheren SDKs.
 
 ---
 
+## API-Schlüssel erhalten
+
+Bevor Sie die SDKs verwenden, benötigen Sie einen API-Schlüssel aus Ihrem itellicoAI-Dashboard.
+
+<Steps>
+  <Step title="Zum Bereich Entwickler navigieren">
+    Gehen Sie zu Ihrem [itellicoAI-Dashboard](https://app.itellico.ai) und navigieren Sie über die Seitenleiste zu **Entwickler**.
+  </Step>
+
+  <Step title="Zu API-Schlüsseln gehen">
+    Klicken Sie im Bereich Entwickler auf **API-Schlüssel**.
+  </Step>
+
+  <Step title="Schlüssel erstellen">
+    Klicken Sie auf die Schaltfläche **API-Schlüssel erstellen** in der oberen rechten Ecke.
+
+    <Frame>
+      <div className="block dark:hidden">
+        <img src="/images/light.png" alt="API-Schlüssel-Dashboard zeigt, wie ein neuer API-Schlüssel erstellt wird" />
+      </div>
+      <div className="hidden dark:block">
+        <img src="/images/dark.png" alt="API-Schlüssel-Dashboard zeigt, wie ein neuer API-Schlüssel erstellt wird" />
+      </div>
+    </Frame>
+  </Step>
+
+  <Step title="Kopieren und mit Ihrem SDK verwenden">
+    Kopieren Sie den generierten API-Schlüssel und speichern Sie ihn sicher. Verwenden Sie diesen Schlüssel bei der Initialisierung des SDK.
+  </Step>
+</Steps>
+
+<Warning>
+Geben Sie Ihren API-Schlüssel niemals weiter und committen Sie ihn nicht in die Versionskontrolle. Verwenden Sie Umgebungsvariablen, um Ihren Schlüssel sicher zu speichern.
+</Warning>
+
+---
+
 ## Warum SDKs verwenden?
 
 <CardGroup cols={2}>
@@ -30,7 +69,7 @@ Erstellen Sie Backend-Integrationen mit typsicheren SDKs.
     Integrierte API-Schlüsselverwaltung – keine manuellen Header erforderlich
   </Card>
 
-  <Card title="Bessere Fehler" icon="triangle-exclamation">
+  <Card title="Bessere Fehlerbehandlung" icon="triangle-exclamation">
     Strukturierte Exceptions für einfacheres Debugging
   </Card>
 
@@ -47,25 +86,77 @@ Erstellen Sie Backend-Integrationen mit typsicheren SDKs.
 
 <CodeGroup>
 ```python Python SDK
-from itellicoai import ItellicoAI
+from itellicoai import Itellicoai
 
-client = ItellicoAI(api_key="your-api-key")
-
-agent = client.agents.create(
-    name="Support Agent",
-    model={"provider": "azure", "model": "gpt-4o-mini"}
+# Client initialisieren
+client = Itellicoai(
+    api_key="your-api-key"
 )
+
+# Einen Agenten erstellen
+agent = client.agents.create(
+    account_id="your-account-id",
+    name="Kundensupport-Agent",
+    model={
+        "provider": "openai",
+        "model": "gpt-4o-mini"
+    },
+    voice={
+        "provider": "elevenlabs",
+        "voice_id": "EXAVITQu4vr4xnSDxMaL"
+    },
+    transcriber={
+        "provider": "deepgram",
+        "model": "nova-2:general",
+        "language": "de-DE"
+    },
+    initial_message={
+        "mode": "fixed_message",
+        "message": "Hallo! Wie kann ich Ihnen heute helfen?",
+        "delay_ms": 1000
+    },
+    max_duration_seconds=1800,
+    tags=["support", "kundenservice"]
+)
+
+print(f"Agent erstellt: {agent.id}")
 ```
 
 ```typescript TypeScript SDK
-import { ItellicoAI } from 'itellicoai';
+import { Itellicoai } from 'itellicoai';
 
-const client = new ItellicoAI({ apiKey: 'your-api-key' });
-
-const agent = await client.agents.create({
-  name: 'Support Agent',
-  model: { provider: 'azure', model: 'gpt-4o-mini' }
+// Client initialisieren
+const client = new Itellicoai({
+  apiKey: 'your-api-key',
 });
+
+// Einen Agenten erstellen
+const agent = await client.agents.create({
+  accountId: 'your-account-id',
+  name: 'Kundensupport-Agent',
+  model: {
+    provider: 'openai',
+    model: 'gpt-4o-mini',
+  },
+  voice: {
+    provider: 'elevenlabs',
+    voiceId: 'EXAVITQu4vr4xnSDxMaL',
+  },
+  transcriber: {
+    provider: 'deepgram',
+    model: 'nova-2:general',
+    language: 'de-DE',
+  },
+  initialMessage: {
+    mode: 'fixed_message',
+    message: 'Hallo! Wie kann ich Ihnen heute helfen?',
+    delayMs: 1000,
+  },
+  maxDurationSeconds: 1800,
+  tags: ['support', 'kundenservice'],
+});
+
+console.log(`Agent erstellt: ${agent.id}`);
 ```
 
 ```bash REST API
@@ -106,6 +197,18 @@ curl -X POST https://api.itellico.ai/v1/agents \
 ## Ressourcen
 
 <CardGroup cols={2}>
+  <Card title="NPM-Paket" icon="js" href="https://www.npmjs.com/package/itellicoai">
+    TypeScript SDK von NPM installieren
+  </Card>
+  <Card title="PyPI-Paket" icon="python" href="https://pypi.org/project/itellicoai/">
+    Python SDK von PyPI installieren
+  </Card>
+  <Card title="TypeScript SDK" icon="github" href="https://github.com/itellicoAI/server-sdk-typescript">
+    TypeScript SDK-Quellcode anzeigen
+  </Card>
+  <Card title="Python SDK" icon="github" href="https://github.com/itellicoAI/server-sdk-python">
+    Python SDK-Quellcode anzeigen
+  </Card>
   <Card title="REST API-Referenz" icon="book" href="/api-reference/introduction">
     Vollständige REST API-Dokumentation
   </Card>

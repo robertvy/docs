@@ -1,529 +1,82 @@
 ---
 title: "Production Best Practices"
-description: "Maintain reliability, security, and performance for production agents"
+description: "Keep your agent running smoothly in production"
 icon: "star"
+keywords: "AI agent monitoring, production maintenance, performance optimization, conversation review, knowledge base updates, agent troubleshooting, quality assurance, production deployment"
+og:description: "Best practices for maintaining AI agents in production. Monitor performance, update knowledge, handle issues, and ensure consistent quality."
 ---
 
-## Production Mindset
+Once your agent is live, a few simple habits will keep it running smoothly and delivering good results.
 
-Running AI agents in production is different from testing. Small issues amplify at scale, edge cases become common, and customers expect consistent quality 24/7. These best practices help you maintain excellence over time.
+## Monitor Performance
 
-## Operational Excellence
+Check in regularly to catch issues early:
 
-### Daily Health Checks
+**Review Conversations**: Listen to a few calls each week in **Conversations**. Check that your agent is handling calls as expected and look for patterns in failures or transfers.
 
-Establish a routine for production monitoring:
+**Check the Dashboard**: Review call volume and success rates in campaign **Dashboard**. Watch for sudden drops in answer rates or goal achievement. Use the answer rate heat map to optimize calling hours.
+
+## Keep Things Current
+
+Your agent performs best with up-to-date information:
 
 <Steps>
-  <Step title="Morning Review (5 minutes)">
-    Check overnight performance:
-    - **Error Log**: Any new errors? (`Logs → Errors`)
-    - **Success Rate**: Still >95%? (`Dashboard → Metrics`)
-    - **Unusual Patterns**: Traffic spikes, new failure modes?
-    - **Alert Review**: Any triggered alerts need investigation?
-
-    **Red Flags**:
-    - Success rate dropped >5% overnight
-    - New error type appeared (wasn't there yesterday)
-    - Support ticket volume increased
+  <Step title="Update knowledge regularly">
+    When your product, pricing, or policies change, update your agent's knowledge base immediately so it gives accurate information.
   </Step>
 
-  <Step title="Midday Spot Check (3 minutes)">
-    Sample live conversations:
-    - Open **Conversations → Live Monitor**
-    - Listen to 2-3 active calls
-    - Verify quality meets standards
-
-    **What to Listen For**:
-    - Agent response relevance
-    - Transcription accuracy
-    - Natural conversation flow
-    - Action execution success
+  <Step title="Refine instructions as needed">
+    If you notice your agent struggling with certain scenarios, update the instructions to handle them better. Test changes before deploying.
   </Step>
 
-  <Step title="End-of-Day Analysis (10 minutes)">
-    Review daily metrics:
-    - **Volume**: Total calls today vs yesterday
-    - **Goals**: Achievement rate vs baseline
-    - **Satisfaction**: CSAT score if collecting feedback
-    - **Outliers**: Any unusual conversations worth reviewing?
-
-    Document trends in a shared sheet for weekly review.
+  <Step title="Review and adjust business hours">
+    Use campaign analytics to find the best calling times, then update your business hours configuration to focus on high-performing windows.
   </Step>
 </Steps>
 
-### Weekly Deep Dives
+## Handle Issues Quickly
 
-Once a week, conduct deeper analysis:
+When something goes wrong:
 
-<Accordion title="Failure mode analysis">
-  **Process**:
-  1. Export all failed calls from past week
-  2. Categorize failures:
-     - Integration errors (API failures)
-     - Transcription errors (misheard words)
-     - Instruction issues (agent behavior wrong)
-     - Capacity issues (dropped calls)
-  3. Identify top 3 failure modes by frequency
-  4. Create action items to address each
+1. **Check recent changes**: Did you update instructions, knowledge, or integrations recently?
+2. **Review error logs**: Look in **Conversations** for failed calls and error messages
+3. **Test the flow**: Use the web test to reproduce the issue
+4. **Fix and verify**: Make the correction, then test again before considering it resolved
 
-  **Example**:
-  - Found: 15% of failures due to calendar API timeouts
-  - Action: Increase timeout from 5s → 10s, add retry logic
-  - Expected impact: Reduce failure rate by 2-3 percentage points
-</Accordion>
 
-<Accordion title="Conversation quality audit">
-  **Process**:
-  1. Randomly sample 20 conversations from the week
-  2. Rate each on quality dimensions:
-     - Greeting quality (1-5)
-     - Response accuracy (1-5)
-     - Natural flow (1-5)
-     - Goal achievement (binary)
-     - Overall experience (1-5)
-  3. Calculate average scores
-  4. Compare to previous week
-  5. Review lowest-scored conversations to find improvement opportunities
-
-  **Benchmark Targets**:
-  - Response accuracy: >4.0/5.0
-  - Natural flow: >3.5/5.0
-  - Goal achievement: >60%
-  - Overall experience: >4.0/5.0
-</Accordion>
-
-<Accordion title="Cost optimization review">
-  **Metrics to Track**:
-  - Cost per call (total monthly cost / # calls)
-  - Cost per successful outcome (cost / # goals achieved)
-  - Model costs (LLM API usage)
-  - Telephony costs (minute usage)
-  - Infrastructure costs (the voice infrastructure, storage)
-
-  **Optimization Tactics**:
-  - Switch to cheaper model for simple calls (GPT-4 → GPT-3.5 for FAQ)
-  - Reduce context window size (shorter prompts)
-  - Enable AMD to avoid long voicemail charges
-  - Compress recordings (lower bitrate for storage)
-
-  **ROI Calculation**:
-  If agent handles 10,000 calls/month at $1.50/call = $15,000
-  If saves 80% human time (was $5/call) = $50,000 saved
-  Net benefit: $35,000/month
-</Accordion>
-
-## Security & Compliance
-
-### Data Protection
+## Simple Success Habits
 
 <AccordionGroup>
-  <Accordion title="PII handling">
-    **Best Practices**:
-    - Enable PII masking for credit cards, SSNs in transcripts
-    - Disable recording for payment/health information flows
-    - Set automatic transcript deletion after 90 days (GDPR right to erasure)
-    - Encrypt recordings at rest (enable in Settings → Security)
-
-    **Configuration**:
-    ```json
-    // Agent security settings
-    {
-      "pii_masking": {
-        "enabled": true,
-        "patterns": ["credit_card", "ssn", "phone", "email"]
-      },
-      "recording": {
-        "enabled": true,
-        "exclude_patterns": ["payment", "ssn", "password"]
-      },
-      "retention": {
-        "transcripts_days": 90,
-        "recordings_days": 30
-      }
-    }
-    ```
+  <Accordion title="Listen to calls weekly">
+    Pick 5-10 random conversations each week and listen to them. This keeps you connected to how customers experience your agent and helps you spot improvement opportunities.
   </Accordion>
 
-  <Accordion title="Access control">
-    **Principle of Least Privilege**:
-    - Developers: Read-only access to production logs
-    - Admins: Full access to agents and configuration
-    - Support: Access to conversation logs only
-    - Auditors: Read-only access to audit logs
-
-    **Implementation**:
-    - Use **Accounts → Team Management** to assign roles
-    - Enable 2FA for admin accounts
-    - Audit access logs monthly for suspicious activity
-    - Rotate API keys every 90 days
+  <Accordion title="Track what matters">
+    Focus on metrics that tie to business outcomes:
+    - Answer rate (are people picking up?)
+    - Goal achievement (is your agent succeeding?)
+    - Call volume trends (usage growing or declining?)
   </Accordion>
 
-  <Accordion title="Compliance tracking">
-    For regulated industries (healthcare, finance):
+  <Accordion title="Test before deploying changes">
+    Always test instruction or knowledge changes in the web simulator before updating your production agent. Small changes can have unexpected effects.
+  </Accordion>
 
-    **HIPAA Compliance**:
-    - Enable encryption in transit and at rest
-    - Sign Business Associate Agreement (BAA) with itellicoAI
-    - Disable third-party model providers that aren't BAA-covered
-    - Implement access logs and audit trails
-
-    **PCI DSS Compliance** (payment cards):
-    - Never log full card numbers (use tokenization)
-    - Disable recording during payment collection
-    - Use DTMF input for card entry (not voice)
-    - Integrate with PCI-compliant payment gateways only
-
-    **SOC 2 / ISO 27001**:
-    - Review itellicoAI's security certifications (Trust Center)
-    - Implement change management for agent updates
-    - Document incident response procedures
-    - Conduct annual security audits
+  <Accordion title="Keep contact lists clean">
+    Remove numbers that consistently fail or are on do-not-call lists. This improves campaign performance and keeps you compliant.
   </Accordion>
 </AccordionGroup>
 
-### Incident Response
-
-Prepare for security incidents:
-
-<Steps>
-  <Step title="Detection">
-    Set up alerts for:
-    - Unusual data access patterns (mass export of transcripts)
-    - Failed authentication attempts >5 in 15 minutes
-    - API key usage from unexpected IP addresses
-    - Agent behavior changes (sudden spike in certain responses)
-  </Step>
-
-  <Step title="Containment">
-    If incident detected:
-    1. Disable affected agent immediately
-    2. Revoke compromised API keys
-    3. Block suspicious IP addresses
-    4. Preserve logs for forensic analysis
-  </Step>
-
-  <Step title="Investigation">
-    - Review access logs to identify breach scope
-    - Check conversation logs for data exfiltration
-    - Identify root cause (stolen keys, social engineering, vulnerability)
-    - Document timeline and impact
-  </Step>
-
-  <Step title="Recovery & Communication">
-    - Patch vulnerability and re-enable agent
-    - Notify affected customers if PII exposed (GDPR requirement)
-    - File incident report internally
-    - Update security procedures to prevent recurrence
-  </Step>
-</Steps>
-
-## Performance Optimization
-
-### Latency Reduction
-
-Target: Agent responds in &lt;500ms for best customer experience
-
-<Tabs>
-  <Tab title="Model Selection">
-    **Optimization**:
-    - Use faster models for simple tasks (GPT-3.5 Turbo, Claude Instant)
-    - Reserve GPT-4/Claude Opus for complex reasoning
-    - Enable model caching for repeated context
-
-    **Latency Benchmarks**:
-    - GPT-3.5 Turbo: 200-400ms
-    - GPT-4: 500-800ms
-    - Claude Instant: 300-500ms
-    - Claude Opus: 600-1000ms
-
-    **A/B Test**: Try faster model for 50% of calls, measure goal achievement impact
-  </Tab>
-
-  <Tab title="Prompt Engineering">
-    **Tactics**:
-    - Reduce instruction length (shorter prompts = faster processing)
-    - Front-load critical info (put important context first)
-    - Remove redundant examples
-    - Use structured output formats (JSON) for faster parsing
-
-    **Before** (150 words):
-    ```
-    You are a customer service agent for Acme Corp...
-    [long detailed instructions]
-    ```
-
-    **After** (75 words):
-    ```
-    Acme Corp support agent. Be concise and helpful.
-    Key rules: [bullet points]
-    ```
-
-    Result: Latency reduced ~100ms
-  </Tab>
-
-  <Tab title="Knowledge Base Optimization">
-    **Improvements**:
-    - Chunk documents into smaller pieces (512 tokens max)
-    - Increase retrieval speed with better indexing
-    - Reduce # of retrieved chunks (5 → 3)
-    - Pre-cache frequently accessed content
-
-    **Configuration**:
-    ```json
-    {
-      "knowledge_retrieval": {
-        "max_chunks": 3,
-        "chunk_size": 512,
-        "cache_top_queries": true
-      }
-    }
-    ```
-
-    Impact: 50-100ms faster retrieval
-  </Tab>
-
-  <Tab title="Infrastructure">
-    **Advanced Options** (Enterprise only):
-    - Dedicated model endpoints (no cold starts)
-    - Regional routing (route to nearest data center)
-    - Edge caching for static responses
-    - CDN for audio file delivery
-
-    Contact support to enable.
-  </Tab>
-</Tabs>
-
-### Call Quality Optimization
-
-Target: >95% call completion, &lt;2% error rate
-
-<CardGroup cols={2}>
-  <Card title="Audio Quality" icon="volume">
-    **Issues**:
-    - Echo, background noise, choppy audio
-
-    **Solutions**:
-    - Enable echo cancellation (AEC) and noise suppression
-    - Use high-quality SIP codecs (Opus > G.711)
-    - Increase network bandwidth allocation
-    - Test with different carriers for best audio
-  </Card>
-
-  <Card title="Interruption Handling" icon="hand">
-    **Issues**:
-    - Agent talks over customer, doesn't detect interruptions
-
-    **Solutions**:
-    - Tune VAD (Voice Activity Detection) sensitivity
-    - Reduce agent verbosity (shorter responses = less overlap)
-    - Enable smart endpointing
-    - Test interruption scenarios in QA
-  </Card>
-
-  <Card title="Transcription Accuracy" icon="closed-captioning">
-    **Issues**:
-    - Misheard words, names, technical terms
-
-    **Solutions**:
-    - Add custom vocabulary (Settings → Transcriber)
-    - Switch transcriber (Deepgram vs Azure vs Whisper)
-    - Use higher quality audio input
-    - Train on accents/dialects common in your traffic
-  </Card>
-
-  <Card title="Context Preservation" icon="memory">
-    **Issues**:
-    - Agent forgets earlier conversation, asks same question twice
-
-    **Solutions**:
-    - Increase context window size
-    - Implement conversation summarization
-    - Store key facts in structured data
-    - Use resumption features for multi-turn flows
-  </Card>
-</CardGroup>
-
-## Maintenance & Updates
-
-### Agent Update Workflow
-
-Safe procedure for updating production agents:
-
-<Steps>
-  <Step title="Test new version">
-    1. Clone production agent to "Agent v2 (staging)"
-    2. Apply changes (instructions, voice, actions)
-    3. Run full test suite in Test mode
-    4. Have 3+ team members QA test
-  </Step>
-
-  <Step title="Gradual rollout">
-    1. Deploy v2 to 10% of traffic
-    2. Monitor for 24 hours
-    3. Compare metrics: v1 vs v2
-    4. If stable and equal/better metrics, increase to 50%
-    5. Monitor 48 hours, then 100%
-  </Step>
-
-  <Step title="Post-deployment validation">
-    1. Watch first 100 calls on v2 closely
-    2. Sample transcripts for quality
-    3. Check goal achievement maintained
-    4. Archive v1 as rollback option
-  </Step>
-</Steps>
-
-**Update Cadence**:
-- **Minor tweaks** (voice speed, greeting): Weekly
-- **Instruction changes**: Bi-weekly
-- **Action/integration changes**: Monthly (requires more testing)
-- **Major overhauls**: Quarterly
-
-### Dependency Management
-
-Keep integrations healthy:
-
-<Accordion title="API monitoring">
-  Track external API health:
-  - Calendar APIs (Calendly, Google Calendar)
-  - CRM APIs (Salesforce, HubSpot)
-  - Payment APIs (Stripe)
-  - Custom endpoints
-
-  **Proactive Monitoring**:
-  - Set up uptime checks for critical endpoints
-  - Alert if response time >1s or error rate >5%
-  - Have fallback behavior (e.g., "I'll have someone call you back")
-
-  **Dashboard**: Use **Analytics → Integrations** to see success rates per API
-</Accordion>
-
-<Accordion title="Model provider management">
-  Hedge against provider outages:
-
-  **Multi-Provider Strategy**:
-  - Primary: GPT-4 for most calls
-  - Fallback: Claude if OpenAI down
-  - Automatic failover in &lt;30 seconds
-
-  **Configuration**:
-  ```json
-  {
-    "model": {
-      "primary": "gpt-4",
-      "fallback": "claude-3-opus",
-      "failover_threshold_ms": 3000
-    }
-  }
-  ```
-
-  **Monitor**:
-  - Check provider status pages (status.openai.com, status.anthropic.com)
-  - Subscribe to status notifications
-  - Test fallback quarterly
-</Accordion>
-
-<Accordion title="Knowledge base refresh">
-  Keep knowledge current:
-
-  **Frequency**:
-  - Product docs: Update within 24 hours of changes
-  - Pricing: Update immediately when changed
-  - FAQ: Review monthly, update as questions evolve
-  - Policies: Update immediately for legal/compliance
-
-  **Process**:
-  1. Document owner reviews content monthly
-  2. Updates pushed to KB via API or dashboard
-  3. Test retrieval with sample queries
-  4. Monitor for "I don't know" responses (indicates missing KB coverage)
-
-  **Automation**:
-  - Sync from CMS via webhook
-  - Pull from GitHub docs repo
-  - Auto-import from help desk articles
-</Accordion>
-
-## Continuous Improvement
-
-### Feedback Loops
-
-<CardGroup cols={2}>
-  <Card title="Customer Feedback" icon="comment">
-    Collect structured feedback:
-    - Post-call CSAT survey (1-5 rating)
-    - Optional comment field
-    - Track over time in Analytics → Satisfaction
-
-    **Action on Feedback**:
-    - Review all 1-2 star ratings
-    - Identify themes (agent too slow, didn't understand, etc.)
-    - Prioritize fixes by frequency
-    - Close the loop: notify customers when fixed
-  </Card>
-
-  <Card title="Support Team Feedback" icon="headset">
-    Your support team sees escalations:
-    - Weekly sync to discuss common agent failures
-    - Log "agent should have handled this" cases
-    - Capture training opportunities
-
-    **Process**:
-    - Support logs issue in ticket with tag `agent-feedback`
-    - AI team reviews monthly
-    - Top issues become Q4 roadmap items
-  </Card>
-
-  <Card title="Analytics-Driven Insights" icon="chart-line">
-    Use data to find improvements:
-    - Calls with >5 turns often indicate confusion → Simplify instructions
-    - High transfer rate on specific topic → Add KB content
-    - Low goal achievement 8pm-10pm → Adjust evening greeting
-
-    Review **Analytics → Insights** for auto-detected patterns
-  </Card>
-
-  <Card title="A/B Testing Cadence" icon="flask">
-    Always be testing:
-    - Run 1-2 A/B tests per month
-    - Test prompts, voices, models, flows
-    - Let tests run 1-2 weeks (need statistical significance)
-    - Roll out winners, archive losers
-
-    Keep a testing backlog prioritized by expected impact
-  </Card>
-</CardGroup>
-
-### Quarterly Business Reviews
-
-Every 3 months, present to stakeholders:
-
-**Metrics**:
-- Total calls handled this quarter
-- Cost savings vs human baseline
-- Goal achievement trends
-- Customer satisfaction scores
-- Top improvements shipped
-
-**Highlights**:
-- Success stories (specific calls where agent excelled)
-- Challenges overcome
-- Lessons learned
-
-**Roadmap**:
-- Next quarter priorities
-- New features to test
-- Expansion plans (new use cases, markets)
+## When to Get Help
+
+Contact support if you experience:
+- Consistent call failures or audio quality issues
+- Sudden performance drops you can't explain
+- Questions about scaling or advanced features
+- Integration problems with external systems
 
 ## Next Steps
 
-<CardGroup cols={2}>
-  <Card title="Troubleshooting Guide" icon="wrench" href="/launch/troubleshooting-deployment">
-    Debug issues when they arise in production
-  </Card>
-
-  <Card title="Optimize Overview" icon="gauge-high" href="/optimize/overview">
-    Advanced optimization techniques for mature deployments
-  </Card>
-</CardGroup>
+<Card title="Optimize" icon="gauge-high" href="/optimize/overview">
+  Improve performance and results over time
+</Card>

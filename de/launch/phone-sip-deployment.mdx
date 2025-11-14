@@ -1,0 +1,173 @@
+---
+title: "Telefon & SIP-Bereitstellung"
+description: "Verbinden Sie Ihren Agenten mit Telefonnummern und SIP-Trunks für Live-Anrufbearbeitung"
+icon: "phone-volume"
+keywords: "SIP-Bereitstellung, Telefon-Deployment, SIP-Trunk, Telefonie-Integration"
+og:description: "Stellen Sie Ihren Agent über SIP-Trunking bereit. Kompletter Leitfaden zur Telefonie-Integration."
+---
+
+## Bereitstellungsübersicht
+
+Die Telefonbereitstellung leitet Live-PSTN-Anrufe durch Ihren getesteten Agenten unter Verwendung eines **Bring Your Own Carrier (BYOC)**-Ansatzes. Sie importieren Ihre bestehenden Telefonnummern und verbinden sie mit Ihrem Anbieter über SIP-Trunks.
+
+**Einrichtungsprozess:**
+1. Konfigurieren Sie Ihren SIP-Trunk mit Anbieter-Zugangsdaten
+2. Importieren Sie Ihre Telefonnummern und verknüpfen Sie sie mit dem Trunk
+3. Weisen Sie Agenten zu, um eingehende Anrufe zu bearbeiten
+4. Testen Sie die Verbindung
+
+Alle Konfigurationen verwenden denselben Echtzeit-Anruf-Stack, den der Testmodus verwendet, was konsistentes Verhalten gewährleistet.
+
+## Eingehende Telefonbereitstellung
+
+### Schritt 1: SIP-Trunk konfigurieren
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/sip/inbound-sip-light.png" alt="Dialog zum Erstellen eines SIP-Trunks mit SIP-Trunk-Name-Feld mit Platzhaltertext, Eingehende Anrufe und Ausgehende Anrufe-Tabs mit Eingehend ausgewählt, Eingehende URI-Konfiguration mit SIP-Anbieter-Weiterleitungsadresse, IP-Sicherheit optionales Feld zur Einschränkung von IP-Adressen, Support kontaktieren-Link, Abbrechen- und SIP-Trunk erstellen-Schaltflächen" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/sip/inbound-sip-dark.png" alt="Dialog zum Erstellen eines SIP-Trunks mit SIP-Trunk-Name-Feld mit Platzhaltertext, Eingehende Anrufe und Ausgehende Anrufe-Tabs mit Eingehend ausgewählt, Eingehende URI-Konfiguration mit SIP-Anbieter-Weiterleitungsadresse, IP-Sicherheit optionales Feld zur Einschränkung von IP-Adressen, Support kontaktieren-Link, Abbrechen- und SIP-Trunk erstellen-Schaltflächen" />
+  </div>
+</Frame>
+
+<br />
+
+<Accordion title="SIP-Trunk-Konfiguration">
+  1. Navigieren Sie zu **Telefonie → SIP-Trunks** und klicken Sie auf **+ Trunk hinzufügen**
+  2. Konfigurieren Sie Ihren Anbieter, um Anrufe an itellicoAIs SIP-Endpunkt zu senden:
+     - **Ziel-SIP-URI**: `sip:50ebbp4vhpr.sip.livekit.cloud`
+     - **Port**: 5060 (UDP) oder 5061 (TLS)
+     - **Codec**: Opus, PCMU oder PCMA
+  3. Erstellen Sie im itellicoAI-Dashboard einen Trunk mit:
+     - **Trunk-Name**: Ein beschreibender Name für Ihren Anbieter
+     - **Erlaubte IPs** (optional): Auf die IP-Bereiche Ihres Anbieters beschränken für Sicherheit
+  4. **Agent zuweisen**: Wählen Sie aus, welcher Agent Anrufe von diesem Trunk bearbeitet
+  5. **Testen**: Führen Sie einen Testanruf über Ihren Anbieter durch, um das Routing zu überprüfen
+</Accordion>
+
+<Accordion title="Anbieter-Kompatibilität">
+  Getestete Anbieter umfassen:
+  - Twilio Elastic SIP Trunking
+  - Vonage (ehemals Nexmo)
+  - Bandwidth
+  - Telnyx
+  - Die meisten Standard-SIP-Anbieter
+
+  **Anforderungen**:
+  - Unterstützung für Opus- oder PCMU/PCMA-Codecs
+  - DTMF über RFC 2833 (für Tastatureingabe)
+  - Reinvite-Unterstützung für Weiterleitungen
+</Accordion>
+
+### Schritt 2: Telefonnummern importieren
+
+Sobald Ihr SIP-Trunk konfiguriert ist, importieren Sie Ihre bestehenden Telefonnummern:
+
+<Steps>
+  <Step title="Zu Telefonnummern navigieren">
+    Gehen Sie zu **Telefonie → Telefonnummern** und klicken Sie auf **Nummer importieren**
+  </Step>
+
+  <Step title="Nummerndetails konfigurieren">
+    Angeben:
+    - **Telefonnummer**: E.164-Format (z.B. `+14155552671`)
+    - **Freundlicher Name**: Optionales Label (z.B. "Support-Leitung")
+    - **SIP-Trunk**: Wählen Sie den in Schritt 1 konfigurierten Trunk
+    - **Eingehender Agent**: Optional jetzt einen Agenten zuweisen (oder später)
+  </Step>
+
+  <Step title="Speichern und überprüfen">
+    Klicken Sie auf **Speichern**, um die Nummer zu importieren. Die Nummer ist jetzt mit Ihrem SIP-Trunk verknüpft und bereit für eingehende Anrufe.
+  </Step>
+</Steps>
+
+### Schritt 3: Agenten zu Nummern zuweisen
+
+<Steps>
+  <Step title="Telefonnummern-Liste öffnen">
+    Gehen Sie zu **Telefonie → Telefonnummern**, um alle importierten Nummern zu sehen
+  </Step>
+
+  <Step title="Agent zuweisen oder aktualisieren">
+    Verwenden Sie die Inline-Agenten-Auswahl, um auszuwählen, welcher Agent Anrufe an diese Nummer beantworten soll
+  </Step>
+
+  <Step title="Anbieter-Weiterleitung konfigurieren und testen">
+    Konfigurieren Sie Ihren Anbieter, um Anrufe an die **Eingehende URI** weiterzuleiten, die auf Ihrem SIP-Trunk angezeigt wird (unter **Telefonie → SIP-Trunks**). Sobald die Anbieter-Weiterleitung aktiv ist, rufen Sie die Nummer von Ihrem Telefon an, um zu testen. Der Agent sollte mit der von Ihnen konfigurierten Begrüßung antworten. Überprüfen Sie Anrufprotokolle unter **Gespräche**, um den korrekten Anruffluss zu verifizieren.
+  </Step>
+</Steps>
+
+<Accordion title="Fehlerbehebung beim Anruf-Routing">
+  Wenn Anrufe Ihren Agenten nicht erreichen:
+
+  - **SIP-URI überprüfen**: Stellen Sie sicher, dass Ihr Anbieter Anrufe an `sip:50ebbp4vhpr.sip.livekit.cloud` sendet
+  - **Codec-Unterstützung prüfen**: Überprüfen Sie, ob Ihr Anbieter Opus, PCMU oder PCMA unterstützt
+  - **Firewall-Regeln**: Stellen Sie sicher, dass Ihr Anbieter den LiveKit-SIP-Endpunkt erreichen kann
+  - **Protokolle**: Prüfen Sie **Gespräche → Protokolle** oder Ihr Anbieter-Portal auf SIP-Fehlercodes
+
+  Häufige Probleme:
+  - `404 Not Found`: Falsche SIP-URI-Konfiguration
+  - `488 Not Acceptable Here`: Codec-Inkompatibilität (Opus/PCMU/PCMA beim Anbieter aktivieren)
+  - `503 Service Unavailable`: Vorübergehendes Verbindungsproblem
+</Accordion>
+
+## Ausgehende Telefonbereitstellung
+
+### Ausgehenden SIP-Trunk konfigurieren
+
+Für ausgehende Anrufe über Ihren eigenen Anbieter (Kampagnen, proaktive Anrufe) konfigurieren Sie den ausgehenden SIP-Trunk mit Authentifizierung:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/sip/outbound-sip-light.png" alt="Dialog zum Erstellen eines SIP-Trunks mit SIP-Trunk-Name-Feld, Eingehende Anrufe und Ausgehende Anrufe-Tabs mit Ausgehend ausgewählt, Authentifizierungs-Empfehlungsbereich, Anbieter-Domain-Feld mit example.com:5060 Platzhalter, Benutzername-Feld für SIP-Authentifizierung, Passwort-Feld für SIP-Authentifizierung, Support kontaktieren-Link, Abbrechen- und SIP-Trunk erstellen-Schaltflächen" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/sip/outbound-sip-dark.png" alt="Dialog zum Erstellen eines SIP-Trunks mit SIP-Trunk-Name-Feld, Eingehende Anrufe und Ausgehende Anrufe-Tabs mit Ausgehend ausgewählt, Authentifizierungs-Empfehlungsbereich, Anbieter-Domain-Feld mit example.com:5060 Platzhalter, Benutzername-Feld für SIP-Authentifizierung, Passwort-Feld für SIP-Authentifizierung, Support kontaktieren-Link, Abbrechen- und SIP-Trunk erstellen-Schaltflächen" />
+  </div>
+</Frame>
+
+<br />
+
+<Accordion title="Ausgehende SIP-Konfiguration">
+  1. Navigieren Sie zu **Telefonie → SIP-Trunks** und klicken Sie auf **+ Trunk hinzufügen**
+  2. Wechseln Sie zum Tab **Ausgehende Anrufe**
+  3. Konfigurieren Sie die Authentifizierung für Ihren Anbieter:
+     - **Anbieter-Domain**: Die SIP-Domain Ihres Anbieters (z.B. `sip.example.com:5060`)
+     - **Benutzername**: SIP-Authentifizierungs-Benutzername von Ihrem Anbieter
+     - **Passwort**: SIP-Authentifizierungs-Passwort von Ihrem Anbieter
+  4. **Speichern** Sie die Trunk-Konfiguration
+  5. **Kampagnen zuweisen**: Verwenden Sie diesen Trunk beim Erstellen ausgehender Kampagnen
+
+  <Note>
+  Wir empfehlen dringend die Verwendung von Benutzername/Passwort-Authentifizierung für ausgehende Anrufe. IP-basierte Authentifizierung wird nicht standardmäßig unterstützt, kann aber implementiert werden. Kontaktieren Sie den Support bei Bedarf.
+  </Note>
+</Accordion>
+
+<Accordion title="Anwendungsfälle für ausgehende Anrufe">
+  **Automatisierte Kampagnen**:
+  - Vertriebsakquise und Lead-Qualifizierung
+  - Terminerinnerungen
+  - Zahlungserinnerungen
+  - Umfrageanrufe
+
+  **Proaktive Benachrichtigungen**:
+  - Bestellstatus-Updates
+  - Lieferbenachrichtigungen
+  - Service-Warnungen
+  - Nachfolgeanrufe
+
+  Siehe [Kampagnenstart](/launch/campaign-outbound-launch) für detaillierte Einrichtung ausgehender Kampagnen.
+</Accordion>
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Kampagnenstart" icon="bullhorn" href="/launch/campaign-outbound-launch">
+    Automatisierte ausgehende Anrufkampagnen einrichten
+  </Card>
+
+  <Card title="Produktions-Best Practices" icon="star" href="/launch/production-best-practices">
+    Für Zuverlässigkeit und Kundenzufriedenheit optimieren
+  </Card>
+</CardGroup>
