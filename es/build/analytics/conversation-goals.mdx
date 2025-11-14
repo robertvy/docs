@@ -1,0 +1,288 @@
+---
+title: "Objetivos de conversación"
+description: "Define y rastrea objetivos medibles para cada conversación"
+icon: "bullseye"
+"keywords": "objetivos de conversación, métricas IA, seguimiento de éxito, objetivos de conversación, seguimiento de objetivos, analítica IA, medición de rendimiento"
+"og:description": "Define y rastrea objetivos de conversación medibles para medir el éxito del agente IA y optimizar el rendimiento."
+---
+
+## Descripción general
+
+Los objetivos de conversación son métricas opcionales que te ayudan a medir el éxito. Define qué resultados son importantes para ti, y la IA analizará cada transcripción de conversación para determinar si se lograron esos objetivos. Esto permite informes de rendimiento, seguimiento de tasas de éxito y optimización basada en datos.
+
+<Warning>
+**Los objetivos son solo para informes.** El agente no conoce los objetivos durante la conversación. Los objetivos son evaluados por la IA después de que termina la llamada analizando la transcripción.
+
+Para guiar el comportamiento del agente durante las llamadas, define lo que quieres que el agente logre en tus [instrucciones del agente](/build/conversation/instructions).
+</Warning>
+
+**Acceso:** Configuración del agente → **Analytics → Objetivos**
+
+---
+
+## Configuración
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/goals/goals-light.png" alt="Interfaz de configuración de objetivos mostrando barra lateral de navegación con sección Analytics expandida y Objetivos seleccionado, pestaña Objetivo Principal mostrando un objetivo 'Llamadas Recibidas' con ID de objetivo 'received-calls' e iconos editar/eliminar, pestaña Objetivos Secundarios mostrando 0 objetivos, y botón Agregar Objetivo en la esquina superior derecha" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/goals/goals-dark.png" alt="Interfaz de configuración de objetivos mostrando barra lateral de navegación con sección Analytics expandida y Objetivos seleccionado, pestaña Objetivo Principal mostrando un objetivo 'Llamadas Recibidas' con ID de objetivo 'received-calls' e iconos editar/eliminar, pestaña Objetivos Secundarios mostrando 0 objetivos, y botón Agregar Objetivo en la esquina superior derecha" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Acceder a objetivos">
+    Configuración del agente → **Analytics → Objetivos** → **Agregar objetivo**
+  </Step>
+
+  <Step title="Elegir tipo de objetivo (opcional)">
+    **Objetivo principal:** Tu métrica de éxito principal
+    - El resultado más importante a medir para este agente
+    - Utilizado para calcular la tasa de éxito general de conversaciones
+    - Ejemplo: "Cita reservada"
+
+    **Objetivos secundarios:** Métricas adicionales
+    - Rastrea resultados adicionales sin afectar la tasa de éxito principal
+    - Mide el valor adicional entregado
+    - Ejemplo: "Correo electrónico recopilado"
+  </Step>
+
+  <Step title="Configurar objetivo">
+    **Nombre:** Etiqueta clara y concisa
+    ```
+    Ejemplo: "Reunión de seguimiento programada"
+    ```
+
+    **Descripción:** Cómo se ve el éxito (sé lo más específico posible - la IA usa esto para evaluar)
+    ```
+    Ejemplo: "Se programó exitosamente una reunión de seguimiento con
+    fecha, hora y lista de asistentes confirmadas. El cliente aceptó
+    la hora programada y recibió confirmación."
+    ```
+
+    <Tip>
+    Descripciones más específicas = evaluación de objetivos más precisa
+    </Tip>
+  </Step>
+
+  <Step title="Guardar">
+    El objetivo ahora se rastrea para todas las conversaciones futuras
+  </Step>
+</Steps>
+
+---
+
+## Objetivos principales vs secundarios
+
+<Tabs>
+  <Tab title="Objetivo principal">
+    **Opcional.** Elige el resultado más importante a medir.
+
+    <Info>
+    **¿Por qué solo un objetivo principal?** Tener un objetivo principal define tu métrica de éxito principal. Las conversaciones se consideran exitosas si se logra el objetivo principal, haciendo que tu panel de análisis sea más fácil de interpretar.
+    </Info>
+
+    **Ejemplos:**
+    - 📅 Cita reservada
+    - ✅ Lead calificado
+    - 🔧 Problema resuelto
+    - 💳 Pago recopilado
+    - 📞 Devolución de llamada programada
+
+    **Informes:**
+    - Utilizado para calcular la tasa de éxito general
+    - Métrica principal en el panel de análisis
+    - Determina si la conversación fue exitosa
+  </Tab>
+
+  <Tab title="Objetivos secundarios">
+    **Opcional. Múltiples permitidos.** Resultados adicionales a rastrear.
+
+    **Ejemplos:**
+    - 📧 Correo electrónico recopilado
+    - ⭐ Comentarios recopilados
+    - 💰 Oportunidad de venta adicional identificada
+    - 📝 Información de contacto actualizada
+    - ✓ Preferencias confirmadas
+
+    **Informes:**
+    - Rastreado separadamente del objetivo principal
+    - No afecta la tasa de éxito general
+    - Mide el valor adicional entregado
+  </Tab>
+</Tabs>
+
+---
+
+## Ejemplos
+
+<AccordionGroup>
+  <Accordion title="Reserva de cita" icon="calendar">
+    **Objetivo principal:**
+    - Nombre: "Cita reservada"
+    - Descripción: "Se programó exitosamente una cita con fecha, hora, tipo de servicio e información de contacto confirmados"
+
+    **Objetivo secundario:**
+    - Nombre: "Correo electrónico recopilado"
+    - Descripción: "El cliente proporcionó su dirección de correo electrónico para recordatorios de cita"
+  </Accordion>
+
+  <Accordion title="Calificación de lead" icon="filter">
+    **Objetivo principal:**
+    - Nombre: "Lead calificado"
+    - Descripción: "El lead cumple con los criterios de calificación con presupuesto confirmado, cronograma, estado de tomador de decisiones y puntos de dolor identificados"
+
+    **Objetivo secundario:**
+    - Nombre: "Demo programada"
+    - Descripción: "Se reservó exitosamente una demostración de producto con el lead calificado"
+  </Accordion>
+
+  <Accordion title="Soporte al cliente" icon="headset">
+    **Objetivo principal:**
+    - Nombre: "Problema resuelto"
+    - Descripción: "El problema del cliente fue abordado y la resolución confirmada a su satisfacción"
+
+    **Objetivo secundario:**
+    - Nombre: "Comentarios recopilados"
+    - Descripción: "El cliente proporcionó una calificación de retroalimentación o sugerencias de mejora"
+  </Accordion>
+
+  <Accordion title="Recopilación de información" icon="clipboard-list">
+    **Objetivo principal:**
+    - Nombre: "Requisitos recopilados"
+    - Descripción: "Requisitos completos del proyecto recopilados incluyendo alcance, presupuesto, cronograma y proceso de decisión"
+
+    **Objetivo secundario:**
+    - Nombre: "Urgencia identificada"
+    - Descripción: "Se determinó el nivel de urgencia del proyecto y la fecha ideal de inicio"
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Visualización de resultados
+
+### Conversaciones individuales
+
+Ver el estado de los objetivos para cada llamada:
+
+1. Ir a **Conversaciones**
+2. Hacer clic en una conversación
+3. Ver la sección **Objetivos**
+4. Ver qué objetivos se lograron (logrado, parcialmente logrado, o no logrado)
+
+### Panel de control
+
+Ver métricas de objetivos en todas las conversaciones:
+
+Ir al **Panel de control** para ver tasas de finalización de objetivos y tendencias de rendimiento.
+
+[Más información sobre el Panel de control →](/optimize/analytics-dashboard)
+
+---
+
+## Mejores prácticas
+
+<AccordionGroup>
+  <Accordion title="Escribir descripciones claras" icon="pen">
+    La IA usa tu descripción para evaluar la finalización del objetivo.
+
+    ❌ Vago: "Obtener información del cliente"
+
+    ✅ Claro: "Recopilar nombre completo del cliente, dirección de correo electrónico, número de teléfono y motivo de consulta"
+  </Accordion>
+
+  <Accordion title="Comenzar con un objetivo principal" icon="bullseye">
+    No intentes lograr demasiado en una sola llamada.
+
+    ✅ Enfoque: Un objetivo principal claro
+
+    ❌ Sobrecarga: Múltiples objetivos principales en competencia
+  </Accordion>
+
+  <Accordion title="Usar objetivos secundarios estratégicamente" icon="list">
+    Los objetivos secundarios rastrean valor adicional más allá de tu métrica principal.
+
+    **Ejemplos:**
+    - Principal: "Cita reservada" + Secundario: "Correo electrónico recopilado"
+    - Principal: "Problema resuelto" + Secundario: "Comentarios recopilados"
+    - Principal: "Lead calificado" + Secundario: "Demo programada"
+  </Accordion>
+
+  <Accordion title="Archivar objetivos obsoletos" icon="folder">
+    Archiva objetivos antiguos para mantenerlos fuera del camino mientras preservas datos históricos.
+
+    **Para archivar:** Hacer clic en el icono de archivo junto al objetivo
+
+    **Para restaurar:** Hacer clic en "Ver archivados" → Restaurar
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Consejos
+
+- **Alinear instrucciones con objetivos** - Aunque el agente no ve los objetivos durante las llamadas, escribe las instrucciones de tu agente para guiar las conversaciones hacia el logro de tus objetivos definidos
+- **Revisar regularmente** - Verificar las tasas de logro de objetivos semanalmente para identificar oportunidades de optimización
+- **Refinar definiciones** - Ajustar descripciones de objetivos si la evaluación de la IA no coincide con tus expectativas
+- **Combinar con análisis** - Usar [Análisis post-llamada](/build/analytics/post-call-analysis) para calificación de calidad detallada
+
+---
+
+## Solución de problemas
+
+<AccordionGroup>
+  <Accordion title="Los objetivos no se muestran en las conversaciones" icon="eye-slash">
+    **Causas:**
+    - Objetivos creados después de que ocurrieran las conversaciones
+    - Objetivos archivados
+
+    **Soluciones:**
+    - Los objetivos solo se aplican a nuevas conversaciones después de la creación
+    - Verificar objetivos archivados (hacer clic en "Ver archivados")
+  </Accordion>
+
+  <Accordion title="Evaluación de objetivo inexacta" icon="triangle-exclamation">
+    **Causas:**
+    - Descripción de objetivo vaga
+    - La descripción no coincide con los criterios de éxito reales
+
+    **Soluciones:**
+    - Hacer la descripción más específica y detallada
+    - Proporcionar criterios de éxito claros
+    - Probar con algunas llamadas y refinar
+  </Accordion>
+
+  <Accordion title="Tasas de logro bajas" icon="chart-column">
+    **Causas:**
+    - Objetivo demasiado ambicioso para el tipo de conversación
+    - Las instrucciones del agente no se alinean con el objetivo
+    - Descripción del objetivo no lo suficientemente específica
+
+    **Soluciones:**
+    - Revisar si el objetivo es realista para tu caso de uso
+    - Actualizar las instrucciones del agente para guiar hacia el resultado deseado
+    - Hacer la descripción del objetivo más específica
+    - Ajustar la definición del objetivo basándose en patrones de conversación reales
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Próximos pasos
+
+<CardGroup cols={2}>
+  <Card title="Análisis post-llamada" icon="magnifying-glass-chart" href="/build/analytics/post-call-analysis">
+    Extraer información detallada
+  </Card>
+  <Card title="Correos electrónicos post-llamada" icon="envelope-open-text" href="/build/analytics/post-call-automation">
+    Activar correos electrónicos desde objetivos
+  </Card>
+  <Card title="Panel de control" icon="chart-line" href="/optimize/analytics-dashboard">
+    Ver métricas de rendimiento
+  </Card>
+  <Card title="Revisar conversaciones" icon="messages" href="/optimize/review-conversations">
+    Revisar resultados de objetivos en conversaciones
+  </Card>
+</CardGroup>

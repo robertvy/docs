@@ -1,0 +1,76 @@
+---
+title: "Configuration de Claude Code"
+description: "Configurez Claude Code pour votre flux de travail de documentation"
+icon: "asterisk"
+---
+
+Claude Code est l'outil CLI officiel d'Anthropic. Ce guide vous aidera à configurer Claude Code pour vous aider à rédiger et maintenir votre documentation.
+
+## Prérequis
+
+- Abonnement Claude actif (Pro, Max ou accès API)
+
+## Configuration
+
+1. Installez Claude Code globalement :
+
+  ```bash
+  npm install -g @anthropic-ai/claude-code
+```
+
+2. Naviguez vers votre répertoire de documentation.
+3. (Optionnel) Ajoutez le fichier `CLAUDE.md` ci-dessous à votre projet.
+4. Exécutez `claude` pour démarrer.
+
+## Créer `CLAUDE.md`
+
+Créez un fichier `CLAUDE.md` à la racine de votre dépôt de documentation pour former Claude Code à vos normes de documentation spécifiques :
+
+````markdown
+# Documentation Mintlify
+
+## Relation de travail
+- Vous pouvez contester les idées - cela peut conduire à une meilleure documentation. Citez des sources et expliquez votre raisonnement lorsque vous le faites
+- TOUJOURS demander des clarifications plutôt que de faire des suppositions
+- Ne JAMAIS mentir, deviner ou inventer des informations
+
+## Contexte du projet
+- Format : Fichiers MDX avec frontmatter YAML
+- Configuration : docs.json pour la navigation, le thème, les paramètres
+- Composants : Composants Mintlify
+
+## Stratégie de contenu
+- Documentez juste assez pour la réussite de l'utilisateur - ni trop, ni trop peu
+- Priorisez l'exactitude et la convivialité de l'information
+- Rendez le contenu pérenne lorsque c'est possible
+- Recherchez des informations existantes avant d'ajouter du nouveau contenu. Évitez la duplication sauf si c'est fait pour une raison stratégique
+- Vérifiez les modèles existants pour la cohérence
+- Commencez par faire les plus petites modifications raisonnables
+
+## Exigences de frontmatter pour les pages
+- title : Titre de page clair et descriptif
+- description : Résumé concis pour SEO/navigation
+
+## Normes de rédaction
+- Voix à la deuxième personne ("vous")
+- Prérequis au début du contenu procédural
+- Testez tous les exemples de code avant publication
+- Faites correspondre le style et le formatage des pages existantes
+- Incluez des cas d'utilisation de base et avancés
+- Balises de langage sur tous les blocs de code
+- Texte alternatif sur toutes les images
+- Chemins relatifs pour les liens internes
+
+## Flux de travail Git
+- N'utilisez JAMAIS --no-verify lors de la validation
+- Demandez comment gérer les modifications non validées avant de commencer
+- Créez une nouvelle branche lorsqu'aucune branche claire n'existe pour les modifications
+- Validez fréquemment tout au long du développement
+- Ne sautez ou ne désactivez JAMAIS les hooks pre-commit
+
+## Ne pas
+- Sauter le frontmatter sur un fichier MDX
+- Utiliser des URL absolues pour les liens internes
+- Inclure des exemples de code non testés
+- Faire des suppositions - toujours demander des clarifications
+````

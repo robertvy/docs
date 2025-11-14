@@ -1,0 +1,96 @@
+---
+title: "Configuración de Windsurf"
+description: "Configure Windsurf para su flujo de trabajo de documentación"
+icon: "water"
+---
+
+Configure el asistente de IA Cascade de Windsurf para ayudarle a escribir y mantener la documentación. Esta guía muestra cómo configurar Windsurf específicamente para su flujo de trabajo de documentación Mintlify.
+
+## Requisitos previos
+
+- Editor Windsurf instalado
+- Acceso a su repositorio de documentación
+
+## Reglas del espacio de trabajo
+
+Cree reglas de espacio de trabajo que proporcionen a Windsurf contexto sobre su proyecto de documentación y estándares.
+
+Cree `.windsurf/rules.md` en la raíz de su proyecto:
+
+````markdown
+# Regla de redacción técnica Mintlify
+
+## Contexto del proyecto
+
+- Este es un proyecto de documentación en la plataforma Mintlify
+- Usamos archivos MDX con frontmatter YAML
+- La navegación se configura en `docs.json`
+- Seguimos las mejores prácticas de redacción técnica
+
+## Estándares de redacción
+
+- Use segunda persona ("usted") para instrucciones
+- Escriba en voz activa y tiempo presente
+- Comience los procedimientos con requisitos previos
+- Incluya resultados esperados para pasos principales
+- Use encabezados descriptivos y ricos en palabras clave
+- Mantenga las oraciones concisas pero informativas
+
+## Estructura de página requerida
+
+Cada página debe comenzar con frontmatter:
+
+```yaml
+---
+title: "Título claro y específico"
+description: "Descripción concisa para SEO y navegación"
+---
+```
+
+## Componentes Mintlify
+
+### Callouts
+
+- `<Note>` para información suplementaria útil
+- `<Warning>` para advertencias importantes y cambios incompatibles
+- `<Tip>` para mejores prácticas y consejos de expertos
+- `<Info>` para información contextual neutral
+- `<Check>` para confirmaciones de éxito
+
+### Ejemplos de código
+
+- Cuando sea apropiado, incluya ejemplos completos y ejecutables
+- Use `<CodeGroup>` para ejemplos de múltiples lenguajes
+- Especifique etiquetas de idioma en todos los bloques de código
+- Incluya datos realistas, no marcadores de posición
+- Use `<RequestExample>` y `<ResponseExample>` para documentación API
+
+### Procedimientos
+
+- Use el componente `<Steps>` para instrucciones secuenciales
+- Incluya pasos de verificación con componentes `<Check>` cuando sea relevante
+- Divida procedimientos complejos en pasos más pequeños
+
+### Organización de contenido
+
+- Use `<Tabs>` para contenido específico de plataforma
+- Use `<Accordion>` para divulgación progresiva
+- Use `<Card>` y `<CardGroup>` para resaltar contenido
+- Envuelva las imágenes en componentes `<Frame>` con texto alternativo descriptivo
+
+## Requisitos de documentación API
+
+- Documente todos los parámetros con `<ParamField>`
+- Muestre la estructura de respuesta con `<ResponseField>`
+- Incluya ejemplos de éxito y error
+- Use `<Expandable>` para propiedades de objetos anidados
+- Siempre incluya ejemplos de autenticación
+
+## Estándares de calidad
+
+- Pruebe todos los ejemplos de código antes de publicar
+- Use rutas relativas para enlaces internos
+- Incluya texto alternativo para todas las imágenes
+- Asegure la jerarquía de encabezados adecuada (comience con h2)
+- Verifique los patrones existentes para mantener la coherencia
+````
