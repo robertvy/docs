@@ -1,0 +1,411 @@
+---
+title: "Registros y Monitoreo"
+description: "Analiza resultados de pruebas con registros de conversación y métricas"
+icon: "chart-mixed"
+keywords: "registros de conversación, monitoreo de llamadas, análisis, análisis de transcripciones, registros de acciones, recuperación de conocimiento, métricas de calidad, monitoreo en vivo, seguimiento de rendimiento"
+og:description: "Analiza el rendimiento de agentes de IA con registros y monitoreo completos. Rastrea conversaciones, acciones, recuperación de conocimiento y métricas de calidad para agentes listos para producción."
+---
+
+## Descripción General
+
+Cada llamada de prueba genera registros completos que te ayudan a validar el comportamiento del agente, depurar problemas y rastrear métricas de calidad. Aprende a analizar registros de manera efectiva para asegurar que tu agente esté listo para producción.
+
+## Acceso a Registros de Conversación
+
+<Steps>
+  <Step title="Navega a registros">
+    Ve a **Conversations → Logs** en el panel de control. Verás una lista de todas las conversaciones recientes (prueba y producción).
+  </Step>
+
+  <Step title="Filtra llamadas de prueba">
+    Usa filtros para encontrar tus llamadas de prueba:
+    - **Agent**: Selecciona agente específico
+    - **Date Range**: Última hora, últimas 24 horas, rango personalizado
+    - **Status**: Success, failed, in progress
+    - **Tags**: Filtrar por etiqueta "test"
+    - **Direction**: Inbound vs outbound
+  </Step>
+
+  <Step title="Abre detalles de conversación">
+    Haz clic en cualquier conversación para ver detalles completos:
+    - Reproducción de audio
+    - Transcripción completa
+    - Registros de ejecución de acciones
+    - Recuperaciones de base de conocimiento
+    - Resultados de objetivos
+    - Métricas de calidad
+  </Step>
+</Steps>
+
+## Comprensión de Componentes de Registro
+
+### Vista de Transcripción
+
+**Lo Que Ves**:
+```
+[00:03] Agent: Bienvenido a itellicoAI. ¿Cómo puedo ayudarte hoy?
+[00:05] Customer: ¿Cuál es su horario de atención?
+[00:07] Agent: Estamos abiertos de lunes a viernes, de 9 AM a 5 PM hora del Este.
+[00:10] Customer: Gracias.
+[00:11] Agent: ¡De nada! ¿Hay algo más en lo que pueda ayudarte?
+[00:13] Customer: No, eso es todo.
+[00:14] Agent: ¡Que tengas un gran día!
+[Llamada terminada - Duración: 00:11]
+```
+
+**Elementos Clave**:
+- **Marcas de Tiempo**: Rastrea latencia de respuesta (tiempo entre turnos)
+- **Etiquetas de Hablante**: Agent vs Customer claramente marcados
+- **Puntuaciones de Confianza**: Pasa el cursor sobre la transcripción para ver confianza de transcripción
+- **Opción de Edición**: Corrige manualmente errores de transcripción para reentrenamiento
+
+<Accordion title="Análisis de tiempo de respuesta">
+  **Latencia Objetivo**:
+  - Respuesta del agente: &lt;1 segundo (excelente), &lt;2 segundos (aceptable)
+  - Llamadas API: &lt;3 segundos total (incluyendo procesamiento del agente)
+
+  **Señales de Alerta**:
+  - Brechas >3 segundos indican problemas de latencia
+  - Verifica pestaña **Quality** para métricas de red
+  - Revisa selección del modelo (GPT-4 más lento que GPT-3.5)
+</Accordion>
+
+### Pestaña de Acciones
+
+**Ver Detalles de Ejecución de Acciones**:
+<CardGroup cols={2}>
+  <Card title="Request" icon="arrow-right">
+    - Nombre de la acción (ej., "getOrderStatus")
+    - Marca de tiempo de activación
+    - Parámetros de entrada extraídos
+    - Endpoint de API llamado
+    - Encabezados y cuerpo de solicitud
+  </Card>
+
+  <Card title="Response" icon="arrow-left">
+    - Código de estado HTTP (200, 404, 500, etc.)
+    - Cuerpo de respuesta (JSON, XML, texto)
+    - Tiempo de procesamiento (ms)
+    - Estado de éxito/fallo
+    - Mensajes de error (si falló)
+  </Card>
+</CardGroup>
+
+**Ejemplo de Registro de Acción**:
+```json
+{
+  "action": "getOrderStatus",
+  "timestamp": "2024-01-12T15:23:45Z",
+  "input": {
+    "order_id": "12345",
+    "customer_phone": "+12125551234"
+  },
+  "request": {
+    "method": "POST",
+    "url": "https://api.example.com/orders/status",
+    "headers": {"Authorization": "Bearer ***"},
+    "body": {"order_id": "12345"}
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "status": "shipped",
+      "tracking": "1Z999AA10123456784",
+      "eta": "2024-01-15"
+    },
+    "duration_ms": 245
+  },
+  "result": "success"
+}
+```
+
+**Depuración de Acciones**:
+- Las acciones fallidas muestran detalles del error
+- Prueba la misma solicitud con curl para aislar el problema
+- Verifica validez y permisos de clave API
+- Verifica que el formato del payload de solicitud coincida con las especificaciones de API
+
+### Pestaña de Conocimiento
+
+**Ver Recuperación de KB**:
+```json
+{
+  "query": "cuál es su horario de atención",
+  "chunks_retrieved": 3,
+  "results": [
+    {
+      "content": "Nuestro equipo de soporte está disponible de lunes a viernes, de 9 AM a 5 PM EST...",
+      "similarity_score": 0.92,
+      "source": "kb_article_123",
+      "chunk_id": "chunk_456"
+    },
+    {
+      "content": "El horario de días festivos varía. Estamos cerrados en días festivos principales de EE.UU...",
+      "similarity_score": 0.78,
+      "source": "kb_article_789"
+    }
+  ],
+  "retrieval_time_ms": 123
+}
+```
+
+**Análisis**:
+- **Alta Similitud (>0.85)**: Buena coincidencia, el agente debería usar este contenido
+- **Similitud Media (0.7-0.85)**: Relevante pero puede necesitar mejor contenido o consulta
+- **Baja Similitud (&lt;0.7)**: Coincidencia pobre, el agente puede no tener respuesta en KB
+
+**Si el Agente Dice "No Sé"**:
+- Verifica si se recuperó contenido relevante (similitud >0.8)
+- Si sí → Problema de instrucción del agente (no usó el contenido recuperado)
+- Si no → Falta contenido de KB o desajuste de consulta
+
+### Pestaña de Objetivos
+
+**Seguimiento de Objetivos de Conversación**:
+<Tabs>
+  <Tab title="Goal Outcomes">
+    ```json
+    {
+      "goals": [
+        {
+          "name": "appointment_scheduled",
+          "achieved": true,
+          "confidence": 0.94,
+          "entities": {
+            "date": "2024-01-15",
+            "time": "14:00",
+            "service": "consultation"
+          }
+        },
+        {
+          "name": "contact_info_collected",
+          "achieved": true,
+          "confidence": 0.88,
+          "entities": {
+            "email": "customer@example.com",
+            "phone": "+12125551234"
+          }
+        }
+      ]
+    }
+    ```
+
+    **Interpretación de Confianza**:
+    - >0.9: Muy confiado, confiable
+    - 0.7-0.9: Confiado, probablemente preciso
+    - &lt;0.7: Baja confianza, revisar transcripción
+  </Tab>
+
+  <Tab title="Goal Debugging">
+    **Por Qué No Se Logran los Objetivos**:
+    1. **Definición de Objetivo Demasiado Estricta**: Ajusta frases de activación
+    2. **Conversación Interrumpida**: Cliente colgó antes de completar
+    3. **Agente No Siguió el Flujo**: Problema de instrucción
+    4. **Entidades No Extraídas**: Necesitan respuestas más claras del cliente
+
+    **Ejemplo de Corrección**:
+    ```markdown
+    # Antes (demasiado estricto)
+    Objetivo: "appointment_scheduled"
+    Activador: El cliente dice "sí, resérvame a las 2pm"
+
+    # Después (más flexible)
+    Objetivo: "appointment_scheduled"
+    Activador: Cualquier reserva de fecha/hora confirmada
+    ```
+  </Tab>
+</Tabs>
+
+### Pestaña de Calidad
+
+**Métricas de Calidad de Llamada**:
+
+| Métrica | Objetivo | Indica |
+|--------|--------|-----------|
+| **MOS (Mean Opinion Score)** | >3.5 | Calidad general de llamada (escala 1-5) |
+| **Jitter** | &lt;30ms | Estabilidad de red (variación en tiempo de paquetes) |
+| **Packet Loss** | &lt;1% | Confiabilidad de red |
+| **RTT (Round Trip Time)** | &lt;200ms | Latencia de red |
+| **Bitrate** | 64kbps+ | Calidad de audio (mayor = mejor) |
+
+**Diagnóstico de Problemas de Audio**:
+- Alto jitter + pérdida de paquetes → Congestión de red
+- Alto RTT → Distancia geográfica o problema de enrutamiento
+- Puntuación MOS baja → Mala calidad general, investigar múltiples factores
+
+## Herramientas de Monitoreo
+
+### Monitor en Vivo
+
+**Monitoreo de Llamadas en Tiempo Real**:
+<Steps>
+  <Step title="Abre monitor en vivo">
+    Navega a **Conversations → Live Monitor** para ver llamadas activas en tiempo real.
+  </Step>
+
+  <Step title="Observa llamadas activas">
+    Ve la lista de llamadas en progreso con:
+    - ID de llamante
+    - Agente asignado
+    - Duración de llamada (temporizador en vivo)
+    - Transcripción actual (actualiza cada 2-3 segundos)
+    - Acciones siendo ejecutadas
+  </Step>
+
+  <Step title="Interviene si es necesario">
+    **Opciones de Intervención**:
+    - **Whisper**: Habla al agente sin que el cliente escuche (guía al agente)
+    - **Barge In**: Únete a la llamada como participante de 3 vías
+    - **Takeover**: Desconecta al agente, toma control de la llamada
+    - **End Call**: Termina forzosamente la llamada si es necesario
+
+    **Casos de Uso**:
+    - Agente dando información incorrecta
+    - Probar caso límite requiere orientación
+    - Situación de emergencia
+  </Step>
+</Steps>
+
+### Métricas del Panel de Control
+
+**Vista de Alto Nivel**:
+<CardGroup cols={2}>
+  <Card title="Volumen de Llamadas de Prueba" icon="phone">
+    - Total de llamadas de prueba hoy
+    - Gráfico de llamadas por hora
+    - Horas pico de pruebas
+  </Card>
+
+  <Card title="Tasa de Éxito" icon="circle-check">
+    - % de llamadas completadas exitosamente
+    - Conteo de llamadas fallidas
+    - Razones comunes de fallo
+  </Card>
+
+  <Card title="Duración Promedio" icon="clock">
+    - Duración promedio de llamada
+    - Distribución de duración
+    - Valores atípicos (muy cortos o largos)
+  </Card>
+
+  <Card title="Logro de Objetivos" icon="bullseye">
+    - % de llamadas que logran objetivos
+    - Desglose de objetivos (qué objetivos más/menos logrados)
+    - Tendencias a lo largo del tiempo
+  </Card>
+</CardGroup>
+
+## Análisis de Resultados de Pruebas
+
+### Lista de Verificación de Calidad
+
+Después de ejecutar suite de pruebas, revisa:
+
+<Accordion title="Calidad de transcripción">
+  - [ ] Precisión de transcripción >90%
+  - [ ] Sin palabras importantes mal escuchadas
+  - [ ] Respuestas del agente relevantes a entrada del cliente
+  - [ ] Conversación fluye naturalmente
+  - [ ] Sin pausas o retrasos incómodos
+</Accordion>
+
+<Accordion title="Ejecución de acciones">
+  - [ ] Todas las acciones activadas en momentos correctos
+  - [ ] Acciones completadas exitosamente (sin errores)
+  - [ ] Respuestas de API usadas correctamente por el agente
+  - [ ] Latencia de acción &lt;3 segundos
+  - [ ] Manejo de errores funciona (fallos manejados con gracia)
+</Accordion>
+
+<Accordion title="Precisión de conocimiento">
+  - [ ] Consultas de KB recuperan contenido relevante
+  - [ ] Agente usa contenido recuperado en respuestas
+  - [ ] Agente no alucina hechos que no están en KB
+  - [ ] Agente dice "No sé" cuando es apropiado
+  - [ ] Tiempo de recuperación &lt;500ms
+</Accordion>
+
+<Accordion title="Calidad de llamada">
+  - [ ] Puntuación MOS >3.5
+  - [ ] Jitter &lt;30ms
+  - [ ] Pérdida de paquetes &lt;1%
+  - [ ] Sin interrupciones o distorsiones de audio
+  - [ ] Voz suena natural y clara
+</Accordion>
+
+### Comparación de Ejecuciones de Prueba
+
+**Rastrea Métricas a lo Largo del Tiempo**:
+```markdown
+| Fecha | Llamadas de Prueba | Tasa de Éxito | Duración Prom. | Logro de Objetivos |
+|------|-----------|--------------|--------------|------------------|
+| 10 Ene | 25 | 96% | 3:45 | 68% |
+| 11 Ene | 30 | 94% | 3:52 | 71% |
+| 12 Ene | 28 | 98% | 3:38 | 75% |
+```
+
+**Análisis de Tendencias**:
+- Tasa de éxito mejorando → Buen progreso
+- Duración disminuyendo → Agente volviéndose más eficiente
+- Logro de objetivos aumentando → Instrucciones optimizadas
+
+**Detección de Regresiones**:
+- Caída repentina en tasa de éxito → Cambio reciente rompió algo
+- Pico de duración → Nuevo problema de latencia introducido
+- Caída en logro de objetivos → Instrucciones o KB cambiaron negativamente
+
+## Exportación de Registros
+
+### Para Revisión de Equipo
+
+<Steps>
+  <Step title="Exporta registros de conversación">
+    Desde Conversations → Logs, selecciona conversaciones y haz clic en **Export**:
+    - Formato: JSON, CSV
+    - Incluir: Transcripción, acciones, objetivos, metadatos
+    - Descargar como archivo o enviar a email
+  </Step>
+
+  <Step title="Comparte con el equipo">
+    **Casos de Uso**:
+    - Equipo de QA revisa para aseguramiento de calidad
+    - Equipo de producto analiza patrones de conversación
+    - Ingeniería depura problemas específicos
+    - Equipo de cumplimiento audita para requisitos regulatorios
+  </Step>
+</Steps>
+
+### Acceso Programático
+
+**Exportación por API**:
+```bash
+# Exporta todas las conversaciones de prueba de las últimas 24 horas
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+     "https://api.itellico.ai/v1/conversations?start_date=2024-01-12&tag=test" \
+     > test_conversations.json
+
+# Analiza con jq
+cat test_conversations.json | jq '.[] | select(.status == "failed")'
+```
+
+**Usar para**:
+- Informes de pruebas automatizados
+- Integración con frameworks de prueba
+- Validación de pipeline CI/CD
+- Paneles de análisis personalizados
+
+## Próximos Pasos
+
+<CardGroup cols={2}>
+  <Card title="Depuración" icon="bug" href="/test/debugging">
+    Depura problemas encontrados en registros
+  </Card>
+
+  <Card title="Escenarios de Prueba" icon="list-check" href="/launch/test/test-scenarios">
+    Construye suite de pruebas completa
+  </Card>
+
+  <Card title="Solución de Problemas" icon="screwdriver-wrench" href="/launch/test/troubleshooting">
+    Resuelve problemas comunes de pruebas
+  </Card>
+</CardGroup>

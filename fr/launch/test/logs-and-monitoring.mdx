@@ -1,0 +1,411 @@
+---
+title: "Journaux et surveillance"
+description: "Analyser les résultats de test avec les journaux de conversation et les métriques"
+icon: "chart-mixed"
+keywords: "journaux de conversation, surveillance appels, analytiques, analyse transcription, journaux actions, récupération connaissances, métriques qualité, surveillance en direct, suivi performances"
+og:description: "Analysez les performances des agents IA avec des journaux et une surveillance complets. Suivez les conversations, actions, récupération de connaissances et métriques de qualité pour des agents prêts pour la production."
+---
+
+## Vue d'ensemble
+
+Chaque appel de test génère des journaux complets qui vous aident à valider le comportement de l'agent, déboguer les problèmes et suivre les métriques de qualité. Apprenez à analyser efficacement les journaux pour vous assurer que votre agent est prêt pour la production.
+
+## Accéder aux journaux de conversation
+
+<Steps>
+  <Step title="Naviguer vers les journaux">
+    Allez dans **Conversations → Logs** dans le tableau de bord. Vous verrez une liste de toutes les conversations récentes (test et production).
+  </Step>
+
+  <Step title="Filtrer les appels de test">
+    Utilisez les filtres pour trouver vos appels de test :
+    - **Agent** : Sélectionnez un agent spécifique
+    - **Plage de dates** : Dernière heure, dernières 24 heures, plage personnalisée
+    - **Statut** : Succès, échec, en cours
+    - **Tags** : Filtrer pour le tag "test"
+    - **Direction** : Entrant vs sortant
+  </Step>
+
+  <Step title="Ouvrir les détails de la conversation">
+    Cliquez sur n'importe quelle conversation pour afficher les détails complets :
+    - Lecture audio
+    - Transcription complète
+    - Journaux d'exécution des actions
+    - Récupérations de la base de connaissances
+    - Résultats des objectifs
+    - Métriques de qualité
+  </Step>
+</Steps>
+
+## Comprendre les composants des journaux
+
+### Vue de la transcription
+
+**Ce que vous voyez** :
+```
+[00:03] Agent: Bienvenue chez itellicoAI. Comment puis-je vous aider aujourd'hui ?
+[00:05] Client: Quels sont vos horaires d'ouverture ?
+[00:07] Agent: Nous sommes ouverts du lundi au vendredi, de 9h à 17h heure de l'Est.
+[00:10] Client: Merci.
+[00:11] Agent: De rien ! Puis-je vous aider avec autre chose ?
+[00:13] Client: Non, c'est tout.
+[00:14] Agent: Passez une excellente journée !
+[Appel terminé - Durée : 00:11]
+```
+
+**Éléments clés** :
+- **Horodatages** : Suivez la latence de réponse (temps entre les tours)
+- **Étiquettes de locuteur** : Agent vs Client clairement marqués
+- **Scores de confiance** : Survolez la transcription pour voir la confiance de la transcription
+- **Option d'édition** : Corrigez manuellement les erreurs de transcription pour le réentraînement
+
+<Accordion title="Analyser le timing des réponses">
+  **Latence cible** :
+  - Réponse de l'agent : &lt;1 seconde (excellent), &lt;2 secondes (acceptable)
+  - Appels API : &lt;3 secondes au total (incluant le traitement de l'agent)
+
+  **Signaux d'alerte** :
+  - Écarts >3 secondes indiquent des problèmes de latence
+  - Vérifiez l'onglet **Quality** pour les métriques réseau
+  - Examinez la sélection du modèle (GPT-4 plus lent que GPT-3.5)
+</Accordion>
+
+### Onglet Actions
+
+**Voir les détails d'exécution des actions** :
+<CardGroup cols={2}>
+  <Card title="Requête" icon="arrow-right">
+    - Nom de l'action (ex : "getOrderStatus")
+    - Horodatage de déclenchement
+    - Paramètres d'entrée extraits
+    - Endpoint API appelé
+    - En-têtes et corps de la requête
+  </Card>
+
+  <Card title="Réponse" icon="arrow-left">
+    - Code de statut HTTP (200, 404, 500, etc.)
+    - Corps de la réponse (JSON, XML, texte)
+    - Temps de traitement (ms)
+    - Statut succès/échec
+    - Messages d'erreur (si échec)
+  </Card>
+</CardGroup>
+
+**Exemple de journal d'action** :
+```json
+{
+  "action": "getOrderStatus",
+  "timestamp": "2024-01-12T15:23:45Z",
+  "input": {
+    "order_id": "12345",
+    "customer_phone": "+12125551234"
+  },
+  "request": {
+    "method": "POST",
+    "url": "https://api.example.com/orders/status",
+    "headers": {"Authorization": "Bearer ***"},
+    "body": {"order_id": "12345"}
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "status": "shipped",
+      "tracking": "1Z999AA10123456784",
+      "eta": "2024-01-15"
+    },
+    "duration_ms": 245
+  },
+  "result": "success"
+}
+```
+
+**Débogage des actions** :
+- Les actions échouées affichent les détails de l'erreur
+- Testez la même requête avec curl pour isoler le problème
+- Vérifiez la validité de la clé API et les permissions
+- Vérifiez que le format du payload de la requête correspond aux spécifications de l'API
+
+### Onglet Connaissances
+
+**Voir la récupération KB** :
+```json
+{
+  "query": "what are your business hours",
+  "chunks_retrieved": 3,
+  "results": [
+    {
+      "content": "Notre équipe de support est disponible du lundi au vendredi, de 9h à 17h EST...",
+      "similarity_score": 0.92,
+      "source": "kb_article_123",
+      "chunk_id": "chunk_456"
+    },
+    {
+      "content": "Les horaires de vacances varient. Nous sommes fermés les jours fériés américains majeurs...",
+      "similarity_score": 0.78,
+      "source": "kb_article_789"
+    }
+  ],
+  "retrieval_time_ms": 123
+}
+```
+
+**Analyse** :
+- **Haute similarité (>0.85)** : Bonne correspondance, l'agent devrait utiliser ce contenu
+- **Similarité moyenne (0.7-0.85)** : Pertinent mais peut nécessiter un meilleur contenu ou une meilleure requête
+- **Faible similarité (&lt;0.7)** : Mauvaise correspondance, l'agent peut ne pas avoir la réponse dans la KB
+
+**Si l'agent dit "Je ne sais pas"** :
+- Vérifiez si le contenu pertinent a été récupéré (similarité >0.8)
+- Si oui → Problème d'instruction de l'agent (n'a pas utilisé le contenu récupéré)
+- Si non → Contenu KB manquant ou inadéquation de la requête
+
+### Onglet Objectifs
+
+**Suivi des objectifs de conversation** :
+<Tabs>
+  <Tab title="Résultats des objectifs">
+    ```json
+    {
+      "goals": [
+        {
+          "name": "appointment_scheduled",
+          "achieved": true,
+          "confidence": 0.94,
+          "entities": {
+            "date": "2024-01-15",
+            "time": "14:00",
+            "service": "consultation"
+          }
+        },
+        {
+          "name": "contact_info_collected",
+          "achieved": true,
+          "confidence": 0.88,
+          "entities": {
+            "email": "customer@example.com",
+            "phone": "+12125551234"
+          }
+        }
+      ]
+    }
+    ```
+
+    **Interprétation de la confiance** :
+    - >0.9 : Très confiant, fiable
+    - 0.7-0.9 : Confiant, probablement précis
+    - &lt;0.7 : Faible confiance, examinez la transcription
+  </Tab>
+
+  <Tab title="Débogage des objectifs">
+    **Pourquoi les objectifs ne sont pas atteints** :
+    1. **Définition d'objectif trop stricte** : Ajustez les phrases de déclenchement
+    2. **Conversation interrompue** : Le client a raccroché avant la fin
+    3. **L'agent n'a pas suivi le flux** : Problème d'instruction
+    4. **Entités non extraites** : Besoin de réponses client plus claires
+
+    **Exemple de correction** :
+    ```markdown
+    # Avant (trop strict)
+    Objectif : "appointment_scheduled"
+    Déclencheur : Le client dit "oui, réservez-moi pour 14h"
+
+    # Après (plus flexible)
+    Objectif : "appointment_scheduled"
+    Déclencheur : Toute réservation de date/heure confirmée
+    ```
+  </Tab>
+</Tabs>
+
+### Onglet Qualité
+
+**Métriques de qualité d'appel** :
+
+| Métrique | Cible | Indique |
+|--------|--------|-----------|
+| **MOS (Mean Opinion Score)** | >3.5 | Qualité globale de l'appel (échelle 1-5) |
+| **Jitter** | &lt;30ms | Stabilité réseau (variation du timing des paquets) |
+| **Perte de paquets** | &lt;1% | Fiabilité réseau |
+| **RTT (Round Trip Time)** | &lt;200ms | Latence réseau |
+| **Débit binaire** | 64kbps+ | Qualité audio (plus élevé = meilleur) |
+
+**Diagnostic des problèmes audio** :
+- Jitter élevé + perte de paquets → Congestion réseau
+- RTT élevé → Distance géographique ou problème de routage
+- Score MOS faible → Mauvaise qualité globale, investiguer plusieurs facteurs
+
+## Outils de surveillance
+
+### Moniteur en direct
+
+**Surveillance d'appels en temps réel** :
+<Steps>
+  <Step title="Ouvrir le moniteur en direct">
+    Naviguez vers **Conversations → Live Monitor** pour voir les appels actifs en temps réel.
+  </Step>
+
+  <Step title="Surveiller les appels actifs">
+    Voir la liste des appels en cours avec :
+    - ID de l'appelant
+    - Agent assigné
+    - Durée de l'appel (compteur en direct)
+    - Transcription actuelle (mises à jour toutes les 2-3 secondes)
+    - Actions en cours d'exécution
+  </Step>
+
+  <Step title="Intervenir si nécessaire">
+    **Options d'intervention** :
+    - **Whisper** : Parler à l'agent sans que le client entende (guider l'agent)
+    - **Barge In** : Rejoindre l'appel en tant que participant à 3
+    - **Takeover** : Déconnecter l'agent, prendre le contrôle de l'appel vous-même
+    - **End Call** : Terminer l'appel de force si nécessaire
+
+    **Cas d'usage** :
+    - L'agent donne de mauvaises informations
+    - Un cas limite de test nécessite des conseils
+    - Situation d'urgence
+  </Step>
+</Steps>
+
+### Métriques du tableau de bord
+
+**Vue d'ensemble de haut niveau** :
+<CardGroup cols={2}>
+  <Card title="Volume d'appels de test" icon="phone">
+    - Total des appels de test aujourd'hui
+    - Graphique des appels par heure
+    - Heures de test de pointe
+  </Card>
+
+  <Card title="Taux de succès" icon="circle-check">
+    - % d'appels terminés avec succès
+    - Nombre d'appels échoués
+    - Raisons d'échec courantes
+  </Card>
+
+  <Card title="Durée moyenne" icon="clock">
+    - Durée moyenne de l'appel
+    - Distribution de la durée
+    - Valeurs aberrantes (très court ou long)
+  </Card>
+
+  <Card title="Atteinte des objectifs" icon="bullseye">
+    - % d'appels atteignant les objectifs
+    - Répartition des objectifs (quels objectifs le plus/le moins atteints)
+    - Tendances au fil du temps
+  </Card>
+</CardGroup>
+
+## Analyser les résultats de test
+
+### Liste de contrôle qualité
+
+Après avoir exécuté la suite de tests, examinez :
+
+<Accordion title="Qualité de la transcription">
+  - [ ] Précision de la transcription >90%
+  - [ ] Pas de mots mal entendus majeurs
+  - [ ] Réponses de l'agent pertinentes par rapport à l'entrée client
+  - [ ] La conversation se déroule naturellement
+  - [ ] Pas de pauses ou de délais gênants
+</Accordion>
+
+<Accordion title="Exécution des actions">
+  - [ ] Toutes les actions déclenchées aux bons moments
+  - [ ] Actions terminées avec succès (pas d'erreurs)
+  - [ ] Réponses API utilisées correctement par l'agent
+  - [ ] Latence des actions &lt;3 secondes
+  - [ ] La gestion des erreurs fonctionne (échecs de test gérés avec élégance)
+</Accordion>
+
+<Accordion title="Précision des connaissances">
+  - [ ] Les requêtes KB récupèrent le contenu pertinent
+  - [ ] L'agent utilise le contenu récupéré dans les réponses
+  - [ ] L'agent n'hallucine pas de faits non présents dans la KB
+  - [ ] L'agent dit "Je ne sais pas" quand c'est approprié
+  - [ ] Temps de récupération &lt;500ms
+</Accordion>
+
+<Accordion title="Qualité d'appel">
+  - [ ] Score MOS >3.5
+  - [ ] Jitter &lt;30ms
+  - [ ] Perte de paquets &lt;1%
+  - [ ] Pas de coupures audio ou de distorsion
+  - [ ] La voix sonne naturelle et claire
+</Accordion>
+
+### Comparer les exécutions de test
+
+**Suivre les métriques au fil du temps** :
+```markdown
+| Date | Appels test | Taux succès | Durée moy | Atteinte objectifs |
+|------|-----------|--------------|--------------|------------------|
+| 10 janv | 25 | 96% | 3:45 | 68% |
+| 11 janv | 30 | 94% | 3:52 | 71% |
+| 12 janv | 28 | 98% | 3:38 | 75% |
+```
+
+**Analyse des tendances** :
+- Taux de succès en amélioration → Bon progrès
+- Durée en diminution → L'agent devient plus efficace
+- Atteinte des objectifs en augmentation → Instructions optimisées
+
+**Détection de régression** :
+- Chute soudaine du taux de succès → Un changement récent a cassé quelque chose
+- Pic de durée → Nouveau problème de latence introduit
+- Chute de l'atteinte des objectifs → Instructions ou KB changées négativement
+
+## Exporter les journaux
+
+### Pour révision d'équipe
+
+<Steps>
+  <Step title="Exporter les journaux de conversation">
+    Depuis Conversations → Logs, sélectionnez les conversations et cliquez sur **Export** :
+    - Format : JSON, CSV
+    - Inclure : Transcription, actions, objectifs, métadonnées
+    - Télécharger en fichier ou envoyer par email
+  </Step>
+
+  <Step title="Partager avec l'équipe">
+    **Cas d'usage** :
+    - L'équipe QA examine pour l'assurance qualité
+    - L'équipe produit analyse les patterns de conversation
+    - L'ingénierie débogue des problèmes spécifiques
+    - L'équipe de conformité audite pour les exigences réglementaires
+  </Step>
+</Steps>
+
+### Accès programmatique
+
+**Export API** :
+```bash
+# Exporter toutes les conversations de test des dernières 24 heures
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+     "https://api.itellico.ai/v1/conversations?start_date=2024-01-12&tag=test" \
+     > test_conversations.json
+
+# Analyser avec jq
+cat test_conversations.json | jq '.[] | select(.status == "failed")'
+```
+
+**Utiliser pour** :
+- Rapports de test automatisés
+- Intégration avec les frameworks de test
+- Validation des pipelines CI/CD
+- Tableaux de bord d'analytiques personnalisés
+
+## Prochaines étapes
+
+<CardGroup cols={2}>
+  <Card title="Débogage" icon="bug" href="/test/debugging">
+    Déboguer les problèmes trouvés dans les journaux
+  </Card>
+
+  <Card title="Scénarios de test" icon="list-check" href="/launch/test/test-scenarios">
+    Créer une suite de tests complète
+  </Card>
+
+  <Card title="Dépannage" icon="screwdriver-wrench" href="/launch/test/troubleshooting">
+    Résoudre les problèmes de test courants
+  </Card>
+</CardGroup>

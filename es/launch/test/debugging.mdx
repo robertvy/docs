@@ -1,0 +1,362 @@
+---
+title: "Depuración"
+description: "Depura problemas del agente con registros, trazas y herramientas de diagnóstico"
+icon: "bug"
+keywords: "depuración de agentes de IA, registros de conversación, solución de errores, depuración de acciones, errores de transcripción, depuración de API, pruebas de agentes, análisis de registros, herramientas de diagnóstico"
+og:description: "Guía sistemática de depuración para agentes de IA. Analiza registros, soluciona acciones, corrige errores de transcripción y resuelve problemas de comportamiento de agentes con herramientas de diagnóstico."
+---
+
+## Filosofía de Depuración
+
+Cuando tu agente se comporta de manera inesperada, la depuración sistemática ahorra tiempo. Sigue este proceso:
+
+1. **Reproduce** - ¿Puedes hacer que el problema ocurra nuevamente de manera consistente?
+2. **Aísla** - ¿Es por las instrucciones, integraciones, modelo o infraestructura?
+3. **Inspecciona** - Revisa registros, trazas y métricas en busca de pistas
+4. **Corrige** - Aplica el cambio más pequeño que resuelva el problema
+5. **Valida** - Prueba para confirmar que la corrección funciona
+
+## Herramientas Rápidas de Depuración
+
+<CardGroup cols={2}>
+  <Card title="Registros de Conversación" icon="file-lines">
+    Cada llamada de prueba y producción registrada con transcripción completa, acciones y metadatos.
+
+    Acceso: **Conversations → Logs**
+  </Card>
+
+  <Card title="Monitor en Vivo" icon="eye">
+    Observa llamadas activas en tiempo real con transcripciones en vivo y activación de acciones.
+
+    Acceso: **Conversations → Live Monitor**
+  </Card>
+
+  <Card title="Registros de Errores" icon="triangle-exclamation">
+    Errores de plataforma, fallos de API y problemas del sistema.
+
+    Acceso: **Logs → Errors**
+  </Card>
+
+  <Card title="Inspector de Acciones" icon="magnifying-glass">
+    Vista detallada de llamadas API personalizadas, solicitudes, respuestas y tiempos.
+
+    Acceso: En registros de conversación → pestaña **Actions**
+  </Card>
+</CardGroup>
+
+## Escenarios Comunes de Depuración
+
+### El Agente Da Respuestas Incorrectas
+
+<Steps>
+  <Step title="Verifica las instrucciones">
+    Revisa agente → **Conversation → Instructions**:
+    - ¿Las instrucciones son claras y específicas?
+    - ¿Hay reglas contradictorias?
+    - ¿El agente tiene contexto para la pregunta?
+  </Step>
+
+  <Step title="Verifica la base de conocimiento">
+    - ¿La respuesta correcta está en tu KB?
+    - Prueba la búsqueda de KB manualmente:
+      ```bash
+      curl -X POST https://api.itellico.ai/v1/knowledge-bases/kb_123/search \
+           -H "Authorization: Bearer YOUR_API_KEY" \
+           -d '{"query": "your test query"}'
+      ```
+    - Verifica la recuperación en registros → sección **Knowledge Retrieved**
+  </Step>
+
+  <Step title="Revisa el registro de conversación">
+    - ¿Qué contexto tenía el agente al responder?
+    - ¿Se recuperó contenido relevante de KB?
+    - ¿El agente siguió las plantillas de instrucciones?
+  </Step>
+
+  <Step title="Prueba de forma aislada">
+    Crea una prueba mínima:
+    - Instrucción simple
+    - Pregunta clara
+    - Contenido esperado de KB
+
+    Si funciona de forma aislada, el problema es contexto/complejidad.
+  </Step>
+</Steps>
+
+### Las Acciones No Se Activan
+
+<Accordion title="La acción API no se ejecuta">
+  **Verifica en registros de conversación**:
+  1. Ve a conversación → pestaña **Actions**
+  2. ¿Está listada la acción? Si no, nunca se activó
+  3. Si está listada, verifica el estado: Success vs Failed
+
+  **Por qué las acciones no se activan**:
+  - Las instrucciones del agente no mencionan cuándo usarla
+  - El usuario no proporcionó información requerida
+  - No se cumplió la condición de activación de la acción
+
+  **Solución**:
+  - Agrega instrucción clara: "Cuando el cliente pregunte sobre el estado del pedido, usa la acción getOrderStatus"
+  - Asegúrate de que el agente recopile los parámetros requeridos primero
+  - Prueba la frase de activación en el simulador
+</Accordion>
+
+<Accordion title="La API devuelve error">
+  **Verifica los detalles de la acción en registros**:
+  - Solicitud enviada (¿formato de payload correcto?)
+  - Respuesta recibida (¿código de error? ¿mensaje?)
+  - Encabezados de autenticación (¿clave API válida?)
+
+  **Errores comunes**:
+  - `401 Unauthorized` → Verifica la clave API
+  - `404 Not Found` → Verifica la URL del endpoint
+  - `408 Timeout` → API demasiado lenta, aumenta el tiempo de espera
+  - `500 Internal Server Error` → Problema de API externa
+
+  **Prueba la API manualmente**:
+  ```bash
+  # Copia la solicitud de los registros y prueba con curl
+  curl -X POST https://api.example.com/endpoint \
+       -H "Authorization: Bearer YOUR_KEY" \
+       -H "Content-Type: application/json" \
+       -d '{"param": "value"}'
+  ```
+
+  Si la llamada manual funciona, el problema está en la configuración de la acción.
+</Accordion>
+
+### Errores de Transcripción
+
+<Accordion title="El agente escucha mal las palabras">
+  **Revisa la precisión de la transcripción**:
+  - Escucha la grabación de la llamada
+  - Compara con el texto de la transcripción
+  - Identifica palabras mal escuchadas (¿términos técnicos? ¿nombres? ¿acentos?)
+
+  **Soluciones**:
+
+  **1. Agrega Vocabulario Personalizado**:
+  ```json
+  // Configuración del agente → Transcriber → Custom Vocabulary
+  {
+    "custom_words": [
+      {"word": "itellicoAI", "pronunciation": "eye-TELL-ih-koh AI"},
+      {"word": "API", "pronunciation": "A P I"}
+    ]
+  }
+  ```
+
+  **2. Prueba Diferente Transcriptor**:
+  - Deepgram: Mejor para acentos, ruido
+  - Azure: Mejor para términos técnicos
+  - Whisper: Mejor para multilingüe
+
+  **3. Mejora la Calidad de Audio**:
+  - Habilita supresión de ruido
+  - Usa códec de mayor tasa de bits (Opus 64kbps)
+  - Prueba en ambiente más silencioso
+</Accordion>
+
+### El Agente Se Repite o Entra en Bucle
+
+<Accordion title="El agente hace la misma pregunta varias veces">
+  **Diagnóstico**:
+  1. Revisa la transcripción - ¿dónde comienza el bucle?
+  2. ¿Qué respuesta del usuario desencadena la repetición?
+  3. ¿Falla la transcripción? (el agente no "escuchó" la respuesta)
+
+  **Soluciones**:
+
+  **1. Agrega Instrucciones de Prevención de Bucles**:
+  ```markdown
+  Si has hecho la misma pregunta dos veces sin obtener una respuesta clara:
+  1. Reformula la pregunta
+  2. Si aún no está claro, ofrece transferir a un humano
+
+  Nunca hagas la misma pregunta más de 3 veces.
+  ```
+
+  **2. Usa Entrada Estructurada (DTMF)**:
+  Para información crítica, usa el teclado:
+  ```markdown
+  "¿Qué departamento? Presione 1 para Ventas, 2 para Soporte."
+  ```
+
+  Más confiable que el reconocimiento de voz.
+
+  **3. Verifica la Transcripción**:
+  Si el agente no "escuchó" la respuesta, corrige la calidad del audio o la configuración del transcriptor.
+</Accordion>
+
+## Depuración con Registros
+
+### Lectura de Registros de Conversación
+
+Cada registro de conversación incluye:
+
+<Tabs>
+  <Tab title="Transcript">
+    **Qué Buscar**:
+    - Precisión de transcripción (comparar con audio)
+    - Relevancia de respuesta del agente
+    - Flujo de conversación (natural vs incómodo)
+    - Indicadores de logro de objetivos
+
+    **Marcas de tiempo**: Verifica si los retrasos entre turnos indican problemas de latencia
+  </Tab>
+
+  <Tab title="Actions">
+    **Detalles**:
+    - Qué acciones se activaron
+    - Parámetros de entrada
+    - Solicitud/respuesta de API
+    - Tiempo de ejecución
+    - Estado de éxito/fallo
+
+    **Depurar Fallos**: Los mensajes de error suelen indicar la causa raíz
+  </Tab>
+
+  <Tab title="Knowledge">
+    **Qué Se Recuperó**:
+    - Consulta de búsqueda utilizada
+    - Fragmentos de KB recuperados
+    - Puntuaciones de similitud
+    - Contenido usado en la respuesta
+
+    **Depurar "No sé"**: Verifica si se recuperó contenido relevante pero no se usó, o si la recuperación falló por completo
+  </Tab>
+
+  <Tab title="Goals">
+    **Resultados**:
+    - Qué objetivos se lograron
+    - Puntuaciones de confianza
+    - Entidades extraídas (fechas, nombres, etc.)
+
+    **Depurar Clasificación Errónea**: Revisa la conversación - ¿debería haberse logrado el objetivo?
+  </Tab>
+
+  <Tab title="Quality">
+    **Métricas**:
+    - Calidad de audio (jitter, pérdida de paquetes, puntuación MOS)
+    - Latencia de respuesta
+    - Duración de la llamada
+    - Frecuencia de interrupciones
+
+    **Problemas de Rendimiento**: Verifica latencia y métricas de calidad
+  </Tab>
+</Tabs>
+
+### Análisis de Registros de Errores
+
+Filtra errores por:
+- Rango de tiempo (últimas 24h, última semana)
+- Tipo de error (API, transcripción, sistema)
+- ID del agente (agente específico)
+- Gravedad (crítico, advertencia, información)
+
+**Patrones Comunes**:
+- Mismo error repitiéndose → Problema sistémico (configuración, integración)
+- Picos de error en momento específico → Problema de capacidad o servicio externo
+- Errores en agente específico → Problema de configuración específico del agente
+
+## Depuración Avanzada
+
+### Depuración de Comportamiento del Modelo
+
+<Accordion title="Compara respuestas del modelo">
+  Prueba el mismo escenario con diferentes modelos:
+
+  **Pasos**:
+  1. Clona el agente
+  2. Cambia el modelo (GPT-4 → Claude, etc.)
+  3. Ejecuta escenario de prueba idéntico
+  4. Compara respuestas
+
+  **Cuándo es Útil**:
+  - El agente da respuestas inesperadas
+  - Probar si la actualización del modelo mejora la calidad
+  - Depurar alucinaciones o hechos incorrectos
+</Accordion>
+
+<Accordion title="Iteración de ingeniería de prompts">
+  **Pruebas Sistemáticas**:
+  1. Crea 5-10 escenarios de prueba (guardados en Test Scenarios)
+  2. Ejecuta todos los escenarios con instrucciones actuales
+  3. Documenta los fallos
+  4. Modifica las instrucciones para abordar los fallos
+  5. Vuelve a ejecutar todos los escenarios
+  6. Repite hasta que todos pasen
+
+  **Prueba A/B de Instrucciones**:
+  - Crea dos versiones del agente con diferentes instrucciones
+  - Enruta 50% del tráfico a cada una
+  - Compara tasas de logro de objetivos
+  - Promueve al ganador
+</Accordion>
+
+### Depuración de Integración
+
+<Accordion title="Prueba APIs de forma aislada">
+  **Elimina el Agente de la Ecuación**:
+  1. Copia la solicitud API de los registros
+  2. Prueba con curl/Postman
+  3. Verifica que el formato de respuesta coincida con las expectativas
+  4. Confirma que la autenticación funciona
+
+  Si la API funciona de forma aislada pero falla desde el agente:
+  - Verifica la lista de IPs permitidas
+  - Verifica configuración de tiempo de espera (el agente puede agotar el tiempo antes de que la API responda)
+  - Verifica el formato del payload de la solicitud
+</Accordion>
+
+<Accordion title="Simula respuestas de API">
+  Para pruebas sin llamar a APIs reales:
+
+  **Usa servidor simulado**:
+  ```javascript
+  // mockapi.example.com/order-status
+  {
+    "order_id": "12345",
+    "status": "shipped",
+    "eta": "2024-01-15"
+  }
+  ```
+
+  Apunta la acción del agente a la URL simulada, prueba el flujo de conversación sin dependencias externas.
+</Accordion>
+
+## Lista de Verificación de Depuración
+
+Al depurar un problema:
+
+- [ ] ¿Puedes reproducir el problema de manera consistente?
+- [ ] ¿Revisaste el registro de conversación de la llamada fallida?
+- [ ] ¿Verificaste los registros de errores para errores relacionados?
+- [ ] ¿Verificaste que las instrucciones del agente sean claras?
+- [ ] ¿Probaste en el simulador web (iteración más rápida)?
+- [ ] ¿Aislaste el problema (instrucciones vs integración vs modelo)?
+- [ ] ¿Aplicaste la corrección mínima (cambiaste una cosa)?
+- [ ] ¿Volviste a probar para confirmar que la corrección funciona?
+- [ ] ¿Probaste regresiones (no rompiste otros escenarios)?
+- [ ] ¿Documentaste el problema y la solución?
+
+## Próximos Pasos
+
+<CardGroup cols={2}>
+  <Card title="Registros y Monitoreo" icon="chart-mixed" href="/launch/test/logs-and-monitoring">
+    Profundiza en registros y métricas
+  </Card>
+
+  <Card title="Solución de Problemas" icon="screwdriver-wrench" href="/launch/test/troubleshooting">
+    Problemas comunes y soluciones
+  </Card>
+
+  <Card title="Escenarios de Prueba" icon="list-check" href="/launch/test/test-scenarios">
+    Construye suite de pruebas de regresión
+  </Card>
+
+  <Card title="Mejores Prácticas de Producción" icon="star" href="/launch/production-best-practices">
+    Previene problemas en producción
+  </Card>
+</CardGroup>

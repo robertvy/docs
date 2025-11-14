@@ -1,0 +1,339 @@
+---
+title: "Teste por Telefone"
+description: "Valide seu agente com chamadas telefônicas PSTN reais"
+icon: "phone"
+keywords: "teste por telefone, validação PSTN, teste de qualidade de chamada, teste DTMF, teste AMD, detecção de correio de voz, qualidade de áudio, teste de transferência de chamada, formato E.164"
+og:description: "Valide agentes IA com chamadas telefônicas PSTN reais. Teste qualidade de áudio, entrada DTMF, transferências de chamada, detecção de correio de voz e experiência completa de ponta a ponta."
+---
+
+## Por Que o Teste por Telefone é Importante
+
+Embora o simulador web detecte a maioria dos problemas, o teste por telefone valida a experiência completa de ponta a ponta, incluindo:
+- Qualidade e latência de áudio PSTN
+- Tons DTMF reais de teclados telefônicos
+- Transferências e roteamento de chamadas reais
+- Detecção de correio de voz (AMD)
+- Comportamento de chamadas de celular e telefone fixo
+
+**Recomendação**: Complete o teste do simulador web primeiro, depois valide com 2-3 chamadas telefônicas de teste antes do lançamento.
+
+## Executando um Teste por Telefone
+
+<Steps>
+  <Step title="Abrir gaveta Test Agent">
+    No editor de agente, clique no botão **Test Agent** (canto superior direito). Mude para a aba **Phone Call**.
+  </Step>
+
+  <Step title="Configurar chamada de teste">
+    **From Number**: Selecione um dos seus números provisionados como ID do chamador
+
+    **Destination**: Insira seu número de telefone no formato E.164 (`+12125551234`)
+
+    **Configuração AMD** (para saída):
+    - **Baseado em texto**: Detecção rápida (~1-2s), 85-90% de precisão
+    - **Baseado em ML**: Mais lento (~3-4s), 95%+ de precisão
+    - Escolha baseado nas necessidades da sua campanha
+  </Step>
+
+  <Step title="Iniciar teste">
+    Clique em **Start Test**. A plataforma disca seu telefone imediatamente.
+
+    **O Que Acontece**:
+    - Seu telefone toca em 2-5 segundos
+    - Atenda a chamada
+    - O agente reproduz a saudação
+    - Fale naturalmente para testar a conversa
+  </Step>
+
+  <Step title="Monitorar em tempo real">
+    Enquanto na chamada, abra **Conversations → Live Monitor** em outra aba para assistir:
+    - Transcrição ao vivo
+    - Disparadores de ação
+    - Métricas de qualidade da chamada
+  </Step>
+
+  <Step title="Revisar após a chamada">
+    Uma vez concluída, encontre a conversa em **Conversations → Logs**:
+    - Gravação de áudio completa
+    - Transcrição com timestamps
+    - Resultados de objetivos
+    - Payloads de ações
+    - Métricas de qualidade (latência, jitter, perda de pacotes)
+  </Step>
+</Steps>
+
+## O Que Testar
+
+### Verificações de Qualidade de Áudio
+
+<Accordion title="Clareza e pronúncia">
+  **Ouvir Por**:
+  - A voz do agente está clara e natural?
+  - As pronúncias personalizadas estão funcionando?
+  - Há artefatos robóticos ou falhas?
+  - Velocidade de fala apropriada?
+
+  **Testar Em**:
+  - Telefone celular (rede celular)
+  - Telefone fixo (se disponível)
+  - Telefone VoIP (Teams, Zoom Phone)
+
+  Redes diferentes têm características de qualidade de áudio diferentes.
+</Accordion>
+
+<Accordion title="Eco e feedback">
+  **Cenários de Teste**:
+  1. Use modo viva-voz → Ouça por eco
+  2. Use fone de ouvido/monofone → Deve estar livre de eco
+
+  **Problemas**:
+  - Eco no viva-voz → Normal, AEC (cancelamento de eco) deve lidar com isso
+  - Eco no monofone → Problema, verifique configurações de áudio do agente
+  - Loop de feedback → Desabilite uma fonte de áudio
+
+  **Configuração**: Habilite cancelamento de eco em agente → **Voice Settings → Audio Processing**
+</Accordion>
+
+<Accordion title="Latência e atrasos">
+  **Medir Tempo de Resposta**:
+  - Pare de falar e conte os segundos até o agente responder
+  - Alvo: &lt;1s para melhor experiência
+  - Aceitável: &lt;2s
+  - Ruim: >3s (clientes ficam frustrados)
+
+  **Se Alta Latência**:
+  - Verifique seleção de modelo (GPT-3.5 mais rápido que GPT-4)
+  - Reduza comprimento da instrução
+  - Simplifique recuperação da base de conhecimento
+  - Verifique conectividade de rede
+</Accordion>
+
+### Teste DTMF (Teclado)
+
+Teste entrada do teclado do telefone se seu agente usa DTMF:
+
+<Steps>
+  <Step title="Habilitar DTMF">
+    Em configurações do agente → **Advanced → DTMF Controls**, habilite detecção de teclado.
+  </Step>
+
+  <Step title="Testar pressionamento de teclas">
+    Durante chamada telefônica:
+    - Agente diz: "Pressione 1 para vendas, 2 para suporte"
+    - Pressione teclas no teclado do seu telefone
+    - Agente deve detectar e responder
+
+    Teste todas as teclas: 0-9, *, #
+  </Step>
+
+  <Step title="Verificar nos logs">
+    Verifique o log de conversa para campo `dtmf_input` mostrando quais teclas foram detectadas.
+
+    Se as teclas não forem detectadas:
+    - Verifique se a operadora suporta DTMF RFC 2833
+    - Verifique se as configurações DTMF do agente estão habilitadas
+    - Tente telefone diferente (alguns telefones VoIP têm problemas)
+  </Step>
+</Steps>
+
+### Teste de Transferência
+
+Valide se transferências de chamada funcionam corretamente:
+
+<Accordion title="Transferência cega">
+  **Configuração**:
+  1. Configure ação de transferência com número de destino válido
+  2. Dispare transferência durante chamada de teste
+  3. Agente deve anunciar transferência e conectá-lo
+
+  **O Que Verificar**:
+  - Anúncio de transferência está claro
+  - Chamada conecta ao número de destino
+  - Qualidade de áudio mantida após transferência
+  - Registro adequado de duração da chamada
+
+  **Nota**: Use um segundo número de telefone que você controla para verificar conexão.
+</Accordion>
+
+<Accordion title="Transferência assistida">
+  **Configuração**:
+  - Defina tipo de transferência como "assistida" na configuração de ação
+  - Agente deve conectar ao destino primeiro
+  - Informar destino antes de conectar chamador
+
+  **Fluxo de Teste**:
+  1. Dispare transferência
+  2. Agente coloca você em espera (ouve música)
+  3. Agente conecta ao destino
+  4. Agente anuncia: "Tenho [cliente] para você"
+  5. Agente conecta ambas as partes
+
+  Mais confiável que transferências cegas, mas mais lento.
+</Accordion>
+
+### Detecção de Correio de Voz (AMD)
+
+Para campanhas de saída, teste detecção de secretária eletrônica:
+
+<Steps>
+  <Step title="Ligar para seu correio de voz">
+    Use Phone Test para ligar para um número que vai para correio de voz (seu próprio VM, ou número de teste de VM).
+  </Step>
+
+  <Step title="Habilitar AMD">
+    Nas configurações de teste, selecione AMD baseado em texto ou baseado em ML.
+  </Step>
+
+  <Step title="Verificar detecção">
+    - Chamada deve detectar correio de voz em 1-4 segundos
+    - Agente deve desligar (ou deixar mensagem se configurado)
+    - Verifique logs para `amd_result: "voicemail"`
+
+    **Teste de Precisão**:
+    - Execute 10 chamadas de teste
+    - 5 para pessoa real (você atende)
+    - 5 para correio de voz
+    - Calcule precisão de detecção: Deve ser >85% (texto) ou >95% (ML)
+  </Step>
+</Steps>
+
+## Melhores Práticas de Teste
+
+<CardGroup cols={2}>
+  <Card title="Testar de múltiplos dispositivos" icon="mobile">
+    - iPhone (iOS)
+    - Telefone Android
+    - Telefone fixo (se aplicável)
+    - Telefone VoIP
+
+    Qualidade da chamada varia por dispositivo e rede.
+  </Card>
+
+  <Card title="Testar diferentes cenários" icon="list-check">
+    - Ambiente silencioso (escritório)
+    - Ambiente barulhento (rua, cafeteria)
+    - Enquanto se move (caminhando, dirigindo)
+    - Sinal fraco (porão, área rural)
+  </Card>
+
+  <Card title="Teste em horários diferentes" icon="clock">
+    - Horários de pico (congestionamento de rede)
+    - Horários fora de pico (condições ótimas)
+    - Fusos horários diferentes se atendendo clientes globais
+  </Card>
+
+  <Card title="Ligar de locais alvo" icon="earth-americas">
+    Se atendendo clientes em regiões específicas:
+    - Ligue dessas áreas de código
+    - Teste número local vs toll-free
+    - Verifique se ID do chamador exibe corretamente
+  </Card>
+</CardGroup>
+
+## Analisando Resultados de Teste por Telefone
+
+Após cada chamada de teste, revise métricas:
+
+### Métricas de Qualidade da Chamada
+
+Navegue para **Conversations → Logs** → Selecione chamada de teste → aba **Quality**:
+
+| Métrica | Alvo | Ação se Ruim |
+|--------|--------|----------------|
+| **Jitter** | &lt;30ms | Verifique estabilidade da rede |
+| **Perda de Pacotes** | &lt;1% | Investigue rede ou operadora |
+| **RTT (Round Trip Time)** | &lt;200ms | Verifique roteamento geográfico |
+| **MOS (Mean Opinion Score)** | >3.5 | Indicador geral de qualidade |
+
+### Precisão de Transcrição
+
+Compare transcrição com o que você realmente disse:
+
+- **Taxa de Erro de Palavras (WER)**: Deve ser &lt;10%
+- Erros comuns: Termos técnicos, nomes, sotaques
+- Corrija com vocabulário personalizado em agente → **Transcriber → Custom Words**
+
+### Execução de Ações
+
+Verifique se todas as ações dispararam corretamente:
+- Verifique timestamps (dispararam no momento certo?)
+- Revise payloads (parâmetros corretos enviados?)
+- Confirme respostas (API retornou dados esperados?)
+
+## Problemas Comuns e Correções
+
+<AccordionGroup>
+  <Accordion title="Chamada não conecta">
+    **Causas**:
+    - Número ainda não provisionado (aguarde 5-10 min)
+    - Formato de número errado (deve ser E.164: +12125551234)
+    - Operadora bloqueando chamadas (verifique pontuação de spam)
+    - Falha no registro do trunk SIP
+
+    **Correção**:
+    - Verifique se o número mostra status "Active" em Telephony → Numbers
+    - Verifique logs de registro do trunk SIP
+    - Teste com número de destino diferente
+  </Accordion>
+
+  <Accordion title="Áudio unidirecional">
+    **Sintoma**: Você ouve o agente, mas o agente não ouve você (ou vice-versa)
+
+    **Causas**:
+    - Firewall bloqueando pacotes RTP
+    - Problema de travessia NAT
+    - Incompatibilidade de codec
+
+    **Correção**:
+    - Habilite relay TURN nas configurações do agente
+    - Verifique se o firewall permite portas UDP 10000-60000
+    - Tente codec diferente (Opus → PCMU)
+  </Accordion>
+
+  <Accordion title="Qualidade de áudio ruim">
+    **Causas**:
+    - Congestionamento de rede
+    - Baixa largura de banda
+    - Perda de pacotes
+    - Configurações de codec erradas
+
+    **Correção**:
+    - Verifique métricas de qualidade da chamada nos logs
+    - Mude para codec de maior qualidade
+    - Teste em horário diferente (menos carga de rede)
+    - Contate operadora se persistente
+  </Accordion>
+</AccordionGroup>
+
+## Checklist de Teste por Telefone
+
+Antes de lançar para produção, complete este checklist de teste por telefone:
+
+- [ ] Ligou de telefone celular - áudio claro em ambas as direções
+- [ ] Ligou de telefone fixo (se aplicável) - áudio claro
+- [ ] Testou em ambiente barulhento - agente transcreve com precisão
+- [ ] Testou entrada DTMF - todas as teclas detectadas corretamente
+- [ ] Disparou transferência - conectou com sucesso ao destino
+- [ ] Testou AMD - correio de voz detectado com precisão
+- [ ] Interrompeu agente no meio da frase - barge-in funciona
+- [ ] Ficou em silêncio - tratamento de inatividade disparado
+- [ ] Disparou todas as ações personalizadas - executadas com sucesso
+- [ ] Fez perguntas do KB - recuperou informação correta
+- [ ] Revisou métricas de qualidade da chamada - todas dentro dos alvos
+- [ ] Verificou precisão da transcrição - &lt;10% taxa de erro de palavras
+
+## Próximos Passos
+
+<CardGroup cols={2}>
+  <Card title="Cenários de Teste" icon="list-check" href="/launch/test/test-scenarios">
+    Cenários de teste comuns para validar
+  </Card>
+
+  <Card title="Depuração" icon="bug" href="/test/debugging">
+    Solucione problemas encontrados durante teste
+  </Card>
+
+  <Card title="Logs e Monitoramento" icon="chart-mixed" href="/launch/test/logs-and-monitoring">
+    Mergulho profundo em logs e métricas de chamada
+  </Card>
+</CardGroup>

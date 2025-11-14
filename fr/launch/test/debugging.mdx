@@ -1,0 +1,362 @@
+---
+title: "Débogage"
+description: "Déboguer les problèmes d'agent avec les journaux, traces et outils de diagnostic"
+icon: "bug"
+keywords: "débogage agent IA, journaux de conversation, dépannage erreurs, débogage actions, erreurs de transcription, débogage API, test agent, analyse journaux, outils diagnostiques"
+og:description: "Guide de débogage systématique pour les agents IA. Analysez les journaux, dépannez les actions, corrigez les erreurs de transcription et résolvez les problèmes de comportement avec les outils de diagnostic."
+---
+
+## Philosophie de débogage
+
+Lorsque votre agent se comporte de manière inattendue, un débogage systématique permet de gagner du temps. Suivez ce processus :
+
+1. **Reproduire** - Pouvez-vous reproduire le problème de manière cohérente ?
+2. **Isoler** - Est-ce les instructions, les intégrations, le modèle ou l'infrastructure ?
+3. **Inspecter** - Examinez les journaux, traces et métriques pour trouver des indices
+4. **Corriger** - Appliquez le plus petit changement qui résout le problème
+5. **Valider** - Testez pour confirmer que la correction fonctionne
+
+## Outils de débogage rapides
+
+<CardGroup cols={2}>
+  <Card title="Journaux de conversation" icon="file-lines">
+    Chaque appel de test et de production est journalisé avec transcription complète, actions et métadonnées.
+
+    Accès : **Conversations → Logs**
+  </Card>
+
+  <Card title="Moniteur en direct" icon="eye">
+    Surveillez les appels actifs en temps réel avec transcriptions en direct et déclenchement d'actions.
+
+    Accès : **Conversations → Live Monitor**
+  </Card>
+
+  <Card title="Journaux d'erreurs" icon="triangle-exclamation">
+    Erreurs de plateforme, échecs d'API et problèmes système.
+
+    Accès : **Logs → Errors**
+  </Card>
+
+  <Card title="Inspecteur d'actions" icon="magnifying-glass">
+    Vue détaillée des appels API personnalisés, requêtes, réponses et timing.
+
+    Accès : Dans les journaux de conversation → onglet **Actions**
+  </Card>
+</CardGroup>
+
+## Scénarios de débogage courants
+
+### L'agent donne de mauvaises réponses
+
+<Steps>
+  <Step title="Vérifier les instructions">
+    Examinez agent → **Conversation → Instructions** :
+    - Les instructions sont-elles claires et spécifiques ?
+    - Y a-t-il des règles contradictoires ?
+    - L'agent a-t-il le contexte pour la question ?
+  </Step>
+
+  <Step title="Vérifier la base de connaissances">
+    - La réponse correcte est-elle dans votre KB ?
+    - Testez la recherche KB manuellement :
+      ```bash
+      curl -X POST https://api.itellico.ai/v1/knowledge-bases/kb_123/search \
+           -H "Authorization: Bearer YOUR_API_KEY" \
+           -d '{"query": "your test query"}'
+      ```
+    - Vérifiez la récupération dans les journaux → section **Knowledge Retrieved**
+  </Step>
+
+  <Step title="Examiner le journal de conversation">
+    - Quel contexte l'agent avait-il lors de la réponse ?
+    - Le contenu KB pertinent a-t-il été récupéré ?
+    - L'agent a-t-il suivi les modèles d'instructions ?
+  </Step>
+
+  <Step title="Tester en isolation">
+    Créez un test minimal :
+    - Instruction simple
+    - Question claire
+    - Contenu KB attendu
+
+    Si cela fonctionne en isolation, le problème est le contexte/la complexité.
+  </Step>
+</Steps>
+
+### Les actions ne se déclenchent pas
+
+<Accordion title="L'action API ne se déclenche pas">
+  **Vérifier dans les journaux de conversation** :
+  1. Allez à la conversation → onglet **Actions**
+  2. L'action est-elle listée ? Si non, elle ne s'est jamais déclenchée
+  3. Si listée, vérifiez le statut : Succès vs Échec
+
+  **Pourquoi les actions ne se déclenchent pas** :
+  - Les instructions de l'agent ne mentionnent pas quand l'utiliser
+  - L'utilisateur n'a pas fourni les informations requises
+  - La condition de déclenchement de l'action n'est pas remplie
+
+  **Solution** :
+  - Ajoutez une instruction claire : "Quand le client demande l'état de commande, utilisez l'action getOrderStatus"
+  - Assurez-vous que l'agent collecte d'abord les paramètres requis
+  - Testez la phrase de déclenchement dans le simulateur
+</Accordion>
+
+<Accordion title="L'API retourne une erreur">
+  **Vérifier les détails de l'action dans les journaux** :
+  - Requête envoyée (format de payload correct ?)
+  - Réponse reçue (code d'erreur ? message ?)
+  - En-têtes d'authentification (clé API valide ?)
+
+  **Erreurs courantes** :
+  - `401 Unauthorized` → Vérifiez la clé API
+  - `404 Not Found` → Vérifiez l'URL du endpoint
+  - `408 Timeout` → API trop lente, augmentez le timeout
+  - `500 Internal Server Error` → Problème d'API externe
+
+  **Tester l'API manuellement** :
+  ```bash
+  # Copiez la requête des journaux et testez avec curl
+  curl -X POST https://api.example.com/endpoint \
+       -H "Authorization: Bearer YOUR_KEY" \
+       -H "Content-Type: application/json" \
+       -d '{"param": "value"}'
+  ```
+
+  Si l'appel manuel fonctionne, le problème est dans la configuration de l'action.
+</Accordion>
+
+### Erreurs de transcription
+
+<Accordion title="L'agent entend mal des mots">
+  **Examiner la précision de la transcription** :
+  - Écoutez l'enregistrement de l'appel
+  - Comparez au texte transcrit
+  - Identifiez les mots mal entendus (termes techniques ? noms ? accents ?)
+
+  **Solutions** :
+
+  **1. Ajouter un vocabulaire personnalisé** :
+  ```json
+  // Paramètres de l'agent → Transcriber → Custom Vocabulary
+  {
+    "custom_words": [
+      {"word": "itellicoAI", "pronunciation": "eye-TELL-ih-koh AI"},
+      {"word": "API", "pronunciation": "A P I"}
+    ]
+  }
+  ```
+
+  **2. Essayer un transcripteur différent** :
+  - Deepgram : Meilleur pour les accents, le bruit
+  - Azure : Meilleur pour les termes techniques
+  - Whisper : Meilleur pour le multilingue
+
+  **3. Améliorer la qualité audio** :
+  - Activer la suppression du bruit
+  - Utiliser un codec à débit binaire plus élevé (Opus 64kbps)
+  - Tester dans un environnement plus silencieux
+</Accordion>
+
+### L'agent boucle ou se répète
+
+<Accordion title="L'agent pose la même question plusieurs fois">
+  **Diagnostic** :
+  1. Examinez la transcription - où commence la boucle ?
+  2. Quelle réponse de l'utilisateur déclenche la répétition ?
+  3. La transcription échoue-t-elle ? (l'agent n'a pas "entendu" la réponse)
+
+  **Corrections** :
+
+  **1. Ajouter des instructions de prévention de boucle** :
+  ```markdown
+  Si vous avez posé la même question deux fois sans obtenir une réponse claire :
+  1. Reformulez la question
+  2. Si toujours pas clair, proposez de transférer à un humain
+
+  Ne posez jamais la même question plus de 3 fois.
+  ```
+
+  **2. Utiliser une entrée structurée (DTMF)** :
+  Pour les informations critiques, utilisez le clavier :
+  ```markdown
+  "Quel département ? Appuyez sur 1 pour les Ventes, 2 pour le Support."
+  ```
+
+  Plus fiable que la reconnaissance vocale.
+
+  **3. Vérifier la transcription** :
+  Si l'agent n'a pas "entendu" la réponse, corrigez la qualité audio ou les paramètres du transcripteur.
+</Accordion>
+
+## Débogage avec les journaux
+
+### Lecture des journaux de conversation
+
+Chaque journal de conversation comprend :
+
+<Tabs>
+  <Tab title="Transcription">
+    **Ce qu'il faut rechercher** :
+    - Précision de la transcription (comparer à l'audio)
+    - Pertinence des réponses de l'agent
+    - Flux de conversation (naturel vs maladroit)
+    - Indicateurs d'atteinte des objectifs
+
+    **Horodatages** : Vérifiez si les délais entre les tours indiquent des problèmes de latence
+  </Tab>
+
+  <Tab title="Actions">
+    **Détails** :
+    - Quelles actions ont été déclenchées
+    - Paramètres d'entrée
+    - Requête/réponse API
+    - Temps d'exécution
+    - Statut succès/échec
+
+    **Déboguer les échecs** : Les messages d'erreur indiquent généralement la cause profonde
+  </Tab>
+
+  <Tab title="Connaissances">
+    **Ce qui a été récupéré** :
+    - Requête de recherche utilisée
+    - Morceaux KB récupérés
+    - Scores de similarité
+    - Contenu utilisé dans la réponse
+
+    **Déboguer "Je ne sais pas"** : Vérifiez si le contenu pertinent a été récupéré mais non utilisé, ou si la récupération a complètement échoué
+  </Tab>
+
+  <Tab title="Objectifs">
+    **Résultats** :
+    - Quels objectifs ont été atteints
+    - Scores de confiance
+    - Entités extraites (dates, noms, etc.)
+
+    **Déboguer la mauvaise classification** : Examinez la conversation - l'objectif aurait-il dû être atteint ?
+  </Tab>
+
+  <Tab title="Qualité">
+    **Métriques** :
+    - Qualité audio (jitter, perte de paquets, score MOS)
+    - Latence de réponse
+    - Durée de l'appel
+    - Fréquence des interruptions
+
+    **Problèmes de performance** : Vérifiez les métriques de latence et de qualité
+  </Tab>
+</Tabs>
+
+### Analyse des journaux d'erreurs
+
+Filtrer les erreurs par :
+- Plage horaire (dernières 24h, dernière semaine)
+- Type d'erreur (API, transcription, système)
+- ID agent (agent spécifique)
+- Gravité (critique, avertissement, info)
+
+**Patterns courants** :
+- Même erreur répétée → Problème systémique (config, intégration)
+- Pics d'erreurs à des moments précis → Problème de capacité ou de service externe
+- Erreurs sur un agent spécifique → Problème de configuration spécifique à l'agent
+
+## Débogage avancé
+
+### Débogage du comportement du modèle
+
+<Accordion title="Comparer les réponses des modèles">
+  Testez le même scénario avec différents modèles :
+
+  **Étapes** :
+  1. Clonez l'agent
+  2. Changez le modèle (GPT-4 → Claude, etc.)
+  3. Exécutez un scénario de test identique
+  4. Comparez les réponses
+
+  **Quand c'est utile** :
+  - L'agent donne des réponses inattendues
+  - Tester si une mise à niveau du modèle améliore la qualité
+  - Déboguer les hallucinations ou les faits incorrects
+</Accordion>
+
+<Accordion title="Itération d'ingénierie de prompt">
+  **Test systématique** :
+  1. Créez 5-10 scénarios de test (enregistrés dans Test Scenarios)
+  2. Exécutez tous les scénarios avec les instructions actuelles
+  3. Documentez les échecs
+  4. Modifiez les instructions pour résoudre les échecs
+  5. Réexécutez tous les scénarios
+  6. Répétez jusqu'à ce que tous réussissent
+
+  **Test A/B des instructions** :
+  - Créez deux versions d'agent avec des instructions différentes
+  - Routez 50% du trafic vers chacune
+  - Comparez les taux d'atteinte des objectifs
+  - Promouvez le gagnant
+</Accordion>
+
+### Débogage de l'intégration
+
+<Accordion title="Tester les API en isolation">
+  **Retirer l'agent de l'équation** :
+  1. Copiez la requête API des journaux
+  2. Testez avec curl/Postman
+  3. Vérifiez que le format de réponse correspond aux attentes
+  4. Confirmez que l'authentification fonctionne
+
+  Si l'API fonctionne en isolation mais échoue depuis l'agent :
+  - Vérifiez la liste blanche d'IP
+  - Vérifiez les paramètres de timeout (l'agent peut expirer avant que l'API ne réponde)
+  - Vérifiez le formatage du payload de la requête
+</Accordion>
+
+<Accordion title="Simuler les réponses API">
+  Pour tester sans appeler les vraies API :
+
+  **Utiliser un serveur simulé** :
+  ```javascript
+  // mockapi.example.com/order-status
+  {
+    "order_id": "12345",
+    "status": "shipped",
+    "eta": "2024-01-15"
+  }
+  ```
+
+  Pointez l'action de l'agent vers l'URL simulée, testez le flux de conversation sans dépendances externes.
+</Accordion>
+
+## Liste de contrôle de débogage
+
+Lors du débogage d'un problème :
+
+- [ ] Pouvez-vous reproduire le problème de manière cohérente ?
+- [ ] Avez-vous examiné le journal de conversation pour l'appel défaillant ?
+- [ ] Avez-vous vérifié les journaux d'erreurs pour les erreurs connexes ?
+- [ ] Avez-vous vérifié que les instructions de l'agent sont claires ?
+- [ ] Avez-vous testé dans le simulateur web (itération plus rapide) ?
+- [ ] Avez-vous isolé le problème (instructions vs intégration vs modèle) ?
+- [ ] Avez-vous appliqué une correction minimale (changé une chose) ?
+- [ ] Avez-vous retesté pour confirmer que la correction fonctionne ?
+- [ ] Avez-vous testé les régressions (ne pas casser d'autres scénarios) ?
+- [ ] Avez-vous documenté le problème et la correction ?
+
+## Prochaines étapes
+
+<CardGroup cols={2}>
+  <Card title="Journaux et surveillance" icon="chart-mixed" href="/launch/test/logs-and-monitoring">
+    Plongée profonde dans les journaux et métriques
+  </Card>
+
+  <Card title="Dépannage" icon="screwdriver-wrench" href="/launch/test/troubleshooting">
+    Problèmes courants et solutions
+  </Card>
+
+  <Card title="Scénarios de test" icon="list-check" href="/launch/test/test-scenarios">
+    Créer une suite de tests de régression
+  </Card>
+
+  <Card title="Bonnes pratiques de production" icon="star" href="/launch/production-best-practices">
+    Prévenir les problèmes en production
+  </Card>
+</CardGroup>

@@ -1,0 +1,362 @@
+---
+title: "Depuração"
+description: "Depure problemas do agente com logs, rastreamentos e ferramentas de diagnóstico"
+icon: "bug"
+keywords: "depuração de agente IA, logs de conversa, solução de erros, depuração de ações, erros de transcrição, depuração de API, teste de agente, análise de logs, ferramentas de diagnóstico"
+og:description: "Guia sistemático de depuração para agentes IA. Analise logs, solucione ações, corrija erros de transcrição e resolva problemas de comportamento do agente com ferramentas de diagnóstico."
+---
+
+## Filosofia de Depuração
+
+Quando seu agente se comporta de forma inesperada, a depuração sistemática economiza tempo. Siga este processo:
+
+1. **Reproduzir** - Você consegue fazer o problema acontecer novamente de forma consistente?
+2. **Isolar** - É instrução, integração, modelo ou infraestrutura?
+3. **Inspecionar** - Revise logs, rastreamentos e métricas em busca de pistas
+4. **Corrigir** - Aplique a menor mudança que resolva o problema
+5. **Validar** - Teste para confirmar que a correção funciona
+
+## Ferramentas Rápidas de Depuração
+
+<CardGroup cols={2}>
+  <Card title="Logs de Conversa" icon="file-lines">
+    Cada chamada de teste e produção registrada com transcrição completa, ações e metadados.
+
+    Acesso: **Conversations → Logs**
+  </Card>
+
+  <Card title="Monitor ao Vivo" icon="eye">
+    Assista chamadas ativas em tempo real com transcrições ao vivo e acionadores de ação.
+
+    Acesso: **Conversations → Live Monitor**
+  </Card>
+
+  <Card title="Logs de Erro" icon="triangle-exclamation">
+    Erros de plataforma, falhas de API e problemas de sistema.
+
+    Acesso: **Logs → Errors**
+  </Card>
+
+  <Card title="Inspetor de Ações" icon="magnifying-glass">
+    Visão detalhada de chamadas de API personalizadas, requisições, respostas e tempo.
+
+    Acesso: Nos logs de conversa → aba **Actions**
+  </Card>
+</CardGroup>
+
+## Cenários Comuns de Depuração
+
+### Agente Dá Respostas Erradas
+
+<Steps>
+  <Step title="Verificar instruções">
+    Revise agente → **Conversation → Instructions**:
+    - As instruções são claras e específicas?
+    - Há regras conflitantes?
+    - O agente tem contexto para a pergunta?
+  </Step>
+
+  <Step title="Verificar base de conhecimento">
+    - A resposta correta está no seu KB?
+    - Teste a busca do KB manualmente:
+      ```bash
+      curl -X POST https://api.itellico.ai/v1/knowledge-bases/kb_123/search \
+           -H "Authorization: Bearer YOUR_API_KEY" \
+           -d '{"query": "your test query"}'
+      ```
+    - Verifique a recuperação nos logs → seção **Knowledge Retrieved**
+  </Step>
+
+  <Step title="Revisar log de conversa">
+    - Que contexto o agente tinha ao responder?
+    - O conteúdo relevante do KB foi recuperado?
+    - O agente seguiu os templates de instrução?
+  </Step>
+
+  <Step title="Testar isoladamente">
+    Crie um teste mínimo:
+    - Instrução simples
+    - Pergunta clara
+    - Conteúdo esperado do KB
+
+    Se funcionar isoladamente, o problema é contexto/complexidade.
+  </Step>
+</Steps>
+
+### Ações Não Disparam
+
+<Accordion title="Ação de API não dispara">
+  **Verifique nos logs de conversa**:
+  1. Vá para conversa → aba **Actions**
+  2. A ação está listada? Se não, ela nunca foi disparada
+  3. Se listada, verifique o status: Sucesso vs Falha
+
+  **Por que as ações não disparam**:
+  - As instruções do agente não mencionam quando usá-la
+  - O usuário não forneceu as informações necessárias
+  - A condição de disparo da ação não foi atendida
+
+  **Correção**:
+  - Adicione instrução clara: "Quando o cliente perguntar sobre status do pedido, use a ação getOrderStatus"
+  - Certifique-se de que o agente coleta os parâmetros necessários primeiro
+  - Teste a frase de disparo no simulador
+</Accordion>
+
+<Accordion title="API retorna erro">
+  **Verifique os detalhes da ação nos logs**:
+  - Requisição enviada (formato do payload correto?)
+  - Resposta recebida (código de erro? mensagem?)
+  - Cabeçalhos de autenticação (chave de API válida?)
+
+  **Erros comuns**:
+  - `401 Unauthorized` → Verifique a chave de API
+  - `404 Not Found` → Verifique a URL do endpoint
+  - `408 Timeout` → API muito lenta, aumente o timeout
+  - `500 Internal Server Error` → Problema da API externa
+
+  **Teste a API manualmente**:
+  ```bash
+  # Copie a requisição dos logs e teste com curl
+  curl -X POST https://api.example.com/endpoint \
+       -H "Authorization: Bearer YOUR_KEY" \
+       -H "Content-Type: application/json" \
+       -d '{"param": "value"}'
+  ```
+
+  Se a chamada manual funcionar, o problema está na configuração da ação.
+</Accordion>
+
+### Erros de Transcrição
+
+<Accordion title="Agente ouve palavras erradas">
+  **Revise a precisão da transcrição**:
+  - Ouça a gravação da chamada
+  - Compare com o texto da transcrição
+  - Identifique palavras mal compreendidas (termos técnicos? nomes? sotaques?)
+
+  **Soluções**:
+
+  **1. Adicionar Vocabulário Personalizado**:
+  ```json
+  // Configurações do agente → Transcriber → Custom Vocabulary
+  {
+    "custom_words": [
+      {"word": "itellicoAI", "pronunciation": "eye-TELL-ih-koh AI"},
+      {"word": "API", "pronunciation": "A P I"}
+    ]
+  }
+  ```
+
+  **2. Tentar Transcritor Diferente**:
+  - Deepgram: Melhor para sotaques, ruído
+  - Azure: Melhor para termos técnicos
+  - Whisper: Melhor para multilíngue
+
+  **3. Melhorar Qualidade de Áudio**:
+  - Habilite supressão de ruído
+  - Use codec de bitrate maior (Opus 64kbps)
+  - Teste em ambiente mais silencioso
+</Accordion>
+
+### Agente Entra em Loop ou Repete
+
+<Accordion title="Agente faz a mesma pergunta várias vezes">
+  **Diagnosticar**:
+  1. Revise a transcrição - onde o loop começa?
+  2. Qual resposta do usuário aciona a repetição?
+  3. A transcrição está falhand? (agente não "ouviu" a resposta)
+
+  **Correções**:
+
+  **1. Adicionar Instruções de Prevenção de Loop**:
+  ```markdown
+  Se você fez a mesma pergunta duas vezes sem obter uma resposta clara:
+  1. Reformule a pergunta
+  2. Se ainda não estiver claro, ofereça transferir para um humano
+
+  Nunca faça a mesma pergunta mais de 3 vezes.
+  ```
+
+  **2. Usar Entrada Estruturada (DTMF)**:
+  Para informações críticas, use o teclado:
+  ```markdown
+  "Qual departamento? Pressione 1 para Vendas, 2 para Suporte."
+  ```
+
+  Mais confiável que reconhecimento de fala.
+
+  **3. Verificar Transcrição**:
+  Se o agente não "ouviu" a resposta, corrija a qualidade do áudio ou configurações do transcritor.
+</Accordion>
+
+## Depuração com Logs
+
+### Leitura de Logs de Conversa
+
+Cada log de conversa inclui:
+
+<Tabs>
+  <Tab title="Transcrição">
+    **O Que Procurar**:
+    - Precisão da transcrição (compare com o áudio)
+    - Relevância da resposta do agente
+    - Fluxo da conversa (natural vs desajeitado)
+    - Indicadores de alcance de objetivo
+
+    **Timestamps**: Verifique se atrasos entre turnos indicam problemas de latência
+  </Tab>
+
+  <Tab title="Ações">
+    **Detalhes**:
+    - Quais ações foram disparadas
+    - Parâmetros de entrada
+    - Requisição/resposta da API
+    - Tempo de execução
+    - Status de sucesso/falha
+
+    **Depurar Falhas**: Mensagens de erro geralmente indicam a causa raiz
+  </Tab>
+
+  <Tab title="Conhecimento">
+    **O Que Foi Recuperado**:
+    - Query de busca usada
+    - Fragmentos do KB recuperados
+    - Pontuações de similaridade
+    - Conteúdo usado na resposta
+
+    **Depurar "Não sei"**: Verifique se conteúdo relevante foi recuperado mas não usado, ou se a recuperação falhou completamente
+  </Tab>
+
+  <Tab title="Objetivos">
+    **Resultados**:
+    - Quais objetivos foram alcançados
+    - Pontuações de confiança
+    - Entidades extraídas (datas, nomes, etc.)
+
+    **Depurar Classificação Incorreta**: Revise a conversa - o objetivo deveria ter sido alcançado?
+  </Tab>
+
+  <Tab title="Qualidade">
+    **Métricas**:
+    - Qualidade de áudio (jitter, perda de pacotes, pontuação MOS)
+    - Latência de resposta
+    - Duração da chamada
+    - Frequência de interrupção
+
+    **Problemas de Performance**: Verifique latência e métricas de qualidade
+  </Tab>
+</Tabs>
+
+### Análise de Log de Erros
+
+Filtre erros por:
+- Intervalo de tempo (últimas 24h, última semana)
+- Tipo de erro (API, transcrição, sistema)
+- ID do agente (agente específico)
+- Severidade (crítico, aviso, info)
+
+**Padrões Comuns**:
+- Mesmo erro repetindo → Problema sistêmico (config, integração)
+- Picos de erro em horário específico → Problema de capacidade ou serviço externo
+- Erros em agente específico → Problema de configuração específica do agente
+
+## Depuração Avançada
+
+### Depuração de Comportamento do Modelo
+
+<Accordion title="Comparar respostas do modelo">
+  Teste o mesmo cenário com modelos diferentes:
+
+  **Passos**:
+  1. Clone o agente
+  2. Mude o modelo (GPT-4 → Claude, etc.)
+  3. Execute cenário de teste idêntico
+  4. Compare as respostas
+
+  **Quando Útil**:
+  - Agente dando respostas inesperadas
+  - Testando se atualização do modelo melhora qualidade
+  - Depurando alucinações ou fatos incorretos
+</Accordion>
+
+<Accordion title="Iteração de engenharia de prompt">
+  **Teste Sistemático**:
+  1. Crie 5-10 cenários de teste (salvos em Test Scenarios)
+  2. Execute todos os cenários com instruções atuais
+  3. Documente falhas
+  4. Modifique instruções para corrigir falhas
+  5. Execute todos os cenários novamente
+  6. Repita até que todos passem
+
+  **Teste A/B de Instruções**:
+  - Crie duas versões de agente com instruções diferentes
+  - Direcione 50% do tráfego para cada
+  - Compare taxas de alcance de objetivo
+  - Promova o vencedor
+</Accordion>
+
+### Depuração de Integração
+
+<Accordion title="Testar APIs isoladamente">
+  **Remover o Agente da Equação**:
+  1. Copie a requisição da API dos logs
+  2. Teste com curl/Postman
+  3. Verifique se o formato da resposta corresponde às expectativas
+  4. Confirme que a autenticação funciona
+
+  Se a API funcionar isoladamente mas falhar do agente:
+  - Verifique lista de permissões de IP
+  - Verifique configurações de timeout (agente pode esgotar o tempo antes da API responder)
+  - Verifique formatação do payload da requisição
+</Accordion>
+
+<Accordion title="Simular respostas de API">
+  Para testar sem atingir APIs reais:
+
+  **Use servidor simulado**:
+  ```javascript
+  // mockapi.example.com/order-status
+  {
+    "order_id": "12345",
+    "status": "shipped",
+    "eta": "2024-01-15"
+  }
+  ```
+
+  Aponte a ação do agente para URL simulada, teste o fluxo de conversa sem dependências externas.
+</Accordion>
+
+## Checklist de Depuração
+
+Ao depurar um problema:
+
+- [ ] Você consegue reproduzir o problema consistentemente?
+- [ ] Revisou o log de conversa da chamada com falha?
+- [ ] Verificou logs de erro para erros relacionados?
+- [ ] Verificou se as instruções do agente estão claras?
+- [ ] Testou no simulador web (iteração mais rápida)?
+- [ ] Isolou o problema (instruções vs integração vs modelo)?
+- [ ] Aplicou correção mínima (mudou uma coisa)?
+- [ ] Testou novamente para confirmar que a correção funciona?
+- [ ] Testou para regressões (não quebrou outros cenários)?
+- [ ] Documentou o problema e a correção?
+
+## Próximos Passos
+
+<CardGroup cols={2}>
+  <Card title="Logs e Monitoramento" icon="chart-mixed" href="/launch/test/logs-and-monitoring">
+    Mergulho profundo em logs e métricas
+  </Card>
+
+  <Card title="Solução de Problemas" icon="screwdriver-wrench" href="/launch/test/troubleshooting">
+    Problemas comuns e soluções
+  </Card>
+
+  <Card title="Cenários de Teste" icon="list-check" href="/launch/test/test-scenarios">
+    Construa suite de testes de regressão
+  </Card>
+
+  <Card title="Melhores Práticas de Produção" icon="star" href="/launch/production-best-practices">
+    Previna problemas em produção
+  </Card>
+</CardGroup>

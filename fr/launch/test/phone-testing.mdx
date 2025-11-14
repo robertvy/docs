@@ -1,0 +1,339 @@
+---
+title: "Tests téléphoniques"
+description: "Valider votre agent avec de vrais appels téléphoniques PSTN"
+icon: "phone"
+keywords: "tests téléphoniques, validation PSTN, tests qualité appel, tests DTMF, tests AMD, détection messagerie vocale, qualité audio, tests transfert appel, format E.164"
+og:description: "Validez les agents IA avec de vrais appels téléphoniques PSTN. Testez la qualité audio, l'entrée DTMF, les transferts d'appels, la détection de messagerie vocale et l'expérience d'appel de bout en bout."
+---
+
+## Pourquoi les tests téléphoniques sont importants
+
+Alors que le simulateur web détecte la plupart des problèmes, les tests téléphoniques valident l'expérience complète de bout en bout, y compris :
+- La qualité audio et la latence PSTN
+- Les vraies tonalités DTMF des claviers téléphoniques
+- Les vrais transferts et routages d'appels
+- La détection de messagerie vocale (AMD)
+- Le comportement des appels mobiles et fixes
+
+**Recommandation** : Complétez les tests du simulateur web d'abord, puis validez avec 2-3 appels de test téléphoniques avant le lancement.
+
+## Exécuter un test téléphonique
+
+<Steps>
+  <Step title="Ouvrir le tiroir Test Agent">
+    Dans votre éditeur d'agent, cliquez sur le bouton **Test Agent** (en haut à droite). Passez à l'onglet **Phone Call**.
+  </Step>
+
+  <Step title="Configurer l'appel de test">
+    **Numéro de départ** : Sélectionnez l'un de vos numéros provisionnés comme ID d'appelant
+
+    **Destination** : Entrez votre numéro de téléphone au format E.164 (`+12125551234`)
+
+    **Paramètre AMD** (pour sortant) :
+    - **Text-based** : Détection rapide (~1-2s), précision 85-90%
+    - **ML-based** : Plus lent (~3-4s), précision >95%
+    - Choisissez en fonction des besoins de votre campagne
+  </Step>
+
+  <Step title="Démarrer le test">
+    Cliquez sur **Start Test**. La plateforme compose immédiatement votre téléphone.
+
+    **Ce qui se passe** :
+    - Votre téléphone sonne dans les 2-5 secondes
+    - Répondez à l'appel
+    - L'agent joue le message d'accueil
+    - Parlez naturellement pour tester la conversation
+  </Step>
+
+  <Step title="Surveiller en temps réel">
+    Pendant l'appel, ouvrez **Conversations → Live Monitor** dans un autre onglet pour voir :
+    - La transcription en direct
+    - Les déclenchements d'actions
+    - Les métriques de qualité d'appel
+  </Step>
+
+  <Step title="Examiner après l'appel">
+    Une fois terminé, trouvez la conversation dans **Conversations → Logs** :
+    - Enregistrement audio complet
+    - Transcription avec horodatages
+    - Résultats des objectifs
+    - Payloads des actions
+    - Métriques de qualité (latence, jitter, perte de paquets)
+  </Step>
+</Steps>
+
+## Que tester
+
+### Vérifications de la qualité audio
+
+<Accordion title="Clarté et prononciation">
+  **Écouter pour** :
+  - La voix de l'agent est-elle claire et naturelle ?
+  - Les prononciations personnalisées fonctionnent-elles ?
+  - Y a-t-il des artefacts robotiques ou des glitchs ?
+  - Vitesse de parole appropriée ?
+
+  **Tester sur** :
+  - Téléphone mobile (réseau cellulaire)
+  - Ligne fixe (si disponible)
+  - Téléphone VoIP (Teams, Zoom Phone)
+
+  Différents réseaux ont différentes caractéristiques de qualité audio.
+</Accordion>
+
+<Accordion title="Écho et feedback">
+  **Scénarios de test** :
+  1. Utilisez le mode haut-parleur → Écoutez l'écho
+  2. Utilisez un casque/combiné → Devrait être sans écho
+
+  **Problèmes** :
+  - Écho sur haut-parleur → Normal, l'AEC (annulation d'écho) devrait le gérer
+  - Écho sur combiné → Problème, vérifiez les paramètres audio de l'agent
+  - Boucle de feedback → Désactivez une source audio
+
+  **Configuration** : Activez l'annulation d'écho dans agent → **Voice Settings → Audio Processing**
+</Accordion>
+
+<Accordion title="Latence et délais">
+  **Mesurer le temps de réponse** :
+  - Arrêtez de parler et comptez les secondes jusqu'à ce que l'agent réponde
+  - Cible : &lt;1s pour la meilleure expérience
+  - Acceptable : &lt;2s
+  - Mauvais : >3s (les clients sont frustrés)
+
+  **Si latence élevée** :
+  - Vérifiez la sélection du modèle (GPT-3.5 plus rapide que GPT-4)
+  - Réduisez la longueur des instructions
+  - Simplifiez la récupération de la base de connaissances
+  - Vérifiez la connectivité réseau
+</Accordion>
+
+### Tests DTMF (clavier)
+
+Testez l'entrée du clavier téléphonique si votre agent utilise DTMF :
+
+<Steps>
+  <Step title="Activer DTMF">
+    Dans les paramètres de l'agent → **Advanced → DTMF Controls**, activez la détection de clavier.
+  </Step>
+
+  <Step title="Tester les pressions de touches">
+    Pendant l'appel téléphonique :
+    - L'agent dit : "Appuyez sur 1 pour les ventes, 2 pour le support"
+    - Appuyez sur les touches du clavier de votre téléphone
+    - L'agent devrait détecter et répondre
+
+    Testez toutes les touches : 0-9, *, #
+  </Step>
+
+  <Step title="Vérifier dans les journaux">
+    Vérifiez le journal de conversation pour le champ `dtmf_input` montrant quelles touches ont été détectées.
+
+    Si les touches ne sont pas détectées :
+    - Vérifiez que l'opérateur prend en charge DTMF RFC 2833
+    - Vérifiez que les paramètres DTMF de l'agent sont activés
+    - Essayez un téléphone différent (certains téléphones VoIP ont des problèmes)
+  </Step>
+</Steps>
+
+### Tests de transfert
+
+Validez que les transferts d'appels fonctionnent correctement :
+
+<Accordion title="Transfert direct">
+  **Configuration** :
+  1. Configurez l'action de transfert avec un numéro de destination valide
+  2. Déclenchez le transfert pendant l'appel de test
+  3. L'agent devrait annoncer le transfert et vous connecter
+
+  **Ce qu'il faut vérifier** :
+  - L'annonce de transfert est claire
+  - L'appel se connecte au numéro de destination
+  - La qualité audio est maintenue après le transfert
+  - Journalisation appropriée de la durée d'appel
+
+  **Note** : Utilisez un deuxième numéro de téléphone que vous contrôlez pour vérifier la connexion.
+</Accordion>
+
+<Accordion title="Transfert assisté">
+  **Configuration** :
+  - Définissez le type de transfert sur "attended" dans la configuration de l'action
+  - L'agent devrait d'abord se connecter à la destination
+  - Informer la destination avant de connecter l'appelant
+
+  **Flux de test** :
+  1. Déclenchez le transfert
+  2. L'agent vous met en attente (entend de la musique)
+  3. L'agent se connecte à la destination
+  4. L'agent annonce : "J'ai [client] pour vous"
+  5. L'agent connecte les deux parties
+
+  Plus fiable que les transferts directs, mais plus lent.
+</Accordion>
+
+### Détection de messagerie vocale (AMD)
+
+Pour les campagnes sortantes, testez la détection de répondeur :
+
+<Steps>
+  <Step title="Appeler votre messagerie vocale">
+    Utilisez Phone Test pour appeler un numéro qui va à la messagerie vocale (votre propre messagerie ou un numéro de test de messagerie).
+  </Step>
+
+  <Step title="Activer AMD">
+    Dans les paramètres de test, sélectionnez AMD basé sur texte ou ML.
+  </Step>
+
+  <Step title="Vérifier la détection">
+    - L'appel devrait détecter la messagerie vocale dans les 1-4 secondes
+    - L'agent devrait raccrocher (ou laisser un message si configuré)
+    - Vérifiez les journaux pour `amd_result: "voicemail"`
+
+    **Test de précision** :
+    - Exécutez 10 appels de test
+    - 5 à une vraie personne (vous répondez)
+    - 5 à la messagerie vocale
+    - Calculez la précision de détection : Devrait être >85% (texte) ou >95% (ML)
+  </Step>
+</Steps>
+
+## Bonnes pratiques de test
+
+<CardGroup cols={2}>
+  <Card title="Tester depuis plusieurs appareils" icon="mobile">
+    - iPhone (iOS)
+    - Téléphone Android
+    - Ligne fixe (si applicable)
+    - Téléphone VoIP
+
+    La qualité d'appel varie selon l'appareil et le réseau.
+  </Card>
+
+  <Card title="Tester différents scénarios" icon="list-check">
+    - Environnement calme (bureau)
+    - Environnement bruyant (rue, café)
+    - En mouvement (marche, conduite)
+    - Signal faible (sous-sol, zone rurale)
+  </Card>
+
+  <Card title="Tests selon l'heure de la journée" icon="clock">
+    - Heures de pointe (congestion réseau)
+    - Heures creuses (conditions optimales)
+    - Différents fuseaux horaires si vous servez des clients mondiaux
+  </Card>
+
+  <Card title="Appeler depuis les emplacements cibles" icon="earth-americas">
+    Si vous servez des clients dans des régions spécifiques :
+    - Appelez depuis ces indicatifs régionaux
+    - Testez numéro local vs numéro gratuit
+    - Vérifiez que l'ID de l'appelant s'affiche correctement
+  </Card>
+</CardGroup>
+
+## Analyser les résultats des tests téléphoniques
+
+Après chaque appel de test, examinez les métriques :
+
+### Métriques de qualité d'appel
+
+Naviguez vers **Conversations → Logs** → Sélectionnez l'appel de test → onglet **Quality** :
+
+| Métrique | Cible | Action si mauvais |
+|--------|--------|----------------|
+| **Jitter** | &lt;30ms | Vérifiez la stabilité réseau |
+| **Perte de paquets** | &lt;1% | Investiguer réseau ou opérateur |
+| **RTT (Round Trip Time)** | &lt;200ms | Vérifiez le routage géographique |
+| **MOS (Mean Opinion Score)** | >3.5 | Indicateur de qualité globale |
+
+### Précision de la transcription
+
+Comparez la transcription à ce que vous avez réellement dit :
+
+- **Word Error Rate (WER)** : Devrait être &lt;10%
+- Erreurs courantes : Termes techniques, noms, accents
+- Correction avec vocabulaire personnalisé dans agent → **Transcriber → Custom Words**
+
+### Exécution des actions
+
+Vérifiez que toutes les actions se sont déclenchées correctement :
+- Vérifiez les horodatages (se sont-elles déclenchées au bon moment ?)
+- Examinez les payloads (paramètres corrects envoyés ?)
+- Confirmez les réponses (l'API a retourné les données attendues ?)
+
+## Problèmes courants et corrections
+
+<AccordionGroup>
+  <Accordion title="L'appel ne se connecte pas">
+    **Causes** :
+    - Numéro pas encore provisionné (attendez 5-10 min)
+    - Format de numéro incorrect (doit être E.164 : +12125551234)
+    - Opérateur bloquant les appels (vérifiez le score de spam)
+    - Échec d'enregistrement du trunk SIP
+
+    **Correction** :
+    - Vérifiez que le numéro affiche le statut "Active" dans Telephony → Numbers
+    - Vérifiez les journaux d'enregistrement du trunk SIP
+    - Testez avec un numéro de destination différent
+  </Accordion>
+
+  <Accordion title="Audio unidirectionnel">
+    **Symptôme** : Vous entendez l'agent, mais l'agent ne vous entend pas (ou vice versa)
+
+    **Causes** :
+    - Pare-feu bloquant les paquets RTP
+    - Problème de traversée NAT
+    - Incompatibilité de codec
+
+    **Correction** :
+    - Activez le relais TURN dans les paramètres de l'agent
+    - Vérifiez que le pare-feu autorise les ports UDP 10000-60000
+    - Essayez un codec différent (Opus → PCMU)
+  </Accordion>
+
+  <Accordion title="Mauvaise qualité audio">
+    **Causes** :
+    - Congestion réseau
+    - Bande passante faible
+    - Perte de paquets
+    - Mauvais paramètres de codec
+
+    **Correction** :
+    - Vérifiez les métriques de qualité d'appel dans les journaux
+    - Passez à un codec de meilleure qualité
+    - Testez à un moment différent (moins de charge réseau)
+    - Contactez l'opérateur si persistant
+  </Accordion>
+</AccordionGroup>
+
+## Liste de contrôle des tests téléphoniques
+
+Avant de lancer en production, complétez cette liste de contrôle des tests téléphoniques :
+
+- [ ] Appelé depuis un téléphone mobile - audio clair dans les deux sens
+- [ ] Appelé depuis une ligne fixe (si applicable) - audio clair
+- [ ] Testé dans un environnement bruyant - l'agent transcrit avec précision
+- [ ] Testé l'entrée DTMF - toutes les touches détectées correctement
+- [ ] Déclenché un transfert - connecté avec succès à la destination
+- [ ] Testé AMD - messagerie vocale détectée avec précision
+- [ ] Interrompu l'agent en milieu de phrase - le barge-in fonctionne
+- [ ] Resté silencieux - gestion de l'inactivité déclenchée
+- [ ] Déclenché toutes les actions personnalisées - exécutées avec succès
+- [ ] Posé des questions KB - récupéré les bonnes informations
+- [ ] Examiné les métriques de qualité d'appel - toutes dans les cibles
+- [ ] Vérifié la précision de la transcription - &lt;10% de taux d'erreur de mots
+
+## Prochaines étapes
+
+<CardGroup cols={2}>
+  <Card title="Scénarios de test" icon="list-check" href="/launch/test/test-scenarios">
+    Scénarios de test courants à valider
+  </Card>
+
+  <Card title="Débogage" icon="bug" href="/test/debugging">
+    Dépanner les problèmes trouvés pendant les tests
+  </Card>
+
+  <Card title="Journaux et surveillance" icon="chart-mixed" href="/launch/test/logs-and-monitoring">
+    Plongée profonde dans les journaux d'appels et métriques
+  </Card>
+</CardGroup>

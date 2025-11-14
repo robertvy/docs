@@ -1,0 +1,363 @@
+---
+title: "Escenarios de Prueba"
+description: "Escenarios de prueba comunes para validar antes del lanzamiento a producción"
+icon: "list-check"
+keywords: "escenarios de prueba, pruebas de agentes, suite de pruebas, pruebas de regresión, pruebas QA, pruebas de conversación, casos límite, automatización de pruebas, aseguramiento de calidad"
+og:description: "Escenarios de prueba completos para agentes de IA antes de producción. Construye suites de prueba cubriendo caminos felices, casos límite y condiciones de error con pruebas automatizadas."
+---
+
+## Por Qué Importan los Escenarios de Prueba
+
+Los escenarios de prueba repetibles aseguran calidad consistente entre actualizaciones del agente. Construye una suite de pruebas que cubra:
+- **Caminos felices** - Interacciones ideales con clientes
+- **Casos límite** - Escenarios inusuales pero válidos
+- **Condiciones de error** - Cómo el agente maneja fallos
+- **Pruebas de regresión** - Previene romper funcionalidad existente
+
+## Escenarios de Prueba Principales
+
+### 1. Saludo e Introducción
+
+**Escenario**: Cliente llama por primera vez, necesita entender con quién está hablando.
+
+<Accordion title="Pasos de prueba">
+  1. Inicia llamada (prueba web o telefónica)
+  2. Espera el saludo del agente
+  3. No hables inmediatamente (prueba si el agente solicita)
+  4. Pregunta: "¿Con quién estoy hablando?"
+  5. Verifica que el agente se presente claramente
+
+  **Resultados Esperados**:
+  - Saludo se reproduce dentro de 2 segundos de inicio de llamada
+  - Agente declara nombre/empresa claramente
+  - Agente ofrece ayuda proactivamente
+  - Tono profesional y amigable
+</Accordion>
+
+<Accordion title="Variaciones">
+  - Llama durante horario de atención vs después de horas
+  - Llama desde diferentes números de teléfono (prueba reconocimiento de ID de llamante)
+  - Llama con diferentes idiomas habilitados (prueba multilingüe)
+</Accordion>
+
+---
+
+### 2. Búsqueda de Información (Base de Conocimiento)
+
+**Escenario**: Cliente hace pregunta respondida en base de conocimiento.
+
+<Accordion title="Pasos de prueba">
+  1. Haz pregunta claramente respondida en KB (ej., "¿Cuál es su horario de atención?")
+  2. Verifica que el agente recupere información correcta
+  3. Haz pregunta de seguimiento
+  4. Verifica que el agente mantenga contexto
+
+  **Resultados Esperados**:
+  - Agente responde con precisión desde contenido de KB
+  - Respuesta es concisa (no lee artículo completo de KB)
+  - Agente ofrece ayuda relacionada
+  - Preguntas de seguimiento manejadas correctamente
+</Accordion>
+
+<Accordion title="Casos límite">
+  - Haz pregunta con redacción ligeramente diferente al contenido de KB
+  - Haz pregunta combinando múltiples temas de KB
+  - Haz pregunta con intención ambigua
+  - Haz pregunta NO en KB (el agente debería decir "No sé")
+</Accordion>
+
+---
+
+### 3. Ejecución de Acción (Llamada API)
+
+**Escenario**: Cliente solicita acción que requiere llamada API externa.
+
+<Accordion title="Pasos de prueba">
+  1. Solicita acción (ej., "Verifica el estado de mi pedido para el pedido 12345")
+  2. Verifica que el agente confirme comprensión
+  3. Espera a que se complete llamada API
+  4. Verifica que el agente comunique resultado correctamente
+
+  **Resultados Esperados**:
+  - Agente extrae parámetros requeridos (número de pedido)
+  - Agente llama endpoint API correcto
+  - Agente espera respuesta sin error de timeout
+  - Agente comunica resultado naturalmente
+  - Si API falla, el agente maneja con gracia
+</Accordion>
+
+<Accordion title="Escenarios de fallo">
+  - API devuelve error (500, 404)
+  - API agota tiempo (respuesta lenta)
+  - API devuelve formato inesperado
+  - Falta parámetro requerido (el agente debería solicitarlo)
+</Accordion>
+
+---
+
+### 4. Transferencia de Llamada
+
+**Escenario**: Cliente necesita hablar con agente humano.
+
+<Accordion title="Pasos de prueba">
+  1. Solicita transferencia (ej., "Necesito hablar con alguien")
+  2. Verifica que el agente confirme transferencia
+  3. Verifica que el agente anuncie quién/qué departamento
+  4. (Solo prueba telefónica) Verifica que la llamada realmente se transfiera
+
+  **Resultados Esperados**:
+  - Agente reconoce solicitud inmediatamente
+  - Agente explica dónde serás transferido
+  - Agente intenta transferencia
+  - Transferencia se completa exitosamente (prueba telefónica)
+</Accordion>
+
+<Accordion title="Casos límite">
+  - Solicita transferencia a departamento específico
+  - Solicita transferencia fuera de horario de atención
+  - Solicita transferencia después de acción fallida
+  - Múltiples solicitudes de transferencia en misma llamada
+</Accordion>
+
+---
+
+### 5. Manejo de Interrupciones
+
+**Escenario**: Cliente interrumpe al agente a mitad de frase.
+
+<Accordion title="Pasos de prueba">
+  1. Haz pregunta que provoque respuesta larga
+  2. Mientras el agente está hablando, interrumpe con nueva pregunta
+  3. Verifica que el agente deje de hablar y escuche
+  4. Verifica que el agente aborde la nueva pregunta
+
+  **Resultados Esperados**:
+  - Agente deja de hablar inmediatamente (&lt;500ms)
+  - Agente procesa nueva entrada
+  - Agente no reanuda respuesta anterior
+  - Conversación fluye naturalmente después de interrupción
+</Accordion>
+
+<Accordion title="Pruebas de estrés">
+  - Interrumpe múltiples veces rápidamente
+  - Interrumpe con pregunta no relacionada
+  - Interrumpe solo con ruido (no palabras)
+  - Quédate en silencio después de interrumpir
+</Accordion>
+
+---
+
+### 6. Inactividad / Silencio
+
+**Escenario**: Cliente deja de responder durante conversación.
+
+<Accordion title="Pasos de prueba">
+  1. Inicia conversación normalmente
+  2. El agente hace una pregunta
+  3. Quédate completamente en silencio (no respondas)
+  4. Espera 10-15 segundos
+  5. Verifica que el agente solicite: "¿Sigues ahí?"
+  6. Quédate en silencio nuevamente
+  7. Verifica que el agente eventualmente termine llamada o transfiera
+
+  **Resultados Esperados**:
+  - Primera solicitud después de ~10 segundos
+  - Segunda solicitud si aún en silencio
+  - Después de 2-3 solicitudes, el agente termina llamada con gracia
+  - Registro adecuado de timeout de inactividad
+</Accordion>
+
+---
+
+### 7. Entrada DTMF (Teclado)
+
+**Escenario**: Cliente usa teclado telefónico para entrada (si está habilitado).
+
+<Accordion title="Pasos de prueba">
+  1. Agente solicita: "Presione 1 para ventas, 2 para soporte"
+  2. Presiona tecla en teclado telefónico
+  3. Verifica que el agente detecte y responda
+  4. Prueba todas las teclas: 0-9, *, #
+
+  **Resultados Esperados**:
+  - Todas las teclas detectadas correctamente
+  - Agente confirma entrada ("Presionaste 1")
+  - Agente enruta a acción/departamento correcto
+  - Teclas inválidas manejadas (ej., presionar 9 cuando solo 1-2 son válidos)
+</Accordion>
+
+---
+
+### 8. Soporte Multilingüe
+
+**Escenario**: Cliente habla en diferente idioma (si multilingüe está habilitado).
+
+<Accordion title="Pasos de prueba">
+  1. Inicia llamada en inglés
+  2. Cambia a español a mitad de llamada
+  3. Verifica que el agente detecte idioma y responda en español
+  4. Cambia de vuelta a inglés
+  5. Verifica que el agente se adapte
+
+  **Resultados Esperados**:
+  - Detección de idioma dentro de 1-2 oraciones
+  - Agente responde en idioma detectado
+  - Transcripción precisa para ambos idiomas
+  - Selección de voz apropiada para idioma
+</Accordion>
+
+---
+
+### 9. Conversación Larga (Prueba de Resistencia)
+
+**Escenario**: Conversación extendida probando retención de contexto.
+
+<Accordion title="Pasos de prueba">
+  1. Ten conversación cubriendo 10+ turnos
+  2. Haz referencia a puntos anteriores de conversación
+  3. Haz preguntas complejas de múltiples partes
+  4. Verifica que el agente recuerde contexto
+
+  **Resultados Esperados**:
+  - Agente retiene historial de conversación
+  - Agente no repite información ya proporcionada
+  - Agente no solicita información que el cliente ya proporcionó
+  - Calidad de llamada permanece estable por 10+ minutos
+</Accordion>
+
+---
+
+### 10. Casos Adversariales / Límite
+
+**Escenario**: Escenarios difíciles de clientes.
+
+<Accordion title="Pasos de prueba">
+  **Cliente Confundido**:
+  - Da respuestas divagantes, poco claras
+  - Cambia temas a mitad de conversación
+  - Haz preguntas no relacionadas
+
+  **Cliente Frustrado**:
+  - Expresa frustración: "¡Esto no está funcionando!"
+  - Exige hablar con humano
+  - Usa lenguaje fuerte (prueba barreras de seguridad)
+
+  **Cliente de Prueba**:
+  - Intenta hacer que el agente diga cosas inapropiadas
+  - Haz preguntas fuera de alcance
+  - Prueba límites del conocimiento del agente
+
+  **Resultados Esperados**:
+  - Agente permanece servicial y profesional
+  - Agente ofrece transferir cuando es apropiado
+  - Agente no se involucra con solicitudes inapropiadas
+  - Agente dice con gracia "No puedo ayudar con eso"
+</Accordion>
+
+## Construcción de Tu Suite de Pruebas
+
+<Steps>
+  <Step title="Documenta escenarios principales">
+    Crea una tabla de escenarios que tu agente debe manejar:
+
+    | Escenario | Prioridad | Criterios de Aprobación |
+    |----------|----------|---------------|
+    | Saludo | P0 (crítico) | Introducción clara, &lt;2s |
+    | Búsqueda KB | P0 | Respuesta precisa, recupera de KB |
+    | Llamada API | P1 (importante) | Ejecuta exitosamente, &lt;5s |
+    | Transferencia | P1 | Conecta a destino correcto |
+    | DTMF | P2 (deseable) | Detecta todas las teclas correctamente |
+  </Step>
+
+  <Step title="Crea scripts de prueba">
+    Escribe diálogo exacto para cada escenario:
+
+    **Script de Ejemplo**:
+    ```
+    Escenario: Búsqueda de Estado de Pedido
+    Probador: "Hola, ¿cuál es el estado de mi pedido?"
+    Agente Esperado: "Puedo ayudarte con eso. ¿Cuál es tu número de pedido?"
+    Probador: "12345"
+    Agente Esperado: "Déjame verificar... [llamada API] Tu pedido fue enviado y llegará el 15 de enero."
+    Resultado: PASS/FAIL
+    ```
+  </Step>
+
+  <Step title="Ejecuta suite completa regularmente">
+    **Cuándo Probar**:
+    - Antes de cada despliegue a producción
+    - Después de cambios importantes de instrucciones
+    - Semanalmente para agentes críticos
+    - Después de actualizaciones de plataforma
+
+    **Seguimiento**:
+    Usa hoja de cálculo o herramienta de gestión de pruebas para rastrear:
+    - Fecha de prueba
+    - Pass/fail por escenario
+    - Notas sobre fallos
+    - Tendencias a lo largo del tiempo
+  </Step>
+
+  <Step title="Automatiza donde sea posible">
+    Para escenarios críticos, automatiza pruebas:
+
+    ```python
+    # Ejemplo de prueba automatizada
+    def test_greeting():
+        call = client.test_calls.create(
+            agent_id="agent_123",
+            scenario="greeting",
+            expected_keywords=["welcome", "help"]
+        )
+
+        assert call.duration_seconds < 5
+        assert "welcome" in call.transcript.lower()
+        assert call.status == "success"
+    ```
+
+    Ejecuta pruebas automatizadas en horario o pre-despliegue.
+  </Step>
+</Steps>
+
+## Matriz de Cobertura de Pruebas
+
+Asegúrate de estar probando todas las capacidades del agente:
+
+| Capacidad | Escenario de Prueba | Estado |
+|------------|---------------|--------|
+| **Conversación Principal** |
+| Saludo | Prueba de saludo de primera llamada | ✓ |
+| Instrucciones | Prueba de seguimiento de reglas del agente | ✓ |
+| Contexto | Conversación de múltiples turnos | ✓ |
+| **Conocimiento** |
+| Recuperación KB | Prueba de pregunta FAQ | ✓ |
+| Precisión KB | Verifica respuestas correctas | ✓ |
+| Manejo de desconocidos | Haz pregunta sin respuesta | ✓ |
+| **Acciones** |
+| Llamadas API | Activa cada acción personalizada | ⚠️ En progreso |
+| Transferencias | Prueba cada destino de transferencia | ⚠️ En progreso |
+| Reserva | Completa reserva de calendario | ⏳ No iniciado |
+| **Características de Voz** |
+| Interrupciones | Prueba de barge-in | ✓ |
+| Silencio | Prueba de timeout de inactividad | ✓ |
+| DTMF | Prueba de entrada de teclado | N/A |
+| **Calidad** |
+| Audio | Métricas de calidad de llamada | ✓ |
+| Latencia | Tiempo de respuesta &lt;2s | ✓ |
+| Precisión | WER de transcripción &lt;10% | ✓ |
+
+## Próximos Pasos
+
+<CardGroup cols={2}>
+  <Card title="Simulador Web" icon="browser" href="/test/web-simulator">
+    Ejecuta escenarios de prueba en el navegador
+  </Card>
+
+  <Card title="Pruebas Telefónicas" icon="phone" href="/test/phone-testing">
+    Valida con llamadas PSTN reales
+  </Card>
+
+  <Card title="Depuración" icon="bug" href="/test/debugging">
+    Soluciona escenarios fallidos
+  </Card>
+</CardGroup>

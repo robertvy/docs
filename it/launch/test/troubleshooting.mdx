@@ -1,0 +1,565 @@
+---
+title: "Risoluzione Problemi"
+description: "Risolvi problemi e errori comuni nei test"
+icon: "screwdriver-wrench"
+keywords: "problemi test, problemi microfono, risoluzione audio, errori test telefonico, problemi qualità chiamata, problemi DTMF, debug comportamento agente, errori piattaforma"
+og:description: "Risolvi problemi comuni test agente AI. Correggi problemi microfono, qualità audio, connettività telefonica, rilevamento DTMF ed errori piattaforma con soluzioni passo-passo."
+---
+
+## Approccio alla Risoluzione Problemi
+
+Quando il test non va come previsto, segui questo approccio sistematico:
+
+1. **Identifica il sintomo** - Cosa c'è esattamente di sbagliato?
+2. **Isola la causa** - È configurazione agente, problema browser/telefono o piattaforma?
+3. **Controlla i log** - Rivedi log conversazioni per errori
+4. **Testa in isolamento** - Rimuovi variabili per trovare causa principale
+5. **Applica correzione** - Fai la modifica minima che risolve il problema
+6. **Verifica** - Ritesta per confermare che la correzione funzioni
+
+## Problemi Simulatore Web
+
+### Microfono Non Funzionante
+
+**Sintomo**: L'agente non ti sente, non appare trascrizione.
+
+<AccordionGroup>
+  <Accordion title="Permessi browser">
+    **Controlla Permessi**:
+    - Chrome: `chrome://settings/content/microphone`
+    - Firefox: Clicca icona lucchetto nella barra indirizzi → Permessi
+    - Safari: Safari → Preferenze → Siti Web → Microfono
+
+    **Soluzione**: Permetti accesso microfono per il sito, ricarica pagina
+  </Accordion>
+
+  <Accordion title="Microfono sbagliato selezionato">
+    **Diagnosi**:
+    - Clicca icona ingranaggio nel simulatore
+    - Controlla quale mic è selezionato
+    - Verifica che sia il tuo microfono attivo (non mic sistema predefinito)
+
+    **Soluzione**: Seleziona microfono corretto dal dropdown, testa livelli audio
+  </Accordion>
+
+  <Accordion title="Microfono in uso">
+    **Sintomo**: Errore "Microphone busy"
+
+    **Causa**: Altra app (Zoom, Meets, Discord) sta usando il mic
+
+    **Soluzione**: Chiudi altre app che usano microfono, riavvia browser se necessario
+  </Accordion>
+
+  <Accordion title="Compatibilità browser">
+    **Requisiti**:
+    - Chrome 60+ (raccomandato)
+    - Firefox 55+
+    - Safari 14.1+
+    - Edge 79+
+
+    **Non Supportato**: IE11, browser mobile vecchi
+
+    **Soluzione**: Aggiorna browser o passa a browser supportato
+  </Accordion>
+</AccordionGroup>
+
+### Nessun Audio dall'Agente
+
+**Sintomo**: Parli, appare trascrizione, ma l'agente non risponde con voce.
+
+<AccordionGroup>
+  <Accordion title="Problemi altoparlante/cuffie">
+    **Controlla**:
+    - Volume non silenziato
+    - Dispositivo output corretto selezionato
+    - Altoparlanti/cuffie collegati e funzionanti
+
+    **Soluzione**: Regola volume, seleziona altoparlanti corretti nelle impostazioni simulatore
+  </Accordion>
+
+  <Accordion title="Autoplay browser bloccato">
+    **Sintomo**: Primo test funziona, test successivi senza audio
+
+    **Causa**: Policy autoplay browser blocca audio
+
+    **Soluzione**: Interagisci con pagina prima di avviare test (clicca ovunque), o permetti autoplay nelle impostazioni browser
+  </Accordion>
+
+  <Accordion title="Connessione WebRTC fallita">
+    **Sintomo**: Errore "Connection failed" nella console
+
+    **Causa**: Firewall o rete blocca WebRTC
+
+    **Soluzione**:
+    - Controlla che firewall permetta traffico WebRTC
+    - Prova rete diversa (hotspot mobile)
+    - Abilita relay TURN nelle impostazioni agente (Enterprise)
+  </Accordion>
+</AccordionGroup>
+
+### Simulatore Bloccato o Congelato
+
+**Sintomi**: Simulatore non si avvia, si blocca durante chiamata o non termina chiamata.
+
+<AccordionGroup>
+  <Accordion title="Svuota cache browser">
+    **Passaggi**:
+    1. Apri strumenti sviluppatore browser (F12)
+    2. Click destro pulsante aggiorna → "Empty Cache and Hard Reload"
+    3. O svuota dati sito: Impostazioni → Privacy → Cancella dati navigazione
+
+    **Soluzione**: Cancella stato bloccato da test precedenti
+  </Accordion>
+
+  <Accordion title="Aggiorna pagina">
+    **Soluzione Semplice**: Ricarica pagina (Cmd+R o Ctrl+R)
+
+    **Ricarica forzata**: Cmd+Shift+R (Mac) o Ctrl+Shift+R (Windows)
+
+    Testa di nuovo dopo ricarica
+  </Accordion>
+
+  <Accordion title="Controlla console browser">
+    **Passaggi**:
+    1. Apri strumenti dev (F12)
+    2. Vai a scheda Console
+    3. Cerca errori (testo rosso)
+
+    **Errori Comuni**:
+    - `WebSocket connection failed` → Problema rete
+    - `Microphone permission denied` → Problema permessi
+    - `Uncaught TypeError` → Bug piattaforma, contatta supporto
+
+    Screenshot errore e includi in ticket supporto
+  </Accordion>
+</AccordionGroup>
+
+## Problemi Test Telefonico
+
+### Chiamata Test Non Si Connette
+
+**Sintomo**: Clicchi "Start Test" ma il telefono non squilla mai.
+
+<AccordionGroup>
+  <Accordion title="Verifica formato numero telefono">
+    **Formato Corretto**: E.164 con prefisso paese
+
+    ✅ Corretto: `+12125551234`
+    ❌ Sbagliato: `212-555-1234`, `(212) 555-1234`, `2125551234`
+
+    **Soluzione**: Riformatta in E.164, riprova
+  </Accordion>
+
+  <Accordion title="Controlla numero 'From' provisionato">
+    **Passaggi**:
+    1. Vai a **Telephony → Numbers**
+    2. Trova il tuo numero "From"
+    3. Verifica che lo stato sia "Active" non "Pending" o "Failed"
+
+    **Se Pending**: Aspetta 5-10 minuti per provisioning
+    **Se Failed**: Contatta supporto con dettagli numero
+  </Accordion>
+
+  <Accordion title="Capacità account">
+    **Controlla**: Sei al massimo delle chiamate simultanee?
+
+    Naviga a **Dashboard → Usage** → Controlla "Concurrent Calls"
+
+    **Se al limite**: Termina chiamate attive o aggiorna piano
+  </Accordion>
+
+  <Accordion title="Blocco carrier">
+    **Sintomo**: Chiamate da altri numeri funzionano, ma non al tuo telefono
+
+    **Causa**: Il tuo carrier potrebbe bloccare chiamate (filtro spam)
+
+    **Soluzione**:
+    - Prova chiamare telefono diverso
+    - Aggiungi numero ai tuoi contatti
+    - Controlla lista spam/blocco carrier
+    - Registra CNAM (nome chiamante) con carrier
+  </Accordion>
+</AccordionGroup>
+
+### Qualità Chiamata Scarsa
+
+**Sintomi**: Audio distorto, eco, ritardi, voce robotica.
+
+<AccordionGroup>
+  <Accordion title="Qualità rete">
+    **Testa la Tua Rete**:
+    - Esegui speed test: >5 Mbps upload/download
+    - Controlla ping: <100ms
+    - Testa da rete diversa (WiFi vs cellulare)
+
+    **Soluzione**:
+    - Avvicinati al router WiFi
+    - Passa a connessione cablata
+    - Testa durante ore non di picco (meno congestione)
+  </Accordion>
+
+  <Accordion title="Cellulare vs WiFi">
+    **Testa Entrambi**:
+    - Chiama su rete cellulare
+    - Chiama su WiFi
+    - Confronta qualità
+
+    **Risultato**: Uno molto migliore dell'altro? Usa quella rete per test futuri
+  </Accordion>
+
+  <Accordion title="Impostazioni telefono">
+    **Controlla**:
+    - Bluetooth disconnesso (aggiunge latenza)
+    - WiFi calling disabilitato (può causare problemi)
+    - VPN disabilitata (aggiunge latenza)
+    - Avviso chiamata disabilitato (nessuna interruzione)
+
+    **Soluzione**: Regola impostazioni telefono, testa di nuovo
+  </Accordion>
+
+  <Accordion title="Impostazioni voce agente">
+    **Prova a Regolare**:
+    - Velocità voce (più lenta può essere più chiara)
+    - Provider voce (ElevenLabs vs Azure vs Google)
+    - Impostazioni elaborazione audio (cancellazione eco, soppressione rumore)
+
+    Naviga a agente → **Voice Settings** per regolare
+  </Accordion>
+</AccordionGroup>
+
+### DTMF Non Rilevato
+
+**Sintomo**: Premi tasti telefono ma l'agente non rileva input.
+
+<AccordionGroup>
+  <Accordion title="DTMF abilitato nell'agente">
+    **Controlla**: Agent → **Advanced → DTMF Controls**
+
+    **Verifica**:
+    - [ ] Rilevamento DTMF abilitato
+    - [ ] Modalità rilevamento impostata correttamente (sempre on vs attivazione parola chiave)
+    - [ ] Mappature tasti configurate
+
+    **Soluzione**: Abilita DTMF se disabilitato, salva e ritesta
+  </Accordion>
+
+  <Accordion title="Tipo DTMF">
+    **Due Tipi**:
+    - **RFC 2833** (in-band): Trasportato con audio voce
+    - **SIP INFO** (out-of-band): Messaggi SIP separati
+
+    **Controlla Carrier**: Alcuni carrier supportano solo un tipo
+
+    **Soluzione**: Prova cambiare tipo DTMF nelle impostazioni agente, o usa carrier/telefono diverso
+  </Accordion>
+
+  <Accordion title="Tastiera telefonica">
+    **Test**: Premi tasti durante chiamata - senti toni?
+
+    **Se Nessun Tono**: Il telefono potrebbe inviare SIP INFO invece di toni (non compatibile)
+
+    **Se Toni Sentiti**: Dovrebbe funzionare. Controlla log agente per eventi DTMF. Se non loggati, potrebbe essere problema carrier.
+  </Accordion>
+</AccordionGroup>
+
+## Problemi Comportamento Agente
+
+### Agente Non Segue Istruzioni
+
+**Sintomo**: L'agente fa qualcosa di diverso da ciò che hai specificato nelle istruzioni.
+
+<AccordionGroup>
+  <Accordion title="Istruzioni troppo vaghe">
+    **Esempio**:
+    ```markdown
+    ❌ Vago: "Sii utile e amichevole."
+
+    ✅ Specifico: "Saluta dicendo: 'Benvenuto in Acme Corp. Sono qui per aiutarti con ordini e tracciamento. Cosa posso fare per te oggi?'"
+    ```
+
+    **Soluzione**: Rendi le istruzioni più esplicite e specifiche
+  </Accordion>
+
+  <Accordion title="Istruzioni in conflitto">
+    **Esempio**:
+    ```markdown
+    ❌ Conflitto:
+    "Sii conciso e breve."
+    "Fornisci spiegazioni dettagliate per ogni funzionalità."
+
+    ✅ Allineato:
+    "Sii conciso a meno che il cliente non chieda più dettagli."
+    ```
+
+    **Soluzione**: Rimuovi regole in conflitto, dai priorità a un comportamento
+  </Accordion>
+
+  <Accordion title="Limitazioni modello">
+    **Verifica Realtà**:
+    - I modelli non seguono istruzioni perfettamente 100% delle volte
+    - Istruzioni complesse più difficili da seguire di quelle semplici
+    - Istruzioni lunghe (>500 parole) riducono conformità
+
+    **Soluzione**:
+    - Semplifica istruzioni
+    - Testa con modello diverso (GPT-4 vs Claude)
+    - Aggiungi esempi comportamento desiderato
+  </Accordion>
+
+  <Accordion title="Testa in isolamento">
+    **Test Minimale**:
+    1. Crea nuovo agente con istruzioni minimali
+    2. Testa singolo comportamento in questione
+    3. Se funziona → Il problema è complessità/conflitto nelle istruzioni complete
+    4. Se non funziona → Potrebbe essere limitazione modello o aspettativa irrealistica
+
+    **Itera**: Aggiungi gradualmente istruzioni indietro fino a quando problema riappare, poi correggi quell'istruzione specifica
+  </Accordion>
+</AccordionGroup>
+
+### Errori Trascrizione
+
+**Sintomo**: L'agente sente costantemente male certe parole o frasi.
+
+<AccordionGroup>
+  <Accordion title="Aggiungi vocabolario personalizzato">
+    **Per**: Termini tecnici, nomi prodotti, acronimi
+
+    **Passaggi**:
+    1. Vai a agente → **Transcriber → Custom Vocabulary**
+    2. Aggiungi parole sentite male con pronuncia fonetica
+    3. Testa di nuovo
+
+    **Esempio**:
+    ```json
+    {
+      "custom_words": [
+        {"word": "itellicoAI", "pronunciation": "eye-TELL-ih-koh AI"},
+        {"word": "Kubernetes", "pronunciation": "koo-ber-NET-eez"}
+      ]
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Prova transcriber diverso">
+    **Opzioni**:
+    - **Deepgram**: Migliore per accenti, rumore, tempo reale
+    - **Azure**: Migliore per termini tecnici, alta accuratezza
+    - **Whisper**: Migliore per multilingue, offline
+
+    **Test**: Cambia transcriber nelle impostazioni agente, esegui stesso test, confronta accuratezza
+  </Accordion>
+
+  <Accordion title="Migliora qualità audio">
+    **Fattori**:
+    - Rumore di fondo → Usa ambiente silenzioso
+    - Mic scarso → Usa mic/auricolare migliore
+    - Volume basso → Parla più forte o più vicino al mic
+    - Borbottio → Parla chiaramente e lentamente
+
+    **Test**: Stesso test in condizioni ideali (stanza silenziosa, buon mic, parlata chiara)
+  </Accordion>
+</AccordionGroup>
+
+### Azioni Non Funzionanti
+
+**Sintomo**: Le azioni personalizzate non si attivano o falliscono quando attivate.
+
+<AccordionGroup>
+  <Accordion title="Azione non si attiva">
+    **Controlla Istruzioni**: Menzionano quando usare l'azione?
+
+    **Esempio**:
+    ```markdown
+    ❌ Mancante: Nessuna menzione dell'azione nelle istruzioni
+
+    ✅ Esplicito: "Quando il cliente chiede stato ordine, usa l'azione getOrderStatus con il loro numero ordine."
+    ```
+
+    **Test**: Richiedi esplicitamente azione nel test: "Controlla stato ordine per ordine 12345"
+  </Accordion>
+
+  <Accordion title="Parametri mancanti">
+    **Controlla**: L'azione richiede parametri che il cliente non ha fornito?
+
+    **Esempio**: L'azione necessita `order_id` ma il cliente ha solo detto "controlla il mio ordine" senza numero
+
+    **Soluzione nelle Istruzioni**:
+    ```markdown
+    "Se il cliente chiede ordine ma non fornisce numero ordine, chiedi: 'Qual è il tuo numero ordine?'"
+    ```
+  </Accordion>
+
+  <Accordion title="Errori API">
+    **Controlla Log**: Conversations → Logs → scheda Actions
+
+    **Errori Comuni**:
+    - 401 Unauthorized → Controlla chiave API
+    - 404 Not Found → Verifica URL endpoint
+    - Timeout → Aumenta limite timeout
+
+    **Testa API Manualmente**:
+    ```bash
+    curl -X POST https://api.example.com/endpoint \
+         -H "Authorization: Bearer YOUR_KEY" \
+         -d '{"param": "value"}'
+    ```
+
+    Se chiamata manuale funziona, il problema è nella configurazione azione
+  </Accordion>
+</AccordionGroup>
+
+## Problemi Piattaforma
+
+### Dashboard Non Carica
+
+**Sintomi**: Pagina bianca, caricamento infinito, errori.
+
+<AccordionGroup>
+  <Accordion title="Controlla stato piattaforma">
+    Visita: `https://status.itellico.ai`
+
+    **Se Outage**: Aspetta risoluzione, controlla pagina stato per aggiornamenti
+
+    **Se Operativo**: Il problema è probabilmente locale (browser, rete, cache)
+  </Accordion>
+
+  <Accordion title="Svuota cache browser">
+    **Passaggi**:
+    1. Apri impostazioni (Cmd+, o Ctrl+,)
+    2. Privacy → Cancella dati navigazione
+    3. Seleziona "Immagini e file in cache"
+    4. Cancella dati
+    5. Ricarica dashboard
+
+    **Ricarica Forzata**: Cmd+Shift+R o Ctrl+Shift+R
+  </Accordion>
+
+  <Accordion title="Prova browser diverso">
+    **Testa in**:
+    - Chrome (modalità incognito)
+    - Firefox (finestra privata)
+    - Safari (navigazione privata)
+
+    **Se funziona in incognito/privato**: Il problema è estensione browser o dati in cache
+
+    **Soluzione**: Disabilita estensioni una per una per trovare conflitto
+  </Accordion>
+
+  <Accordion title="Controlla console browser">
+    **Passaggi**:
+    1. F12 per aprire strumenti dev
+    2. Scheda Console
+    3. Cerca errori
+
+    **Comuni**:
+    - Errori CORS → Contatta supporto
+    - Errori 401/403 → Sessione scaduta, logout e login di nuovo
+    - Errori JavaScript → Problema compatibilità browser
+
+    Screenshot errore per ticket supporto
+  </Accordion>
+</AccordionGroup>
+
+### Sessione Scaduta / Problemi Auth
+
+**Sintomi**: Logout inaspettato, errori "unauthorized".
+
+<AccordionGroup>
+  <Accordion title="Re-login">
+    **Soluzione Semplice**: Logout e login di nuovo
+
+    **Se persiste**: Cancella cookie e cache, poi login
+  </Accordion>
+
+  <Accordion title="Problemi chiave API">
+    **Se usi API**: Controlla che la chiave sia valida
+
+    **Passaggi**:
+    1. Vai a **Accounts → API Keys**
+    2. Verifica che chiave esista e non scaduta
+    3. Rigenera se necessario
+    4. Aggiorna nel tuo codice/config
+
+    **Sicurezza**: Non committare mai chiavi API in version control
+  </Accordion>
+
+  <Accordion title="Permessi">
+    **Controlla**: Hai il ruolo corretto?
+
+    **Ruoli**:
+    - Admin: Accesso completo
+    - Developer: Può modificare agenti, non può gestire fatturazione
+    - Viewer: Solo lettura
+
+    **Soluzione**: Chiedi al proprietario account di regolare i tuoi permessi
+  </Accordion>
+</AccordionGroup>
+
+## Ottenere Aiuto
+
+Quando non riesci a risolvere un problema:
+
+<Steps>
+  <Step title="Raccogli informazioni">
+    Raccogli prima di contattare supporto:
+    - ID agente
+    - ID conversazione (se chiamata specifica)
+    - Timestamp problema
+    - Cosa ti aspettavi vs cosa è successo
+    - Passaggi per riprodurre
+    - Screenshot o registrazione schermo
+    - Info browser/dispositivo
+  </Step>
+
+  <Step title="Controlla documentazione">
+    Cerca nella documentazione problemi simili:
+    - Questa guida risoluzione problemi
+    - Documentazione configurazione agente
+    - Riferimento API (per problemi integrazione)
+  </Step>
+
+  <Step title="Forum community">
+    Visita: `https://community.itellico.ai`
+
+    - Cerca problemi simili
+    - Posta la tua domanda con dettagli
+    - Community e staff rispondono
+  </Step>
+
+  <Step title="Contatta supporto">
+    Email: `support@itellico.ai`
+
+    Includi:
+    - Oggetto chiaro (es. "Chiamata test non si connette - Agent ID: agent_123")
+    - Descrizione dettagliata
+    - Passaggi per riprodurre
+    - Tutte le informazioni dallo Step 1
+    - Cosa hai già provato
+
+    **Tempi di Risposta**:
+    - Critico (produzione down): <1 ora
+    - Alto (test bloccato): <4 ore
+    - Medio: <24 ore
+  </Step>
+</Steps>
+
+## Prossimi Passi
+
+<CardGroup cols={2}>
+  <Card title="Guida Debugging" icon="bug" href="/test/debugging">
+    Debugging sistematico per problemi agente
+  </Card>
+
+  <Card title="Log e Monitoraggio" icon="chart-mixed" href="/launch/test/logs-and-monitoring">
+    Analizza log per trovare cause principali
+  </Card>
+
+  <Card title="Scenari di Test" icon="list-check" href="/launch/test/test-scenarios">
+    Test completo per prevenire problemi
+  </Card>
+
+  <Card title="Supporto" icon="life-ring" href="/resources/overview">
+    Risorse supporto aggiuntive
+  </Card>
+</CardGroup>

@@ -1,0 +1,363 @@
+---
+title: "Cenários de Teste"
+description: "Cenários de teste comuns para validar antes do lançamento em produção"
+icon: "list-check"
+keywords: "cenários de teste, teste de agente, suite de testes, teste de regressão, teste de QA, teste de conversa, casos extremos, automação de testes, garantia de qualidade"
+og:description: "Cenários de teste abrangentes para agentes IA antes da produção. Construa suites de teste cobrindo caminhos felizes, casos extremos e condições de erro com testes automatizados."
+---
+
+## Por Que Cenários de Teste São Importantes
+
+Cenários de teste repetíveis garantem qualidade consistente entre atualizações do agente. Construa uma suite de testes que cubra:
+- **Caminhos felizes** - Interações ideais com clientes
+- **Casos extremos** - Cenários incomuns mas válidos
+- **Condições de erro** - Como o agente lida com falhas
+- **Testes de regressão** - Previne quebra de funcionalidade existente
+
+## Cenários de Teste Principais
+
+### 1. Saudação e Introdução
+
+**Cenário**: Cliente liga pela primeira vez, precisa entender com quem está falando.
+
+<Accordion title="Passos do teste">
+  1. Iniciar chamada (teste web ou telefone)
+  2. Aguardar saudação do agente
+  3. Não falar imediatamente (testar se agente solicita)
+  4. Perguntar: "Com quem estou falando?"
+  5. Verificar se agente se apresenta claramente
+
+  **Resultados Esperados**:
+  - Saudação reproduz em 2 segundos do início da chamada
+  - Agente declara nome/empresa claramente
+  - Agente oferece ajuda proativamente
+  - Tom profissional e amigável
+</Accordion>
+
+<Accordion title="Variações">
+  - Ligar durante horário comercial vs após horário
+  - Ligar de números de telefone diferentes (testar reconhecimento de ID do chamador)
+  - Ligar com diferentes idiomas habilitados (teste multilíngue)
+</Accordion>
+
+---
+
+### 2. Busca de Informação (Base de Conhecimento)
+
+**Cenário**: Cliente faz pergunta respondida na base de conhecimento.
+
+<Accordion title="Passos do teste">
+  1. Fazer pergunta claramente respondida no KB (ex: "Qual é o horário de funcionamento?")
+  2. Verificar se agente recupera informação correta
+  3. Fazer pergunta de acompanhamento
+  4. Verificar se agente mantém contexto
+
+  **Resultados Esperados**:
+  - Agente responde com precisão do conteúdo do KB
+  - Resposta é concisa (não lendo artigo inteiro do KB)
+  - Agente oferece ajuda relacionada
+  - Perguntas de acompanhamento tratadas corretamente
+</Accordion>
+
+<Accordion title="Casos extremos">
+  - Fazer pergunta com redação ligeiramente diferente do conteúdo do KB
+  - Fazer pergunta combinando múltiplos tópicos do KB
+  - Fazer pergunta com intenção ambígua
+  - Fazer pergunta NÃO presente no KB (agente deve dizer "Não sei")
+</Accordion>
+
+---
+
+### 3. Execução de Ação (Chamada de API)
+
+**Cenário**: Cliente solicita ação requerendo chamada de API externa.
+
+<Accordion title="Passos do teste">
+  1. Solicitar ação (ex: "Verificar status do meu pedido número 12345")
+  2. Verificar se agente confirma entendimento
+  3. Aguardar conclusão da chamada de API
+  4. Verificar se agente comunica resultado corretamente
+
+  **Resultados Esperados**:
+  - Agente extrai parâmetros necessários (número do pedido)
+  - Agente chama endpoint correto da API
+  - Agente aguarda resposta sem erro de timeout
+  - Agente comunica resultado naturalmente
+  - Se API falhar, agente trata graciosamente
+</Accordion>
+
+<Accordion title="Cenários de falha">
+  - API retorna erro (500, 404)
+  - API esgota tempo (resposta lenta)
+  - API retorna formato inesperado
+  - Parâmetro obrigatório ausente (agente deve pedir)
+</Accordion>
+
+---
+
+### 4. Transferência de Chamada
+
+**Cenário**: Cliente precisa falar com agente humano.
+
+<Accordion title="Passos do teste">
+  1. Solicitar transferência (ex: "Preciso falar com alguém")
+  2. Verificar se agente confirma transferência
+  3. Verificar se agente anuncia para quem/qual departamento
+  4. (Somente teste por telefone) Verificar se chamada realmente transfere
+
+  **Resultados Esperados**:
+  - Agente reconhece solicitação imediatamente
+  - Agente explica para onde você será transferido
+  - Agente tenta transferência
+  - Transferência completa com sucesso (teste por telefone)
+</Accordion>
+
+<Accordion title="Casos extremos">
+  - Solicitar transferência para departamento específico
+  - Solicitar transferência fora do horário comercial
+  - Solicitar transferência após ação falhada
+  - Múltiplas solicitações de transferência na mesma chamada
+</Accordion>
+
+---
+
+### 5. Tratamento de Interrupção
+
+**Cenário**: Cliente interrompe agente no meio da frase.
+
+<Accordion title="Passos do teste">
+  1. Fazer pergunta que gera resposta longa
+  2. Enquanto agente está falando, interromper com nova pergunta
+  3. Verificar se agente para de falar e ouve
+  4. Verificar se agente aborda nova pergunta
+
+  **Resultados Esperados**:
+  - Agente para de falar imediatamente (&lt;500ms)
+  - Agente processa nova entrada
+  - Agente não retoma resposta anterior
+  - Conversa flui naturalmente após interrupção
+</Accordion>
+
+<Accordion title="Testes de estresse">
+  - Interromper múltiplas vezes rapidamente
+  - Interromper com pergunta não relacionada
+  - Interromper com apenas ruído (não palavras)
+  - Ficar em silêncio após interromper
+</Accordion>
+
+---
+
+### 6. Inatividade / Silêncio
+
+**Cenário**: Cliente para de responder durante conversa.
+
+<Accordion title="Passos do teste">
+  1. Iniciar conversa normalmente
+  2. Agente faz uma pergunta
+  3. Ficar completamente em silêncio (não responder)
+  4. Aguardar 10-15 segundos
+  5. Verificar se agente solicita: "Você ainda está aí?"
+  6. Ficar em silêncio novamente
+  7. Verificar se agente eventualmente encerra chamada ou transfere
+
+  **Resultados Esperados**:
+  - Primeira solicitação após ~10 segundos
+  - Segunda solicitação se ainda em silêncio
+  - Após 2-3 solicitações, agente encerra chamada graciosamente
+  - Registro adequado de timeout de inatividade
+</Accordion>
+
+---
+
+### 7. Entrada DTMF (Teclado)
+
+**Cenário**: Cliente usa teclado do telefone para entrada (se habilitado).
+
+<Accordion title="Passos do teste">
+  1. Agente solicita: "Pressione 1 para vendas, 2 para suporte"
+  2. Pressionar tecla no teclado do telefone
+  3. Verificar se agente detecta e responde
+  4. Testar todas as teclas: 0-9, *, #
+
+  **Resultados Esperados**:
+  - Todas as teclas detectadas corretamente
+  - Agente confirma entrada ("Você pressionou 1")
+  - Agente roteia para ação/departamento correto
+  - Teclas inválidas tratadas (ex: pressionar 9 quando apenas 1-2 válidos)
+</Accordion>
+
+---
+
+### 8. Suporte Multilíngue
+
+**Cenário**: Cliente fala em idioma diferente (se multilíngue habilitado).
+
+<Accordion title="Passos do teste">
+  1. Iniciar chamada em inglês
+  2. Mudar para espanhol no meio da chamada
+  3. Verificar se agente detecta idioma e responde em espanhol
+  4. Voltar para inglês
+  5. Verificar se agente se adapta
+
+  **Resultados Esperados**:
+  - Detecção de idioma em 1-2 frases
+  - Agente responde no idioma detectado
+  - Transcrição precisa para ambos os idiomas
+  - Seleção de voz apropriada para o idioma
+</Accordion>
+
+---
+
+### 9. Conversa Longa (Teste de Resistência)
+
+**Cenário**: Conversa estendida testando retenção de contexto.
+
+<Accordion title="Passos do teste">
+  1. Ter conversa cobrindo 10+ turnos
+  2. Referenciar pontos anteriores da conversa
+  3. Fazer perguntas complexas de múltiplas partes
+  4. Verificar se agente lembra do contexto
+
+  **Resultados Esperados**:
+  - Agente retém histórico da conversa
+  - Agente não repete informação já fornecida
+  - Agente não pede informação que cliente já forneceu
+  - Qualidade da chamada permanece estável por 10+ minutos
+</Accordion>
+
+---
+
+### 10. Casos Adversariais / Extremos
+
+**Cenário**: Cenários difíceis de cliente.
+
+<Accordion title="Passos do teste">
+  **Cliente Confuso**:
+  - Dar respostas divagantes e pouco claras
+  - Mudar de tópico no meio da conversa
+  - Fazer perguntas não relacionadas
+
+  **Cliente Frustrado**:
+  - Expressar frustração: "Isso não está funcionando!"
+  - Exigir falar com humano
+  - Usar linguagem forte (testar guardrails)
+
+  **Cliente Testador**:
+  - Tentar fazer agente dizer coisas inapropriadas
+  - Fazer perguntas fora do escopo
+  - Testar limites do conhecimento do agente
+
+  **Resultados Esperados**:
+  - Agente permanece prestativo e profissional
+  - Agente oferece transferir quando apropriado
+  - Agente não engaja com solicitações inapropriadas
+  - Agente diz graciosamente "Não posso ajudar com isso"
+</Accordion>
+
+## Construindo Sua Suite de Testes
+
+<Steps>
+  <Step title="Documentar cenários principais">
+    Crie uma tabela de cenários que seu agente deve lidar:
+
+    | Cenário | Prioridade | Critério de Aprovação |
+    |----------|----------|---------------|
+    | Saudação | P0 (crítico) | Introdução clara, &lt;2s |
+    | Busca KB | P0 | Resposta precisa, recupera do KB |
+    | Chamada API | P1 (importante) | Executa com sucesso, &lt;5s |
+    | Transferência | P1 | Conecta ao destino correto |
+    | DTMF | P2 (desejável) | Detecta todas as teclas corretamente |
+  </Step>
+
+  <Step title="Criar scripts de teste">
+    Escreva diálogo exato para cada cenário:
+
+    **Script de Exemplo**:
+    ```
+    Cenário: Busca de Status de Pedido
+    Testador: "Oi, qual é o status do meu pedido?"
+    Agente Esperado: "Posso ajudar com isso. Qual é o número do seu pedido?"
+    Testador: "12345"
+    Agente Esperado: "Deixe-me verificar... [Chamada API] Seu pedido foi enviado e chegará em 15 de janeiro."
+    Resultado: PASSA/FALHA
+    ```
+  </Step>
+
+  <Step title="Executar suite completa regularmente">
+    **Quando Testar**:
+    - Antes de cada implantação em produção
+    - Após mudanças importantes de instrução
+    - Semanalmente para agentes críticos
+    - Após atualizações da plataforma
+
+    **Rastreamento**:
+    Use planilha ou ferramenta de gerenciamento de testes para rastrear:
+    - Data testada
+    - Passa/falha por cenário
+    - Notas sobre falhas
+    - Tendências ao longo do tempo
+  </Step>
+
+  <Step title="Automatizar onde possível">
+    Para cenários críticos, automatize testes:
+
+    ```python
+    # Exemplo de teste automatizado
+    def test_greeting():
+        call = client.test_calls.create(
+            agent_id="agent_123",
+            scenario="greeting",
+            expected_keywords=["welcome", "help"]
+        )
+
+        assert call.duration_seconds < 5
+        assert "welcome" in call.transcript.lower()
+        assert call.status == "success"
+    ```
+
+    Execute testes automatizados em cronograma ou pré-implantação.
+  </Step>
+</Steps>
+
+## Matriz de Cobertura de Testes
+
+Certifique-se de estar testando todas as capacidades do agente:
+
+| Capacidade | Cenário de Teste | Status |
+|------------|---------------|--------|
+| **Conversa Principal** |
+| Saudação | Teste de saudação primeira chamada | ✓ |
+| Instruções | Teste de seguir regras do agente | ✓ |
+| Contexto | Conversa multi-turno | ✓ |
+| **Conhecimento** |
+| Recuperação KB | Teste de pergunta FAQ | ✓ |
+| Precisão KB | Verificar respostas corretas | ✓ |
+| Tratamento de desconhecido | Fazer pergunta sem resposta | ✓ |
+| **Ações** |
+| Chamadas API | Disparar cada ação personalizada | ⚠️ Em progresso |
+| Transferências | Testar cada destino de transferência | ⚠️ Em progresso |
+| Reserva | Completar reserva de calendário | ⏳ Não iniciado |
+| **Recursos de Voz** |
+| Interrupções | Teste de barge-in | ✓ |
+| Silêncio | Teste de timeout de inatividade | ✓ |
+| DTMF | Teste de entrada de teclado | N/A |
+| **Qualidade** |
+| Áudio | Métricas de qualidade da chamada | ✓ |
+| Latência | Tempo de resposta &lt;2s | ✓ |
+| Precisão | WER de transcrição &lt;10% | ✓ |
+
+## Próximos Passos
+
+<CardGroup cols={2}>
+  <Card title="Simulador Web" icon="browser" href="/test/web-simulator">
+    Execute cenários de teste no navegador
+  </Card>
+
+  <Card title="Teste por Telefone" icon="phone" href="/test/phone-testing">
+    Valide com chamadas PSTN reais
+  </Card>
+
+  <Card title="Depuração" icon="bug" href="/test/debugging">
+    Solucione cenários com falha
+  </Card>
+</CardGroup>

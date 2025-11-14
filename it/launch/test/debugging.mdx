@@ -1,0 +1,362 @@
+---
+title: "Debugging"
+description: "Debug dei problemi dell'agente con log, tracce e strumenti diagnostici"
+icon: "bug"
+keywords: "debug agente AI, log conversazioni, risoluzione errori, debug azioni, errori trascrizione, debug API, test agente, analisi log, strumenti diagnostici"
+og:description: "Guida sistematica al debugging per agenti AI. Analizza i log, risolvi problemi con le azioni, correggi errori di trascrizione e risolvi problemi di comportamento dell'agente con strumenti diagnostici."
+---
+
+## Filosofia del Debugging
+
+Quando il tuo agente si comporta in modo inaspettato, il debugging sistematico fa risparmiare tempo. Segui questo processo:
+
+1. **Riproduci** - Riesci a far accadere il problema in modo costante?
+2. **Isola** - È un problema di istruzioni, integrazioni, modello o infrastruttura?
+3. **Ispeziona** - Rivedi log, tracce e metriche per trovare indizi
+4. **Correggi** - Applica la modifica minima che risolve il problema
+5. **Valida** - Testa per confermare che la correzione funzioni
+
+## Strumenti Rapidi di Debugging
+
+<CardGroup cols={2}>
+  <Card title="Log Conversazioni" icon="file-lines">
+    Ogni test e chiamata di produzione registrati con trascrizione completa, azioni e metadati.
+
+    Accesso: **Conversations → Logs**
+  </Card>
+
+  <Card title="Monitor Live" icon="eye">
+    Guarda le chiamate attive in tempo reale con trascrizioni live e trigger delle azioni.
+
+    Accesso: **Conversations → Live Monitor**
+  </Card>
+
+  <Card title="Log Errori" icon="triangle-exclamation">
+    Errori della piattaforma, fallimenti API e problemi di sistema.
+
+    Accesso: **Logs → Errors**
+  </Card>
+
+  <Card title="Action Inspector" icon="magnifying-glass">
+    Vista dettagliata delle chiamate API personalizzate, richieste, risposte e tempistiche.
+
+    Accesso: Nei log conversazioni → scheda **Actions**
+  </Card>
+</CardGroup>
+
+## Scenari Comuni di Debugging
+
+### L'Agente Fornisce Risposte Sbagliate
+
+<Steps>
+  <Step title="Verifica le istruzioni">
+    Rivedi agente → **Conversation → Instructions**:
+    - Le istruzioni sono chiare e specifiche?
+    - Ci sono regole in conflitto?
+    - L'agente ha il contesto per la domanda?
+  </Step>
+
+  <Step title="Verifica la knowledge base">
+    - La risposta corretta è nella tua KB?
+    - Testa la ricerca KB manualmente:
+      ```bash
+      curl -X POST https://api.itellico.ai/v1/knowledge-bases/kb_123/search \
+           -H "Authorization: Bearer YOUR_API_KEY" \
+           -d '{"query": "your test query"}'
+      ```
+    - Controlla il recupero nei log → sezione **Knowledge Retrieved**
+  </Step>
+
+  <Step title="Rivedi il log della conversazione">
+    - Quale contesto aveva l'agente quando ha risposto?
+    - È stato recuperato contenuto KB rilevante?
+    - L'agente ha seguito i template delle istruzioni?
+  </Step>
+
+  <Step title="Testa in isolamento">
+    Crea un test minimo:
+    - Istruzione semplice
+    - Domanda chiara
+    - Contenuto KB previsto
+
+    Se funziona in isolamento, il problema è il contesto/complessità.
+  </Step>
+</Steps>
+
+### Le Azioni Non Si Attivano
+
+<Accordion title="L'azione API non si attiva">
+  **Controlla nei log delle conversazioni**:
+  1. Vai alla conversazione → scheda **Actions**
+  2. L'azione è elencata? Se no, non è mai stata attivata
+  3. Se elencata, controlla lo stato: Success vs Failed
+
+  **Perché le azioni non si attivano**:
+  - Le istruzioni dell'agente non menzionano quando usarla
+  - L'utente non ha fornito le informazioni richieste
+  - La condizione di attivazione dell'azione non è stata soddisfatta
+
+  **Soluzione**:
+  - Aggiungi un'istruzione chiara: "Quando il cliente chiede lo stato dell'ordine, usa l'azione getOrderStatus"
+  - Assicurati che l'agente raccolga prima i parametri richiesti
+  - Testa la frase di attivazione nel simulatore
+</Accordion>
+
+<Accordion title="L'API restituisce un errore">
+  **Controlla i dettagli dell'azione nei log**:
+  - Richiesta inviata (formato del payload corretto?)
+  - Risposta ricevuta (codice errore? messaggio?)
+  - Header di autenticazione (chiave API valida?)
+
+  **Errori comuni**:
+  - `401 Unauthorized` → Controlla la chiave API
+  - `404 Not Found` → Verifica l'URL dell'endpoint
+  - `408 Timeout` → API troppo lenta, aumenta il timeout
+  - `500 Internal Server Error` → Problema con l'API esterna
+
+  **Testa l'API manualmente**:
+  ```bash
+  # Copia la richiesta dai log e testa con curl
+  curl -X POST https://api.example.com/endpoint \
+       -H "Authorization: Bearer YOUR_KEY" \
+       -H "Content-Type: application/json" \
+       -d '{"param": "value"}'
+  ```
+
+  Se la chiamata manuale funziona, il problema è nella configurazione dell'azione.
+</Accordion>
+
+### Errori di Trascrizione
+
+<Accordion title="L'agente sente male le parole">
+  **Rivedi l'accuratezza della trascrizione**:
+  - Ascolta la registrazione della chiamata
+  - Confronta con il testo della trascrizione
+  - Identifica le parole sentite male (termini tecnici? nomi? accenti?)
+
+  **Soluzioni**:
+
+  **1. Aggiungi Vocabolario Personalizzato**:
+  ```json
+  // Impostazioni agente → Transcriber → Custom Vocabulary
+  {
+    "custom_words": [
+      {"word": "itellicoAI", "pronunciation": "eye-TELL-ih-koh AI"},
+      {"word": "API", "pronunciation": "A P I"}
+    ]
+  }
+  ```
+
+  **2. Prova un Transcriber Diverso**:
+  - Deepgram: Migliore per accenti, rumore
+  - Azure: Migliore per termini tecnici
+  - Whisper: Migliore per multilingue
+
+  **3. Migliora la Qualità Audio**:
+  - Abilita la soppressione del rumore
+  - Usa un codec a bitrate più alto (Opus 64kbps)
+  - Testa in un ambiente più silenzioso
+</Accordion>
+
+### L'Agente Si Ripete o Entra in Loop
+
+<Accordion title="L'agente fa la stessa domanda più volte">
+  **Diagnosi**:
+  1. Rivedi la trascrizione - dove inizia il loop?
+  2. Quale risposta dell'utente innesca la ripetizione?
+  3. La trascrizione sta fallendo? (l'agente non ha "sentito" la risposta)
+
+  **Soluzioni**:
+
+  **1. Aggiungi Istruzioni di Prevenzione Loop**:
+  ```markdown
+  Se hai fatto la stessa domanda due volte senza ottenere una risposta chiara:
+  1. Riformula la domanda
+  2. Se ancora poco chiara, offri di trasferire a un umano
+
+  Non fare mai la stessa domanda più di 3 volte.
+  ```
+
+  **2. Usa Input Strutturato (DTMF)**:
+  Per informazioni critiche, usa la tastiera:
+  ```markdown
+  "Quale reparto? Premi 1 per Vendite, 2 per Supporto."
+  ```
+
+  Più affidabile del riconoscimento vocale.
+
+  **3. Controlla la Trascrizione**:
+  Se l'agente non ha "sentito" la risposta, correggi la qualità audio o le impostazioni del transcriber.
+</Accordion>
+
+## Debugging con i Log
+
+### Lettura dei Log delle Conversazioni
+
+Ogni log di conversazione include:
+
+<Tabs>
+  <Tab title="Trascrizione">
+    **Cosa Cercare**:
+    - Accuratezza della trascrizione (confronta con l'audio)
+    - Rilevanza della risposta dell'agente
+    - Flusso della conversazione (naturale vs scomodo)
+    - Indicatori di raggiungimento obiettivi
+
+    **Timestamp**: Controlla se i ritardi tra i turni indicano problemi di latenza
+  </Tab>
+
+  <Tab title="Azioni">
+    **Dettagli**:
+    - Quali azioni sono state attivate
+    - Parametri di input
+    - Richiesta/risposta API
+    - Tempo di esecuzione
+    - Stato successo/fallimento
+
+    **Debug Fallimenti**: I messaggi di errore solitamente indicano la causa principale
+  </Tab>
+
+  <Tab title="Knowledge">
+    **Cosa È Stato Recuperato**:
+    - Query di ricerca utilizzata
+    - Chunk KB recuperati
+    - Punteggi di similarità
+    - Contenuto usato nella risposta
+
+    **Debug "Non lo so"**: Controlla se il contenuto rilevante è stato recuperato ma non usato, o se il recupero è fallito completamente
+  </Tab>
+
+  <Tab title="Obiettivi">
+    **Risultati**:
+    - Quali obiettivi raggiunti
+    - Punteggi di confidenza
+    - Entità estratte (date, nomi, ecc.)
+
+    **Debug Classificazione Errata**: Rivedi la conversazione - l'obiettivo doveva essere raggiunto?
+  </Tab>
+
+  <Tab title="Qualità">
+    **Metriche**:
+    - Qualità audio (jitter, perdita pacchetti, punteggio MOS)
+    - Latenza risposta
+    - Durata chiamata
+    - Frequenza interruzioni
+
+    **Problemi di Performance**: Controlla latenza e metriche di qualità
+  </Tab>
+</Tabs>
+
+### Analisi dei Log di Errore
+
+Filtra gli errori per:
+- Intervallo temporale (ultime 24h, ultima settimana)
+- Tipo di errore (API, trascrizione, sistema)
+- ID agente (agente specifico)
+- Gravità (critico, avviso, info)
+
+**Pattern Comuni**:
+- Stesso errore che si ripete → Problema sistemico (configurazione, integrazione)
+- Picchi di errori in orari specifici → Problema di capacità o servizio esterno
+- Errori su agente specifico → Problema di configurazione specifico dell'agente
+
+## Debugging Avanzato
+
+### Debugging del Comportamento del Modello
+
+<Accordion title="Confronta risposte dei modelli">
+  Testa lo stesso scenario con modelli diversi:
+
+  **Passaggi**:
+  1. Clona l'agente
+  2. Cambia modello (GPT-4 → Claude, ecc.)
+  3. Esegui scenario di test identico
+  4. Confronta le risposte
+
+  **Quando È Utile**:
+  - L'agente fornisce risposte inaspettate
+  - Testare se l'aggiornamento del modello migliora la qualità
+  - Debug di allucinazioni o fatti incorretti
+</Accordion>
+
+<Accordion title="Iterazione di prompt engineering">
+  **Test Sistematico**:
+  1. Crea 5-10 scenari di test (salvati in Test Scenarios)
+  2. Esegui tutti gli scenari con le istruzioni attuali
+  3. Documenta i fallimenti
+  4. Modifica le istruzioni per affrontare i fallimenti
+  5. Riesegui tutti gli scenari
+  6. Ripeti fino a quando tutti passano
+
+  **Test A/B delle Istruzioni**:
+  - Crea due versioni dell'agente con istruzioni diverse
+  - Indirizza il 50% del traffico a ciascuno
+  - Confronta i tassi di raggiungimento degli obiettivi
+  - Promuovi il vincitore
+</Accordion>
+
+### Debugging delle Integrazioni
+
+<Accordion title="Testa le API in isolamento">
+  **Rimuovi l'Agente dall'Equazione**:
+  1. Copia la richiesta API dai log
+  2. Testa con curl/Postman
+  3. Verifica che il formato della risposta corrisponda alle aspettative
+  4. Conferma che l'autenticazione funzioni
+
+  Se l'API funziona in isolamento ma fallisce dall'agente:
+  - Controlla l'IP allowlisting
+  - Verifica le impostazioni di timeout (l'agente potrebbe andare in timeout prima che l'API risponda)
+  - Controlla la formattazione del payload della richiesta
+</Accordion>
+
+<Accordion title="Mock delle risposte API">
+  Per testare senza colpire le API reali:
+
+  **Usa un server mock**:
+  ```javascript
+  // mockapi.example.com/order-status
+  {
+    "order_id": "12345",
+    "status": "shipped",
+    "eta": "2024-01-15"
+  }
+  ```
+
+  Punta l'azione dell'agente all'URL mock, testa il flusso della conversazione senza dipendenze esterne.
+</Accordion>
+
+## Checklist di Debugging
+
+Quando esegui il debug di un problema:
+
+- [ ] Riesci a riprodurre il problema in modo costante?
+- [ ] Hai rivisto il log della conversazione per la chiamata fallita?
+- [ ] Hai controllato i log degli errori per errori correlati?
+- [ ] Hai verificato che le istruzioni dell'agente siano chiare?
+- [ ] Hai testato nel simulatore web (iterazione più veloce)?
+- [ ] Hai isolato il problema (istruzioni vs integrazione vs modello)?
+- [ ] Hai applicato la correzione minima (cambiato una cosa)?
+- [ ] Hai ritestato per confermare che la correzione funzioni?
+- [ ] Hai testato per regressioni (non hai rotto altri scenari)?
+- [ ] Hai documentato il problema e la correzione?
+
+## Prossimi Passi
+
+<CardGroup cols={2}>
+  <Card title="Log e Monitoraggio" icon="chart-mixed" href="/launch/test/logs-and-monitoring">
+    Approfondimento su log e metriche
+  </Card>
+
+  <Card title="Risoluzione Problemi" icon="screwdriver-wrench" href="/launch/test/troubleshooting">
+    Problemi comuni e soluzioni
+  </Card>
+
+  <Card title="Scenari di Test" icon="list-check" href="/launch/test/test-scenarios">
+    Costruisci suite di test di regressione
+  </Card>
+
+  <Card title="Best Practice Produzione" icon="star" href="/launch/production-best-practices">
+    Previeni problemi in produzione
+  </Card>
+</CardGroup>
