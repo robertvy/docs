@@ -1,0 +1,435 @@
+---
+title: "Análise Pós-Chamada"
+description: "Extraia insights estruturados e métricas de qualidade das conversações"
+icon: "magnifying-glass-chart"
+"keywords": "análise pós-chamada, análise de conversação, insights de IA, métricas de qualidade, análise de sentimento, análise de chamada, qualidade de conversação"
+"og:description": "Extraia insights estruturados e métricas de qualidade de conversações de IA com análise pós-chamada automatizada."
+---
+
+## Visão Geral
+
+A análise pós-chamada usa IA para extrair informações estruturadas das transcrições de conversação. Defina o que você quer que a IA analise (pontuações de qualidade, sentimento, categorias, dados extraídos) e obtenha insights consistentes e acionáveis de cada chamada.
+
+**Acesso:** Configurações do agente → **Análise de Chamada**
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/postcalls/postcall-light.png" alt="Interface de configuração de Análise de Chamada mostrando barra lateral de navegação com seção Analytics expandida e Call Analysis selecionado, abas Default Analyses e Custom Analyses com Default Analyses ativo mostrando 13 análises, categorias expansíveis incluindo Communication (3), Interaction (4), Knowledge (2), Sentiment (2) e Technical (2) com ícones de chevron, e botão Add Analysis no canto superior direito" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/postcalls/postcall-dark.png" alt="Interface de configuração de Análise de Chamada mostrando barra lateral de navegação com seção Analytics expandida e Call Analysis selecionado, abas Default Analyses e Custom Analyses com Default Analyses ativo mostrando 13 análises, categorias expansíveis incluindo Communication (3), Interaction (4), Knowledge (2), Sentiment (2) e Technical (2) com ícones de chevron, e botão Add Analysis no canto superior direito" />
+  </div>
+</Frame>
+
+<Warning>
+**Análise vs Objetivos:** Análise extrai informações e julga qualidade (ex: "Quão satisfeito estava o cliente?"). Objetivos rastreiam conversões (ex: "Consulta foi agendada?"). Use ambos juntos para relatórios completos.
+</Warning>
+
+---
+
+## Idioma de Análise
+
+Defina o idioma para avaliação da análise de IA:
+
+**Acesso:** Configurações do agente → **Analytics → Idioma**
+
+Selecione o idioma no qual objetivos e análises serão avaliados. Isso determina qual idioma a IA usa ao analisar transcrições e responder perguntas de análise.
+
+**Exemplo:** Se você definir o idioma de análise para espanhol, a IA avaliará as conversações em espanhol, mesmo que seu agente fale inglês com os clientes.
+
+<Tip>
+Esta configuração aplica-se tanto à Análise de Chamada quanto à avaliação de Objetivos.
+</Tip>
+
+---
+
+## Análise Padrão vs Personalizada
+
+**Análises Padrão** - Pré-configuradas pela itellicoAI, sempre disponíveis:
+- Não podem ser editadas ou arquivadas
+- Ative/desative com o interruptor Ativo
+- Otimizadas para casos de uso comuns
+
+**Análises Personalizadas** - Crie as suas próprias:
+- Controle total sobre nome, descrição e tipo
+- Pode editar, arquivar e restaurar
+- Adaptadas às suas necessidades específicas de negócio
+
+<Info>
+Análises padrão fornecem um ponto de partida. Crie análises personalizadas para seus requisitos únicos.
+</Info>
+
+---
+
+## Configuração
+
+<Steps>
+  <Step title="Acessar Análise de Chamada">
+    Configurações do agente → **Análise de Chamada** → **Adicionar Análise**
+  </Step>
+
+  <Step title="Configurar pergunta">
+    **Nome:** Identificador interno
+
+    ```
+    Exemplo: "Pontuação de Satisfação do Cliente"
+    ```
+
+    **Descrição:** A pergunta que a IA responderá (seja o mais específico possível)
+
+    ```
+    Exemplo: "Em uma escala de 1 a 5 estrelas, avalie a satisfação geral
+    do cliente com base em seu tom, linguagem e se o problema foi
+    totalmente resolvido durante a chamada."
+    ```
+
+    <Tip>
+    Descrições mais específicas = análise de IA mais precisa
+    </Tip>
+  </Step>
+
+  <Step title="Escolher tipo de pergunta">
+    **Sim/Não** - Resposta binária
+    ```
+    Exemplo: "O problema do cliente foi totalmente resolvido?"
+    ```
+
+    **Aberta** - Resposta de texto
+    ```
+    Exemplo: "Qual foi o principal tópico discutido?"
+    ```
+
+    **Avaliação** - 1 a 5 estrelas
+    ```
+    Exemplo: "Quão profissional foi o agente?"
+    ```
+  </Step>
+
+  <Step title="Salvar">
+    Clique em **Adicionar Análise** para salvar
+  </Step>
+</Steps>
+
+---
+
+## Tipos de Pergunta
+
+<Tabs>
+  <Tab title="Sim/Não">
+    **Perguntas de resposta binária** para métricas claras.
+
+    **Melhor para:**
+    - Verificações de conformidade
+    - Verificação de qualidade
+    - Detecção de uso de recursos
+
+    **Exemplos:**
+    - ✅ "Informações de pagamento foram coletadas?"
+    - ✅ "O agente seguiu o script?"
+    - ✅ "O chamador foi transferido?"
+    - ✅ "Cliente concordou com a oferta?"
+  </Tab>
+
+  <Tab title="Aberta">
+    **Perguntas de resposta de texto** para insights detalhados.
+
+    **Melhor para:**
+    - Categorização de problemas
+    - Extração de informações
+    - Análise de causa raiz
+    - Resumos de conversação
+
+    **Exemplos:**
+    - 📝 "Qual foi o tópico principal discutido?"
+    - 📝 "Quais objeções o cliente levantou?"
+    - 📝 "Qual produto foi discutido?"
+    - 📝 "Resuma o problema técnico do cliente"
+  </Tab>
+
+  <Tab title="Avaliação">
+    **Escala de 1 a 5 estrelas** para avaliação qualitativa.
+
+    **Escala padrão:**
+    - **5** = Desempenho excepcional
+    - **4** = Desempenho acima da média
+    - **3** = Desempenho médio/satisfatório
+    - **2** = Desempenho abaixo da média
+    - **1** = Desempenho mínimo/ruim
+
+    **Melhor para:**
+    - Pontuação de qualidade
+    - Análise de sentimento
+    - Avaliação de desempenho
+    - Medição de satisfação
+
+    **Exemplos:**
+    - ⭐ "Avalie o sentimento do cliente (1=muito negativo, 5=muito positivo)"
+    - ⭐ "Quão bem o agente lidou com objeções?"
+    - ⭐ "Avalie a qualidade da chamada (1=ruim, 5=excelente)"
+    - ⭐ "Pontuação de satisfação do cliente"
+
+    <Tip>
+    Sempre defina o que cada nível de avaliação significa em sua descrição para análise mais precisa
+    </Tip>
+  </Tab>
+</Tabs>
+
+---
+
+## Exemplos
+
+<AccordionGroup>
+  <Accordion title="Satisfação do Cliente" icon="face-smile">
+    **Nome:** Pontuação de Satisfação do Cliente
+
+    **Tipo:** Avaliação (1 a 5 estrelas)
+
+    **Descrição:**
+    ```
+    Avalie a satisfação geral do cliente com base em seu tom,
+    linguagem e respostas (1 a 5 estrelas):
+
+    5 estrelas = Muito satisfeito, entusiasmado, todas as necessidades atendidas
+    4 estrelas = Satisfeito, interação positiva
+    3 estrelas = Neutro, necessidades básicas atendidas
+    2 estrelas = Algo insatisfeito, alguma frustração
+    1 estrela = Muito insatisfeito, irritado, problemas não resolvidos
+    ```
+  </Accordion>
+
+  <Accordion title="Resolução de Problema" icon="check-circle">
+    **Nome:** Problema Totalmente Resolvido
+
+    **Tipo:** Sim/Não
+
+    **Descrição:**
+    ```
+    O problema, pergunta ou solicitação do cliente foi totalmente resolvido
+    até o final da chamada? Responda Sim apenas se o cliente confirmou
+    satisfação ou explicitamente concordou que o problema foi resolvido.
+    ```
+  </Accordion>
+
+  <Accordion title="Classificação de Tópico de Chamada" icon="tag">
+    **Nome:** Tópico Principal da Chamada
+
+    **Tipo:** Aberta
+
+    **Descrição:**
+    ```
+    Identifique o tópico principal ou motivo desta chamada. Escolha entre:
+    - Consulta sobre faturamento
+    - Suporte técnico
+    - Informações sobre produto
+    - Status do pedido
+    - Reclamação
+    - Solicitação de cancelamento
+    - Pergunta geral
+
+    Retorne apenas o nome da categoria. Se múltiplos tópicos foram discutidos,
+    retorne aquele que ocupou mais tempo da conversação.
+    ```
+  </Accordion>
+
+  <Accordion title="Desempenho do Agente" icon="user-gear">
+    **Nome:** Profissionalismo do Agente
+
+    **Tipo:** Avaliação (1 a 5 estrelas)
+
+    **Descrição:**
+    ```
+    Avalie o profissionalismo do agente durante a chamada (1 a 5 estrelas):
+
+    5 = Excepcionalmente profissional, cortês e prestativo
+    4 = Muito profissional com pequeno espaço para melhoria
+    3 = Profissional e apropriado
+    2 = Algo não profissional (interrompendo, impaciente)
+    1 = Não profissional (rude, desdenhoso, inapropriado)
+    ```
+  </Accordion>
+
+  <Accordion title="Análise de Sentimento" icon="chart-line">
+    **Nome:** Sentimento do Cliente
+
+    **Tipo:** Avaliação (1 a 5 estrelas)
+
+    **Descrição:**
+    ```
+    Avalie o estado emocional do cliente durante a chamada:
+
+    5 = Muito positivo (feliz, animado, grato, entusiasmado)
+    4 = Positivo (satisfeito, amigável, satisfeito)
+    3 = Neutro (profissional, objetivo, calmo)
+    2 = Negativo (frustrado, desapontado, irritado)
+    1 = Muito negativo (com raiva, hostil, ameaçador)
+    ```
+  </Accordion>
+
+  <Accordion title="Verificação de Conformidade" icon="shield-check">
+    **Nome:** Identificação Adequada
+
+    **Tipo:** Sim/Não
+
+    **Descrição:**
+    ```
+    O agente se identificou adequadamente com nome e empresa
+    no início da chamada, conforme exigido pela política da empresa?
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Análise vs Objetivos
+
+Use ambos juntos para rastreamento completo de conversação:
+
+| Recurso | Objetivos | Análise |
+|---------|-----------|---------|
+| **Propósito** | Rastrear conversões | Extrair insights e julgar qualidade |
+| **Exemplo** | "Consulta agendada" | "Quão satisfeito estava o cliente?" |
+| **Tipo de Resposta** | Alcançado/Não alcançado | Sim/Não, Texto ou avaliação de 1-5 |
+| **Usar Para** | Métricas de sucesso | Pontuação de qualidade, categorização |
+| **Melhor Para** | Resultados de negócio | Relatórios detalhados |
+
+**Exemplo de combinação:**
+- **Objetivo:** "Consulta agendada" (Conseguimos a conversão?)
+- **Análise:** "Satisfação do Cliente" (Quão bem fizemos isso?)
+- **Análise:** "Tópico Principal da Chamada" (O que eles queriam?)
+
+---
+
+## Visualizando Resultados
+
+### Conversações Individuais
+
+Visualize resultados de análise para cada chamada:
+
+1. Vá para **Conversações**
+2. Clique em uma conversação
+3. Visualize a seção **Análise de Chamada**
+4. Veja todas as perguntas de análise com respostas da IA
+
+### Painel
+
+Visualize dados agregados de todas as conversações:
+
+Vá para **Painel** para ver tendências de análise e métricas.
+
+[Saiba mais sobre o Painel →](/pt/optimize/analytics-dashboard)
+
+---
+
+## Melhores Práticas
+
+<AccordionGroup>
+  <Accordion title="Escreva Perguntas Específicas" icon="pen">
+    A IA usa sua descrição para responder. Seja detalhado.
+
+    ❌ Vago: "A chamada foi boa?"
+
+    ✅ Específico: "O agente forneceu informações precisas, abordou todas as perguntas do cliente e manteve um tom profissional durante toda a chamada?"
+  </Accordion>
+
+  <Accordion title="Defina Escalas de Avaliação" icon="star">
+    Para perguntas de avaliação, sempre defina o que cada nível significa.
+
+    ```
+    Avalie o profissionalismo do agente (1-5):
+    5 = Excepcionalmente profissional
+    4 = Muito profissional
+    3 = Profissional
+    2 = Algo não profissional
+    1 = Não profissional
+    ```
+  </Accordion>
+
+  <Accordion title="Comece com Perguntas Chave" icon="list">
+    Não crie muitas análises de uma vez. Comece com 3-5 perguntas críticas:
+
+    1. Problema resolvido (Sim/Não)
+    2. Satisfação do cliente (Avaliação)
+    3. Tópico da chamada (Aberta)
+    4. Sentimento (Avaliação)
+
+    Adicione mais conforme necessário.
+  </Accordion>
+
+  <Accordion title="Arquive Análises Antigas" icon="folder">
+    Arquive perguntas de análise desatualizadas para mantê-las fora do caminho enquanto preserva dados históricos.
+
+    **Para arquivar:** Clique no ícone de arquivo ao lado da análise
+
+    **Para restaurar:** Clique em "Ver Arquivados" → Restaurar
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Dicas
+
+- **Combine com objetivos** - Use objetivos para conversões, análise para insights de qualidade
+- **Teste e refine** - Revise as respostas da IA em algumas chamadas e ajuste as descrições se necessário
+- **Seja consistente** - Use as mesmas perguntas de análise em agentes similares para dados comparáveis
+- **Ative/desative conforme necessário** - Alterne perguntas de análise ligadas/desligadas com o interruptor Ativo
+
+---
+
+## Solução de Problemas
+
+<AccordionGroup>
+  <Accordion title="Respostas imprecisas" icon="triangle-exclamation">
+    **Causas:**
+    - Descrição da pergunta muito vaga
+    - Múltiplas interpretações possíveis
+    - Falta de contexto na descrição
+
+    **Soluções:**
+    - Torne a descrição mais específica e detalhada
+    - Forneça exemplos na descrição
+    - Para avaliações, defina cada nível explicitamente
+    - Teste com chamadas de amostra e refine
+  </Accordion>
+
+  <Accordion title="Avaliações inconsistentes" icon="arrows-left-right">
+    **Causas:**
+    - Critérios de avaliação não claramente definidos
+    - Interpretação subjetiva pela IA
+
+    **Soluções:**
+    - Defina critérios exatos para cada nível de avaliação
+    - Forneça exemplos específicos para cada avaliação de estrelas
+    - Use perguntas Sim/Não para respostas mais objetivas
+  </Accordion>
+
+  <Accordion title="Análise não aparece" icon="eye-slash">
+    **Causas:**
+    - Pergunta de análise desabilitada
+    - Criada após as chamadas terem ocorrido
+    - Transcrição não habilitada
+
+    **Soluções:**
+    - Verifique se a análise está Ativa (ative)
+    - Análise só funciona em novas chamadas após a criação
+    - Certifique-se de que a transcrição está habilitada para o agente
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Próximos Passos
+
+<CardGroup cols={2}>
+  <Card title="Objetivos de Conversação" icon="bullseye" href="/pt/build/analytics/conversation-goals">
+    Rastreie conversões e resultados
+  </Card>
+  <Card title="E-mails Pós-Chamada" icon="envelope-open-text" href="/pt/build/analytics/post-call-automation">
+    Acione e-mails a partir de análises
+  </Card>
+  <Card title="Painel" icon="chart-line" href="/pt/optimize/analytics-dashboard">
+    Visualize insights agregados
+  </Card>
+  <Card title="Instruções do Agente" icon="pen-to-square" href="/pt/build/conversation/instructions">
+    Oriente o comportamento do agente
+  </Card>
+</CardGroup>

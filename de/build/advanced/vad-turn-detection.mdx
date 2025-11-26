@@ -1,0 +1,316 @@
+---
+title: "Sprachaktivitätserkennung & Gesprächswechselerkennung"
+description: "Konfiguriere Sprachaktivitätserkennung, Gesprächswechselerkennung und Unterbrechungsbehandlung für einen natürlichen Gesprächsfluss"
+icon: "microphone-lines"
+keywords: "VAD, Voice Activity Detection, Sprecheraktivität, Turn Detection, Sprach-Erkennung"
+og:description: "Optimieren du Gesprächsfluss mit Voice Activity Detection (VAD) und intelligenter Sprechererkennung."
+---
+
+## Überblick
+
+Sprachaktivitätserkennung (VAD) und Gesprächswechselerkennung ermöglichen es deinen KI-Agenten zu erkennen, wann Benutzer sprechen, wann sie ihren Gesprächsturn beendet haben und wie Unterbrechungen natürlich behandelt werden. Diese Einstellungen sind entscheidend für die Schaffung reibungsloser, menschenähnlicher Gespräche, die reaktionsschnell sind, ohne Benutzer mitten im Satz zu unterbrechen.
+
+VAD und Gesprächswechselerkennung arbeiten zusammen, um zu bestimmen, wann zugehört, wann geantwortet und wie mit Unterbrechungen umgegangen werden soll - und verwandeln so grundlegende Spracherkennung in natürliche Gesprächsinteraktionen.
+
+<Note>
+**Universelle Anwendung:** VAD- und Gesprächswechselerkennungseinstellungen gelten für alle Gesprächstypen, einschließlich Telefonanrufe (SIP/PSTN) und webbasierte Gespräche.
+
+Die Konfiguration ist verfügbar unter **Agenteneinstellungen → Operationen → Sprachaktivitätserkennung (VAD)**. Die Einstellungen umfassen Empfindlichkeitsvoreinstellungen, intelligentes Endpointing, Unterbrechungsbehandlung und erweiterte Tuning-Parameter.
+</Note>
+
+---
+
+## Was ist Sprachaktivitätserkennung?
+
+### VAD-Technologie verstehen
+
+Sprachaktivitätserkennung (VAD) ist die Technologie, die bestimmt, wann jemand spricht im Gegensatz zu Stille oder Hintergrundgeräuschen. du ist die Grundlage dafür, zu wissen, wann zugehört werden soll und wann ein Benutzer zu Ende gesprochen hat.
+
+**Hauptkomponenten:**
+- **Spracherkennung:** Identifiziert, wann Sprachaktivität beginnt
+- **Stilleerkennung:** Erkennt, wann Sprache beendet wurde
+- **Geräuschfilterung:** Unterscheidet Sprache von Hintergrundgeräuschen
+
+### Was ist Gesprächswechselerkennung?
+
+Gesprächswechselerkennung (auch "Endpointing" genannt) bestimmt, wann ein Sprecher seinen Gesprächsturn beendet hat und es Zeit für den Agenten ist zu antworten. Dies ist ausgefeilter als einfache Stilleerkennung, da es natürliche Pausen, Denkzeit und Gesprächskontext berücksichtigt.
+
+---
+
+## Intelligentes Endpointing
+
+### KI-gestützte Gesprächswechselerkennung
+
+Intelligentes Endpointing verwendet ein KI-Modell, um das Gesprächsende genauer als nur VAD allein zu erkennen. Diese erweiterte Funktion hilft, das Unterbrechen von Benutzern während natürlicher Pausen zu verhindern und gleichzeitig einen reaktionsschnellen Gesprächsfluss zu erhalten.
+
+**Vorteile:**
+- Reduziert falsche Unterbrechungen während natürlicher Pausen
+- Verbessert die Barge-In-Behandlung, wenn Benutzer unterbrechen
+- Handhabt Sätze mit mehreren Nebensätzen besser
+- Berücksichtigt den Gesprächskontext
+
+<Warning>
+**Latenz-Kompromiss:** Intelligentes Endpointing fügt der Gesprächswechselerkennung einige hundert Millisekunden Latenz hinzu. Dies verbessert die Genauigkeit, macht den Agenten aber etwas weniger reaktionsschnell. Deaktivieren du es für zeitkritische Anwendungen, bei denen sofortige Reaktion wichtiger ist als die Genauigkeit der Gesprächswechselerkennung.
+</Warning>
+
+**Fallback-Verhalten:** Wenn das KI-Modell nicht verfügbar ist, fällt das System automatisch auf reine VAD-Erkennung zurück, um einen zuverlässigen Betrieb sicherzustellen.
+
+<Card title="Intelligentes Endpointing umschalten" icon="brain-circuit">
+  KI-basierte Gesprächswechselerkennung aktivieren oder deaktivieren. Bei Deaktivierung verwendet das System reine VAD-Erkennung mit schnelleren Antwortzeiten.
+</Card>
+
+---
+
+## Empfindlichkeitsvoreinstellungen
+
+### Schnelle Konfigurationsoptionen
+
+Wähle aus vorkonfigurierten Empfindlichkeitsstufen, die Reaktionsschnelligkeit und Genauigkeit ausbalancieren. Jede Voreinstellung passt automatisch mehrere Parameter für optimale Leistung in gängigen Szenarien an.
+
+<AccordionGroup>
+  <Accordion title="Niedrige Empfindlichkeit" icon="turtle">
+    **Weniger empfindlich, weniger Unterbrechungen**
+
+    Am besten für:
+    - Umgebungen mit Hintergrundgeräuschen
+    - Benutzer, die mit langen Pausen sprechen
+    - Formelle Gespräche, die Geduld erfordern
+  </Accordion>
+
+  <Accordion title="Mittlere Empfindlichkeit (Empfohlen)" icon="gauge">
+    **Ausgewogene Empfindlichkeit**
+
+    Am besten für:
+    - Allzweckgespräche
+    - Gemischte Umgebungen
+    - Die meisten Geschäftsanwendungen
+  </Accordion>
+
+  <Accordion title="Hohe Empfindlichkeit" icon="rabbit">
+    **Empfindlicher, schnellere Antworten**
+
+    Am besten für:
+    - Schnelle Gespräche
+    - Saubere Audioumgebungen
+    - Zeitkritische Interaktionen
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Erweiterte Einstellungen
+
+### Benutzerdefinierte Konfiguration
+
+Für eine feinabgestimmte Kontrolle wechseln du in den "Benutzerdefiniert"-Modus, um auf erweiterte Parameter zuzugreifen. Diese Einstellungen ermöglichen eine präzise Abstimmung für spezifische Anwendungsfälle oder Umgebungen.
+
+### Unterbrechungsbehandlung
+
+<AccordionGroup>
+  <Accordion title="Unterbrechungen zulassen" icon="circle-pause">
+    **Hauptschalter für Unterbrechungsbehandlung**
+
+    Wenn aktiviert, können Benutzer den Agenten unterbrechen, während er spricht. Wenn deaktiviert, wird der Agent seine Antwort beenden, bevor er neue Eingaben akzeptiert.
+
+    **Anwendungsfälle:**
+    - **Aktiviert:** Natürliche Gespräche, Kundensupport, interaktive Dialoge
+    - **Deaktiviert:** Wichtige Ankündigungen, rechtliche Hinweise, strukturierte Skripte
+  </Accordion>
+
+  <Accordion title="Sprachdauer für Unterbrechung" icon="clock">
+    **Minimale Sprachdauer vor Zulassung einer Unterbrechung (0-5 Sekunden)**
+
+    Steuert, wie lange ein Benutzer sprechen muss, bevor der Agent es als Unterbrechungsversuch erkennt.
+
+    - **Niedrigere Werte (0,2-0,5s):** Reaktionsschneller, kann aber bei kurzen Einwürfen auslösen
+    - **Höhere Werte (1,0-2,0s):** Stabiler, erfordert anhaltende Sprache zum Unterbrechen
+
+    **Standard:** 0,5 Sekunden
+  </Accordion>
+
+  <Accordion title="Minimale Wörter" icon="text">
+    **Minimale Wortanzahl vor Zulassung einer Unterbrechung (0-5 Wörter)**
+
+    Erfordert, dass der Benutzer eine bestimmte Anzahl von Wörtern spricht, bevor eine Unterbrechung erkannt wird.
+
+    - **0 Wörter:** Bei jeder Spracherkennung unterbrechen
+    - **1-2 Wörter:** Balance zwischen Reaktionsschnelligkeit und Stabilität
+    - **3-5 Wörter:** Erhebliche Eingabe vor Unterbrechung erforderlich
+
+    **Standard:** 0 Wörter (bei jeder Sprache unterbrechen)
+  </Accordion>
+
+  <Accordion title="Endpointing-Verzögerung" icon="timer">
+    **Minimale Stilleverzögerung, bevor Sprache als beendet gilt (0-2 Sekunden)**
+
+    Wie lange in Stille gewartet wird, bevor festgestellt wird, dass der Benutzer zu Ende gesprochen hat.
+
+    - **Niedrigere Werte (0,2-0,5s):** Schnellere Antworten, kann aber nachdenkliche Pausen abschneiden
+    - **Höhere Werte (1,0-2,0s):** Geduldiger, ermöglicht natürliche Pausen und Denkzeit
+
+    **Standard:** 0,5 Sekunden
+  </Accordion>
+
+  <Accordion title="VAD-Schwellenwert" icon="gauge-high">
+    **Empfindlichkeit der Spracherkennung (0,0 - 1,0)**
+
+    Steuert, wie empfindlich das System bei der Erkennung von Sprache gegenüber Stille oder Geräuschen ist.
+
+    - **Niedrigere Werte (0,1-0,3):** Weniger empfindlich, erfordert klarere Sprache
+    - **Mittlere Werte (0,4-0,6):** Ausgewogen für die meisten Umgebungen
+    - **Höhere Werte (0,7-1,0):** Empfindlicher, erkennt leisere Sprache
+
+    **Standard:** 0,5
+
+    <Warning>
+    Sehr niedrige Werte können leise sprechende Benutzer verpassen. Sehr hohe Werte können auf Hintergrundgeräusche reagieren.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Prefix-Padding" icon="backward">
+    **Audiopuffer vor Spracherkennung (0-500ms)**
+
+    Menge an Audio, die vor erkannter Sprache eingefügt wird. Dies hilft, das Abschneiden des Anfangs von Wörtern oder Sätzen zu verhindern.
+
+    - **Niedrigere Werte (0-50ms):** Minimale Pufferung, Risiko des Abschneidens von Sprachbeginn
+    - **Mittlere Werte (100-200ms):** Gute Balance für die meisten Fälle
+    - **Höhere Werte (300-500ms):** Maximale Erhaltung des Sprachbeginns
+
+    **Standard:** 100ms
+  </Accordion>
+
+  <Accordion title="Stilledauer" icon="forward">
+    **Stilleschwellenwert vor Beendigung des Turns (0-2000ms)**
+
+    Wie lange in Stille gewartet wird, bevor die Sprache des Benutzers als beendet gilt.
+
+    - **Niedrigere Werte (100-300ms):** Schnelle Antworten, kann aber Pausen abschneiden
+    - **Mittlere Werte (400-800ms):** Ausgewogen für natürliche Gespräche
+    - **Höhere Werte (1000-2000ms):** Sehr geduldig, ermöglicht lange Denkpausen
+
+    **Standard:** 500ms
+
+    <Tip>
+    Höhere Werte funktionieren gut für Benutzer, die beim Sprechen nachdenken oder Sprachmuster mit natürlichen Pausen haben.
+    </Tip>
+  </Accordion>
+</AccordionGroup>
+
+### Präventive Generierung
+
+<Card title="Präventive Generierung" icon="rocket">
+  **Antwortgenerierung vor Abschluss der Gesprächswechselerkennung starten**
+
+  Wenn aktiviert, beginnt der Agent mit der Generierung einer Antwort, sobald eine finale Transkription verfügbar ist, noch bevor das Gesprächsende bestätigt wird. Dies kann die wahrgenommene Latenz reduzieren, kann aber gelegentlich Antworten generieren, die abgebrochen werden, wenn der Benutzer weiterspricht.
+
+  **Best Practices:**
+  - Funktioniert am besten mit aktiviertem intelligenten Endpointing
+  - Ideal für zeitkritische Gespräche
+  - Kann API-Kosten durch abgebrochene Generierungen erhöhen
+
+  **Standard:** Deaktiviert
+</Card>
+
+---
+
+## Best Practices für die Konfiguration
+
+### Die richtigen Einstellungen wählen
+
+<Steps>
+  <Step title="Mit Voreinstellungen beginnen">
+    Beginne für die meisten Anwendungsfälle mit der mittleren Empfindlichkeitsvoreinstellung. Teste in deiner tatsächlichen Umgebung, bevor du anpassen.
+  </Step>
+  <Step title="Mit echten Benutzern testen">
+    Verschiedene Akzente, Sprachmuster und Sprechgeschwindigkeiten erfordern möglicherweise unterschiedliche Einstellungen. Teste mit repräsentativen Benutzern.
+  </Step>
+  <Step title="Intelligentes Endpointing berücksichtigen">
+    Aktivieren du intelligentes Endpointing nur, wenn der Agent Benutzer zu oft mitten im Turn unterbricht und andere Einstellungen (Endpointing-Verzögerung, Empfindlichkeit) dies nicht beheben können. Denken du daran, dass es Latenz hinzufügt.
+  </Step>
+  <Step title="An Umgebung anpassen">
+    Laute Umgebungen profitieren von niedrigerer Empfindlichkeit. Ruhige Umgebungen können höhere Empfindlichkeit für reaktionsschnellere Interaktionen verwenden.
+  </Step>
+  <Step title="Anwendungsfall berücksichtigen">
+    - **Kundensupport:** Mittlere bis hohe Empfindlichkeit
+    - **Informationserfassung:** Mittlere Empfindlichkeit mit aktivierten Unterbrechungen
+    - **Ankündigungen:** Niedrige Empfindlichkeit mit deaktivierten Unterbrechungen
+    - **Verkaufsgespräche:** Mittlere bis hohe Empfindlichkeit mit aktivierten Unterbrechungen
+  </Step>
+</Steps>
+
+---
+
+## Häufige Szenarien
+
+### Fehlerbehebung
+
+<AccordionGroup>
+  <Accordion title="Agent unterbricht Benutzer mitten im Satz" icon="scissors">
+    **Symptome:** Agent beginnt zu antworten, bevor Benutzer zu Ende gesprochen haben
+
+    **Lösungen:**
+    - Endpointing-Verzögerung oder Stilledauer erhöhen
+    - Zu niedrigerer Empfindlichkeitsvoreinstellung wechseln
+    - Bei benutzerdefinierten Einstellungen die minimale Wortanforderung erhöhen
+    - Erwägen du, intelligentes Endpointing als letzten Ausweg zu aktivieren (fügt Latenz hinzu)
+  </Accordion>
+
+  <Accordion title="Agent antwortet zu langsam" icon="hourglass">
+    **Symptome:** Spürbare Verzögerung zwischen Benutzerbeendigung und Agentenantwort
+
+    **Lösungen:**
+    - Endpointing-Verzögerung oder Stilledauer verringern
+    - Zu höherer Empfindlichkeitsvoreinstellung wechseln
+    - Intelligentes Endpointing deaktivieren, falls aktiviert (reduziert Latenz)
+    - Präventive Generierung aktivieren
+  </Accordion>
+
+  <Accordion title="Agent erkennt Unterbrechungen nicht" icon="ban">
+    **Symptome:** Benutzer können den Agenten beim Sprechen nicht unterbrechen
+
+    **Lösungen:**
+    - Sicherstellen, dass "Unterbrechungen zulassen" aktiviert ist
+    - Sprachdauer für Unterbrechung verringern
+    - Minimale Wortanforderung reduzieren
+    - Zu höherer Empfindlichkeitsvoreinstellung wechseln
+  </Accordion>
+
+  <Accordion title="Falsche Auslöser durch Hintergrundgeräusche" icon="volume-high">
+    **Symptome:** Agent reagiert auf Hintergrundgeräusche oder Lärm
+
+    **Lösungen:**
+    - Zu niedrigerer Empfindlichkeitsvoreinstellung wechseln
+    - VAD-Schwellenwert verringern
+    - Minimale Wortanforderung erhöhen
+    - Sprachdauer für Unterbrechung erhöhen
+  </Accordion>
+
+  <Accordion title="Verpasste Sprache von leise sprechenden Benutzern" icon="volume-low">
+    **Symptome:** Agent erkennt nicht, wenn leise Benutzer sprechen
+
+    **Lösungen:**
+    - Zu höherer Empfindlichkeitsvoreinstellung wechseln
+    - VAD-Schwellenwert erhöhen
+    - Sprachdauer für Unterbrechung verringern
+    - Mikrofon-/Audioeingabequalität überprüfen
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Verwandte Funktionen
+
+<CardGroup cols={2}>
+  <Card title="Spracheinstellungen" icon="sliders" href="/de/build/voice-speech/voice-settings">
+    Konfiguriere Sprachgeschwindigkeit, Tonhöhe und andere TTS-Parameter
+  </Card>
+  <Card title="Hintergrundklang" icon="music" href="/de/build/voice-speech/ambient-sound">
+    Füge Hintergrundaudio für natürlichere Gespräche hinzu
+  </Card>
+  <Card title="Benutzerdefinierte Aussprachen" icon="spell-check" href="/de/build/voice-speech/custom-pronunciations">
+    Stelle die richtige Aussprache von Namen und Fachbegriffen sicher
+  </Card>
+  <Card title="DTMF-Steuerung" icon="hashtag" href="/de/build/advanced/dtmf-controls">
+    Konfiguriere die Telefontastaturinteraktion für IVR-Navigation
+  </Card>
+</CardGroup>

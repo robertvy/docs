@@ -1,0 +1,388 @@
+---
+title: "Mode Contexte vs RAG"
+description: "Choisir entre l'injection de contexte et la récupération RAG pour tes bases de connaissances"
+icon: "brain"
+"keywords": "RAG, contexte vs RAG, récupération de connaissances, base de connaissances IA, génération augmentée par récupération, injection de contexte, mémoire IA"
+"og:description": "Apprendre quand utiliser l'injection de contexte vs. la récupération RAG pour optimiser l'accès aux connaissances et les performances de ton agent IA."
+---
+
+## Vue d'ensemble
+
+Lorsque tu attribues des connaissances à ton agent, tu dois choisir comment l'agent accède à ces informations. itellicoAI offre deux méthodes d'accès : **Mode Contexte** (injection de prompt) et **Mode RAG** (Génération Augmentée par Récupération).
+
+Comprendre la différence entre ces approches t'aidera à optimiser les performances et la précision de ton agent.
+
+---
+
+## Les Deux Méthodes d'Accès
+
+<CardGroup cols={2}>
+  <Card title="Mode Contexte" icon="file-import">
+    **Injection de Prompt**
+
+    Toutes les connaissances sont injectées directement dans le contexte de conversation de l'agent au début de chaque interaction.
+
+    **Idéal pour :** Les petites bases de connaissances avec des informations critiques dont l'agent a besoin pour chaque conversation.
+  </Card>
+  <Card title="Mode RAG" icon="magnifying-glass">
+    **Génération Augmentée par Récupération**
+
+    L'agent recherche et récupère dynamiquement les connaissances pertinentes en fonction du sujet de conversation.
+
+    **Idéal pour :** Les grandes bases de connaissances où seules des sections spécifiques sont nécessaires par conversation.
+  </Card>
+</CardGroup>
+
+---
+
+## Mode Contexte (Injection de Prompt)
+
+### Comment Ça Fonctionne
+
+En Mode Contexte, le contenu de ta base de connaissances est chargé directement dans le prompt système de l'agent au début de chaque conversation :
+
+```text wrap
+Prompt Système :
+Vous êtes un agent de service client utile.
+
+[Vos instructions d'agent...]
+
+==== BASE DE CONNAISSANCES : FAQ Support Client ====
+
+### Facturation & Paiements
+- Question : Comment mettre à jour mon mode de paiement ?
+  Réponse : Vous pouvez mettre à jour votre mode de paiement en...
+
+- Question : Quand serai-je facturé ?
+  Réponse : La facturation se fait le même jour chaque mois...
+
+### Politique de Retour
+[Contenu complet de la politique de retour]
+
+### Informations d'Expédition
+[Informations complètes d'expédition]
+
+==== FIN BASE DE CONNAISSANCES ====
+
+Maintenant, aidez le client avec sa question.
+```
+
+L'agent voit TOUTES les connaissances dès le départ et peut les référencer tout au long de la conversation.
+
+### Sortie Formatée
+
+Par défaut, les connaissances sont injectées avec un formatage structuré :
+
+```text wrap
+========================================
+# Nom de la Base de Connaissances
+Description de la base de connaissances
+
+## Nom du Dossier
+Description du dossier
+
+### Titre de l'Élément
+----------------------------------------
+Contenu de l'élément ici
+----------------------------------------
+========================================
+```
+
+Ce formatage aide l'agent à comprendre la structure et l'organisation des connaissances.
+
+### Quand Utiliser le Mode Contexte
+
+<AccordionGroup>
+  <Accordion title="Petites bases de connaissances (< 1 000 mots)" icon="file">
+    Si ta base de connaissances est compacte, le Mode Contexte garantit que l'agent a toujours le contexte complet.
+
+    **Exemple de cas d'usage :**
+    Un agent support avec une base de connaissances contenant :
+    - 10 FAQ courantes
+    - Politique de retour (500 mots)
+    - Coordonnées
+    - Options d'expédition
+
+    Total : ~3 000 mots - s'intègre facilement dans le contexte.
+  </Accordion>
+
+  <Accordion title="Informations critiques nécessaires à chaque fois" icon="circle-exclamation">
+    Informations que l'agent doit référencer lors de la plupart ou de tous les appels.
+
+    **Exemple de cas d'usage :**
+    Un agent de réservation qui a besoin de :
+    - Politiques d'entreprise (toujours)
+    - Services disponibles (toujours)
+    - Structure de tarification (toujours)
+    - Procédures de réservation (toujours)
+  </Accordion>
+
+  <Accordion title="Informations hautement structurées" icon="table">
+    Lorsque les éléments de connaissance se référencent les uns aux autres ou forment un tout cohérent.
+
+    **Exemple de cas d'usage :**
+    Agent de configuration produit avec :
+    - Dépendances d'options ("S'ils choisissent X, proposer Y")
+    - Matrice de compatibilité
+    - Bundles de packages
+    - Tarification qui dépend des combinaisons
+  </Accordion>
+
+</AccordionGroup>
+
+### Avantages du Mode Contexte
+
+<CardGroup cols={2}>
+  <Card title="Toujours Disponible" icon="check">
+    L'agent a un accès immédiat à toutes les connaissances sans délai de recherche
+  </Card>
+  <Card title="Meilleur pour Petits Ensembles" icon="gauge-high">
+    Efficace lorsque les connaissances s'intègrent confortablement dans la fenêtre de contexte
+  </Card>
+  <Card title="Déterministe" icon="equals">
+    L'agent voit exactement les mêmes connaissances à chaque fois
+  </Card>
+  <Card title="Fonctionne avec Variables" icon="brackets-curly">
+    Les connaissances peuvent inclure des variables Jinja qui se résolvent dans le contexte
+  </Card>
+</CardGroup>
+
+### Limitations du Mode Contexte
+
+<Warning>
+Le Mode Contexte est **limité à 10 000 tokens au total** pour toutes les connaissances attribuées.
+</Warning>
+
+**Limitations :**
+- Garder les bases de connaissances petites (< 1 000 mots)
+- Toutes les connaissances sont envoyées avec chaque requête (coût plus élevé)
+- Toutes les connaissances sont traitées à chaque fois (latence plus élevée)
+- La base de connaissances entière est incluse même si seule une petite partie est pertinente
+
+---
+
+## Mode RAG (Génération Augmentée par Récupération)
+
+### Comment Ça Fonctionne
+
+En Mode RAG, ta base de connaissances est stockée dans une base de données vectorielle. Lorsque l'agent a besoin d'informations :
+
+1. **L'utilisateur pose une question :** "Quelle est ta politique de retour ?"
+2. **L'agent identifie le besoin :** L'agent détermine qu'il a besoin de connaissances sur les retours
+3. **Le système recherche :** Le système RAG recherche dans la base de connaissances le contenu pertinent
+4. **Le contenu pertinent est récupéré :** Seule la section politique de retour est récupérée
+5. **L'agent répond :** L'agent utilise les connaissances récupérées pour répondre
+
+L'agent ne voit que les connaissances dont il a besoin, quand il en a besoin.
+
+### Récupération Intelligente
+
+RAG utilise la recherche sémantique avec des embeddings vectoriels pour trouver les connaissances pertinentes :
+
+```text wrap
+Utilisateur : "Je dois renvoyer les chaussures que j'ai achetées la semaine dernière"
+
+Le système RAG pense :
+- Mots-clés : "renvoyer", "chaussures", "achetées"
+- Signification sémantique : Retours, possiblement échange
+- Rechercher dans les connaissances : politique de retour, expédition, échanges
+
+Connaissances récupérées :
+- Aperçu Politique de Retour
+- Instructions Expédition Retour
+- Procédures d'Échange
+
+PAS récupéré :
+- FAQ Facturation
+- Spécifications Produit
+- Gestion de Compte
+```
+
+### Avantages du Mode RAG
+
+<CardGroup cols={2}>
+  <Card title="Évolue Infiniment" icon="up-right-and-down-left-from-center">
+    Supporte des bases de connaissances massives sans limites de contexte
+  </Card>
+  <Card title="Plus Rapide pour Grandes Connaissances" icon="clock-rotate-left">
+    Réduit les tokens du prompt système pour les grandes bases de connaissances
+  </Card>
+  <Card title="Efficace" icon="gauge-high">
+    Ne récupère que ce qui est nécessaire pour le sujet actuel
+  </Card>
+  <Card title="Meilleur pour Diversité" icon="shapes">
+    Gère bien une grande variété de sujets non liés
+  </Card>
+</CardGroup>
+
+### Considérations du Mode RAG
+
+<Note>
+RAG repose sur la qualité des embeddings vectoriels. Si tes éléments de connaissance ne sont pas clairement écrits, la récupération peut manquer des informations pertinentes.
+</Note>
+
+**La qualité de récupération dépend de :**
+- Titres d'éléments de connaissance clairs et descriptifs
+- Contenu bien structuré
+- Catégorisation appropriée dans les dossiers
+- Éviter les informations dupliquées ou contradictoires
+
+---
+
+## Indicateur de Tokens de Contexte Restants
+
+Lors de l'utilisation du Mode Contexte, surveille tes tokens de contexte restants pour t'assurer d'avoir suffisamment d'espace pour les conversations.
+
+### Comprendre l'Indicateur
+
+Le tableau de bord affiche ton utilisation du contexte dans les paramètres de Connaissance :
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/knowledge-settings/settings-light.png" alt="Paramètres de connaissance montrant l'utilisation du contexte" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/knowledge-settings/settings-dark.png" alt="Paramètres de connaissance montrant l'utilisation du contexte" />
+  </div>
+</Frame>
+
+Tu peux voir :
+- **Mode RAG** : Recherche vectorielle dynamique avec taille de connaissance illimitée
+- **Mode Contexte** : Ajouté au prompt système avec une limite de 10 000 tokens
+
+---
+
+## Choisir le Bon Mode
+
+Utilise ce guide de décision pour sélectionner la meilleure méthode d'accès :
+
+### Approche Hybride
+
+Tu peux utiliser les deux modes pour différentes bases de connaissances sur le même agent :
+
+**Exemple de configuration :**
+- **Mode Contexte :** Petite base de connaissances "Politiques de Base" (toujours nécessaire)
+- **Mode RAG :** Grande base de connaissances "Catalogue Produit" (récupérer selon besoin)
+
+Cela te donne le meilleur des deux mondes.
+
+---
+
+## Tester Ta Configuration
+
+<Steps>
+  <Step title="Attribuer la base de connaissances">
+    Configure ton agent avec une base de connaissances en Mode Contexte ou RAG.
+  </Step>
+
+  <Step title="Démarrer un appel test">
+    Utilise la fonctionnalité Appel Test dans le tableau de bord.
+  </Step>
+
+  <Step title="Poser des questions sur le contenu des connaissances">
+    Pose des questions qui devraient être répondues depuis ta base de connaissances.
+
+    **Exemples de questions :**
+    - "Quelle est ta politique de retour ?"
+    - "Combien coûte le plan Pro ?"
+    - "Quelles sont tes heures d'ouverture ?"
+  </Step>
+
+  <Step title="Vérifier les réponses">
+    Confirme que l'agent utilise correctement le contenu des connaissances dans les réponses.
+  </Step>
+
+  <Step title="Tester les cas limites">
+    Pose des questions sur des sujets NON dans ta base de connaissances pour garantir que l'agent répond de manière appropriée ("Je n'ai pas cette information").
+  </Step>
+</Steps>
+
+---
+
+## Meilleures Pratiques
+
+<AccordionGroup>
+  <Accordion title="Commencer avec RAG pour grandes bases" icon="magnifying-glass">
+    En cas de doute, utilise le Mode RAG. C'est plus sûr pour les grandes bases de connaissances et tu peux toujours passer au Mode Contexte si nécessaire.
+  </Accordion>
+
+  <Accordion title="Écrire un contenu clair et complet" icon="file-text">
+    RAG utilise la recherche sémantique pour trouver les connaissances pertinentes. Rédige un contenu complet et bien écrit qui inclut naturellement les termes et concepts que les utilisateurs interrogeront.
+
+    **Bon :** "Notre politique de retour permet les retours dans les 30 jours suivant l'achat pour les produits physiques. Les produits numériques ne peuvent pas être retournés une fois téléchargés."
+
+    **Mauvais :** "Voir document politique" ou fragments de phrases incomplets
+  </Accordion>
+
+  <Accordion title="Tester les deux modes" icon="vial">
+    Essaie à la fois le Mode Contexte et le Mode RAG avec ta base de connaissances et vois lequel fonctionne le mieux pour ton cas d'usage.
+  </Accordion>
+
+  <Accordion title="Combiner stratégiquement" icon="layer-group">
+    Utilise le Mode Contexte pour les informations critiques et fréquemment nécessaires et le Mode RAG pour les matériaux de référence étendus.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Dépannage
+
+<AccordionGroup>
+  <Accordion title="L'agent n'utilise pas les connaissances (Mode Contexte)">
+    **Vérifier :**
+    - Tous les éléments de connaissance sont-ils en statut COMPLETED ?
+    - Le contexte restant est-il suffisant (non tronqué) ?
+
+    **Solution :**
+    - Corriger les éléments échoués
+    - Réduire la taille des connaissances ou passer à RAG
+  </Accordion>
+
+  <Accordion title="L'agent ne trouve pas les connaissances (Mode RAG)">
+    **Vérifier :**
+    - Le contenu est-il bien organisé ?
+    - Poses-tu des questions qui correspondent aux connaissances ?
+
+    **Solution :**
+    - Ajouter un contenu plus détaillé
+    - Tester avec différentes formulations
+    - Envisager d'ajouter des mots-clés au contenu
+  </Accordion>
+
+  <Accordion title="L'agent fournit des informations incorrectes ou obsolètes">
+    **Vérifier :**
+    - Le contenu des connaissances est-il correct et actuel ?
+    - As-tu des informations contradictoires dans plusieurs éléments ?
+
+    **Solution :**
+    - Mettre à jour le contenu des connaissances
+    - Supprimer les doublons et les conflits
+  </Accordion>
+
+  <Accordion title="Utilisation du contexte trop élevée">
+    **Solutions :**
+    - Passer au Mode RAG pour les grandes bases de connaissances
+    - Diviser les connaissances en bases plus petites et ciblées
+    - Réduire la longueur des instructions de l'agent
+    - Supprimer le contenu verbeux ou redondant
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Prochaines Étapes
+
+<CardGroup cols={2}>
+  <Card title="Créer des Bases de Connaissances" icon="plus" href="/fr/build/knowledge/create-knowledge-bases">
+    Construire et organiser ton contenu de connaissances
+  </Card>
+  <Card title="Types de Contenu" icon="file-lines" href="/fr/build/knowledge/content-types">
+    Découvrir les éléments texte, PDF et URL
+  </Card>
+  <Card title="Variables & Contenu Dynamique" icon="brackets-curly" href="/fr/build/conversation/variables-dynamic-content">
+    Utiliser les références de connaissances dans les instructions
+  </Card>
+  <Card title="Tester Ton Agent" icon="vial" href="/fr/test/web-simulator">
+    Tester comment ton agent utilise les connaissances
+  </Card>
+</CardGroup>

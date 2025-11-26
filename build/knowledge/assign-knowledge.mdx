@@ -1,0 +1,248 @@
+---
+title: "Assign Knowledge to Agents"
+description: "Link knowledge bases to your agents and control what information they can access"
+icon: "link"
+"keywords": "assign knowledge base, connect knowledge, agent knowledge configuration, knowledge assignment, AI agent setup, knowledge integration"
+"og:description": "Learn how to link knowledge bases to your agents and control what information they can access for intelligent conversations."
+---
+
+## Overview
+
+After creating your knowledge base, the next step is connecting it to your agents. You control exactly what knowledge each agent can access—from entire knowledge bases down to individual items.
+
+This flexibility allows you to:
+- Give different agents access to different information
+- Ensure agents only reference relevant, approved content
+- Update agent knowledge without changing agent configuration
+
+---
+
+## Assignment Levels
+
+You can assign knowledge to agents at three different levels of granularity:
+
+<CardGroup cols={3}>
+  <Card title="Entire Knowledge Base" icon="database">
+    Agent has access to all folders and items within the knowledge base.
+
+    **Best for:** Agents that need comprehensive access to all information in a category.
+
+    **Example:** Customer support agent with access to entire "Support Resources" knowledge base.
+  </Card>
+  <Card title="Specific Folder" icon="folder">
+    Agent only accesses one folder within a knowledge base.
+
+    **Best for:** Specialized agents that only need information from one category.
+
+    **Example:** Billing agent with access only to "Billing & Payments" folder.
+  </Card>
+  <Card title="Individual Items" icon="file">
+    Agent has access to specific knowledge items only.
+
+    **Best for:** Agents that need very specific, controlled information.
+
+    **Example:** Appointment agent with access only to "Cancellation Policy" and "Scheduling Guidelines" items.
+  </Card>
+</CardGroup>
+
+---
+
+## How to Assign Knowledge
+
+### Step 1: Navigate to Agent Configuration
+
+<Steps>
+  <Step title="Open your agent">
+    Go to **Agents** in the left sidebar and select the agent you want to configure.
+  </Step>
+
+  <Step title="Go to Abilities → Knowledge">
+    Click on **Abilities** in the left navigation, then select the **Knowledge** section.
+  </Step>
+</Steps>
+
+### Step 2: Add Knowledge
+
+<Steps>
+  <Step title="Click 'Add Knowledge'">
+    Click the **+ Add Knowledge** button to open the knowledge selector.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/knowledge/knowledge-light.png" alt="Add Knowledge dialog showing knowledge selection options (Entire Base, Folder, Specific Item) and access method configuration (RAG vs Context Mode)" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/knowledge/knowledge-dark.png" alt="Add Knowledge dialog showing knowledge selection options (Entire Base, Folder, Specific Item) and access method configuration (RAG vs Context Mode)" />
+  </div>
+</Frame>
+  </Step>
+
+  <Step title="Choose assignment level">
+    Select what you want to assign:
+    - **Knowledge Base** - Entire knowledge base
+    - **Folder** - Specific folder within a base
+    - **Item** - Individual knowledge item
+  </Step>
+
+  <Step title="Select the knowledge">
+    Browse or search to find the knowledge base, folder, or item you want to assign.
+  </Step>
+
+  <Step title="Choose access mode">
+    Select how the agent should access this knowledge:
+    - **Context Mode** - Inject all knowledge into the system prompt (limited to 10k tokens overall)
+    - **RAG Mode** - Dynamically retrieve relevant knowledge based on conversation
+
+    Learn more: [Context vs RAG](/build/knowledge/context-vs-rag)
+  </Step>
+
+  <Step title="Save">
+    Click **Add** to assign the knowledge to your agent.
+  </Step>
+</Steps>
+
+---
+
+## Managing Agent Knowledge
+
+### View Assigned Knowledge
+
+In the agent's Knowledge section, you'll see all assigned knowledge bases, folders, and items with their access modes.
+
+### Modify Assignment
+
+- **Change access mode:** Remove the knowledge and re-add it with the desired mode (Context or RAG)
+- **Remove knowledge:** Click the remove icon to unlink knowledge from the agent
+- **Add more:** Click **+ Add Knowledge** to assign additional knowledge
+
+### Test Knowledge Access
+
+After assigning knowledge:
+
+<Steps>
+  <Step title="Make a test call">
+    Use the **Test** feature to call your agent.
+  </Step>
+
+  <Step title="Ask knowledge-based questions">
+    Ask questions that should be answered using the assigned knowledge.
+  </Step>
+
+  <Step title="Verify responses">
+    Confirm the agent is accessing and using the knowledge correctly.
+  </Step>
+
+  <Step title="Adjust if needed">
+    If responses aren't accurate, check:
+    - Is the right knowledge assigned?
+    - Is the access mode appropriate (Context vs RAG)?
+    - Is the knowledge content accurate and up-to-date?
+  </Step>
+</Steps>
+
+---
+
+## Best Practices
+
+### Start Small, Then Expand
+
+<AccordionGroup>
+  <Accordion title="Begin with essential knowledge" icon="circle-1">
+    Start by assigning only the most critical knowledge your agent needs.
+
+    **Example:**
+    - Start: Return policy, business hours, contact info (3 items)
+    - Later: Add product details, FAQs, troubleshooting (20+ items)
+
+    **Why:** Easier to verify accuracy and troubleshoot issues with less knowledge.
+  </Accordion>
+
+  <Accordion title="Test thoroughly after each addition" icon="circle-2">
+    Every time you add knowledge, test to ensure the agent uses it correctly.
+
+    **Test checklist:**
+    - Ask direct questions about the new knowledge
+    - Ask edge cases or tricky scenarios
+    - Verify agent doesn't hallucinate or make up information
+    - Confirm agent correctly says "I don't know" when knowledge doesn't cover a topic
+  </Accordion>
+
+  <Accordion title="Monitor and refine" icon="circle-3">
+    After deployment, monitor real conversations to see how knowledge is being used.
+
+    **Look for:**
+    - Questions the agent couldn't answer (missing knowledge)
+    - Incorrect answers (knowledge needs updating)
+    - Confused responses (too much similar knowledge)
+  </Accordion>
+</AccordionGroup>
+
+### Choose the Right Assignment Level
+
+- **Entire Knowledge Base** - When agent needs everything in a category
+- **Specific Folder** - When agent has a specialized role
+- **Individual Items** - When you need precise control over what agent knows
+
+<Warning>
+Avoid assigning overlapping knowledge at different levels. For example, don't assign both "Customer Support KB" (entire base) AND "Returns Folder" (from the same base). This creates redundancy.
+</Warning>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Agent isn't using assigned knowledge" icon="triangle-exclamation">
+    **Check:**
+    1. Is the knowledge actually assigned to the agent?
+    2. Is the vector indexing status "INDEXED"? (Check in Knowledge Base > Items)
+    3. Is the access mode appropriate? (Try switching Context/RAG)
+    4. Is the question phrased in a way the knowledge can answer?
+
+    **Test:** Ask a very direct question that's clearly in the knowledge. If agent still doesn't use it, there's a configuration issue.
+  </Accordion>
+
+  <Accordion title="Agent gives incorrect information" icon="triangle-exclamation">
+    **Check:**
+    1. Is the knowledge content itself accurate?
+    2. Are there conflicting items in the knowledge base?
+    3. Is outdated knowledge still assigned?
+
+    **Fix:**
+    - Review and update the knowledge content, remove conflicting/outdated items
+    - **Lower the temperature setting** (in AI Model settings) to make the agent stick closer to the knowledge
+    - **Add critical knowledge to Context Mode** instead of RAG for guaranteed inclusion in every conversation
+    - **Switch to a more capable model** in AI Model settings (e.g., GPT-4.1 instead of GPT-4.1 Mini, or Claude Sonnet instead of Haiku)
+  </Accordion>
+
+  <Accordion title="Agent says 'I don't know' but knowledge exists" icon="triangle-exclamation">
+    **Possible causes:**
+    1. Knowledge isn't indexed yet (check vector status)
+    2. RAG mode can't find relevant matches (try Context mode)
+    3. Knowledge title/content doesn't match the question keywords
+
+    **Fix:**
+    - Wait for indexing to complete
+    - Improve knowledge item titles and content to include common question keywords
+    - Consider using Context mode for critical information
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Context vs RAG" icon="brain" href="/build/knowledge/context-vs-rag">
+    Deep dive into choosing the right access method
+  </Card>
+  <Card title="Create Knowledge Bases" icon="plus" href="/build/knowledge/create-knowledge-bases">
+    Learn how to build and organize your knowledge
+  </Card>
+  <Card title="Test Your Agent" icon="flask" href="/test/web-simulator">
+    Test your agent's knowledge in action
+  </Card>
+  <Card title="Variables & Dynamic Content" icon="brackets-curly" href="/build/conversation/variables-dynamic-content">
+    Reference knowledge in agent instructions
+  </Card>
+</CardGroup>

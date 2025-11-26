@@ -1,0 +1,298 @@
+---
+title: "Debugging"
+description: "Tools and techniques for identifying and fixing agent issues"
+icon: "bug"
+keywords: 'debugging, troubleshooting, conversation logs, error debugging, transcriber issues, LLM debugging, TTS debugging, action debugging'
+og:description: 'Debug voice agent issues with conversation logs and systematic troubleshooting. Identify and fix transcriber, LLM, TTS, and action execution problems.'
+---
+
+## Overview
+
+Debugging voice agents requires systematic investigation of multiple components working together—transcription, LLM reasoning, voice synthesis, and action execution. The itellicoAI dashboard provides detailed logs and tools to help you quickly identify the root cause of issues.
+
+---
+
+## Dashboard Debugging Tools
+
+<CardGroup cols={2}>
+  <Card title="Conversation Logs" icon="list">
+    Complete history of every conversation with transcripts, actions, and metadata
+  </Card>
+
+  <Card title="Real-Time Transcript" icon="closed-captioning">
+    Live view of transcription and agent responses during test calls
+  </Card>
+
+  <Card title="Action Payloads" icon="code">
+    Detailed JSON of every API call, tool execution, and webhook
+  </Card>
+
+  <Card title="Error Messages" icon="triangle-exclamation">
+    Specific error details when components fail
+  </Card>
+</CardGroup>
+
+---
+
+## Systematic Debugging Approach
+
+When something goes wrong, follow this systematic process:
+
+<Steps>
+  <Step title="Reproduce the issue">
+    Test again to confirm the problem is consistent
+
+    Note exact conditions when it occurs
+  </Step>
+
+  <Step title="Identify the component">
+    Determine which part of the pipeline failed:
+    - Transcriber (speech → text)
+    - LLM (understanding → response)
+    - TTS (text → speech)
+    - Action/Tool execution
+    - Knowledge retrieval
+  </Step>
+
+  <Step title="Review logs">
+    Open **Conversations** and find the problematic call
+
+    Examine transcripts, action payloads, and errors
+  </Step>
+
+  <Step title="Test components individually">
+    Isolate the failing component:
+    - Try different transcriber
+    - Test LLM with simpler prompts
+    - Try different voice
+    - Test actions directly via API
+  </Step>
+
+  <Step title="Fix and verify">
+    Make targeted changes based on findings
+
+    Test again to confirm the fix
+  </Step>
+</Steps>
+
+---
+
+## Component-Level Debugging
+
+<AccordionGroup>
+  <Accordion title="Transcriber Issues" icon="microphone">
+    **How to identify:**
+    - Check transcript in conversation logs
+    - Compare what was said vs what was transcribed
+    - Look for missing words, incorrect words, or gibberish
+
+    **Common causes:**
+    - Background noise
+    - Accent or language mismatch
+    - Audio quality problems
+    - Wrong transcriber model selected
+
+    **Debugging steps:**
+    1. Navigate to **Models → Transcriber**
+    2. Try different transcriber provider (Deepgram ↔ Azure)
+    3. Try different model (e.g., Nova-2 ↔ Nova-3)
+    4. Verify language setting matches speaker
+    5. Test in quieter environment
+    6. Check audio input quality
+
+    **What to check in logs:**
+    - Transcript accuracy
+    - Timing of transcription (delays?)
+    - Empty or partial transcriptions
+    - Language detection issues
+  </Accordion>
+
+  <Accordion title="LLM Response Issues" icon="brain">
+    **How to identify:**
+    - Agent gives wrong answers
+    - Agent goes off-topic
+    - Agent repeats itself
+    - Agent refuses to answer valid questions
+    - Agent hallucinates information
+
+    **Common causes:**
+    - Instructions too vague or conflicting
+    - Knowledge base missing information
+    - Context window overflow
+    - Model not suitable for task
+    - Temperature too high/low
+
+    **Debugging steps:**
+    1. Review agent instructions in **Abilities → Instructions**
+    2. Simplify instructions to isolate the issue
+    3. Check knowledge base for missing information
+    4. Try different LLM model (Claude Haiku 4.5 ↔ GPT-4.1 mini)
+    5. Adjust temperature in model settings
+    6. Review conversation logs to see full context
+
+    **What to check in logs:**
+    - Full conversation history leading to bad response
+    - Knowledge items retrieved (if using RAG)
+    - System prompts and context injection
+
+    <Tip>
+    Test problematic prompts in the web simulator first—it's faster than phone testing.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="Voice/TTS Issues" icon="volume">
+    **How to identify:**
+    - Unnatural speech patterns
+    - Mispronunciations
+    - Wrong emphasis or intonation
+    - Robotic sound
+    - Speed too fast/slow
+
+    **Common causes:**
+    - Voice not suited to content type
+    - Punctuation affecting pacing
+    - Numbers or acronyms not handled well
+    - Voice provider limitations
+
+    **Debugging steps:**
+    1. Navigate to **Models → Voice**
+    2. Try different voice from same provider
+    3. Try different voice provider entirely
+    4. Add custom pronunciations for problem words
+    5. Adjust stability/clarity settings (ElevenLabs)
+    6. Adjust speaking rate
+    7. Modify text output to improve TTS
+
+    **What to check in logs:**
+    - Listen to audio recording
+    - Compare text vs how it was spoken
+    - Check for SSML tags (if used)
+    - Verify voice settings applied
+  </Accordion>
+
+  <Accordion title="Action/Tool Execution Issues" icon="bolt">
+    **How to identify:**
+    - Action doesn't trigger when expected
+    - Action triggers but fails
+    - Wrong data sent to action
+    - Action returns error
+
+    **Common causes:**
+    - Action not properly configured
+    - API endpoint down or slow
+    - Authentication failure
+    - Incorrect parameter extraction
+    - Network timeout
+
+    **Debugging steps:**
+    1. Check if action was triggered in conversation logs
+    2. Review action payload (JSON sent to API)
+    3. Check API response and status code
+    4. Test API endpoint directly (Postman, curl)
+    5. Verify authentication credentials
+    6. Check parameter extraction from conversation
+    7. Review action instructions in agent prompt
+
+    **What to check in logs:**
+    - `custom_data.actions` or similar fields
+    - API request payload
+    - API response body
+    - Error messages and stack traces
+    - Timestamp (did it timeout?)
+
+    <Note>
+    Conversation logs show complete action payloads including request/response data.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Knowledge Retrieval Issues" icon="database">
+    **How to identify:**
+    - Agent can't answer questions it should know
+    - Agent retrieves wrong knowledge
+    - Agent mixes irrelevant information into answers
+
+    **Common causes:**
+    - Knowledge not indexed yet
+    - RAG retrieval not finding relevant items
+    - Knowledge base not assigned to agent
+
+    **Debugging steps:**
+    1. Verify knowledge base assigned to agent
+    2. Check knowledge items are **INDEXED** (not just COMPLETED)
+    3. Review knowledge item titles—make them descriptive
+    4. Test with smaller knowledge base
+    5. Try Context mode vs RAG mode
+    6. Check conversation logs for retrieved knowledge
+
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Using Conversation Logs for Debugging
+
+Every test call creates a detailed log accessible in **Conversations**.
+
+### What's in the logs:
+
+**Basic information:**
+- Call date, time, duration
+- Agent used
+- Phone number (if phone test)
+- Call status (completed, failed, etc.)
+
+**Conversation data:**
+- Full transcript (user + agent)
+- Timestamps for each message
+- Audio recording (if available)
+
+**Technical details:**
+- Actions triggered with payloads
+- DTMF inputs captured
+- Goal analysis results
+- Post-call analysis responses
+- Custom data fields
+- Error messages
+
+**How to debug with logs:**
+1. Filter by agent name to find test calls
+2. Open specific call to see full details
+3. Read transcript to identify where it went wrong
+4. Check action payloads if actions failed
+5. Listen to audio if transcript looks correct but audio was wrong
+6. Review timestamps to identify latency issues
+
+---
+
+## Getting Help
+
+When you need additional support:
+
+<CardGroup cols={2}>
+  <Card title="Review Documentation" icon="book">
+    Check specific feature docs for configuration details
+  </Card>
+
+  <Card title="Check Provider Status" icon="signal">
+    Visit status pages for OpenAI, Deepgram, ElevenLabs, Azure
+  </Card>
+
+  <Card title="Contact Support" icon="headset">
+    Email support@itellico.ai with call logs and error details
+  </Card>
+</CardGroup>
+
+**When contacting support, include:**
+- Agent ID or name
+- Conversation ID from logs
+- Specific error messages
+- Steps to reproduce
+- Screenshots if applicable
+
+---
+
+## Next Steps
+
+<Card title="Launch Checklist" icon="rocket" href="/launch/overview">
+  Once you've debugged your agent, review the launch checklist to prepare for production
+</Card>

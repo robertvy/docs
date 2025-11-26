@@ -1,0 +1,173 @@
+---
+title: "Phone & SIP Deployment"
+description: "Connect your agent to phone numbers and SIP trunks for live call handling"
+icon: "phone-volume"
+keywords: "SIP trunk configuration, BYOC, bring your own carrier, phone number import, inbound calling, outbound calling, SIP authentication, VoIP setup, carrier integration"
+og:description: "Connect AI agents to phone systems via SIP trunks. BYOC setup for inbound and outbound calling with your existing carrier infrastructure."
+---
+
+## Deployment Overview
+
+Phone deployment routes live PSTN calls through your tested agent using a **Bring Your Own Carrier (BYOC)** approach. You import your existing phone numbers and connect them to your carrier via SIP trunks.
+
+**Setup process:**
+1. Configure your SIP trunk with carrier credentials
+2. Import your phone numbers and link them to the trunk
+3. Assign agents to handle inbound calls
+4. Test the connection
+
+All configurations use the same real-time calling stack that Test Mode uses, ensuring consistent behavior.
+
+## Inbound Phone Deployment
+
+### Step 1: Configure SIP Trunk
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/sip/inbound-sip-light.png" alt="Create SIP Trunk dialog showing SIP Trunk Name field with placeholder text, Inbound Calls and Outbound Calls tabs with Inbound selected, Inbound URI configuration showing SIP provider forward address, IP Security optional field for restricting IP addresses, Contact support link, Cancel and Create SIP Trunk buttons" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/sip/inbound-sip-dark.png" alt="Create SIP Trunk dialog showing SIP Trunk Name field with placeholder text, Inbound Calls and Outbound Calls tabs with Inbound selected, Inbound URI configuration showing SIP provider forward address, IP Security optional field for restricting IP addresses, Contact support link, Cancel and Create SIP Trunk buttons" />
+  </div>
+</Frame>
+
+<br />
+
+<Accordion title="SIP trunk configuration">
+  1. Navigate to **Telephony → SIP Trunks** and click **+ Add Trunk**
+  2. Configure your carrier to send calls to itellicoAI's SIP endpoint:
+     - **Destination SIP URI**: `sip:50ebbp4vhpr.sip.livekit.cloud`
+     - **Port**: 5060 (UDP) or 5061 (TLS)
+     - **Codec**: Opus, PCMU, or PCMA
+  3. In itellicoAI dashboard, create a trunk with:
+     - **Trunk Name**: A descriptive name for your carrier
+     - **Allowed IPs** (optional): Restrict to your carrier's IP ranges for security
+  4. **Assign Agent**: Select which agent handles calls from this trunk
+  5. **Test**: Make a test call through your carrier to verify routing
+</Accordion>
+
+<Accordion title="Carrier compatibility">
+  Tested carriers include:
+  - Twilio Elastic SIP Trunking
+  - Vonage (formerly Nexmo)
+  - Bandwidth
+  - Telnyx
+  - Most standard SIP providers
+
+  **Requirements**:
+  - Support for Opus or PCMU/PCMA codecs
+  - DTMF via RFC 2833 (for keypad input)
+  - Reinvite support for transfers
+</Accordion>
+
+### Step 2: Import Phone Numbers
+
+Once your SIP trunk is configured, import your existing phone numbers:
+
+<Steps>
+  <Step title="Navigate to Phone Numbers">
+    Go to **Telephony → Phone Numbers** and click **Import Number**
+  </Step>
+
+  <Step title="Configure number details">
+    Provide:
+    - **Phone Number**: E.164 format (e.g., `+14155552671`)
+    - **Friendly Name**: Optional label (e.g., "Support Line")
+    - **SIP Trunk**: Select the trunk you configured in Step 1
+    - **Inbound Agent**: Optionally assign an agent now (or do it later)
+  </Step>
+
+  <Step title="Save and verify">
+    Click **Save** to import the number. The number is now linked to your SIP trunk and ready for inbound calls.
+  </Step>
+</Steps>
+
+### Step 3: Assign Agents to Numbers
+
+<Steps>
+  <Step title="Open Phone Numbers list">
+    Go to **Telephony → Phone Numbers** to see all imported numbers
+  </Step>
+
+  <Step title="Assign or update agent">
+    Use the inline agent picker to select which agent should answer calls to this number
+  </Step>
+
+  <Step title="Configure carrier forwarding and test">
+    Configure your carrier to forward calls to the **Inbound URI** shown on your SIP trunk (in **Telephony → SIP Trunks**). Once carrier forwarding is active, call the number from your phone to test. The agent should answer using the greeting you configured. Review call logs in **Conversations** to verify proper call flow.
+  </Step>
+</Steps>
+
+<Accordion title="Troubleshooting call routing">
+  If calls aren't reaching your agent:
+
+  - **Verify SIP URI**: Ensure your carrier is sending calls to `sip:50ebbp4vhpr.sip.livekit.cloud`
+  - **Check codec support**: Verify your carrier supports Opus, PCMU, or PCMA
+  - **Firewall rules**: Ensure your carrier can reach the LiveKit SIP endpoint
+  - **Logs**: Check **Conversations → Logs** or your carrier portal for SIP error codes
+
+  Common issues:
+  - `404 Not Found`: Incorrect SIP URI configuration
+  - `488 Not Acceptable Here`: Codec mismatch (enable Opus/PCMU/PCMA on carrier)
+  - `503 Service Unavailable`: Temporary connectivity issue
+</Accordion>
+
+## Outbound Phone Deployment
+
+### Configure Outbound SIP Trunk
+
+For outbound calling through your own carrier (campaigns, proactive calls), configure the outbound SIP trunk with authentication:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/sip/outbound-sip-light.png" alt="Create SIP Trunk dialog showing SIP Trunk Name field, Inbound Calls and Outbound Calls tabs with Outbound selected, Authentication Recommendation section, Provider Domain field with example.com:5060 placeholder, Username field for SIP authentication, Password field for SIP authentication, Contact support link, Cancel and Create SIP Trunk buttons" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/sip/outbound-sip-dark.png" alt="Create SIP Trunk dialog showing SIP Trunk Name field, Inbound Calls and Outbound Calls tabs with Outbound selected, Authentication Recommendation section, Provider Domain field with example.com:5060 placeholder, Username field for SIP authentication, Password field for SIP authentication, Contact support link, Cancel and Create SIP Trunk buttons" />
+  </div>
+</Frame>
+
+<br />
+
+<Accordion title="Outbound SIP configuration">
+  1. Navigate to **Telephony → SIP Trunks** and click **+ Add Trunk**
+  2. Switch to the **Outbound Calls** tab
+  3. Configure authentication for your carrier:
+     - **Provider Domain**: Your carrier's SIP domain (e.g., `sip.example.com:5060`)
+     - **Username**: SIP authentication username from your carrier
+     - **Password**: SIP authentication password from your carrier
+  4. **Save** the trunk configuration
+  5. **Assign to campaigns**: Use this trunk when creating outbound campaigns
+
+  <Note>
+  We highly recommend using username/password authentication for outbound calls. IP-based authentication is not supported out of the box but can be implemented. Contact support if needed.
+  </Note>
+</Accordion>
+
+<Accordion title="Outbound calling use cases">
+  **Automated Campaigns**:
+  - Sales outreach and lead qualification
+  - Appointment reminders
+  - Payment reminders
+  - Survey calls
+
+  **Proactive Notifications**:
+  - Order status updates
+  - Delivery notifications
+  - Service alerts
+  - Follow-up calls
+
+  See [Campaign Launch](/launch/campaign-outbound-launch) for detailed outbound campaign setup.
+</Accordion>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Campaign Launch" icon="bullhorn" href="/launch/campaign-outbound-launch">
+    Set up automated outbound calling campaigns
+  </Card>
+
+  <Card title="Production Best Practices" icon="star" href="/launch/production-best-practices">
+    Optimize for reliability and customer satisfaction
+  </Card>
+</CardGroup>

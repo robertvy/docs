@@ -1,0 +1,415 @@
+---
+title: "Dynamic Context"
+description: "Fetch personalized data from your systems before conversations begin"
+icon: "database"
+"keywords": "dynamic context, API context, personalized data, CRM integration, customer data, real-time context, AI personalization"
+"og:description": "Fetch personalized customer data from your CRM and systems before conversations begin for intelligent AI interactions."
+---
+
+## Overview
+
+Dynamic Context lets you fetch customer data from your external APIs **once, before each conversation starts**. Instead of relying only on contact records, your agents can access account status, order history, support tickets, and business context from your CRM, databases, and backend systems.
+
+<Note>
+Dynamic Context is configured in **Agent Settings → Operations → Dynamic Context**. The returned JSON data is available directly as variables (e.g., `{{ field_name }}`) in your agent's [greeting](/build/conversation/greeting-messages) and [instructions](/build/conversation/instructions).
+</Note>
+
+<Info>
+**The context API is called once before the conversation begins.** The data is available for rendering the greeting and throughout the conversation. It does not refresh during the conversation. Keep your endpoint fast (&lt;1s response time) and return only data needed for the conversation.
+</Info>
+
+**Quick Requirements:**
+- HTTPS endpoint
+- JSON response under 32 KB
+- Response time under 1 second (ideally)
+- Authentication via Bearer token, API key, or Basic auth
+
+---
+
+## How It Works
+
+**Request Flow:**
+
+<Steps>
+  <Step title="Call initiated">
+    Call initiated (inbound) or about to start (outbound)
+  </Step>
+
+  <Step title="Context API called">
+    **BEFORE conversation begins:** System sends POST request to your endpoint
+  </Step>
+
+  <Step title="Query your systems">
+    Your API queries CRM/database for customer data
+  </Step>
+
+  <Step title="Return JSON">
+    Your API returns JSON with context data
+  </Step>
+
+  <Step title="Context available">
+    Context data made available as template variables
+  </Step>
+
+  <Step title="Greeting rendered">
+    Greeting rendered (uses context variables if referenced in greeting)
+  </Step>
+
+  <Step title="Conversation begins">
+    Conversation begins (context variables available if referenced in instructions)
+
+    Context remains static throughout conversation (no refresh)
+  </Step>
+</Steps>
+
+<Columns cols={3}>
+  <Card title="Inbound calls" icon="phone">
+    `direction: "inbound"` with caller's contact_number. Look up customer data in your CRM.
+  </Card>
+  <Card title="Outbound calls" icon="arrow-up-right-dots">
+    `direction: "outbound"` with contact_number you're calling. Fetch campaign context.
+  </Card>
+  <Card title="Web widget" icon="window">
+    `medium: "web"` with optional external_id. Identify user in your system.
+  </Card>
+</Columns>
+
+---
+
+## Configuration
+
+<Steps>
+  <Step title="Navigate to Dynamic Context">
+    1. Open your agent settings
+    2. Click the **Operations** navigation group (on the left sidebar)
+    3. Select **Dynamic Context** from the sections
+  </Step>
+
+  <Step title="Configure Endpoint">
+    **Endpoint URL:** `https://api.company.com/context`
+
+    **Authentication:** Choose Bearer Token, Basic, API Key, or None
+
+    The request will include: agent_uuid, direction, agent_number, contact_number (and external_id for web widget)
+  </Step>
+
+  <Step title="Test">
+    Use **Test Request** to verify your endpoint responds correctly
+  </Step>
+
+  <Step title="Save">
+    Enable and save. Context will be fetched before each conversation.
+  </Step>
+</Steps>
+
+---
+
+## Request & Response Format
+
+### What We Send (POST Request)
+
+<RequestExample>
+```http
+POST https://api.company.com/context
+Authorization: Bearer your_api_token
+Content-Type: application/json
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36...
+X-Agent-UUID: 550e8400-e29b-41d4-a716-446655440000
+X-Agent-Number: +15551234000
+X-Contact-Number: +15551234567
+X-Direction: inbound
+X-Medium: phone
+X-Room-SID: RM_abc123
+
+{
+  "agent_uuid": "550e8400-e29b-41d4-a716-446655440000",
+  "direction": "inbound",
+  "agent_number": "+15551234000",
+  "contact_number": "+15551234567"
+}
+```
+</RequestExample>
+
+**Body parameters:**
+- `agent_uuid` (string, always included) - The UUID of the agent handling the call
+- `direction` (string, always included) - "inbound" or "outbound"
+- `agent_number` (string, optional) - The phone number the agent is using
+- `contact_number` (string, optional) - The customer's phone number
+- `external_id` (string/int, optional) - Only for web widget calls, if provided by your integration
+
+**Additional headers:**
+- `X-Agent-UUID`, `X-Agent-Number`, `X-Contact-Number`, `X-Direction`, `X-Medium` (phone/web)
+- `X-Room-SID` - Unique identifier for this conversation session
+- `X-External-ID` - For web widget calls only
+
+<Note>
+**Typical usage:** Your endpoint uses `contact_number` or `external_id` to look up the customer in your CRM/database, then returns relevant account data, order history, tickets, etc. The `agent_uuid` can be used to customize responses per agent if needed.
+</Note>
+
+### What You Return (JSON Response)
+
+<ResponseExample>
+```json
+{
+  "account": {
+    "customer_id": "12345",
+    "tier": "VIP",
+    "status": "active",
+    "created_date": "2022-03-15"
+  },
+  "recent_orders": [
+    {
+      "order_id": "ORD-789",
+      "status": "shipped",
+      "tracking": "1Z999AA1234567890"
+    }
+  ],
+  "support_tickets": [
+    {
+      "ticket_id": "TKT-456",
+      "status": "open",
+      "subject": "Billing question"
+    }
+  ]
+}
+```
+</ResponseExample>
+
+**Requirements:**
+- Valid JSON format
+- Under 32 KB
+- Return only necessary fields (keeps response fast)
+- Handle missing data gracefully (return `null` or omit fields)
+
+<Info>
+**How variables are accessed:** All top-level keys in your JSON response become template variables. If you return `{"account": {"tier": "VIP"}}`, you access it as `{{ account.tier }}`, not `{{ context.account.tier }}`.
+</Info>
+
+---
+
+## Using Context Variables
+
+All returned data from your API is available directly as top-level variables in your agent's greeting and instructions.
+
+**Accessing fields:**
+```jinja
+Account Tier: {{ account.tier }}
+→ "VIP"
+
+Order Status: {{ recent_orders[0].status }}
+→ "shipped"
+
+Number of Tickets: {{ support_tickets|length }}
+→ 1
+```
+
+**Example greeting with context:**
+```jinja
+Thanks for calling! I see you're a {{ account.tier }} customer with us.
+How can I help you today?
+```
+
+**Example instructions with context:**
+```jinja
+You are helping a {{ account.tier }} customer since {{ account.created_date }}.
+
+{% if support_tickets|length > 0 %}
+IMPORTANT: Customer has {{ support_tickets|length }} open ticket(s):
+{% for ticket in support_tickets %}
+- Ticket #{{ ticket.ticket_id }}: {{ ticket.subject }} ({{ ticket.status }})
+{% endfor %}
+
+Ask if they're calling about ticket #{{ support_tickets[0].ticket_id }}.
+{% endif %}
+
+{% if recent_orders|length > 0 %}
+Recent order #{{ recent_orders[0].order_id }} is {{ recent_orders[0].status }}.
+{% if recent_orders[0].tracking %}
+Tracking: {{ recent_orders[0].tracking }}
+{% endif %}
+{% endif %}
+
+Account Status: {{ account.status | default("active") }}
+```
+
+<Tip>
+Use the `| default("value")` filter to provide fallbacks when data is missing. See [Greeting](/build/conversation/greeting-messages) and [Instructions](/build/conversation/instructions) for more templating syntax and usage examples.
+</Tip>
+
+---
+
+## Authentication
+
+### Bearer Token (Recommended)
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+Use for JWT, OAuth 2.0 access tokens, or modern API keys.
+
+### API Key (Header)
+```
+X-API-Key: sk-abc123def456...
+```
+Custom header name with your API key.
+
+### Basic Auth
+```
+Authorization: Basic YXBpX3VzZXI6cGFzc3dvcmQ=
+```
+Username/password, base64 encoded.
+
+### None
+No authentication (only for internal/private networks).
+
+<Warning>
+Always use HTTPS.
+</Warning>
+
+---
+
+## Example Use Case
+
+**Customer Support with Full Context**
+
+**Scenario:** Support agent needs complete customer view before conversation starts.
+
+**Your API returns:**
+```json
+{
+  "customer": {
+    "name": "John Smith",
+    "tier": "Premium",
+    "since": "2022-01-15"
+  },
+  "account": {
+    "status": "active",
+    "subscription": "Pro Plan",
+    "renewal_date": "2025-12-01"
+  },
+  "support": {
+    "open_tickets": [
+      {
+        "id": "TKT-789",
+        "subject": "Can't export reports",
+        "priority": "high"
+      }
+    ]
+  }
+}
+```
+
+**Agent instructions:**
+```jinja
+You're helping {{ customer.name }}, a {{ customer.tier }} customer
+since {{ customer.since }}.
+
+{% if support.open_tickets|length > 0 %}
+Customer has an open {{ support.open_tickets[0].priority }} priority ticket
+about "{{ support.open_tickets[0].subject }}".
+
+Start by asking: "I see you have a ticket open about
+{{ support.open_tickets[0].subject }}. Is that what you're calling about today?"
+{% endif %}
+
+Account: {{ account.subscription }}, renews {{ account.renewal_date }}
+```
+
+**Result:** Agent knows about the open ticket before the conversation starts, allowing for a personalized greeting and informed conversation throughout.
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Keep responses fast" icon="gauge-high">
+    - Target under 1 second response time
+    - Cache frequently accessed data (5-10 minute TTL)
+    - Return only fields you'll use in instructions
+    - Use database indexes on lookup fields (contact_number, external_id, or your internal customer IDs)
+  </Accordion>
+
+  <Accordion title="Handle missing data gracefully" icon="shield-check">
+    - Use `| default("value")` filters in instructions
+    - Return `null` for missing fields (don't error)
+    - Test with contacts that have minimal data
+
+    ```jinja
+    {# Safe - provides fallback #}
+    Tier: {{ account.tier | default("Standard") }}
+
+    {# Safer - checks existence #}
+    {% if support_tickets and support_tickets|length > 0 %}
+      Has open tickets
+    {% endif %}
+    ```
+  </Accordion>
+
+  <Accordion title="Secure sensitive data" icon="lock">
+    - Don't return SSN, credit cards, passwords
+    - Use HTTPS only
+    - Implement authentication (Bearer token recommended)
+    - Return only necessary fields (e.g., last 4 of account number, not full)
+    - Log access for audit trails
+  </Accordion>
+
+  <Accordion title="Test before production" icon="vial">
+    1. Use **Test Request** modal with real customer data
+    2. Test edge cases (new customer, VIP, suspended account)
+    3. Verify instructions handle missing fields gracefully
+    4. Pilot with small traffic percentage before full rollout
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="401 Unauthorized" icon="lock-open">
+    - Verify credentials are correct
+    - Check authentication type matches your API (Bearer vs. Basic vs. API Key)
+    - Test with same credentials in Postman
+    - Check if token has expired
+  </Accordion>
+
+  <Accordion title="Context variables empty" icon="brackets-curly">
+    - Use **Test Request** to verify endpoint is responding
+    - Check JSON structure matches what you're accessing
+    - Verify Dynamic Context toggle is ON
+    - Use `| default("fallback")` for missing fields
+  </Accordion>
+
+  <Accordion title="Slow or timeout" icon="hourglass">
+    - Add database indexes
+    - Implement caching
+    - Return only necessary fields
+    - Optimize database queries
+    - Check network latency to your API
+  </Accordion>
+
+  <Accordion title="Wrong data returned" icon="triangle-exclamation">
+    - Check parameters in **Test Request** modal
+    - Verify template variables resolve correctly: `{{ account.tier }}`
+    - Ensure cache keys include customer identifier
+    - Test with known customer to confirm data matches
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Greeting" icon="hand-wave" href="/build/conversation/greeting-messages">
+    Use context variables to personalize your agent's greeting
+  </Card>
+  <Card title="Instructions" icon="pen" href="/build/conversation/instructions">
+    Learn how to use context variables with Jinja templating
+  </Card>
+  <Card title="Variables & Dynamic Content" icon="brackets-curly" href="/build/conversation/variables-dynamic-content">
+    Master templating syntax for dynamic prompts
+  </Card>
+  <Card title="Custom API Actions" icon="code" href="/build/actions/custom-api-actions">
+    Create actions that use context data during conversations
+  </Card>
+</CardGroup>

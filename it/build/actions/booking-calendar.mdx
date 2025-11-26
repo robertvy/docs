@@ -1,0 +1,561 @@
+---
+title: "Integrazione Prenotazione e Calendario"
+description: "Pianifica appuntamenti automaticamente con l'integrazione Cal.com"
+icon: "calendar"
+"keywords": "prenotazione appuntamenti AI, integrazione Cal.com, integrazione calendario, pianifica appuntamenti, automazione prenotazione AI, pianificazione appuntamenti"
+"og:description": "Abilita la pianificazione automatica appuntamenti con l'integrazione Cal.com per automazione prenotazione AI senza soluzione di continuità."
+---
+
+## Panoramica
+
+L'azione Prenotazione consente ai tuoi agenti AI di pianificare appuntamenti durante conversazioni dal vivo. Integrata con Cal.com, i tuoi agenti possono verificare disponibilità, presentare fasce orarie, confermare prenotazioni e inviare conferme automatiche.
+
+<Note>
+Richiede un account Cal.com e integrazione attiva. Funziona con il piano gratuito di Cal.com.
+</Note>
+
+<Info>
+**Come funziona:** L'azione prenotazione fornisce due funzioni al tuo agente:
+1. **Ottieni slot disponibili** - Recupera fasce orarie disponibili da Cal.com
+2. **Prenota appuntamento** - Crea la prenotazione con dettagli cliente
+
+Questo gestisce il flusso di prenotazione principale. Per flussi di lavoro avanzati come confermare appuntamenti esistenti, riprogrammare o cancellare, dovrai costruire logica personalizzata usando [Azioni API Personalizzate](/it/build/actions/custom-api-actions) che si integrano direttamente con l'API Cal.com.
+</Info>
+
+---
+
+## Configurazione
+
+<Steps>
+  <Step title="Crea Tipi Evento Cal.com">
+    Configura tipi di evento in Cal.com per ogni tipo di appuntamento:
+    - Durata (15 min, 30 min, 60 min, ecc.)
+    - Posizione meeting (Zoom, Google Meet, telefono, di persona)
+    - Finestre disponibilità
+
+    [Documentazione tipi evento Cal.com](https://cal.com/docs/core-features/event-types)
+  </Step>
+  <Step title="Testa Tipi Evento">
+    Prenota un appuntamento di test in Cal.com per verificare che disponibilità, link meeting e notifiche funzionino correttamente.
+  </Step>
+  <Step title="Connetti Cal.com">
+    Ottieni la tua chiave API Cal.com e connettila a itellicoAI:
+
+    1. Vai a [Impostazioni Cal.com → Sviluppatore → Chiavi API](https://app.cal.com/settings/developer/api-keys)
+    2. Clicca su **+ Aggiungi**, nominala (es. "itellicoAI") e salva
+    3. In itellicoAI, vai a **Integrazioni → Cal.com**
+    4. Incolla la tua chiave API, clicca su **Testa Connessione**, poi **Connetti**
+
+    <div style={{ maxWidth: '400px', marginBottom: '1rem' }}>
+      <Frame>
+        <div className="block dark:hidden">
+          <img src="/images/cal/test-cal-light.png" alt="Integrazione Cal.com" />
+        </div>
+        <div className="hidden dark:block">
+          <img src="/images/cal/test-cal-dark.png" alt="Integrazione Cal.com" />
+        </div>
+      </Frame>
+    </div>
+  </Step>
+</Steps>
+
+---
+
+## Utilizzare il Tuo Sistema Calendario Esistente
+
+Una domanda comune: **"Usiamo Google Calendar / Microsoft Outlook / Microsoft 365. Possiamo ancora usare Cal.com?"**
+
+**Sì!** Cal.com si integra con il tuo sistema calendario esistente per prevenire doppie prenotazioni e verificare disponibilità su tutti i tuoi calendari.
+
+### Come Funziona
+
+Cal.com si connette al sistema calendario della tua azienda (Google Calendar, Microsoft Outlook, Microsoft 365, Exchange) e:
+
+1. **Verifica disponibilità** - Legge il tuo calendario esistente per determinare quando sei libero
+2. **Previene conflitti** - Fa riferimenti incrociati a tutti i calendari connessi prima di mostrare slot disponibili
+3. **Sincronizza prenotazioni** - Aggiunge appuntamenti confermati al tuo calendario esistente automaticamente
+4. **Aggiorna in tempo reale** - Quando i clienti prenotano tramite itellicoAI, l'appuntamento appare immediatamente nel tuo calendario aziendale
+
+<Note>
+Cal.com agisce come livello di pianificazione sopra il tuo sistema calendario esistente. Continui a usare Google Calendar, Outlook o Microsoft 365 normalmente - Cal.com legge solo disponibilità e scrive prenotazioni su di esso.
+</Note>
+
+### Sistemi Calendario Supportati
+
+Cal.com si integra con:
+- **Google Calendar** - Account personali e Google Workspace
+- **Microsoft Outlook** - Outlook.com e desktop Outlook
+- **Microsoft 365** - Account business ed enterprise
+- **Microsoft Exchange** - Exchange 2013, 2016 e più recenti
+- **Apple Calendar** - Calendario iCloud
+
+### Configurare Integrazione Calendario
+
+<Steps>
+  <Step title="Connetti il Tuo Calendario a Cal.com">
+    In Cal.com, vai a **Impostazioni → Calendari** e connetti il tuo calendario:
+
+    - **Google Calendar**: Clicca "Connetti" e autorizza Cal.com
+    - **Microsoft Outlook/365**: Clicca "Connetti" e accedi con Microsoft
+    - **Exchange**: Clicca "Connetti" e inserisci i dettagli del tuo server Exchange
+
+    [Guida connessione calendario Cal.com](https://cal.com/docs)
+  </Step>
+  <Step title="Configura Verifica Conflitti">
+    Una volta connesso, Cal.com verifica automaticamente questo calendario per conflitti. Quando qualcuno cerca di prenotare con te:
+
+    1. Cal.com verifica tutti i calendari connessi
+    2. Mostra solo orari quando sei effettivamente disponibile
+    3. Previene doppie prenotazioni su tutti i sistemi
+  </Step>
+  <Step title="Seleziona Destinazione Prenotazione">
+    Scegli quale calendario riceve nuove prenotazioni:
+
+    - Nelle impostazioni tipo evento Cal.com
+    - Seleziona il calendario dove devono essere creati gli appuntamenti
+    - Questo può essere diverso dai calendari che Cal.com verifica per conflitti
+  </Step>
+</Steps>
+
+<Info>
+**Calendari multipli:** Puoi connettere calendari multipli (es. Google Calendar personale + Outlook lavorativo). Cal.com li verifica tutti per conflitti e tu scegli quale riceve nuove prenotazioni.
+</Info>
+
+### Scenari Comuni
+
+<AccordionGroup>
+  <Accordion title="L'Azienda Usa Microsoft 365" icon="microsoft">
+    **Configurazione:**
+    1. Connetti il tuo account Microsoft 365 a Cal.com
+    2. Cal.com legge la tua disponibilità da Microsoft 365
+    3. Le nuove prenotazioni appaiono nel tuo calendario Microsoft 365
+    4. Il tuo agente AI prenota appuntamenti tramite itellicoAI → Cal.com → Microsoft 365
+
+    **Vantaggio:** Tu e il tuo team continuate a usare Microsoft 365 normalmente. L'agente AI rispetta automaticamente gli impegni calendario esistenti di tutti.
+  </Accordion>
+
+  <Accordion title="L'Azienda Usa Google Workspace" icon="google">
+    **Configurazione:**
+    1. Connetti il tuo account Google Workspace a Cal.com
+    2. Cal.com legge la tua disponibilità da Google Calendar
+    3. Le nuove prenotazioni appaiono nel tuo Google Calendar
+    4. Il tuo agente AI prenota appuntamenti tramite itellicoAI → Cal.com → Google Calendar
+
+    **Vantaggio:** Integrazione senza soluzione di continuità con la tua configurazione Google Workspace esistente. Tutte le prenotazioni si sincronizzano istantaneamente.
+  </Accordion>
+
+  <Accordion title="Membri Team Usano Sistemi Calendario Diversi" icon="users">
+    **Configurazione:**
+    Ogni membro del team connette il proprio calendario al proprio account Cal.com:
+    - Alice connette il suo Google Calendar
+    - Bob connette il suo calendario Microsoft 365
+    - Carol connette il suo calendario Outlook
+
+    **Vantaggio:** Cal.com gestisce la complessità. La disponibilità di ogni persona viene verificata nel loro sistema calendario nativo.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Aggiungi Azione Prenotazione
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/cal/booking-action-light.png" alt="Pagina Azioni che mostra opzione Prenotazione Calendario nella sezione Integrazione" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/cal/booking-action-dark.png" alt="Pagina Azioni che mostra opzione Prenotazione Calendario nella sezione Integrazione" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Crea Azione">
+    1. Vai al tuo agente → **Abilità → Azioni**
+    2. Clicca su **Aggiungi Azione** → **Prenotazione Calendario**
+    3. Seleziona il tuo tipo evento Cal.com
+  </Step>
+  <Step title="Configura Impostazioni">
+    L'azione viene automaticamente nominata "Prenota [Tipo Evento]" in base al tuo evento Cal.com. Vedi opzioni di configurazione sotto.
+  </Step>
+</Steps>
+
+---
+
+## Configurazione
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/cal/event-config-light.png" alt="Dialogo configurazione Nuova Azione Prenotazione che mostra impostazioni evento, configurazione email, notifiche SMS e preferenze pianificazione" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/cal/event-config-dark.png" alt="Dialogo configurazione Nuova Azione Prenotazione che mostra impostazioni evento, configurazione email, notifiche SMS e preferenze pianificazione" />
+  </div>
+</Frame>
+
+### Evento e Piattaforma
+
+**Tipo Evento Cal.com** (Richiesto)
+- Seleziona dal menu a tendina o inserisci ID evento manualmente
+- Ogni azione mappa a un tipo evento Cal.com
+
+**Piattaforma Meeting** (Richiesto)
+- Scegli come sono ospitati i meeting:
+  - **Cal Video** - Video integrato Cal.com
+  - **Zoom** - Richiede Zoom connesso in Cal.com
+  - **Google Meet** - Richiede Google Meet connesso
+  - **Microsoft Teams** - Richiede Teams connesso
+  - **Telefono** - Appuntamento chiamata telefonica
+  - **Di Persona** - Meeting fisico (indirizzo richiesto)
+
+**Fuso Orario** (Richiesto)
+- Predefinito al fuso orario del tuo browser (può essere cambiato)
+- Tutti gli orari suggeriti sono presentati in questo fuso orario
+- Menu a tendina ricercabile con tutti i fusi orari disponibili
+
+### Preferenze Pianificazione
+
+**Giorni da Guardare Avanti** (1-3 giorni, predefinito: 2)
+- Quanti giorni futuri l'agente considera quando trova slot
+
+**Slot Orari Per Giorno** (2-5 slot, predefinito: 3)
+- Quanti slot orari per giorno l'agente offre
+
+**Ore Tra Suggerimenti** (1-4 ore, predefinito: 3)
+- Spaziatura minima tra orari suggeriti
+
+**Data Inizio** (Opzionale)
+- Data più presto che l'agente può suggerire
+- Lascia vuoto per disponibilità immediata
+
+### Configurazione Email
+
+L'agente usa questa priorità per trovare email cliente:
+
+1. **Contesto Dinamico** - `cal_email` dalla tua API contesto
+2. **Record Contatto** - Email memorizzata nel contatto itellicoAI
+3. **Email Fallback** - Casella team (configura sotto)
+4. **Chiedi Cliente** - Agente richiede email durante chiamata
+
+**Email Fallback** (Opzionale)
+- Usata quando email cliente non disponibile
+- Lascia vuoto per forzare agente a raccogliere sempre email
+
+### Notifiche SMS
+
+**Invia Conferma SMS** (Predefinito: abilitato)
+- Invia SMS dopo completamento prenotazione
+- Include dettagli meeting e link join
+
+<Warning>
+Le conferme SMS funzionano solo su **chiamate telefoniche** dove il numero di telefono del chiamante è disponibile nel sistema. Non verranno inviate per chiamate web o quando il numero di telefono non è disponibile.
+</Warning>
+
+**Template SMS**
+- Personalizza il messaggio con segnaposto:
+  - `{date}` - Data appuntamento
+  - `{time}` - Ora appuntamento
+  - `{link}` - Link meeting
+  - `{location}` - Indirizzo di persona
+  - `{duration}` - Durata meeting
+
+**Istruzioni Prenotazione Predefinite** (Predefinito: abilitato)
+- Script pianificazione pre-costruito per l'agente
+- Disabilita solo se hai bisogno di più controllo sul flusso conversazione prenotazione
+
+---
+
+## Pianificare per Dipendenti Multipli
+
+Uno scenario comune: **"Abbiamo 3 dipendenti che possono gestire appuntamenti, ognuno con disponibilità diversa. Come pianifichiamo per il team?"**
+
+**Soluzione:** Usa Cal.com Teams con pianificazione Round Robin. Questo distribuisce appuntamenti tra membri del team in base alla loro disponibilità individuale.
+
+### Cos'è Cal.com Teams?
+
+Cal.com Teams ti consente di creare tipi di evento che possono essere gestiti da membri del team multipli. Invece di prenotare con una persona specifica, i clienti prenotano con il tuo team, e Cal.com assegna automaticamente l'appuntamento a un membro del team disponibile.
+
+<Note>
+Cal.com Teams richiede un piano Teams o Organization. La funzionalità round robin distribuisce intelligentemente appuntamenti in base a disponibilità, priorità o rotazione.
+</Note>
+
+### Come Funziona Round Robin
+
+Quando un cliente prenota un appuntamento:
+
+1. **Verifica disponibilità** - Cal.com verifica il calendario di ogni membro del team
+2. **Applica logica distribuzione** - Seleziona il miglior membro del team in base al tuo metodo scelto:
+   - **Priorità**: Assegna prima a membri del team con priorità più alta
+   - **Ponderato**: Distribuisci proporzionalmente (es. staff senior ottiene più prenotazioni)
+   - **Prenotato meno recentemente**: Ruota uniformemente per chi è stato prenotato meno recentemente
+3. **Prenota con una persona** - Cliente viene pianificato con il membro del team selezionato
+4. **Aggiorna calendario** - Appuntamento appare nel calendario di quel membro del team
+
+### Configurare Tipi Evento Team
+
+<Steps>
+  <Step title="Crea un Team in Cal.com">
+    In Cal.com:
+    1. Vai a **Team** → **Crea Team**
+    2. Nomina il tuo team (es. "Team Vendite", "Team Supporto")
+    3. Invita membri del team per email
+    4. Ogni membro connette il proprio calendario (Google, Microsoft, ecc.)
+  </Step>
+  <Step title="Crea Tipo Evento Team">
+    Nel tuo team Cal.com:
+    1. Vai a **Tipi Evento** → **Nuovo Tipo Evento**
+    2. Seleziona **Round Robin** come tipo di evento
+    3. Configura durata, piattaforma meeting, ecc.
+    4. Seleziona quali membri del team possono gestire questo tipo di evento
+  </Step>
+  <Step title="Configura Metodo Distribuzione">
+    Scegli come sono distribuiti gli appuntamenti:
+
+    **Classifica Priorità:**
+    - Assegna a ogni membro del team una priorità (Alta, Media, Bassa)
+    - Membri priorità più alta ottengono prima prenotazioni
+    - Usa per staff senior o specialisti
+
+    **Distribuzione Ponderata:**
+    - Dai a ogni membro una percentuale peso (predefinito 100%)
+    - Pesi più alti = più prenotazioni
+    - Usa per staff part-time vs full-time
+
+    **Prenotato Meno Recentemente:**
+    - Ruota automaticamente tra membri del team
+    - Assicura distribuzione uniforme
+    - Usa per condivisione carico di lavoro uguale
+  </Step>
+  <Step title="Aggiungi a itellicoAI">
+    Una volta creato il tuo tipo evento team:
+    1. In itellicoAI, vai al tuo agente → **Abilità → Azioni**
+    2. Clicca su **Aggiungi Azione** → **Prenotazione Calendario**
+    3. Seleziona il tuo tipo evento team dal menu a tendina
+    4. L'azione prenotazione pianificherà ora con il tuo team
+  </Step>
+</Steps>
+
+### Avanzato: Host Fissi + Round Robin
+
+Per scenari dove una persona deve sempre partecipare, mentre altri ruotano:
+
+**Esempio:** Chiamate vendite necessitano rappresentante vendite (rotazione) + manager vendite (sempre presente)
+
+**Configurazione in Cal.com:**
+1. Crea tipo evento round robin
+2. Seleziona **Host Fissi**: Manager Vendite (partecipa sempre)
+3. Seleziona **Host Round Robin**: Rappresentanti vendite (uno partecipa per chiamata)
+4. Cal.com verifica disponibilità per entrambi e prenota quando entrambi sono liberi
+
+### Esempi Pianificazione Team
+
+<AccordionGroup>
+  <Accordion title="Team Vendite: 3 Rappresentanti con Distribuzione Uguale" icon="users">
+    **Scenario:** 3 rappresentanti vendite dovrebbero condividere chiamate demo equamente
+
+    **Configurazione:**
+    - Crea team "Team Vendite" con 3 membri
+    - Usa distribuzione **Prenotato Meno Recentemente**
+    - Ogni rappresentante connette il proprio calendario a Cal.com
+    - Crea tipo evento "Demo Vendite" (30 min, round robin)
+
+    **Risultato:** Le demo sono automaticamente distribuite uniformemente. La disponibilità rappresentante è verificata in tempo reale dai loro calendari individuali.
+  </Accordion>
+
+  <Accordion title="Team Supporto: Assegnazione Basata su Priorità" icon="headset">
+    **Scenario:** Staff supporto senior dovrebbe ottenere problemi complessi, staff junior problemi routine
+
+    **Configurazione:**
+    - Crea tipo evento "Chiamata Supporto Tecnico" con distribuzione priorità
+    - Staff senior: Priorità alta
+    - Staff junior: Priorità media
+
+    **Risultato:** Staff senior viene prenotato prima quando disponibile. Staff junior gestisce overflow.
+  </Accordion>
+
+  <Accordion title="Team Part-Time: Distribuzione Ponderata" icon="clock">
+    **Scenario:** 2 dipendenti full-time e 1 dipendente part-time
+
+    **Configurazione:**
+    - Staff full-time: 100% peso ciascuno
+    - Staff part-time: 50% peso
+    - Usa distribuzione ponderata
+
+    **Risultato:** Part-timer ottiene metà prenotazioni dello staff full-time.
+  </Accordion>
+
+  <Accordion title="Meeting Multi-Ruolo" icon="user-group">
+    **Scenario:** Cliente necessita sia specialista tecnico che account manager
+
+    **Configurazione:**
+    - Usa **Gruppi Round Robin** (funzionalità avanzata)
+    - Gruppo 1: Specialisti tecnici (uno partecipa)
+    - Gruppo 2: Account manager (uno partecipa)
+
+    **Risultato:** Cal.com seleziona una persona da ogni gruppo, assicurando che entrambi i ruoli siano coperti.
+  </Accordion>
+</AccordionGroup>
+
+### Integrazione Team con itellicoAI
+
+Quando connetti un tipo evento team Cal.com a itellicoAI:
+
+1. **Il tuo agente AI prenota con il team** - Non una persona specifica
+2. **Cal.com gestisce assegnazione** - Seleziona automaticamente il miglior membro del team
+3. **Cliente ottiene conferma** - Con i dettagli del membro del team assegnato
+4. **Calendario membro del team si aggiorna** - Appuntamento appare nel loro calendario individuale
+
+**Nelle tue istruzioni agente:**
+
+```
+Quando un cliente vuole pianificare una consultazione:
+
+1. Usa l'azione 'Prenota Consultazione Team'
+2. Il sistema assegnerà automaticamente un membro del team disponibile
+3. Conferma: "Perfetto! Sei pianificato con [membro team assegnato]
+   il [data] alle [ora]. Riceverai una email di conferma."
+```
+
+<Info>
+**Flessibilità:** I membri del team possono aggiornare la loro disponibilità Cal.com individuale, e il round robin rispetta automaticamente quei cambiamenti. Non è necessario aggiornare nulla in itellicoAI.
+</Info>
+
+---
+
+## Utilizzo nelle Istruzioni
+
+Fai riferimento all'azione con il suo nome auto-generato (es. "Prenota Consultazione 30 Minuti") nelle istruzioni del tuo agente:
+
+```
+Quando un cliente vuole pianificare una consultazione:
+
+1. Conferma: "Sarei felice di pianificare quello per te"
+2. Chiedi disponibilità: "Quali giorni funzionano meglio questa settimana?"
+3. Raccogli email se necessario
+4. Usa l'azione 'Prenota Consultazione 30 Minuti' per presentare orari
+5. Conferma verbalmente: "Perfetto! Sei tutto pronto per [giorno] alle [ora].
+   Riceverai una email di conferma con il link meeting."
+```
+
+<Info>
+Il nome dell'azione è automaticamente generato dal titolo del tuo tipo evento Cal.com (es. "Consultazione 30 Minuti" diventa "Prenota Consultazione 30 Minuti").
+</Info>
+
+### Gestire Fallimenti Prenotazione
+
+```
+Se 'Prenota Consultazione 30 Minuti' fallisce:
+
+1. Scusati: "Sto avendo problemi ad accedere al calendario in questo momento"
+2. Offri alternativa:
+   - "Posso far richiamare qualcuno per pianificare"
+   - Raccogli numero richiamata e orario migliore
+3. Se nessuna disponibilità: "Siamo al completo per [periodo].
+   Funzionerebbe [periodo alternativo]?"
+```
+
+---
+
+## Test
+
+<Steps>
+  <Step title="Verifica Integrazione">
+    - Integrazione Cal.com mostra "Connessa"
+    - Tipi evento appaiono nel menu a tendina
+    - Piattaforme meeting configurate in Cal.com
+  </Step>
+  <Step title="Testa Flusso Prenotazione">
+    1. Avvia chiamata di test con il tuo agente
+    2. Richiedi prenotazione appuntamento
+    3. Verifica che l'agente presenti orari disponibili
+    4. Conferma completamento prenotazione
+  </Step>
+  <Step title="Controlla Conferme">
+    - Conferma email ricevuta
+    - Conferma SMS inviata (se abilitata)
+    - Link meeting funziona
+    - Calendario aggiornato
+  </Step>
+  <Step title="Testa Casi Limite">
+    - Richiedi date fuori disponibilità
+    - Testa senza email nel record contatto
+    - Verifica gestione fallimenti
+  </Step>
+</Steps>
+
+---
+
+## Risoluzione Problemi
+
+<AccordionGroup>
+  <Accordion title="Azione Prenotazione Non Appare" icon="eye-slash">
+    **Causa:** Cal.com non connesso
+
+    **Soluzione:**
+    - Vai a Integrazioni → Cal.com
+    - Verifica che lo stato mostri "Connesso"
+  </Accordion>
+
+  <Accordion title="Nessun Tipo Evento nel Menu a Tendina" icon="calendar-xmark">
+    **Causa:** Nessun tipo evento in Cal.com o problema sincronizzazione
+
+    **Soluzione:**
+    - Crea tipi evento in Cal.com
+    - Disconnetti e riconnetti integrazione se necessario
+  </Accordion>
+
+  <Accordion title="Piattaforma Meeting Disabilitata" icon="video-slash">
+    **Causa:** Piattaforma non connessa in Cal.com
+
+    **Soluzione:**
+    - Vai alle impostazioni tipo evento Cal.com
+    - Connetti la piattaforma (Zoom, Google Meet, ecc.)
+    - Disconnetti e riconnetti integrazione per sincronizzare cambiamenti
+  </Accordion>
+
+  <Accordion title="Conferma Email Non Ricevuta" icon="envelope-open-text">
+    **Possibili cause:**
+    - Indirizzo email sbagliato
+    - Cartella spam
+    - Impostazioni email Cal.com
+
+    **Soluzione:**
+    - Controlla cartella spam/posta indesiderata
+    - Verifica email nella conferma prenotazione
+    - Controlla impostazioni notifiche Cal.com
+  </Accordion>
+
+  <Accordion title="Agente Non Usa Azione" icon="robot">
+    **Possibili cause:**
+    - Nome azione non referenziato nelle istruzioni
+    - Agente non riconosce intento prenotazione
+    - Modello LLM non performa bene con chiamata funzione
+
+    **Soluzione:**
+    - Fai riferimento al nome auto-generato esatto (es. 'Prenota Consultazione 30 Minuti')
+    - Controlla la scheda Azioni per vedere il nome effettivo
+    - Verifica che l'azione sia aggiunta all'agente
+    - Aggiungi flusso prenotazione esplicito alle istruzioni
+    - Testa con chiaro: "Voglio prenotare un appuntamento"
+    - Prova GPT-4.1 o GPT-4.1-mini per chiamata funzione più affidabile
+    - Riduci temperatura per comportamento più consistente
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Prossimi Passi
+
+<CardGroup cols={2}>
+  <Card title="Panoramica Azioni" icon="bolt" href="/it/build/actions/overview">
+    Scopri tutti i tipi di azioni
+  </Card>
+  <Card title="Azioni API Personalizzate" icon="code" href="/it/build/actions/custom-api-actions">
+    Costruisci flussi prenotazione personalizzati
+  </Card>
+  <Card title="Azioni Trasferimento" icon="right-left" href="/it/build/actions/transfer-details">
+    Instrada a pianificatori umani se necessario
+  </Card>
+  <Card title="Testa il Tuo Agente" icon="vial" href="/it/test/web-simulator">
+    Guida test completa
+  </Card>
+</CardGroup>

@@ -1,0 +1,417 @@
+---
+title: "Mensagens de saudação"
+description: "Configure como seu agente inicia conversas"
+icon: "hand-wave"
+"keywords": "Mensagens de saudação IA, saudações IA conversacional, saudações dinâmicas, mensagens personalizadas de agente, iniciadores de conversa, mensagens de boas-vindas IA"
+"og:description": "Configure mensagens de saudação dinâmicas e personalizadas que dão o tom certo para cada conversa com agente IA."
+---
+
+## Visão geral
+
+A saudação é a primeira coisa que os clientes ouvem ao se conectarem com seu agente. Uma saudação bem elaborada estabelece o tom, define expectativas e guia a conversa na direção certa.
+
+## Modos de saudação
+
+Escolha entre três modos de saudação diferentes:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/greeting-light.png" alt="Configuração de saudação mostrando barra lateral de navegação com seção Habilidades expandida e Saudação selecionada, abas Entrada e Saída, três opções de modo de saudação (Usuário inicia, Agente IA inicia com mensagem dinâmica, Agente IA inicia com mensagem fixa), editor de mensagem fixa com suporte a variáveis, controle deslizante de atraso de mensagem e botão de interrupção" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/greeting-dark.png" alt="Configuração de saudação mostrando barra lateral de navegação com seção Habilidades expandida e Saudação selecionada, abas Entrada e Saída, três opções de modo de saudação (Usuário inicia, Agente IA inicia com mensagem dinâmica, Agente IA inicia com mensagem fixa), editor de mensagem fixa com suporte a variáveis, controle deslizante de atraso de mensagem e botão de interrupção" />
+  </div>
+</Frame>
+
+<Tabs>
+  <Tab title="Saudação fixa">
+    **Ideal para**: Saudações consistentes e de marca
+
+    Seu agente diz exatamente a mesma saudação toda vez.
+
+    ```text wrap
+    Olá! Obrigado por ligar para o suporte da Acme. Aqui é o Alex. Como posso ajudar?
+    ```
+
+    **Vantagens:**
+    - Mensagens de marca consistentes
+    - Experiência do cliente previsível
+    - Fácil de testar e refinar
+    - Sem variabilidade de IA
+
+    **Use quando:**
+    - A voz da marca é crítica
+    - A saudação inclui isenções de responsabilidade específicas
+    - É necessária consistência em todas as chamadas
+  </Tab>
+
+  <Tab title="Gerado por IA">
+    **Ideal para**: Saudações personalizadas e conscientes do contexto
+
+    Seu agente gera saudações dinamicamente com base no contexto disponível.
+
+    **Exemplos de variações:**
+    ```text wrap
+    # Com nome do cliente:
+    "Olá Sarah! Obrigado por ligar. Como posso ajudá-la hoje?"
+
+    # Cliente VIP:
+    "Olá Sr. Silva! Obrigado por ligar. Como posso ajudá-lo hoje?"
+
+    # Baseado em horário:
+    "Bom dia! Obrigado por ligar para o suporte Acme. O que te traz aqui?"
+
+    # Específico da campanha:
+    "Olá! Vejo que você solicitou informações sobre nosso plano Enterprise. Terei prazer em ajudar!"
+    ```
+
+    **Vantagens:**
+    - Personalizado para cada chamador
+    - Consciente do contexto (hora, campanha, tipo de cliente)
+    - Variabilidade natural
+    - Pode referenciar dados disponíveis
+
+    **Use quando:**
+    - Você tem dados de contato ricos
+    - A personalização melhora a experiência
+    - Diferentes segmentos de clientes precisam de abordagens diferentes
+  </Tab>
+
+  <Tab title="Usuário inicia">
+    **Ideal para**: Chamadas de saída onde o destinatário fala primeiro
+
+    O agente espera silenciosamente o cliente falar antes de responder.
+
+    **Cliente:** "Alô?" / "Sim?" / "Quem é?"
+    **Agente:** "Olá! Aqui é o Alex da Acme. Estou ligando sobre sua consulta recente. Tem um momento?"
+
+    **Vantagens:**
+    - Natural para cenários de saída
+    - O cliente fala primeiro como esperado
+    - O agente responde depois que o cliente atende
+
+    **Use quando:**
+    - Fazendo chamadas de saída
+    - O destinatário dirá algo naturalmente ao atender
+    - Você quer que o cliente inicie a conversa
+
+    <Note>
+    **Para a maioria dos casos de uso, recomendamos Saudação fixa.** Usuário inicia é útil apenas em certos cenários de chamadas de saída.
+    </Note>
+  </Tab>
+</Tabs>
+
+---
+
+## Configuração de saudação
+
+### Atraso inicial
+
+Controle quanto tempo o agente espera antes de falar (0-5 segundos).
+
+Um atraso de **0,5 segundos** é um bom ponto de partida para a maioria dos casos de uso.
+
+### Interruptibilidade
+
+Controle se os clientes podem interromper a saudação.
+
+**Não interrompível (Recomendado):**
+- A saudação é reproduzida totalmente sem interrupção
+- Garante que os clientes ouçam a mensagem completa
+- Introdução profissional e clara
+- Melhor para a maioria dos casos de uso
+
+**Interrompível:**
+- O cliente pode falar durante a saudação
+- O agente para no meio da saudação e ouve
+- Pode levar a introduções incompletas
+- Use apenas se os clientes interrompem frequentemente e saudações não interrompíveis levam a conversas não ideais ou desligamentos
+
+<Tip>
+Saudações não interrompíveis garantem que sua introdução de marca e propósito sejam sempre comunicados claramente. Mantenha saudações concisas (menos de 10 segundos) para melhores resultados.
+</Tip>
+
+---
+
+## Saudações de entrada vs saída
+
+### Saudações de entrada
+
+Os clientes estão ligando para você. Eles iniciaram o contato.
+
+**Melhores práticas:**
+- Agradeça-os por ligar
+- Identifique sua empresa/serviço
+- Apresente o agente (nome opcional)
+- Pergunte como pode ajudar
+
+**Exemplos:**
+
+```text wrap
+# Suporte padrão:
+"Obrigado por ligar para o suporte Acme Software. Como posso ajudá-lo hoje?"
+
+# Com nome do agente:
+"Olá! Aqui é o Alex do suporte Acme. No que posso ajudar?"
+
+# Amigável:
+"Olá! Obrigado por ligar. O que te traz hoje?"
+
+# Específico do departamento:
+"Departamento de faturamento Acme, aqui é a Sara. Como posso ajudá-lo?"
+```
+
+---
+
+### Saudações de saída
+
+Você está ligando para o cliente. Precisa estabelecer legitimidade e propósito rapidamente.
+
+**Melhores práticas:**
+- Identifique você e sua empresa
+- Indique o propósito da chamada
+- Confirme que está falando com a pessoa certa
+- Pergunte se é um bom momento
+
+**Exemplos:**
+
+```text wrap
+# Lembrete de consulta:
+"Olá, aqui é o Alex da Clínica Odontológica Acme. Estou ligando para confirmar sua consulta amanhã às 14h. Ainda está bom para você?"
+
+# Acompanhamento de lead:
+"Olá, aqui é a Sara da Acme Software. Você solicitou recentemente informações sobre nosso plano Enterprise. Tem alguns minutos para discutir como podemos ajudar?"
+
+# Feedback do cliente:
+"Olá! Aqui é o João da Acme. Você comprou recentemente nosso produto e eu gostaria de obter seu feedback rápido. Tem dois minutos?"
+
+# Lembrete de pagamento:
+"Olá, aqui é a equipe de faturamento da Acme. Estou ligando sobre sua conta. Podemos cuidar desse pagamento hoje?"
+```
+
+### Personalizações de saudações de saída
+
+Configure saudações separadas para chamadas de saída na seção **Saudação**.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/outbound-greeting-light.png" alt="Configuração de saudação de saída mostrando aba Saída (personalizado) selecionada com botão 'Usar o mesmo de entrada', três opções de modo de saudação (Usuário inicia, Agente IA inicia com mensagem dinâmica, Agente IA inicia com mensagem fixa), editor de mensagem fixa de saída, controle deslizante de atraso de mensagem, botão de interrupção e botão salvar alterações" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/outbound-greeting-dark.png" alt="Configuração de saudação de saída mostrando aba Saída (personalizado) selecionada com botão 'Usar o mesmo de entrada', três opções de modo de saudação (Usuário inicia, Agente IA inicia com mensagem dinâmica, Agente IA inicia com mensagem fixa), editor de mensagem fixa de saída, controle deslizante de atraso de mensagem, botão de interrupção e botão salvar alterações" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Ativar personalização de saída">
+    Ative "Configurar saudação de saída separada"
+  </Step>
+  <Step title="Escolher modo de saudação de saída">
+    Fixa, gerada por IA ou Usuário inicia
+  </Step>
+  <Step title="Definir atraso específico de saída">
+    Geralmente 0-0,5 segundos para saída
+  </Step>
+  <Step title="Configurar interruptibilidade">
+    Geralmente interrompível para sensação natural
+  </Step>
+</Steps>
+
+<Note>
+Por padrão, chamadas de saída espelham sua saudação de entrada. Use personalizações quando precisar de comportamento diferente para chamadas proativas.
+</Note>
+
+---
+
+## Uso de variáveis em saudações
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/greeting-variables-light.png" alt="Configuração de variáveis de saudação mostrando aba Saída (personalizado) com Agente IA inicia com mensagem fixa selecionado, editor de mensagem fixa de saída contendo sintaxe de variável, seção Variáveis detectadas mostrando variável de teste, controle deslizante de atraso de mensagem e botão de interrupção" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/greeting-variables-dark.png" alt="Configuração de variáveis de saudação mostrando aba Saída (personalizado) com Agente IA inicia com mensagem fixa selecionado, editor de mensagem fixa de saída contendo sintaxe de variável, seção Variáveis detectadas mostrando variável de teste, controle deslizante de atraso de mensagem e botão de interrupção" />
+  </div>
+</Frame>
+
+### Variáveis de contato
+
+Personalize com informações do cliente:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/contact-variables-light.png" alt="Variáveis de contato em saudação mostrando aba Entrada com Agente IA inicia com mensagem fixa selecionado, editor de mensagem fixa com sintaxe de variáveis baseadas em tempo e contato usando current_datetime e contact.full_name, seção Variáveis detectadas mostrando as variáveis analisadas, controle deslizante de atraso de mensagem e botão de interrupção" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/contact-variables-dark.png" alt="Variáveis de contato em saudação mostrando aba Entrada com Agente IA inicia com mensagem fixa selecionado, editor de mensagem fixa com sintaxe de variáveis baseadas em tempo e contato usando current_datetime e contact.full_name, seção Variáveis detectadas mostrando as variáveis analisadas, controle deslizante de atraso de mensagem e botão de interrupção" />
+  </div>
+</Frame>
+
+```jinja wrap
+Olá {{ contact.first_name | default("") }}! Obrigado por ligar.
+```
+
+Saudações baseadas em horário usando a variável integrada `current_datetime`:
+
+```jinja wrap
+Bom {{ "dia" if current_datetime.hour < 12 else "tarde" }}, {{ contact.full_name | default("") }}!
+```
+
+<Tip>
+A variável `current_datetime` está automaticamente disponível em saudações e instruções para construir lógica baseada em tempo. Veja [Variáveis e conteúdo dinâmico](/pt/build/conversation/variables-dynamic-content) para mais detalhes.
+</Tip>
+
+### Saudações condicionais
+
+Use variáveis de contato integradas:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/condition-greeting-light.png" alt="Configuração de saudação condicional mostrando aba Entrada com Agente IA inicia com mensagem fixa selecionado, editor de mensagem fixa com lógica condicional if-else usando a variável contact.email, seção Variáveis detectadas mostrando contact.first_name e contact.email, controle deslizante de atraso de mensagem e botão de interrupção" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/condition-greeting-dark.png" alt="Configuração de saudação condicional mostrando aba Entrada com Agente IA inicia com mensagem fixa selecionado, editor de mensagem fixa com lógica condicional if-else usando a variável contact.email, seção Variáveis detectadas mostrando contact.first_name e contact.email, controle deslizante de atraso de mensagem e botão de interrupção" />
+  </div>
+</Frame>
+
+```jinja wrap
+{% if contact.email %}
+Olá {{ contact.first_name }}, tenho seu e-mail {{ contact.email }} em arquivo.
+{% else %}
+Olá {{ contact.first_name }}, obrigado por ligar!
+{% endif %}
+Como posso ajudá-lo hoje?
+```
+
+Ou use variáveis personalizadas da sua API de contexto dinâmico:
+
+```jinja wrap
+{% if account_tier == "premium" %}
+Olá {{ contact.first_name }}, obrigado por ser um valioso cliente premium.
+{% else %}
+Olá {{ contact.first_name }}, obrigado por ligar!
+{% endif %}
+Como posso ajudá-lo hoje?
+```
+
+<Note>
+Variáveis como `account_tier`, `company_name` ou campos personalizados devem ser fornecidas através do seu [endpoint API de contexto dinâmico](/pt/build/advanced/dynamic-context).
+</Note>
+
+---
+
+## Escrevendo ótimas saudações
+
+<AccordionGroup>
+  <Accordion title="Mantenha breve" icon="clock">
+    Busque menos de 10 segundos.
+
+    **Bom:** "Olá! Obrigado por ligar para o suporte Acme. Como posso ajudar?"
+
+    **Muito longo:** "Olá e obrigado por ligar para o centro de suporte técnico Acme Software. Meu nome é Alex e estarei ajudando você hoje..."
+  </Accordion>
+
+  <Accordion title="Soe natural" icon="comments">
+    Use linguagem conversacional.
+
+    **Bom:** "Olá! Obrigado por ligar. No que posso ajudar?"
+
+    **Evite:** "Saudações, estimado cliente. Por favor indique a natureza de sua consulta."
+  </Accordion>
+
+  <Accordion title="Defina expectativas" icon="bullseye">
+    Deixe seu propósito claro.
+
+    **Bom:** "Olá! Aqui é o Alex do faturamento Acme. Estou ligando sobre sua fatura recente."
+
+    **Evite:** "Olá, aqui é da Acme. Eu queria entrar em contato com você hoje."
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Testando saudações
+
+### O que testar
+
+<AccordionGroup>
+  <Accordion title="Tempo" icon="clock">
+    - O atraso é apropriado?
+    - O agente começa a falar muito cedo/tarde?
+    - O cliente pode interromper se necessário?
+  </Accordion>
+
+  <Accordion title="Conteúdo" icon="message">
+    - A saudação é clara e compreensível?
+    - Ela estabelece o propósito?
+    - O tom é apropriado?
+    - Há alguma formulação estranha?
+  </Accordion>
+
+  <Accordion title="Variáveis" icon="brackets-curly">
+    - As variáveis são renderizadas corretamente?
+    - Os padrões estão funcionando?
+    - A lógica condicional dispara corretamente?
+  </Accordion>
+
+  <Accordion title="Comprimento" icon="ruler">
+    - Menos de 10 segundos?
+    - O cliente permanece engajado?
+    - Sem palavras desnecessárias?
+  </Accordion>
+</AccordionGroup>
+
+### Processo de teste
+
+1. **Chamada de teste** no painel
+2. **Iniciar chamada web**
+3. Ouça a saudação várias vezes
+4. Teste com contextos diferentes (cliente VIP, campanhas diferentes, etc.)
+5. Peça feedback de colegas
+6. Refine com base em resultados de chamadas reais
+
+---
+
+## Erros comuns
+
+<AccordionGroup>
+  <Accordion title="Muito formal" icon="user-tie">
+    **Evite:** "Saudações. Você contactou a divisão de suporte técnico da Acme Corporation."
+
+    **Melhor:** "Olá! Obrigado por ligar para o suporte Acme. No que posso ajudá-lo?"
+  </Accordion>
+
+  <Accordion title="Muito casual" icon="face-smile">
+    **Evite:** "E aí! Qual é? Do que você precisa?"
+
+    **Melhor:** "Olá! Obrigado por ligar. No que posso ajudar hoje?"
+  </Accordion>
+
+  <Accordion title="Nome da empresa ausente" icon="building">
+    **Evite:** "Olá, aqui é o Alex. Como posso ajudar?"
+
+    **Melhor:** "Olá! Aqui é o Alex do suporte Acme. O que te traz hoje?"
+  </Accordion>
+
+  <Accordion title="Sem propósito para chamadas de saída" icon="phone-arrow-up-right">
+    **Evite:** "Olá, é a Sara? Como você está hoje?"
+
+    **Melhor:** "Olá Sara! Aqui é o Alex da Acme. Você solicitou informações sobre nosso produto - tem um minuto rápido para conversar?"
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Variáveis e conteúdo dinâmico" icon="brackets-curly" href="/pt/build/conversation/variables-dynamic-content">
+    Aprenda a usar variáveis em saudações e instruções
+  </Card>
+  <Card title="Guia de engenharia de prompts" icon="book" href="/pt/build/conversation/prompt-engineering-guide">
+    Domine técnicas avançadas de instruções
+  </Card>
+  <Card title="Teste seu agente" icon="vial" href="/pt/test/web-simulator">
+    Teste suas saudações e refine
+  </Card>
+</CardGroup>

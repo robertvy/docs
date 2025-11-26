@@ -1,0 +1,102 @@
+---
+title: "Phone Testing"
+description: "Test your agent with real phone calls"
+icon: "phone"
+keywords: 'phone testing, call testing, PSTN testing, voice quality testing, AMD testing, telephony testing, real phone calls'
+og:description: 'Test voice agents with real phone calls. Verify voice quality, answering machine detection, call transfers, and complete customer experience over PSTN.'
+---
+
+## Why Test with Phone Calls
+
+If your use case involves telephony, phone testing is essential to validate the complete customer experience. Web testing uses WebRTC with different codecs and no PSTN infrastructure, so phone testing lets you verify voice quality, timing, answering machine detection, and transfer flows exactly as your customers will experience them.
+
+## How to Make a Test Call
+
+<Steps>
+  <Step title="Open Test Agent">
+    Go to your agent and click **Test Agent** in the top right corner.
+  </Step>
+  <Step title="Switch to Phone Call">
+    Click the **Phone Call** tab at the top of the test panel.
+  </Step>
+  <Step title="Choose your caller ID">
+    Select which phone number to call from. This will be the caller ID your contact sees.
+  </Step>
+  <Step title="Enter destination number">
+    Type the phone number you want to call in [E.164 format](https://www.twilio.com/docs/glossary/what-e164) with country code (e.g., +1 for US).
+  </Step>
+  <Step title="Configure AMD (optional)">
+    Choose [answering machine detection](/build/advanced/voicemail-handling) mode: **Text** for speed or **ML** for accuracy. Leave default if unsure.
+  </Step>
+  <Step title="Start the call">
+    Click **Start Test**. Your agent will call the number and you can have a real conversation.
+  </Step>
+</Steps>
+
+## What to verify during the call
+
+<CardGroup cols={2}>
+  <Card title="Latency" icon="clock">
+    Count the beats between speaking and hearing the agent. Flag anything over ~600 ms.
+  </Card>
+  <Card title="AMD" icon="robot">
+    Let voicemail answer to check whether the selected AMD mode behaves correctly.
+  </Card>
+  <Card title="Actions & transfers" icon="bolt">
+    Trigger custom actions, bookings, or transfers to confirm they still fire when audio flows through PSTN.
+  </Card>
+  <Card title="Context accuracy" icon="id-card">
+    Confirm caller-specific prompts or knowledge lookups still work when the call is initiated with real metadata.
+  </Card>
+  <Card title="End-of-call handling" icon="flag-checkered">
+    Ensure wrap-up messaging, automations, and transcripts finalize even if the caller hangs up first.
+  </Card>
+</CardGroup>
+
+## Test Scenarios
+
+<AccordionGroup>
+  <Accordion title="Conversation flow" icon="comments">
+    Test the complete conversation path from greeting through goal completion. Verify the agent follows your instructions and handles the conversation naturally.
+  </Accordion>
+  <Accordion title="Interruptions" icon="hand">
+    Try interrupting the agent while it's speaking. Verify it stops gracefully and responds appropriately to your interruption.
+  </Accordion>
+  <Accordion title="Different environments" icon="location-dot">
+    Test from quiet rooms, noisy environments, and different locations. Call from mobile phones, landlines, and different carriers if possible.
+  </Accordion>
+  <Accordion title="Edge cases" icon="triangle-exclamation">
+    Test unexpected inputs, unclear requests, and scenarios where the agent needs to ask clarifying questions or gracefully handle confusion.
+  </Accordion>
+</AccordionGroup>
+
+## After the Call
+
+1. Go to the **Conversations** tab in your dashboard
+2. Find your test call (look for the phone icon)
+3. Review the transcript for accuracy
+4. Check that goals were tracked correctly
+5. Verify any actions or automations triggered as expected
+
+<Tip>
+Keep notes on what worked and what needs improvement for each test call.
+</Tip>
+
+## Common Issues
+
+<AccordionGroup>
+  <Accordion title="Call doesn't connect" icon="phone-xmark">
+    Check that your selected phone number is active and properly configured in **Telephony → Numbers**.
+  </Accordion>
+  <Accordion title="Poor audio quality" icon="volume-xmark">
+    Try calling from a different location or device.
+  </Accordion>
+  <Accordion title="No transcript appears" icon="file-slash">
+    Wait a few moments after the call ends for processing. If it still doesn't appear, try another test call.
+  </Accordion>
+  <Accordion title="Agent sounds different than web test" icon="waveform">
+    This is normal - phone networks process audio differently than web calls. Test multiple times to ensure consistency.
+  </Accordion>
+</AccordionGroup>
+
+Once your phone tests are successful, you're ready to launch your agent to customers!

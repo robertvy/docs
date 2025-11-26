@@ -1,0 +1,266 @@
+---
+title: "Dashboard"
+description: "Track metrics, spot trends, and measure agent performance over time"
+icon: "chart-line"
+keywords: "AI agent dashboard, conversation metrics, goal achievement rate, transfer rate, call duration analytics, action success rate, campaign analytics, answer rate heat map, voice AI KPIs, agent performance tracking"
+og:description: "Track key metrics and measure AI agent performance over time. Monitor goal achievement, transfer rates, call duration, and campaign analytics with comprehensive dashboards."
+---
+
+The **Dashboard** gives you quantitative insights into agent performance. Track key metrics over time, identify trends, and measure the impact of changes.
+
+**Access:** Navigate to **Dashboard** in the main menu, or check campaign-specific metrics in **Campaigns → [Campaign] → Dashboard** and **Reporting** tabs
+
+## Key Metrics
+
+<AccordionGroup>
+  <Accordion title="Goal Achievement Rate" icon="bullseye">
+    **What it measures:** Percentage of conversations where configured goals were achieved
+
+    **Target benchmarks:**
+    - ✅ Excellent: &gt;85%
+    - 👍 Good: 70-85%
+    - ⚠️ Needs improvement: &lt;70%
+
+    **How to improve:**
+    - Review failed conversations to spot patterns
+    - Add missing knowledge for common failure reasons
+    - Refine goal definitions for accuracy
+    - Update instructions to handle edge cases
+
+    Configure goals in **Agent Settings → Analytics → Goals**. See [Conversation Goals](/build/analytics/conversation-goals).
+  </Accordion>
+
+  <Accordion title="Answer Rate (Campaigns)" icon="phone">
+    **What it measures:** Percentage of campaign contacts who answered the phone
+
+    **Target:** Varies by industry (30-60% typical)
+
+    **How to improve:**
+    - Use the answer rate heat map to find best calling times
+    - Update business hours to focus on high-performing windows
+    - Avoid early mornings, late evenings, and weekends unless data supports it
+    - Test different days/times for your specific audience
+
+    Only available for campaigns. View in campaign **Dashboard** tab under Answer Rate Heat Map.
+  </Accordion>
+
+  <Accordion title="Transfer Rate" icon="phone-arrow-up-right">
+    **What it measures:** Percentage of conversations transferred to humans
+
+    **Target benchmarks:**
+    - ✅ Excellent: &lt;15%
+    - 👍 Good: 15-25%
+    - ⚠️ Needs improvement: &gt;25%
+
+    **How to improve:**
+    - Review transcripts that led to transfers
+    - Add knowledge or actions to handle common transfer reasons
+    - Update instructions to handle more scenarios in automation
+    - Set clearer criteria for when transfers are appropriate
+
+    Note: Some transfers are expected (e.g., legal questions, escalations). Focus on reducing unnecessary transfers.
+  </Accordion>
+
+  <Accordion title="Average Call Duration" icon="clock">
+    **What it measures:** Mean length of all conversations
+
+    **Target:** Varies by use case (2-4 min support, 3-8 min sales, 1-3 min booking)
+
+    **How to interpret:**
+    - ⬆️ Increasing: Agent may be verbose, slow knowledge retrieval, or handling complex issues
+    - ⬇️ Decreasing: Agent more efficient OR dropping calls early
+    - 📊 Stable: Consistent performance
+
+    **How to improve:**
+    - Shorten agent responses (remove repetitive phrases)
+    - Optimize knowledge base structure
+    - Streamline conversation flow (ask for info upfront)
+    - Create shortcuts for frequent scenarios
+  </Accordion>
+
+  <Accordion title="Action Success Rate" icon="wrench">
+    **What it measures:** Percentage of triggered actions that execute successfully
+
+    **Target benchmarks:**
+    - ✅ Excellent: &gt;95%
+    - 👍 Good: 90-95%
+    - ⚠️ Needs improvement: &lt;90%
+
+    **Common failures:**
+    - API endpoints down or slow
+    - Authentication failures
+    - Incorrect parameters
+    - Network timeouts
+
+    **How to improve:**
+    - Monitor API health and response times
+    - Improve parameter extraction instructions
+    - Add retry logic for transient failures
+    - Better error handling in actions
+  </Accordion>
+
+  <Accordion title="Completion Rate" icon="circle-check">
+    **What it measures:** Percentage of conversations that complete normally (vs drop/error)
+
+    **Target:** &gt;95%
+
+    **Low completion indicates:**
+    - Technical issues (audio, connectivity)
+    - Poor user experience causing hang-ups
+    - Confusing conversation flow
+    - Long wait times or latency issues
+  </Accordion>
+
+  <Accordion title="Cost Per Conversation" icon="dollar-sign">
+    **What it measures:** Average cost to handle one complete conversation
+
+    **Typical ranges:**
+    - Simple Q&A: $0.10 - $0.30
+    - Support: $0.20 - $0.50
+    - Sales: $0.40 - $1.00+
+
+    **Cost components:**
+    - LLM inference (40-60%)
+    - Text-to-Speech (20-35%)
+    - Speech-to-Text (15-25%)
+    - Knowledge operations (small %)
+
+    Track trends over time to spot cost increases and measure optimization impact.
+  </Accordion>
+</AccordionGroup>
+
+## Filters and Date Ranges
+
+Use filters to analyze specific slices of your data:
+
+**Date Range:**
+- Today, Yesterday, Last 7 days, Last 30 days
+- This month, Last month
+- Custom range
+
+**Agent Filter:** Isolate performance of specific agents or compare multiple
+
+**Phone Number Filter:** Track calls to/from specific numbers
+
+**Status Filter:** Filter by outcome (completed, failed, transferred)
+
+**Campaign Filter:** For campaign calls, filter by campaign name
+
+## Campaign Dashboard & Reporting
+
+For outbound campaigns, each campaign has **Dashboard** and **Reporting** tabs with campaign-specific insights:
+
+<CardGroup cols={2}>
+  <Card title="Answer Rate Heat Map" icon="chart-line">
+    Weekly heat map showing answer rates by hour and day. After 50-100 calls, use this to identify the best calling times and optimize your business hours configuration.
+  </Card>
+
+  <Card title="Goal Performance" icon="bullseye">
+    Track campaign goal achievement rates per contact. See which contacts completed objectives and analyze success patterns.
+  </Card>
+
+  <Card title="Contact Analytics" icon="users">
+    Per-contact metrics combining all conversations, status history, and analysis results for comprehensive insights.
+  </Card>
+
+  <Card title="Call Volume" icon="phone-volume">
+    Monitor call attempts, connection rates, and contact progression over time.
+  </Card>
+</CardGroup>
+
+## Dashboard Exports
+
+Export data for deeper analysis:
+
+**From Dashboard (Conversations):**
+- Export filtered conversation data
+- Choose CSV or Excel format
+- Include transcripts, goals, actions, costs
+
+**From Campaign Dashboard/Reporting:**
+- Export campaign performance summary
+- Export contacts with all conversation data
+- Choose XLSX, CSV comma, or CSV semicolon format
+
+See [Review Conversations](/optimize/review-conversations) for details on what's included in exports and how to use them.
+
+## Weekly Review Routine
+
+Make dashboard review a habit:
+
+<Steps>
+  <Step title="Check for anomalies">
+    Look for sudden drops or spikes in any metric. Did something change recently?
+  </Step>
+
+  <Step title="Compare to last week">
+    Are metrics trending up or down? What changed between periods?
+  </Step>
+
+  <Step title="Dig into outliers">
+    If a metric is off, switch to **Conversations** view to review specific calls and understand why.
+  </Step>
+
+  <Step title="Adjust based on data">
+    Use insights to update instructions, knowledge, business hours, or actions. Test changes and monitor impact next week.
+  </Step>
+</Steps>
+
+## Metric Combinations
+
+Look at metrics together for deeper insights:
+
+**Goal Achievement + Transfer Rate:**
+- Low goals, high transfers → Agent can't handle scope
+- High goals, low transfers → Excellent automation ✅
+- Low both → Fundamental issues
+
+**Duration + Goal Achievement:**
+- Long duration, high goals → Thorough but slow
+- Short duration, high goals → Efficient and effective ✅
+- Long duration, low goals → Struggling to help
+- Short duration, low goals → Failing fast
+
+**Action Success + Goal Achievement:**
+- High action success, high goals → Actions driving success ✅
+- Low action success, low goals → Broken integrations hurting outcomes
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Focus on trends, not absolutes" icon="chart-line">
+    Weekly changes matter more than single-day numbers. Look for patterns over 2-4 weeks.
+  </Accordion>
+
+  <Accordion title="Combine quantitative + qualitative" icon="chart-mixed">
+    Dashboard shows what's happening. Conversations view shows why. Use both.
+  </Accordion>
+
+  <Accordion title="Set baselines before optimizing" icon="ruler">
+    Run for 1-2 weeks to establish baselines. Then make one change at a time and measure impact.
+  </Accordion>
+
+  <Accordion title="Export for long-term tracking" icon="file-export">
+    Don't rely solely on dashboard. Export monthly for records and trend analysis in Excel or BI tools.
+  </Accordion>
+
+  <Accordion title="Act on insights" icon="bolt">
+    Measurement without action is wasted. Set improvement targets, make changes, test, iterate.
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Review Conversations" icon="messages" href="/optimize/review-conversations">
+    Switch from metrics to qualitative: dig into specific calls
+  </Card>
+
+  <Card title="Conversation Goals" icon="bullseye" href="/build/analytics/conversation-goals">
+    Configure goals to track what matters for your use case
+  </Card>
+
+  <Card title="Post-Call Analysis" icon="clipboard-list" href="/build/analytics/post-call-analysis">
+    Set up custom questions to extract structured insights
+  </Card>
+</CardGroup>

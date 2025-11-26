@@ -1,0 +1,298 @@
+---
+title: "Debugging"
+description: "Tools und Techniken zur Identifizierung und Behebung von Agenten-Problemen"
+icon: "bug"
+keywords: "Debugging, Fehlersuche, Problemlösung, Agent-Debugging, Fehlerbehebung"
+og:description: "Debug und beheben du Probleme in deinem KI Voice Agent. Tools für effektive Fehlersuche."
+---
+
+## Übersicht
+
+Das Debuggen von Voice-Agenten erfordert eine systematische Untersuchung mehrerer zusammenarbeitender Komponenten - Transkription, LLM-Reasoning, Sprachsynthese und Aktionsausführung. Das itellicoAI-Dashboard bietet detaillierte Protokolle und Tools, um dir zu helfen, die Grundursache von Problemen schnell zu identifizieren.
+
+---
+
+## Dashboard-Debugging-Tools
+
+<CardGroup cols={2}>
+  <Card title="Gesprächsprotokolle" icon="list">
+    Vollständige Historie jeder Konversation mit Transkripten, Aktionen und Metadaten
+  </Card>
+
+  <Card title="Echtzeit-Transkript" icon="closed-captioning">
+    Live-Ansicht der Transkription und Agentenantworten während Testanrufen
+  </Card>
+
+  <Card title="Aktions-Payloads" icon="code">
+    Detailliertes JSON jedes API-Aufrufs, Tool-Ausführung und Webhooks
+  </Card>
+
+  <Card title="Fehlermeldungen" icon="triangle-exclamation">
+    Spezifische Fehlerdetails, wenn Komponenten fehlschlagen
+  </Card>
+</CardGroup>
+
+---
+
+## Systematischer Debugging-Ansatz
+
+Wenn etwas schief geht, folgen du diesem systematischen Prozess:
+
+<Steps>
+  <Step title="Reproduzieren das Problem">
+    Teste erneut, um zu bestätigen, dass das Problem konsistent ist
+
+    Notieren du die genauen Bedingungen, wenn es auftritt
+  </Step>
+
+  <Step title="Identifizieren die Komponente">
+    Bestimmen du, welcher Teil der Pipeline fehlgeschlagen ist:
+    - Transcriber (Sprache → Text)
+    - LLM (Verständnis → Antwort)
+    - TTS (Text → Sprache)
+    - Aktions-/Tool-Ausführung
+    - Wissensabruf
+  </Step>
+
+  <Step title="Protokolle überprüfen">
+    Öffne **Konversationen** und finden du den problematischen Anruf
+
+    Untersuchen du Transkripte, Aktions-Payloads und Fehler
+  </Step>
+
+  <Step title="Komponenten einzeln testen">
+    Isoliere die fehlgeschlagene Komponente:
+    - Versuche einen anderen Transcriber
+    - Teste LLM mit einfacheren Prompts
+    - Versuche eine andere Stimme
+    - Teste Aktionen direkt über API
+  </Step>
+
+  <Step title="Beheben und verifizieren">
+    Nehmen du gezielte Änderungen basierend auf Erkenntnissen vor
+
+    Teste erneut, um die Behebung zu bestätigen
+  </Step>
+</Steps>
+
+---
+
+## Debugging auf Komponentenebene
+
+<AccordionGroup>
+  <Accordion title="Transcriber-Probleme" icon="microphone">
+    **Wie man identifiziert:**
+    - Überprüfe das Transkript in Gesprächsprotokollen
+    - Vergleiche, was gesagt wurde vs. was transkribiert wurde
+    - Suche nach fehlenden Wörtern, falschen Wörtern oder Kauderwelsch
+
+    **Häufige Ursachen:**
+    - Hintergrundgeräusche
+    - Akzent- oder Sprachinkongruenz
+    - Audioqualitätsprobleme
+    - Falsches Transcriber-Modell ausgewählt
+
+    **Debugging-Schritte:**
+    1. Navigiere zu **Modelle → Transcriber**
+    2. Versuche einen anderen Transcriber-Anbieter (Deepgram ↔ Azure)
+    3. Versuche ein anderes Modell (z.B. Nova-2 ↔ Nova-3)
+    4. Überprüfe, ob die Spracheinstellung mit dem Sprecher übereinstimmt
+    5. Teste in ruhigerer Umgebung
+    6. Überprüfe die Audio-Eingangsqualität
+
+    **Was in Protokollen zu überprüfen ist:**
+    - Transkript-Genauigkeit
+    - Timing der Transkription (Verzögerungen?)
+    - Leere oder teilweise Transkriptionen
+    - Spracherkennungsprobleme
+  </Accordion>
+
+  <Accordion title="LLM-Antwortprobleme" icon="brain">
+    **Wie man identifiziert:**
+    - Agent gibt falsche Antworten
+    - Agent weicht vom Thema ab
+    - Agent wiederholt sich
+    - Agent lehnt es ab, gültige Fragen zu beantworten
+    - Agent halluziniert Informationen
+
+    **Häufige Ursachen:**
+    - Anweisungen zu vage oder widersprüchlich
+    - Wissensdatenbank fehlt Informationen
+    - Kontextfenster-Überlauf
+    - Modell nicht für Aufgabe geeignet
+    - Temperatur zu hoch/niedrig
+
+    **Debugging-Schritte:**
+    1. Überprüfe Agentenanweisungen unter **Fähigkeiten → Anweisungen**
+    2. Vereinfachen du Anweisungen, um das Problem zu isolieren
+    3. Überprüfe Wissensdatenbank auf fehlende Informationen
+    4. Versuche ein anderes LLM-Modell (Claude Haiku 4.5 ↔ GPT-4.1 mini)
+    5. Passe die Temperatur in den Modelleinstellungen an
+    6. Überprüfe Gesprächsprotokolle, um den vollständigen Kontext zu sehen
+
+    **Was in Protokollen zu überprüfen ist:**
+    - Vollständige Gesprächshistorie, die zu schlechter Antwort führt
+    - Abgerufene Wissenselemente (bei Verwendung von RAG)
+    - System-Prompts und Kontext-Injection
+
+    <Tip>
+    Teste problematische Prompts zuerst im Web-Simulator - es ist schneller als Telefon-Tests.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="Stimm-/TTS-Probleme" icon="volume">
+    **Wie man identifiziert:**
+    - Unnatürliche Sprachmuster
+    - Falsche Aussprachen
+    - Falsche Betonung oder Intonation
+    - Roboterhafter Klang
+    - Geschwindigkeit zu schnell/langsam
+
+    **Häufige Ursachen:**
+    - Stimme nicht für Inhaltstyp geeignet
+    - Interpunktion beeinflusst das Tempo
+    - Zahlen oder Akronyme werden nicht gut verarbeitet
+    - Einschränkungen des Stimmenanbieters
+
+    **Debugging-Schritte:**
+    1. Navigiere zu **Modelle → Stimme**
+    2. Versuche eine andere Stimme vom selben Anbieter
+    3. Versuche einen völlig anderen Stimmenanbieter
+    4. Füge benutzerdefinierte Aussprachen für Problemwörter hinzu
+    5. Passe Stabilitäts-/Klarheitseinstellungen an (ElevenLabs)
+    6. Passe die Sprechgeschwindigkeit an
+    7. Ändern du die Textausgabe, um TTS zu verbessern
+
+    **Was in Protokollen zu überprüfen ist:**
+    - Hören dich die Audioaufzeichnung an
+    - Vergleiche Text vs. wie es gesprochen wurde
+    - Überprüfe auf SSML-Tags (falls verwendet)
+    - Verifizieren du, dass Stimmeinstellungen angewendet wurden
+  </Accordion>
+
+  <Accordion title="Aktions-/Tool-Ausführungsprobleme" icon="bolt">
+    **Wie man identifiziert:**
+    - Aktion wird nicht ausgelöst, wenn erwartet
+    - Aktion wird ausgelöst, schlägt aber fehl
+    - Falsche Daten an Aktion gesendet
+    - Aktion gibt Fehler zurück
+
+    **Häufige Ursachen:**
+    - Aktion nicht ordnungsgemäß konfiguriert
+    - API-Endpunkt ausgefallen oder langsam
+    - Authentifizierungsfehler
+    - Inkorrekte Parameter-Extraktion
+    - Netzwerk-Timeout
+
+    **Debugging-Schritte:**
+    1. Überprüfe, ob Aktion in Gesprächsprotokollen ausgelöst wurde
+    2. Überprüfe Aktions-Payload (JSON an API gesendet)
+    3. Überprüfe API-Antwort und Statuscode
+    4. Teste API-Endpunkt direkt (Postman, curl)
+    5. Verifizieren du Authentifizierungsdaten
+    6. Überprüfe Parameter-Extraktion aus Gespräch
+    7. Überprüfe Aktionsanweisungen im Agenten-Prompt
+
+    **Was in Protokollen zu überprüfen ist:**
+    - `custom_data.actions` oder ähnliche Felder
+    - API-Request-Payload
+    - API-Response-Body
+    - Fehlermeldungen und Stack-Traces
+    - Zeitstempel (Timeout aufgetreten?)
+
+    <Note>
+    Gesprächsprotokolle zeigen vollständige Aktions-Payloads einschließlich Request-/Response-Daten.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Wissensabruf-Probleme" icon="database">
+    **Wie man identifiziert:**
+    - Agent kann Fragen nicht beantworten, die er wissen sollte
+    - Agent ruft falsches Wissen ab
+    - Agent mischt irrelevante Informationen in Antworten
+
+    **Häufige Ursachen:**
+    - Wissen noch nicht indiziert
+    - RAG-Abruf findet keine relevanten Elemente
+    - Wissensdatenbank nicht dem Agenten zugewiesen
+
+    **Debugging-Schritte:**
+    1. Verifizieren du, dass Wissensdatenbank dem Agenten zugewiesen ist
+    2. Überprüfe, dass Wissenselemente **INDEXIERT** sind (nicht nur ABGESCHLOSSEN)
+    3. Überprüfe Wissenselemente-Titel - machen du sie beschreibend
+    4. Teste mit kleinerer Wissensdatenbank
+    5. Versuche Kontext-Modus vs. RAG-Modus
+    6. Überprüfe Gesprächsprotokolle auf abgerufenes Wissen
+
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Verwendung von Gesprächsprotokollen für Debugging
+
+Jeder Testanruf erstellt ein detailliertes Protokoll, das unter **Konversationen** zugänglich ist.
+
+### Was in den Protokollen enthalten ist:
+
+**Grundlegende Informationen:**
+- Anrufdatum, Uhrzeit, Dauer
+- Verwendeter Agent
+- Telefonnummer (bei Telefon-Test)
+- Anrufstatus (abgeschlossen, fehlgeschlagen, etc.)
+
+**Gesprächsdaten:**
+- Vollständiges Transkript (Benutzer + Agent)
+- Zeitstempel für jede Nachricht
+- Audioaufzeichnung (falls verfügbar)
+
+**Technische Details:**
+- Ausgelöste Aktionen mit Payloads
+- Erfasste DTMF-Eingaben
+- Zielanalyseergebnisse
+- Antworten nach Gesprächsanalyse
+- Benutzerdefinierte Datenfelder
+- Fehlermeldungen
+
+**So debuggen du mit Protokollen:**
+1. Filtere nach Agentenname, um Testanrufe zu finden
+2. Öffne spezifischen Anruf, um vollständige Details zu sehen
+3. Lesen du Transkript, um zu identifizieren, wo es schief ging
+4. Überprüfe Aktions-Payloads, wenn Aktionen fehlgeschlagen sind
+5. Hören dich Audio an, wenn Transkript korrekt aussieht, aber Audio falsch war
+6. Überprüfe Zeitstempel, um Latenzprobleme zu identifizieren
+
+---
+
+## Hilfe erhalten
+
+Wenn du zusätzliche Unterstützung benötigen:
+
+<CardGroup cols={2}>
+  <Card title="Dokumentation überprüfen" icon="book">
+    Überprüfe spezifische Feature-Dokumentation für Konfigurationsdetails
+  </Card>
+
+  <Card title="Anbieter-Status überprüfen" icon="signal">
+    Besuchen du Statusseiten für OpenAI, Deepgram, ElevenLabs, Azure
+  </Card>
+
+  <Card title="Support kontaktieren" icon="headset">
+    E-Mail an support@itellico.ai mit Anrufprotokollen und Fehlerdetails
+  </Card>
+</CardGroup>
+
+**Bei Kontaktaufnahme mit Support bitte angeben:**
+- Agenten-ID oder Name
+- Konversations-ID aus Protokollen
+- Spezifische Fehlermeldungen
+- Schritte zur Reproduktion
+- Screenshots, falls zutreffend
+
+---
+
+## Nächste Schritte
+
+<Card title="Launch-Checkliste" icon="rocket" href="/de/launch/overview">
+  Sobald du deinen Agenten debuggt haben, überprüfen du die Launch-Checkliste, um sich auf die Produktion vorzubereiten
+</Card>

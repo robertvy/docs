@@ -1,0 +1,530 @@
+---
+title: "Manejo de Buzón de Voz"
+description: "Configura la Detección de Contestador Automático (AMD) para identificar y manejar sistemas de buzón de voz en campañas salientes"
+icon: "voicemail"
+"keywords": "detección de contestador automático, AMD, detección de buzón de voz, llamadas salientes, manejo de buzón de voz, automatización de campañas"
+"og:description": "Configura la Detección de Contestador Automático para identificar y manejar automáticamente sistemas de buzón de voz en campañas de IA salientes."
+---
+
+## Descripción General
+
+La Detección de Contestador Automático (AMD) permite que tus agentes de IA detecten automáticamente cuando las llamadas salientes alcanzan buzón de voz en lugar de una persona en vivo. Cuando se detecta buzón de voz, el agente cuelga y registra el resultado, permitiéndote reintentar en diferentes momentos para maximizar las posibilidades de alcanzar a una persona en vivo.
+
+Esta característica crítica previene tiempo de agente desperdiciado hablando con contestadores automáticos y optimiza la eficiencia de campaña enfocando recursos en conversaciones en vivo en lugar de sistemas de buzón de voz.
+
+<Note>
+**Solo Llamadas Telefónicas:** AMD se aplica a llamadas telefónicas a través de conexiones SIP/PSTN. Las conversaciones basadas en web sin una rama telefónica no soportan interacción DTMF.
+
+La configuración AMD se accede durante la creación de campañas y llamadas de prueba. AMD basado en texto siempre está activo. Opcionalmente puedes habilitar AMD basado en ML como complemento para detección más rápida (~1.5s vs 5-15s).
+</Note>
+
+---
+
+## ¿Qué es la Detección de Contestador Automático?
+
+### El Desafío
+
+Al hacer llamadas salientes, encuentras dos escenarios posibles:
+
+**Escenario 1: Respuesta en Vivo**
+```text wrap
+Teléfono suena → Persona contesta → "¿Hola?"
+→ El agente debe participar en conversación
+→ Se necesitan capacidades completas del agente
+```
+
+**Escenario 2: Buzón de Voz**
+```text wrap
+Teléfono suena → Sistema de buzón de voz contesta → "Has alcanzado a John Smith..."
+→ El agente debe colgar y reintentar después
+→ No desperdiciar tiempo con guión de conversación completo
+→ No crear interacción incómoda hablando sobre saludo de buzón de voz
+```
+
+**El problema:** ¿Cómo sabe el agente qué escenario ocurrió?
+
+### Solución AMD
+
+AMD analiza el audio en los primeros segundos después de la conexión de llamada para determinar si contestó un humano o una máquina:
+
+**Proceso de detección:**
+```text wrap
+1. La llamada se conecta
+2. AMD analiza audio (0.5-3 segundos dependiendo del método)
+3. Clasificación: HUMANO o MÁQUINA
+4. El agente ejecuta comportamiento apropiado
+```
+
+**Beneficios:**
+- **Eficiencia:** No desperdiciar tiempo de agente en buzón de voz
+- **Mejor segmentación:** Enfoca intentos de reintento en diferentes momentos para alcanzar persona en vivo
+- **Tasas de conexión más altas:** Optimiza tiempo de llamada basado en patrones de buzón de voz
+- **Mejores analíticas:** Separa "alcanzó buzón de voz" de "sin respuesta" en reportes
+
+---
+
+## Métodos AMD
+
+### Descripción General de Tipos de Detección
+
+<CardGroup cols={2}>
+  <Card title="AMD Basado en Texto" icon="text">
+    Detección basada en palabras clave usando transcriptor y LLM - siempre activo
+  </Card>
+  <Card title="AMD Basado en ML (Opcional)" icon="brain">
+    Reconocimiento rápido de patrones usando Red Neuronal Profunda - complemento opcional para velocidad
+  </Card>
+</CardGroup>
+
+### AMD Basado en Texto
+
+**Rol:** Capa de detección base que siempre se ejecuta. Usa el transcriptor y LLM de tu agente para identificar palabras clave de buzón de voz.
+
+**Cómo funciona:**
+```text wrap
+1. La llamada se conecta
+2. El pipeline de voz de IA del agente (transcriptor) recibe audio
+3. El agente espera que el primer turno/expresión se complete (pausa detectada)
+4. LLM analiza transcripción para patrones similares a buzón de voz:
+   - "Has alcanzado"
+   - "Deja un mensaje"
+   - "No disponible"
+   - "Buzón de voz"
+   - "Después del pitido"
+5. Si se detecta buzón de voz → El agente cuelga
+6. Si se detecta persona en vivo → El agente continúa conversación normal
+```
+
+**Características:**
+
+<AccordionGroup>
+  <Accordion title="Velocidad" icon="gauge">
+    **Más lento:** Espera que se termine la expresión/turno completo
+
+    Debe esperar que el saludo completo de buzón de voz se complete (pausa detectada), luego transcribir y analizar el texto completo. La detección típica ocurre después de 5-15+ segundos dependiendo de la longitud del mensaje de buzón de voz.
+
+    **Limitación:** Saludos de buzón de voz largos significan tiempos de espera más largos antes de la detección
+
+    **Mejor para:** Campañas donde la precisión es más importante que la detección inmediata
+  </Accordion>
+
+  <Accordion title="Precisión" icon="chart-line">
+    **Alta precisión cuando:**
+    - Saludos de buzón de voz estándar con frases comunes
+    - Calidad de audio clara
+    - El idioma de buzón de voz coincide con el idioma del transcriptor
+    - Entornos B2B con saludos profesionales
+
+    **NO detectará:**
+    - Saludos de buzón de voz en idiomas que el transcriptor no soporta
+    - Sistemas de buzón de voz sin saludo (solo pitidos)
+    - Indicadores de buzón de voz no verbales
+
+    **Precisión más baja cuando:**
+    - Saludos personalizados sin palabras clave estándar
+    - Saludos cortos ("Hola, deja un mensaje" - muy breve)
+    - Calidad de audio pobre o ruido de fondo
+    - Ruido de fondo interfiriendo con transcripción
+  </Accordion>
+
+  <Accordion title="Mejores Casos de Uso" icon="briefcase">
+    **Ideal para:**
+    - **Campañas B2B** - Los buzones de voz empresariales típicamente usan fraseología estándar
+    - **Campañas priorizando precisión** - Reduce falsos positivos analizando contexto completo de expresión
+    - **Despliegues conscientes del presupuesto** - Menor costo computacional
+    - **Mercados de habla hispana** - Detección de palabras clave optimizada para español
+
+    **Escenarios de ejemplo:**
+    - Contacto de ventas a números telefónicos empresariales
+    - Recordatorios de citas a líneas de oficina
+    - Campañas de calificación de leads B2B
+  </Accordion>
+
+  <Accordion title="Limitaciones" icon="triangle-exclamation">
+    **Puede tener dificultades con:**
+    - Saludos personales y creativos de buzón de voz ("Oye, soy Mike, sabes qué hacer")
+    - Saludos muy cortos
+    - El idioma del buzón de voz no coincide con el idioma del transcriptor
+    - Saludos que suenan conversacionales ("¿Hola? ¿Hola? Es broma, deja un mensaje")
+    - Música de fondo o ruido en el saludo
+
+    **Falsos positivos:** Humano que comienza con "Has alcanzado..." podría clasificarse mal
+
+    **Falsos negativos:** Buzón de voz sin palabras clave podría clasificarse como humano
+  </Accordion>
+</AccordionGroup>
+
+### AMD Basado en ML (Complemento Opcional)
+
+**Rol:** Capa de detección rápida opcional que puedes habilitar para velocidad. Trabaja en paralelo con AMD basado en texto.
+
+**Cómo funciona:**
+```text wrap
+1. La llamada se conecta
+2. Red Neuronal Profunda (DNN) analiza audio en tiempo real:
+   - Patrones de habla y cadencia
+   - Patrones de audio de buzón de voz
+   - Características acústicas
+   - Tiempo y ritmo
+   - Indicadores de habla natural vs. grabada
+3. Modelo entrenado en decenas de miles de grabaciones de audio
+4. Clasificación: HUMANO o MÁQUINA
+5. Detección independiente del idioma
+```
+
+**Características:**
+
+<AccordionGroup>
+  <Accordion title="Velocidad" icon="gauge-high">
+    **Rápido:** ~1.5 segundos
+
+    Identifica respuestas de humanos en vivo dentro de 1.5 segundos
+
+    **Mucho más rápido que AMD basado en texto** que debe esperar expresión completa
+  </Accordion>
+
+  <Accordion title="Precisión" icon="chart-line">
+    **Muy alta precisión** en condiciones del mundo real
+
+    **Por qué habilitar AMD Basado en ML:**
+    - **Independiente del idioma:** Funciona en todos los idiomas (el basado en texto solo funciona si el idioma del transcriptor coincide)
+    - **Detecta buzón de voz solo con pitido:** Captura sistemas de buzón de voz sin saludo (el basado en texto no puede)
+    - **Maneja saludos creativos:** Detecta saludos personales/no estándar sin palabras clave
+    - **Detección basada en patrones:** No depende de palabras clave específicas de buzón de voz
+    - **Detección rápida:** ~1.5 segundos vs 5-15+ segundos para solo texto
+    - **Mejor para campañas multi-idioma:** No se necesita configuración de idioma
+
+    **Limitaciones:**
+    - Conexiones extremadamente cortas (< 0.5 segundos de audio)
+    - Calidad de audio altamente degradada
+  </Accordion>
+
+  <Accordion title="Mejores Casos de Uso" icon="briefcase">
+    **Ideal para:**
+    - **Campañas de consumidor** - Buzones de voz personales con saludos creativos
+    - **Campañas multi-idioma** - No depende de palabras clave en español
+    - **Campañas enfocadas en calidad** - Cuando la precisión es más importante que la velocidad
+    - **Mercados complejos** - Números empresariales/personales mixtos
+
+    **Escenarios de ejemplo:**
+    - Llamadas de ventas a consumidores
+    - Campañas políticas
+    - Recaudación de fondos sin fines de lucro
+    - Contacto de salud
+    - Campañas de soporte multi-idioma
+  </Accordion>
+
+  <Accordion title="Ventajas" icon="check">
+    **Maneja bien:**
+    - Saludos personales creativos
+    - Saludos cortos
+    - Buzones de voz no en español
+    - Saludos sin palabras clave estándar
+    - Música de fondo o efectos de sonido
+    - Saludos que suenan conversacionales naturales
+
+    **Robusto en:**
+    - Diferentes idiomas
+    - Acentos regionales
+    - Varios sistemas de buzón de voz
+    - Saludos personalizados
+  </Accordion>
+</AccordionGroup>
+
+### Cómo Funciona AMD
+
+**AMD Basado en Texto (Capa Base):**
+- Siempre activo
+- Analiza transcripción para palabras clave de buzón de voz
+- Espera expresión completa (5-15+ segundos)
+- Más conservador - rara vez cuelga a personas en vivo
+
+**AMD Basado en ML (Complemento Opcional):**
+- Opcionalmente puedes habilitar esto para detección más rápida
+- Analiza patrones de audio en ~1.5 segundos
+- Trabaja en paralelo con AMD basado en texto
+- Más rápido pero ocasionalmente puede colgar a personas en vivo
+
+**Opciones de Configuración:**
+
+**Solo Basado en Texto (Conservador):**
+- Solo detección basada en texto activa
+- Detección más lenta (5-15+ segundos)
+- Rara vez cuelga a personas en vivo
+- **Compromiso:** Podría perder algunos buzones de voz y hablar con ellos
+- Mejor para: Cuando quieres evitar colgar a personas en vivo a toda costa
+
+**Basado en Texto + Basado en ML (Rápido y Recomendado):**
+- ML detecta en ~1.5 segundos
+- Basado en texto valida en paralelo
+- Muy alta precisión
+- **Compromiso:** Ocasionalmente podría colgar a una persona en vivo
+- Mejor para: Campañas donde hablar con buzón de voz incurre costo adicional
+
+<Tip>
+**¿Cuál deberías elegir?**
+
+**Basado en Texto + Basado en ML (recomendado):** Si hablar con buzón de voz desperdicia tiempo e incurre costo adicional, y puedes tolerar ocasionalmente colgar a una persona en vivo.
+
+**Solo Basado en Texto:** Si colgar a una persona real en ocasiones raras es peor que el costo adicional de hablar con buzón de voz.
+</Tip>
+
+---
+
+## Configurando AMD
+
+AMD puede configurarse en dos lugares:
+
+<CardGroup cols={2}>
+  <Card title="Llamadas Telefónicas de Prueba" icon="phone-volume" href="#llamadas-telefónicas-de-prueba">
+    Habilita AMD al probar tu agente con llamadas telefónicas
+  </Card>
+  <Card title="Configuración de Campaña" icon="megaphone" href="#configuración-de-campaña">
+    Configura AMD para campañas salientes
+  </Card>
+</CardGroup>
+
+### Llamadas Telefónicas de Prueba
+
+Configura AMD al probar tu agente vía teléfono:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/answering-machine/answering-light.png" alt="Diálogo Probar Agente mostrando pestaña de Llamada Telefónica seleccionada, sección de Configuración de Llamada con opciones de Detección de Contestador Automático (AMD) incluyendo pestañas Basado en texto y Basado en ML, menú desplegable De Número para seleccionar número telefónico, campo A Número con marcador de posición de número telefónico, y botón Iniciar Llamada Telefónica" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/answering-machine/answering-dark.png" alt="Diálogo Probar Agente mostrando pestaña de Llamada Telefónica seleccionada, sección de Configuración de Llamada con opciones de Detección de Contestador Automático (AMD) incluyendo pestañas Basado en texto y Basado en ML, menú desplegable De Número para seleccionar número telefónico, campo A Número con marcador de posición de número telefónico, y botón Iniciar Llamada Telefónica" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Abrir Agente">
+    Ve a tu página de **Agente**
+
+    Haz clic en el botón **Llamada de Prueba**
+  </Step>
+
+  <Step title="Seleccionar Llamada Telefónica">
+    Elige **Llamada Telefónica** como tipo de prueba
+  </Step>
+
+  <Step title="Configurar AMD">
+    Encuentra la configuración de **Detección de Contestador Automático (AMD)**
+
+    Elige entre:
+    - **Basado en texto** (predeterminado) - Evita colgar a personas en vivo a toda costa
+    - **Basado en ML** - Detección rápida (~1.5s) pero ocasionalmente puede colgar a personas en vivo
+  </Step>
+
+  <Step title="Hacer Llamada de Prueba">
+    Selecciona tu Número De
+
+    Ingresa Número A (tu número telefónico para prueba)
+
+    Haz clic en **Iniciar Llamada Telefónica**
+
+    Si se detecta buzón de voz, el agente colgará
+  </Step>
+</Steps>
+
+### Configuración de Campaña
+
+Configura AMD para campañas salientes:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/campaigns/create-campaign-light.png" alt="Diálogo Crear Campaña mostrando menú desplegable de Detección de Contestador Automático (AMD) con Basado en texto seleccionado, campo Nombre de Campaña con descripción, menú desplegable Agente para seleccionar agente para llamadas de campaña, menú desplegable Número Telefónico para seleccionar número telefónico saliente, sección de Horario Comercial mostrando disponibilidad 24/7 con estado Abierto, botones Cancelar y Crear Campaña" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/campaigns/create-campaign-dark.png" alt="Diálogo Crear Campaña mostrando menú desplegable de Detección de Contestador Automático (AMD) con Basado en texto seleccionado, campo Nombre de Campaña con descripción, menú desplegable Agente para seleccionar agente para llamadas de campaña, menú desplegable Número Telefónico para seleccionar número telefónico saliente, sección de Horario Comercial mostrando disponibilidad 24/7 con estado Abierto, botones Cancelar y Crear Campaña" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Creación de Campaña">
+    Ve a la sección **Campañas**
+
+    Haz clic en **Crear Campaña**
+  </Step>
+
+  <Step title="Seleccionar Estrategia AMD">
+    Encuentra el menú desplegable **Detección de Contestador Automático (AMD)**
+
+    *Elige estrategia de detección de buzón de voz para esta campaña*
+
+    Selecciona una:
+    - **Basado en texto** - Evita colgar a personas en vivo a toda costa (más lento, 5-15s)
+    - **Basado en ML** - Detección rápida (~1.5s) pero ocasionalmente puede colgar a personas en vivo
+  </Step>
+
+  <Step title="Completar Configuración de Campaña">
+    Llena otros campos requeridos:
+    - Nombre de Campaña
+    - Agente
+    - Número Telefónico
+
+    Haz clic en **Crear Campaña**
+  </Step>
+</Steps>
+
+**Cambiando configuraciones AMD para campañas existentes:**
+
+1. Navega a la pestaña **Configuración** de campaña
+2. Localiza el menú desplegable **Detección de Contestador Automático (AMD)**
+3. Selecciona estrategia diferente (Basado en texto o Basado en ML)
+4. Guarda cambios
+
+<Warning>
+Cambiar configuraciones AMD a mitad de campaña puede afectar la consistencia de analíticas. Considera crear una nueva campaña si necesitas hacer pruebas A/B de configuraciones AMD.
+</Warning>
+
+---
+
+## Comportamiento AMD
+
+Cuando AMD detecta buzón de voz, el agente automáticamente cuelga y registra el resultado.
+
+La llamada se marca como **MÁQUINA** en analíticas de campaña, permitiéndote programar reintentos en diferentes momentos para aumentar las posibilidades de alcanzar a una persona en vivo.
+
+---
+
+## Probando Configuración AMD
+
+### Plan de Prueba AMD
+
+<Steps>
+  <Step title="Probar AMD Basado en ML">
+    **Configuración:**
+    1. Configura agente con AMD Basado en ML habilitado
+    2. Prepara número telefónico de prueba con buzón de voz
+
+    **Prueba:**
+    1. Inicia llamada de prueba a número de buzón de voz
+    2. Deja que la llamada vaya a buzón de voz
+    3. Monitorea comportamiento del agente
+
+    **Validación:**
+    - El agente cuelga dentro de ~1.5 segundos
+    - Llamada marcada como MÁQUINA en registros
+    - Sin intento de conversación con saludo de buzón de voz
+  </Step>
+
+  <Step title="Probar AMD Basado en Texto">
+    **Configuración:**
+    1. Configura agente con solo AMD Basado en Texto
+    2. Usa mismo número de prueba de buzón de voz
+
+    **Prueba:**
+    1. Inicia llamada de prueba
+    2. Deja que la llamada vaya a buzón de voz con saludo estándar
+
+    **Validación:**
+    - El agente espera saludo completo (5-15+ segundos)
+    - El agente cuelga después de detectar palabras clave
+    - Llamada marcada como MÁQUINA
+  </Step>
+
+  <Step title="Probar Detección de Persona en Vivo">
+    **Configuración:**
+    1. Prueba con ambos métodos AMD
+    2. Contesta llamada personalmente
+
+    **Prueba:**
+    1. Inicia llamada de prueba
+    2. Contesta y di "¿Hola?"
+    3. Verifica que el agente continúe conversación normalmente
+
+    **Validación:**
+    - El agente NO cuelga
+    - Procede conversación normal
+    - Llamada NO marcada como MÁQUINA
+  </Step>
+
+  <Step title="Probar Casos Extremos">
+    **Escenarios a probar:**
+
+    **Respuesta silenciosa:**
+    - Contesta pero no hables
+    - Verifica que AMD no clasifique mal
+
+    **Saludo rápido:**
+    - Contesta con "Hola" muy breve
+    - Verifica que continúe conversación
+
+    **Buzón de voz sin palabras clave:**
+    - Prueba con saludo no estándar
+    - Monitorea rendimiento de ML vs basado en texto
+
+    **Buzón de voz solo con pitido:**
+    - Sistema de buzón de voz sin saludo
+    - Verifica que el basado en ML detecte, el basado en texto puede perder
+  </Step>
+</Steps>
+
+---
+
+## Solución de Problemas
+
+<AccordionGroup>
+  <Accordion title="Método AMD Incorrecto Seleccionado" icon="circle-question">
+    **Síntomas:** Rendimiento no coincide con expectativas
+
+    **Verificar:**
+    - Revisa configuración AMD de campaña
+    - Compara velocidad de detección esperada vs real
+    - Verifica tasas de falsos positivos/negativos en registros
+
+    **Solución:**
+    - Cambia entre Basado en texto y Basado en ML
+    - Prueba ambos métodos con tus patrones de llamada
+    - Elige según tu prioridad (velocidad vs conservador)
+  </Accordion>
+
+  <Accordion title="Alta Tasa de Falsos Positivos" icon="user-xmark">
+    **Síntomas:** Colgando a personas en vivo frecuentemente
+
+    **Análisis:**
+    - Revisa grabaciones de llamadas de falsos positivos
+    - Verifica si AMD basado en ML está siendo demasiado agresivo
+    - Identifica patrones comunes (ruido de fondo, saludos específicos)
+
+    **Solución:**
+    - Cambia a AMD Basado en texto (más conservador)
+    - Mejora calidad de llamada/reduce ruido de fondo
+    - Prueba desde diferentes números telefónicos
+    - Contacta soporte si persiste
+  </Accordion>
+
+  <Accordion title="Alta Tasa de Falsos Negativos" icon="voicemail">
+    **Síntomas:** El agente frecuentemente habla con buzón de voz
+
+    **Análisis:**
+    - Verifica si los buzones de voz tienen saludos no estándar
+    - Revisa si sistemas de buzón de voz solo con pitido
+    - Verifica que el idioma del transcriptor coincida con el idioma del buzón de voz
+
+    **Solución:**
+    - Cambia a AMD basado en ML (mejor para saludos no estándar)
+    - El basado en ML detecta sistemas solo con pitido
+    - Asegura que el agente hable mismo idioma que audiencia objetivo
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Próximos Pasos
+
+<CardGroup cols={2}>
+  <Card title="Gestión de Campañas" icon="megaphone" href="/es/launch/campaign-outbound-launch">
+    Crea y gestiona campañas de llamadas salientes
+  </Card>
+  <Card title="Analíticas y Reportes" icon="chart-line" href="/es/optimize/overview">
+    Rastrea rendimiento AMD y optimiza campañas
+  </Card>
+  <Card title="Instrucciones del Agente" icon="pen" href="/es/build/conversation/instructions">
+    Escribe avisos efectivos para manejo de llamadas
+  </Card>
+  <Card title="Horario Comercial" icon="clock" href="/es/launch/business-hours">
+    Configura tiempos óptimos de llamada basados en datos AMD
+  </Card>
+</CardGroup>

@@ -1,0 +1,388 @@
+---
+title: "Modalità Context vs RAG"
+description: "Scegli tra iniezione Context e recupero RAG per le tue basi di conoscenza"
+icon: "brain"
+"keywords": "RAG, context vs RAG, recupero conoscenza, base di conoscenza AI, generazione aumentata da recupero, iniezione contesto, memoria AI"
+"og:description": "Scopri quando usare l'iniezione del contesto vs. il recupero RAG per ottimizzare l'accesso alla conoscenza e le prestazioni del tuo agente AI."
+---
+
+## Panoramica
+
+Quando assegni conoscenza al tuo agente, devi scegliere come l'agente accede a queste informazioni. itellicoAI offre due metodi di accesso: **Modalità Context** (iniezione prompt) e **Modalità RAG** (Generazione Aumentata da Recupero).
+
+Comprendere la differenza tra questi approcci ti aiuterà a ottimizzare le prestazioni e l'accuratezza del tuo agente.
+
+---
+
+## I Due Metodi di Accesso
+
+<CardGroup cols={2}>
+  <Card title="Modalità Context" icon="file-import">
+    **Iniezione Prompt**
+
+    Tutta la conoscenza viene iniettata direttamente nel contesto di conversazione dell'agente all'inizio di ogni interazione.
+
+    **Ideale per:** Piccole basi di conoscenza con informazioni critiche di cui l'agente ha bisogno per ogni conversazione.
+  </Card>
+  <Card title="Modalità RAG" icon="magnifying-glass">
+    **Generazione Aumentata da Recupero**
+
+    L'agente cerca e recupera dinamicamente la conoscenza rilevante in base all'argomento della conversazione.
+
+    **Ideale per:** Grandi basi di conoscenza dove solo sezioni specifiche sono necessarie per conversazione.
+  </Card>
+</CardGroup>
+
+---
+
+## Modalità Context (Iniezione Prompt)
+
+### Come Funziona
+
+In Modalità Context, il contenuto della tua base di conoscenza viene caricato direttamente nel prompt di sistema dell'agente all'inizio di ogni conversazione:
+
+```text wrap
+Prompt di Sistema:
+Sei un agente di servizio clienti disponibile.
+
+[Le tue istruzioni per l'agente...]
+
+==== BASE DI CONOSCENZA: FAQ Assistenza Clienti ====
+
+### Fatturazione & Pagamenti
+- Domanda: Come posso aggiornare il mio metodo di pagamento?
+  Risposta: Puoi aggiornare il tuo metodo di pagamento tramite...
+
+- Domanda: Quando verrò fatturato?
+  Risposta: La fatturazione avviene lo stesso giorno di ogni mese...
+
+### Politica di Reso
+[Contenuto completo della politica di reso]
+
+### Informazioni sulla Spedizione
+[Informazioni complete sulla spedizione]
+
+==== FINE BASE DI CONOSCENZA ====
+
+Ora assisti il cliente con la sua domanda.
+```
+
+L'agente vede TUTTO il contenuto della conoscenza dall'inizio e può farvi riferimento durante tutta la conversazione.
+
+### Output Formattato
+
+Per impostazione predefinita, la conoscenza viene iniettata con formattazione strutturata:
+
+```text wrap
+========================================
+# Nome Base di Conoscenza
+Descrizione base di conoscenza
+
+## Nome Cartella
+Descrizione cartella
+
+### Titolo Elemento
+----------------------------------------
+Contenuto elemento qui
+----------------------------------------
+========================================
+```
+
+Questa formattazione aiuta l'agente a comprendere la struttura e l'organizzazione della conoscenza.
+
+### Quando Usare la Modalità Context
+
+<AccordionGroup>
+  <Accordion title="Piccole basi di conoscenza (< 1.000 parole)" icon="file">
+    Se la tua base di conoscenza è compatta, la Modalità Context assicura che l'agente abbia sempre il contesto completo.
+
+    **Esempio caso d'uso:**
+    Un agente di supporto con una base di conoscenza contenente:
+    - 10 FAQ comuni
+    - Politica di reso (500 parole)
+    - Informazioni di contatto
+    - Opzioni di spedizione
+
+    Totale: ~3.000 parole - si adatta facilmente al contesto.
+  </Accordion>
+
+  <Accordion title="Informazioni critiche necessarie ogni volta" icon="circle-exclamation">
+    Informazioni a cui l'agente deve fare riferimento nella maggior parte o in tutte le chiamate.
+
+    **Esempio caso d'uso:**
+    Un agente di prenotazione che necessita di:
+    - Politiche aziendali (sempre)
+    - Servizi disponibili (sempre)
+    - Struttura dei prezzi (sempre)
+    - Procedure di prenotazione (sempre)
+  </Accordion>
+
+  <Accordion title="Informazioni altamente strutturate" icon="table">
+    Quando gli elementi di conoscenza si riferiscono l'uno all'altro o formano un insieme coeso.
+
+    **Esempio caso d'uso:**
+    Agente di configurazione prodotto con:
+    - Dipendenze delle opzioni ("Se scelgono X, offrire Y")
+    - Matrice di compatibilità
+    - Pacchetti bundle
+    - Prezzi che dipendono dalle combinazioni
+  </Accordion>
+
+</AccordionGroup>
+
+### Vantaggi della Modalità Context
+
+<CardGroup cols={2}>
+  <Card title="Sempre Disponibile" icon="check">
+    L'agente ha accesso immediato a tutta la conoscenza senza ritardo di ricerca
+  </Card>
+  <Card title="Meglio per Piccoli Set" icon="gauge-high">
+    Efficiente quando la conoscenza si adatta comodamente nella finestra di contesto
+  </Card>
+  <Card title="Deterministico" icon="equals">
+    L'agente vede esattamente la stessa conoscenza ogni volta
+  </Card>
+  <Card title="Funziona con Variabili" icon="brackets-curly">
+    La conoscenza può includere variabili Jinja che si risolvono nel contesto
+  </Card>
+</CardGroup>
+
+### Limitazioni della Modalità Context
+
+<Warning>
+La Modalità Context è **limitata a 10.000 token totali** su tutta la conoscenza assegnata.
+</Warning>
+
+**Limitazioni:**
+- Mantieni le basi di conoscenza piccole (< 1.000 parole)
+- Tutta la conoscenza viene inviata con ogni richiesta (costo maggiore)
+- Tutta la conoscenza viene elaborata ogni volta (latenza maggiore)
+- L'intera base di conoscenza è inclusa anche se solo una piccola parte è rilevante
+
+---
+
+## Modalità RAG (Generazione Aumentata da Recupero)
+
+### Come Funziona
+
+In Modalità RAG, la tua base di conoscenza è memorizzata in un database vettoriale. Quando l'agente ha bisogno di informazioni:
+
+1. **L'utente fa una domanda:** "Qual è la vostra politica di reso?"
+2. **L'agente identifica la necessità:** L'agente determina che ha bisogno di conoscenza sui resi
+3. **Il sistema cerca:** Il sistema RAG cerca nella base di conoscenza il contenuto rilevante
+4. **Il contenuto rilevante viene recuperato:** Solo la sezione della politica di reso viene recuperata
+5. **L'agente risponde:** L'agente usa la conoscenza recuperata per rispondere
+
+L'agente vede solo la conoscenza di cui ha bisogno, quando ne ha bisogno.
+
+### Recupero Intelligente
+
+RAG usa la ricerca semantica con embedding vettoriali per trovare conoscenza rilevante:
+
+```text wrap
+Utente: "Devo restituire le scarpe che ho comprato la settimana scorsa"
+
+Il Sistema RAG pensa:
+- Parole chiave: "restituire", "scarpe", "comprato"
+- Significato semantico: Resi, possibilmente cambio
+- Cerca nella conoscenza: politica di reso, spedizione, cambi
+
+Conoscenza recuperata:
+- Panoramica Politica di Reso
+- Istruzioni per la Spedizione del Reso
+- Procedure di Cambio
+
+NON recuperata:
+- FAQ Fatturazione
+- Specifiche Prodotto
+- Gestione Account
+```
+
+### Vantaggi della Modalità RAG
+
+<CardGroup cols={2}>
+  <Card title="Scala Infinitamente" icon="up-right-and-down-left-from-center">
+    Supporta basi di conoscenza massive senza limiti di contesto
+  </Card>
+  <Card title="Più Veloce per Grandi Conoscenze" icon="clock-rotate-left">
+    Riduce i token del prompt di sistema per grandi basi di conoscenza
+  </Card>
+  <Card title="Efficiente" icon="gauge-high">
+    Recupera solo ciò che è necessario per l'argomento corrente
+  </Card>
+  <Card title="Meglio per la Diversità" icon="shapes">
+    Gestisce bene un'ampia varietà di argomenti non correlati
+  </Card>
+</CardGroup>
+
+### Considerazioni sulla Modalità RAG
+
+<Note>
+RAG si basa sulla qualità dell'embedding vettoriale. Se i tuoi elementi di conoscenza non sono scritti chiaramente, il recupero potrebbe perdere informazioni rilevanti.
+</Note>
+
+**La qualità del recupero dipende da:**
+- Titoli di elementi di conoscenza chiari e descrittivi
+- Contenuto ben strutturato
+- Corretta categorizzazione in cartelle
+- Evitare informazioni duplicate o in conflitto
+
+---
+
+## Indicatore Token di Contesto Rimanenti
+
+Quando usi la Modalità Context, monitora i tuoi token di contesto rimanenti per assicurarti di avere abbastanza spazio per le conversazioni.
+
+### Comprendere l'Indicatore
+
+Il dashboard mostra l'utilizzo del tuo contesto nelle impostazioni di Conoscenza:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/knowledge-settings/settings-light.png" alt="Impostazioni di conoscenza che mostrano l'utilizzo del contesto" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/knowledge-settings/settings-dark.png" alt="Impostazioni di conoscenza che mostrano l'utilizzo del contesto" />
+  </div>
+</Frame>
+
+Puoi vedere:
+- **Modalità RAG**: Ricerca vettoriale dinamica con dimensione della conoscenza illimitata
+- **Modalità Context**: Aggiunto al prompt di sistema con limite di 10.000 token
+
+---
+
+## Scegliere la Modalità Giusta
+
+Usa questa guida decisionale per selezionare il miglior metodo di accesso:
+
+### Approccio Ibrido
+
+Puoi usare entrambe le modalità per diverse basi di conoscenza sullo stesso agente:
+
+**Esempio di configurazione:**
+- **Modalità Context:** Piccola base di conoscenza "Politiche Principali" (sempre necessaria)
+- **Modalità RAG:** Grande base di conoscenza "Catalogo Prodotti" (recupera quando necessario)
+
+Questo ti dà il meglio di entrambi i mondi.
+
+---
+
+## Testare la Tua Configurazione
+
+<Steps>
+  <Step title="Assegna base di conoscenza">
+    Configura il tuo agente con una base di conoscenza in Modalità Context o RAG.
+  </Step>
+
+  <Step title="Avvia chiamata di prova">
+    Usa la funzione Chiamata di Prova nel dashboard.
+  </Step>
+
+  <Step title="Fai domande sul contenuto della conoscenza">
+    Fai domande che dovrebbero essere risposte dalla tua base di conoscenza.
+
+    **Esempi di domande:**
+    - "Qual è la vostra politica di reso?"
+    - "Quanto costa il piano Pro?"
+    - "Quali sono i vostri orari di apertura?"
+  </Step>
+
+  <Step title="Verifica le risposte">
+    Conferma che l'agente sta usando correttamente il contenuto della conoscenza nelle risposte.
+  </Step>
+
+  <Step title="Testa casi limite">
+    Fai domande su argomenti NON nella tua base di conoscenza per assicurarti che l'agente risponda appropriatamente ("Non ho questa informazione").
+  </Step>
+</Steps>
+
+---
+
+## Best Practice
+
+<AccordionGroup>
+  <Accordion title="Inizia con RAG per basi grandi" icon="magnifying-glass">
+    In caso di dubbio, usa la Modalità RAG. È più sicura per grandi basi di conoscenza e puoi sempre passare alla Modalità Context se necessario.
+  </Accordion>
+
+  <Accordion title="Scrivi contenuto chiaro e completo" icon="file-text">
+    RAG usa la ricerca semantica per trovare conoscenza rilevante. Scrivi contenuto completo e ben scritto che include naturalmente i termini e i concetti su cui gli utenti faranno domande.
+
+    **Buono:** "La nostra politica di reso consente resi entro 30 giorni dall'acquisto per prodotti fisici. I prodotti digitali non possono essere restituiti una volta scaricati."
+
+    **Cattivo:** "Vedi documento politica" o frammenti di frasi incomplete
+  </Accordion>
+
+  <Accordion title="Testa entrambe le modalità" icon="vial">
+    Prova sia la Modalità Context che RAG con la tua base di conoscenza e vedi quale funziona meglio per il tuo caso d'uso.
+  </Accordion>
+
+  <Accordion title="Combina strategicamente" icon="layer-group">
+    Usa la Modalità Context per informazioni critiche e frequentemente necessarie e la Modalità RAG per materiale di riferimento esteso.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Risoluzione Problemi
+
+<AccordionGroup>
+  <Accordion title="L'agente non usa la conoscenza (Modalità Context)">
+    **Controlla:**
+    - Tutti gli elementi di conoscenza sono in stato COMPLETED?
+    - Il contesto rimanente è sufficiente (non troncato)?
+
+    **Soluzione:**
+    - Risolvi gli elementi falliti
+    - Riduci la dimensione della conoscenza o passa a RAG
+  </Accordion>
+
+  <Accordion title="L'agente non trova la conoscenza (Modalità RAG)">
+    **Controlla:**
+    - Il contenuto è ben organizzato?
+    - Stai facendo domande che corrispondono alla conoscenza?
+
+    **Soluzione:**
+    - Aggiungi contenuto più dettagliato
+    - Testa con formulazioni diverse
+    - Considera di aggiungere parole chiave al contenuto
+  </Accordion>
+
+  <Accordion title="L'agente fornisce informazioni errate o obsolete">
+    **Controlla:**
+    - Il contenuto della conoscenza è corretto e attuale?
+    - Hai informazioni in conflitto in più elementi?
+
+    **Soluzione:**
+    - Aggiorna il contenuto della conoscenza
+    - Rimuovi duplicati e conflitti
+  </Accordion>
+
+  <Accordion title="Utilizzo del contesto troppo alto">
+    **Soluzioni:**
+    - Passa alla Modalità RAG per grandi basi di conoscenza
+    - Dividi la conoscenza in basi più piccole e focalizzate
+    - Riduci la lunghezza delle istruzioni dell'agente
+    - Rimuovi contenuto verboso o ridondante
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Prossimi Passi
+
+<CardGroup cols={2}>
+  <Card title="Crea Basi di Conoscenza" icon="plus" href="/it/build/knowledge/create-knowledge-bases">
+    Costruisci e organizza il contenuto della tua conoscenza
+  </Card>
+  <Card title="Tipi di Contenuto" icon="file-lines" href="/it/build/knowledge/content-types">
+    Scopri gli elementi di tipo testo, PDF e URL
+  </Card>
+  <Card title="Variabili & Contenuto Dinamico" icon="brackets-curly" href="/it/build/conversation/variables-dynamic-content">
+    Usa riferimenti alla conoscenza nelle istruzioni
+  </Card>
+  <Card title="Testa il Tuo Agente" icon="vial" href="/it/test/web-simulator">
+    Testa come il tuo agente usa la conoscenza
+  </Card>
+</CardGroup>

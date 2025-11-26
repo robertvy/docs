@@ -1,0 +1,450 @@
+---
+title: "Campaign & Outbound Launch"
+description: "Deploy automated outbound calling campaigns at scale"
+icon: "bullhorn"
+keywords: "outbound campaigns, automated calling, campaign management, answering machine detection, AMD, contact lifecycle, campaign analytics, progressive dialing, goal tracking"
+og:description: "Launch automated outbound calling campaigns with progressive dialing, AMD, and analytics. Manage contacts, track goals, and optimize call performance at scale."
+---
+
+Outbound campaigns automate high-volume calling for sales, reminders, surveys, and notifications. Each campaign connects your agent to a contact list, manages dialing schedules, and tracks outcomes.
+
+## Key Features
+
+<CardGroup cols={3}>
+  <Card title="Automated Dialing" icon="phone-volume">
+    Progressive dialing with configurable retry logic
+  </Card>
+
+  <Card title="Business Hours" icon="clock">
+    Enforce calling windows and timezone scheduling
+  </Card>
+
+  <Card title="Smart AMD" icon="voicemail">
+    Skip voicemails with text or ML detection
+  </Card>
+
+  <Card title="Contact Lifecycle" icon="arrows-spin">
+    Automatic status tracking with retry management
+  </Card>
+
+  <Card title="Analytics & Reporting" icon="chart-line">
+    Heat map, goals, and per-contact analysis
+  </Card>
+
+  <Card title="Export & History" icon="file-export">
+    Export contacts with metrics and track jobs
+  </Card>
+</CardGroup>
+
+## Creating Your First Campaign
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/campaigns/create-campaign-light.png" alt="Create Campaign dialog showing Answering Machine Detection (AMD) dropdown with Text-based selected, Campaign Name field with description, Agent dropdown to select agent for campaign calls, Phone Number dropdown to select outbound phone number, Business Hours section showing 24/7 availability with Open status, Cancel and Create Campaign buttons" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/campaigns/create-campaign-dark.png" alt="Create Campaign dialog showing Answering Machine Detection (AMD) dropdown with Text-based selected, Campaign Name field with description, Agent dropdown to select agent for campaign calls, Phone Number dropdown to select outbound phone number, Business Hours section showing 24/7 availability with Open status, Cancel and Create Campaign buttons" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Navigate to Campaigns">
+    Go to **Campaigns** and click **Create Campaign** (or **Create First Campaign** if this is your first one).
+  </Step>
+
+  <Step title="Configure required settings">
+    **Campaign Name**: Descriptive name for internal use (e.g., "Q1 Sales Outreach")
+
+    **Agent**: Select which AI agent will handle the calls
+
+    **Phone Number**: Choose a phone number for this campaign. Numbers already assigned to active or paused campaigns won't appear in the list. If you haven't set up a phone number yet, see [Phone & SIP Deployment](/launch/phone-sip-deployment).
+
+    **Answering Machine Detection (AMD)**: Choose text-based (fast) or ML-based (accurate). [Learn more about AMD](#answering-machine-detection).
+  </Step>
+
+  <Step title="Configure optional settings">
+    **Business Hours**: Limit calling to a specific schedule (default is 24/7). You can create schedules in **Settings → Business Hours**. [Learn more about Business Hours](/launch/business-hours).
+
+    Click **Create Campaign** to continue.
+  </Step>
+
+  <Step title="Configure campaign settings">
+    After creation, go to the **Settings** tab:
+
+    **Basic Settings**:
+    - **Campaign Name**: Update the campaign name anytime
+    - **Phone Number**: Cannot be changed after creation
+    - **Agent**: Switch to a different agent if needed
+
+    **Scheduling**:
+    - **Start Date & Time**: When to begin calling (leave blank to start immediately, allows dates up to 24 hours in past)
+    - **Call Interval**: Wait time between calls - choose from: 5s, 10s, 20s, 30s, 1min, 2min, 5min, 10min, 20min, 30min
+    - **Ring Timeout**: How long to let the phone ring - choose from: 10s, 15s, 20s, 25s, 30s, 45s, 60s
+    - **Business Hours**: Update or change the schedule anytime (shows real-time open/closed status with visual indicator)
+
+    **Detection**:
+    - **AMD Mode**: Switch between Text-based (fast) or ML-based (accurate) answering machine detection
+
+    **Retry Logic**:
+    - **Max Retry Attempts**: How many times to retry (0-10, default: 2)
+    - **Retry Interval**: Calendar time between retries (not business hours). Configure with unit selector (minutes, hours, or days)
+    - **Contact Completion Timeout**: Maximum time for a contact to reach completed state after analysis. Configure with unit selector (minutes, hours, or days)
+  </Step>
+
+  <Step title="Add contacts">
+    Go to the **Contacts** tab to manage your campaign contacts.
+
+    The interface has two panels:
+    - **Left Panel**: Available contacts from your contact list
+    - **Right Panel**: Contacts added to this campaign
+
+    **Adding contacts**:
+    - Click **+ Add** next to individual contacts
+    - Select multiple contacts and click **Add Selected**
+    - Use **Add All** to add all filtered contacts (large batches run in background)
+
+    Use search and tag filters to narrow down contacts before adding.
+  </Step>
+
+  <Step title="Set goals and analyses">
+    **Goals Tab**: Create campaign-level goals with two types:
+    - **Primary Goal** (limit: 1): Main success criterion for the campaign
+    - **Secondary Goals** (unlimited): Additional objectives to track
+
+    Goals evaluate each contact based on all their conversations. Results show as: Achieved, Partially Achieved, Not Achieved, or Unknown.
+
+    **Analyses Tab**: Define custom analyses using question types:
+    - **Yes/No**: Binary outcome questions
+    - **Open Text**: Free-form analysis responses
+    - **Rating Scale**: 1-5 rating (Low/Poor to High/Excellent)
+
+    Each analysis can be toggled active/inactive and runs per contact across all conversations.
+  </Step>
+
+  <Step title="Launch the campaign">
+    Campaigns are created in **Paused** status by default. Set the status to **Active** to start dialing. Once active, the campaign begins at the configured start time. Monitor progress in the **Dashboard** and **Reporting** tabs.
+  </Step>
+</Steps>
+
+## Campaign Management
+
+Once created, your campaign has six main tabs:
+
+<AccordionGroup>
+  <Accordion title="Dashboard" icon="gauge">
+    Campaign overview in a 2x2 grid layout:
+
+    **Quick Stats** (top-left):
+    - Primary Goal Achievement Rate
+    - Total Conversations
+    - Average Call Duration
+    - Human Answer Rate
+
+    **Contact Status** (top-right):
+    - All 7 statuses with counts and percentages
+    - Visual separation between active and final states
+
+    **Goal Analysis** (bottom-left):
+    - Achieved (green) / Partially Achieved (yellow) / Not Achieved (red) / Unknown (gray)
+    - Progress bars showing distribution
+
+    **Answer Rate Heat Map** (bottom-right):
+    - Weekly 7-day x 24-hour grid
+    - Color intensity shows answer rates (0-30%+)
+    - Identify best calling hours and days
+  </Accordion>
+
+  <Accordion title="Reporting" icon="chart-bar">
+    Per-contact detailed analytics table with advanced filtering:
+
+    **Table Columns**: Contact name/tags, phone with flag, status badge, primary goal indicator, goal achievement ring, conversation count/duration, last called timestamp, actions
+
+    **Filter Options**:
+    - Tags (multi-select, searchable)
+    - Status (all 7 types)
+    - Min/Max Retry Attempts
+    - Primary Goal Status (achieved, partially achieved, not achieved, unknown)
+    - Search by name/phone
+
+    **Actions**:
+    - Bulk retry selected contacts
+    - View detailed analytics per contact
+    - Export with format selection (XLSX, CSV)
+  </Accordion>
+
+  <Accordion title="Contacts" icon="users">
+    Two-panel interface for managing campaign contacts:
+
+    **Left Panel (Available Contacts)**:
+    - Search and filter by tags
+    - Add individual contacts or bulk add
+    - "Add All Filtered" for large batches (runs in background)
+
+    **Right Panel (Campaign Contacts)**:
+    - Filter by tags and status
+    - Remove only **Pending** contacts (others locked)
+    - Bulk remove with confirmation
+    - Click contact for quick analytics view
+  </Accordion>
+
+  <Accordion title="Goals" icon="bullseye">
+    Create and manage campaign-level goals with two tabs:
+
+    **Primary Goal Tab**:
+    - Limit: 1 primary goal maximum
+    - Archive/restore previous primary goals
+
+    **Secondary Goals Tab**:
+    - Unlimited secondary goals
+    - Archive/restore workflow
+
+    All goals evaluate contacts based on all their conversations (not per-conversation like agent goals). Results: Achieved, Partially Achieved, Not Achieved, Unknown.
+  </Accordion>
+
+  <Accordion title="Analyses" icon="microscope">
+    Configure custom analyses with three question types:
+    - **Yes/No**: Binary outcomes
+    - **Open Text**: Free-form responses
+    - **Rating Scale**: 1-5 ratings
+
+    **Features**:
+    - Toggle analyses active/inactive without deleting
+    - Archive/restore workflow
+    - Each analysis runs per contact across all conversations
+  </Accordion>
+
+  <Accordion title="Settings" icon="gear">
+    Adjust all campaign parameters organized in two columns:
+
+    **Left Column**: Campaign name, phone number (locked), agent, start date/time, business hours (with real-time open/closed indicator)
+
+    **Right Column**: Call interval (10 options), ring timeout (7 options), AMD mode, max retry attempts, completion timeout (with unit selector), retry interval (with unit selector)
+  </Accordion>
+</AccordionGroup>
+
+## Contact Lifecycle
+
+Contacts progress through these statuses, shown with colored badges and icons throughout the UI:
+
+### Active States
+
+<CardGroup cols={2}>
+  <Card title="Pending" icon="clock">
+    **Gray badge with clock icon**
+
+    Contact is queued and waiting to be dialed
+  </Card>
+
+  <Card title="Dialing" icon="phone">
+    **Yellow badge with phone icon**
+
+    Call is currently in progress - dialing the contact
+  </Card>
+
+  <Card title="Called" icon="phone">
+    **Violet badge**
+
+    Call has been made, awaiting next step
+  </Card>
+
+  <Card title="Retry" icon="arrows-rotate">
+    **Blue badge with refresh icon**
+
+    No meaningful conversation occurred, call scheduled for retry
+  </Card>
+</CardGroup>
+
+### Final States
+
+<CardGroup cols={3}>
+  <Card title="Completed" icon="circle-check">
+    **Green badge with check-circle icon**
+
+    Contact successfully completed all campaign objectives
+  </Card>
+
+  <Card title="Failed" icon="circle-xmark">
+    **Red badge with X-circle icon**
+
+    Call permanently failed and won't be retried
+  </Card>
+
+  <Card title="No Conversation" icon="phone-slash">
+    **Gray badge with phone-X icon**
+
+    Contact didn't pick up or didn't respond
+  </Card>
+</CardGroup>
+
+<Note>
+The system manages status transitions automatically based on call outcomes. You can manually retry contacts from the Contacts or Reporting tabs. Only contacts in **Pending** status can be removed from the campaign.
+</Note>
+
+## Managing Active Campaigns
+
+### Changing Campaign Status
+
+Navigate to **Campaigns** list and click the status badge to change:
+
+- **Active**: Campaign is actively dialing contacts
+- **Paused**: Stop dialing temporarily while preserving all progress
+- **Completed**: Mark campaign as finished
+- **Cancelled**: Cancel the campaign
+
+### Adding Contacts Mid-Campaign
+
+You can add more contacts to a running campaign:
+1. Go to **Contacts** tab
+2. Use the two-panel interface to add new contacts
+3. New contacts enter the queue automatically
+
+### Updating Settings
+
+Modify campaign settings at any time:
+- Update **Business Hours** to adjust calling windows
+- Change **Retry Logic** based on performance
+- Modify **Call Interval** or **Ring Timeout**
+- Changes apply immediately to queued calls
+
+## Campaign Reporting
+
+<CardGroup cols={2}>
+  <Card title="Answer Rate Heat Map" icon="chart-line">
+    Weekly heat map showing answer rates by hour and day. After 50-100 calls, use this to identify the best calling times and optimize your business hours configuration.
+  </Card>
+
+  <Card title="Goal Performance" icon="bullseye">
+    Track campaign goal achievement rates per contact. See which contacts completed objectives and analyze success patterns.
+  </Card>
+
+  <Card title="Contact Analytics" icon="users">
+    Per-contact metrics combining all conversations, status history, and analysis results for comprehensive insights.
+  </Card>
+
+  <Card title="Call Volume" icon="phone-volume">
+    Monitor call attempts, connection rates, and contact progression over time.
+  </Card>
+</CardGroup>
+
+## Contact Exports
+
+<AccordionGroup>
+  <Accordion title="Export Options" icon="file-export">
+    From the **Contacts** tab or **Reporting** tab, export contact data with flexible format options:
+
+    **Scope**:
+    - **Export current selection**: Selected contacts only
+    - **Export filtered contacts**: All contacts matching active filters
+    - **Export entire campaign**: Complete contact list with all metrics
+
+    **Format Options**:
+    - **XLSX (recommended)**: Excel format with full formatting support
+    - **CSV comma-separated**: Standard CSV with comma delimiters
+    - **CSV semicolon-separated**: European CSV format for regions using comma decimal separators
+
+    Exports include contact details, status, conversation data, goal results, and analysis outcomes.
+  </Accordion>
+
+  <Accordion title="Export History" icon="clock">
+    Track all export jobs from the **Contacts** tab:
+    - View in-progress exports with status updates and file format
+    - Download completed files (format shown: .xlsx, .csv (,), or .csv (;))
+    - Continue working while exports run in background
+
+    Large exports are processed in the background so you can keep managing your campaign. Each export shows its format icon (Excel or CSV) for quick identification.
+  </Accordion>
+</AccordionGroup>
+
+## Inbound Call Integration
+
+When contacts call back, the system automatically links the call to the campaign contact using a two-tier matching strategy:
+
+### Matching Logic
+
+**Primary Match (DID-based)**:
+- Matches contact's phone number (calling number) with campaign's phone number (called number)
+- Works for active or paused campaigns
+- Most reliable method - doesn't require agent match
+
+**Fallback Match (Agent-based)**:
+- Only activates if:
+  - No DID match found, AND
+  - Contact has a recent outbound call (within 30 days) from any campaign
+- Matches contact's phone number with campaigns using the same agent
+- Uses most recently updated campaign contact
+
+### Status Updates
+
+When an inbound call is matched to a campaign contact in these statuses, it automatically updates to **Called**:
+- Retry → Called
+- Completed → Called
+- No Conversation → Called
+
+This allows callbacks to reopen contact opportunities and continue the campaign workflow.
+
+### Benefits
+
+- **Automatic Linking**: No manual intervention needed
+- **Context Continuity**: Agent has access to all previous campaign interactions
+- **Status Updates**: Contact lifecycle automatically adjusts for callbacks
+- **Unified Reporting**: All interactions (outbound + inbound) tracked together per contact
+
+## Best Practices
+
+### Start Small
+
+<Warning>
+Always start with a pilot batch of 10-20 contacts before scaling to thousands. This validates configuration and prevents large-scale mistakes.
+</Warning>
+
+**Pilot workflow**:
+1. Create a test list with friendly contacts (colleagues, test numbers)
+2. Launch the campaign and monitor in **Conversations → Live monitor**
+3. Review outcomes:
+   - Answer rate
+   - AMD accuracy
+   - Goal achievement rate
+   - Average call duration
+4. Adjust agent instructions, AMD settings, or business hours as needed
+5. Scale gradually: 50 → 200 → 1,000+ contacts
+
+### Contact List Quality
+
+Before uploading contacts:
+- Remove duplicate numbers
+- Validate phone number format (E.164: +1234567890)
+- Check against your internal Do Not Call list
+- Verify against national DNC registries if applicable
+
+### Timezone Optimization
+
+For contacts across multiple time zones:
+1. Create business hours in **Settings → Business Hours** with appropriate timezone
+2. Assign to campaign so calls happen during local business hours
+3. Use the answer rate heat map to find optimal calling windows per region
+
+### Segmentation
+
+Create separate campaigns for:
+- Different customer segments (trial vs. paid customers)
+- Different scripts or objectives
+- Different languages
+- A/B testing variations
+
+This allows you to track performance and optimize each segment independently.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Business Hours" icon="clock" href="/launch/business-hours">
+    Configure calling schedules and timezone handling
+  </Card>
+
+  <Card title="Production Best Practices" icon="star" href="/launch/production-best-practices">
+    Optimize campaign performance and customer satisfaction
+  </Card>
+
+  <Card title="Analytics & Reporting" icon="chart-bar" href="/optimize/overview">
+    Deep-dive campaign analytics and conversion tracking
+  </Card>
+</CardGroup>

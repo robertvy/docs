@@ -1,0 +1,224 @@
+---
+title: "Paramètres Vocaux"
+description: "Affinez ton voix avec des paramètres spécifiques au fournisseur"
+icon: "sliders"
+"keywords": "paramètres vocaux, paramètres TTS, vitesse de parole, stabilité vocale, paramètres vocaux, réglage voix IA, configuration vocale"
+"og:description": "Affinez la voix de ton agent IA avec des paramètres spécifiques au fournisseur incluant vitesse, stabilité et paramètres de livraison."
+---
+
+## Aperçu
+
+Après avoir sélectionné ton voix, tu peux ajuster les paramètres spécifiques au fournisseur pour affiner son son. Les paramètres disponibles dépendent du fournisseur de voix que tu as sélectionné.
+
+<Note>
+Les paramètres vocaux sont affichés dynamiquement en fonction de ton voix sélectionnée. Les modifications s'appliquent immédiatement aux nouvelles conversations.
+</Note>
+
+---
+
+## Paramètres ElevenLabs
+
+Les voix ElevenLabs prennent en charge les paramètres ajustables suivants :
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/voice-parameters/voice-params-light.png" alt="Dialogue Paramètres Vocaux ElevenLabs montrant le curseur Stabilité avec valeur par défaut 0.7 contrôlant la stabilité et la répétitivité de la voix, curseur Boost de Similarité à 0.7 pour augmenter la similarité avec la voix originale, curseur Style à 0.00 pour l'intensité du style de parole, bouton bascule Utiliser Boost du Locuteur activé pour la clarté, curseur Vitesse à 1.00 pour le multiplicateur de vitesse de lecture, menu déroulant Latence de Streaming réglé sur 3, et boutons Réinitialiser Tout, Annuler, Enregistrer les Modifications" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/voice-parameters/voice-params-dark.png" alt="Dialogue Paramètres Vocaux ElevenLabs montrant le curseur Stabilité avec valeur par défaut 0.7 contrôlant la stabilité et la répétitivité de la voix, curseur Boost de Similarité à 0.7 pour augmenter la similarité avec la voix originale, curseur Style à 0.00 pour l'intensité du style de parole, bouton bascule Utiliser Boost du Locuteur activé pour la clarté, curseur Vitesse à 1.00 pour le multiplicateur de vitesse de lecture, menu déroulant Latence de Streaming réglé sur 3, et boutons Réinitialiser Tout, Annuler, Enregistrer les Modifications" />
+  </div>
+</Frame>
+
+### Stabilité
+
+Contrôle la cohérence et l'expressivité (plage : 0.0-1.0, défaut itellicoAI : 0.71)
+
+**Comment ça fonctionne :**
+- **Valeurs basses (0.3-0.5) :** Plus expressif et varié, mais moins cohérent entre les générations
+- **Valeurs moyennes (0.5-0.7) :** Expressivité et cohérence équilibrées (recommandé)
+- **Valeurs élevées (0.7-1.0) :** Plus cohérent et prévisible, mais peut sembler monotone
+
+**Point de départ recommandé :** 0.5-0.7
+
+Utilise une stabilité plus faible pour les applications créatives où la variété est souhaitée, et une stabilité plus élevée (0.6-0.85) pour des réponses de service client cohérentes.
+
+### Boost de Similarité
+
+Contrôle dans quelle mesure la voix correspond au locuteur original (plage : 0.0-1.0, défaut itellicoAI : 0.75)
+
+**Comment ça fonctionne :**
+- **Valeurs basses (0.5-0.7) :** Interprétation plus créative de la voix
+- **Valeurs moyennes (0.75-0.8) :** Adhésion équilibrée à la voix originale (recommandé)
+- **Valeurs élevées (0.8-1.0) :** Correspondance stricte au caractère vocal original
+
+**Point de départ recommandé :** 0.75-0.8
+
+Des valeurs plus élevées augmentent la charge de calcul et peuvent ajouter de la latence. Elles sont également plus susceptibles de reproduire des artefacts si les données vocales sources sont bruyantes.
+
+### Style
+
+Contrôle la variation stylistique du rythme et de l'intonation (plage : 0.0-1.0, défaut itellicoAI : 0.0)
+
+**Comment ça fonctionne :**
+- **0.0 :** Livraison neutre (recommandé)
+- **0.5-1.0 :** Style amplifié du locuteur original
+
+**Point de départ recommandé :** 0.0
+
+Des valeurs de style plus élevées peuvent rendre les voix moins stables et ajouter de la latence. Garde ceci à 0 pour la plupart des cas d'usage.
+
+### Boost du Locuteur
+
+Améliore la clarté et la présence (booléen, défaut itellicoAI : activé)
+
+**Comment ça fonctionne :**
+- **Activé :** Augmente la similarité avec le locuteur original, améliorant la clarté
+- **Désactivé :** Traitement standard
+
+**Point de départ recommandé :** Activé
+
+Augmente légèrement la latence ; effet subtil.
+
+### Vitesse
+
+Contrôle la vitesse de lecture (plage : 0.7-1.2, défaut itellicoAI : 1.0)
+
+**Valeurs de vitesse :**
+- **0.7-0.9 :** Livraison plus lente et plus claire
+- **1.0 :** Vitesse normale (par défaut)
+- **1.1-1.2 :** Livraison plus rapide et plus énergique
+
+**Point de départ recommandé :** 1.0
+
+Ajuste par petits incréments (0.05-0.1) et Teste avec des conversations complètes.
+
+---
+
+## Paramètres Cartesia
+
+Les voix Cartesia prennent en charge le paramètre ajustable suivant :
+
+### Débit de Parole
+
+Contrôle la vitesse de parole de la voix (plage : 0.5-2.0, défaut : 1.0)
+
+**Valeurs de débit de parole :**
+- **0.5-0.8 :** Livraison plus lente pour la clarté
+- **1.0 :** Vitesse normale (par défaut)
+- **1.2-2.0 :** Livraison plus rapide pour l'efficacité
+
+**Point de départ recommandé :** 1.0
+
+La latence ultra-faible de Cartesia rend les ajustements de vitesse réactifs. Teste avec des scénarios de conversation réalistes.
+
+---
+
+## Paramètres Azure Speech
+
+Les voix Azure Speech ne prennent pas en charge les paramètres ajustables via l'interface itellicoAI. Azure utilise des configurations vocales par défaut optimisées par Microsoft pour chaque voix neuronale.
+
+---
+
+## Ajuster les Paramètres
+
+### Comment Modifier les Paramètres Vocaux
+
+1. Naviguez vers l'onglet **Voix** dans la configuration de ton agent
+2. Ton voix actuellement sélectionnée est affichée dans la carte "Voix Actuelle" en haut
+3. Clique sur l'**icône d'engrenage** à côté de ton voix actuelle (disponible pour les voix ElevenLabs et Cartesia)
+4. Une fenêtre modale s'ouvre avec les paramètres ajustables pour ton voix
+5. Ajuste les curseurs ou les boutons bascule selon tes besoins
+6. Clique sur **Enregistrer les Modifications** pour appliquer
+
+---
+
+## Paramètres Courants par Cas d'Usage
+
+<AccordionGroup>
+  <Accordion title="Support Client" icon="headset">
+    **ElevenLabs :**
+    - Stabilité : 0.60-0.85
+    - Similarité : 0.75-0.85
+    - Style : 0.0
+    - Vitesse : 0.95-1.05
+
+    **Cartesia :**
+    - Débit de Parole : 1.0
+
+    **Objectif :** Clair, stable, professionnel
+  </Accordion>
+
+  <Accordion title="Ventes" icon="chart-line">
+    **ElevenLabs :**
+    - Stabilité : 0.45-0.70
+    - Similarité : 0.70-0.80
+    - Style : 0.0
+    - Vitesse : 1.05-1.15
+
+    **Cartesia :**
+    - Débit de Parole : 1.1-1.2
+
+    **Objectif :** Énergique, confiant, engageant
+  </Accordion>
+
+  <Accordion title="Support Technique" icon="wrench">
+    **ElevenLabs :**
+    - Stabilité : 0.60-0.85
+    - Similarité : 0.75-0.85
+    - Style : 0.0
+    - Vitesse : 0.95-1.0
+
+    **Cartesia :**
+    - Débit de Parole : 0.9-0.95
+
+    **Objectif :** Clair, patient, instructif
+  </Accordion>
+
+  <Accordion title="Santé" icon="heart-pulse">
+    **ElevenLabs :**
+    - Stabilité : 0.70-0.85
+    - Similarité : 0.80-0.90
+    - Style : 0.0
+    - Vitesse : 0.9-1.0
+
+    **Cartesia :**
+    - Débit de Parole : 0.9
+
+    **Objectif :** Calme, cohérent, professionnel
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Bonnes Pratiques
+
+**Commence avec les valeurs par défaut recommandées :** Les valeurs par défaut d'Itellico sont des points de départ optimisés. ElevenLabs recommande stabilité ≈0.5 et similarité ≈0.75-0.8 comme références communes.
+
+**Fais de petits changements :** Les paramètres vocaux sont sensibles. Ajuste par petits incréments et Teste après chaque modification.
+
+**Teste en contexte :** Utilise des scénarios de conversation complets (3-5 minutes), pas seulement des échantillons d'une phrase.
+
+**Considérez ton audience :** Les clients plus âgés préfèrent souvent des vitesses légèrement plus lentes. Les audiences plus jeunes peuvent préférer légèrement plus rapide.
+
+**Comprends les compromis de latence :** Un boost de similarité et un boost de locuteur plus élevés augmentent la latence. Les valeurs de style >0 peuvent également ajouter de la latence et réduire la stabilité.
+
+**Documentez tes paramètres :** Garde une trace de ce qui fonctionne pour chaque combinaison de cas d'usage et de voix.
+
+---
+
+## Prochaines Étapes
+
+<CardGroup cols={2}>
+  <Card title="Prononciations Personnalisées" icon="spell-check" href="/fr/build/voice-speech/custom-pronunciations">
+    Corrigez la prononciation des noms de marque et des termes techniques
+  </Card>
+  <Card title="Son Ambiant" icon="volume" href="/fr/build/voice-speech/ambient-sound">
+    Ajoute une ambiance de fond aux appels
+  </Card>
+  <Card title="Sélectionner une Voix" icon="microphone" href="/fr/build/voice-speech/select-voice">
+    Choisis une voix différente
+  </Card>
+  <Card title="Teste ton Agent" icon="vial" href="/fr/test/web-simulator">
+    Teste tes paramètres vocaux avec des appels web
+  </Card>
+</CardGroup>

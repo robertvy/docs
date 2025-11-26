@@ -1,0 +1,255 @@
+---
+title: "Guia de engenharia de prompts"
+description: "Domine a arte de escrever instruções eficazes de agente"
+icon: "book"
+"keywords": "Engenharia de prompts, prompts de IA, melhores práticas de IA conversacional, instruções de agente, conversas naturais, design de comportamento de IA, escrita de prompts"
+"og:description": "Domine a arte de escrever instruções eficazes de agente IA com técnicas comprovadas de engenharia de prompts e melhores práticas."
+---
+
+## Introdução
+
+Projetar um prompt sólido (instruções) é como transformar um modelo de voz genérico em um companheiro de IA confiável. Este guia abrangente explica como o runtime do agente itellicoAI interpreta suas instruções, a estrutura que recomendamos e os padrões reutilizáveis que você pode usar para diferentes casos de uso.
+
+<Tip>
+Este é um guia avançado. Se você está começando, consulte primeiro [Noções básicas de instruções](/pt/build/conversation/instructions).
+</Tip>
+
+---
+
+## Início rápido: A fórmula de prompt de 5 minutos
+
+Novo na escrita de prompts de agente? Comece aqui. Esta fórmula leva você de uma página em branco a um agente funcional em minutos.
+
+<Steps>
+  <Step title="Quem é seu agente? (30 segundos)">
+    Dê ao seu agente uma identidade e personalidade claras.
+
+    ```
+    Você é [Nome], um [papel] na [Empresa].
+    Sua personalidade é [traço 1], [traço 2] e [traço 3].
+    ```
+
+    **Exemplo:**
+    ```
+    Você é Sara, uma Gerente de Sucesso do Cliente na TechCo.
+    Sua personalidade é prestativa, paciente e conhecedora.
+    ```
+  </Step>
+
+  <Step title="Qual é o objetivo? (30 segundos)">
+    Defina o resultado específico e mensurável.
+
+    ```
+    Seu objetivo é [resultado mensurável específico].
+    ```
+
+    **Exemplo:**
+    ```
+    Seu objetivo é agendar demonstrações de produto com prospects qualificados
+    que tenham orçamento e cronograma.
+    ```
+  </Step>
+
+  <Step title="Como flui a conversa? (3 minutos)">
+    Mapeie as etapas-chave em ordem.
+
+    **Fluxo padrão:**
+    1. **Saudação** - Confirmar identidade
+    2. **Permissão** - Perguntar se têm tempo
+    3. **Descoberta** - Entender suas necessidades
+    4. **Valor** - Compartilhar como você pode ajudar
+    5. **Ação** - Agendar reunião/fechar venda
+    6. **Fechamento** - Confirmar próximos passos
+
+    **Escreva em seu prompt assim:**
+    ```
+    Fluxo de conversa:
+    1. Saudação - Confirmar identidade e agradecê-los pelo interesse
+    2. Permissão - Perguntar se têm 5 minutos para conversar
+    3. Descoberta - Entender suas necessidades com perguntas abertas
+    4. Valor - Compartilhar como você pode ajudar baseado no que aprendeu
+    5. Ação - Agendar reunião ou fechar venda usando a ação apropriada
+    6. Fechamento - Confirmar próximos passos e agradecê-los pelo tempo
+    ```
+  </Step>
+
+  <Step title="Quais são os limites? (1 minuto)">
+    Defina o que seu agente NUNCA deve fazer e quando escalar.
+
+    **Escreva em seu prompt assim:**
+    ```
+    Limites - Nunca:
+    • Discutir preços (transferir para equipe de vendas)
+    • Fazer promessas sobre recursos ou prazos
+    • Compartilhar dados de clientes ou detalhes de conta
+    • Continuar se o cliente for hostil (encerrar chamada educadamente)
+
+    Transferir para humano quando:
+    • Cliente solicita falar com gerente
+    • Problema técnico além do seu conhecimento
+    • Cliente está frustrado após 2 tentativas de ajudar
+    ```
+  </Step>
+
+  <Step title="E se eles objetarem? (1 minuto)">
+    Prepare-se para objeções comuns com respostas exatas.
+
+    ```
+    Tratamento de objeções:
+    • "Não interessado" → [Sua resposta]
+    • "Muito caro" → [Sua resposta]
+    • "Preciso pensar" → [Sua resposta]
+    ```
+
+    **Exemplo:**
+    ```
+    Tratamento de objeções:
+    • "Não interessado" → "Entendo. Posso perguntar o que mudou desde que você solicitou informações?"
+    • "Muito caro" → "Eu ouço você. Vamos discutir quais recursos importam mais para seu orçamento."
+    • "Preciso pensar" → "Claro. Quais preocupações específicas devo abordar?"
+    ```
+  </Step>
+</Steps>
+
+---
+
+### Princípios-chave de escrita
+
+Siga estes três princípios para tornar seus prompts mais eficazes:
+
+<AccordionGroup>
+  <Accordion title="Escreva como você fala" icon="comments">
+    Agentes de voz precisam de linguagem conversacional, não jargão corporativo.
+
+    **Evite:**
+    ```
+    "Estou entrando em contato sobre..."
+    "Conforme nossa correspondência anterior..."
+    ```
+
+    **Melhor:**
+    ```
+    "Estou ligando sobre..."
+    "Acompanhando..."
+    ```
+
+    Teste: Leia em voz alta. Se soar rígido, simplifique.
+  </Accordion>
+
+  <Accordion title="Dê palavras exatas" icon="quote-left">
+    Não descreva o que dizer - escreva as palavras reais.
+
+    **Evite:**
+    ```
+    "Apresente-se profissionalmente"
+    "Explique os benefícios"
+    ```
+
+    **Melhor:**
+    ```
+    Diga: "Olá, aqui é o Alex da TechCo"
+    Diga: "Isso economiza 10 horas por semana em relatórios"
+    ```
+
+    Quanto mais específico, mais consistente será seu agente.
+  </Accordion>
+
+  <Accordion title="Use ramificação If/Then" icon="code-branch">
+    Lide com diferentes cenários com lógica condicional.
+
+    ```
+    Se o cliente disser sim → Continue para etapa 2
+
+    Se o cliente disser não → Pergunte: "Quando seria melhor?"
+
+    Se o cliente for hostil → Diga: "Peço desculpas pelo
+    inconveniente. Deixe-me transferi-lo para um
+    gerente que pode ajudar."
+    ```
+
+    Planeje para sucesso, objeções e casos extremos.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Estrutura de prompt recomendada
+
+Use esta estrutura como template:
+
+| Seção | Propósito | Dicas |
+|-------|-----------|-------|
+| **Papel e tom** | Dizer ao LLM quem ele representa e como deve soar | Incluir tom da marca, idiomas permitidos, notas de pronúncia |
+| **Objetivo principal** | Explicar o resultado desejado para o chamador | Usar listas com marcadores ou numeradas para clareza |
+| **Fluxo de conversa** | Delinear as etapas principais em ordem | Referenciar pré-requisitos, loops, critérios de saída |
+| **Captura de informações** | Sinalizar campos obrigatórios e etapas de confirmação | Destacar como verificar precisão antes de prosseguir |
+| **Gatilhos de ação** | Descrever quando executar cada ação e com quais entradas | Usar nomes de ação explícitos que correspondem à interface de configuração |
+| **Escalações e limites** | Definir tópicos proibidos e quando transferir ou encerrar chamadas | Parear regras com a ação de transferência/encerramento relevante |
+| **Fechamento e acompanhamento** | Explicar como encerrar a chamada e confirmar próximos passos | Incluir qualquer mensagem de acompanhamento prometida ao chamador |
+
+---
+
+## Referência de ações
+
+<Warning>
+Sempre referencie ações pelo **nome exato** configurado na interface. O runtime do agente expõe uma chamada de função com esse nome, então redação ambígua pode quebrar a execução.
+</Warning>
+
+### Exemplo: Ação de agendamento
+
+```text wrap
+Quando o chamador confirmar que quer agendar, chame a ação de agendamento `Agendar consulta odontológica` com:
+- `date` e `time` coletados durante a conversa
+- Peça e-mail se `contact.email` estiver faltando; caso contrário use e-mail do contato
+
+Se a ação retornar erro:
+1. Desculpe-se: "Desculpe, estou tendo problemas para agendar esse horário"
+2. Ofereça dois horários alternativos do mesmo dia
+3. Tente novamente uma vez com a alternativa
+4. Se a segunda tentativa falhar, acione a ação `Transferir para recepção`
+```
+
+---
+
+## Variáveis e conteúdo condicional
+
+Use templates Jinja para personalizar instruções com valores dinâmicos de contatos e contexto.
+
+### Lógica condicional
+
+```jinja wrap
+{% if contact.email %}
+Você tem o e-mail do cliente em arquivo: {{ contact.email }}
+{% else %}
+Peça o endereço de e-mail antes de prosseguir com o agendamento.
+{% endif %}
+
+{% if contact.first_name %}
+Cumprimente-os pelo nome: "Olá {{ contact.first_name }}, obrigado por ligar!"
+{% else %}
+Use uma saudação geral: "Olá! Obrigado por ligar!"
+{% endif %}
+```
+
+---
+
+## Próximos passos
+
+<CardGroup>
+  <Card title="Mensagens de saudação" icon="hand-wave" href="/pt/build/conversation/greeting-messages">
+    Configure como conversas começam
+  </Card>
+  <Card title="Variáveis e conteúdo dinâmico" icon="brackets-curly" href="/pt/build/conversation/variables-dynamic-content">
+    Domine templates Jinja
+  </Card>
+  <Card title="Adicionar base de conhecimento" icon="book" href="/pt/build/knowledge/architecture">
+    Adicione suas informações comerciais a bases de conhecimento
+  </Card>
+  <Card title="Configurar ações" icon="bolt" href="/pt/build/actions/overview">
+    Permita que seu agente execute ações
+  </Card>
+</CardGroup>
+
+## Precisa de ajuda?
+
+Envie um e-mail para [support@itellico.ai](mailto:support@itellico.ai) para assistência com engenharia de prompts e otimização de agentes.

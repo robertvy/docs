@@ -1,0 +1,447 @@
+---
+title: "Accounts und Subaccounts"
+description: "Organisieren du Teams mit hierarchischen Accounts und verwalten du Zugriffskontrollen"
+icon: "users"
+keywords: "Übersicht, Einführung, Dokumentation, Anleitung, Getting Started"
+og:description: "Vollständige Übersicht und Einführung. Lernen du die Grundlagen und starten du erfolgreich."
+---
+
+## Übersicht
+
+itellicoAI verwendet ein hierarchisches Account-System, das es dir ermöglicht, deine Teams zu organisieren, Zugriffskontrollen zu verwalten und deine Voice-KI-Operationen zu skalieren. Ob du ein einzelnes Team oder ein Unternehmen mit mehreren Abteilungen sind, das Account-System bietet Flexibilität und Sicherheit.
+
+## Account-Typen
+
+### Haupt-Accounts
+
+Haupt-Accounts (auch "Root-Accounts" oder "Parent-Accounts" genannt) sind Top-Level-Organisationen mit:
+
+- Unabhängiger Abrechnung und Abonnements
+- Voller administrativer Kontrolle
+- Möglichkeit, unbegrenzte Subaccounts zu erstellen (abhängig vom Abonnement)
+- Separaten API-Keys und Integrationen
+
+**Anwendungsfälle:**
+- Einzelne Unternehmen
+- Agenturen, die mehrere Kunden verwalten
+- Unternehmen mit unterschiedlichen Geschäftseinheiten
+
+### Subaccounts
+
+Subaccounts sind unter Parent-Accounts verschachtelt und bieten:
+
+- Isolierten Arbeitsbereich für Teams oder Kunden
+- Separate Agents, Kontakte und Konversationen
+- Unabhängige Teammitglieder und Berechtigungen
+- Gemeinsame Abrechnung mit dem Parent-Account
+
+**Hauptmerkmale:**
+- Unbegrenzte Verschachtelungstiefe (Subaccounts können eigene Subaccounts haben)
+- Parent-Accounts können auf Daten von Child-Accounts zugreifen
+- Children **können nicht** auf Parent- oder Sibling-Daten zugreifen
+- Jeder Subaccount hat seinen eigenen Owner und sein eigenes Team
+
+**Anwendungsfälle:**
+- Agentur-Kundenarbeitsräume
+- Abteilungstrennung in Unternehmen
+- Regionale oder Produktlinien-Divisionen
+- Reseller-Kundenaccounts
+
+## Account-Hierarchie
+
+Das System folgt einer Parent-Child-Hierarchie mit strikter Zugriffskontrolle:
+
+```
+Parent Account (Agentur)
+├── Subaccount A (Kunde 1)
+│   ├── Sub-Subaccount A1 (Kunde 1 - Vertriebsteam)
+│   └── Sub-Subaccount A2 (Kunde 1 - Support-Team)
+├── Subaccount B (Kunde 2)
+└── Subaccount C (Kunde 3)
+```
+
+### Zugriffsregeln
+
+- **Zugriff nach unten**: Parents können auf alle Child-Subaccounts zugreifen
+- **Kein Zugriff nach oben**: Children können nicht auf Parent-Daten zugreifen
+- **Kein Sibling-Zugriff**: Subaccounts können nicht aufeinander zugreifen
+- **Kontextwechsel**: Benutzer mit mehreren Mitgliedschaften können zwischen Accounts wechseln
+
+## Benutzerrollen und Berechtigungen
+
+Jedes Teammitglied hat eine von vier Rollen:
+
+<AccordionGroup>
+  <Accordion title="Owner" icon="crown">
+    **Volle administrative Kontrolle** über den Account.
+
+    Berechtigungen:
+    - Alle Berechtigungen (Wildcard-Zugriff)
+    - Teammitglieder und Rollen verwalten
+    - Account-Einstellungen und Branding verwalten
+    - Subaccounts erstellen und verwalten
+    - Abrechnung und Abonnements verwalten
+    - Account löschen
+    - Kann nicht von anderen entfernt werden
+
+    Einschränkungen:
+    - Nur **ein Owner** pro Account
+    - Owner-Rolle kann nicht über die Benutzeroberfläche übertragen werden (Support kontaktieren)
+  </Accordion>
+
+  <Accordion title="Admin" icon="user-shield">
+    **Administrative Privilegien** ohne Abrechnungszugriff.
+
+    Berechtigungen:
+    - Teammitglieder verwalten (hinzufügen, entfernen, Rollen ändern)
+    - Account-Einstellungen verwalten
+    - Subaccounts erstellen und verwalten (wenn Abonnement dies zulässt)
+    - Integrationen und API-Keys verwalten
+    - Vollzugriff auf Agents und Konversationen
+
+    Einschränkungen:
+    - Kann den Account nicht löschen
+    - Kann den Owner nicht entfernen
+    - Kann nicht auf Abrechnungseinstellungen zugreifen
+  </Accordion>
+
+  <Accordion title="Member" icon="user">
+    **Standard-Benutzer** mit vollem Zugriff auf Funktionen.
+
+    Berechtigungen:
+    - Agents erstellen und bearbeiten
+    - Auf alle Konversationen zugreifen
+    - Eigene Inhalte verwalten
+    - Testfunktionen verwenden
+    - Teammitglieder anzeigen
+
+    Einschränkungen:
+    - Kann Teammitglieder nicht verwalten
+    - Kann Account-Einstellungen nicht ändern
+    - Kann keine Subaccounts erstellen
+  </Accordion>
+
+  <Accordion title="Viewer" icon="eye">
+    **Nur-Lese-Zugriff** auf den Account.
+
+    Berechtigungen:
+    - Agents und Konfigurationen anzeigen
+    - Konversationsprotokolle anzeigen
+    - Teammitglieder anzeigen
+
+    Einschränkungen:
+    - Kann nichts erstellen oder bearbeiten
+    - Kann nicht auf Einstellungen zugreifen
+    - Kann keine Mitglieder einladen
+  </Accordion>
+</AccordionGroup>
+
+## Accounts verwalten
+
+### Haupt-Account erstellen
+
+<Steps>
+  <Step title="Account-Switcher öffnen">
+    Klicke auf deinen Account-Namen in der oberen Navigationsleiste.
+  </Step>
+
+  <Step title="Neuen Account erstellen">
+    Klicke auf **Neuen Account erstellen** und wähle **Haupt-Account**.
+  </Step>
+
+  <Step title="Account konfigurieren">
+    Gib den Account-Namen ein und bestätigen du.
+
+    du werden automatisch zum **Owner** des neuen Accounts.
+  </Step>
+</Steps>
+
+<Note>
+Haupt-Accounts haben separate Abrechnung. du müssen ein Abonnement für den neuen Account konfigurieren.
+</Note>
+
+### Subaccount erstellen
+
+<Steps>
+  <Step title="Zu Subaccounts navigieren">
+    Gehe zu **Einstellungen → Subaccounts** in deinem Parent-Account.
+  </Step>
+
+  <Step title="Subaccount erstellen">
+    Klicke auf **Subaccount erstellen** und geben du den Namen ein.
+
+    **Voraussetzungen:**
+    - du müssen Admin oder Owner sein
+    - dein Abonnement muss Subaccount-Verwaltung beinhalten
+  </Step>
+
+  <Step title="Team konfigurieren">
+    du werden zum Owner des Subaccounts. Laden du bei Bedarf Teammitglieder ein.
+  </Step>
+</Steps>
+
+<Tip>
+Subaccounts erben die Abrechnung vom Parent-Account. Die Nutzung wird separat verfolgt, aber dem Parent berechnet.
+</Tip>
+
+### Zwischen Accounts wechseln
+
+Wenn du Mitglied mehrerer Accounts sind:
+
+1. Klicke auf deinen Account-Namen in der oberen Navigation
+2. Durchsuchen du den Account-Baum
+3. Klicke auf einen beliebigen Account, um den Kontext zu wechseln
+4. Alle Daten, Agents und Einstellungen werden aktualisiert, um den ausgewählten Account widerzuspiegeln
+
+<Note>
+Der ausgewählte Account bleibt pro Browser-Tab bestehen, sodass du in mehreren Accounts gleichzeitig arbeiten können.
+</Note>
+
+## Teammitglieder-Verwaltung
+
+### Mitglieder einladen
+
+<Steps>
+  <Step title="Team-Einstellungen öffnen">
+    Navigiere zu **Einstellungen → Team** in deinem Account.
+  </Step>
+
+  <Step title="Einladung senden">
+    Klicke auf **Mitglieder einladen** und geben du E-Mail-Adressen ein.
+
+    Neue Mitglieder erhalten standardmäßig die **Member**-Rolle.
+  </Step>
+
+  <Step title="Mitglied akzeptiert">
+    Eingeladene erhalten eine E-Mail mit einem sicheren Link zum Akzeptieren oder Ablehnen.
+
+    Einladungen laufen nach 7 Tagen ab.
+  </Step>
+</Steps>
+
+<Tip>
+du können ausstehende Einladungen von der Team-Seite aus erneut senden oder stornieren.
+</Tip>
+
+### Mitgliederrollen ändern
+
+**Admins und Owners** können Mitgliederrollen ändern:
+
+1. Gehe zu **Einstellungen → Team**
+2. Finden du das Mitglied in der Liste
+3. Klicke auf das Rollen-Dropdown
+4. Wähle neue Rolle: Admin, Member oder Viewer
+
+<Warning>
+du können die Owner-Rolle nicht ändern. Kontaktiere den Support für Eigentumsübertragungen.
+</Warning>
+
+### Mitglieder entfernen
+
+**Nur Owners** können Teammitglieder entfernen:
+
+1. Gehe zu **Einstellungen → Team**
+2. Klicke auf das Menü (⋯) neben einem Mitglied
+3. Wähle **Aus Team entfernen**
+4. Bestätige die Entfernung
+
+<Note>
+- du können sich nicht selbst entfernen
+- du können andere Owners nicht entfernen
+- Entfernte Mitglieder verlieren sofort alle Zugriffsrechte
+</Note>
+
+## API-Keys und programmatischer Zugriff
+
+API-Keys bieten programmatischen Zugriff auf deinen Account:
+
+### API-Keys erstellen
+
+1. Navigiere zu **Einstellungen → API-Keys**
+2. Klicke auf **API-Key erstellen**
+3. Gib eine Bezeichnung ein (z.B. "Produktionsserver")
+4. **Kopiere den Key sofort** - er wird nur einmal angezeigt
+5. Sicher aufbewahren (wie ein Passwort behandeln)
+
+<Warning>
+API-Keys haben vollen Zugriff auf deinen Account. Committen du sie niemals in Versionskontrolle oder teilen du sie öffentlich.
+</Warning>
+
+### Key-Format
+
+```
+sk-{8-Zeichen-Präfix}.{55-Zufallszeichen}
+```
+
+- Das Präfix hilft bei der Identifizierung von Keys in Logs
+- Der vollständige Key wird gehasht und kann nicht abgerufen werden
+
+### Keys verwalten
+
+- **Widerrufen**: Einen Key deaktivieren, ohne ihn zu löschen (kann später reaktiviert werden)
+- **Löschen**: Einen Key dauerhaft entfernen
+- **Ablaufdatum setzen**: Keys automatisch an einem bestimmten Datum ablaufen lassen
+- **Zuletzt verwendet**: Verfolgen, wann jeder Key zuletzt verwendet wurde
+
+<Tip>
+Verwende separate API-Keys für verschiedene Umgebungen (Entwicklung, Staging, Produktion) und rotieren du sie regelmäßig.
+</Tip>
+
+## Account-Einstellungen
+
+### Branding-Anpassung
+
+Passe das Erscheinungsbild deines Accounts an:
+
+- **Logo**: Quadratisches Logo für Account-Switcher und Navigation
+- **Breites Logo**: Horizontales Logo für Anmeldeseiten und E-Mails
+- **Favicon**: Benutzerdefiniertes Browser-Symbol
+- **Farben**: Primäre und sekundäre Markenfarben
+
+**Branding aktualisieren:**
+1. Gehe zu **Einstellungen → Branding**
+2. Laden du Bilder hoch oder wähle Farben aus
+3. Vorschau der Änderungen
+4. Speichern
+
+### Account-Informationen
+
+Aktualisieren du grundlegende Account-Details:
+
+- **Account-Name**: Anzeigename in der gesamten Plattform
+- **Account-Status**: Aktiv/Inaktiv (Soft-Deaktivierung)
+
+## Sicherheits-Best-Practices
+
+<AccordionGroup>
+  <Accordion title="Prinzip der geringsten Privilegien verwenden" icon="shield-halved">
+    - Weisen du die Viewer-Rolle für Nur-Lese-Bedürfnisse zu
+    - Reservieren du die Admin-Rolle für diejenigen, die das Team verwalten
+    - Begrenzen du die Owner-Rolle auf 1-2 Personen
+  </Accordion>
+
+  <Accordion title="Mit Subaccounts organisieren" icon="sitemap">
+    - Erstelle separate Subaccounts für Kunden
+    - Verwende Subaccounts zur Isolierung von Abteilungen
+    - Nutzen du die Hierarchie für Zugriffskontrolle
+  </Accordion>
+
+  <Accordion title="API-Keys sorgfältig verwalten" icon="key">
+    - Erstelle separate Keys pro Umgebung
+    - Widerrufen du nicht verwendete oder kompromittierte Keys sofort
+    - Setze Ablaufdaten für temporären Zugriff
+    - Überwache die Zeitstempel der letzten Verwendung
+  </Accordion>
+
+  <Accordion title="Teammitglieder regelmäßig überprüfen" icon="clipboard-list">
+    - Überprüfe Teammitglieder vierteljährlich
+    - Entferne ausscheidende Mitarbeiter sofort
+    - Aktualisieren du Rollen bei Verantwortungsänderungen
+  </Accordion>
+</AccordionGroup>
+
+## Häufige Anwendungsfälle
+
+### Agentur verwaltet mehrere Kunden
+
+```
+Agentur (Parent Account)
+├── Subaccount Kunde A
+│   └── Personal von Kunde A hat vollen Zugriff
+├── Subaccount Kunde B
+│   └── Personal von Kunde B hat vollen Zugriff
+└── Agentur behält Sichtbarkeit über alle Kunden
+```
+
+**Vorteile:**
+- Kunden können keine Daten der anderen sehen
+- Agentur-Admins können alle Accounts verwalten
+- Separate Abrechnungsverfolgung pro Kunde
+- Einfaches Onboarding und Offboarding
+
+### Unternehmen mit regionalen Teams
+
+```
+Unternehmenszentrale (Parent Account)
+├── Region Nordamerika
+│   ├── Vertriebsteam
+│   └── Support-Team
+├── Region Europa
+│   ├── Vertriebsteam
+│   └── Support-Team
+└── Region APAC
+```
+
+**Vorteile:**
+- Regionale Autonomie mit zentraler Aufsicht
+- Zugriffskontrolle auf Abteilungsebene
+- Konsolidierte Abrechnung und Berichterstattung
+- Flexible Teamstrukturen
+
+### Reseller oder White-Label-Anbieter
+
+```
+Reseller (Parent Account)
+├── Kunde 1 (Subaccount)
+├── Kunde 2 (Subaccount)
+└── Kunde 3 (Subaccount)
+```
+
+**Vorteile:**
+- Kundenisolierung und Datenschutz
+- Zentralisierte Abrechnung an Reseller
+- Benutzerdefiniertes Branding pro Kunde
+- Skalierbare Kunden-Onboarding
+
+## FAQs
+
+<AccordionGroup>
+  <Accordion title="Wie viele Subaccounts kann ich erstellen?">
+    Die Anzahl der Subaccounts hängt von deinem Abonnementplan ab. Kontaktiere den Vertrieb, um deine Anforderungen zu besprechen.
+  </Accordion>
+
+  <Accordion title="Kann ich einen Subaccount auf einen anderen Parent übertragen?">
+    Kontaktiere den Support, um Subaccounts zwischen Parents zu übertragen oder Subaccounts in Haupt-Accounts umzuwandeln.
+  </Accordion>
+
+  <Accordion title="Wer wird für die Nutzung von Subaccounts in Rechnung gestellt?">
+    Der Parent-Account ist für alle Subaccount-Abrechnungen verantwortlich. Die Nutzung wird separat für die Berichterstattung verfolgt.
+  </Accordion>
+
+  <Accordion title="Können Subaccounts eigene API-Keys haben?">
+    Ja! Jeder Subaccount kann unabhängige API-Keys erstellen. Keys sind auf ihren Account-Kontext begrenzt.
+  </Accordion>
+
+  <Accordion title="Was passiert mit Daten, wenn ich einen Account deaktiviere?">
+    Accounts werden soft-gelöscht (als inaktiv markiert). Daten werden aufbewahrt und können durch Kontaktieren des Supports reaktiviert werden.
+  </Accordion>
+
+  <Accordion title="Kann ein Benutzer Mitglied mehrerer Accounts sein?">
+    Ja! Benutzer können in mehrere Accounts eingeladen werden und mit dem Account-Switcher zwischen ihnen wechseln.
+  </Accordion>
+
+  <Accordion title="Wie übertrage ich das Eigentum an einem Account?">
+    Kontaktiere den Support, um die Owner-Rolle zu übertragen. Dies kann aus Sicherheitsgründen nicht über die Benutzeroberfläche erfolgen.
+  </Accordion>
+</AccordionGroup>
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Team-Verwaltung" icon="users" href="/de/accounts/team-management">
+    Erfahren du, wie du Teammitglieder einladen und verwalten
+  </Card>
+  <Card title="API-Keys" icon="key" href="/de/accounts/api-keys">
+    Erstellen und verwalten du programmatischen Zugriff
+  </Card>
+  <Card title="Branding" icon="palette" href="/de/accounts/account-settings">
+    Passe das Erscheinungsbild deines Accounts an
+  </Card>
+  <Card title="Abrechnung" icon="credit-card" href="/de/accounts/overview">
+    Verwalten du Abonnements und Zahlungen
+  </Card>
+</CardGroup>
+
+## Benötigen du Hilfe?
+
+Kontaktiere [support@itellico.ai](mailto:support@itellico.ai) für Unterstützung bei der Account-Verwaltung, Abrechnungsfragen oder Eigentumsübertragungen.

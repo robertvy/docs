@@ -1,0 +1,173 @@
+---
+title: "Despliegue de Telefonía y SIP"
+description: "Conecta tu agente a números telefónicos y troncales SIP para gestionar llamadas en vivo"
+icon: "phone-volume"
+keywords: "SIP trunk configuration, BYOC, bring your own carrier, phone number import, inbound calling, outbound calling, SIP authentication, VoIP setup, carrier integration"
+og:description: "Conecta agentes de IA a sistemas telefónicos mediante troncales SIP. Configuración BYOC para llamadas entrantes y salientes con tu infraestructura de operador existente."
+---
+
+## Descripción General del Despliegue
+
+El despliegue telefónico enruta llamadas PSTN en vivo a través de tu agente probado utilizando un enfoque de **Bring Your Own Carrier (BYOC)**. Importas tus números telefónicos existentes y los conectas a tu operador mediante troncales SIP.
+
+**Proceso de configuración:**
+1. Configura tu troncal SIP con las credenciales del operador
+2. Importa tus números telefónicos y vincúlalos a la troncal
+3. Asigna agentes para gestionar llamadas entrantes
+4. Prueba la conexión
+
+Todas las configuraciones utilizan la misma infraestructura de llamadas en tiempo real que usa el Modo de Prueba, garantizando un comportamiento consistente.
+
+## Despliegue de Telefonía Entrante
+
+### Paso 1: Configurar Troncal SIP
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/sip/inbound-sip-light.png" alt="Diálogo Crear Troncal SIP mostrando campo Nombre de Troncal SIP con texto de marcador, pestañas Llamadas Entrantes y Llamadas Salientes con Entrantes seleccionado, configuración de URI Entrante mostrando dirección de reenvío del proveedor SIP, campo opcional Seguridad IP para restringir direcciones IP, enlace Contactar soporte, botones Cancelar y Crear Troncal SIP" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/sip/inbound-sip-dark.png" alt="Diálogo Crear Troncal SIP mostrando campo Nombre de Troncal SIP con texto de marcador, pestañas Llamadas Entrantes y Llamadas Salientes con Entrantes seleccionado, configuración de URI Entrante mostrando dirección de reenvío del proveedor SIP, campo opcional Seguridad IP para restringir direcciones IP, enlace Contactar soporte, botones Cancelar y Crear Troncal SIP" />
+  </div>
+</Frame>
+
+<br />
+
+<Accordion title="Configuración de troncal SIP">
+  1. Navega a **Telefonía → Troncales SIP** y haz clic en **+ Agregar Troncal**
+  2. Configura tu operador para enviar llamadas al endpoint SIP de itellicoAI:
+     - **SIP URI de destino**: `sip:50ebbp4vhpr.sip.livekit.cloud`
+     - **Puerto**: 5060 (UDP) o 5061 (TLS)
+     - **Códec**: Opus, PCMU o PCMA
+  3. En el panel de itellicoAI, crea una troncal con:
+     - **Nombre de Troncal**: Un nombre descriptivo para tu operador
+     - **IPs Permitidas** (opcional): Restringe a los rangos de IP de tu operador para mayor seguridad
+  4. **Asignar Agente**: Selecciona qué agente gestiona las llamadas desde esta troncal
+  5. **Prueba**: Realiza una llamada de prueba a través de tu operador para verificar el enrutamiento
+</Accordion>
+
+<Accordion title="Compatibilidad de operadores">
+  Los operadores probados incluyen:
+  - Twilio Elastic SIP Trunking
+  - Vonage (anteriormente Nexmo)
+  - Bandwidth
+  - Telnyx
+  - La mayoría de proveedores SIP estándar
+
+  **Requisitos**:
+  - Soporte para códecs Opus o PCMU/PCMA
+  - DTMF vía RFC 2833 (para entrada de teclado)
+  - Soporte de reinvite para transferencias
+</Accordion>
+
+### Paso 2: Importar Números Telefónicos
+
+Una vez configurada tu troncal SIP, importa tus números telefónicos existentes:
+
+<Steps>
+  <Step title="Navega a Números Telefónicos">
+    Ve a **Telefonía → Números Telefónicos** y haz clic en **Importar Número**
+  </Step>
+
+  <Step title="Configura los detalles del número">
+    Proporciona:
+    - **Número Telefónico**: Formato E.164 (ej., `+14155552671`)
+    - **Nombre Descriptivo**: Etiqueta opcional (ej., "Línea de Soporte")
+    - **Troncal SIP**: Selecciona la troncal que configuraste en el Paso 1
+    - **Agente Entrante**: Opcionalmente asigna un agente ahora (o hazlo más tarde)
+  </Step>
+
+  <Step title="Guarda y verifica">
+    Haz clic en **Guardar** para importar el número. El número ahora está vinculado a tu troncal SIP y listo para llamadas entrantes.
+  </Step>
+</Steps>
+
+### Paso 3: Asignar Agentes a Números
+
+<Steps>
+  <Step title="Abre la lista de Números Telefónicos">
+    Ve a **Telefonía → Números Telefónicos** para ver todos los números importados
+  </Step>
+
+  <Step title="Asigna o actualiza el agente">
+    Usa el selector de agente en línea para elegir qué agente debe responder las llamadas a este número
+  </Step>
+
+  <Step title="Configura el reenvío del operador y prueba">
+    Configura tu operador para reenviar llamadas al **URI Entrante** mostrado en tu troncal SIP (en **Telefonía → Troncales SIP**). Una vez que el reenvío del operador esté activo, llama al número desde tu teléfono para probar. El agente debe responder usando el saludo que configuraste. Revisa los registros de llamadas en **Conversaciones** para verificar el flujo correcto de la llamada.
+  </Step>
+</Steps>
+
+<Accordion title="Solución de problemas de enrutamiento de llamadas">
+  Si las llamadas no llegan a tu agente:
+
+  - **Verifica el SIP URI**: Asegúrate de que tu operador está enviando llamadas a `sip:50ebbp4vhpr.sip.livekit.cloud`
+  - **Verifica soporte de códec**: Verifica que tu operador soporta Opus, PCMU o PCMA
+  - **Reglas de firewall**: Asegúrate de que tu operador puede alcanzar el endpoint SIP de LiveKit
+  - **Registros**: Verifica **Conversaciones → Registros** o tu portal de operador para códigos de error SIP
+
+  Problemas comunes:
+  - `404 Not Found`: Configuración incorrecta del SIP URI
+  - `488 Not Acceptable Here`: Desajuste de códec (habilita Opus/PCMU/PCMA en el operador)
+  - `503 Service Unavailable`: Problema temporal de conectividad
+</Accordion>
+
+## Despliegue de Telefonía Saliente
+
+### Configurar Troncal SIP Saliente
+
+Para llamadas salientes a través de tu propio operador (campañas, llamadas proactivas), configura la troncal SIP saliente con autenticación:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/sip/outbound-sip-light.png" alt="Diálogo Crear Troncal SIP mostrando campo Nombre de Troncal SIP, pestañas Llamadas Entrantes y Llamadas Salientes con Salientes seleccionado, sección Recomendación de Autenticación, campo Dominio del Proveedor con marcador example.com:5060, campo Usuario para autenticación SIP, campo Contraseña para autenticación SIP, enlace Contactar soporte, botones Cancelar y Crear Troncal SIP" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/sip/outbound-sip-dark.png" alt="Diálogo Crear Troncal SIP mostrando campo Nombre de Troncal SIP, pestañas Llamadas Entrantes y Llamadas Salientes con Salientes seleccionado, sección Recomendación de Autenticación, campo Dominio del Proveedor con marcador example.com:5060, campo Usuario para autenticación SIP, campo Contraseña para autenticación SIP, enlace Contactar soporte, botones Cancelar y Crear Troncal SIP" />
+  </div>
+</Frame>
+
+<br />
+
+<Accordion title="Configuración de SIP saliente">
+  1. Navega a **Telefonía → Troncales SIP** y haz clic en **+ Agregar Troncal**
+  2. Cambia a la pestaña **Llamadas Salientes**
+  3. Configura la autenticación para tu operador:
+     - **Dominio del Proveedor**: El dominio SIP de tu operador (ej., `sip.example.com:5060`)
+     - **Usuario**: Nombre de usuario de autenticación SIP de tu operador
+     - **Contraseña**: Contraseña de autenticación SIP de tu operador
+  4. **Guarda** la configuración de la troncal
+  5. **Asigna a campañas**: Usa esta troncal al crear campañas salientes
+
+  <Note>
+  Recomendamos encarecidamente usar autenticación de usuario/contraseña para llamadas salientes. La autenticación basada en IP no está soportada de forma predeterminada pero puede implementarse. Contacta a soporte si es necesario.
+  </Note>
+</Accordion>
+
+<Accordion title="Casos de uso de llamadas salientes">
+  **Campañas Automatizadas**:
+  - Contacto de ventas y calificación de leads
+  - Recordatorios de citas
+  - Recordatorios de pago
+  - Llamadas de encuestas
+
+  **Notificaciones Proactivas**:
+  - Actualizaciones de estado de pedidos
+  - Notificaciones de entrega
+  - Alertas de servicio
+  - Llamadas de seguimiento
+
+  Consulta [Lanzamiento de Campañas](/es/launch/campaign-outbound-launch) para configuración detallada de campañas salientes.
+</Accordion>
+
+## Próximos Pasos
+
+<CardGroup cols={2}>
+  <Card title="Lanzamiento de Campañas" icon="bullhorn" href="/es/launch/campaign-outbound-launch">
+    Configura campañas de llamadas salientes automatizadas
+  </Card>
+
+  <Card title="Mejores Prácticas de Producción" icon="star" href="/es/launch/production-best-practices">
+    Optimiza para confiabilidad y satisfacción del cliente
+  </Card>
+</CardGroup>

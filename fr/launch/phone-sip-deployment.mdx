@@ -1,0 +1,173 @@
+---
+title: "Déploiement Téléphonique & SIP"
+description: "Connecte ton agent aux numéros de téléphone et trunks SIP pour la gestion des appels en direct"
+icon: "phone-volume"
+keywords: "Configuration trunk SIP, BYOC, apportez ton propre opérateur, import numéro de téléphone, appels entrants, appels sortants, authentification SIP, configuration VoIP, intégration opérateur"
+og:description: "Connecte les agents IA aux systèmes téléphoniques via des trunks SIP. Configuration BYOC pour les appels entrants et sortants avec ton infrastructure d'opérateur existante."
+---
+
+## Vue d'ensemble du déploiement
+
+Le déploiement téléphonique achemine les appels PSTN en direct vers ton agent testé en utilisant une approche **Apportez Ton Propre Opérateur (BYOC)**. Tu importes tes numéros de téléphone existants et les connectes à ton opérateur via des trunks SIP.
+
+**Processus de configuration :**
+1. Configure ton trunk SIP avec les identifiants de l'opérateur
+2. Importe tes numéros de téléphone et Lie-les au trunk
+3. Assigne des agents pour gérer les appels entrants
+4. Teste la connexion
+
+Toutes les configurations utilisent la même pile d'appels en temps réel que le Mode Test, garantissant un comportement cohérent.
+
+## Déploiement des Appels Entrants
+
+### Étape 1 : Configurer le Trunk SIP
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/sip/inbound-sip-light.png" alt="Dialogue Créer un Trunk SIP montrant le champ Nom du Trunk SIP avec texte de placeholder, onglets Appels Entrants et Appels Sortants avec Entrants sélectionné, configuration URI Entrant montrant l'adresse de transfert du fournisseur SIP, champ optionnel Sécurité IP pour restreindre les adresses IP, lien Contacter le support, boutons Annuler et Créer un Trunk SIP" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/sip/inbound-sip-dark.png" alt="Dialogue Créer un Trunk SIP montrant le champ Nom du Trunk SIP avec texte de placeholder, onglets Appels Entrants et Appels Sortants avec Entrants sélectionné, configuration URI Entrant montrant l'adresse de transfert du fournisseur SIP, champ optionnel Sécurité IP pour restreindre les adresses IP, lien Contacter le support, boutons Annuler et Créer un Trunk SIP" />
+  </div>
+</Frame>
+
+<br />
+
+<Accordion title="Configuration du trunk SIP">
+  1. Naviguez vers **Téléphonie → Trunks SIP** et Clique sur **+ Ajouter un Trunk**
+  2. Configure ton opérateur pour envoyer les appels au point de terminaison SIP d'itellicoAI :
+     - **URI SIP de destination** : `sip:50ebbp4vhpr.sip.livekit.cloud`
+     - **Port** : 5060 (UDP) ou 5061 (TLS)
+     - **Codec** : Opus, PCMU ou PCMA
+  3. Dans le tableau de bord itellicoAI, Crée un trunk avec :
+     - **Nom du Trunk** : Un nom descriptif pour ton opérateur
+     - **IPs autorisées** (optionnel) : Restreindre aux plages IP de ton opérateur pour la sécurité
+  4. **Assigner un Agent** : Sélectionne quel agent gère les appels de ce trunk
+  5. **Tester** : Effectue un appel test via ton opérateur pour vérifier le routage
+</Accordion>
+
+<Accordion title="Compatibilité des opérateurs">
+  Opérateurs testés incluant :
+  - Twilio Elastic SIP Trunking
+  - Vonage (anciennement Nexmo)
+  - Bandwidth
+  - Telnyx
+  - La plupart des fournisseurs SIP standard
+
+  **Exigences** :
+  - Support des codecs Opus ou PCMU/PCMA
+  - DTMF via RFC 2833 (pour la saisie au clavier)
+  - Support Reinvite pour les transferts
+</Accordion>
+
+### Étape 2 : Importer les Numéros de Téléphone
+
+Une fois ton trunk SIP configuré, Importe tes numéros de téléphone existants :
+
+<Steps>
+  <Step title="Naviguez vers Numéros de Téléphone">
+    Va dans **Téléphonie → Numéros de Téléphone** et Clique sur **Importer un Numéro**
+  </Step>
+
+  <Step title="Configure les détails du numéro">
+    Fournis :
+    - **Numéro de Téléphone** : Format E.164 (ex : `+14155552671`)
+    - **Nom Convivial** : Étiquette optionnelle (ex : "Ligne Support")
+    - **Trunk SIP** : Sélectionne le trunk configuré à l'Étape 1
+    - **Agent Entrant** : Assigne optionnellement un agent maintenant (ou Fais-le plus tard)
+  </Step>
+
+  <Step title="Enregistrer et vérifier">
+    Clique sur **Enregistrer** pour importer le numéro. Le numéro est maintenant lié à ton trunk SIP et prêt pour les appels entrants.
+  </Step>
+</Steps>
+
+### Étape 3 : Assigner des Agents aux Numéros
+
+<Steps>
+  <Step title="Ouvre la liste des Numéros de Téléphone">
+    Va dans **Téléphonie → Numéros de Téléphone** pour voir tous les numéros importés
+  </Step>
+
+  <Step title="Assigner ou mettre à jour l'agent">
+    Utilise le sélecteur d'agent en ligne pour choisir quel agent doit répondre aux appels vers ce numéro
+  </Step>
+
+  <Step title="Configure le transfert de l'opérateur et Teste">
+    Configure ton opérateur pour transférer les appels vers l'**URI Entrant** affiché sur ton trunk SIP (dans **Téléphonie → Trunks SIP**). Une fois le transfert de l'opérateur actif, appelez le numéro depuis ton téléphone pour tester. L'agent devrait répondre en utilisant le message d'accueil que tu as configuré. Consulte les journaux d'appels dans **Conversations** pour vérifier le bon déroulement de l'appel.
+  </Step>
+</Steps>
+
+<Accordion title="Dépannage du routage d'appels">
+  Si les appels n'atteignent pas ton agent :
+
+  - **Vérifie l'URI SIP** : Assure-toi que ton opérateur envoie les appels vers `sip:50ebbp4vhpr.sip.livekit.cloud`
+  - **Vérifie le support des codecs** : Vérifie que ton opérateur supporte Opus, PCMU ou PCMA
+  - **Règles de pare-feu** : Assure-toi que ton opérateur peut atteindre le point de terminaison SIP LiveKit
+  - **Journaux** : Consulte **Conversations → Journaux** ou ton portail opérateur pour les codes d'erreur SIP
+
+  Problèmes courants :
+  - `404 Not Found` : Configuration URI SIP incorrecte
+  - `488 Not Acceptable Here` : Incompatibilité de codec (Active Opus/PCMU/PCMA chez l'opérateur)
+  - `503 Service Unavailable` : Problème de connectivité temporaire
+</Accordion>
+
+## Déploiement des Appels Sortants
+
+### Configurer le Trunk SIP Sortant
+
+Pour les appels sortants via ton propre opérateur (campagnes, appels proactifs), Configure le trunk SIP sortant avec authentification :
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/sip/outbound-sip-light.png" alt="Dialogue Créer un Trunk SIP montrant le champ Nom du Trunk SIP, onglets Appels Entrants et Appels Sortants avec Sortants sélectionné, section Recommandation d'Authentification, champ Domaine du Fournisseur avec placeholder example.com:5060, champ Nom d'utilisateur pour l'authentification SIP, champ Mot de passe pour l'authentification SIP, lien Contacter le support, boutons Annuler et Créer un Trunk SIP" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/sip/outbound-sip-dark.png" alt="Dialogue Créer un Trunk SIP montrant le champ Nom du Trunk SIP, onglets Appels Entrants et Appels Sortants avec Sortants sélectionné, section Recommandation d'Authentification, champ Domaine du Fournisseur avec placeholder example.com:5060, champ Nom d'utilisateur pour l'authentification SIP, champ Mot de passe pour l'authentification SIP, lien Contacter le support, boutons Annuler et Créer un Trunk SIP" />
+  </div>
+</Frame>
+
+<br />
+
+<Accordion title="Configuration SIP sortante">
+  1. Naviguez vers **Téléphonie → Trunks SIP** et Clique sur **+ Ajouter un Trunk**
+  2. Basculez vers l'onglet **Appels Sortants**
+  3. Configure l'authentification pour ton opérateur :
+     - **Domaine du Fournisseur** : Le domaine SIP de ton opérateur (ex : `sip.example.com:5060`)
+     - **Nom d'utilisateur** : Nom d'utilisateur d'authentification SIP de ton opérateur
+     - **Mot de passe** : Mot de passe d'authentification SIP de ton opérateur
+  4. **Enregistre** la configuration du trunk
+  5. **Assigne aux campagnes** : Utilise ce trunk lors de la création de campagnes sortantes
+
+  <Note>
+  Nous recommandons fortement l'utilisation de l'authentification nom d'utilisateur/mot de passe pour les appels sortants. L'authentification basée sur IP n'est pas supportée par défaut mais peut être implémentée. Contactez le support si nécessaire.
+  </Note>
+</Accordion>
+
+<Accordion title="Cas d'usage des appels sortants">
+  **Campagnes Automatisées** :
+  - Prospection commerciale et qualification de leads
+  - Rappels de rendez-vous
+  - Rappels de paiement
+  - Appels d'enquête
+
+  **Notifications Proactives** :
+  - Mises à jour de statut de commande
+  - Notifications de livraison
+  - Alertes de service
+  - Appels de suivi
+
+  Voir [Lancement de Campagne](/fr/launch/campaign-outbound-launch) pour la configuration détaillée des campagnes sortantes.
+</Accordion>
+
+## Prochaines Étapes
+
+<CardGroup cols={2}>
+  <Card title="Lancement de Campagne" icon="bullhorn" href="/fr/launch/campaign-outbound-launch">
+    Configure des campagnes d'appels sortants automatisées
+  </Card>
+
+  <Card title="Bonnes Pratiques de Production" icon="star" href="/fr/launch/production-best-practices">
+    Optimise pour la fiabilité et la satisfaction client
+  </Card>
+</CardGroup>

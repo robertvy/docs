@@ -1,0 +1,325 @@
+---
+title: "Rilevamento Attività Vocale e Turn Detection"
+description: "Configura il rilevamento dell'attività vocale, il turn detection e la gestione delle interruzioni per un flusso di conversazione naturale"
+icon: "microphone-lines"
+"keywords": "VAD, rilevamento attività vocale, turn detection, gestione interruzioni, rilevamento parlato, flusso conversazione, endpointing"
+"og:description": "Configura il rilevamento dell'attività vocale e il turn detection per un flusso di conversazione AI naturale e reattivo con gestione delle interruzioni."
+---
+
+## Panoramica
+
+Il Rilevamento dell'Attività Vocale (VAD) e i controlli di Turn Detection consentono ai tuoi agenti AI di riconoscere quando gli utenti stanno parlando, rilevare quando hanno terminato il loro turno e gestire le interruzioni in modo naturale. Queste impostazioni sono fondamentali per creare conversazioni fluide e simili a quelle umane che risultano reattive senza interrompere gli utenti a metà frase.
+
+VAD e turn detection lavorano insieme per determinare quando ascoltare, quando rispondere e come gestire le interruzioni - trasformando il riconoscimento vocale di base in interazioni conversazionali naturali.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/vad-light.png" alt="Configurazione del Rilevamento dell'Attività Vocale (VAD) che mostra la barra di navigazione laterale con la sezione Operations espansa e Voice Activity Detection selezionato, toggle Smart Endpointing con icona info e descrizione, toggle Allow Interruptions abilitato, toggle Preemptive Generation, opzioni Voice Detection Sensitivity (Low, Medium, High, Custom) e impostazioni avanzate inclusi slider Interrupt Speech Duration, Minimum Words ed Endpointing Delay" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/vad-dark.png" alt="Configurazione del Rilevamento dell'Attività Vocale (VAD) che mostra la barra di navigazione laterale con la sezione Operations espansa e Voice Activity Detection selezionato, toggle Smart Endpointing con icona info e descrizione, toggle Allow Interruptions abilitato, toggle Preemptive Generation, opzioni Voice Detection Sensitivity (Low, Medium, High, Custom) e impostazioni avanzate inclusi slider Interrupt Speech Duration, Minimum Words ed Endpointing Delay" />
+  </div>
+</Frame>
+
+<Note>
+**Applicazione Universale:** Le impostazioni VAD e turn detection si applicano a tutti i tipi di conversazione, comprese le chiamate telefoniche (SIP/PSTN) e le conversazioni basate sul web.
+
+La configurazione è disponibile in **Impostazioni Agente → Operations → Voice Activity Detection (VAD)**. Le impostazioni includono preset di sensibilità, smart endpointing, gestione delle interruzioni e parametri di ottimizzazione avanzati.
+</Note>
+
+---
+
+## Cos'è il Rilevamento dell'Attività Vocale?
+
+### Comprendere la Tecnologia VAD
+
+Il Rilevamento dell'Attività Vocale (VAD) è la tecnologia che determina quando qualcuno sta parlando rispetto a quando c'è silenzio o rumore di fondo. È la base per sapere quando ascoltare e quando un utente ha finito di parlare.
+
+**Componenti chiave:**
+- **Rilevamento del Parlato:** Identifica quando inizia l'attività vocale
+- **Rilevamento del Silenzio:** Riconosce quando il parlato è terminato
+- **Filtraggio del Rumore:** Distingue il parlato dai suoni di fondo
+
+### Cos'è il Turn Detection?
+
+Il turn detection (chiamato anche "endpointing") determina quando un parlante ha finito il proprio turno conversazionale ed è il momento per l'agente di rispondere. Questo è più sofisticato del semplice rilevamento del silenzio, poiché tiene conto delle pause naturali, del tempo di riflessione e del contesto conversazionale.
+
+---
+
+## Smart Endpointing
+
+### Turn Detection Basato su AI
+
+Lo Smart Endpointing utilizza un modello AI per rilevare la fine del turno in modo più accurato rispetto al solo VAD di base. Questa funzionalità avanzata aiuta a prevenire l'interruzione degli utenti durante pause naturali mantenendo comunque un flusso di conversazione reattivo.
+
+**Vantaggi:**
+- Riduce le interruzioni false durante pause naturali
+- Migliora la gestione del barge-in quando gli utenti interrompono
+- Gestisce meglio le frasi con più clausole
+- Tiene conto del contesto conversazionale
+
+<Warning>
+**Compromesso di Latenza:** Lo Smart Endpointing aggiunge alcune centinaia di millisecondi di latenza al turn detection. Questo migliora l'accuratezza ma rende l'agente leggermente meno reattivo. Disabilitalo per applicazioni critiche in termini di tempo dove la risposta immediata è più importante dell'accuratezza del turn detection.
+</Warning>
+
+**Comportamento di fallback:** Se il modello AI non è disponibile, il sistema ritorna automaticamente al rilevamento solo VAD per garantire un funzionamento affidabile.
+
+<Card title="Toggle Smart Endpointing" icon="brain-circuit">
+  Abilita o disabilita il turn detection basato su AI. Quando disabilitato, il sistema utilizza il rilevamento solo VAD con tempi di risposta più rapidi.
+</Card>
+
+---
+
+## Preset di Sensibilità
+
+### Opzioni di Configurazione Rapida
+
+Scegli tra livelli di sensibilità preconfigurati che bilanciano reattività e accuratezza. Ogni preset regola automaticamente più parametri per prestazioni ottimali in scenari comuni.
+
+<AccordionGroup>
+  <Accordion title="Sensibilità Bassa" icon="turtle">
+    **Meno sensibile, meno interruzioni**
+
+    Ideale per:
+    - Ambienti con rumore di fondo
+    - Utenti che parlano con lunghe pause
+    - Conversazioni formali che richiedono pazienza
+  </Accordion>
+
+  <Accordion title="Sensibilità Media (Raccomandata)" icon="gauge">
+    **Sensibilità bilanciata**
+
+    Ideale per:
+    - Conversazioni generiche
+    - Ambienti misti
+    - La maggior parte dei casi d'uso aziendali
+  </Accordion>
+
+  <Accordion title="Sensibilità Alta" icon="rabbit">
+    **Più sensibile, risposte più rapide**
+
+    Ideale per:
+    - Conversazioni a ritmo veloce
+    - Ambienti audio puliti
+    - Interazioni sensibili al tempo
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Impostazioni Avanzate
+
+### Configurazione Personalizzata
+
+Per un controllo preciso, passa alla modalità "Custom" per accedere a parametri avanzati. Queste impostazioni consentono un'ottimizzazione precisa per casi d'uso o ambienti specifici.
+
+### Gestione delle Interruzioni
+
+<AccordionGroup>
+  <Accordion title="Consenti Interruzioni" icon="circle-pause">
+    **Interruttore principale per la gestione delle interruzioni**
+
+    Quando abilitato, gli utenti possono interrompere l'agente mentre sta parlando. Quando disabilitato, l'agente completerà la sua risposta prima di accettare nuovo input.
+
+    **Casi d'uso:**
+    - **Abilitato:** Conversazioni naturali, supporto clienti, dialoghi interattivi
+    - **Disabilitato:** Annunci importanti, disclaimer legali, script strutturati
+  </Accordion>
+
+  <Accordion title="Durata Parlato Interruzione" icon="clock">
+    **Durata minima del parlato prima di consentire l'interruzione (0-5 secondi)**
+
+    Controlla quanto tempo un utente deve parlare prima che l'agente lo riconosca come tentativo di interruzione.
+
+    - **Valori più bassi (0,2-0,5s):** Più reattivi, ma possono attivarsi su brevi interiezioni
+    - **Valori più alti (1,0-2,0s):** Più stabili, richiedono parlato sostenuto per interrompere
+
+    **Predefinito:** 0,5 secondi
+  </Accordion>
+
+  <Accordion title="Parole Minime" icon="text">
+    **Conteggio minimo di parole prima di consentire l'interruzione (0-5 parole)**
+
+    Richiede che l'utente pronunci un certo numero di parole prima di riconoscere un'interruzione.
+
+    - **0 parole:** Interrompi al rilevamento di qualsiasi parlato
+    - **1-2 parole:** Bilancio tra reattività e stabilità
+    - **3-5 parole:** Richiedi input sostanziale prima di interrompere
+
+    **Predefinito:** 0 parole (interrompi su qualsiasi parlato)
+  </Accordion>
+
+  <Accordion title="Ritardo Endpointing" icon="timer">
+    **Ritardo minimo di silenzio prima di considerare terminato il parlato (0-2 secondi)**
+
+    Quanto tempo attendere in silenzio prima di determinare che l'utente ha finito di parlare.
+
+    - **Valori più bassi (0,2-0,5s):** Risposte più rapide, ma possono interrompere pause riflessive
+    - **Valori più alti (1,0-2,0s):** Più pazienti, consentono pause naturali e tempo di riflessione
+
+    **Predefinito:** 0,5 secondi
+  </Accordion>
+
+  <Accordion title="Soglia VAD" icon="gauge-high">
+    **Sensibilità del rilevamento vocale (0,0 - 1,0)**
+
+    Controlla quanto il sistema è sensibile nel rilevare il parlato rispetto al silenzio o al rumore.
+
+    - **Valori più bassi (0,1-0,3):** Meno sensibile, richiede parlato più chiaro
+    - **Valori medi (0,4-0,6):** Bilanciato per la maggior parte degli ambienti
+    - **Valori più alti (0,7-1,0):** Più sensibile, rileva parlato più silenzioso
+
+    **Predefinito:** 0,5
+
+    <Warning>
+    Valori molto bassi potrebbero perdere utenti che parlano a bassa voce. Valori molto alti potrebbero attivarsi sul rumore di fondo.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Prefix Padding" icon="backward">
+    **Buffer audio prima del rilevamento del parlato (0-500ms)**
+
+    Quantità di audio da includere prima che venga rilevato il parlato. Questo aiuta a prevenire il taglio dell'inizio di parole o frasi.
+
+    - **Valori più bassi (0-50ms):** Buffer minimo, rischio di taglio inizio parlato
+    - **Valori medi (100-200ms):** Buon equilibrio per la maggior parte dei casi
+    - **Valori più alti (300-500ms):** Massima preservazione dell'inizio del parlato
+
+    **Predefinito:** 100ms
+  </Accordion>
+
+  <Accordion title="Durata Silenzio" icon="forward">
+    **Soglia di silenzio prima di terminare il turno (0-2000ms)**
+
+    Quanto tempo attendere in silenzio prima di considerare terminato il parlato dell'utente.
+
+    - **Valori più bassi (100-300ms):** Risposte rapide, ma possono interrompere pause
+    - **Valori medi (400-800ms):** Bilanciato per conversazione naturale
+    - **Valori più alti (1000-2000ms):** Molto pazienti, consentono lunghe pause riflessive
+
+    **Predefinito:** 500ms
+
+    <Tip>
+    Valori più alti funzionano bene per utenti che pensano mentre parlano o hanno modelli di parlato con pause naturali.
+    </Tip>
+  </Accordion>
+</AccordionGroup>
+
+### Generazione Preventiva
+
+<Card title="Generazione Preventiva" icon="rocket">
+  **Inizia a generare risposte prima che il turn detection sia completato**
+
+  Quando abilitato, l'agente inizia a generare una risposta non appena è disponibile una trascrizione finale, anche prima di confermare la fine del turno. Questo può ridurre la latenza percepita ma potrebbe occasionalmente generare risposte che vengono annullate se l'utente continua a parlare.
+
+  **Migliori pratiche:**
+  - Funziona meglio con smart endpointing abilitato
+  - Ideale per conversazioni sensibili al tempo
+  - Potrebbe aumentare i costi API a causa di generazioni annullate
+
+  **Predefinito:** Disabilitato
+</Card>
+
+---
+
+## Best Practice di Configurazione
+
+### Scegliere le Impostazioni Giuste
+
+<Steps>
+  <Step title="Inizia con i Preset">
+    Inizia con il preset di sensibilità Media per la maggior parte dei casi d'uso. Testa nel tuo ambiente reale prima di personalizzare.
+  </Step>
+  <Step title="Testa con Utenti Reali">
+    Diversi accenti, modelli di parlato e velocità possono richiedere impostazioni diverse. Testa con utenti rappresentativi.
+  </Step>
+  <Step title="Considera Smart Endpointing">
+    Abilita smart endpointing solo se l'agente interrompe gli utenti a metà turno troppo spesso e altre impostazioni (ritardo endpointing, sensibilità) non possono risolverlo. Ricorda che aggiunge latenza.
+  </Step>
+  <Step title="Regola in Base all'Ambiente">
+    Gli ambienti rumorosi beneficiano di sensibilità più bassa. Gli ambienti silenziosi possono usare sensibilità più alta per interazioni più reattive.
+  </Step>
+  <Step title="Considera il Caso d'Uso">
+    - **Supporto clienti:** Sensibilità media-alta
+    - **Raccolta informazioni:** Sensibilità media con interruzioni abilitate
+    - **Annunci:** Sensibilità bassa con interruzioni disabilitate
+    - **Chiamate di vendita:** Sensibilità media-alta con interruzioni abilitate
+  </Step>
+</Steps>
+
+---
+
+## Scenari Comuni
+
+### Guida alla Risoluzione dei Problemi
+
+<AccordionGroup>
+  <Accordion title="L'agente interrompe gli utenti a metà frase" icon="scissors">
+    **Sintomi:** L'agente inizia a rispondere prima che gli utenti finiscano di parlare
+
+    **Soluzioni:**
+    - Aumenta ritardo endpointing o durata silenzio
+    - Passa a un preset di sensibilità più bassa
+    - Se usi impostazioni personalizzate, aumenta il requisito di parole minime
+    - Considera l'abilitazione di smart endpointing come ultima risorsa (aggiunge latenza)
+  </Accordion>
+
+  <Accordion title="L'agente risponde troppo lentamente" icon="hourglass">
+    **Sintomi:** Ritardo evidente tra la fine dell'utente e la risposta dell'agente
+
+    **Soluzioni:**
+    - Diminuisci ritardo endpointing o durata silenzio
+    - Passa a un preset di sensibilità più alta
+    - Disabilita smart endpointing se abilitato (riduce latenza)
+    - Abilita generazione preventiva
+  </Accordion>
+
+  <Accordion title="L'agente non riconosce le interruzioni" icon="ban">
+    **Sintomi:** Gli utenti non possono interrompere l'agente mentre parla
+
+    **Soluzioni:**
+    - Assicurati che "Consenti Interruzioni" sia abilitato
+    - Diminuisci durata parlato interruzione
+    - Riduci requisito parole minime
+    - Passa a preset di sensibilità più alta
+  </Accordion>
+
+  <Accordion title="Attivazioni false dal rumore di fondo" icon="volume-high">
+    **Sintomi:** L'agente risponde a suoni o rumori di fondo
+
+    **Soluzioni:**
+    - Passa a preset di sensibilità più bassa
+    - Diminuisci soglia VAD
+    - Aumenta requisito parole minime
+    - Aumenta durata parlato interruzione
+  </Accordion>
+
+  <Accordion title="Parlato perso da utenti che parlano piano" icon="volume-low">
+    **Sintomi:** L'agente non rileva quando utenti silenziosi stanno parlando
+
+    **Soluzioni:**
+    - Passa a preset di sensibilità più alta
+    - Aumenta soglia VAD
+    - Diminuisci durata parlato interruzione
+    - Verifica qualità microfono/input audio
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Funzionalità Correlate
+
+<CardGroup cols={2}>
+  <Card title="Impostazioni Vocali" icon="sliders" href="/it/build/voice-speech/voice-settings">
+    Configura velocità vocale, tono e altri parametri TTS
+  </Card>
+  <Card title="Suono Ambientale" icon="music" href="/it/build/voice-speech/ambient-sound">
+    Aggiungi audio di sottofondo per conversazioni più naturali
+  </Card>
+  <Card title="Pronunce Personalizzate" icon="spell-check" href="/it/build/voice-speech/custom-pronunciations">
+    Assicura la corretta pronuncia di nomi e termini tecnici
+  </Card>
+  <Card title="Controlli DTMF" icon="hashtag" href="/it/build/advanced/dtmf-controls">
+    Configura l'interazione con la tastiera telefonica per la navigazione IVR
+  </Card>
+</CardGroup>

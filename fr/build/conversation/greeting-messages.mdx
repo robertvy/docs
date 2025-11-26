@@ -1,0 +1,417 @@
+---
+title: "Messages d'accueil"
+description: "Configurez la façon dont votre agent démarre les conversations"
+icon: "hand-wave"
+"keywords": "Messages d'accueil IA, accueil IA conversationnelle, accueil dynamique, messages agent personnalisés, démarreurs de conversation, messages de bienvenue IA"
+"og:description": "Configurez des messages d'accueil dynamiques et personnalisés qui donnent le bon ton à chaque conversation avec un agent IA."
+---
+
+## Aperçu
+
+L'accueil est la première chose que les clients entendent lorsqu'ils se connectent à votre agent. Un accueil bien conçu établit le ton, fixe les attentes et guide la conversation dans la bonne direction.
+
+## Modes d'accueil
+
+Choisissez parmi trois modes d'accueil différents :
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/greeting-light.png" alt="Configuration de l'accueil montrant la barre latérale de navigation avec la section Capacités développée et Accueil sélectionné, les onglets Entrant et Sortant, trois options de mode d'accueil (L'utilisateur initie, L'agent IA initie avec message dynamique, L'agent IA initie avec message fixe), éditeur de message fixe avec support de variables, curseur de délai de message et bouton d'interruption" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/greeting-dark.png" alt="Configuration de l'accueil montrant la barre latérale de navigation avec la section Capacités développée et Accueil sélectionné, les onglets Entrant et Sortant, trois options de mode d'accueil (L'utilisateur initie, L'agent IA initie avec message dynamique, L'agent IA initie avec message fixe), éditeur de message fixe avec support de variables, curseur de délai de message et bouton d'interruption" />
+  </div>
+</Frame>
+
+<Tabs>
+  <Tab title="Accueil fixe">
+    **Idéal pour** : Accueil cohérent et de marque
+
+    Votre agent prononce exactement le même accueil à chaque fois.
+
+    ```text wrap
+    Bonjour ! Merci d'avoir appelé le support Acme. C'est Alex. Comment puis-je vous aider ?
+    ```
+
+    **Avantages :**
+    - Message de marque cohérent
+    - Expérience client prévisible
+    - Facile à tester et à affiner
+    - Aucune variabilité de l'IA
+
+    **À utiliser quand :**
+    - La voix de la marque est essentielle
+    - L'accueil inclut des clauses de non-responsabilité spécifiques
+    - Cohérence nécessaire sur tous les appels
+  </Tab>
+
+  <Tab title="Généré par l'IA">
+    **Idéal pour** : Accueil personnalisé et contextuel
+
+    Votre agent génère des accueils dynamiquement en fonction du contexte disponible.
+
+    **Exemples de variations :**
+    ```text wrap
+    # Avec nom du client :
+    "Bonjour Sarah ! Merci d'appeler. Comment puis-je vous aider aujourd'hui ?"
+
+    # Client VIP :
+    "Bonjour M. Johnson ! Merci d'appeler. Comment puis-je vous aider aujourd'hui ?"
+
+    # Basé sur l'heure :
+    "Bonjour ! Merci d'appeler le support Acme. Qu'est-ce qui vous amène ?"
+
+    # Spécifique à la campagne :
+    "Bonjour ! Je vois que vous avez demandé des informations sur notre offre Entreprise. Je serai ravi de vous aider !"
+    ```
+
+    **Avantages :**
+    - Personnalisé pour chaque appelant
+    - Conscient du contexte (heure, campagne, type de client)
+    - Variabilité naturelle
+    - Peut référencer les données disponibles
+
+    **À utiliser quand :**
+    - Vous disposez de données de contact riches
+    - La personnalisation améliore l'expérience
+    - Différents segments de clients nécessitent différentes approches
+  </Tab>
+
+  <Tab title="L'utilisateur initie">
+    **Idéal pour** : Appels sortants où le destinataire parle en premier
+
+    L'agent attend silencieusement que le client parle avant de répondre.
+
+    **Client :** "Allô ?" / "Oui ?" / "Qui est à l'appareil ?"
+    **Agent :** "Bonjour ! C'est Alex d'Acme. J'appelle au sujet de votre demande récente. Avez-vous un instant ?"
+
+    **Avantages :**
+    - Naturel pour les scénarios sortants
+    - Le client parle en premier comme prévu
+    - L'agent répond après que le client ait décroché
+
+    **À utiliser quand :**
+    - Effectuer des appels sortants
+    - Le destinataire dira naturellement quelque chose en répondant
+    - Vous voulez que le client initie la conversation
+
+    <Note>
+    **Pour la plupart des cas d'usage, nous recommandons l'Accueil fixe.** L'utilisateur initie n'est utile que dans certains scénarios d'appels sortants.
+    </Note>
+  </Tab>
+</Tabs>
+
+---
+
+## Configuration de l'accueil
+
+### Délai initial
+
+Contrôlez combien de temps l'agent attend avant de parler (0-5 secondes).
+
+Un délai de **0,5 seconde** est un bon point de départ pour la plupart des cas d'usage.
+
+### Interruptibilité
+
+Contrôlez si les clients peuvent interrompre l'accueil.
+
+**Non-interruptible (Recommandé) :**
+- L'accueil se joue entièrement sans interruption
+- Garantit que les clients entendent le message complet
+- Introduction professionnelle et claire
+- Meilleur pour la plupart des cas d'usage
+
+**Interruptible :**
+- Le client peut parler pendant l'accueil
+- L'agent s'arrête en plein accueil et écoute
+- Peut conduire à des introductions incomplètes
+- À utiliser uniquement si les clients interrompent fréquemment et que les accueils non-interruptibles conduisent à des conversations sous-optimales ou à des raccrochages
+
+<Tip>
+Les accueils non-interruptibles garantissent que votre introduction de marque et votre objectif sont toujours communiqués clairement. Gardez les accueils concis (moins de 10 secondes) pour de meilleurs résultats.
+</Tip>
+
+---
+
+## Accueils entrants vs sortants
+
+### Accueils entrants
+
+Les clients vous appellent. Ils ont initié le contact.
+
+**Bonnes pratiques :**
+- Remerciez-les d'avoir appelé
+- Identifiez votre entreprise/service
+- Présentez l'agent (nom optionnel)
+- Demandez comment vous pouvez aider
+
+**Exemples :**
+
+```text wrap
+# Support standard :
+"Merci d'avoir appelé le support Acme Software. Comment puis-je vous aider aujourd'hui ?"
+
+# Avec nom de l'agent :
+"Bonjour ! C'est Alex du support Acme. En quoi puis-je vous aider ?"
+
+# Convivial :
+"Bonjour ! Merci d'avoir appelé. Qu'est-ce qui vous amène aujourd'hui ?"
+
+# Spécifique au département :
+"Service facturation Acme, c'est Sam. Comment puis-je vous assister ?"
+```
+
+---
+
+### Accueils sortants
+
+Vous appelez le client. Vous devez établir votre légitimité et votre objectif rapidement.
+
+**Bonnes pratiques :**
+- Identifiez-vous et identifiez votre entreprise
+- Indiquez l'objet de l'appel
+- Confirmez que vous parlez à la bonne personne
+- Demandez si c'est le bon moment
+
+**Exemples :**
+
+```text wrap
+# Rappel de rendez-vous :
+"Bonjour, c'est Alex du cabinet dentaire Acme. J'appelle pour confirmer votre rendez-vous demain à 14h. Cela vous convient-il toujours ?"
+
+# Suivi de prospect :
+"Bonjour, c'est Sarah d'Acme Software. Vous avez récemment demandé des informations sur notre offre Entreprise. Avez-vous quelques minutes pour discuter de la façon dont nous pouvons vous aider ?"
+
+# Commentaires clients :
+"Bonjour ! C'est Jordan d'Acme. Vous avez récemment acheté notre produit, et je voulais avoir vos commentaires rapidement. Avez-vous deux minutes ?"
+
+# Rappel de paiement :
+"Bonjour, c'est l'équipe de facturation d'Acme. J'appelle au sujet de votre compte. Pouvons-nous régler ce paiement aujourd'hui ?"
+```
+
+### Personnalisation des accueils sortants
+
+Configurez des accueils séparés pour les appels sortants dans la section **Accueil**.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/outbound-greeting-light.png" alt="Configuration de l'accueil sortant montrant l'onglet Sortant (personnalisé) sélectionné avec le bouton 'Utiliser le même que l'entrant', trois options de mode d'accueil (L'utilisateur initie, L'agent IA initie avec message dynamique, L'agent IA initie avec message fixe), éditeur de message fixe sortant, curseur de délai de message, bouton d'interruption et bouton d'enregistrement" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/outbound-greeting-dark.png" alt="Configuration de l'accueil sortant montrant l'onglet Sortant (personnalisé) sélectionné avec le bouton 'Utiliser le même que l'entrant', trois options de mode d'accueil (L'utilisateur initie, L'agent IA initie avec message dynamique, L'agent IA initie avec message fixe), éditeur de message fixe sortant, curseur de délai de message, bouton d'interruption et bouton d'enregistrement" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Activer la personnalisation sortante">
+    Activez "Configurer un accueil sortant séparé"
+  </Step>
+  <Step title="Choisir le mode d'accueil sortant">
+    Fixe, généré par l'IA ou L'utilisateur initie
+  </Step>
+  <Step title="Définir le délai spécifique sortant">
+    Généralement 0-0,5 seconde pour les appels sortants
+  </Step>
+  <Step title="Configurer l'interruptibilité">
+    Généralement interruptible pour un ressenti naturel
+  </Step>
+</Steps>
+
+<Note>
+Par défaut, les appels sortants reflètent votre accueil entrant. Utilisez les personnalisations lorsque vous avez besoin d'un comportement différent pour les appels proactifs.
+</Note>
+
+---
+
+## Utilisation des variables dans les accueils
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/greeting-variables-light.png" alt="Configuration des variables d'accueil montrant l'onglet Sortant (personnalisé) avec L'agent IA initie avec message fixe sélectionné, éditeur de message fixe sortant contenant la syntaxe des variables, section Variables détectées montrant la variable de test, curseur de délai de message et bouton d'interruption" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/greeting-variables-dark.png" alt="Configuration des variables d'accueil montrant l'onglet Sortant (personnalisé) avec L'agent IA initie avec message fixe sélectionné, éditeur de message fixe sortant contenant la syntaxe des variables, section Variables détectées montrant la variable de test, curseur de délai de message et bouton d'interruption" />
+  </div>
+</Frame>
+
+### Variables de contact
+
+Personnalisez avec les informations du client :
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/contact-variables-light.png" alt="Variables de contact dans l'accueil montrant l'onglet Entrant avec L'agent IA initie avec message fixe sélectionné, éditeur de message fixe avec syntaxe de variables basées sur l'heure et de contact utilisant current_datetime et contact.full_name, section Variables détectées affichant les variables analysées, curseur de délai de message et bouton d'interruption" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/contact-variables-dark.png" alt="Variables de contact dans l'accueil montrant l'onglet Entrant avec L'agent IA initie avec message fixe sélectionné, éditeur de message fixe avec syntaxe de variables basées sur l'heure et de contact utilisant current_datetime et contact.full_name, section Variables détectées affichant les variables analysées, curseur de délai de message et bouton d'interruption" />
+  </div>
+</Frame>
+
+```jinja wrap
+Bonjour {{ contact.first_name | default("") }} ! Merci d'avoir appelé.
+```
+
+Accueils basés sur l'heure utilisant la variable intégrée `current_datetime` :
+
+```jinja wrap
+Bon{{ "jour" if current_datetime.hour < 12 else "jour" }}, {{ contact.full_name | default("") }} !
+```
+
+<Tip>
+La variable `current_datetime` est automatiquement disponible dans les accueils et les instructions pour construire une logique basée sur l'heure. Voir [Variables et contenu dynamique](/fr/build/conversation/variables-dynamic-content) pour plus de détails.
+</Tip>
+
+### Accueils conditionnels
+
+Utilisez les variables de contact intégrées :
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/condition-greeting-light.png" alt="Configuration d'accueil conditionnel montrant l'onglet Entrant avec L'agent IA initie avec message fixe sélectionné, éditeur de message fixe avec logique conditionnelle if-else utilisant la variable contact.email, section Variables détectées montrant contact.first_name et contact.email, curseur de délai de message et bouton d'interruption" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/condition-greeting-dark.png" alt="Configuration d'accueil conditionnel montrant l'onglet Entrant avec L'agent IA initie avec message fixe sélectionné, éditeur de message fixe avec logique conditionnelle if-else utilisant la variable contact.email, section Variables détectées montrant contact.first_name et contact.email, curseur de délai de message et bouton d'interruption" />
+  </div>
+</Frame>
+
+```jinja wrap
+{% if contact.email %}
+Bonjour {{ contact.first_name }}, j'ai votre email {{ contact.email }} dans notre système.
+{% else %}
+Bonjour {{ contact.first_name }}, merci d'avoir appelé !
+{% endif %}
+Comment puis-je vous aider aujourd'hui ?
+```
+
+Ou utilisez des variables personnalisées depuis votre API de contexte dynamique :
+
+```jinja wrap
+{% if account_tier == "premium" %}
+Bonjour {{ contact.first_name }}, merci d'être un client premium apprécié.
+{% else %}
+Bonjour {{ contact.first_name }}, merci d'avoir appelé !
+{% endif %}
+Comment puis-je vous aider aujourd'hui ?
+```
+
+<Note>
+Les variables comme `account_tier`, `company_name` ou les champs personnalisés doivent être fournies via votre [point d'accès API de contexte dynamique](/fr/build/advanced/dynamic-context).
+</Note>
+
+---
+
+## Rédiger d'excellents accueils
+
+<AccordionGroup>
+  <Accordion title="Soyez bref" icon="clock">
+    Visez moins de 10 secondes.
+
+    **Bon :** "Bonjour ! Merci d'avoir appelé le support Acme. Comment puis-je vous aider ?"
+
+    **Trop long :** "Bonjour et merci d'avoir appelé le centre de support technique Acme Software. Je m'appelle Alex, et je vais vous assister aujourd'hui..."
+  </Accordion>
+
+  <Accordion title="Sonnez naturel" icon="comments">
+    Utilisez un langage conversationnel.
+
+    **Bon :** "Bonjour ! Merci d'avoir appelé. En quoi puis-je vous aider ?"
+
+    **À éviter :** "Salutations, client apprécié. Veuillez indiquer la nature de votre demande."
+  </Accordion>
+
+  <Accordion title="Fixez des attentes" icon="bullseye">
+    Rendez votre objectif clair.
+
+    **Bon :** "Bonjour ! C'est Alex du service facturation Acme. J'appelle au sujet de votre facture récente."
+
+    **À éviter :** "Bonjour, c'est Acme. Je voulais vous contacter aujourd'hui."
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Tester les accueils
+
+### Que tester
+
+<AccordionGroup>
+  <Accordion title="Timing" icon="clock">
+    - Le délai est-il approprié ?
+    - L'agent commence-t-il à parler trop tôt/tard ?
+    - Le client peut-il interrompre si nécessaire ?
+  </Accordion>
+
+  <Accordion title="Contenu" icon="message">
+    - L'accueil est-il clair et compréhensible ?
+    - Établit-il l'objectif ?
+    - Le ton est-il approprié ?
+    - Y a-t-il des formulations maladroites ?
+  </Accordion>
+
+  <Accordion title="Variables" icon="brackets-curly">
+    - Les variables s'affichent-elles correctement ?
+    - Les valeurs par défaut fonctionnent-elles ?
+    - La logique conditionnelle se déclenche-t-elle correctement ?
+  </Accordion>
+
+  <Accordion title="Longueur" icon="ruler">
+    - Moins de 10 secondes ?
+    - Le client reste-t-il engagé ?
+    - Pas de mots inutiles ?
+  </Accordion>
+</AccordionGroup>
+
+### Processus de test
+
+1. **Appel test** dans le tableau de bord
+2. **Démarrer l'appel Web**
+3. Écoutez l'accueil plusieurs fois
+4. Testez avec différents contextes (client VIP, différentes campagnes, etc.)
+5. Demandez l'avis de collègues
+6. Affinez en fonction des résultats d'appels réels
+
+---
+
+## Erreurs courantes
+
+<AccordionGroup>
+  <Accordion title="Trop formel" icon="user-tie">
+    **À éviter :** "Salutations. Vous avez contacté la division du support technique de la Corporation Acme."
+
+    **Meilleur :** "Bonjour ! Merci d'avoir appelé le support Acme. En quoi puis-je vous aider ?"
+  </Accordion>
+
+  <Accordion title="Trop décontracté" icon="face-smile">
+    **À éviter :** "Salut ! Quoi de neuf ? De quoi as-tu besoin ?"
+
+    **Meilleur :** "Bonjour ! Merci d'avoir appelé. En quoi puis-je vous aider aujourd'hui ?"
+  </Accordion>
+
+  <Accordion title="Nom de l'entreprise manquant" icon="building">
+    **À éviter :** "Bonjour, c'est Alex. Comment puis-je vous aider ?"
+
+    **Meilleur :** "Bonjour ! C'est Alex du support Acme. Qu'est-ce qui vous amène aujourd'hui ?"
+  </Accordion>
+
+  <Accordion title="Pas d'objectif pour les appels sortants" icon="phone-arrow-up-right">
+    **À éviter :** "Bonjour, est-ce Sarah ? Comment allez-vous aujourd'hui ?"
+
+    **Meilleur :** "Bonjour Sarah ! C'est Alex d'Acme. Vous avez demandé des informations sur notre produit - avez-vous une minute pour en parler ?"
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Prochaines étapes
+
+<CardGroup cols={2}>
+  <Card title="Variables et contenu dynamique" icon="brackets-curly" href="/fr/build/conversation/variables-dynamic-content">
+    Apprenez à utiliser les variables dans les accueils et les instructions
+  </Card>
+  <Card title="Guide d'ingénierie des prompts" icon="book" href="/fr/build/conversation/prompt-engineering-guide">
+    Maîtrisez les techniques d'instructions avancées
+  </Card>
+  <Card title="Testez votre agent" icon="vial" href="/fr/test/web-simulator">
+    Testez vos accueils et affinez
+  </Card>
+</CardGroup>

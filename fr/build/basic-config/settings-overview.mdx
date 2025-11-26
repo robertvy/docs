@@ -1,0 +1,315 @@
+---
+title: "Aperçu des paramètres de l'agent"
+description: "Naviguer dans le panneau de configuration de l'agent et comprendre la hiérarchie des paramètres"
+icon: "sliders"
+"keywords": "paramètres agent IA, configuration bot vocal, panneau de contrôle agent, modèles capacités opérations, configuration agent vocal, configuration assistant IA"
+"og:description": "Guide complet du panneau de configuration de l'agent IA incluant les paramètres de modèles, capacités, opérations et analytics pour une automatisation vocale optimale."
+---
+
+## Aperçu du panneau de configuration
+
+Le panneau de configuration de l'agent est organisé en sections logiques qui contrôlent différents aspects du comportement et des capacités de votre agent.
+
+## Sections de configuration principales
+
+<CardGroup cols={2}>
+  <Card title="Modèles" icon="brain" href="#onglet-modeles">
+    Sélection de modèle IA, configuration vocale, paramètres de transcripteur
+  </Card>
+  <Card title="Capacités" icon="wand-magic-sparkles" href="#onglet-capacites">
+    Instructions, salutations, connaissances, actions, DTMF, serveurs MCP
+  </Card>
+  <Card title="Opérations" icon="gear" href="#onglet-operations">
+    Gestion d'inactivité, détection d'activité vocale, contexte dynamique
+  </Card>
+  <Card title="Analytics" icon="chart-line" href="#onglet-analytics">
+    Objectifs de conversation, analyse post-appel et flux de travail
+  </Card>
+</CardGroup>
+
+---
+
+## Onglet Modèles
+
+Sélectionnez et configurez les technologies IA qui alimentent votre agent.
+
+### Modèle (LLM)
+Choisissez le modèle de langage pour le raisonnement.
+
+**Fournisseurs :**
+- Azure OpenAI
+- OpenAI
+- Anthropic
+- Groq
+
+**Fonctionnalités :**
+- Sélection de modèle avec badges d'hébergement UE
+- Contrôle de température
+
+[En savoir plus sur les modèles IA →](/fr/build/voice-speech/choose-ai-model)
+
+### Voix
+Sélectionnez comment votre agent sonne.
+
+**Fournisseurs :**
+- ElevenLabs
+- Azure
+- Cartesia
+
+**Fonctionnalités :**
+- Bibliothèque de voix avec aperçus
+- Configuration vocale (varie selon le fournisseur)
+
+[En savoir plus sur la sélection de voix →](/fr/build/voice-speech/select-voice)
+
+### Transcripteur
+Configurez le transcripteur.
+
+**Fournisseurs :**
+- Deepgram
+- Azure Speech
+
+**Fonctionnalités :**
+- Sélection de langue et support multilingue
+- Amplification de mots-clés
+
+[En savoir plus sur la transcription →](/fr/build/voice-speech/transcriber)
+
+
+### Effets sonores
+Ajoutez de l'audio ambiant aux conversations.
+- Ambiance de fond (bureau, café, rue)
+
+[En savoir plus sur le son ambiant →](/fr/build/voice-speech/ambient-sound)
+
+---
+
+## Onglet Capacités
+
+Configurez ce que votre agent peut faire et comment il se comporte dans les conversations.
+
+### Instructions (prompt système)
+Définissez la personnalité, les connaissances et le flux conversationnel de votre agent.
+- Éditeur compatible Jinja avec coloration syntaxique
+- Insertion de variables
+- Modèles de prompts et conseils d'écriture
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/agent/agent-instruction-light.png" alt="Éditeur d'instructions dans la section Capacités montrant la barre latérale de navigation, éditeur de texte avec boutons Modèles et Guide d'écriture, aide aux variables, compteur de tokens, et contrôles de sauvegarde" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/agent/agent-instruction-dark.png" alt="Éditeur d'instructions dans la section Capacités montrant la barre latérale de navigation, éditeur de texte avec boutons Modèles et Guide d'écriture, aide aux variables, compteur de tokens, et contrôles de sauvegarde" />
+  </div>
+</Frame>
+
+[En savoir plus sur les instructions →](/fr/build/conversation/instructions)
+
+### Salutation
+Contrôlez comment les conversations commencent.
+- Initié par l'utilisateur, généré par IA, ou salutation fixe
+- Remplacements de salutation entrante vs sortante
+- Paramètres d'interruptibilité et de délai
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/greeting/greeting-light.png" alt="Configuration de salutation montrant les onglets Entrant/Sortant, trois options de salutation (L'utilisateur initie, Agent IA avec message dynamique, Agent IA avec message fixe), éditeur de message, curseur de délai, et basculement barge-in" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/greeting/greeting-dark.png" alt="Configuration de salutation montrant les onglets Entrant/Sortant, trois options de salutation (L'utilisateur initie, Agent IA avec message dynamique, Agent IA avec message fixe), éditeur de message, curseur de délai, et basculement barge-in" />
+  </div>
+</Frame>
+
+[En savoir plus sur les salutations →](/fr/build/conversation/greeting-messages)
+
+### Accès aux connaissances
+Connectez des bases de connaissances, des collections et des documents.
+- Attachez plusieurs sources de connaissances
+- Choisissez le mode Contexte ou RAG par source
+- Support pour plusieurs types de fichiers et scraping de sites web
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/knowledge/knowledge-light.png" alt="Configuration d'Accès aux connaissances montrant les options Sélectionner les connaissances (Base entière, Dossier, Élément spécifique), liste déroulante Base de connaissances, et panneau Configurer l'accès avec sélection mode RAG vs Contexte et explications détaillées" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/knowledge/knowledge-dark.png" alt="Configuration d'Accès aux connaissances montrant les options Sélectionner les connaissances (Base entière, Dossier, Élément spécifique), liste déroulante Base de connaissances, et panneau Configurer l'accès avec sélection mode RAG vs Contexte et explications détaillées" />
+  </div>
+</Frame>
+
+[En savoir plus sur les connaissances →](/fr/build/knowledge/architecture)
+
+### Actions & Intégrations
+Permettez à votre agent d'effectuer de vraies actions.
+- Transférer les appels (agent, téléphone, SIP)
+- Terminer les conversations
+- Réservation intelligente (Cal.com)
+- Actions API personnalisées
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/cal/booking-action-light.png" alt="Page d'aperçu des actions montrant la section Contrôle d'appel (Transférer l'appel, Terminer la conversation) et la section Intégration (Action personnalisée, Réservation de calendrier) avec des boutons Ajouter pour chaque type d'action" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/cal/booking-action-dark.png" alt="Page d'aperçu des actions montrant la section Contrôle d'appel (Transférer l'appel, Terminer la conversation) et la section Intégration (Action personnalisée, Réservation de calendrier) avec des boutons Ajouter pour chaque type d'action" />
+  </div>
+</Frame>
+
+[En savoir plus sur les actions →](/fr/build/actions/overview)
+
+### Contrôles DTMF
+Configurez la gestion des entrées au clavier.
+- Mode Menu (touche unique) ou mode Collecteur (multi-chiffres)
+- Configuration d'envoi de tonalités
+- Paramètres de capture et d'émission
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/DTMF/dtmf-light.png" alt="Configuration des Contrôles DTMF montrant les options de Mode de capture (Menu vs Collecteur), basculement Activer DTMF, paramètres Collecteur (cooldown, timeout, gap), paramètres d'envoi de tonalités avec limites de chiffres et timeout, et options de configuration de touches" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/DTMF/dtmf-dark.png" alt="Configuration des Contrôles DTMF montrant les options de Mode de capture (Menu vs Collecteur), basculement Activer DTMF, paramètres Collecteur (cooldown, timeout, gap), paramètres d'envoi de tonalités avec limites de chiffres et timeout, et options de configuration de touches" />
+  </div>
+</Frame>
+
+[En savoir plus sur le DTMF →](/fr/build/advanced/dtmf-controls)
+
+---
+
+## Onglet Opérations
+
+Affinez le comportement opérationnel et la mécanique des conversations.
+
+### Inactivité & Timeout
+Gérez le silence et les clients inactifs.
+- Cadence de vérification/rappel
+- Messages de timeout personnalisés
+- Actions d'inactivité
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/timeout-light.png" alt="Configuration Inactivité & Timeout montrant les onglets SOURCE DE MESSAGE (Vérifications, Comportement de pause, Monologue, Timeout), basculement Détection d'inactivité, configuration de timing avec timeout de vérification et vérifications max, messages de vérification, et paramètres de message de fin" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/timeout-dark.png" alt="Configuration Inactivité & Timeout montrant les onglets SOURCE DE MESSAGE (Vérifications, Comportement de pause, Monologue, Timeout), basculement Détection d'inactivité, configuration de timing avec timeout de vérification et vérifications max, messages de vérification, et paramètres de message de fin" />
+  </div>
+</Frame>
+
+[En savoir plus sur l'inactivité →](/fr/build/advanced/inactivity-timeout-settings)
+
+### Détection d'activité vocale (VAD)
+Contrôlez quand votre agent parle et écoute.
+- Modes prédéfinis (Bas, Moyen, Élevé) ou Personnalisé
+- Gestion des interruptions
+- Configuration du délai d'endpointing
+- Basculement d'endpointing intelligent
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/vad-light.png" alt="Configuration Détection d'activité vocale montrant le basculement Endpointing intelligent, basculement Autoriser les interruptions, option Génération préemptive, préréglages de Sensibilité de détection vocale (Bas, Moyen, Élevé, Personnalisé), et paramètres avancés avec curseurs pour durée de parole d'interruption, mots minimum, et délai d'endpointing" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/vad-dark.png" alt="Configuration Détection d'activité vocale montrant le basculement Endpointing intelligent, basculement Autoriser les interruptions, option Génération préemptive, préréglages de Sensibilité de détection vocale (Bas, Moyen, Élevé, Personnalisé), et paramètres avancés avec curseurs pour durée de parole d'interruption, mots minimum, et délai d'endpointing" />
+  </div>
+</Frame>
+
+[En savoir plus sur le VAD →](/fr/build/advanced/vad-turn-detection)
+
+### Contexte dynamique
+Récupérez des données personnalisées avant les conversations.
+- Configuration de point de terminaison de contexte
+- Configuration d'authentification
+- Fonctionnalité de requête de test
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/dynamic-light.png" alt="Configuration Contexte dynamique montrant la barre latérale de navigation avec la section Opérations développée, Configuration de point de terminaison avec champ URL de point de terminaison API et bouton Test, et Paramètres d'authentification avec liste déroulante Méthode d'authentification" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/dynamic-dark.png" alt="Configuration Contexte dynamique montrant la barre latérale de navigation avec la section Opérations développée, Configuration de point de terminaison avec champ URL de point de terminaison API et bouton Test, et Paramètres d'authentification avec liste déroulante Méthode d'authentification" />
+  </div>
+</Frame>
+
+[En savoir plus sur le contexte dynamique →](/fr/build/advanced/dynamic-context)
+
+---
+
+## Onglet Analytics
+
+Configurez la mesure des conversations et le suivi de succès.
+
+### Objectifs
+Définissez à quoi ressemble le succès.
+- Objectifs principaux et secondaires
+- Types d'objectifs et critères
+- Suivi de performance
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/analytics-goal-light.png" alt="Configuration Objectifs montrant la barre latérale de navigation avec la section Analytics développée et Objectifs sélectionnée, onglets Objectif principal et Objectifs secondaires avec bouton Ajouter un objectif, et message d'état vide 'Aucun objectif principal défini'" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/analytics-goal-dark.png" alt="Configuration Objectifs montrant la barre latérale de navigation avec la section Analytics développée et Objectifs sélectionnée, onglets Objectif principal et Objectifs secondaires avec bouton Ajouter un objectif, et message d'état vide 'Aucun objectif principal défini'" />
+  </div>
+</Frame>
+
+[En savoir plus sur les objectifs →](/fr/build/analytics/conversation-goals)
+
+### Analyse post-appel
+Configurez l'analyse automatisée des conversations.
+- Extraire des informations structurées
+- Critères d'analyse
+- Systèmes de notation
+- Métriques de performance
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/call-analysis-light.png" alt="Configuration Analyse d'appel montrant la barre latérale de navigation avec la section Analytics développée et Analyse d'appel sélectionnée, onglets Analyses par défaut et Analyses personnalisées avec bouton Ajouter une analyse, et catégories incluant Communication, Interaction, Connaissance, Sentiment, et Technique avec compteurs d'éléments" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/call-analysis-dark.png" alt="Configuration Analyse d'appel montrant la barre latérale de navigation avec la section Analytics développée et Analyse d'appel sélectionnée, onglets Analyses par défaut et Analyses personnalisées avec bouton Ajouter une analyse, et catégories incluant Communication, Interaction, Connaissance, Sentiment, et Technique avec compteurs d'éléments" />
+  </div>
+</Frame>
+
+[En savoir plus dans Optimiser →](/fr/optimize/overview)
+
+---
+
+## Conseils de navigation
+
+### Utilisation du panneau de configuration
+
+<Steps>
+  <Step title="Configurer les modèles">
+    Sélectionnez le modèle IA, la voix et le transcripteur
+  </Step>
+  <Step title="Configurer les capacités">
+    Configurez les instructions, salutations et connaissances
+  </Step>
+  <Step title="Affiner les opérations">
+    Ajustez les paramètres VAD et timeout après test
+  </Step>
+  <Step title="Configurer les analytics">
+    Définissez des objectifs pour la mesure
+  </Step>
+</Steps>
+
+### Comportement de sauvegarde
+
+Certaines sections (comme la sélection de modèle) sauvegardent automatiquement. D'autres nécessitent de cliquer sur le bouton Enregistrer. Les modifications s'appliquent uniquement aux appels futurs, pas aux appels en cours.
+
+---
+
+## Prochaines étapes
+
+<CardGroup cols={3}>
+  <Card title="Écrire les instructions" icon="pen" href="/fr/build/conversation/instructions">
+    Définir le comportement de votre agent
+  </Card>
+  <Card title="Configurer la voix" icon="microphone" href="/fr/build/voice-speech/choose-ai-model">
+    Sélectionner le modèle IA et la voix
+  </Card>
+  <Card title="Ajouter des connaissances" icon="book" href="/fr/build/knowledge/architecture">
+    Connecter vos informations métier
+  </Card>
+</CardGroup>

@@ -1,0 +1,473 @@
+---
+title: "Inactividad, Tiempos de Espera y Detección de Pausas"
+description: "Configura recordatorios, pausas y tiempos de espera de conversación para gestionar el flujo y duración de llamadas"
+icon: "hourglass"
+"keywords": "detección de inactividad, tiempo de espera de conversación, detección de pausas, duración de llamada, configuración de tiempo de espera, gestión de conversación de IA"
+"og:description": "Configura recordatorios inteligentes, detección de pausas y tiempos de espera para gestionar el flujo y duración de conversación de IA."
+---
+
+## Descripción General
+
+Las configuraciones de inactividad y tiempo de espera permiten que tus agentes de IA manejen con elegancia períodos de silencio, gestionen pausas naturales de conversación y apliquen duraciones máximas de conversación. Estos controles son esenciales para crear conversaciones profesionales y conscientes del tiempo que respetan tanto las necesidades del usuario como las restricciones operativas.
+
+Estas configuraciones trabajan juntas para crear un flujo de conversación natural mientras previenen problemas comunes como llamadas abandonadas, tiempos de espera excesivos y conversaciones fuera de control.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/inactivity/inactivity-light.png" alt="Configuración de Inactividad y Tiempo de Espera mostrando barra lateral de navegación con sección de Operaciones expandida e Inactividad y Tiempo de Espera seleccionado, pestañas de FUENTE DE MENSAJE (Recordatorios, Comportamiento de Pausa, Monólogo, Tiempo de Espera) con Recordatorios activo, alternador de Detección de Inactividad habilitado, sección de CONFIGURACIÓN DE TIEMPO con Tiempo de Espera de Recordatorio establecido en 6 segundos y Máximo de Recordatorios establecido en 3, sección de MENSAJES DE RECORDATORIO mostrando mensaje 'Hallo??', y sección de MENSAJE FINAL con 'Auf Wiederhören.', más alternador Predeterminado/Personalizado" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/inactivity/inactivity-dark.png" alt="Configuración de Inactividad y Tiempo de Espera mostrando barra lateral de navegación con sección de Operaciones expandida e Inactividad y Tiempo de Espera seleccionado, pestañas de FUENTE DE MENSAJE (Recordatorios, Comportamiento de Pausa, Monólogo, Tiempo de Espera) con Recordatorios activo, alternador de Detección de Inactividad habilitado, sección de CONFIGURACIÓN DE TIEMPO con Tiempo de Espera de Recordatorio establecido en 6 segundos y Máximo de Recordatorios establecido en 3, sección de MENSAJES DE RECORDATORIO mostrando mensaje 'Hallo??', y sección de MENSAJE FINAL con 'Auf Wiederhören.', más alternador Predeterminado/Personalizado" />
+  </div>
+</Frame>
+
+<Note>
+**Aplicación Universal:** Las configuraciones de inactividad y tiempo de espera se aplican a todos los tipos de conversación, incluyendo llamadas telefónicas (SIP/PSTN) y conversaciones basadas en web.
+
+La configuración está disponible en **Configuración del Agente → Operaciones → Inactividad y Tiempo de Espera**. Las configuraciones incluyen recordatorios, detección de pausas y tiempos de espera de conversación.
+</Note>
+
+---
+
+## Descripción General de Características
+
+### Tres Componentes Clave
+
+<CardGroup cols={3}>
+  <Card title="Recordatorios" icon="bell">
+    Avisos periódicos durante el silencio para asegurar que el usuario sigue comprometido
+  </Card>
+  <Card title="Detección de Pausas" icon="pause">
+    Reconocimiento inteligente de pausas naturales cuando los usuarios necesitan tiempo
+  </Card>
+  <Card title="Tiempo de Espera de Conversación" icon="clock">
+    Duración máxima para toda la conversación
+  </Card>
+</CardGroup>
+
+---
+
+## Recordatorios
+
+### Detectando Inactividad del Usuario
+
+Los recordatorios ayudan a asegurar que los usuarios no se han desconectado, siguen prestando atención o necesitan asistencia. Cuando está habilitado, el agente verificará periódicamente con / recordará al usuario durante períodos de silencio.
+
+<Tabs>
+  <Tab title="Configuración">
+    ### Configuraciones Principales
+
+    <AccordionGroup>
+      <Accordion title="Detección de Inactividad" icon="toggle-on">
+        **Interruptor principal para funcionalidad de recordatorios**
+
+        Cuando está habilitado, el agente monitoreará períodos de silencio del usuario y enviará mensajes de recordatorio. Cuando está deshabilitado, no ocurrirán recordatorios (aunque el tiempo de espera de conversación aún se aplica).
+
+        **Predeterminado:** Habilitado
+      </Accordion>
+
+      <Accordion title="Tiempo de Espera de Recordatorio" icon="timer">
+        **Segundos antes de enviar un mensaje de recordatorio (5-300 segundos)**
+
+        Cuánto tiempo espera el agente en silencio antes de enviar un recordatorio al usuario.
+
+        - **Recomendación típica (5-15s):** Bueno para la mayoría de conversaciones, mantiene el compromiso
+        - **Tiempo de espera extendido (20-45s):** Para escenarios donde los usuarios pueden necesitar tiempo para pensar
+        - **Tiempo de espera largo (60-300s):** Cuando los usuarios necesitan buscar información o completar acciones
+
+        **Predeterminado:** 10 segundos
+
+        <Tip>
+        Para escenarios donde los usuarios necesitan buscar información (números de cuenta, direcciones, etc.), usa valores de tiempo de espera extendidos o largos para evitar interrumpirlos.
+        </Tip>
+      </Accordion>
+
+      <Accordion title="Máximo de Recordatorios" icon="repeat">
+        **Número máximo de recordatorios antes de finalizar llamada (0-10)**
+
+        Cuántas veces el agente intentará volver a comprometer antes de finalizar elegantemente la conversación.
+
+        - **0 recordatorios:** Deshabilitado (la conversación continúa indefinidamente hasta el tiempo de espera)
+        - **1-3 recordatorios:** Salida rápida para llamadas probablemente abandonadas
+        - **4-7 recordatorios:** Persistencia equilibrada
+        - **8-10 recordatorios:** Muy paciente, múltiples intentos de re-compromiso
+
+        **Predeterminado:** 3 recordatorios
+
+        <Warning>
+        Establecer esto en 0 deshabilita la funcionalidad de recordatorio pero NO deshabilita el tiempo de espera de conversación. La conversación aún terminará cuando se alcance el tiempo de espera general.
+        </Warning>
+      </Accordion>
+    </AccordionGroup>
+
+    ### Cómo Funciona
+
+    ```mermaid
+    sequenceDiagram
+        participant Usuario
+        participant Agente
+        Usuario->>Agente: Hola, necesito ayuda
+        Agente->>Usuario: ¿Cómo puedo ayudarte?
+        Note over Usuario,Agente: El usuario deja de responder
+        Note over Agente: Espera 10 segundos (tiempo de espera de recordatorio)
+        Agente->>Usuario: "¿Sigues ahí?" (Recordatorio #1)
+        Note over Usuario,Agente: Aún sin respuesta
+        Note over Agente: Espera otros 10 segundos
+        Agente->>Usuario: "¿Hola? ¿Puedes oírme?" (Recordatorio #2)
+        Note over Usuario,Agente: Aún sin respuesta
+        Note over Agente: Espera otros 10 segundos
+        Agente->>Usuario: "Terminaré la llamada ahora" (Recordatorio #3)
+        Agente->>Usuario: Termina la conversación elegantemente
+    ```
+  </Tab>
+  <Tab title="Mensajes">
+    ### Mensajes de Recordatorio
+
+    Personaliza lo que dice el agente durante los recordatorios. Los mensajes se pueden rotar para sonar más natural a través de múltiples recordatorios.
+
+    <Tabs>
+      <Tab title="Mensajes Predeterminados">
+        **Mensajes proporcionados por el sistema**
+
+        La plataforma proporciona mensajes de recordatorio predeterminados que coinciden con el idioma configurado de tu agente. Estos mensajes se seleccionan automáticamente según la configuración de idioma de voz y transcriptor de tu agente.
+
+        **Beneficios:**
+        - No se requiere configuración
+        - Creados profesionalmente
+        - Variedad para sonar natural
+      </Tab>
+      <Tab title="Mensajes Personalizados">
+        **Crea tus propios mensajes de recordatorio**
+
+        Cambia a mensajes personalizados para crear recordatorios específicos de marca o conscientes del contexto.
+
+        **Características:**
+        - Agrega múltiples mensajes (rotados automáticamente)
+        - Arrastra para reordenar prioridad
+        - Personalización ilimitada
+
+        **Ejemplos de mensajes personalizados:**
+        1. "Oye, no escuché eso. ¿Sigues conmigo?"
+        2. "Solo verificando - ¿necesitas más tiempo?"
+        3. "Estoy aquí cuando estés listo. ¿Debo continuar?"
+
+        <Tip>
+        Agrega 3-5 mensajes variados para hacer que los recordatorios repetidos suenen más naturales y menos robóticos.
+        </Tip>
+      </Tab>
+    </Tabs>
+
+    ### Mensaje Final
+
+    El mensaje final hablado antes de terminar la conversación después de que se alcancen los recordatorios máximos.
+
+    **Predeterminado:** "Terminaré la llamada ahora. ¡Siéntete libre de llamar de nuevo en cualquier momento!"
+
+    **Ejemplos personalizados:**
+    - "Ya que no he escuchado de ti, me desconectaré ahora. ¡Que tengas un gran día!"
+    - "Te dejaré ir ahora. Gracias por llamar, y por favor comunícate de nuevo si necesitas algo."
+    - "Parece que nos desconectamos. Estoy terminando la llamada, pero siéntete libre de llamar de nuevo."
+  </Tab>
+  <Tab title="Casos de Uso">
+    ### Escenarios Comunes
+
+    <AccordionGroup>
+      <Accordion title="Atención al Cliente" icon="headset">
+        **Escenario:** Interacciones generales de servicio al cliente
+
+        **Configuración:**
+        - Tiempo de espera de recordatorio: 10 segundos
+        - Máximo de recordatorios: 3-4
+        - Habilitar detección de pausas: Sí
+        - Mensajes: "¿Sigues ahí?"
+
+        **Por qué:** Tiempo de espera estándar con detección de pausas para cuando los usuarios necesitan buscar cosas
+      </Accordion>
+
+      <Accordion title="Recopilación de Información" icon="clipboard-list">
+        **Escenario:** El agente solicita números de cuenta, direcciones u otros datos
+
+        **Configuración:**
+        - Tiempo de espera de recordatorio: 10 segundos
+        - Máximo de recordatorios: 3-4
+        - Habilitar detección de pausas: Sí
+        - Mensajes: "Tómate tu tiempo. Estoy listo cuando tengas esa información."
+
+        **Por qué:** La detección de pausas suspende automáticamente los recordatorios cuando los usuarios dicen que están buscando información
+      </Accordion>
+
+      <Accordion title="Encuestas Automatizadas" icon="clipboard-question">
+        **Escenario:** Encuesta de voz o recopilación de retroalimentación
+
+        **Configuración:**
+        - Tiempo de espera de recordatorio: 10 segundos
+        - Máximo de recordatorios: 2
+        - Habilitar detección de pausas: No
+        - Mensajes: "No escuché una respuesta. ¿Te gustaría continuar?"
+
+        **Por qué:** Ritmo rápido mantiene el compromiso, menos reintentos previenen esperas largas
+      </Accordion>
+
+      <Accordion title="Reserva de Citas" icon="calendar">
+        **Escenario:** El usuario está revisando su calendario
+
+        **Configuración:**
+        - Tiempo de espera de recordatorio: 15 segundos
+        - Máximo de recordatorios: 4-5
+        - Habilitar detección de pausas: Sí
+        - Mensajes: "Esperaré mientras revisas tu calendario. Avísame cuando estés listo."
+
+        **Por qué:** La detección de pausas suspende los recordatorios cuando los usuarios dicen que están revisando su calendario
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+</Tabs>
+
+---
+
+## Detección de Pausas
+
+### Pausas Naturales de Conversación
+
+La detección de pausas permite que el agente reconozca inteligentemente cuando los usuarios necesitan tiempo para actividades específicas - sin bombardearlos con mensajes de recordatorio. Esto crea un flujo de conversación más natural.
+
+<Tabs>
+  <Tab title="Descripción General">
+    ### Cómo Funciona la Detección de Pausas
+
+    El agente usa IA para detectar cuando un usuario solicita explícitamente tiempo para completar una acción, luego suspende temporalmente los recordatorios de inactividad.
+
+    **Desencadenantes comunes de pausa:**
+    - "Déjame revisar mi calendario"
+    - "Espera, necesito encontrar ese documento"
+    - "¿Puedes darme un minuto para preguntarle a mi colega?"
+    - "Estoy buscando eso ahora"
+    - "Déjame tomar mi tarjeta de crédito"
+
+    **Durante una pausa:**
+    - ✅ Los recordatorios de inactividad se suspenden
+    - ✅ Se aplica la duración máxima de pausa
+    - ✅ El tiempo de espera general de conversación aún se aplica
+
+    ```mermaid
+    sequenceDiagram
+        participant Usuario
+        participant Agente
+        Usuario->>Agente: Necesito programar una cita
+        Agente->>Usuario: ¡Claro! ¿Cuándo te funciona?
+        Usuario->>Agente: Déjame revisar mi calendario
+        Note over Agente: Detecta solicitud de pausa
+        Note over Agente: Suspende recordatorios por hasta 5 minutos
+        Note over Usuario: El usuario revisa el calendario (2 minutos)
+        Usuario->>Agente: ¿Qué tal el martes a las 2pm?
+        Note over Agente: Reanuda operación normal
+        Agente->>Usuario: ¡El martes a las 2pm funciona genial!
+    ```
+  </Tab>
+  <Tab title="Configuración">
+    ### Configuraciones de Pausa Predeterminadas
+
+    <AccordionGroup>
+      <Accordion title="Habilitar Pausa Predeterminada" icon="toggle-on">
+        **Interruptor principal para detección automática de pausas**
+
+        Cuando está habilitado, el agente detecta automáticamente escenarios de pausa comunes y suspende los recordatorios temporalmente.
+
+        **Predeterminado:** Habilitado
+
+        <Note>
+        La detección de pausas requiere que la detección de inactividad esté habilitada. Si la detección de inactividad está deshabilitada, la detección de pausas también estará deshabilitada.
+        </Note>
+      </Accordion>
+
+      <Accordion title="Duración Máxima de Pausa" icon="clock">
+        **Tiempo máximo antes de reanudar verificaciones (1-3600 segundos)**
+
+        Cuánto tiempo esperará el agente durante una pausa detectada antes de reanudar el comportamiento normal de recordatorio.
+
+        - **Duración corta (60-120s):** Solo acciones rápidas
+        - **Duración media (180-300s):** Escenarios de pausa estándar
+        - **Duración larga (600-3600s):** Actividades extendidas
+
+        **Predeterminado:** 300 segundos (5 minutos)
+
+        <Tip>
+        Establece esto según las actividades típicas que realizan tus usuarios. Por ejemplo, revisar un calendario puede necesitar 120s, mientras que recopilar documentos puede necesitar 300s.
+        </Tip>
+      </Accordion>
+    </AccordionGroup>
+
+    ### Detección Automática
+
+    El agente detecta automáticamente escenarios de pausa basados en comprensión del lenguaje natural. Los patrones comunes incluyen:
+
+    - **Solicitudes temporales:** "dame un segundo", "espera un minuto", "aguanta"
+    - **Declaraciones de acción:** "déjame revisar", "estoy mirando", "necesito encontrar"
+    - **Consultar a otros:** "déjame preguntar", "necesitaré verificar con"
+    - **Recopilación de información:** "buscando eso ahora", "sacando", "buscando"
+
+    No se necesita configuración explícita - la IA maneja la detección automáticamente.
+  </Tab>
+  <Tab title="Anulaciones Personalizadas">
+    ### Escenarios de Pausa Avanzados
+
+    Para casos de uso especializados, crea reglas de anulación de pausa personalizadas con duraciones extendidas más allá de la pausa predeterminada.
+
+    **Componentes de Anulación:**
+
+    <AccordionGroup>
+      <Accordion title="Nombre de Anulación" icon="tag">
+        Nombre descriptivo para el escenario de pausa (ej., "Búsqueda Extendida de Documentos", "Verificación de Múltiples Calendarios")
+      </Accordion>
+
+      <Accordion title="Duración Máxima" icon="timer">
+        Duración máxima personalizada para este escenario específico (anula la duración de pausa predeterminada)
+
+        Establece duraciones más largas para escenarios donde los usuarios necesitan tiempo extendido más allá de la pausa estándar de 5 minutos.
+      </Accordion>
+    </AccordionGroup>
+
+    ### Ejemplo de Anulación
+
+    **Nombre:** Coordinación Extendida de Calendario
+
+    **Duración Máxima:** 600 segundos (10 minutos)
+
+    **Caso de uso:** Usuarios empresariales programando a través de múltiples calendarios o coordinando con equipos necesitan más tiempo que la pausa predeterminada de 5 minutos. El agente detectará automáticamente cuando dicen "déjame revisar mi calendario" y suspenderá los recordatorios por hasta 10 minutos en lugar de los 5 minutos predeterminados.
+  </Tab>
+</Tabs>
+
+---
+
+## Tiempo de Espera de Conversación
+
+### Duración Máxima General
+
+El tiempo de espera de conversación establece una duración máxima absoluta para toda la conversación, independientemente del nivel de actividad o compromiso.
+
+<Card title="Por Qué Importan los Tiempos de Espera de Conversación" icon="shield-check">
+  Los tiempos de espera de conversación:
+  - Previenen costos desbocados de conversaciones interminables
+  - Aplican políticas operativas y SLAs
+  - Protegen contra abuso o problemas del sistema
+  - Permiten planificación de recursos predecible
+  - Aseguran acceso justo en entornos de alto volumen
+</Card>
+
+### Configuración
+
+<AccordionGroup>
+  <Accordion title="Duración Máxima de Conversación" icon="clock">
+    **Longitud total máxima de conversación en segundos (0-ilimitado)**
+
+    El tiempo máximo absoluto para toda la conversación de principio a fin.
+
+    - **Tiempo de espera corto (120-300s):** Interacciones rápidas, casos de uso transaccionales
+    - **Tiempo de espera medio (300-900s):** Llamadas estándar de servicio al cliente
+    - **Tiempo de espera largo (900-3600s):** Soporte complejo, consultas detalladas
+    - **Tiempo de espera muy largo (3600+s):** Sesiones extendidas, escenarios especializados
+
+    **Predeterminado:** 300 segundos (5 minutos)
+
+    <Note>
+    Este es un límite estricto que no puede extenderse. Planifica conservadoramente según tu longitud típica de conversación más tiempo de buffer.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Mensaje de Fin de Tiempo de Espera" icon="message">
+    **Mensaje hablado cuando se alcanza el tiempo de espera de conversación**
+
+    El agente habla este mensaje antes de finalizar la conversación debido a alcanzar la duración máxima.
+
+    **Predeterminado:** "Hemos alcanzado nuestro tiempo máximo de llamada. Gracias por tu tiempo, ¡y siéntete libre de llamar de nuevo si necesitas más ayuda!"
+
+    **Ejemplos personalizados:**
+    - "Hemos alcanzado nuestro límite de tiempo. Gracias por llamar, y no dudes en comunicarte de nuevo si necesitas asistencia."
+    - "Nuestro tiempo de sesión ha terminado. Por favor llama de nuevo en cualquier momento si necesitas más ayuda."
+    - "Hemos alcanzado la duración máxima de llamada. Se enviará un resumen a tu correo electrónico. ¡Gracias!"
+  </Accordion>
+</AccordionGroup>
+
+### Comportamiento
+
+- **Siempre habilitado:** El tiempo de espera se ejecuta independientemente de todas las demás configuraciones
+- **Límite absoluto:** No puede pausarse ni extenderse por ningún mecanismo
+- **Incluye todo el tiempo:** Cuenta el tiempo total transcurrido incluyendo pausas y silencio
+- **Finalización elegante:** El agente habla el mensaje de fin y termina cortésmente
+
+---
+
+## Solución de Problemas
+
+### Problemas Comunes y Soluciones
+
+<AccordionGroup>
+  <Accordion title="El agente verifica con demasiada frecuencia" icon="bell-ring">
+    **Síntomas:** Los recordatorios interrumpen a usuarios que aún están comprometidos
+
+    **Soluciones:**
+    - Aumenta el tiempo de espera de recordatorio (prueba 15s en lugar de 10s, o 12s en lugar de 8s)
+    - Habilita la detección de pausas si no está ya activa
+    - Revisa si los usuarios están pausando naturalmente (tiempo de pensamiento)
+    - Considera si la configuración de detección de actividad de voz está cortando a los usuarios
+  </Accordion>
+
+  <Accordion title="El agente no espera lo suficiente durante las pausas" icon="hourglass-end">
+    **Síntomas:** Los recordatorios se activan mientras los usuarios están recopilando información
+
+    **Soluciones:**
+    - Aumenta la duración de pausa predeterminada (prueba 300-600s)
+    - Crea anulaciones de pausa personalizadas para escenarios específicos
+    - Verifica que la detección de pausas esté habilitada
+    - Revisa los eventos de detección de pausas en los registros de conversación
+  </Accordion>
+
+  <Accordion title="Las conversaciones terminan demasiado rápido" icon="clock-rotate-left">
+    **Síntomas:** Las conversaciones legítimas se terminan prematuramente
+
+    **Soluciones:**
+    - Aumenta el tiempo de espera de conversación para coincidir con las longitudes típicas de llamada
+    - Revisa la configuración de máximo de recordatorios (puede ser demasiado baja)
+    - Analiza la duración real de conversación en los registros
+    - Considera si el tiempo de espera de recordatorio es demasiado agresivo
+  </Accordion>
+
+  <Accordion title="Las respuestas del agente son demasiado verbosas" icon="volume-high">
+    **Síntomas:** El agente proporciona respuestas excesivamente detalladas o largas
+
+    **Soluciones:**
+    - Actualiza las instrucciones del agente para fomentar brevedad
+    - Agrega orientación de prompt como "Mantén las respuestas bajo 30 segundos"
+    - Usa ejemplos de respuestas concisas en las instrucciones
+    - Considera si el modelo de IA tiende hacia respuestas verbosas
+  </Accordion>
+
+  <Accordion title="Las conversaciones son demasiado largas y cuestan demasiado" icon="coins">
+    **Síntomas:** Duraciones de conversación excesivas impactando costos
+
+    **Soluciones:**
+    - Reduce el tiempo de espera de conversación para aplicar límites estrictos
+    - Actualiza las instrucciones del agente para fomentar respuestas breves y concisas
+    - Reduce el máximo de recordatorios para salir de llamadas inactivas más rápido
+    - Considera reducir el tiempo de espera de recordatorio para detección más rápida de desconexión
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Características Relacionadas
+
+<CardGroup cols={2}>
+  <Card title="VAD y Detección de Turno" icon="microphone-lines" href="/es/build/advanced/vad-turn-detection">
+    Configura la detección de actividad de voz y comportamiento de toma de turnos
+  </Card>
+  <Card title="Acciones de Control de Llamada" icon="phone-hangup" href="/es/build/actions/call-control">
+    Control de llamada programático incluyendo acciones de finalizar llamada
+  </Card>
+  <Card title="Mensajes de Saludo" icon="hand-wave" href="/es/build/conversation/greeting-messages">
+    Configura cómo comienzan las conversaciones
+  </Card>
+  <Card title="Objetivos de Conversación" icon="bullseye-arrow" href="/es/build/analytics/conversation-goals">
+    Rastrea el éxito y finalización de conversaciones
+  </Card>
+</CardGroup>

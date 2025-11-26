@@ -1,0 +1,208 @@
+---
+title: "Anrufsteuerungsaktionen"
+description: "Verwalten du den Gesprächsfluss mit Transfer- und Gesprächsbeendigungsaktionen"
+icon: "phone"
+keywords: "Anrufsteuerung, Gesprächsbeendung, Anruf beenden, Call Control, Anruf-Aktionen"
+og:description: "Steuern du Anrufverhalten mit Aktionen zur Gesprächsbeendung und Anrufverwaltung für optimale Kundeninteraktionen."
+---
+
+## Übersicht
+
+Anrufsteuerungsaktionen geben deinen KI-Agenten die Fähigkeit, den Gesprächslebenszyklus und das Routing zu verwalten. Diese wesentlichen Aktionen ermöglichen es Agenten, Anrufe weiterzuleiten, wenn spezialisierte Hilfe benötigt wird, und Gespräche professionell zu beenden, wenn Ziele erreicht sind.
+
+Jeder Sprachagent sollte Anrufsteuerungsaktionen konfiguriert haben, um häufige Szenarien wie Eskalationsanfragen und Gesprächsabschluss zu handhaben.
+
+---
+
+## Anruf weiterleiten
+
+Die Transfer-Aktion ermöglicht es deinem Agenten, aktive Anrufe an andere KI-Agenten, Telefonnummern oder SIP-Adressen weiterzuleiten, wenn Situationen dies erfordern.
+
+### Wann zu verwenden
+
+- Kunde bittet, mit einem Menschen oder einer bestimmten Abteilung zu sprechen
+- Problem liegt außerhalb des Wissens oder der Fähigkeiten des Agenten
+- Anfrage erfordert spezialisiertes Fachwissen
+- Ein anderer KI-Agent ist besser für die Anfrage geeignet
+
+### Konfiguration
+
+<Steps>
+  <Step title="Transfer-Aktion hinzufügen">
+    Navigiere zu **Fähigkeiten → Aktionen** in der Kategorie Anrufsteuerung und klicke auf **Hinzufügen** bei **Anruf weiterleiten**
+  </Step>
+  <Step title="Aktion benennen">
+    Gib ihr einen klaren, beschreibenden Namen wie "Transfer zum Support" oder "Transfer zur Abrechnung"
+  </Step>
+  <Step title="Beschreibung hinzufügen">
+    Beschreiben du, was dieser Transfer tut: "Leitet an einen anderen KI-Agenten, eine Telefonnummer oder SIP-Adresse weiter"
+  </Step>
+  <Step title="Ziel konfigurieren">
+    Richte dein Transfer-Ziel ein (siehe [Transfer-Details](/de/build/actions/transfer-details) für vollständige Konfigurationsoptionen)
+  </Step>
+  <Step title="Speichern">
+    Klicke auf **Speichern**, um die Transfer-Aktion zu deinem Agenten hinzuzufügen
+  </Step>
+</Steps>
+
+### Verwendung in Anweisungen
+
+Referenzieren du die Transfer-Aktion mit ihrem exakten Namen in den [Anweisungen (System-Prompt)](/de/build/conversation/prompt-engineering-guide) deines Agenten:
+
+```jinja
+Wenn ein Kunde darum bittet, mit einem Menschen zu sprechen:
+1. Erklären Sie, warum Sie ihn weiterleiten
+2. Fragen Sie "Möchten Sie, dass ich Sie jetzt verbinde?"
+3. Warten Sie auf Bestätigung
+4. Sobald bestätigt, verwenden Sie die Aktion 'Transfer zum Support'
+
+Wenn der Kunde Abrechnungsprobleme erwähnt:
+- Verwenden Sie die Aktion 'Transfer zur Abrechnung'
+```
+
+<Note>
+Siehe die Seite [Transfer-Details](/de/build/actions/transfer-details) für erweiterte Konfiguration einschließlich Transfer-Modi, mehrere Ziele und SIP-Routing.
+</Note>
+
+---
+
+## Gespräch beenden
+
+Die Aktion "Gespräch beenden" ermöglicht es deinem Agenten, Anrufe professionell zu beenden, wenn Gesprächsziele erreicht sind oder wenn eine Beendigung angemessen ist.
+
+### Wann zu verwenden
+
+- Frage des Kunden beantwortet oder Aufgabe erfolgreich abgeschlossen
+- Termin geplant und bestätigt
+- Kunde gibt an, dass er keine zusätzliche Hilfe benötigt
+- Anfrage liegt vollständig außerhalb des Zwecks des Agenten
+
+### Konfiguration
+
+<Steps>
+  <Step title="Aktion 'Gespräch beenden' hinzufügen">
+    Gehe zu **Fähigkeiten → Aktionen** in der Kategorie Anrufsteuerung und klicke auf **Hinzufügen** bei **Gespräch beenden**
+  </Step>
+  <Step title="Aktion benennen">
+    Verwende einen klaren Namen wie "Anruf höflich beenden" oder "Anruf beenden"
+  </Step>
+  <Step title="Beschreibung hinzufügen">
+    Beschreiben du, wann dies verwendet werden sollte: "Lassen du den Agenten das Gespräch mit einer benutzerdefinierten Nachricht beenden"
+  </Step>
+  <Step title="Abschiedsnachricht festlegen (Optional)">
+    Gib optional eine Standard-Abschiedsnachricht an:
+
+    "Vielen Dank für deinen Anruf! Haben du einen schönen Tag."
+
+    Lassen du das Feld leer, um die Nachricht vollständig über deine Agentenanweisungen zu steuern.
+  </Step>
+  <Step title="Speichern">
+    Klicke auf **Speichern**, um die Aktion für deinen Agenten verfügbar zu machen
+  </Step>
+</Steps>
+
+### Verwendung in Anweisungen
+
+```jinja
+Sobald Sie ihre Anfrage erfolgreich abgeschlossen haben:
+1. Fragen Sie "Gibt es noch etwas, bei dem ich Ihnen helfen kann?"
+2. Wenn sie nein sagen:
+   - Bedanken Sie sich für den Anruf
+   - Verwenden Sie die Aktion 'Anruf höflich beenden'
+3. Wenn sie ja sagen, helfen Sie weiter
+```
+
+<Warning>
+Die Aktion "Gespräch beenden" beendet den Anruf unmittelbar nachdem der Agent zu Ende gesprochen hat. Stelle sicher, dass dein Agent alles Notwendige sagt, bevor er diese Aktion aufruft.
+</Warning>
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Um Bestätigung bitten vor Aktionen" icon="comments">
+    Fordere Agenten auf, vor der Ausführung von Aktionen um Benutzerbestätigung zu bitten, um zu vermeiden, dass Aktionen angekündigt werden, die im nächsten Zug ausgeführt werden.
+
+    **Gut:**
+    ```
+    "Ich kann Sie zu unserem Abrechnungsteam verbinden. Möchten Sie, dass ich das jetzt tue?"
+    [Auf Antwort warten]
+    [Transfer nach Bestätigung ausführen]
+    ```
+
+    **Schlecht:**
+    ```
+    "Ich verbinde Sie jetzt..."
+    [Aktion wird im nächsten Zug ausgeführt, was zu unangenehmer Verzögerung führt]
+    ```
+  </Accordion>
+
+  <Accordion title="Immer vor dem Weiterleiten erklären" icon="comment">
+    Leiten du niemals Anrufe ohne Kontext weiter. Agenten sollten erklären, warum sie weiterleiten, Erwartungen setzen und bestätigen.
+
+    **Gut:**
+    ```
+    "Ich verstehe, dass Sie Hilfe bei der Abrechnung benötigen. Unsere Abrechnungsabteilung kann auf
+    Ihre Kontodaten zugreifen. Möchten Sie, dass ich Sie jetzt verbinde?"
+    [Auf Bestätigung warten]
+    [Transfer nach Bestätigung ausführen]
+    ```
+
+    **Schlecht:**
+    ```
+    "Lassen Sie mich Sie zur Abrechnung verbinden."
+    [Leitet ohne Erklärung oder Bestätigung weiter]
+    ```
+  </Accordion>
+
+  <Accordion title="Vor dem Beenden bestätigen" icon="circle-check">
+    Fragen du immer, ob es noch etwas gibt, bevor du Anrufe beenden, um zu verhindern, dass Kunden sich gehetzt fühlen.
+
+    **Gut:**
+    ```
+    "Gibt es noch etwas, bei dem ich Ihnen heute helfen kann?"
+    [Auf Antwort warten]
+    [Wenn nein] "Großartig! Danke für Ihren Anruf!"
+    [Aktion 'Anruf beenden' verwenden]
+    ```
+
+    **Schlecht:**
+    ```
+    "Ihr Termin ist gebucht. Danke!"
+    [Verwendet Aktion 'Anruf beenden' ohne zu prüfen, ob sie noch etwas brauchen]
+    ```
+  </Accordion>
+
+  <Accordion title="Beschreibende Aktionsnamen verwenden" icon="tag">
+    Erstelle mehrere Aktionen für verschiedene Szenarien mit klaren Namen, die mit der Art und Weise übereinstimmen, wie du sie in Anweisungen referenzieren.
+
+    **Gut:**
+    - "Transfer zur Abrechnungsabteilung"
+    - "Transfer zum technischen Support"
+    - "Anruf höflich beenden"
+
+    **Schlecht:**
+    - "Transfer 1"
+    - "Beenden"
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Transfer-Details" icon="right-left" href="/de/build/actions/transfer-details">
+    Tiefer Einblick in Transfer-Ziele, Modi und erweiterte Konfiguration
+  </Card>
+  <Card title="Aktionen Übersicht" icon="bolt" href="/de/build/actions/overview">
+    Erfahren du mehr über alle verfügbaren Aktionstypen
+  </Card>
+  <Card title="Buchungsaktionen" icon="calendar" href="/de/build/actions/booking-calendar">
+    Richte Terminplanung mit Cal.com ein
+  </Card>
+  <Card title="Benutzerdefinierte API-Aktionen" icon="code" href="/de/build/actions/custom-api-actions">
+    Verbindung zu externen Systemen herstellen
+  </Card>
+</CardGroup>

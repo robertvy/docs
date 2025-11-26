@@ -1,0 +1,473 @@
+---
+title: "Inactivity, Timeouts & Pause Detection"
+description: "Configure check-ins, pauses, and conversation timeouts to manage call flow and duration"
+icon: "hourglass"
+"keywords": "inactivity detection, conversation timeout, pause detection, call duration, timeout settings, AI conversation management"
+"og:description": "Configure intelligent check-ins, pause detection, and timeouts to manage AI conversation flow and duration."
+---
+
+## Overview
+
+Inactivity and timeout settings enable your AI agents to gracefully handle periods of silence, manage natural conversation pauses, and enforce maximum conversation durations. These controls are essential for creating professional, time-aware conversations that respect both user needs and operational constraints.
+
+These settings work together to create natural conversation flow while preventing common issues like abandoned calls, excessive wait times, and runaway conversations.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/inactivity/inactivity-light.png" alt="Inactivity & Timeout configuration showing navigation sidebar with Operations section expanded and Inactivity & Timeout selected, MESSAGE SOURCE tabs (Check-ins, Pause Behavior, Monologue, Timeout) with Check-ins active, Inactivity Detection toggle enabled, TIMING CONFIGURATION section with Check-in Timeout set to 6 seconds and Max Check-ins set to 3, CHECK-IN MESSAGES section showing message 'Hallo??', and END MESSAGE section with 'Auf Wiederhören.', plus Default/Custom toggle" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/inactivity/inactivity-dark.png" alt="Inactivity & Timeout configuration showing navigation sidebar with Operations section expanded and Inactivity & Timeout selected, MESSAGE SOURCE tabs (Check-ins, Pause Behavior, Monologue, Timeout) with Check-ins active, Inactivity Detection toggle enabled, TIMING CONFIGURATION section with Check-in Timeout set to 6 seconds and Max Check-ins set to 3, CHECK-IN MESSAGES section showing message 'Hallo??', and END MESSAGE section with 'Auf Wiederhören.', plus Default/Custom toggle" />
+  </div>
+</Frame>
+
+<Note>
+**Universal Application:** Inactivity and timeout settings apply to all conversation types, including phone calls (SIP/PSTN) and web-based conversations.
+
+Configuration is available in **Agent Settings → Operations → Inactivity & Timeout**. Settings include check-in reminders, pause detection, and conversation timeouts.
+</Note>
+
+---
+
+## Feature Overview
+
+### Three Key Components
+
+<CardGroup cols={3}>
+  <Card title="Check-ins & Reminders" icon="bell">
+    Periodic prompts during silence to ensure the user is still engaged
+  </Card>
+  <Card title="Pause Detection" icon="pause">
+    Smart recognition of natural pauses when users need time
+  </Card>
+  <Card title="Conversation Timeout" icon="clock">
+    Maximum duration for the entire conversation
+  </Card>
+</CardGroup>
+
+---
+
+## Check-ins & Reminders
+
+### Detecting User Inactivity
+
+Check-ins help ensure users haven't dropped off, are still paying attention, or need assistance. When enabled, the agent will periodically check in with / remind the user during periods of silence.
+
+<Tabs>
+  <Tab title="Configuration">
+    ### Core Settings
+
+    <AccordionGroup>
+      <Accordion title="Inactivity Detection" icon="toggle-on">
+        **Master switch for check-in functionality**
+
+        When enabled, the agent will monitor for periods of user silence and send check-in messages. When disabled, no check-ins will occur (though conversation timeout still applies).
+
+        **Default:** Enabled
+      </Accordion>
+
+      <Accordion title="Check-in Timeout" icon="timer">
+        **Seconds before sending a check-in message (5-300 seconds)**
+
+        How long the agent waits in silence before sending a reminder to the user.
+
+        - **Typical recommendation (5-15s):** Good for most conversations, maintains engagement
+        - **Extended timeout (20-45s):** For scenarios where users may need time to think
+        - **Long timeout (60-300s):** When users need to look up information or complete actions
+
+        **Default:** 10 seconds
+
+        <Tip>
+        For scenarios where users need to look up information (account numbers, addresses, etc.), use extended or long timeout values to avoid interrupting them.
+        </Tip>
+      </Accordion>
+
+      <Accordion title="Max Check-ins" icon="repeat">
+        **Maximum number of check-ins before ending call (0-10)**
+
+        How many times the agent will attempt to re-engage before gracefully ending the conversation.
+
+        - **0 check-ins:** Disabled (conversation continues indefinitely until timeout)
+        - **1-3 check-ins:** Quick exit for likely abandoned calls
+        - **4-7 check-ins:** Balanced persistence
+        - **8-10 check-ins:** Very patient, multiple re-engagement attempts
+
+        **Default:** 3 check-ins
+
+        <Warning>
+        Setting this to 0 disables reminder functionality but does NOT disable the conversation timeout. The conversation will still end when the overall timeout is reached.
+        </Warning>
+      </Accordion>
+    </AccordionGroup>
+
+    ### How It Works
+
+    ```mermaid
+    sequenceDiagram
+        participant User
+        participant Agent
+        User->>Agent: Hello, I need help
+        Agent->>User: How can I help you?
+        Note over User,Agent: User stops responding
+        Note over Agent: Wait 10 seconds (check-in timeout)
+        Agent->>User: "Are you still there?" (Check-in #1)
+        Note over User,Agent: Still no response
+        Note over Agent: Wait another 10 seconds
+        Agent->>User: "Hello? Can you hear me?" (Check-in #2)
+        Note over User,Agent: Still no response
+        Note over Agent: Wait another 10 seconds
+        Agent->>User: "I'll end the call now" (Check-in #3)
+        Agent->>User: Ends conversation gracefully
+    ```
+  </Tab>
+  <Tab title="Messages">
+    ### Check-in Messages
+
+    Customize what the agent says during check-ins. Messages can be rotated to sound more natural across multiple check-ins.
+
+    <Tabs>
+      <Tab title="Default Messages">
+        **System-provided messages**
+
+        The platform provides default check-in messages that match your agent's configured language. These messages are automatically selected based on your agent's voice and transcriber language settings.
+
+        **Benefits:**
+        - No setup required
+        - Professionally crafted
+        - Variety to sound natural
+      </Tab>
+      <Tab title="Custom Messages">
+        **Create your own check-in messages**
+
+        Switch to custom messages to create brand-specific or context-aware check-ins.
+
+        **Features:**
+        - Add multiple messages (rotated automatically)
+        - Drag to reorder priority
+        - Unlimited customization
+
+        **Example custom messages:**
+        1. "Hey, I didn't catch that. Are you still with me?"
+        2. "Just checking - did you need more time?"
+        3. "I'm here when you're ready. Should I continue?"
+
+        <Tip>
+        Add 3-5 varied messages to make repeated check-ins sound more natural and less robotic.
+        </Tip>
+      </Tab>
+    </Tabs>
+
+    ### End Message
+
+    The final message spoken before ending the conversation after max check-ins are reached.
+
+    **Default:** "I'll end the call now. Feel free to call back anytime!"
+
+    **Custom examples:**
+    - "Since I haven't heard from you, I'll disconnect now. Have a great day!"
+    - "I'll let you go now. Thanks for calling, and please reach out again if you need anything."
+    - "It seems we got disconnected. I'm ending the call, but feel free to call back."
+  </Tab>
+  <Tab title="Use Cases">
+    ### Common Scenarios
+
+    <AccordionGroup>
+      <Accordion title="Customer Support" icon="headset">
+        **Scenario:** General customer service interactions
+
+        **Configuration:**
+        - Check-in timeout: 10 seconds
+        - Max check-ins: 3-4
+        - Enable pause detection: Yes
+        - Messages: "Are you still there?"
+
+        **Why:** Standard timeout with pause detection for when users need to look things up
+      </Accordion>
+
+      <Accordion title="Information Gathering" icon="clipboard-list">
+        **Scenario:** Agent asks for account numbers, addresses, or other data
+
+        **Configuration:**
+        - Check-in timeout: 10 seconds
+        - Max check-ins: 3-4
+        - Enable pause detection: Yes
+        - Messages: "Take your time. I'm ready when you have that information."
+
+        **Why:** Pause detection automatically suspends check-ins when users say they're looking for information
+      </Accordion>
+
+      <Accordion title="Automated Surveys" icon="clipboard-question">
+        **Scenario:** Voice survey or feedback collection
+
+        **Configuration:**
+        - Check-in timeout: 10 seconds
+        - Max check-ins: 2
+        - Enable pause detection: No
+        - Messages: "I didn't hear a response. Would you like to continue?"
+
+        **Why:** Quick pace maintains engagement, fewer retries prevent long waits
+      </Accordion>
+
+      <Accordion title="Appointment Booking" icon="calendar">
+        **Scenario:** User is checking their calendar
+
+        **Configuration:**
+        - Check-in timeout: 15 seconds
+        - Max check-ins: 4-5
+        - Enable pause detection: Yes
+        - Messages: "I'll wait while you check your calendar. Let me know when you're ready."
+
+        **Why:** Pause detection suspends check-ins when users say they're checking their calendar
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+</Tabs>
+
+---
+
+## Pause Detection
+
+### Natural Conversation Pauses
+
+Pause detection allows the agent to intelligently recognize when users need time for specific activities - without bombarding them with check-in messages. This creates a more natural conversation flow.
+
+<Tabs>
+  <Tab title="Overview">
+    ### How Pause Detection Works
+
+    The agent uses AI to detect when a user explicitly requests time to complete an action, then temporarily suspends inactivity check-ins.
+
+    **Common pause triggers:**
+    - "Let me check my calendar"
+    - "Hold on, I need to find that document"
+    - "Can you give me a minute to ask my colleague?"
+    - "I'm looking that up now"
+    - "Let me grab my credit card"
+
+    **During a pause:**
+    - ✅ Inactivity check-ins are suspended
+    - ✅ Maximum pause duration is enforced
+    - ✅ Overall conversation timeout still applies
+
+    ```mermaid
+    sequenceDiagram
+        participant User
+        participant Agent
+        User->>Agent: I need to schedule an appointment
+        Agent->>User: Sure! When works for you?
+        User->>Agent: Let me check my calendar
+        Note over Agent: Detects pause request
+        Note over Agent: Suspends check-ins for up to 5 minutes
+        Note over User: User checks calendar (2 minutes)
+        User->>Agent: How about Tuesday at 2pm?
+        Note over Agent: Resumes normal operation
+        Agent->>User: Tuesday at 2pm works great!
+    ```
+  </Tab>
+  <Tab title="Configuration">
+    ### Default Pause Settings
+
+    <AccordionGroup>
+      <Accordion title="Enable Default Pause" icon="toggle-on">
+        **Master switch for automatic pause detection**
+
+        When enabled, the agent automatically detects common pause scenarios and suspends check-ins temporarily.
+
+        **Default:** Enabled
+
+        <Note>
+        Pause detection requires inactivity detection to be enabled. If inactivity detection is disabled, pause detection will also be disabled.
+        </Note>
+      </Accordion>
+
+      <Accordion title="Maximum Pause Duration" icon="clock">
+        **Maximum time before resuming checks (1-3600 seconds)**
+
+        How long the agent will wait during a detected pause before resuming normal check-in behavior.
+
+        - **Short duration (60-120s):** Quick actions only
+        - **Medium duration (180-300s):** Standard pause scenarios
+        - **Long duration (600-3600s):** Extended activities
+
+        **Default:** 300 seconds (5 minutes)
+
+        <Tip>
+        Set this based on the typical activities your users perform. For example, checking a calendar might need 120s, while gathering documents might need 300s.
+        </Tip>
+      </Accordion>
+    </AccordionGroup>
+
+    ### Automatic Detection
+
+    The agent automatically detects pause scenarios based on natural language understanding. Common patterns include:
+
+    - **Temporal requests:** "give me a second", "wait a minute", "hold on"
+    - **Action statements:** "let me check", "I'm looking", "I need to find"
+    - **Consulting others:** "let me ask", "I'll need to check with"
+    - **Information gathering:** "finding that now", "pulling up", "looking for"
+
+    No explicit configuration needed - the AI handles detection automatically.
+  </Tab>
+  <Tab title="Custom Overrides">
+    ### Advanced Pause Scenarios
+
+    For specialized use cases, create custom pause override rules with extended durations beyond the default pause.
+
+    **Override Components:**
+
+    <AccordionGroup>
+      <Accordion title="Override Name" icon="tag">
+        Descriptive name for the pause scenario (e.g., "Extended Document Search", "Multi-Calendar Check")
+      </Accordion>
+
+      <Accordion title="Max Duration" icon="timer">
+        Custom maximum duration for this specific scenario (overrides default pause duration)
+
+        Set longer durations for scenarios where users need extended time beyond the standard 5-minute pause.
+      </Accordion>
+    </AccordionGroup>
+
+    ### Example Override
+
+    **Name:** Extended Calendar Coordination
+
+    **Max Duration:** 600 seconds (10 minutes)
+
+    **Use case:** Business users scheduling across multiple calendars or coordinating with teams need more time than the default 5-minute pause. The agent will automatically detect when they say "let me check my calendar" and suspend check-ins for up to 10 minutes instead of the default 5 minutes.
+  </Tab>
+</Tabs>
+
+---
+
+## Conversation Timeout
+
+### Overall Maximum Duration
+
+Conversation timeout sets an absolute maximum duration for the entire conversation, regardless of activity level or engagement.
+
+<Card title="Why Conversation Timeouts Matter" icon="shield-check">
+  Conversation timeouts:
+  - Prevent runaway costs from endless conversations
+  - Enforce operational policies and SLAs
+  - Protect against abuse or system issues
+  - Enable predictable resource planning
+  - Ensure fair access in high-volume environments
+</Card>
+
+### Configuration
+
+<AccordionGroup>
+  <Accordion title="Maximum Conversation Duration" icon="clock">
+    **Maximum total conversation length in seconds (0-unlimited)**
+
+    The absolute maximum time for the entire conversation from start to finish.
+
+    - **Short timeout (120-300s):** Quick interactions, transactional use cases
+    - **Medium timeout (300-900s):** Standard customer service calls
+    - **Long timeout (900-3600s):** Complex support, detailed consultations
+    - **Very long timeout (3600+s):** Extended sessions, specialized scenarios
+
+    **Default:** 300 seconds (5 minutes)
+
+    <Note>
+    This is a hard limit that cannot be extended. Plan conservatively based on your typical conversation length plus buffer time.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Timeout End Message" icon="message">
+    **Message spoken when conversation timeout is reached**
+
+    The agent speaks this message before ending the conversation due to reaching maximum duration.
+
+    **Default:** "We've reached our maximum call time. Thank you for your time, and please feel free to call back if you need more help!"
+
+    **Custom examples:**
+    - "We've reached our time limit. Thank you for calling, and please don't hesitate to reach out again if you need assistance."
+    - "Our session time is up. Please call back anytime if you need more help."
+    - "We've reached the maximum call duration. A summary will be sent to your email. Thank you!"
+  </Accordion>
+</AccordionGroup>
+
+### Behavior
+
+- **Always enabled:** Timeout runs independently of all other settings
+- **Absolute limit:** Cannot be paused or extended by any mechanism
+- **Includes all time:** Counts total elapsed time including pauses and silence
+- **Graceful ending:** Agent speaks the end message and terminates politely
+
+---
+
+## Troubleshooting
+
+### Common Issues and Solutions
+
+<AccordionGroup>
+  <Accordion title="Agent checks in too frequently" icon="bell-ring">
+    **Symptoms:** Check-ins interrupt users who are still engaged
+
+    **Solutions:**
+    - Increase check-in timeout (try 15s instead of 10s, or 12s instead of 8s)
+    - Enable pause detection if not already active
+    - Review if users are naturally pausing (thinking time)
+    - Consider if voice activity detection settings are cutting users off
+  </Accordion>
+
+  <Accordion title="Agent doesn't wait long enough during pauses" icon="hourglass-end">
+    **Symptoms:** Check-ins trigger while users are gathering information
+
+    **Solutions:**
+    - Increase default pause duration (try 300-600s)
+    - Create custom pause overrides for specific scenarios
+    - Verify pause detection is enabled
+    - Check pause detection events in conversation logs
+  </Accordion>
+
+  <Accordion title="Conversations end too quickly" icon="clock-rotate-left">
+    **Symptoms:** Legitimate conversations are terminated prematurely
+
+    **Solutions:**
+    - Increase conversation timeout to match typical call lengths
+    - Review max check-ins setting (may be too low)
+    - Analyze actual conversation duration in logs
+    - Consider if check-in timeout is too aggressive
+  </Accordion>
+
+  <Accordion title="Agent responses are too verbose" icon="volume-high">
+    **Symptoms:** Agent provides overly detailed or lengthy responses
+
+    **Solutions:**
+    - Update agent instructions to encourage brevity
+    - Add prompt guidance like "Keep responses under 30 seconds"
+    - Use examples of concise responses in instructions
+    - Consider if the AI model tends toward verbose responses
+  </Accordion>
+
+  <Accordion title="Conversations run too long and cost too much" icon="coins">
+    **Symptoms:** Excessive conversation durations impacting costs
+
+    **Solutions:**
+    - Reduce conversation timeout to enforce hard limits
+    - Update agent instructions to encourage brief, concise responses
+    - Lower max check-ins to exit inactive calls faster
+    - Consider reducing check-in timeout for faster disengagement detection
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Related Features
+
+<CardGroup cols={2}>
+  <Card title="VAD & Turn Detection" icon="microphone-lines" href="/build/advanced/vad-turn-detection">
+    Configure voice activity detection and turn-taking behavior
+  </Card>
+  <Card title="Call Control Actions" icon="phone-hangup" href="/build/actions/call-control">
+    Programmatic call control including end call actions
+  </Card>
+  <Card title="Greeting Messages" icon="hand-wave" href="/build/conversation/greeting-messages">
+    Configure how conversations begin
+  </Card>
+  <Card title="Conversation Goals" icon="bullseye-arrow" href="/build/analytics/conversation-goals">
+    Track conversation success and completion
+  </Card>
+</CardGroup>

@@ -1,0 +1,218 @@
+---
+title: "Instruções (Prompt do sistema)"
+description: "Defina a personalidade, conhecimento e comportamento conversacional do seu agente"
+icon: "pen"
+"keywords": "Instruções de agente IA, prompt do sistema, configuração de agente, comportamento de IA conversacional, personalidade IA, regras de agente, engenharia de prompts"
+"og:description": "Aprenda a definir a personalidade, conhecimento e comportamento conversacional do seu agente IA através de prompts de sistema eficazes."
+---
+
+## Visão geral
+
+O campo Instruções (também chamado de prompt do sistema) é onde você define a personalidade do seu agente, estilo conversacional, objetivos e regras comportamentais. Esta é a configuração mais importante para o sucesso do seu agente.
+
+As instruções são um bloco de texto enviado ao modelo de IA a cada turno de conversa. Elas dizem ao modelo:
+
+- **Quem ele é** (papel e identidade)
+- **Como se comportar** (tom, estilo, limites)
+- **O que alcançar** (objetivos e metas)
+- **Quando usar ferramentas** (ações, conhecimento, transferências)
+
+<Note>
+  A plataforma fornece automaticamente histórico de conversação, dados de contato e conteúdo da base de conhecimento. Foque suas instruções em regras e orientações que só você pode fornecer.
+</Note>
+
+---
+
+## O editor de instruções
+
+O editor de instruções inclui recursos úteis para facilitar a escrita de instruções:
+
+<CardGroup cols={2}>
+  <Card title="Editor de texto grande" icon="text">
+    Editor espaçoso para escrever instruções detalhadas
+  </Card>
+  <Card title="Suporte Jinja" icon="code">
+    Templates Jinja2 completos com variáveis e condicionais
+  </Card>
+  <Card title="Templates de prompts" icon="book">
+    Templates pré-construídos para casos de uso comuns
+  </Card>
+  <Card title="Destaque de sintaxe" icon="code">
+    Destaque de sintaxe Jinja e detecção de erros
+  </Card>
+</CardGroup>
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/agent/agent-instruction-light.png" alt="Editor de instruções do agente mostrando área de texto com botões Templates e Guia de escrita, assistente de variáveis, contador de tokens e controles de salvamento" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/agent/agent-instruction-dark.png" alt="Editor de instruções do agente mostrando área de texto com botões Templates e Guia de escrita, assistente de variáveis, contador de tokens e controles de salvamento" />
+  </div>
+</Frame>
+
+---
+
+## Uso de templates de prompts
+
+O editor de instruções inclui uma **Biblioteca de prompts** com templates prontos para uso:
+
+- **Qualificação de leads** - Vendas B2B com framework BANT
+- **Agendamento de consultas** - Agendamento de serviços com confirmações
+- **Feedback de clientes** - Pesquisas NPS com fluxos de recuperação
+- **Coleta de informações** - Pesquisa e coleta de dados
+- **Prospecção** - Cold calling com abordagem focada em valor
+- **Específicos do setor** - Saúde, imobiliário, serviços domésticos e mais
+
+**Para usar um template:**
+
+1. Clique em "Navegar templates" no editor de instruções
+2. Selecione um template que corresponda ao seu caso de uso
+3. Personalize os espaços reservados (`company_name`, `service_type`, etc.)
+4. Teste e refine com base em suas necessidades específicas
+
+<Frame>
+  <img
+    className="block dark:hidden rounded-lg my-4"
+    src="/images/prompt_templates.png"
+    alt="Biblioteca de templates de prompts mostrando templates disponíveis em modo claro"
+  />
+  <img
+    className="hidden dark:block rounded-lg my-4"
+    src="/images/prompt_templates_dark.png"
+    alt="Biblioteca de templates de prompts mostrando templates disponíveis em modo escuro"
+  />
+</Frame>
+
+<Tip>
+  Os templates seguem uma estrutura comprovada: Papel → Objetivo → Fluxo de conversa → Referência rápida. Comece com um template e adapte em vez de começar do zero.
+</Tip>
+
+---
+
+## Estrutura básica de instruções
+
+Aqui está um template simples para começar:
+
+```text wrap
+Você é [NOME/PAPEL] para [NOME DA EMPRESA].
+
+Seu papel:
+- [Responsabilidade principal]
+- [Responsabilidade secundária]
+- [Tarefas adicionais]
+
+Tom: [Descrever estilo de comunicação]
+
+Diretrizes importantes:
+- [Regra chave 1]
+- [Regra chave 2]
+- [Regra chave 3]
+
+Quando [SITUAÇÃO], você deve [AÇÃO].
+```
+
+### Exemplo: Agente de suporte ao cliente
+
+```text wrap
+Você é Alex, um agente de suporte ao cliente amigável para Acme Software.
+
+Seu papel:
+- Responder perguntas de clientes sobre nossos produtos e serviços
+- Solucionar problemas técnicos comuns
+- Fornecer informações de conta quando solicitado
+- Escalar problemas complexos para suporte humano
+
+Tom: Profissional mas caloroso, paciente e prestativo. Mantenha respostas concisas e claras.
+
+Diretrizes importantes:
+- Sempre cumprimente os clientes calorosamente e pergunte como pode ajudar
+- Nunca faça promessas sobre recursos ou preços sobre os quais não tem certeza
+- Se não souber algo, admita honestamente e ofereça transferir
+- Confirme o entendimento antes de passar para as soluções
+- Termine perguntando se há mais alguma coisa com que possa ajudar
+
+Quando um cliente mencionar problemas de faturamento, forneça informações básicas mas sempre ofereça transferir para o departamento de faturamento para ajuda detalhada.
+```
+
+---
+
+## O que o agente já sabe
+
+A plataforma fornece automaticamente o seguinte contexto ao seu agente a cada turno de conversa. **Você não precisa incluí-los em suas instruções:**
+
+<AccordionGroup>
+  <Accordion title="Transcrição da conversa" icon="messages">
+    O histórico completo da conversa entre o agente e o contato, incluindo todas as mensagens e chamadas de ferramentas.
+  </Accordion>
+  <Accordion title="Informações de contato" icon="user">
+    Dados de contato como nome, e-mail e número de telefone. Acessível via variáveis como `{{ contact.first_name }}`.
+  </Accordion>
+  <Accordion title="Conteúdo da base de conhecimento" icon="book">
+    Quando relevante, a plataforma recupera e inclui automaticamente conteúdo de suas bases de conhecimento.
+  </Accordion>
+  <Accordion title="Ações disponíveis" icon="bolt">
+    A plataforma informa ao agente quais ações estão disponíveis (transferir, agendar consulta, ações API personalizadas). Você só precisa explicar quando usá-las.
+  </Accordion>
+  <Accordion title="Data/hora atual" icon="clock">
+    O agente sabe automaticamente a data, hora e fuso horário atuais.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Erros comuns
+
+<AccordionGroup>
+  <Accordion title="Instruções muito longas" icon="text-size">
+    Mantenha instruções abaixo de 3000 palavras. Instruções longas confundem o modelo e diminuem tempos de resposta.
+
+    **Solução:** Foque em regras essenciais e fluxo de conversa. Mova fatos e políticas para bases de conhecimento.
+  </Accordion>
+  <Accordion title="Muito vago" icon="circle-question">
+    "Seja prestativo" não fornece orientação acionável.
+
+    **Solução:** Seja específico. Em vez disso escreva: "Responda perguntas em menos de 30 segundos, faça uma pergunta de esclarecimento por vez e confirme o entendimento antes de fornecer soluções."
+  </Accordion>
+  <Accordion title="Regras contraditórias" icon="triangle-exclamation">
+    Instruções conflitantes confundem o agente.
+
+    **Solução:** Revise cuidadosamente para garantir que as diretrizes não se contradigam. Teste minuciosamente.
+  </Accordion>
+  <Accordion title="Fatos codificados" icon="database">
+    Fatos, detalhes de produtos e políticas pertencem a bases de conhecimento, não a instruções.
+
+    **Solução:** Mova todo conteúdo factual para bases de conhecimento. Instruções devem conter apenas regras comportamentais e orientação de conversa.
+  </Accordion>
+  <Accordion title="Lógica muito complexa" icon="code">
+    Condicionais profundamente aninhadas e lógica Jinja complexa frequentemente falham.
+
+    **Solução:** Mantenha a lógica simples e clara. Use instruções if/then diretas.
+
+    **Alternativa:** Construa uma equipe de agentes que possam se transferir mutuamente, cada um com uma tarefa dedicada e instruções mais simples.
+  </Accordion>
+  <Accordion title="Nomes de ações incorretos" icon="bolt">
+    Nomes de ações incompatíveis impedem que o agente use ações corretamente.
+
+    **Solução:** Sempre referencie nomes de ações exatos da seção Ações. Copie-os diretamente da interface.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Guia de engenharia de prompts" icon="book" href="/pt/build/conversation/prompt-engineering-guide">
+    Técnicas avançadas para escrever instruções eficazes
+  </Card>
+  <Card title="Mensagens de saudação" icon="hand-wave" href="/pt/build/conversation/greeting-messages">
+    Configure como conversas começam
+  </Card>
+  <Card title="Variáveis e conteúdo dinâmico" icon="brackets-curly" href="/pt/build/conversation/variables-dynamic-content">
+    Domine templates Jinja e variáveis
+  </Card>
+  <Card title="Teste seu agente" icon="vial" href="/pt/test/web-simulator">
+    Aprenda a testar seu agente efetivamente
+  </Card>
+</CardGroup>

@@ -1,0 +1,990 @@
+---
+title: "Controles DTMF"
+description: "Configure envio e captura de tons Dual-Tone Multi-Frequency (DTMF) para menus telefônicos interativos"
+icon: "hashtag"
+"keywords": "DTMF, tons de teclado, navegação IVR, teclado telefônico, detecção de tons, resposta de voz interativa, captura DTMF"
+"og:description": "Configure envio e captura de tons DTMF para navegação IVR e automação de menus telefônicos interativos."
+---
+
+## Visão Geral
+
+Os controles DTMF (Dual-Tone Multi-Frequency) permitem que seus agentes de IA enviem e capturem tons de teclado telefônico durante conversas. Isso permite que os agentes naveguem sistemas IVR, interajam com sistemas telefônicos legados e coletem entrada estruturada de chamadores através de toques de teclas - transformando seu agente de apenas voz para um sistema completo de automação telefônica.
+
+As capacidades DTMF são essenciais para integrar agentes de IA com infraestrutura telefônica empresarial existente, permitindo transferências sem costura através de menus IVR complexos e coletando entrada numérica precisa como números de conta, códigos PIN ou seleções de menu.
+
+<Note>
+**Apenas Chamadas Telefônicas:** DTMF aplica-se a chamadas telefônicas via conexões SIP/PSTN. Conversas baseadas na web sem uma perna telefônica não suportam interação DTMF.
+
+A configuração DTMF está disponível na aba Habilidades em Controles DTMF. As configurações incluem ativação/desativação global, parâmetros de envio de tom e configuração de modo de captura.
+</Note>
+
+---
+
+## O que é DTMF?
+
+### Compreendendo a Tecnologia DTMF
+
+DTMF é o sinal gerado quando você pressiona teclas em um teclado telefônico. Cada tecla produz dois tons simultâneos em frequências diferentes - um alto e um baixo - criando um som único que os sistemas podem decodificar para identificar qual tecla foi pressionada.
+
+**Teclas disponíveis:**
+- **Dígitos:** 0-9 (entrada numérica)
+- **Asterisco:** * (frequentemente usado como "voltar" ou "cancelar")
+- **Sustenido/Cerquilha:** # (frequentemente usado como "confirmar" ou "entrar")
+
+**Usos comuns:**
+- Navegar menus IVR ("Pressione 1 para Vendas, 2 para Suporte")
+- Entrar números de conta ou PINs
+- Confirmar ou cancelar ações
+
+---
+
+## Capacidades DTMF
+
+### Duas Funções Principais
+
+<CardGroup cols={2}>
+  <Card title="Envio de Tons" icon="phone-arrow-up">
+    Agente envia tons DTMF para sistemas externos (navegação IVR)
+  </Card>
+  <Card title="Captura de Tons" icon="phone-arrow-down">
+    Agente recebe e interpreta tons DTMF de chamadores
+  </Card>
+</CardGroup>
+
+### Casos de Uso de Envio de Tons
+
+<AccordionGroup>
+  <Accordion title="Navegação IVR" icon="sitemap">
+    Agente navega sistemas de menu telefônico automaticamente.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant IVR
+        Agent->>IVR: Liga para linha de suporte externa
+        IVR->>Agent: "Pressione 1 para faturamento, 2 para suporte"
+        Agent->>IVR: Envia tom "2"
+        IVR->>Agent: Encaminha para suporte técnico
+        Note over Agent: Continua em nome do cliente
+    ```
+  </Accordion>
+
+  <Accordion title="Autenticação" icon="key">
+    Agente insere credenciais através de sistemas IVR.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant Bank IVR
+        Agent->>Bank IVR: Liga para verificar saldo
+        Bank IVR->>Agent: "Digite o número da conta"
+        Agent->>Bank IVR: Envia tons "5551234567"
+        Bank IVR->>Agent: "Digite o PIN"
+        Agent->>Bank IVR: Envia tons "9876"
+        Bank IVR->>Agent: Concede acesso à conta
+    ```
+  </Accordion>
+
+  <Accordion title="Integração de Sistemas" icon="diagram-project">
+    Agente transfere chamadas através de menus IVR de múltiplos níveis.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant IVR
+        Agent->>IVR: Inicia transferência para número principal
+        IVR->>Agent: "Pressione 3 para atendimento ao cliente"
+        Agent->>IVR: Envia tom "3"
+        IVR->>Agent: "Pressione 2 para clientes existentes"
+        Agent->>IVR: Envia tom "2"
+        Note over Agent,IVR: Chamada encaminha para departamento correto
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Casos de Uso de Captura de Tons
+
+<AccordionGroup>
+  <Accordion title="Seleção de Menu" icon="list">
+    Agente apresenta opções de menu e captura escolha do cliente.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant Customer
+        Agent->>Customer: "Pressione 1 para faturamento, 2 para suporte técnico"
+        Customer->>Agent: Pressiona "1"
+        Note over Agent: Detecta tom e encaminha para fluxo de faturamento
+    ```
+  </Accordion>
+
+  <Accordion title="Coleta de Informações" icon="input-numeric">
+    Agente coleta dados numéricos estruturados como números de conta.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant Customer
+        Agent->>Customer: "Digite seu número de conta de 6 dígitos,<br/>seguido de sustenido"
+        Customer->>Agent: Pressiona "123456#"
+        Note over Agent: Captura "123456" para busca de conta
+    ```
+  </Accordion>
+
+  <Accordion title="Entrada por Teclado" icon="grid">
+    Agente coleta dados sensíveis via teclado em vez de voz.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant Customer
+        Agent->>Customer: "Digite os últimos 4 dígitos do CPF<br/>usando seu teclado"
+        Customer->>Agent: Insere dígitos via teclado
+        Note over Agent: Captura dígitos dos tons
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Configurando Controles DTMF
+
+### Acessando Configurações DTMF
+
+<Steps>
+  <Step title="Navegue para Configuração DTMF">
+    Abra sua configuração de agente
+
+    Vá para a aba **Habilidades**
+
+    Role até a seção **Controles DTMF**
+  </Step>
+  <Step title="Ative DTMF">
+    Alterne **Suporte DTMF** para LIGADO
+
+    Isso ativa capacidades de envio e captura
+  </Step>
+  <Step title="Configure Definições">
+    Configure parâmetros de envio de tom e modo de captura (detalhado abaixo)
+  </Step>
+  <Step title="Salve Configuração">
+    Salve alterações
+
+    Barra de salvamento aparece se houver alterações não salvas
+  </Step>
+</Steps>
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/DTMF/dtmf-light.png" alt="Configuração de Controles DTMF mostrando modo de captura, configurações de tom e parâmetros de coletor" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/DTMF/dtmf-dark.png" alt="Configuração de Controles DTMF mostrando modo de captura, configurações de tom e parâmetros de coletor" />
+  </div>
+</Frame>
+
+### Alternância Global DTMF
+
+**Ativar DTMF durante chamadas**
+
+Permitir que o agente envie tons de teclado e colete dígitos de chamadores.
+
+**Quando ativar:**
+- Agente precisa navegar sistemas IVR
+- Agente precisa coletar entrada numérica estruturada
+- Integração requer interação DTMF
+
+---
+
+## Configuração de Envio de Tons
+
+### Envio de Tons
+
+Configure seu agente para enviar tons DTMF para sistemas externos.
+
+**Alternância:** Permitir que o agente envie tons de teclado
+
+**Parâmetros:**
+- **Tempo de espera entre tons (segundos):** 3 segundos (padrão)
+- **Duração do tom (ms):** 120 ms (padrão)
+- **Intervalo entre tons (ms):** 70 ms (padrão)
+
+### Parâmetros de Envio de Tons
+
+<AccordionGroup>
+  <Accordion title="Tempo de espera entre tons (segundos)" icon="clock">
+    **O que controla:** Tempo mínimo entre transmissões sequenciais de tons
+
+    **Padrão:** 3 segundos
+
+    **Intervalo:** 0.5s e acima (incremento: 0.5s)
+
+    **Propósito:** Garante que o IVR receptor tenha tempo de processar cada tom antes que o próximo chegue
+
+    **Quando ajustar:**
+    - **Aumentar (4-5s):** Sistemas IVR lentos/legados perdendo tons
+    - **Diminuir (1-2s):** Sistemas modernos rápidos, reduzir tempo total de navegação
+
+    **Exemplo:**
+    ```
+    Enviando "1234" com tempo de espera de 3s:
+    Tom "1" → pausa de 3s → Tom "2" → pausa de 3s →
+    Tom "3" → pausa de 3s → Tom "4"
+
+    Tempo total: ~12 segundos
+    ```
+  </Accordion>
+
+  <Accordion title="Duração do tom (ms)" icon="stopwatch">
+    **O que controla:** Duração de cada transmissão individual de tom
+
+    **Padrão:** 120ms
+
+    **Intervalo:** 40ms - 1000ms (incremento: 10ms)
+
+    **Propósito:** Determina quanto tempo o agente "mantém pressionada" cada tecla
+
+    **Quando ajustar:**
+    - **Aumentar (150-200ms):** Sistemas IVR não detectando tons de forma confiável
+    - **Diminuir (80-100ms):** Acelerar interações, reduzir latência
+
+    **Nota técnica:** A maioria dos IVRs requer mínimo de 60-80ms para detectar um tom. Abaixo desse limiar, tons podem ser perdidos.
+  </Accordion>
+
+  <Accordion title="Intervalo entre tons (ms)" icon="grip-lines">
+    **O que controla:** Intervalo silencioso entre o fim de um tom e início do próximo
+
+    **Padrão:** 70ms
+
+    **Intervalo:** 0ms - 1000ms (incremento: 10ms)
+
+    **Propósito:** Fornece separação clara entre tons consecutivos para evitar mistura
+
+    **Quando ajustar:**
+    - **Aumentar (100-150ms):** IVR tratando tons rápidos como entrada única
+    - **Diminuir (40-50ms):** Acelerar sequências de múltiplos dígitos
+
+    **Relação com tempo de espera:**
+    ```
+    Tempo total entre tons = Duração do Tom + Intervalo + Tempo de Espera
+
+    Exemplo com padrões:
+    120ms (tom) + 70ms (intervalo) + 3000ms (espera) = 3.19s entre inícios
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Configurações Recomendadas por Caso de Uso
+
+<AccordionGroup>
+  <Accordion title="IVRs Modernos Rápidos" icon="rocket">
+    **Configurações:**
+    - **Tempo de espera:** 1-2 segundos
+    - **Duração do Tom:** 100ms
+    - **Intervalo entre tons:** 50ms
+
+    **Usar para:** IVRs baseados em nuvem, sistemas telefônicos modernos
+
+    **Tempo total por tom:** ~1.15s
+
+    Melhor para sistemas rápidos baseados em nuvem que podem processar rapidamente entrada DTMF.
+  </Accordion>
+
+  <Accordion title="IVRs Padrão (Padrão)" icon="phone">
+    **Configurações:**
+    - **Tempo de espera:** 3 segundos (padrão)
+    - **Duração do Tom:** 120ms (padrão)
+    - **Intervalo entre tons:** 70ms (padrão)
+
+    **Usar para:** Maioria dos sistemas telefônicos empresariais
+
+    **Tempo total por tom:** ~3.19s
+
+    Esta é a configuração padrão recomendada que funciona confiavelmente com a maioria dos sistemas IVR.
+  </Accordion>
+
+  <Accordion title="IVRs Lentos/Problemáticos" icon="hourglass">
+    **Configurações:**
+    - **Tempo de espera:** 4-5 segundos
+    - **Duração do Tom:** 150ms
+    - **Intervalo entre tons:** 100ms
+
+    **Usar para:** Sistemas perdendo tons, infraestrutura legada
+
+    **Tempo total por tom:** ~4.25s
+
+    Use essas configurações mais lentas quando observar tons sendo perdidos ou falhas de navegação com sistemas legados.
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+Comece com configurações padrão e ajuste apenas se observar tons sendo perdidos ou falhas de navegação IVR. Teste completamente após quaisquer alterações.
+</Tip>
+
+---
+
+## Configuração de Captura de Tons
+
+### Modos de Captura
+
+Escolha como seu agente recebe e interpreta entrada DTMF de chamadores.
+
+<CardGroup cols={2}>
+  <Card title="Menu (tecla única)" icon="list" href="#modo-menu">
+    Pressão única de tecla → resposta imediata. Para seleções de menu estilo IVR.
+  </Card>
+  <Card title="Coletor (múltiplos dígitos)" icon="input-numeric" href="#modo-coletor">
+    Buffer de múltiplos dígitos até tecla de terminação. Para números de conta, PINs, etc.
+  </Card>
+</CardGroup>
+
+### Modo Menu
+
+**Para seleções de menu estilo IVR**
+
+O modo Menu captura uma única pressão de tecla e a envia imediatamente ao agente.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/DTMF/menu-dtmf-light.png" alt="Configuração de Controles DTMF mostrando opções de Modo de Captura com abas Menu (tecla única) e Coletor (múltiplos dígitos), modo Menu selecionado, alternância Ativar DTMF durante chamadas, seção Envio de Tons com alternância 'Permitir que o agente envie tons de teclado' e parâmetros para Tempo de espera entre tons (3 segundos), Duração do tom (120 ms) e Intervalo entre tons (70 ms), seção Captura de Teclado com alternância 'Coletar entrada de teclado do chamador', nota explicando que modo Menu finaliza no primeiro dígito, e botões Descartar/Salvar alterações" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/DTMF/menu-dtmf-dark.png" alt="Configuração de Controles DTMF mostrando opções de Modo de Captura com abas Menu (tecla única) e Coletor (múltiplos dígitos), modo Menu selecionado, alternância Ativar DTMF durante chamadas, seção Envio de Tons com alternância 'Permitir que o agente envie tons de teclado' e parâmetros para Tempo de espera entre tons (3 segundos), Duração do tom (120 ms) e Intervalo entre tons (70 ms), seção Captura de Teclado com alternância 'Coletar entrada de teclado do chamador', nota explicando que modo Menu finaliza no primeiro dígito, e botões Descartar/Salvar alterações" />
+  </div>
+</Frame>
+
+**Como funciona:**
+- Agente apresenta opções de menu
+- Cliente pressiona tecla única (0-9, *, #)
+- Agente recebe dígito imediatamente
+- Agente responde baseado na tecla pressionada
+
+**Exemplo:**
+```text wrap
+Agente: "Pressione 1 para faturamento, 2 para suporte técnico, ou 3 para
+       falar com um representante."
+
+Cliente: [Pressiona 2]
+
+Agente: "Ótimo, vou ajudá-lo com suporte técnico."
+```
+
+**Configuração:**
+
+*Modo Menu escuta por uma única pressão de tecla e a envia ao agente imediatamente.*
+
+Sem parâmetros adicionais - Modo Menu automaticamente:
+- Captura pressão de tecla única
+- Processa imediatamente
+- Nenhuma tecla de terminação necessária
+- Tecla limpar não disponível
+
+**Casos de uso:** Seleção de departamento, confirmações sim/não, escalas de avaliação
+
+---
+
+### Modo Coletor
+
+**Para coletar sequências como números de conta, PINs, números de telefone**
+
+O modo Coletor armazena múltiplos dígitos até que o usuário pressione a tecla de terminação ou o timeout expire.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/DTMF/collector-dtmf-light.png" alt="Configuração de Controles DTMF mostrando Modo de Captura com aba Coletor (múltiplos dígitos) selecionada, alternância Ativar DTMF, seção Envio de Tons com configurações de tempo de espera/duração/intervalo, seção Captura de Teclado com alternância Coletar entrada de teclado do chamador, configuração de dígitos mínimo/máximo, configurações de timeout, menus suspensos de tecla de terminação e tecla de limpar entrada, e botão salvar alterações" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/DTMF/collector-dtmf-dark.png" alt="Configuração de Controles DTMF mostrando Modo de Captura com aba Coletor (múltiplos dígitos) selecionada, alternância Ativar DTMF, seção Envio de Tons com configurações de tempo de espera/duração/intervalo, seção Captura de Teclado com alternância Coletar entrada de teclado do chamador, configuração de dígitos mínimo/máximo, configurações de timeout, menus suspensos de tecla de terminação e tecla de limpar entrada, e botão salvar alterações" />
+  </div>
+</Frame>
+
+**Como funciona:**
+- Agente solicita entrada de múltiplos dígitos
+- Cliente insere múltiplos dígitos
+- Pressiona tecla de terminação (geralmente #) quando completo
+- Agente recebe string completa de dígitos
+
+**Exemplo:**
+```text wrap
+Agente: "Por favor, digite seu número de conta de 10 dígitos, seguido da tecla sustenido."
+
+Cliente: [Pressiona 5-5-5-1-2-3-4-5-6-7-#]
+
+Agente: "Obrigado. Encontrei sua conta terminando em 4567."
+```
+
+**Configuração:**
+- **Dígitos mínimos:** 1 (padrão)
+- **Dígitos máximos:** 25 (padrão)
+- **Timeout (ms):** 6000ms (6 segundos, padrão)
+- **Tecla de terminação:** # (Sustenido)
+- **Tecla de limpar entrada:** * (Asterisco)
+
+**Casos de uso:** Números de conta, PINs, números de telefone, IDs de pedido
+
+### Parâmetros do Modo Coletor
+
+<AccordionGroup>
+  <Accordion title="Dígitos mínimos" icon="arrow-down-1-9">
+    **O que controla:** Menor número de dígitos necessários antes que a entrada seja considerada válida
+
+    **Padrão:** 1
+
+    **Intervalo:** 1 até dígitos máximos (incremento: 1)
+
+    **Propósito:** Evita envio prematuro, valida comprimento esperado de entrada
+
+    **Exemplos:**
+    - **Número de conta (10 dígitos):** Definir para 10
+    - **PIN (4 dígitos):** Definir para 4
+    - **Entrada flexível:** Definir para 1 (qualquer comprimento aceito)
+
+    **Comportamento:**
+    - Se cliente pressionar # antes do mínimo ser atingido → Erro, solicitar reinserção
+    - Se cliente atingir mínimo → Pode pressionar # para enviar antes
+  </Accordion>
+
+  <Accordion title="Dígitos máximos" icon="arrow-up-9-1">
+    **O que controla:** Dígitos máximos aceitos antes de auto-envio
+
+    **Padrão:** 25
+
+    **Intervalo:** Dígitos mínimos até 64 (incremento: 1)
+
+    **Propósito:** Evita entrada excessivamente longa, pode auto-enviar quando máximo atingido
+
+    **Exemplos:**
+    - **Número de telefone:** Definir para 10 (formato EUA)
+    - **Número de conta:** Definir para comprimento esperado
+    - **Comprimento variável:** Definir mais alto que máximo esperado
+
+    **Comportamento:**
+    - Quando dígitos máximos inseridos → Envia automaticamente sem requerer #
+    - Tons após máximo são ignorados
+  </Accordion>
+
+  <Accordion title="Timeout (ms)" icon="clock">
+    **O que controla:** Quanto tempo esperar pelo próximo dígito antes de timeout
+
+    **Padrão:** 6000ms (6 segundos)
+
+    **Intervalo:** 500ms - 30000ms (incremento: 500ms)
+
+    **Propósito:** Lida com entrada abandonada, solicita cliente a continuar
+
+    **Comportamento:**
+    - Timer inicia após cada pressão de dígito
+    - Reinicia com cada novo dígito
+    - Se timeout atingido → Tratar como completo ou solicitar mais
+
+    **Exemplos:**
+    - **Entrada rápida (PIN):** 3000-4000ms (3-4 segundos)
+    - **Entrada longa (número de conta):** 6000-8000ms (6-8 segundos)
+    - **Sistema paciente:** 10000ms+ (10+ segundos)
+
+    **Tratamento de instrução:**
+    ```
+    Se entrada DTMF expirar antes da tecla de terminação:
+    - Solicitar cliente: "Não recebi o número completo.
+      Por favor, tente novamente e pressione sustenido quando terminar."
+    - Reiniciar coletor e permitir nova tentativa
+    ```
+  </Accordion>
+
+  <Accordion title="Tecla de terminação" icon="hashtag">
+    **O que controla:** Qual tecla sinaliza "entrada completa"
+
+    **Opções:** # (Sustenido), * (Asterisco), 0-9
+
+    **Padrão:** # (Sustenido)
+
+    **Propósito:** Permite entrada de comprimento variável com sinal explícito de conclusão
+
+    **Exemplo:**
+    ```
+    Agente: "Digite seu número de conta seguido de sustenido."
+    Cliente insere: 123456#
+    → Agente recebe "123456"
+
+    Agente: "Digite seu número de telefone seguido de sustenido."
+    Cliente insere: 5551234567#
+    → Agente recebe "5551234567"
+    ```
+  </Accordion>
+
+  <Accordion title="Tecla de limpar entrada" icon="delete-left">
+    **O que controla:** Qual tecla deleta o último dígito inserido
+
+    **Opções:** * (Asterisco), # (Sustenido)
+
+    **Padrão:** * (Asterisco)
+
+    **Propósito:** Permite que cliente corrija erros sem recomeçar
+
+    **Exemplo:**
+    ```
+    Cliente insere: 1-2-3-4-5-6
+    Percebe erro, pressiona: *
+    Sistema deleta último dígito: 1-2-3-4-5
+    Cliente continua: 7-8-#
+    Entrada final: "12345678"
+    ```
+
+    **Nota:** Se cliente pressionar tecla limpar em buffer vazio, tipicamente ignorado (sem ação).
+  </Accordion>
+</AccordionGroup>
+
+### Configurações Recomendadas do Coletor por Caso de Uso
+
+<AccordionGroup>
+  <Accordion title="Coleta de Número de Conta (10 dígitos)" icon="credit-card">
+    **Configurações:**
+    - **Dígitos mínimos:** 10
+    - **Dígitos máximos:** 10
+    - **Tecla de terminação:** # (opcional, auto-envia em 10)
+    - **Timeout:** 6000ms (6 segundos)
+    - **Tecla de limpar entrada:** *
+
+    **Resultado:** Auto-envia em exatamente 10 dígitos, ou cliente pode pressionar # antes
+  </Accordion>
+
+  <Accordion title="Coleta de PIN (4-6 dígitos)" icon="lock">
+    **Configurações:**
+    - **Dígitos mínimos:** 4
+    - **Dígitos máximos:** 6
+    - **Tecla de terminação:** #
+    - **Timeout:** 4000ms (4 segundos)
+    - **Tecla de limpar entrada:** *
+
+    **Resultado:** Aceita PINs de 4-6 dígitos, requer # para 4-5 dígitos, auto-envia em 6
+  </Accordion>
+
+  <Accordion title="Número de Telefone (Formato Variável)" icon="phone">
+    **Configurações:**
+    - **Dígitos mínimos:** 7
+    - **Dígitos máximos:** 15
+    - **Tecla de terminação:** #
+    - **Timeout:** 6000ms (6 segundos)
+    - **Tecla de limpar entrada:** *
+
+    **Resultado:** Lida com formatos EUA (10 dígitos) e internacional (variável)
+  </Accordion>
+
+  <Accordion title="Entrada Numérica Flexível (Padrão)" icon="input-text">
+    **Configurações:**
+    - **Dígitos mínimos:** 1 (padrão)
+    - **Dígitos máximos:** 25 (padrão)
+    - **Tecla de terminação:** #
+    - **Timeout:** 6000ms (6 segundos, padrão)
+    - **Tecla de limpar entrada:** *
+
+    **Resultado:** Aceita qualquer comprimento, cliente controla conclusão com #
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Usando DTMF em Instruções
+
+### Solicitando Entrada DTMF
+
+**Exemplo de seleção de menu:**
+```text wrap
+Ao apresentar opções, instrua claramente o cliente a usar seu teclado:
+
+Agente: "Posso ajudá-lo com três coisas:
+       Para saldo da conta, pressione 1.
+       Para transações recentes, pressione 2.
+       Para atendimento ao cliente, pressione 3.
+
+       Por favor, pressione um número agora."
+
+Aguarde entrada DTMF. Quando recebida, confirme a seleção:
+
+Se cliente pressionar 1: "Ótimo, vou verificar o saldo da sua conta."
+Se cliente pressionar 2: "Ok, vou mostrar transações recentes."
+Se cliente pressionar 3: "Vou conectá-lo ao atendimento ao cliente."
+```
+
+**Exemplo de coleta de múltiplos dígitos:**
+```text wrap
+Ao coletar números de conta ou PINs:
+
+Agente: "Para segurança, vou precisar verificar sua conta.
+       Por favor, digite seu número de conta de 8 dígitos usando seu teclado,
+       seguido da tecla sustenido."
+
+Aguarde entrada DTMF (modo coletor com min=8, max=8, term=#).
+
+Quando dígitos recebidos, confirme recebimento sem repetir número completo:
+"Obrigado, localizei sua conta terminando em [últimos 4 dígitos]."
+```
+
+### Tratando Respostas DTMF
+
+**Processamento automático:**
+
+Quando a captura DTMF está ativada, o agente automaticamente recebe dígitos coletados e pode responder a eles. Nenhuma configuração adicional necessária.
+
+**Avançado: Usando a ferramenta wait_for_dtmf_input**
+
+Para controle explícito em suas instruções de agente, você pode chamar a ferramenta `wait_for_dtmf_input`. Ela retorna:
+
+```json
+{
+  "value": "1234",
+  "digits": ["1","2","3","4"],
+  "length": 4,
+  "met_minimum": true,
+  "reason": "termination"
+}
+```
+
+Use isso quando precisar validar entrada ou lidar com padrões de dígitos específicos em suas instruções.
+
+**Validando entrada de múltiplos dígitos:**
+```text wrap
+Quando cliente insere número de conta via DTMF:
+
+Validar a entrada:
+- Verificar comprimento corresponde ao esperado (ex: 10 dígitos para número de conta)
+- Verificar formato (apenas numérico, padrão esperado)
+- Usar para ação de busca de conta
+
+Se validação falhar:
+"Recebi {result.length} dígitos, mas números de conta são
+10 dígitos. Vamos tentar novamente. Por favor, digite seu número de conta de 10 dígitos
+seguido de sustenido."
+
+Se validação for bem-sucedida:
+Usar ação 'Buscar Conta de Cliente' com account_number = result.value
+```
+
+### Fallback para Voz
+
+**Oferecendo alternativa de voz:**
+```text wrap
+Sempre forneça uma opção de fallback de voz para clientes que não podem ou
+não querem usar DTMF:
+
+Agente: "Você pode digitar seu número de conta usando seu teclado, ou
+       se preferir, pode dizê-lo em voz alta. Qual você prefere?"
+
+Se cliente disser "teclado" ou pressionar uma tecla:
+→ Entrar em modo de coleta DTMF
+
+Se cliente disser "dizer" ou falar o número:
+→ Usar reconhecimento de voz para capturar número de conta
+```
+
+**Lidando com falhas DTMF:**
+```text wrap
+Se cliente não responder ao prompt DTMF após 10 segundos:
+
+"Não recebi uma entrada de teclado. Se está tendo problemas com
+seu teclado, você também pode me dizer seu número de conta verbalmente.
+Gostaria de tentar o teclado novamente, ou falar o número?"
+```
+
+---
+
+## Testando Configuração DTMF
+
+### Plano de Teste
+
+<Steps>
+  <Step title="Testar Envio de Tons (Navegação IVR)">
+    **Configuração:**
+    1. Configurar agente com ação de transferência para número de telefone com IVR
+    2. Adicionar instruções para navegar IVR usando tons DTMF
+
+    **Teste:**
+    1. Iniciar chamada de teste
+    2. Acionar ação de transferência
+    3. Monitorar agente navegando IVR (verificar logs para tons enviados)
+    4. Verificar que agente alcança destino correto
+
+    **Validação:**
+    - Tons enviados em intervalos corretos
+    - IVR reconhece todos os tons
+    - Navegação completa com sucesso
+    - Sem tons perdidos ou mal interpretados
+  </Step>
+
+  <Step title="Testar Modo Menu (Captura de Tecla Única)">
+    **Configuração:**
+    1. Configurar DTMF em modo Menu
+    2. Adicionar opções de menu às instruções
+
+    **Teste:**
+    1. Iniciar chamada de teste
+    2. Ouvir opções de menu
+    3. Pressionar tecla única (1, 2, 3, etc.)
+    4. Verificar que agente reconhece e responde apropriadamente
+
+    **Matriz de teste:**
+    | Tecla | Ação Esperada |
+    |-----|----------------|
+    | 1   | Encaminhar para opção 1 |
+    | 2   | Encaminhar para opção 2 |
+    | 9   | Encaminhar para opção 9 |
+    | *   | Lidar com tecla asterisco |
+    | #   | Lidar com tecla sustenido |
+    | Inválida | Tratamento de erro |
+  </Step>
+
+  <Step title="Testar Modo Coletor (Múltiplos Dígitos)">
+    **Configuração:**
+    1. Configurar DTMF em modo Coletor
+    2. Definir dígitos min/max apropriados, tecla de terminação
+
+    **Teste:**
+    1. Iniciar chamada de teste
+    2. Solicitar agente para coletar dígitos
+    3. Inserir várias sequências de dígitos:
+       - Exatamente dígitos mínimos + #
+       - Entre min e max dígitos + #
+       - Exatamente dígitos máximos (auto-envio)
+       - Usar tecla limpar (*) para corrigir erros
+       - Deixar entrada expirar
+    4. Verificar que agente recebe string correta de dígitos
+
+    **Validação:**
+    - Aplicação de dígitos mínimos funciona
+    - Auto-envio de dígitos máximos funciona
+    - Tecla de terminação finaliza entrada adequadamente
+    - Tecla limpar deleta corretamente último dígito
+    - Tratamento de timeout apropriado
+  </Step>
+
+  <Step title="Testar Casos Extremos">
+    **Cenários para testar:**
+
+    **Entrada vazia:**
+    - Pressionar # imediatamente (sem dígitos)
+    - Deve rejeitar se min > 0
+
+    **Cenários de timeout:**
+    - Inserir dígitos parciais, aguardar timeout
+    - Verificar tratamento apropriado
+
+    **Entrada rápida:**
+    - Inserir dígitos muito rapidamente
+    - Verificar que todos foram capturados corretamente
+
+    **Casos extremos de tecla limpar:**
+    - Pressionar * em buffer vazio (deve ignorar)
+    - Pressionar * múltiplas vezes (deleta múltiplos dígitos)
+    - Inserir dígitos, limpar todos, inserir nova sequência
+
+    **Teclas inválidas:**
+    - Pressionar teclas em modo errado (ex: # em modo Menu)
+    - Segurar tecla por muito tempo
+    - Pressionar múltiplas teclas simultaneamente
+  </Step>
+
+  <Step title="Testar Integração com Instruções">
+    **Validação:**
+    1. Agente solicita entrada DTMF adequadamente
+    2. Agente aguarda entrada (não continua falando)
+    3. Agente confirma recebimento de entrada
+    4. Agente processa corretamente valor capturado
+    5. Agente lida com entrada inválida graciosamente
+    6. Agente oferece fallback de voz quando apropriado
+  </Step>
+</Steps>
+
+### Problemas Comuns de Teste
+
+<AccordionGroup>
+  <Accordion title="Tons Não Detectados" icon="phone-slash">
+    **Sintomas:** Cliente pressiona teclas mas agente não responde
+
+    **Possíveis causas:**
+    1. Suporte DTMF não ativado globalmente
+    2. Duração do tom muito curta para detecção
+    3. Problemas de rede/codec degradando tons
+    4. Instruções não lidando com variável DTMF
+
+    **Soluções:**
+    - Verificar que alternância de Suporte DTMF está LIGADA
+    - Aumentar duração do tom para 150-200ms
+    - Testar de telefone/rede diferente
+    - Verificar logs para confirmar que ferramenta `wait_for_dtmf_input` está registrada e invocada
+    - Verificar que `session.userdata.last_dtmf_input` está sendo populado nos logs do worker
+  </Accordion>
+
+  <Accordion title="Dígitos Errados Capturados" icon="sort-numeric-down">
+    **Sintomas:** Agente recebe dígitos diferentes dos que cliente pressionou
+
+    **Possíveis causas:**
+    1. Intervalo entre tons muito curto (tons misturando)
+    2. Ruído de fundo criando tons falsos
+    3. Cliente pressionando teclas muito rapidamente
+
+    **Soluções:**
+    - Aumentar intervalo entre tons para 100-150ms
+    - Testar em ambiente silencioso
+    - Aumentar timeout para desacelerar entrada do cliente
+    - Adicionar validação e confirmação em instruções
+  </Accordion>
+
+  <Accordion title="Navegação IVR Falhando" icon="phone-xmark">
+    **Sintomas:** Agente envia tons mas IVR não responde corretamente
+
+    **Possíveis causas:**
+    1. Tempo de espera entre tons muito curto
+    2. Duração do tom inadequada para IVR legado
+    3. Tons enviados antes do IVR estar pronto para receber
+
+    **Soluções:**
+    - Aumentar tempo de espera para 4-5 segundos
+    - Aumentar duração do tom para 150-200ms
+    - Adicionar atrasos em instruções antes de enviar tons:
+      ```
+      Aguardar 2 segundos após IVR atender antes de enviar primeiro tom
+      para garantir que IVR está pronto para receber entrada.
+      ```
+    - Verificar logs SIP/LiveKit para verificar que eventos DTMF estão sendo enviados (RFC2833 ou SIP INFO)
+  </Accordion>
+
+  <Accordion title="Tecla Limpar Não Funcionando" icon="delete-left">
+    **Sintomas:** Pressionar \* não deleta último dígito
+
+    **Possíveis causas:**
+    1. Tecla limpar não configurada adequadamente
+    2. Tecla limpar pressionada em modo Menu (não aplicável)
+    3. \* atribuído como tecla de terminação (conflito)
+
+    **Soluções:**
+    - Verificar que tecla limpar está definida como \* no modo Coletor
+    - Garantir que modo é Coletor (tecla limpar só funciona em Coletor)
+    - Não usar \* como tecla limpar e de terminação
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Melhores Práticas
+
+<AccordionGroup>
+  <Accordion title="Sempre Ofereça Fallback de Voz" icon="microphone">
+    **Nunca force interação apenas por DTMF**
+
+    ```
+    Bom:
+    "Você pode digitar seu número de conta usando seu teclado, ou se
+    preferir, pode dizê-lo em voz alta. Qual você prefere?"
+
+    Ruim:
+    "Digite seu número de conta usando seu teclado agora."
+    [Sem alternativa fornecida]
+    ```
+
+    **Por quê:** Nem todos os clientes podem usar DTMF:
+    - Telefones móveis em áreas de sinal fraco
+    - Aplicativos VoIP sem teclado
+    - Necessidades de acessibilidade
+    - Preferência por interação de voz
+  </Accordion>
+
+  <Accordion title="Confirme Entrada Recebida" icon="check-double">
+    **Sempre confirme o que você recebeu, especialmente para entrada de múltiplos dígitos**
+
+    ```
+    Bom:
+    Cliente insere: 5551234567#
+    Agente: "Obrigado. Localizei sua conta terminando em 4567."
+
+    Ruim:
+    Cliente insere: 5551234567#
+    Agente: [Prossegue sem confirmação]
+    [Cliente incerto se número correto foi recebido]
+    ```
+
+    **Consideração de segurança:** Para entrada sensível (PIN, CPF), confirme parcial:
+    ```
+    "Recebi seu PIN de 4 dígitos terminando em 78."
+    ```
+    Não repita número sensível completo.
+  </Accordion>
+
+  <Accordion title="Instruções Claras para Prompts DTMF" icon="message">
+    **Seja explícito sobre expectativas**
+
+    ```
+    Bom:
+    "Por favor, digite seu número de telefone de 10 dígitos usando seu teclado,
+    seguido da tecla sustenido."
+
+    Ruim:
+    "Digite seu número de telefone."
+    [Cliente não sabe usar teclado vs. voz]
+    [Não sabe como sinalizar conclusão]
+    ```
+
+    **Incluir no prompt:**
+    - O que inserir (número de conta, PIN, seleção)
+    - Quantos dígitos (se comprimento fixo)
+    - Tecla de terminação (se aplicável)
+    - Método alternativo (voz)
+  </Accordion>
+
+  <Accordion title="Comece com Temporização Conservadora" icon="gauge">
+    **Use configurações padrão inicialmente, otimize baseado em dados reais**
+
+    **Estratégia padrão:**
+    1. Começar com padrões recomendados
+    2. Implantar para grupo de teste pequeno
+    3. Monitorar erros DTMF em logs
+    4. Ajustar temporização baseado em falhas reais
+    5. Implementar configurações otimizadas
+
+    **Não:**
+    - Definir temporização muito rápida sem testar
+    - Assumir que todos os IVRs se comportam igualmente
+    - Otimizar para velocidade sobre confiabilidade
+  </Accordion>
+
+  <Accordion title="Lide com Tentativas Graciosamente" icon="rotate">
+    **Permita múltiplas tentativas com feedback útil**
+
+    ```
+    Exemplo de instruções:
+
+    Rastreie tentativas DTMF (por exemplo com variável de memória ou estrutura de dados personalizada):
+    tentativas += 1
+
+    Se tentativa 1: "Vamos tentar novamente. Lembre-se de pressionar sustenido quando terminar."
+    Se tentativa 2: "Tendo problemas? Você também pode dizer o número em voz alta."
+    Se tentativa 3: "Vou transferi-lo para alguém que pode ajudar diretamente."
+    ```
+
+    **Não:**
+    - Desistir após falha única
+    - Repetir exatamente as mesmas instruções (não é útil)
+    - Ficar preso em loop infinito de tentativas
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Próximos Passos
+
+<CardGroup cols={2}>
+  <Card title="Visão Geral de Ações" icon="bolt" href="/pt/build/actions/overview">
+    Combine DTMF com ações para automação poderosa
+  </Card>
+  <Card title="Detalhes de Transferência" icon="phone-arrow-right" href="/pt/build/actions/transfer-details">
+    Use DTMF para navegar IVRs de transferência
+  </Card>
+  <Card title="Instruções" icon="pen" href="/pt/build/conversation/instructions">
+    Escreva prompts eficazes para interações DTMF
+  </Card>
+  <Card title="Variáveis e Conteúdo Dinâmico" icon="brackets-curly" href="/pt/build/conversation/variables-dynamic-content">
+    Use variáveis DTMF em seus prompts
+  </Card>
+  <Card title="Teste Seu Agente" icon="vial" href="/pt/test/web-simulator">
+    Teste funcionalidade DTMF com chamadas web e telefônicas
+  </Card>
+</CardGroup>

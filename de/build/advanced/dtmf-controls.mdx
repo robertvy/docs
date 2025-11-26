@@ -1,0 +1,972 @@
+---
+title: "DTMF-Steuerung"
+description: "Konfiguriere das Senden und Erfassen von Dual-Tone Multi-Frequency (DTMF) Tönen für interaktive Telefonmenüs"
+icon: "hashtag"
+keywords: "DTMF, Tastensteuerung, Tastatur-Eingabe, IVR, Telefontasten, Tastenton-Erkennung"
+og:description: "Nutzen du DTMF-Tastensteuerung für erweiterte Telefoninteraktionen und IVR-Funktionalität in deinem Agent."
+---
+
+## Überblick
+
+DTMF-Steuerung (Dual-Tone Multi-Frequency) ermöglicht es deinen KI-Agenten, während Gesprächen sowohl Telefontastaturtöne zu senden als auch zu erfassen. Dies ermöglicht es Agenten, IVR-Systeme zu navigieren, mit veralteten Telefonsystemen zu interagieren und strukturierte Eingaben von Anrufern über Tastendruck zu sammeln - und verwandelt deinen Agenten von sprachbasiert zu einem vollwertigen Telefonautomatisierungssystem.
+
+DTMF-Fähigkeiten sind unerlässlich für die Integration von KI-Agenten in bestehende Geschäftstelefon-Infrastruktur, ermöglichen nahtlose Transfers durch komplexe IVR-Menüs und sammeln präzise numerische Eingaben wie Kontonummern, PIN-Codes oder Menüauswahlen.
+
+<Note>
+**Nur Telefonanrufe:** DTMF gilt für Telefonanrufe über SIP/PSTN-Verbindungen. Webbasierte Gespräche ohne Telefonteil unterstützen keine DTMF-Interaktion.
+
+Die DTMF-Konfiguration ist im Tab "Fähigkeiten" unter "DTMF-Steuerung" verfügbar. Die Einstellungen umfassen globales Aktivieren/Deaktivieren, Parameter zum Senden von Tönen und Konfiguration des Erfassungsmodus.
+</Note>
+
+---
+
+## Was ist DTMF?
+
+### DTMF-Technologie verstehen
+
+DTMF ist das Signal, das erzeugt wird, wenn du Tasten auf einer Telefontastatur drücken. Jede Taste erzeugt zwei simultane Töne mit unterschiedlichen Frequenzen - einen hohen und einen niedrigen - und erzeugt einen einzigartigen Klang, den Systeme dekodieren können, um zu identifizieren, welche Taste gedrückt wurde.
+
+**Verfügbare Tasten:**
+- **Ziffern:** 0-9 (numerische Eingabe)
+- **Stern:** * (oft verwendet als "zurück" oder "abbrechen")
+- **Raute/Hash:** # (oft verwendet als "bestätigen" oder "eingeben")
+
+**Häufige Verwendungen:**
+- IVR-Menüs navigieren ("Drücken du 1 für Verkauf, 2 für Support")
+- Kontonummern oder PINs eingeben
+- Aktionen bestätigen oder abbrechen
+
+---
+
+## DTMF-Fähigkeiten
+
+### Zwei Hauptfunktionen
+
+<CardGroup cols={2}>
+  <Card title="Töne senden" icon="phone-arrow-up">
+    Agent sendet DTMF-Töne an externe Systeme (IVR-Navigation)
+  </Card>
+  <Card title="Töne erfassen" icon="phone-arrow-down">
+    Agent empfängt und interpretiert DTMF-Töne von Anrufern
+  </Card>
+</CardGroup>
+
+### Anwendungsfälle für das Senden von Tönen
+
+<AccordionGroup>
+  <Accordion title="IVR-Navigation" icon="sitemap">
+    Agent navigiert automatisch durch Telefonmenüsysteme.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant IVR
+        Agent->>IVR: Ruft externe Support-Leitung an
+        IVR->>Agent: "Drücken Sie 1 für Abrechnung, 2 für Support"
+        Agent->>IVR: Sendet Ton "2"
+        IVR->>Agent: Leitet zum technischen Support weiter
+        Note over Agent: Fährt im Namen des Kunden fort
+    ```
+  </Accordion>
+
+  <Accordion title="Authentifizierung" icon="key">
+    Agent gibt Anmeldedaten über IVR-Systeme ein.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant Bank IVR
+        Agent->>Bank IVR: Ruft an, um Kontostand zu prüfen
+        Bank IVR->>Agent: "Geben Sie die Kontonummer ein"
+        Agent->>Bank IVR: Sendet Töne "5551234567"
+        Bank IVR->>Agent: "Geben Sie die PIN ein"
+        Agent->>Bank IVR: Sendet Töne "9876"
+        Bank IVR->>Agent: Gewährt Zugriff auf Konto
+    ```
+  </Accordion>
+
+  <Accordion title="Systemintegration" icon="diagram-project">
+    Agent überträgt Anrufe durch mehrstufige IVR-Menüs.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant IVR
+        Agent->>IVR: Initiiert Transfer zur Hauptnummer
+        IVR->>Agent: "Drücken Sie 3 für Kundendienst"
+        Agent->>IVR: Sendet Ton "3"
+        IVR->>Agent: "Drücken Sie 2 für Bestandskunden"
+        Agent->>IVR: Sendet Ton "2"
+        Note over Agent,IVR: Anruf wird zur richtigen Abteilung geleitet
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Anwendungsfälle für das Erfassen von Tönen
+
+<AccordionGroup>
+  <Accordion title="Menüauswahl" icon="list">
+    Agent präsentiert Menüoptionen und erfasst die Auswahl des Kunden.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant Customer
+        Agent->>Customer: "Drücken Sie 1 für Abrechnung, 2 für Support"
+        Customer->>Agent: Drückt "1"
+        Note over Agent: Erkennt Ton und leitet zum Abrechnungsfluss
+    ```
+  </Accordion>
+
+  <Accordion title="Informationserfassung" icon="input-numeric">
+    Agent sammelt strukturierte numerische Daten wie Kontonummern.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant Customer
+        Agent->>Customer: "Geben Sie Ihre 6-stellige Kontonummer ein,<br/>gefolgt von Raute"
+        Customer->>Agent: Drückt "123456#"
+        Note over Agent: Erfasst "123456" für Kontolookup
+    ```
+  </Accordion>
+
+  <Accordion title="Tastaturgabe" icon="grid">
+    Agent sammelt sensible Daten über Tastatur statt Sprache.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant Customer
+        Agent->>Customer: "Geben Sie die letzten 4 Ziffern der Sozialversicherungsnummer<br/>über Ihre Tastatur ein"
+        Customer->>Agent: Gibt Ziffern über Tastatur ein
+        Note over Agent: Erfasst Ziffern aus Tönen
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## DTMF-Steuerung konfigurieren
+
+### Zugriff auf DTMF-Einstellungen
+
+<Steps>
+  <Step title="Zur DTMF-Konfiguration navigieren">
+    Öffne deine Agentenkonfiguration
+
+    Gehe zum Tab **Fähigkeiten**
+
+    Scrollen du zum Abschnitt **DTMF-Steuerung**
+  </Step>
+  <Step title="DTMF aktivieren">
+    Schalte **DTMF-Unterstützung** auf EIN
+
+    Dies aktiviert sowohl Sende- als auch Erfassungsfähigkeiten
+  </Step>
+  <Step title="Einstellungen konfigurieren">
+    Konfiguriere Parameter zum Senden von Tönen und Erfassungsmodus (unten detailliert)
+  </Step>
+  <Step title="Konfiguration speichern">
+    Änderungen speichern
+
+    Speicherleiste erscheint bei ungespeicherten Änderungen
+  </Step>
+</Steps>
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/DTMF/dtmf-light.png" alt="DTMF-Steuerungskonfiguration mit Erfassungsmodus, Toneinstellungen und Collector-Parametern" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/DTMF/dtmf-dark.png" alt="DTMF-Steuerungskonfiguration mit Erfassungsmodus, Toneinstellungen und Collector-Parametern" />
+  </div>
+</Frame>
+
+### Globaler DTMF-Schalter
+
+**DTMF während Anrufen aktivieren**
+
+Ermöglichen du dem Agenten, Tastaturtöne zu senden und Ziffern von Anrufern zu sammeln.
+
+**Wann aktivieren:**
+- Agent muss IVR-Systeme navigieren
+- Agent muss strukturierte numerische Eingaben sammeln
+- Integration erfordert DTMF-Interaktion
+
+---
+
+## Konfiguration zum Senden von Tönen
+
+### Töne senden
+
+Konfiguriere deinen Agenten, um DTMF-Töne an externe Systeme zu senden.
+
+**Schalter:** Erlauben du dem Agenten, Tastaturtöne zu senden
+
+**Parameter:**
+- **Abkühlzeit zwischen Tönen (Sekunden):** 3 Sekunden (Standard)
+- **Tondauer (ms):** 120 ms (Standard)
+- **Lücke zwischen Tönen (ms):** 70 ms (Standard)
+
+### Parameter zum Senden von Tönen
+
+<AccordionGroup>
+  <Accordion title="Abkühlzeit zwischen Tönen (Sekunden)" icon="clock">
+    **Was es steuert:** Mindestzeit zwischen sequenziellen Tonübertragungen
+
+    **Standard:** 3 Sekunden
+
+    **Bereich:** 0,5s und mehr (Schritt: 0,5s)
+
+    **Zweck:** Stellt sicher, dass das empfangende IVR Zeit hat, jeden Ton zu verarbeiten, bevor der nächste eintrifft
+
+    **Wann anpassen:**
+    - **Erhöhen (4-5s):** Langsame/Legacy-IVR-Systeme verpassen Töne
+    - **Verringern (1-2s):** Schnelle moderne Systeme, Gesamtnavigationszeit reduzieren
+
+    **Beispiel:**
+    ```
+    Senden von "1234" mit 3s Abkühlzeit:
+    Ton "1" → 3s Pause → Ton "2" → 3s Pause →
+    Ton "3" → 3s Pause → Ton "4"
+
+    Gesamtzeit: ~12 Sekunden
+    ```
+  </Accordion>
+
+  <Accordion title="Tondauer (ms)" icon="stopwatch">
+    **Was es steuert:** Länge jeder einzelnen Tonübertragung
+
+    **Standard:** 120ms
+
+    **Bereich:** 40ms - 1000ms (Schritt: 10ms)
+
+    **Zweck:** Bestimmt, wie lange der Agent jede Taste "gedrückt hält"
+
+    **Wann anpassen:**
+    - **Erhöhen (150-200ms):** IVR-Systeme erkennen Töne nicht zuverlässig
+    - **Verringern (80-100ms):** Interaktionen beschleunigen, Latenz reduzieren
+
+    **Technischer Hinweis:** Die meisten IVRs benötigen mindestens 60-80ms, um einen Ton zu erkennen. Unter diesem Schwellenwert können Töne verpasst werden.
+  </Accordion>
+
+  <Accordion title="Lücke zwischen Tönen (ms)" icon="grip-lines">
+    **Was es steuert:** Stille Lücke zwischen dem Ende eines Tons und dem Beginn des nächsten
+
+    **Standard:** 70ms
+
+    **Bereich:** 0ms - 1000ms (Schritt: 10ms)
+
+    **Zweck:** Bietet klare Trennung zwischen aufeinanderfolgenden Tönen, um Vermischung zu verhindern
+
+    **Wann anpassen:**
+    - **Erhöhen (100-150ms):** IVR behandelt schnelle Töne als einzelne Eingabe
+    - **Verringern (40-50ms):** Mehrziffrige Sequenzen beschleunigen
+
+    **Beziehung zur Abkühlzeit:**
+    ```
+    Gesamtzeit zwischen Tönen = Tondauer + Lücke + Abkühlzeit
+
+    Beispiel mit Standards:
+    120ms (Ton) + 70ms (Lücke) + 3000ms (Abkühlzeit) = 3,19s zwischen Starts
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Empfohlene Einstellungen nach Anwendungsfall
+
+<AccordionGroup>
+  <Accordion title="Schnelle moderne IVRs" icon="rocket">
+    **Einstellungen:**
+    - **Abkühlzeit:** 1-2 Sekunden
+    - **Tondauer:** 100ms
+    - **Lücke zwischen Tönen:** 50ms
+
+    **Verwendung für:** Cloud-basierte IVRs, moderne Telefonsysteme
+
+    **Gesamtzeit pro Ton:** ~1,15s
+
+    Am besten für schnelle, cloudbasierte Systeme, die DTMF-Eingaben schnell verarbeiten können.
+  </Accordion>
+
+  <Accordion title="Standard-IVRs (Standard)" icon="phone">
+    **Einstellungen:**
+    - **Abkühlzeit:** 3 Sekunden (Standard)
+    - **Tondauer:** 120ms (Standard)
+    - **Lücke zwischen Tönen:** 70ms (Standard)
+
+    **Verwendung für:** Die meisten Geschäftstelefonsysteme
+
+    **Gesamtzeit pro Ton:** ~3,19s
+
+    Dies ist die empfohlene Standardkonfiguration, die zuverlässig mit der Mehrheit der IVR-Systeme funktioniert.
+  </Accordion>
+
+  <Accordion title="Langsame/problematische IVRs" icon="hourglass">
+    **Einstellungen:**
+    - **Abkühlzeit:** 4-5 Sekunden
+    - **Tondauer:** 150ms
+    - **Lücke zwischen Tönen:** 100ms
+
+    **Verwendung für:** Systeme, die Töne verlieren, Legacy-Infrastruktur
+
+    **Gesamtzeit pro Ton:** ~4,25s
+
+    Verwende diese langsameren Einstellungen, wenn du beobachten, dass Töne verpasst werden oder Navigationsfehler bei Legacy-Systemen auftreten.
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+Beginne mit Standardeinstellungen und passen du nur an, wenn du beobachten, dass Töne verpasst werden oder IVR-Navigationsfehler auftreten. Teste gründlich nach Änderungen.
+</Tip>
+
+---
+
+## Konfiguration zur Tonerfassung
+
+### Erfassungsmodi
+
+Wähle, wie dein Agent DTMF-Eingaben von Anrufern empfängt und interpretiert.
+
+<CardGroup cols={2}>
+  <Card title="Menü (Einzeltaste)" icon="list" href="#menu-mode">
+    Einzeltastendruck → sofortige Antwort. Für IVR-ähnliche Menüauswahlen.
+  </Card>
+  <Card title="Collector (Mehrstellig)" icon="input-numeric" href="#collector-mode">
+    Mehrere Ziffern puffern bis zur Abschlusstaste. Für Kontonummern, PINs usw.
+  </Card>
+</CardGroup>
+
+### Menümodus
+
+**Für IVR-ähnliche Menüauswahlen**
+
+Der Menümodus erfasst einen einzelnen Tastendruck und sendet ihn sofort an den Agenten.
+
+**Funktionsweise:**
+- Agent gibt Menüoptionen vor
+- Kunde drückt einzelne Taste (0-9, *, #)
+- Agent empfängt Ziffer sofort
+- Agent antwortet basierend auf gedrückter Taste
+
+**Beispiel:**
+```text wrap
+Agent: "Drücken Sie 1 für Abrechnung, 2 für technischen Support oder 3,
+       um mit einem Mitarbeiter zu sprechen."
+
+Kunde: [Drückt 2]
+
+Agent: "Großartig, ich helfe Ihnen mit technischem Support."
+```
+
+**Konfiguration:**
+
+*Menümodus wartet auf einen einzelnen Tastendruck und sendet ihn sofort an den Agenten.*
+
+Keine zusätzlichen Parameter - Menümodus automatisch:
+- Erfasst einzelnen Tastendruck
+- Verarbeitet sofort
+- Keine Abschlusstaste erforderlich
+- Löschtaste nicht verfügbar
+
+**Anwendungsfälle:** Abteilungswahl, Ja/Nein-Bestätigungen, Bewertungsskalen
+
+---
+
+### Collector-Modus
+
+**Für das Sammeln von Sequenzen wie Kontonummern, PINs, Telefonnummern**
+
+Der Collector-Modus puffert mehrere Ziffern, bis der Benutzer die Abschlusstaste drückt oder das Timeout abläuft.
+
+**Funktionsweise:**
+- Agent fordert mehrstellige Eingabe an
+- Kunde gibt mehrere Ziffern ein
+- Drückt Abschlusstaste (normalerweise #) bei Abschluss
+- Agent empfängt vollständige Ziffernfolge
+
+**Beispiel:**
+```text wrap
+Agent: "Bitte geben Sie Ihre 10-stellige Kontonummer ein, gefolgt von der Rautetaste."
+
+Kunde: [Drückt 5-5-5-1-2-3-4-5-6-7-#]
+
+Agent: "Danke. Ich habe Ihr Konto gefunden, das auf 4567 endet."
+```
+
+**Konfiguration:**
+- **Minimale Ziffern:** 1 (Standard)
+- **Maximale Ziffern:** 25 (Standard)
+- **Timeout (ms):** 6000ms (6 Sekunden, Standard)
+- **Abschlusstaste:** # (Raute)
+- **Eingabe löschen Taste:** * (Stern)
+
+**Anwendungsfälle:** Kontonummern, PINs, Telefonnummern, Bestell-IDs
+
+### Collector-Modus-Parameter
+
+<AccordionGroup>
+  <Accordion title="Minimale Ziffern" icon="arrow-down-1-9">
+    **Was es steuert:** Wenigste Ziffern erforderlich, bevor Eingabe als gültig gilt
+
+    **Standard:** 1
+
+    **Bereich:** 1 bis maximale Ziffern (Schritt: 1)
+
+    **Zweck:** Verhindert vorzeitige Übermittlung, validiert erwartete Eingabelänge
+
+    **Beispiele:**
+    - **Kontonummer (10 Ziffern):** Auf 10 setzen
+    - **PIN (4 Ziffern):** Auf 4 setzen
+    - **Flexible Eingabe:** Auf 1 setzen (jede Länge akzeptiert)
+
+    **Verhalten:**
+    - Wenn Kunde # vor Erreichen des Minimums drückt → Fehler, Aufforderung zur erneuten Eingabe
+    - Wenn Kunde Minimum erreicht → Kann # drücken, um vorzeitig zu übermitteln
+  </Accordion>
+
+  <Accordion title="Maximale Ziffern" icon="arrow-up-9-1">
+    **Was es steuert:** Maximal akzeptierte Ziffern vor automatischer Übermittlung
+
+    **Standard:** 25
+
+    **Bereich:** Minimale Ziffern bis 64 (Schritt: 1)
+
+    **Zweck:** Verhindert übermäßig lange Eingabe, kann bei Erreichen des Maximums automatisch übermitteln
+
+    **Beispiele:**
+    - **Telefonnummer:** Auf 10 setzen (US-Format)
+    - **Kontonummer:** Auf erwartete Länge setzen
+    - **Variable Länge:** Höher als erwartet Maximum setzen
+
+    **Verhalten:**
+    - Wenn maximale Ziffern eingegeben → Automatisch übermitteln ohne # erforderlich
+    - Töne nach Maximum werden ignoriert
+  </Accordion>
+
+  <Accordion title="Timeout (ms)" icon="clock">
+    **Was es steuert:** Wie lange auf nächste Ziffer gewartet wird, bevor Timeout
+
+    **Standard:** 6000ms (6 Sekunden)
+
+    **Bereich:** 500ms - 30000ms (Schritt: 500ms)
+
+    **Zweck:** Behandelt abgebrochene Eingabe, fordert Kunde auf fortzufahren
+
+    **Verhalten:**
+    - Timer startet nach jedem Zifferndruck
+    - Setzt mit jeder neuen Ziffer zurück
+    - Wenn Timeout erreicht → Als vollständig behandeln oder zur Fortsetzung auffordern
+
+    **Beispiele:**
+    - **Schnelle Eingabe (PIN):** 3000-4000ms (3-4 Sekunden)
+    - **Lange Eingabe (Kontonummer):** 6000-8000ms (6-8 Sekunden)
+    - **Geduldiges System:** 10000ms+ (10+ Sekunden)
+
+    **Anweisungsbehandlung:**
+    ```
+    Wenn DTMF-Eingabe vor Abschlusstaste timeout:
+    - Kunde auffordern: "Ich habe die vollständige Nummer nicht erhalten.
+      Bitte versuchen Sie es erneut und drücken Sie Raute, wenn Sie fertig sind."
+    - Collector zurücksetzen und Wiederholung erlauben
+    ```
+  </Accordion>
+
+  <Accordion title="Abschlusstaste" icon="hashtag">
+    **Was es steuert:** Welche Taste "Eingabe abgeschlossen" signalisiert
+
+    **Optionen:** # (Raute), * (Stern), 0-9
+
+    **Standard:** # (Raute)
+
+    **Zweck:** Ermöglicht Eingabe variabler Länge mit explizitem Abschlusssignal
+
+    **Beispiel:**
+    ```
+    Agent: "Geben Sie Ihre Kontonummer gefolgt von Raute ein."
+    Kunde gibt ein: 123456#
+    → Agent erhält "123456"
+
+    Agent: "Geben Sie Ihre Telefonnummer gefolgt von Raute ein."
+    Kunde gibt ein: 5551234567#
+    → Agent erhält "5551234567"
+    ```
+  </Accordion>
+
+  <Accordion title="Eingabe löschen Taste" icon="delete-left">
+    **Was es steuert:** Welche Taste die zuletzt eingegebene Ziffer löscht
+
+    **Optionen:** * (Stern), # (Raute)
+
+    **Standard:** * (Stern)
+
+    **Zweck:** Ermöglicht Kunde, Fehler zu korrigieren, ohne von vorne zu beginnen
+
+    **Beispiel:**
+    ```
+    Kunde gibt ein: 1-2-3-4-5-6
+    Erkennt Fehler, drückt: *
+    System löscht letzte Ziffer: 1-2-3-4-5
+    Kunde fährt fort: 7-8-#
+    Finale Eingabe: "12345678"
+    ```
+
+    **Hinweis:** Wenn Kunde Löschtaste bei leerem Puffer drückt, typischerweise ignoriert (keine Aktion).
+  </Accordion>
+</AccordionGroup>
+
+### Empfohlene Collector-Einstellungen nach Anwendungsfall
+
+<AccordionGroup>
+  <Accordion title="Kontonummernerfassung (10 Ziffern)" icon="credit-card">
+    **Einstellungen:**
+    - **Minimale Ziffern:** 10
+    - **Maximale Ziffern:** 10
+    - **Abschlusstaste:** # (optional, übermittelt automatisch bei 10)
+    - **Timeout:** 6000ms (6 Sekunden)
+    - **Eingabe löschen Taste:** *
+
+    **Ergebnis:** Automatisch übermitteln bei genau 10 Ziffern, oder Kunde kann # früher drücken
+  </Accordion>
+
+  <Accordion title="PIN-Erfassung (4-6 Ziffern)" icon="lock">
+    **Einstellungen:**
+    - **Minimale Ziffern:** 4
+    - **Maximale Ziffern:** 6
+    - **Abschlusstaste:** #
+    - **Timeout:** 4000ms (4 Sekunden)
+    - **Eingabe löschen Taste:** *
+
+    **Ergebnis:** Akzeptiert 4-6-stellige PINs, erfordert # für 4-5 Ziffern, übermittelt automatisch bei 6
+  </Accordion>
+
+  <Accordion title="Telefonnummer (Variables Format)" icon="phone">
+    **Einstellungen:**
+    - **Minimale Ziffern:** 7
+    - **Maximale Ziffern:** 15
+    - **Abschlusstaste:** #
+    - **Timeout:** 6000ms (6 Sekunden)
+    - **Eingabe löschen Taste:** *
+
+    **Ergebnis:** Behandelt US (10-stellig) und internationale (variable) Formate
+  </Accordion>
+
+  <Accordion title="Flexible numerische Eingabe (Standard)" icon="input-text">
+    **Einstellungen:**
+    - **Minimale Ziffern:** 1 (Standard)
+    - **Maximale Ziffern:** 25 (Standard)
+    - **Abschlusstaste:** #
+    - **Timeout:** 6000ms (6 Sekunden, Standard)
+    - **Eingabe löschen Taste:** *
+
+    **Ergebnis:** Akzeptiert jede Länge, Kunde steuert Abschluss mit #
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## DTMF in Anweisungen verwenden
+
+### Zur DTMF-Eingabe auffordern
+
+**Menüauswahlbeispiel:**
+```text wrap
+Wenn Sie Optionen präsentieren, weisen Sie den Kunden klar an, ihre Tastatur zu verwenden:
+
+Agent: "Ich kann Ihnen bei drei Dingen helfen:
+       Für Kontostand drücken Sie 1.
+       Für letzte Transaktionen drücken Sie 2.
+       Für Kundendienst drücken Sie 3.
+
+       Bitte drücken Sie jetzt eine Nummer."
+
+Warten Sie auf DTMF-Eingabe. Wenn empfangen, bestätigen Sie die Auswahl:
+
+Wenn Kunde 1 drückt: "Großartig, ich schaue Ihren Kontostand nach."
+Wenn Kunde 2 drückt: "Okay, ich zeige Ihnen letzte Transaktionen."
+Wenn Kunde 3 drückt: "Ich verbinde Sie mit dem Kundendienst."
+```
+
+**Mehrstelliges Erfassungsbeispiel:**
+```text wrap
+Beim Sammeln von Kontonummern oder PINs:
+
+Agent: "Zur Sicherheit muss ich Ihr Konto verifizieren.
+       Bitte geben Sie Ihre 8-stellige Kontonummer über Ihre Tastatur ein,
+       gefolgt von der Rautetaste."
+
+Warten Sie auf DTMF-Eingabe (Collector-Modus mit min=8, max=8, term=#).
+
+Wenn Ziffern empfangen, bestätigen Sie den Empfang ohne Wiederholung der vollständigen Nummer:
+"Danke, ich habe Ihr Konto gefunden, das auf [letzte 4 Ziffern] endet."
+```
+
+### DTMF-Antworten behandeln
+
+**Automatische Verarbeitung:**
+
+Wenn DTMF-Erfassung aktiviert ist, empfängt der Agent automatisch gesammelte Ziffern und kann darauf reagieren. Keine zusätzliche Konfiguration erforderlich.
+
+**Erweitert: Verwendung des wait_for_dtmf_input-Tools**
+
+Für explizite Kontrolle in deinen Agentenanweisungen können du das `wait_for_dtmf_input`-Tool aufrufen. Es gibt zurück:
+
+```json
+{
+  "value": "1234",
+  "digits": ["1","2","3","4"],
+  "length": 4,
+  "met_minimum": true,
+  "reason": "termination"
+}
+```
+
+Verwende dies, wenn du Eingaben validieren oder spezifische Ziffernmuster in deinen Anweisungen behandeln müssen.
+
+**Mehrstellige Eingabe validieren:**
+```text wrap
+Wenn Kunde Kontonummer über DTMF eingibt:
+
+Eingabe validieren:
+- Länge überprüfen (z.B. 10 Ziffern für Kontonummer)
+- Format verifizieren (nur numerisch, erwartetes Muster)
+- Für Kontolookup-Aktion verwenden
+
+Wenn Validierung fehlschlägt:
+"Ich habe {result.length} Ziffern erhalten, aber Kontonummern sind
+10 Ziffern. Versuchen wir es nochmal. Bitte geben Sie Ihre 10-stellige
+Kontonummer gefolgt von Raute ein."
+
+Wenn Validierung erfolgreich:
+Verwenden Sie 'Kundenkonto nachschlagen'-Aktion mit account_number = result.value
+```
+
+### Fallback auf Sprache
+
+**Sprachalternative anbieten:**
+```text wrap
+Bieten Sie immer eine Sprachfallback-Option für Kunden, die DTMF nicht
+können oder wollen:
+
+Agent: "Sie können Ihre Kontonummer über Ihre Tastatur eingeben, oder
+       wenn Sie möchten, können Sie sie laut sagen. Was möchten Sie?"
+
+Wenn Kunde "Tastatur" sagt oder eine Taste drückt:
+→ DTMF-Erfassungsmodus eingeben
+
+Wenn Kunde "es sagen" sagt oder die Nummer spricht:
+→ Spracherkennung verwenden, um Kontonummer zu erfassen
+```
+
+**DTMF-Fehler behandeln:**
+```text wrap
+Wenn Kunde nach 10 Sekunden nicht auf DTMF-Aufforderung reagiert:
+
+"Ich habe keine Tastatureingabe erhalten. Wenn Sie Probleme mit
+Ihrer Tastatur haben, können Sie mir Ihre Kontonummer auch verbal mitteilen.
+Möchten Sie es nochmal mit der Tastatur versuchen oder die Nummer sagen?"
+```
+
+---
+
+## DTMF-Konfiguration testen
+
+### Testplan
+
+<Steps>
+  <Step title="Töne senden testen (IVR-Navigation)">
+    **Setup:**
+    1. Agent mit Transfer-Aktion zu Telefonnummer mit IVR konfigurieren
+    2. Anweisungen hinzufügen, um IVR mit DTMF-Tönen zu navigieren
+
+    **Test:**
+    1. Testanruf starten
+    2. Transfer-Aktion auslösen
+    3. Agent beim Navigieren des IVR überwachen (Protokolle auf gesendete Töne prüfen)
+    4. Überprüfen, ob Agent korrektes Ziel erreicht
+
+    **Validierung:**
+    - Töne in korrekten Intervallen gesendet
+    - IVR erkennt alle Töne
+    - Navigation wird erfolgreich abgeschlossen
+    - Keine verworfenen oder falsch interpretierten Töne
+  </Step>
+
+  <Step title="Menümodus testen (Einzeltastenerfassung)">
+    **Setup:**
+    1. DTMF im Menümodus konfigurieren
+    2. Menüoptionen zu Anweisungen hinzufügen
+
+    **Test:**
+    1. Testanruf starten
+    2. Menüoptionen anhören
+    3. Einzelne Taste drücken (1, 2, 3, usw.)
+    4. Überprüfen, ob Agent erkennt und angemessen reagiert
+
+    **Testmatrix:**
+    | Taste | Erwartete Aktion |
+    |-----|----------------|
+    | 1   | Zu Option 1 weiterleiten |
+    | 2   | Zu Option 2 weiterleiten |
+    | 9   | Zu Option 9 weiterleiten |
+    | *   | Sterntaste behandeln |
+    | #   | Rautetaste behandeln |
+    | Ungültig | Fehlerbehandlung |
+  </Step>
+
+  <Step title="Collector-Modus testen (Mehrstellig)">
+    **Setup:**
+    1. DTMF im Collector-Modus konfigurieren
+    2. Angemessene min/max Ziffern, Abschlusstaste setzen
+
+    **Test:**
+    1. Testanruf starten
+    2. Agent auffordern, Ziffern zu sammeln
+    3. Verschiedene Ziffernsequenzen eingeben:
+       - Genau minimale Ziffern + #
+       - Zwischen min und max Ziffern + #
+       - Genau maximale Ziffern (automatisch übermitteln)
+       - Löschtaste (*) zum Korrigieren von Fehlern verwenden
+       - Eingabe-Timeout ablaufen lassen
+    4. Überprüfen, ob Agent korrekte Ziffernfolge erhält
+
+    **Validierung:**
+    - Minimale Zifferndurchsetzung funktioniert
+    - Maximale Ziffern automatisch übermitteln funktioniert
+    - Abschlusstaste finalisiert Eingabe ordnungsgemäß
+    - Löschtaste löscht letzte Ziffer korrekt
+    - Timeout-Behandlung angemessen
+  </Step>
+
+  <Step title="Grenzfälle testen">
+    **Zu testende Szenarien:**
+
+    **Leere Eingabe:**
+    - Sofort # drücken (keine Ziffern)
+    - Sollte ablehnen, wenn min > 0
+
+    **Timeout-Szenarien:**
+    - Teilweise Ziffern eingeben, auf Timeout warten
+    - Angemessene Behandlung überprüfen
+
+    **Schnelle Eingabe:**
+    - Ziffern sehr schnell eingeben
+    - Überprüfen, ob alle korrekt erfasst
+
+    **Grenzfälle der Löschtaste:**
+    - * bei leerem Puffer drücken (sollte ignorieren)
+    - * mehrmals drücken (löscht mehrere Ziffern)
+    - Ziffern eingeben, alle löschen, neue Sequenz eingeben
+
+    **Ungültige Tasten:**
+    - Tasten im falschen Modus drücken (z.B. # im Menümodus)
+    - Taste zu lange halten
+    - Mehrere Tasten gleichzeitig drücken
+  </Step>
+
+  <Step title="Integration mit Anweisungen testen">
+    **Validierung:**
+    1. Agent fordert ordnungsgemäß zur DTMF-Eingabe auf
+    2. Agent wartet auf Eingabe (spricht nicht weiter)
+    3. Agent bestätigt Empfang der Eingabe
+    4. Agent verarbeitet erfassten Wert korrekt
+    5. Agent behandelt ungültige Eingabe elegant
+    6. Agent bietet bei Bedarf Sprach-Fallback an
+  </Step>
+</Steps>
+
+### Häufige Testprobleme
+
+<AccordionGroup>
+  <Accordion title="Töne nicht erkannt" icon="phone-slash">
+    **Symptome:** Kunde drückt Tasten, aber Agent reagiert nicht
+
+    **Mögliche Ursachen:**
+    1. DTMF-Unterstützung nicht global aktiviert
+    2. Tondauer zu kurz für Erkennung
+    3. Netzwerk-/Codec-Probleme verschlechtern Töne
+    4. Anweisungen behandeln DTMF-Variable nicht
+
+    **Lösungen:**
+    - Überprüfen, ob DTMF-Unterstützungsschalter EIN ist
+    - Tondauer auf 150-200ms erhöhen
+    - Von anderem Telefon/Netzwerk testen
+    - Protokolle prüfen, um zu bestätigen, dass `wait_for_dtmf_input`-Tool registriert und aufgerufen wird
+    - Überprüfen, ob `session.userdata.last_dtmf_input` in Worker-Protokollen gefüllt wird
+  </Accordion>
+
+  <Accordion title="Falsche Ziffern erfasst" icon="sort-numeric-down">
+    **Symptome:** Agent empfängt andere Ziffern als Kunde gedrückt hat
+
+    **Mögliche Ursachen:**
+    1. Zwischen-Ton-Lücke zu kurz (Töne vermischen sich)
+    2. Hintergrundgeräusche erzeugen falsche Töne
+    3. Kunde drückt Tasten zu schnell
+
+    **Lösungen:**
+    - Zwischen-Ton-Lücke auf 100-150ms erhöhen
+    - In ruhiger Umgebung testen
+    - Timeout erhöhen, um Kundeneingabe zu verlangsamen
+    - Validierung und Bestätigung in Anweisungen hinzufügen
+  </Accordion>
+
+  <Accordion title="IVR-Navigation schlägt fehl" icon="phone-xmark">
+    **Symptome:** Agent sendet Töne, aber IVR reagiert nicht korrekt
+
+    **Mögliche Ursachen:**
+    1. Abkühlzeit zwischen Tönen zu kurz
+    2. Tondauer unzureichend für Legacy-IVR
+    3. Töne gesendet, bevor IVR bereit zum Empfang
+
+    **Lösungen:**
+    - Abkühlzeit auf 4-5 Sekunden erhöhen
+    - Tondauer auf 150-200ms erhöhen
+    - Verzögerungen in Anweisungen hinzufügen, bevor Töne gesendet werden:
+      ```
+      Warten Sie 2 Sekunden nach IVR-Antwort, bevor Sie ersten Ton senden,
+      um sicherzustellen, dass IVR bereit ist, Eingabe zu empfangen.
+      ```
+    - SIP/LiveKit-Protokolle prüfen, um zu überprüfen, ob DTMF-Ereignisse gesendet werden (RFC2833 oder SIP INFO)
+  </Accordion>
+
+  <Accordion title="Löschtaste funktioniert nicht" icon="delete-left">
+    **Symptome:** Drücken von \* löscht letzte Ziffer nicht
+
+    **Mögliche Ursachen:**
+    1. Löschtaste nicht ordnungsgemäß konfiguriert
+    2. Löschtaste im Menümodus gedrückt (nicht anwendbar)
+    3. \* als Abschlusstaste zugewiesen (Konflikt)
+
+    **Lösungen:**
+    - Überprüfen, ob Löschtaste im Collector-Modus auf \* gesetzt ist
+    - Sicherstellen, dass Modus Collector ist (Löschtaste funktioniert nur im Collector)
+    - Verwende \* nicht als sowohl Lösch- als auch Abschlusstaste
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Immer Sprach-Fallback anbieten" icon="microphone">
+    **Niemals nur DTMF-Interaktion erzwingen**
+
+    ```
+    Gut:
+    "Sie können Ihre Kontonummer über Ihre Tastatur eingeben, oder wenn Sie
+    möchten, können Sie sie laut sagen. Was möchten Sie?"
+
+    Schlecht:
+    "Geben Sie Ihre Kontonummer jetzt über Ihre Tastatur ein."
+    [Keine Alternative angeboten]
+    ```
+
+    **Warum:** Nicht alle Kunden können DTMF verwenden:
+    - Mobiltelefone in Gebieten mit schlechtem Signal
+    - VoIP-Apps ohne Tastatur
+    - Barrierefreiheitsbedürfnisse
+    - Präferenz für Sprachinteraktion
+  </Accordion>
+
+  <Accordion title="Empfangene Eingabe bestätigen" icon="check-double">
+    **Bestätige immer, was du erhalten haben, besonders bei mehrstelliger Eingabe**
+
+    ```
+    Gut:
+    Kunde gibt ein: 5551234567#
+    Agent: "Danke. Ich habe Ihr Konto gefunden, das auf 4567 endet."
+
+    Schlecht:
+    Kunde gibt ein: 5551234567#
+    Agent: [Fährt ohne Bestätigung fort]
+    [Kunde unsicher, ob korrekte Nummer erhalten wurde]
+    ```
+
+    **Sicherheitsüberlegung:** Für sensible Eingaben (PIN, SSN), teilweise bestätigen:
+    ```
+    "Ich habe Ihre 4-stellige PIN erhalten, die auf 78 endet."
+    ```
+    Wiederholen du nicht die vollständige sensible Nummer.
+  </Accordion>
+
+  <Accordion title="Klare Anweisungen für DTMF-Aufforderungen" icon="message">
+    **Sei explizit über Erwartungen**
+
+    ```
+    Gut:
+    "Bitte geben Sie Ihre 10-stellige Telefonnummer über Ihre Tastatur ein,
+    gefolgt von der Rautetaste."
+
+    Schlecht:
+    "Geben Sie Ihre Telefonnummer ein."
+    [Kunde weiß nicht, ob Tastatur oder Sprache]
+    [Weiß nicht, wie Abschluss signalisiert wird]
+    ```
+
+    **In Aufforderung einschließen:**
+    - Was eingegeben werden soll (Kontonummer, PIN, Auswahl)
+    - Wie viele Ziffern (bei fester Länge)
+    - Abschlusstaste (falls zutreffend)
+    - Alternative Methode (Sprache)
+  </Accordion>
+
+  <Accordion title="Mit konservativem Timing beginnen" icon="gauge">
+    **Verwende zunächst Standardeinstellungen, optimiere basierend auf echten Daten**
+
+    **Standardstrategie:**
+    1. Mit empfohlenen Standards beginnen
+    2. Für kleine Testgruppe bereitstellen
+    3. Auf DTMF-Fehler in Protokollen überwachen
+    4. Timing basierend auf tatsächlichen Fehlern anpassen
+    5. Optimierte Einstellungen ausrollen
+
+    **Nicht:**
+    - Sehr schnelles Timing ohne Tests setzen
+    - Annehmen, dass alle IVRs sich gleich verhalten
+    - Für Geschwindigkeit statt Zuverlässigkeit optimieren
+  </Accordion>
+
+  <Accordion title="Wiederholungsversuche elegant behandeln" icon="rotate">
+    **Mehrere Versuche mit hilfreicher Rückmeldung erlauben**
+
+    ```
+    Anweisungsbeispiel:
+
+    DTMF-Versuche verfolgen (z.B. mit einer Speichervariablen oder benutzerdefinierter Datenstruktur):
+    attempts += 1
+
+    Wenn Versuch 1: "Versuchen wir es nochmal. Denken Sie daran, Raute zu drücken, wenn Sie fertig sind."
+    Wenn Versuch 2: "Haben Sie Probleme? Sie können die Nummer auch laut sagen."
+    Wenn Versuch 3: "Ich verbinde Sie mit jemandem, der direkt helfen kann."
+    ```
+
+    **Nicht:**
+    - Nach einmaligem Fehlschlag aufgeben
+    - Exakt gleiche Anweisungen wiederholen (nicht hilfreich)
+    - In unendlicher Wiederholungsschleife stecken bleiben
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Aktionsübersicht" icon="bolt" href="/de/build/actions/overview">
+    Kombinieren du DTMF mit Aktionen für leistungsstarke Automatisierung
+  </Card>
+  <Card title="Transferdetails" icon="phone-arrow-right" href="/de/build/actions/transfer-details">
+    Verwende DTMF zur Navigation von Transfer-IVRs
+  </Card>
+  <Card title="Anweisungen" icon="pen" href="/de/build/conversation/instructions">
+    Schreibe effektive Prompts für DTMF-Interaktionen
+  </Card>
+  <Card title="Variablen & Dynamischer Inhalt" icon="brackets-curly" href="/de/build/conversation/variables-dynamic-content">
+    Verwende DTMF-Variablen in deinen Prompts
+  </Card>
+  <Card title="Teste deinen Agenten" icon="vial" href="/de/test/web-simulator">
+    Teste DTMF-Funktionalität mit Web- und Telefonanrufen
+  </Card>
+</CardGroup>

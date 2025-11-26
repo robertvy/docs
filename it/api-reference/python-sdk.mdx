@@ -1,0 +1,521 @@
+---
+title: "SDK Python"
+description: "Libreria Python type-safe per l'API itellicoAI"
+icon: "python"
+keywords: "SDK Python, itellicoai python, pacchetto PyPI, async python, type hint, client API python, libreria IA vocale python"
+og:description: "Libreria Python type-safe per l'API itellicoAI con supporto async, type hint completi e autenticazione semplificata. Installazione da PyPI con pip."
+---
+
+## Installazione
+
+<CodeGroup>
+```bash pip
+pip install itellicoai
+```
+
+```bash poetry
+poetry add itellicoai
+```
+</CodeGroup>
+
+## Requisiti
+
+- Python 3.8+
+- Supporta operazioni sincrone e asincrone
+
+---
+
+## Ottenere la Tua Chiave API
+
+Per utilizzare l'SDK, avrai bisogno di una chiave API dal tuo [pannello di controllo itellicoAI](https://app.itellico.ai):
+
+1. Naviga su **Sviluppatori** dalla barra laterale
+2. Clicca su **Chiavi API**
+3. Clicca su **Crea Chiave API**
+4. Copia la chiave generata da utilizzare con l'SDK
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/light.png" alt="Pannello delle chiavi API" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/dark.png" alt="Pannello delle chiavi API" />
+  </div>
+</Frame>
+
+<Warning>
+Conserva la tua chiave API in modo sicuro utilizzando variabili d'ambiente. Non caricarla mai nel controllo di versione.
+</Warning>
+
+---
+
+## Avvio Rapido
+
+```python
+from itellicoai import Itellicoai
+
+# Initialize client
+client = Itellicoai(
+    api_key="your-api-key"
+)
+
+# Create an agent
+agent = client.agents.create(
+    account_id="your-account-id",
+    name="Customer Support Agent",
+    model={
+        "provider": "openai",
+        "model": "gpt-4o-mini"
+    },
+    voice={
+        "provider": "elevenlabs",
+        "voice_id": "EXAVITQu4vr4xnSDxMaL"
+    },
+    transcriber={
+        "provider": "deepgram",
+        "model": "nova-2:general",
+        "language": "en-US"
+    },
+    initial_message={
+        "mode": "fixed_message",
+        "message": "Hello! How can I assist you today?",
+        "delay_ms": 1000
+    },
+    max_duration_seconds=1800,
+    tags=["support", "customer-service"]
+)
+
+print(f"Created agent: {agent.id}")
+```
+
+---
+
+## Supporto Async
+
+```python
+import asyncio
+from itellicoai import AsyncItellicoAI
+
+async def main():
+    client = AsyncItellicoAI(api_key="your-api-key")
+
+    # List agents asynchronously
+    agents = await client.agents.list()
+
+    for agent in agents:
+        print(f"Agent: {agent.name}")
+
+asyncio.run(main())
+```
+
+---
+
+## Operazioni SDK
+
+<AccordionGroup>
+  <Accordion title="Gestione Agenti" defaultOpen>
+
+### Elencare Agenti
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+agents = client.agents.list(
+    account_id="account_id",
+)
+print(agents.count)
+```
+
+### Recuperare Agente
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+agent_response = client.agents.retrieve(
+    agent_id="agent_id",
+    account_id="account_id",
+)
+print(agent_response.id)
+```
+
+### Aggiornare Agente
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+agent_response = client.agents.update(
+    agent_id="agent_id",
+    account_id="account_id",
+)
+print(agent_response.id)
+```
+
+### Archiviare Agente
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+client.agents.archive(
+    agent_id="agent_id",
+    account_id="account_id",
+)
+```
+
+  </Accordion>
+
+  <Accordion title="Conversazioni">
+
+### Elencare Conversazioni
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(api_key="My API Key")
+
+conversations = client.accounts.list_conversations(
+    account_id="account_id"
+)
+
+for conv in conversations.items:
+    print(f"Conversation ID: {conv.conversation_id}")
+    print(f"Contact: {conv.contact_number}")
+    print(f"Duration: {conv.duration_seconds}s")
+    print(f"Status: {conv.status}")
+```
+
+  </Accordion>
+
+  <Accordion title="Numeri di Telefono">
+
+### Elencare Numeri di Telefono
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+phone_numbers = client.accounts.phone_numbers.list(
+    account_id="account_id",
+)
+print(phone_numbers.count)
+```
+
+### Creare Numero di Telefono
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+phone_number = client.accounts.phone_numbers.create(
+    account_id="account_id",
+    sip_trunk_id="sip_trunk_id",
+)
+print(phone_number.id)
+```
+
+### Ottenere Numero di Telefono
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+phone_number = client.accounts.phone_numbers.retrieve(
+    phone_number_id="phone_number_id",
+    account_id="account_id",
+)
+print(phone_number.id)
+```
+
+### Aggiornare Numero di Telefono
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+phone_number = client.accounts.phone_numbers.update(
+    phone_number_id="phone_number_id",
+    account_id="account_id",
+)
+print(phone_number.id)
+```
+
+### Eliminare Numero di Telefono
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+client.accounts.phone_numbers.delete(
+    phone_number_id="phone_number_id",
+    account_id="account_id",
+)
+```
+
+  </Accordion>
+
+  <Accordion title="Provider">
+
+### Elencare Modelli
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+
+response = client.accounts.providers.list_models(
+    account_id="account_id",
+)
+print(response)
+```
+
+### Elencare Trascrittori
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+
+response = client.accounts.providers.list_transcribers(
+    account_id="account_id",
+)
+print(response)
+```
+
+### Elencare Voci
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+
+response = client.accounts.providers.list_voices(
+    account_id="account_id",
+    provider="provider",
+)
+print(response)
+```
+
+  </Accordion>
+
+  <Accordion title="Trunk SIP">
+
+### Elencare Trunk SIP
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+
+sip_trunks = client.accounts.sip_trunks.list(
+    account_id="account_id",
+)
+print(sip_trunks.count)
+```
+
+### Creare Trunk SIP
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+
+sip_trunk = client.accounts.sip_trunks.create(
+    account_id="account_id",
+)
+print(sip_trunk.id)
+```
+
+### Ottenere Trunk SIP
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+
+sip_trunk = client.accounts.sip_trunks.retrieve(
+    sip_trunk_id="sip_trunk_id",
+    account_id="account_id",
+)
+print(sip_trunk.id)
+```
+
+### Aggiornare Trunk SIP
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+
+sip_trunk = client.accounts.sip_trunks.update(
+    sip_trunk_id="sip_trunk_id",
+    account_id="account_id",
+)
+print(sip_trunk.id)
+```
+
+### Eliminare Trunk SIP
+
+```python
+from itellicoai import Itellicoai
+
+client = Itellicoai(
+    api_key="My API Key",
+)
+
+client.accounts.sip_trunks.delete(
+    sip_trunk_id="sip_trunk_id",
+    account_id="account_id",
+)
+```
+
+  </Accordion>
+
+  <Accordion title="Analisi">
+
+### Ottenere Analisi Utilizzo
+
+```python
+response = client.accounts.analytics.get_usage(
+    account_id="account_id",
+)
+print(response.meta)
+```
+
+  </Accordion>
+
+  <Accordion title="Sottoaccount">
+
+### Elencare Sottoaccount
+
+```python
+subaccounts = client.accounts.subaccounts.list(
+    account_id="account_id",
+)
+print(subaccounts.count)
+```
+
+### Creare Sottoaccount
+
+```python
+account = client.accounts.subaccounts.create(
+    account_id="account_id",
+    name="name",
+)
+print(account.id)
+```
+
+### Ottenere Sottoaccount
+
+```python
+account = client.accounts.subaccounts.retrieve(
+    subaccount_id="subaccount_id",
+    account_id="account_id",
+)
+print(account.id)
+```
+
+### Aggiornare Sottoaccount
+
+```python
+account = client.accounts.subaccounts.update(
+    subaccount_id="subaccount_id",
+    account_id="account_id",
+)
+print(account.id)
+```
+
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Gestione degli Errori
+
+```python
+from itellicoai import ItellicoAI
+from itellicoai.exceptions import (
+    AuthenticationError,
+    NotFoundError,
+    RateLimitError,
+    APIError
+)
+
+client = ItellicoAI(api_key="your-api-key")
+
+try:
+    agent = client.agents.retrieve("agent_123abc")
+except AuthenticationError:
+    print("Invalid API key")
+except NotFoundError:
+    print("Agent not found")
+except RateLimitError:
+    print("Rate limit exceeded")
+except APIError as e:
+    print(f"API error: {e.message}")
+```
+
+---
+
+## Variabili d'Ambiente
+
+```python
+import os
+from itellicoai import ItellicoAI
+
+# API key automatically loaded from ITELLICO_API_KEY env var
+client = ItellicoAI()
+
+# Or set explicitly
+client = ItellicoAI(api_key=os.getenv("ITELLICO_API_KEY"))
+```
+
+---
+
+## Risorse
+
+<CardGroup cols={2}>
+  <Card title="Pacchetto PyPI" icon="python" href="https://pypi.org/project/itellicoai/">
+    Installa da PyPI
+  </Card>
+  <Card title="Repository GitHub" icon="github" href="https://github.com/itellicoAI/server-sdk-python">
+    Visualizza il codice sorgente su GitHub
+  </Card>
+  <Card title="Riferimento API" icon="book" href="/it/api-reference/introduction">
+    Documentazione API REST
+  </Card>
+</CardGroup>

@@ -1,0 +1,234 @@
+---
+title: "Create Your First Agent"
+description: "Step-by-step guide to building your first AI voice agent"
+icon: "plus"
+"keywords": "create AI agent, build voice bot tutorial, AI agent setup guide, voice assistant configuration, GPT voice agent, agent instructions"
+"og:description": "Complete walkthrough for creating your first AI voice agent. Configure models, voices, greetings, and instructions to launch your agent."
+---
+
+## Before You Start
+
+Make sure you have:
+
+- Active itellicoAI account
+- Clear use case in mind (support, booking, sales, etc.)
+- Basic idea of what you want your agent to say and do
+
+<Tip>
+If you haven't already, complete the [Quickstart](/quickstart) for a faster introduction.
+</Tip>
+
+## Step 1: Navigate to Agents
+
+1. Log into your [itellicoAI dashboard](https://app.itellico.ai/register)
+2. Click **Agents** in the left navigation menu
+3. Click the **Create Agent** button (or **Create First Agent** if this is your first one)
+
+## Step 2: Set Basic Information
+
+Fill in the essential details:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/agent/create-agent-light.png" alt="Create New Agent dialog with name field" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/agent/create-agent-dark.png" alt="Create New Agent dialog with name field" />
+  </div>
+</Frame>
+
+### Agent Name
+Choose a descriptive name that reflects the agent's purpose.
+
+**Examples:**
+- "Customer Support Agent"
+- "Appointment Booking Assistant"
+- "Sales Qualification Bot"
+- "Order Status Helpline"
+
+<Tip>
+Use names that make it easy to identify the agent's function when you have multiple agents running.
+</Tip>
+
+## Step 3: Configure Basic Settings
+
+### Choose Your AI Model
+
+itellicoAI supports multiple AI providers and models. For getting started, we recommend Azure OpenAI for reliability and performance. You can explore other providers later in the settings.
+
+**Recommended models to get started:**
+
+<CardGroup cols={2}>
+  <Card title="GPT-4.1 Mini" icon="bolt">
+    Good for most use cases
+  </Card>
+  <Card title="GPT-4.1" icon="brain">
+    For complex conversation flows
+  </Card>
+</CardGroup>
+
+### Select Voice
+
+Choose how your agent sounds:
+
+1. Click **Voice** in the configuration panel
+2. Preview voices by clicking the play button (ElevenLabs voices only)
+3. Select a voice that matches your brand
+4. Adjust speed and other parameters if needed
+
+<Tip>
+ElevenLabs voices offer the most natural sound quality. Preview several options before deciding.
+</Tip>
+
+### Configure Transcriber
+
+Set up transcriber:
+
+1. Click **Transcriber** under Models
+2. Select **Deepgram Nova-3 General** (recommended)
+3. Choose your language or select **Multilingual** if you serve multiple languages
+
+## Step 4: Write Your Agent Instructions
+
+This is where you define your agent's behavior, personality, and conversational flow.
+
+1. Navigate to **Abilities → Instructions** in the configuration panel
+2. Enter your agent's instructions in the text field
+
+### Basic Instruction Template
+
+```text wrap
+You are a friendly customer support agent for [Your Company Name].
+
+Your role is to:
+1. Greet customers warmly
+2. Listen to their question or issue
+3. Provide helpful, accurate information
+4. Offer to help with anything else before ending the call
+
+Tone: Professional but friendly, patient, and helpful
+
+Important guidelines:
+- Always be polite and respectful
+- If you don't know something, say so honestly
+- Never make promises about things you're unsure of
+- Speak clearly and at a moderate pace
+```
+
+<Note>
+We'll cover advanced prompt engineering in the [Prompt Engineering Guide](/build/conversation/prompt-engineering-guide). For now, a simple, clear instruction works well.
+</Note>
+
+## Step 5: Set Up Greeting Message
+
+Configure how your agent starts conversations. **We recommend Fixed Greeting for most use cases.**
+
+<Note>
+**Best practice:** Make your greeting non-interruptible to ensure customers hear the full greeting before speaking.
+</Note>
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/greeting/greeting-light.png" alt="Greeting configuration showing three options: User Initiates, AI Agent with Dynamic Message, and AI Agent with Fixed Message, including message delay slider and barge-in toggle" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/greeting/greeting-dark.png" alt="Greeting configuration showing three options: User Initiates, AI Agent with Dynamic Message, and AI Agent with Fixed Message, including message delay slider and barge-in toggle" />
+  </div>
+</Frame>
+
+<Tabs>
+  <Tab title="Fixed Greeting (Recommended)">
+    **Best for**: Most inbound and outbound use cases
+
+    Your agent says the same greeting every time:
+
+    ```
+    Hello! Thank you for calling [Company Name]. My name is Alex, and I'm here to help you today. How can I assist you?
+    ```
+  </Tab>
+
+  <Tab title="AI-Generated">
+    **Best for**: Personalized, context-aware greetings
+
+    Your agent generates greetings based on available context (caller information, time of day, etc.):
+
+    Enable this option and your agent will follow the greeting guidelines in your instructions.
+  </Tab>
+
+  <Tab title="User Initiates">
+    **Best for**: Outbound calls where the recipient speaks first
+
+    The agent waits for the customer to speak first before responding. Use this when calling customers who will naturally say something (e.g., "Hello?", "Yes?", "Who is this?") when they pick up.
+  </Tab>
+</Tabs>
+
+## Step 6: Test Your Agent
+
+Before deploying, test your agent:
+
+1. Click **Test Call** in the top-right corner
+2. Click **Start Web Call**
+3. Grant microphone permissions when prompted
+4. Have a conversation with your agent
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/web-call/web-call-light.png" alt="Test Agent dialog showing Web Call and Phone Call options with Start Web Call button" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/web-call/web-call-dark.png" alt="Test Agent dialog showing Web Call and Phone Call options with Start Web Call button" />
+  </div>
+</Frame>
+
+**Test scenarios to try:**
+- Simple greeting response
+- Ask a question about your business
+- Test edge cases (unclear requests, interruptions)
+- Verify the voice sounds good and responses are appropriate
+
+<Warning>
+Always test your agent thoroughly before connecting it to live phone numbers or deploying to production.
+</Warning>
+
+## What's Next?
+
+Your agent is created! Now you can enhance it with:
+
+<CardGroup cols={2}>
+  <Card title="Add Knowledge Base" icon="book" href="/build/knowledge/architecture">
+    Upload FAQs, policies, and documents so your agent can answer specific questions
+  </Card>
+  <Card title="Configure Actions" icon="bolt" href="/build/actions/overview">
+    Enable transfers, bookings, and custom integrations
+  </Card>
+  <Card title="Improve Instructions" icon="pen" href="/build/conversation/prompt-engineering-guide">
+    Learn advanced prompt engineering techniques
+  </Card>
+  <Card title="Deploy Your Agent" icon="rocket" href="/launch/overview">
+    Connect to phone numbers or embed on your website
+  </Card>
+</CardGroup>
+
+## Common First-Time Issues
+
+<AccordionGroup>
+  <Accordion title="Agent responds too slowly">
+    Try selecting a faster model like GPT-4.1 Mini or adjust your Voice Activity Detection settings in [Operational Controls](/build/advanced/vad-turn-detection).
+  </Accordion>
+
+  <Accordion title="Agent interrupts too often">
+    Adjust endpointing delay in Voice Activity Detection settings or enable Smart Endpointing for better turn-detection.
+  </Accordion>
+
+  <Accordion title="Agent doesn't know my business info">
+    Add a Knowledge Base with your business information, FAQs, and policies. See [Knowledge Base](/build/knowledge/architecture).
+  </Accordion>
+
+  <Accordion title="Voice sounds unnatural">
+    Try different voice providers (ElevenLabs recommended) and adjust speed/pitch settings in [Voice Settings](/build/voice-speech/voice-settings).
+  </Accordion>
+</AccordionGroup>
+
+## Need Help?
+
+Email [support@itellico.ai](mailto:support@itellico.ai) for assistance with agent creation and configuration.

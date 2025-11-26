@@ -1,0 +1,102 @@
+---
+title: "Pruebas telefónicas"
+description: "Pruebe su agente con llamadas telefónicas reales"
+icon: "phone"
+keywords: 'pruebas telefónicas, prueba de llamadas, pruebas PSTN, prueba de calidad de voz, prueba AMD, pruebas de telefonía, llamadas telefónicas reales'
+og:description: 'Pruebe agentes de voz con llamadas telefónicas reales. Verifique la calidad de voz, detección de contestador automático, transferencias de llamadas y la experiencia completa del cliente a través de PSTN.'
+---
+
+## Por qué probar con llamadas telefónicas
+
+Si su caso de uso involucra telefonía, las pruebas telefónicas son esenciales para validar la experiencia completa del cliente. Las pruebas web utilizan WebRTC con diferentes códecs y sin infraestructura PSTN, por lo que las pruebas telefónicas le permiten verificar la calidad de voz, el tiempo, la detección de contestador automático y los flujos de transferencia exactamente como sus clientes los experimentarán.
+
+## Cómo realizar una llamada de prueba
+
+<Steps>
+  <Step title="Abrir Probar agente">
+    Vaya a su agente y haga clic en **Probar agente** en la esquina superior derecha.
+  </Step>
+  <Step title="Cambiar a Llamada telefónica">
+    Haga clic en la pestaña **Llamada telefónica** en la parte superior del panel de prueba.
+  </Step>
+  <Step title="Elegir su identificador de llamada">
+    Seleccione desde qué número de teléfono llamar. Este será el identificador de llamada que verá su contacto.
+  </Step>
+  <Step title="Ingresar número de destino">
+    Escriba el número de teléfono que desea llamar en [formato E.164](https://www.twilio.com/docs/glossary/what-e164) con código de país (ej., +1 para EE. UU.).
+  </Step>
+  <Step title="Configurar AMD (opcional)">
+    Elija el modo de [detección de contestador automático](/es/build/advanced/voicemail-handling): **Texto** para velocidad o **ML** para precisión. Deje el predeterminado si no está seguro.
+  </Step>
+  <Step title="Iniciar la llamada">
+    Haga clic en **Iniciar prueba**. Su agente llamará al número y podrá tener una conversación real.
+  </Step>
+</Steps>
+
+## Qué verificar durante la llamada
+
+<CardGroup cols={2}>
+  <Card title="Latencia" icon="clock">
+    Cuente los tiempos entre hablar y escuchar al agente. Señale cualquier cosa superior a ~600 ms.
+  </Card>
+  <Card title="AMD" icon="robot">
+    Deje que el contestador automático responda para verificar si el modo AMD seleccionado se comporta correctamente.
+  </Card>
+  <Card title="Acciones y transferencias" icon="bolt">
+    Active acciones personalizadas, reservas o transferencias para confirmar que aún se activan cuando el audio fluye a través de PSTN.
+  </Card>
+  <Card title="Precisión del contexto" icon="id-card">
+    Confirme que las indicaciones específicas del llamante o las búsquedas de conocimientos aún funcionen cuando la llamada se inicia con metadatos reales.
+  </Card>
+  <Card title="Manejo de fin de llamada" icon="flag-checkered">
+    Asegúrese de que los mensajes de cierre, las automatizaciones y las transcripciones se finalicen incluso si el llamante cuelga primero.
+  </Card>
+</CardGroup>
+
+## Escenarios de prueba
+
+<AccordionGroup>
+  <Accordion title="Flujo de conversación" icon="comments">
+    Pruebe el camino de conversación completo desde el saludo hasta la finalización del objetivo. Verifique que el agente siga sus instrucciones y maneje la conversación de forma natural.
+  </Accordion>
+  <Accordion title="Interrupciones" icon="hand">
+    Intente interrumpir al agente mientras está hablando. Verifique que se detenga con elegancia y responda adecuadamente a su interrupción.
+  </Accordion>
+  <Accordion title="Diferentes entornos" icon="location-dot">
+    Pruebe desde habitaciones silenciosas, entornos ruidosos y diferentes ubicaciones. Llame desde teléfonos móviles, líneas fijas y diferentes operadores si es posible.
+  </Accordion>
+  <Accordion title="Casos límite" icon="triangle-exclamation">
+    Pruebe entradas inesperadas, solicitudes poco claras y escenarios donde el agente necesita hacer preguntas aclaratorias o manejar la confusión con elegancia.
+  </Accordion>
+</AccordionGroup>
+
+## Después de la llamada
+
+1. Vaya a la pestaña **Conversaciones** en su panel
+2. Encuentre su llamada de prueba (busque el ícono de teléfono)
+3. Revise la transcripción para verificar la precisión
+4. Verifique que los objetivos se rastrearon correctamente
+5. Verifique que las acciones o automatizaciones se activaron como se esperaba
+
+<Tip>
+Tome notas sobre lo que funcionó y lo que necesita mejora para cada llamada de prueba.
+</Tip>
+
+## Problemas comunes
+
+<AccordionGroup>
+  <Accordion title="La llamada no se conecta" icon="phone-xmark">
+    Verifique que su número de teléfono seleccionado esté activo y correctamente configurado en **Telefonía → Números**.
+  </Accordion>
+  <Accordion title="Mala calidad de audio" icon="volume-xmark">
+    Intente llamar desde una ubicación o dispositivo diferente.
+  </Accordion>
+  <Accordion title="No aparece la transcripción" icon="file-slash">
+    Espere unos momentos después de que finalice la llamada para el procesamiento. Si aún no aparece, intente otra llamada de prueba.
+  </Accordion>
+  <Accordion title="El agente suena diferente a la prueba web" icon="waveform">
+    Esto es normal: las redes telefónicas procesan el audio de manera diferente a las llamadas web. Pruebe varias veces para garantizar la consistencia.
+  </Accordion>
+</AccordionGroup>
+
+Una vez que sus pruebas telefónicas sean exitosas, ¡está listo para lanzar su agente a los clientes!

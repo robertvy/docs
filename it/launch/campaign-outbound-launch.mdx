@@ -1,0 +1,450 @@
+---
+title: "Lancio Campagne & Outbound"
+description: "Distribuisci campagne di chiamate outbound automatizzate su larga scala"
+icon: "bullhorn"
+keywords: "campagne outbound, chiamate automatizzate, gestione campagne, rilevamento segreteria telefonica, AMD, ciclo di vita contatti, analisi campagne, composizione progressiva, tracciamento obiettivi"
+og:description: "Lancia campagne di chiamate outbound automatizzate con composizione progressiva, AMD e analisi. Gestisci contatti, traccia obiettivi e ottimizza le prestazioni delle chiamate su larga scala."
+---
+
+Le campagne outbound automatizzano le chiamate ad alto volume per vendite, promemoria, sondaggi e notifiche. Ogni campagna collega il tuo agente a un elenco contatti, gestisce i programmi di chiamata e traccia i risultati.
+
+## Funzionalità Chiave
+
+<CardGroup cols={3}>
+  <Card title="Composizione Automatica" icon="phone-volume">
+    Composizione progressiva con logica di riprova configurabile
+  </Card>
+
+  <Card title="Orari di Apertura" icon="clock">
+    Applica finestre di chiamata e pianificazione per fuso orario
+  </Card>
+
+  <Card title="AMD Intelligente" icon="voicemail">
+    Salta le segreterie con rilevamento testo o ML
+  </Card>
+
+  <Card title="Ciclo di Vita Contatti" icon="arrows-spin">
+    Tracciamento automatico dello stato con gestione riprove
+  </Card>
+
+  <Card title="Analisi & Reporting" icon="chart-line">
+    Mappa di calore, obiettivi e analisi per contatto
+  </Card>
+
+  <Card title="Esportazione & Cronologia" icon="file-export">
+    Esporta contatti con metriche e traccia i job
+  </Card>
+</CardGroup>
+
+## Creazione della Prima Campagna
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/campaigns/create-campaign-light.png" alt="Finestra Crea Campagna che mostra il menu Answering Machine Detection (AMD) con Text-based selezionato, campo Nome Campagna con descrizione, menu Agent per selezionare l'agente per le chiamate della campagna, menu Numero di Telefono per selezionare il numero outbound, sezione Orari di Apertura che mostra disponibilità 24/7 con stato Aperto, pulsanti Annulla e Crea Campagna" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/campaigns/create-campaign-dark.png" alt="Finestra Crea Campagna che mostra il menu Answering Machine Detection (AMD) con Text-based selezionato, campo Nome Campagna con descrizione, menu Agent per selezionare l'agente per le chiamate della campagna, menu Numero di Telefono per selezionare il numero outbound, sezione Orari di Apertura che mostra disponibilità 24/7 con stato Aperto, pulsanti Annulla e Crea Campagna" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Naviga in Campagne">
+    Vai in **Campagne** e clicca **Crea Campagna** (o **Crea Prima Campagna** se è la tua prima).
+  </Step>
+
+  <Step title="Configura le impostazioni obbligatorie">
+    **Nome Campagna**: Nome descrittivo per uso interno (es. "Q1 Sales Outreach")
+
+    **Agent**: Seleziona quale agente AI gestirà le chiamate
+
+    **Numero di Telefono**: Scegli un numero per questa campagna. I numeri già assegnati a campagne attive o in pausa non appariranno nella lista. Se non hai ancora configurato un numero, vedi [Distribuzione Telefono & SIP](/it/launch/phone-sip-deployment).
+
+    **Answering Machine Detection (AMD)**: Scegli basato su testo (veloce) o basato su ML (preciso). [Scopri di più su AMD](#answering-machine-detection).
+  </Step>
+
+  <Step title="Configura le impostazioni opzionali">
+    **Orari di Apertura**: Limita le chiamate a un orario specifico (predefinito è 24/7). Puoi creare programmi in **Impostazioni → Orari di Apertura**. [Scopri di più sugli Orari di Apertura](/it/launch/business-hours).
+
+    Clicca **Crea Campagna** per continuare.
+  </Step>
+
+  <Step title="Configura le impostazioni della campagna">
+    Dopo la creazione, vai nella scheda **Impostazioni**:
+
+    **Impostazioni Base**:
+    - **Nome Campagna**: Aggiorna il nome della campagna in qualsiasi momento
+    - **Numero di Telefono**: Non può essere modificato dopo la creazione
+    - **Agent**: Cambia a un agente diverso se necessario
+
+    **Pianificazione**:
+    - **Data e Ora di Inizio**: Quando iniziare a chiamare (lascia vuoto per iniziare immediatamente, consente date fino a 24 ore nel passato)
+    - **Intervallo Chiamate**: Tempo di attesa tra le chiamate - scegli tra: 5s, 10s, 20s, 30s, 1min, 2min, 5min, 10min, 20min, 30min
+    - **Timeout Squillo**: Quanto tempo far squillare il telefono - scegli tra: 10s, 15s, 20s, 25s, 30s, 45s, 60s
+    - **Orari di Apertura**: Aggiorna o cambia il programma in qualsiasi momento (mostra stato aperto/chiuso in tempo reale con indicatore visivo)
+
+    **Rilevamento**:
+    - **Modalità AMD**: Passa tra rilevamento segreteria basato su Testo (veloce) o basato su ML (preciso)
+
+    **Logica Riprova**:
+    - **Tentativi Riprova Massimi**: Quante volte riprovare (0-10, predefinito: 2)
+    - **Intervallo Riprova**: Tempo calendario tra le riprove (non orari di apertura). Configura con selettore unità (minuti, ore o giorni)
+    - **Timeout Completamento Contatto**: Tempo massimo per un contatto per raggiungere lo stato completato dopo l'analisi. Configura con selettore unità (minuti, ore o giorni)
+  </Step>
+
+  <Step title="Aggiungi contatti">
+    Vai nella scheda **Contatti** per gestire i contatti della tua campagna.
+
+    L'interfaccia ha due pannelli:
+    - **Pannello Sinistro**: Contatti disponibili dalla tua lista contatti
+    - **Pannello Destro**: Contatti aggiunti a questa campagna
+
+    **Aggiunta contatti**:
+    - Clicca **+ Aggiungi** accanto ai singoli contatti
+    - Seleziona più contatti e clicca **Aggiungi Selezionati**
+    - Usa **Aggiungi Tutti** per aggiungere tutti i contatti filtrati (batch grandi vengono eseguiti in background)
+
+    Usa ricerca e filtri tag per restringere i contatti prima di aggiungerli.
+  </Step>
+
+  <Step title="Imposta obiettivi e analisi">
+    **Scheda Obiettivi**: Crea obiettivi a livello di campagna con due tipi:
+    - **Obiettivo Primario** (limite: 1): Criterio di successo principale per la campagna
+    - **Obiettivi Secondari** (illimitati): Obiettivi aggiuntivi da tracciare
+
+    Gli obiettivi valutano ogni contatto in base a tutte le loro conversazioni. I risultati mostrano: Raggiunto, Parzialmente Raggiunto, Non Raggiunto o Sconosciuto.
+
+    **Scheda Analisi**: Definisci analisi personalizzate usando tipi di domande:
+    - **Sì/No**: Domande con risultato binario
+    - **Testo Aperto**: Risposte di analisi in forma libera
+    - **Scala di Valutazione**: Valutazione 1-5 (Basso/Scarso a Alto/Eccellente)
+
+    Ogni analisi può essere attivata/disattivata e viene eseguita per contatto su tutte le conversazioni.
+  </Step>
+
+  <Step title="Lancia la campagna">
+    Le campagne vengono create in stato **In Pausa** per impostazione predefinita. Imposta lo stato su **Attivo** per iniziare a chiamare. Una volta attiva, la campagna inizia all'ora di inizio configurata. Monitora i progressi nelle schede **Dashboard** e **Reporting**.
+  </Step>
+</Steps>
+
+## Gestione Campagna
+
+Una volta creata, la tua campagna ha sei schede principali:
+
+<AccordionGroup>
+  <Accordion title="Dashboard" icon="gauge">
+    Panoramica della campagna in layout griglia 2x2:
+
+    **Statistiche Rapide** (in alto a sinistra):
+    - Tasso di Raggiungimento Obiettivo Primario
+    - Conversazioni Totali
+    - Durata Media Chiamata
+    - Tasso di Risposta Umana
+
+    **Stato Contatti** (in alto a destra):
+    - Tutti i 7 stati con conteggi e percentuali
+    - Separazione visiva tra stati attivi e finali
+
+    **Analisi Obiettivi** (in basso a sinistra):
+    - Raggiunto (verde) / Parzialmente Raggiunto (giallo) / Non Raggiunto (rosso) / Sconosciuto (grigio)
+    - Barre di progresso che mostrano la distribuzione
+
+    **Mappa di Calore Tasso di Risposta** (in basso a destra):
+    - Griglia settimanale 7 giorni x 24 ore
+    - Intensità colore mostra i tassi di risposta (0-30%+)
+    - Identifica i migliori orari e giorni di chiamata
+  </Accordion>
+
+  <Accordion title="Reporting" icon="chart-bar">
+    Tabella di analisi dettagliate per contatto con filtri avanzati:
+
+    **Colonne Tabella**: Nome contatto/tag, telefono con bandiera, badge stato, indicatore obiettivo primario, anello raggiungimento obiettivo, conteggio/durata conversazioni, timestamp ultima chiamata, azioni
+
+    **Opzioni Filtro**:
+    - Tag (multi-selezione, ricercabili)
+    - Stato (tutti i 7 tipi)
+    - Tentativi Riprova Min/Max
+    - Stato Obiettivo Primario (raggiunto, parzialmente raggiunto, non raggiunto, sconosciuto)
+    - Ricerca per nome/telefono
+
+    **Azioni**:
+    - Riprova in blocco contatti selezionati
+    - Visualizza analisi dettagliate per contatto
+    - Esporta con selezione formato (XLSX, CSV)
+  </Accordion>
+
+  <Accordion title="Contatti" icon="users">
+    Interfaccia a due pannelli per gestire i contatti della campagna:
+
+    **Pannello Sinistro (Contatti Disponibili)**:
+    - Ricerca e filtra per tag
+    - Aggiungi contatti individuali o in blocco
+    - "Aggiungi Tutti Filtrati" per batch grandi (eseguito in background)
+
+    **Pannello Destro (Contatti Campagna)**:
+    - Filtra per tag e stato
+    - Rimuovi solo contatti **In Attesa** (altri bloccati)
+    - Rimozione in blocco con conferma
+    - Clicca sul contatto per visualizzazione rapida analisi
+  </Accordion>
+
+  <Accordion title="Obiettivi" icon="bullseye">
+    Crea e gestisci obiettivi a livello di campagna con due schede:
+
+    **Scheda Obiettivo Primario**:
+    - Limite: 1 obiettivo primario massimo
+    - Archivia/ripristina obiettivi primari precedenti
+
+    **Scheda Obiettivi Secondari**:
+    - Obiettivi secondari illimitati
+    - Flusso archiviazione/ripristino
+
+    Tutti gli obiettivi valutano i contatti in base a tutte le loro conversazioni (non per conversazione come gli obiettivi agente). Risultati: Raggiunto, Parzialmente Raggiunto, Non Raggiunto, Sconosciuto.
+  </Accordion>
+
+  <Accordion title="Analisi" icon="microscope">
+    Configura analisi personalizzate con tre tipi di domande:
+    - **Sì/No**: Risultati binari
+    - **Testo Aperto**: Risposte in forma libera
+    - **Scala di Valutazione**: Valutazioni 1-5
+
+    **Funzionalità**:
+    - Attiva/disattiva analisi senza eliminarle
+    - Flusso archiviazione/ripristino
+    - Ogni analisi viene eseguita per contatto su tutte le conversazioni
+  </Accordion>
+
+  <Accordion title="Impostazioni" icon="gear">
+    Regola tutti i parametri della campagna organizzati in due colonne:
+
+    **Colonna Sinistra**: Nome campagna, numero di telefono (bloccato), agente, data/ora inizio, orari di apertura (con indicatore aperto/chiuso in tempo reale)
+
+    **Colonna Destra**: Intervallo chiamate (10 opzioni), timeout squillo (7 opzioni), modalità AMD, tentativi riprova massimi, timeout completamento (con selettore unità), intervallo riprova (con selettore unità)
+  </Accordion>
+</AccordionGroup>
+
+## Ciclo di Vita Contatti
+
+I contatti progrediscono attraverso questi stati, mostrati con badge colorati e icone in tutta l'interfaccia:
+
+### Stati Attivi
+
+<CardGroup cols={2}>
+  <Card title="In Attesa" icon="clock">
+    **Badge grigio con icona orologio**
+
+    Il contatto è in coda e in attesa di essere chiamato
+  </Card>
+
+  <Card title="Chiamata in Corso" icon="phone">
+    **Badge giallo con icona telefono**
+
+    Chiamata attualmente in corso - composizione del contatto
+  </Card>
+
+  <Card title="Chiamato" icon="phone">
+    **Badge viola**
+
+    Chiamata effettuata, in attesa del prossimo passo
+  </Card>
+
+  <Card title="Riprova" icon="arrows-rotate">
+    **Badge blu con icona aggiorna**
+
+    Nessuna conversazione significativa avvenuta, chiamata programmata per riprova
+  </Card>
+</CardGroup>
+
+### Stati Finali
+
+<CardGroup cols={3}>
+  <Card title="Completato" icon="circle-check">
+    **Badge verde con icona check-circle**
+
+    Contatto ha completato con successo tutti gli obiettivi della campagna
+  </Card>
+
+  <Card title="Fallito" icon="circle-xmark">
+    **Badge rosso con icona X-circle**
+
+    Chiamata permanentemente fallita e non verrà riprovata
+  </Card>
+
+  <Card title="Nessuna Conversazione" icon="phone-slash">
+    **Badge grigio con icona phone-X**
+
+    Il contatto non ha risposto o non ha risposto
+  </Card>
+</CardGroup>
+
+<Note>
+Il sistema gestisce automaticamente le transizioni di stato in base ai risultati delle chiamate. Puoi riprovare manualmente i contatti dalle schede Contatti o Reporting. Solo i contatti in stato **In Attesa** possono essere rimossi dalla campagna.
+</Note>
+
+## Gestione Campagne Attive
+
+### Cambio Stato Campagna
+
+Naviga nell'elenco **Campagne** e clicca sul badge stato per cambiare:
+
+- **Attivo**: La campagna sta chiamando attivamente i contatti
+- **In Pausa**: Ferma temporaneamente le chiamate preservando tutti i progressi
+- **Completato**: Segna la campagna come terminata
+- **Annullato**: Annulla la campagna
+
+### Aggiunta Contatti Durante la Campagna
+
+Puoi aggiungere più contatti a una campagna in esecuzione:
+1. Vai nella scheda **Contatti**
+2. Usa l'interfaccia a due pannelli per aggiungere nuovi contatti
+3. I nuovi contatti entrano automaticamente in coda
+
+### Aggiornamento Impostazioni
+
+Modifica le impostazioni della campagna in qualsiasi momento:
+- Aggiorna **Orari di Apertura** per regolare le finestre di chiamata
+- Modifica **Logica Riprova** in base alle prestazioni
+- Modifica **Intervallo Chiamate** o **Timeout Squillo**
+- Le modifiche si applicano immediatamente alle chiamate in coda
+
+## Reporting Campagna
+
+<CardGroup cols={2}>
+  <Card title="Mappa di Calore Tasso di Risposta" icon="chart-line">
+    Mappa di calore settimanale che mostra i tassi di risposta per ora e giorno. Dopo 50-100 chiamate, usa questo per identificare i migliori orari di chiamata e ottimizzare la configurazione degli orari di apertura.
+  </Card>
+
+  <Card title="Prestazioni Obiettivi" icon="bullseye">
+    Traccia i tassi di raggiungimento obiettivi della campagna per contatto. Vedi quali contatti hanno completato gli obiettivi e analizza i modelli di successo.
+  </Card>
+
+  <Card title="Analisi Contatti" icon="users">
+    Metriche per contatto che combinano tutte le conversazioni, cronologia stato e risultati analisi per approfondimenti completi.
+  </Card>
+
+  <Card title="Volume Chiamate" icon="phone-volume">
+    Monitora i tentativi di chiamata, i tassi di connessione e la progressione dei contatti nel tempo.
+  </Card>
+</CardGroup>
+
+## Esportazioni Contatti
+
+<AccordionGroup>
+  <Accordion title="Opzioni di Esportazione" icon="file-export">
+    Dalla scheda **Contatti** o **Reporting**, esporta i dati dei contatti con opzioni di formato flessibili:
+
+    **Ambito**:
+    - **Esporta selezione corrente**: Solo contatti selezionati
+    - **Esporta contatti filtrati**: Tutti i contatti che corrispondono ai filtri attivi
+    - **Esporta intera campagna**: Elenco completo contatti con tutte le metriche
+
+    **Opzioni Formato**:
+    - **XLSX (consigliato)**: Formato Excel con supporto formattazione completo
+    - **CSV separato da virgole**: CSV standard con delimitatori virgola
+    - **CSV separato da punto e virgola**: Formato CSV europeo per regioni che usano virgola come separatore decimale
+
+    Le esportazioni includono dettagli contatto, stato, dati conversazione, risultati obiettivi e risultati analisi.
+  </Accordion>
+
+  <Accordion title="Cronologia Esportazioni" icon="clock">
+    Traccia tutti i job di esportazione dalla scheda **Contatti**:
+    - Visualizza esportazioni in corso con aggiornamenti stato e formato file
+    - Scarica file completati (formato mostrato: .xlsx, .csv (,), o .csv (;))
+    - Continua a lavorare mentre le esportazioni vengono eseguite in background
+
+    Le esportazioni grandi vengono elaborate in background così puoi continuare a gestire la tua campagna. Ogni esportazione mostra la sua icona formato (Excel o CSV) per identificazione rapida.
+  </Accordion>
+</AccordionGroup>
+
+## Integrazione Chiamate Inbound
+
+Quando i contatti richiamano, il sistema collega automaticamente la chiamata al contatto della campagna usando una strategia di corrispondenza a due livelli:
+
+### Logica di Corrispondenza
+
+**Corrispondenza Primaria (basata su DID)**:
+- Corrisponde il numero di telefono del contatto (numero chiamante) con il numero di telefono della campagna (numero chiamato)
+- Funziona per campagne attive o in pausa
+- Metodo più affidabile - non richiede corrispondenza agente
+
+**Corrispondenza Fallback (basata su Agente)**:
+- Si attiva solo se:
+  - Nessuna corrispondenza DID trovata, E
+  - Il contatto ha una chiamata outbound recente (entro 30 giorni) da qualsiasi campagna
+- Corrisponde il numero di telefono del contatto con campagne che usano lo stesso agente
+- Usa il contatto campagna aggiornato più di recente
+
+### Aggiornamenti Stato
+
+Quando una chiamata inbound viene abbinata a un contatto campagna in questi stati, viene automaticamente aggiornato a **Chiamato**:
+- Riprova → Chiamato
+- Completato → Chiamato
+- Nessuna Conversazione → Chiamato
+
+Questo consente ai callback di riaprire le opportunità di contatto e continuare il flusso della campagna.
+
+### Vantaggi
+
+- **Collegamento Automatico**: Nessun intervento manuale necessario
+- **Continuità Contesto**: L'agente ha accesso a tutte le interazioni precedenti della campagna
+- **Aggiornamenti Stato**: Il ciclo di vita del contatto si adatta automaticamente ai callback
+- **Reporting Unificato**: Tutte le interazioni (outbound + inbound) tracciate insieme per contatto
+
+## Best Practice
+
+### Inizia in Piccolo
+
+<Warning>
+Inizia sempre con un batch pilota di 10-20 contatti prima di scalare a migliaia. Questo convalida la configurazione e previene errori su larga scala.
+</Warning>
+
+**Flusso pilota**:
+1. Crea una lista di test con contatti amichevoli (colleghi, numeri di test)
+2. Lancia la campagna e monitora in **Conversazioni → Monitor live**
+3. Rivedi i risultati:
+   - Tasso di risposta
+   - Precisione AMD
+   - Tasso di raggiungimento obiettivi
+   - Durata media chiamata
+4. Regola le istruzioni agente, le impostazioni AMD o gli orari di apertura se necessario
+5. Scala gradualmente: 50 → 200 → 1.000+ contatti
+
+### Qualità Lista Contatti
+
+Prima di caricare i contatti:
+- Rimuovi numeri duplicati
+- Valida il formato numero di telefono (E.164: +1234567890)
+- Controlla rispetto alla tua lista interna Do Not Call
+- Verifica rispetto ai registri DNC nazionali se applicabile
+
+### Ottimizzazione Fuso Orario
+
+Per contatti in più fusi orari:
+1. Crea orari di apertura in **Impostazioni → Orari di Apertura** con fuso orario appropriato
+2. Assegna alla campagna così le chiamate avvengono durante gli orari di apertura locali
+3. Usa la mappa di calore del tasso di risposta per trovare finestre di chiamata ottimali per regione
+
+### Segmentazione
+
+Crea campagne separate per:
+- Diversi segmenti clienti (clienti trial vs. paganti)
+- Diversi script o obiettivi
+- Diverse lingue
+- Variazioni test A/B
+
+Questo ti consente di tracciare le prestazioni e ottimizzare ogni segmento indipendentemente.
+
+## Prossimi Passi
+
+<CardGroup cols={2}>
+  <Card title="Orari di Apertura" icon="clock" href="/it/launch/business-hours">
+    Configura programmi di chiamata e gestione fuso orario
+  </Card>
+
+  <Card title="Best Practice Produzione" icon="star" href="/it/launch/production-best-practices">
+    Ottimizza prestazioni campagna e soddisfazione cliente
+  </Card>
+
+  <Card title="Analisi & Reporting" icon="chart-bar" href="/it/optimize/overview">
+    Analisi approfondite campagna e tracciamento conversioni
+  </Card>
+</CardGroup>

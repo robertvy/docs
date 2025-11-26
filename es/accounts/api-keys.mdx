@@ -1,0 +1,462 @@
+---
+title: "Claves API"
+description: "Crea y gestiona el acceso programático a tu cuenta"
+icon: "key"
+keywords: 'claves API, autenticación, acceso programático, seguridad API, gestión de claves, tokens API, rotación de claves, token Bearer'
+og:description: 'Crea y gestiona claves API para acceso programático. Aprende mejores prácticas para rotación de claves, seguridad y autenticación con la API de itellicoAI.'
+---
+
+## Descripción General
+
+Las claves API proporcionan acceso programático a la plataforma itellicoAI, permitiéndote integrar agentes en tus aplicaciones, automatizar tareas y construir flujos de trabajo personalizados.
+
+## ¿Qué son las Claves API?
+
+Las claves API son tokens seguros que autentican tus solicitudes API sin requerir credenciales de inicio de sesión de usuario.
+
+**Características clave:**
+- **Ámbito de cuenta**: Cada clave pertenece a una cuenta específica
+- **Secreta**: Trátala como una contraseña - nunca compartas ni confirmes en control de versiones
+- **Revocable**: Puede ser deshabilitada o eliminada en cualquier momento
+- **Rastreable**: Monitorea la marca de tiempo del último uso y actividad
+
+## Creación de Claves API
+
+### Cómo Crear
+
+<Steps>
+  <Step title="Navegar a Claves API">
+    Ve a **Configuración → Claves API** en tu cuenta
+  </Step>
+
+  <Step title="Hacer Clic en Crear Clave API">
+    Haz clic en el botón **Crear Clave API**
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/keys/create-key-light.png" alt="Diálogo Crear Clave API con campos de nombre de clave y fecha de expiración" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/keys/create-key-dark.png" alt="Diálogo Crear Clave API con campos de nombre de clave y fecha de expiración" />
+  </div>
+</Frame>
+  </Step>
+
+  <Step title="Introducir una Etiqueta">
+    Dale a tu clave un nombre descriptivo:
+    - "Servidor de Producción"
+    - "Entorno de Desarrollo"
+    - "Pipeline CI/CD"
+    - "Aplicación Móvil - iOS"
+  </Step>
+
+  <Step title="Establecer Expiración (Opcional)">
+    Opcionalmente establece una fecha de expiración para rotación automática de claves
+  </Step>
+
+  <Step title="Copiar la Clave">
+    **⚠️ IMPORTANTE**: ¡La clave completa se muestra solo una vez!
+
+    Cópiala inmediatamente y guárdala de forma segura.
+  </Step>
+
+  <Step title="Almacenar de Forma Segura">
+    Guarda la clave en:
+    - Variables de entorno
+    - Gestor de secretos (AWS Secrets Manager, HashiCorp Vault, etc.)
+    - Gestor de contraseñas
+
+    ¡**Nunca** la confirmes en git ni la compartas públicamente!
+  </Step>
+</Steps>
+
+<Warning>
+La clave API completa se muestra **solo una vez** al crearla. Si la pierdes, debes crear una nueva clave.
+</Warning>
+
+## Uso de Claves API
+
+### Encabezado de Autenticación
+
+Incluye tu clave API en el encabezado `Authorization`:
+
+```bash
+curl https://api.itellico.ai/v1/agents \
+  -H "Authorization: Bearer sk-a1b2c3d4.xyz789..." \
+  -H "Content-Type: application/json"
+```
+
+### Contexto de Cuenta
+
+Las claves API tienen ámbito de cuenta. Cuando creas una clave en una cuenta principal, puede acceder tanto a la principal como a todas las subcuentas.
+
+Para acceder a una cuenta específica, incluye el ID de cuenta en la ruta URL:
+
+```bash
+# Acceder a cuenta principal
+curl https://api.itellico.ai/v1/accounts/me/agents \
+  -H "Authorization: Bearer sk-a1b2c3d4.xyz789..." \
+  -H "Content-Type: application/json"
+
+# Acceder a subcuenta específica
+curl https://api.itellico.ai/v1/accounts/{account-id}/agents \
+  -H "Authorization: Bearer sk-a1b2c3d4.xyz789..." \
+  -H "Content-Type: application/json"
+```
+
+### SDKs
+
+Usando nuestros SDKs oficiales:
+
+<CodeGroup>
+
+```python Python
+from itellico import ItellicoAI
+
+client = ItellicoAI(api_key="sk-a1b2c3d4.xyz789...")
+
+# Listar agentes
+agents = client.agents.list()
+```
+
+```typescript TypeScript
+import { ItellicoAI } from '@itellico/sdk';
+
+const client = new ItellicoAI({
+  apiKey: 'sk-a1b2c3d4.xyz789...'
+});
+
+// Listar agentes
+const agents = await client.agents.list();
+```
+
+</CodeGroup>
+
+<Tip>
+Almacena las claves API en variables de entorno y nunca las codifiques directamente en tu código fuente.
+</Tip>
+
+## Gestión de Claves API
+
+### Visualización de Claves
+
+La página de Claves API muestra:
+- **Etiqueta**: Tu nombre descriptivo
+- **Clave Parcial**: Primeros caracteres (ej., `sk-a1b2c3d4...`)
+- **Estado**: Activa, Revocada o Expirada
+- **Creada**: Cuándo se creó la clave
+- **Último Uso**: Cuándo se usó por última vez para una solicitud API
+- **Expira**: Fecha de expiración (si está establecida)
+
+<Note>
+La clave completa **nunca** se muestra después de la creación - solo los primeros caracteres para identificación.
+</Note>
+
+### Edición de Claves
+
+Puedes actualizar:
+- **Etiqueta**: Cambiar el nombre descriptivo
+- **Fecha de expiración**: Extender o establecer expiración
+
+**No** puedes cambiar:
+- La clave en sí (crea una nueva en su lugar)
+- La cuenta a la que pertenece
+
+### Revocación de Claves
+
+Para desactivar temporalmente una clave sin eliminarla:
+
+1. Ve a **Configuración → Claves API**
+2. Encuentra la clave en la lista
+3. Haz clic en **Revocar**
+4. La clave se desactiva inmediatamente
+
+**¿Por qué revocar en lugar de eliminar?**
+- Mantiene la clave en registros para auditoría
+- Puede reactivarse si se revocó por error
+- Preserva fecha de creación e historial
+
+### Reactivación de Claves
+
+Para restaurar una clave revocada:
+
+1. Encuentra la clave revocada en la lista
+2. Haz clic en **Reactivar**
+3. La clave funciona inmediatamente
+
+### Eliminación de Claves
+
+Para eliminar permanentemente una clave:
+
+1. Ve a **Configuración → Claves API**
+2. Encuentra la clave en la lista
+3. Haz clic en el menú (⋯) → **Eliminar**
+4. Confirma la eliminación
+
+<Warning>
+La eliminación es permanente y no se puede deshacer. La clave dejará de funcionar inmediatamente.
+</Warning>
+
+## Estados de Clave
+
+| Estado | Descripción | Acceso API |
+|--------|-------------|------------|
+| **Activa** | La clave funciona normalmente | ✅ Sí |
+| **Revocada** | Desactivada manualmente | ❌ No |
+| **Expirada** | Pasó la fecha de expiración | ❌ No |
+
+## Mejores Prácticas
+
+<AccordionGroup>
+  <Accordion title="Una Clave Por Entorno" icon="server">
+    Crea claves separadas para cada entorno:
+
+    - **Desarrollo**: "Clave Servidor Dev"
+    - **Staging**: "Entorno Staging"
+    - **Producción**: "Servidor Producción"
+
+    **Beneficios:**
+    - Revoca claves dev sin afectar producción
+    - Rastrea uso por entorno
+    - Diferentes políticas de expiración por entorno
+  </Accordion>
+
+  <Accordion title="Usar Variables de Entorno" icon="code">
+    Nunca codifiques claves API en tu código fuente.
+
+    **Bueno:**
+    ```python
+    import os
+    api_key = os.environ['ITELLICO_API_KEY']
+    ```
+
+    **Malo:**
+    ```python
+    api_key = "sk-a1b2c3d4.xyz789..."  # ¡NO HAGAS ESTO!
+    ```
+
+    **Archivos de entorno (.env):**
+    ```bash
+    ITELLICO_API_KEY=sk-a1b2c3d4.xyz789...
+    ```
+
+    **Agregar a .gitignore:**
+    ```
+    .env
+    .env.local
+    *.key
+    ```
+  </Accordion>
+
+  <Accordion title="Rotación Regular de Claves" icon="rotate">
+    Rota las claves API periódicamente por seguridad:
+
+    **Calendario recomendado:**
+    - **Producción**: Cada 90 días
+    - **Staging**: Cada 180 días
+    - **Desarrollo**: Anualmente o cuando cambien desarrolladores
+
+    **Proceso de rotación:**
+    1. Crear nueva clave con fecha de expiración
+    2. Actualizar aplicaciones con nueva clave
+    3. Probar exhaustivamente
+    4. Revocar clave antigua
+    5. Eliminar clave antigua después de 30 días
+  </Accordion>
+
+  <Accordion title="Establecer Fechas de Expiración" icon="calendar-xmark">
+    Usa fechas de expiración para:
+    - **Acceso temporal**: Contratistas, demos, POCs
+    - **Rotación forzada**: Claves de producción establecidas para expirar en 90 días
+    - **Funciones por tiempo limitado**: Pruebas beta, ensayos
+
+    **Ejemplo:**
+    - Crear clave el 1 de enero
+    - Establecer expiración al 1 de abril (90 días)
+    - Recibir notificación 7 días antes de la expiración
+    - Rotar clave antes de la expiración
+  </Accordion>
+
+  <Accordion title="Monitorear Uso" icon="chart-line">
+    Verifica las marcas de tiempo "Último Uso" regularmente:
+
+    - **Nunca usada**: Eliminar claves no utilizadas
+    - **Marca temporal antigua**: Podría ser seguro revocar
+    - **Actividad reciente**: La clave está activa
+
+    Revisa tus claves API mensualmente para eliminar las inactivas.
+  </Accordion>
+
+  <Accordion title="Etiquetas Descriptivas" icon="tag">
+    Usa nombres de clave claros y descriptivos:
+
+    **Buenas etiquetas:**
+    - "Servidor API Producción - us-east-1"
+    - "Aplicación Móvil - iOS - Producción"
+    - "CI/CD - GitHub Actions"
+    - "Manejador Webhook - Staging"
+
+    **Malas etiquetas:**
+    - "Clave API 1"
+    - "Prueba"
+    - "Mi Clave"
+    - "Nueva Clave"
+  </Accordion>
+
+  <Accordion title="Gestión de Secretos" icon="vault">
+    Usa un gestor de secretos en producción:
+
+    **Opciones:**
+    - AWS Secrets Manager
+    - HashiCorp Vault
+    - Azure Key Vault
+    - Google Secret Manager
+    - 1Password / LastPass (para equipos)
+
+    **Beneficios:**
+    - Almacenamiento centralizado de secretos
+    - Rotación automática
+    - Registros de auditoría
+    - Controles de acceso
+  </Accordion>
+</AccordionGroup>
+
+## Consideraciones de Seguridad
+
+<Warning>
+**¡Nunca confirmes claves API en control de versiones!**
+
+Si accidentalmente confirmas una clave:
+1. Revoca la clave inmediatamente
+2. Crea una nueva clave
+3. Usa `git filter-branch` o BFG Repo-Cleaner para eliminar del historial
+4. Fuerza push al remoto
+5. Notifica a los miembros del equipo que hagan pull de lo último
+</Warning>
+
+### Si una Clave se Compromete
+
+<Steps>
+  <Step title="Revocar Inmediatamente">
+    Ve a **Configuración → Claves API** y revoca la clave comprometida
+  </Step>
+
+  <Step title="Crear Nueva Clave">
+    Genera una clave de reemplazo con una nueva etiqueta
+  </Step>
+
+  <Step title="Actualizar Aplicaciones">
+    Despliega la nueva clave a todas las aplicaciones afectadas
+  </Step>
+
+  <Step title="Revisar Registros">
+    Verifica registros de uso para actividad sospechosa
+  </Step>
+
+  <Step title="Notificar al Equipo">
+    Informa a tu equipo sobre el incidente
+  </Step>
+
+  <Step title="Investigar">
+    Determina cómo se comprometió la clave y previene recurrencia
+  </Step>
+</Steps>
+
+## Solución de Problemas
+
+<AccordionGroup>
+  <Accordion title="401 No Autorizado" icon="lock">
+    **Causas:**
+    - Clave API inválida
+    - Clave revocada o expirada
+    - Falta encabezado `Authorization`
+    - Formato de encabezado incorrecto
+
+    **Soluciones:**
+    - Verifica que la clave esté activa en Configuración
+    - Verifica el encabezado: `Authorization: Bearer sk-...`
+    - Asegúrate de que no haya espacios o caracteres extra
+    - Crea una nueva clave si se perdió
+  </Accordion>
+
+  <Accordion title="403 Prohibido" icon="ban">
+    **Causas:**
+    - La clave no tiene acceso a la cuenta solicitada
+    - Solicitando una subcuenta a la que la clave no puede acceder
+    - La cuenta está inactiva
+
+    **Soluciones:**
+    - Verifica que la clave se creó en la cuenta principal o en la subcuenta a la que estás accediendo
+    - Verifica que el ID de cuenta en la URL sea correcto
+    - Verifica que el estado de la cuenta sea activo
+  </Accordion>
+
+  <Accordion title="429 Demasiadas Solicitudes" icon="gauge-high">
+    **Causas:**
+    - Límites de tasa excedidos
+    - Demasiadas solicitudes concurrentes
+
+    **Soluciones:**
+    - Implementar retroceso exponencial
+    - Cachear respuestas cuando sea posible
+    - Actualizar a plan de nivel superior
+    - Distribuir solicitudes a lo largo del tiempo
+  </Accordion>
+
+  <Accordion title="La clave no funciona después de la creación" icon="circle-xmark">
+    **Posibles causas:**
+    - Usando clave incorrecta (prefijo vs clave completa)
+    - Caracteres extra (saltos de línea, espacios)
+    - Revocada inmediatamente después de la creación
+
+    **Soluciones:**
+    - Copiar la clave completa incluyendo el prefijo `sk-`
+    - Recortar espacios en blanco de la clave almacenada
+    - Verificar que el estado sea "Activa"
+  </Accordion>
+</AccordionGroup>
+
+## Preguntas Frecuentes
+
+<AccordionGroup>
+  <Accordion title="¿Cuántas claves API puedo crear?">
+    No hay límite rígido, pero recomendamos:
+    - Equipos pequeños: 3-5 claves
+    - Equipos medianos: 10-15 claves
+    - Empresas: Según sea necesario por entorno
+  </Accordion>
+
+  <Accordion title="¿Puedo usar una clave en múltiples cuentas?">
+    Las claves API creadas en una cuenta principal pueden acceder tanto a la principal como a todas sus subcuentas. Las claves creadas en una subcuenta solo pueden acceder a esa subcuenta.
+  </Accordion>
+
+  <Accordion title="¿Qué sucede si elimino una clave?">
+    Las solicitudes API usando esa clave fallarán inmediatamente con 401 No Autorizado. ¡Actualiza tus aplicaciones primero!
+  </Accordion>
+
+  <Accordion title="¿Puedo ver para qué se usó una clave?">
+    Sí. La marca de tiempo "Último Uso" muestra cuándo se accedió por última vez. Para registros detallados, contacta a soporte sobre registros de acceso API.
+  </Accordion>
+
+  <Accordion title="¿Las claves API expiran automáticamente?">
+    Solo si estableces una fecha de expiración. De lo contrario, las claves permanecen activas hasta que se revoquen o eliminen.
+  </Accordion>
+
+  <Accordion title="¿Pueden las subcuentas tener sus propias claves API?">
+    ¡Sí! Cada subcuenta puede crear claves API independientes con ámbito al contexto de esa subcuenta.
+  </Accordion>
+</AccordionGroup>
+
+## Próximos Pasos
+
+<CardGroup cols={2}>
+  <Card title="Referencia API" icon="book" href="/es/api-reference/introduction">
+    Explora los endpoints API disponibles
+  </Card>
+  <Card title="SDKs" icon="code" href="/es/api-reference/sdks">
+    Usa nuestros SDKs oficiales de Python y TypeScript
+  </Card>
+  <Card title="Gestión de Equipos" icon="users" href="/es/accounts/team-management">
+    Gestiona miembros del equipo
+  </Card>
+</CardGroup>

@@ -1,0 +1,450 @@
+---
+title: "Lancement de Campagne & Appels Sortants"
+description: "Déployez des campagnes d'appels sortants automatisées à grande échelle"
+icon: "bullhorn"
+keywords: "campagnes sortantes, appels automatisés, gestion de campagne, détection de répondeur, AMD, cycle de vie des contacts, analytique de campagne, numérotation progressive, suivi des objectifs"
+og:description: "Lance des campagnes d'appels sortants automatisées avec numérotation progressive, AMD et analytique. Gérez les contacts, Suis les objectifs et Optimise les performances d'appels à grande échelle."
+---
+
+Les campagnes sortantes automatisent les appels à fort volume pour les ventes, rappels, enquêtes et notifications. Chaque campagne connecte ton agent à une liste de contacts, gère les plannings de numérotation et suit les résultats.
+
+## Fonctionnalités Clés
+
+<CardGroup cols={3}>
+  <Card title="Numérotation Automatisée" icon="phone-volume">
+    Numérotation progressive avec logique de relance configurable
+  </Card>
+
+  <Card title="Horaires d'Ouverture" icon="clock">
+    Applique des fenêtres d'appel et planification par fuseau horaire
+  </Card>
+
+  <Card title="AMD Intelligent" icon="voicemail">
+    Ignore les messageries vocales avec détection texte ou ML
+  </Card>
+
+  <Card title="Cycle de Vie des Contacts" icon="arrows-spin">
+    Suivi automatique du statut avec gestion des relances
+  </Card>
+
+  <Card title="Analytique & Rapports" icon="chart-line">
+    Carte thermique, objectifs et analyse par contact
+  </Card>
+
+  <Card title="Export & Historique" icon="file-export">
+    Exporte les contacts avec métriques et Suis les tâches
+  </Card>
+</CardGroup>
+
+## Créer Ton Première Campagne
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/campaigns/create-campaign-light.png" alt="Dialogue Créer une Campagne montrant le menu déroulant Détection de Répondeur (AMD) avec Basée sur le texte sélectionné, champ Nom de Campagne avec description, menu déroulant Agent pour sélectionner l'agent pour les appels de campagne, menu déroulant Numéro de Téléphone pour sélectionner le numéro de téléphone sortant, section Horaires d'Ouverture montrant disponibilité 24/7 avec statut Ouvert, boutons Annuler et Créer une Campagne" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/campaigns/create-campaign-dark.png" alt="Dialogue Créer une Campagne montrant le menu déroulant Détection de Répondeur (AMD) avec Basée sur le texte sélectionné, champ Nom de Campagne avec description, menu déroulant Agent pour sélectionner l'agent pour les appels de campagne, menu déroulant Numéro de Téléphone pour sélectionner le numéro de téléphone sortant, section Horaires d'Ouverture montrant disponibilité 24/7 avec statut Ouvert, boutons Annuler et Créer une Campagne" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Naviguez vers Campagnes">
+    Va dans **Campagnes** et Clique sur **Créer une Campagne** (ou **Créer la Première Campagne** si c'est ton première).
+  </Step>
+
+  <Step title="Configure les paramètres requis">
+    **Nom de Campagne** : Nom descriptif pour usage interne (ex : "Prospection Commerciale T1")
+
+    **Agent** : Sélectionne quel agent IA gérera les appels
+
+    **Numéro de Téléphone** : Choisis un numéro de téléphone pour cette campagne. Les numéros déjà assignés à des campagnes actives ou en pause n'apparaîtront pas dans la liste. Si tu n'avez pas encore configuré de numéro de téléphone, voir [Déploiement Téléphonique & SIP](/fr/launch/phone-sip-deployment).
+
+    **Détection de Répondeur (AMD)** : Choisis basée sur le texte (rapide) ou basée sur ML (précise). [En savoir plus sur AMD](#answering-machine-detection).
+  </Step>
+
+  <Step title="Configure les paramètres optionnels">
+    **Horaires d'Ouverture** : Limite les appels à un planning spécifique (par défaut 24/7). Tu peux créer des plannings dans **Paramètres → Horaires d'Ouverture**. [En savoir plus sur les Horaires d'Ouverture](/fr/launch/business-hours).
+
+    Clique sur **Créer une Campagne** pour continuer.
+  </Step>
+
+  <Step title="Configure les paramètres de campagne">
+    Après création, Va dans l'onglet **Paramètres** :
+
+    **Paramètres de Base** :
+    - **Nom de Campagne** : Mets à jour le nom de campagne à tout moment
+    - **Numéro de Téléphone** : Ne peut pas être modifié après création
+    - **Agent** : Basculez vers un agent différent si nécessaire
+
+    **Planification** :
+    - **Date & Heure de Début** : Quand commencer les appels (laissez vide pour démarrer immédiatement, permet des dates jusqu'à 24 heures dans le passé)
+    - **Intervalle d'Appel** : Temps d'attente entre les appels - Choisis parmi : 5s, 10s, 20s, 30s, 1min, 2min, 5min, 10min, 20min, 30min
+    - **Délai de Sonnerie** : Durée de la sonnerie - Choisis parmi : 10s, 15s, 20s, 25s, 30s, 45s, 60s
+    - **Horaires d'Ouverture** : Mets à jour ou Modifie le planning à tout moment (affiche le statut ouvert/fermé en temps réel avec indicateur visuel)
+
+    **Détection** :
+    - **Mode AMD** : Basculez entre Basée sur le texte (rapide) ou Basée sur ML (précise)
+
+    **Logique de Relance** :
+    - **Tentatives de Relance Max** : Combien de fois relancer (0-10, par défaut : 2)
+    - **Intervalle de Relance** : Temps calendaire entre relances (pas horaires d'ouverture). Configure avec sélecteur d'unité (minutes, heures ou jours)
+    - **Délai d'Achèvement du Contact** : Temps maximum pour qu'un contact atteigne l'état complété après analyse. Configure avec sélecteur d'unité (minutes, heures ou jours)
+  </Step>
+
+  <Step title="Ajoute des contacts">
+    Va dans l'onglet **Contacts** pour gérer tes contacts de campagne.
+
+    L'interface a deux panneaux :
+    - **Panneau Gauche** : Contacts disponibles de ton liste de contacts
+    - **Panneau Droit** : Contacts ajoutés à cette campagne
+
+    **Ajouter des contacts** :
+    - Clique sur **+ Ajouter** à côté de contacts individuels
+    - Sélectionne plusieurs contacts et Clique sur **Ajouter la Sélection**
+    - Utilise **Tout Ajouter** pour ajouter tous les contacts filtrés (les grands lots s'exécutent en arrière-plan)
+
+    Utilise les filtres de recherche et d'étiquettes pour affiner les contacts avant d'ajouter.
+  </Step>
+
+  <Step title="Définis les objectifs et analyses">
+    **Onglet Objectifs** : Crée des objectifs au niveau de la campagne avec deux types :
+    - **Objectif Principal** (limite : 1) : Critère de succès principal pour la campagne
+    - **Objectifs Secondaires** (illimités) : Objectifs additionnels à suivre
+
+    Les objectifs évaluent chaque contact sur la base de toutes leurs conversations. Les résultats s'affichent comme : Atteint, Partiellement Atteint, Non Atteint ou Inconnu.
+
+    **Onglet Analyses** : Définis des analyses personnalisées utilisant des types de questions :
+    - **Oui/Non** : Questions à résultat binaire
+    - **Texte Ouvert** : Réponses d'analyse en forme libre
+    - **Échelle d'Évaluation** : Notation 1-5 (Faible/Médiocre à Élevé/Excellent)
+
+    Chaque analyse peut être activée/désactivée et s'exécute par contact sur toutes les conversations.
+  </Step>
+
+  <Step title="Lance la campagne">
+    Les campagnes sont créées en statut **En Pause** par défaut. Définis le statut sur **Actif** pour commencer la numérotation. Une fois active, la campagne commence à l'heure de début configurée. Surveillez la progression dans les onglets **Tableau de Bord** et **Rapports**.
+  </Step>
+</Steps>
+
+## Gestion de Campagne
+
+Une fois créée, ton campagne a six onglets principaux :
+
+<AccordionGroup>
+  <Accordion title="Tableau de Bord" icon="gauge">
+    Vue d'ensemble de la campagne dans une disposition en grille 2x2 :
+
+    **Stats Rapides** (haut-gauche) :
+    - Taux de Réussite de l'Objectif Principal
+    - Total des Conversations
+    - Durée Moyenne d'Appel
+    - Taux de Réponse Humaine
+
+    **Statut des Contacts** (haut-droit) :
+    - Les 7 statuts avec comptages et pourcentages
+    - Séparation visuelle entre états actifs et finaux
+
+    **Analyse des Objectifs** (bas-gauche) :
+    - Atteint (vert) / Partiellement Atteint (jaune) / Non Atteint (rouge) / Inconnu (gris)
+    - Barres de progression montrant la distribution
+
+    **Carte Thermique du Taux de Réponse** (bas-droit) :
+    - Grille hebdomadaire 7 jours x 24 heures
+    - Intensité de couleur montrant les taux de réponse (0-30%+)
+    - Identifie les meilleures heures et jours d'appel
+  </Accordion>
+
+  <Accordion title="Rapports" icon="chart-bar">
+    Tableau d'analytique détaillée par contact avec filtrage avancé :
+
+    **Colonnes du Tableau** : Nom/étiquettes du contact, téléphone avec drapeau, badge de statut, indicateur d'objectif principal, anneau de réussite d'objectif, comptage/durée des conversations, timestamp du dernier appel, actions
+
+    **Options de Filtre** :
+    - Étiquettes (multi-sélection, recherchable)
+    - Statut (les 7 types)
+    - Min/Max Tentatives de Relance
+    - Statut Objectif Principal (atteint, partiellement atteint, non atteint, inconnu)
+    - Recherche par nom/téléphone
+
+    **Actions** :
+    - Relance en masse des contacts sélectionnés
+    - Voir analytique détaillée par contact
+    - Exporter avec sélection de format (XLSX, CSV)
+  </Accordion>
+
+  <Accordion title="Contacts" icon="users">
+    Interface à deux panneaux pour gérer les contacts de campagne :
+
+    **Panneau Gauche (Contacts Disponibles)** :
+    - Rechercher et filtrer par étiquettes
+    - Ajouter des contacts individuels ou en masse
+    - "Tout Ajouter Filtré" pour grands lots (s'exécute en arrière-plan)
+
+    **Panneau Droit (Contacts de Campagne)** :
+    - Filtrer par étiquettes et statut
+    - Supprimer uniquement les contacts **En Attente** (autres verrouillés)
+    - Suppression en masse avec confirmation
+    - Cliquer sur un contact pour vue analytique rapide
+  </Accordion>
+
+  <Accordion title="Objectifs" icon="bullseye">
+    Crée et gérez les objectifs au niveau de la campagne avec deux onglets :
+
+    **Onglet Objectif Principal** :
+    - Limite : 1 objectif principal maximum
+    - Archiver/restaurer les objectifs principaux précédents
+
+    **Onglet Objectifs Secondaires** :
+    - Objectifs secondaires illimités
+    - Workflow archiver/restaurer
+
+    Tous les objectifs évaluent les contacts sur la base de toutes leurs conversations (pas par conversation comme les objectifs d'agent). Résultats : Atteint, Partiellement Atteint, Non Atteint, Inconnu.
+  </Accordion>
+
+  <Accordion title="Analyses" icon="microscope">
+    Configure des analyses personnalisées avec trois types de questions :
+    - **Oui/Non** : Résultats binaires
+    - **Texte Ouvert** : Réponses en forme libre
+    - **Échelle d'Évaluation** : Notations 1-5
+
+    **Fonctionnalités** :
+    - Activer/désactiver les analyses sans supprimer
+    - Workflow archiver/restaurer
+    - Chaque analyse s'exécute par contact sur toutes les conversations
+  </Accordion>
+
+  <Accordion title="Paramètres" icon="gear">
+    Ajuste tous les paramètres de campagne organisés en deux colonnes :
+
+    **Colonne Gauche** : Nom de campagne, numéro de téléphone (verrouillé), agent, date/heure de début, horaires d'ouverture (avec indicateur temps réel ouvert/fermé)
+
+    **Colonne Droite** : Intervalle d'appel (10 options), délai de sonnerie (7 options), mode AMD, tentatives de relance max, délai d'achèvement (avec sélecteur d'unité), intervalle de relance (avec sélecteur d'unité)
+  </Accordion>
+</AccordionGroup>
+
+## Cycle de Vie des Contacts
+
+Les contacts progressent à travers ces statuts, affichés avec badges colorés et icônes dans toute l'interface :
+
+### États Actifs
+
+<CardGroup cols={2}>
+  <Card title="En Attente" icon="clock">
+    **Badge gris avec icône horloge**
+
+    Contact en file d'attente attendant d'être composé
+  </Card>
+
+  <Card title="Numérotation" icon="phone">
+    **Badge jaune avec icône téléphone**
+
+    Appel en cours - composition du contact
+  </Card>
+
+  <Card title="Appelé" icon="phone">
+    **Badge violet**
+
+    Appel effectué, en attente de la prochaine étape
+  </Card>
+
+  <Card title="Relance" icon="arrows-rotate">
+    **Badge bleu avec icône rafraîchissement**
+
+    Pas de conversation significative, appel planifié pour relance
+  </Card>
+</CardGroup>
+
+### États Finaux
+
+<CardGroup cols={3}>
+  <Card title="Complété" icon="circle-check">
+    **Badge vert avec icône check-circle**
+
+    Contact a complété avec succès tous les objectifs de campagne
+  </Card>
+
+  <Card title="Échoué" icon="circle-xmark">
+    **Badge rouge avec icône X-circle**
+
+    Appel définitivement échoué et ne sera pas relancé
+  </Card>
+
+  <Card title="Pas de Conversation" icon="phone-slash">
+    **Badge gris avec icône téléphone-X**
+
+    Le contact n'a pas décroché ou n'a pas répondu
+  </Card>
+</CardGroup>
+
+<Note>
+Le système gère les transitions de statut automatiquement en fonction des résultats d'appel. Tu peux relancer manuellement les contacts depuis les onglets Contacts ou Rapports. Seuls les contacts en statut **En Attente** peuvent être retirés de la campagne.
+</Note>
+
+## Gérer les Campagnes Actives
+
+### Changer le Statut de Campagne
+
+Naviguez vers la liste **Campagnes** et Clique sur le badge de statut pour changer :
+
+- **Actif** : La campagne compose activement les contacts
+- **En Pause** : Arrêter temporairement la numérotation tout en préservant la progression
+- **Complété** : Marquer la campagne comme terminée
+- **Annulé** : Annuler la campagne
+
+### Ajouter des Contacts en Milieu de Campagne
+
+Tu peux ajouter plus de contacts à une campagne en cours :
+1. Va dans l'onglet **Contacts**
+2. Utilise l'interface à deux panneaux pour ajouter de nouveaux contacts
+3. Les nouveaux contacts entrent automatiquement dans la file d'attente
+
+### Mettre à Jour les Paramètres
+
+Modifie les paramètres de campagne à tout moment :
+- Mets à jour les **Horaires d'Ouverture** pour ajuster les fenêtres d'appel
+- Change la **Logique de Relance** en fonction des performances
+- Modifie l'**Intervalle d'Appel** ou le **Délai de Sonnerie**
+- Les modifications s'appliquent immédiatement aux appels en file d'attente
+
+## Rapports de Campagne
+
+<CardGroup cols={2}>
+  <Card title="Carte Thermique du Taux de Réponse" icon="chart-line">
+    Carte thermique hebdomadaire montrant les taux de réponse par heure et jour. Après 50-100 appels, Utilise cela pour identifier les meilleurs moments d'appel et optimiser ton configuration d'horaires d'ouverture.
+  </Card>
+
+  <Card title="Performance des Objectifs" icon="bullseye">
+    Suis les taux de réussite des objectifs de campagne par contact. Voyez quels contacts ont complété les objectifs et Analyse les modèles de succès.
+  </Card>
+
+  <Card title="Analytique des Contacts" icon="users">
+    Métriques par contact combinant toutes les conversations, historique de statut et résultats d'analyse pour des insights complets.
+  </Card>
+
+  <Card title="Volume d'Appels" icon="phone-volume">
+    Surveillez les tentatives d'appel, taux de connexion et progression des contacts au fil du temps.
+  </Card>
+</CardGroup>
+
+## Exports de Contacts
+
+<AccordionGroup>
+  <Accordion title="Options d'Export" icon="file-export">
+    Depuis l'onglet **Contacts** ou **Rapports**, Exporte les données de contact avec options de format flexibles :
+
+    **Portée** :
+    - **Exporter la sélection actuelle** : Contacts sélectionnés uniquement
+    - **Exporter les contacts filtrés** : Tous les contacts correspondant aux filtres actifs
+    - **Exporter la campagne entière** : Liste de contacts complète avec toutes les métriques
+
+    **Options de Format** :
+    - **XLSX (recommandé)** : Format Excel avec support complet du formatage
+    - **CSV séparé par virgules** : CSV standard avec délimiteurs virgules
+    - **CSV séparé par points-virgules** : Format CSV européen pour régions utilisant virgule comme séparateur décimal
+
+    Les exports incluent détails du contact, statut, données de conversation, résultats d'objectifs et résultats d'analyse.
+  </Accordion>
+
+  <Accordion title="Historique d'Export" icon="clock">
+    Suis toutes les tâches d'export depuis l'onglet **Contacts** :
+    - Voir les exports en cours avec mises à jour de statut et format de fichier
+    - Télécharger les fichiers complétés (format affiché : .xlsx, .csv (,), ou .csv (;))
+    - Continuer à travailler pendant que les exports s'exécutent en arrière-plan
+
+    Les grands exports sont traités en arrière-plan pour que tu puisses continuer à gérer ton campagne. Chaque export affiche son icône de format (Excel ou CSV) pour identification rapide.
+  </Accordion>
+</AccordionGroup>
+
+## Intégration des Appels Entrants
+
+Quand les contacts rappellent, le système lie automatiquement l'appel au contact de campagne en utilisant une stratégie de correspondance à deux niveaux :
+
+### Logique de Correspondance
+
+**Correspondance Principale (basée sur DID)** :
+- Correspond au numéro de téléphone du contact (numéro appelant) avec le numéro de téléphone de la campagne (numéro appelé)
+- Fonctionne pour les campagnes actives ou en pause
+- Méthode la plus fiable - ne nécessite pas de correspondance d'agent
+
+**Correspondance de Secours (basée sur Agent)** :
+- S'active uniquement si :
+  - Pas de correspondance DID trouvée, ET
+  - Le contact a un appel sortant récent (dans les 30 jours) de n'importe quelle campagne
+- Correspond au numéro de téléphone du contact avec les campagnes utilisant le même agent
+- Utilise le contact de campagne le plus récemment mis à jour
+
+### Mises à Jour de Statut
+
+Quand un appel entrant correspond à un contact de campagne dans ces statuts, il se met automatiquement à jour vers **Appelé** :
+- Relance → Appelé
+- Complété → Appelé
+- Pas de Conversation → Appelé
+
+Cela permet aux rappels de rouvrir les opportunités de contact et de continuer le workflow de campagne.
+
+### Avantages
+
+- **Liaison Automatique** : Aucune intervention manuelle nécessaire
+- **Continuité du Contexte** : L'agent a accès à toutes les interactions de campagne précédentes
+- **Mises à Jour de Statut** : Le cycle de vie du contact s'ajuste automatiquement pour les rappels
+- **Rapports Unifiés** : Toutes les interactions (sortantes + entrantes) suivies ensemble par contact
+
+## Bonnes Pratiques
+
+### Commencer Petit
+
+<Warning>
+Commence toujours avec un lot pilote de 10-20 contacts avant de passer à des milliers. Cela valide la configuration et évite les erreurs à grande échelle.
+</Warning>
+
+**Workflow pilote** :
+1. Crée une liste test avec contacts amicaux (collègues, numéros test)
+2. Lance la campagne et surveillez dans **Conversations → Moniteur en direct**
+3. Examine les résultats :
+   - Taux de réponse
+   - Précision AMD
+   - Taux de réussite des objectifs
+   - Durée moyenne d'appel
+4. Ajuste les instructions de l'agent, paramètres AMD ou horaires d'ouverture si nécessaire
+5. Augmente progressivement : 50 → 200 → 1 000+ contacts
+
+### Qualité de Liste de Contacts
+
+Avant de télécharger les contacts :
+- Supprime les numéros en double
+- Valide le format des numéros de téléphone (E.164 : +1234567890)
+- Vérifie contre ton liste interne Ne Pas Appeler
+- Vérifie contre les registres DNC nationaux si applicable
+
+### Optimisation des Fuseaux Horaires
+
+Pour les contacts à travers plusieurs fuseaux horaires :
+1. Crée des horaires d'ouverture dans **Paramètres → Horaires d'Ouverture** avec fuseau horaire approprié
+2. Assigne à la campagne pour que les appels se fassent pendant les horaires d'ouverture locaux
+3. Utilise la carte thermique du taux de réponse pour trouver les fenêtres d'appel optimales par région
+
+### Segmentation
+
+Crée des campagnes séparées pour :
+- Différents segments clients (clients d'essai vs payants)
+- Différents scripts ou objectifs
+- Différentes langues
+- Variations de test A/B
+
+Cela te permet de suivre la performance et d'optimiser chaque segment indépendamment.
+
+## Prochaines Étapes
+
+<CardGroup cols={2}>
+  <Card title="Horaires d'Ouverture" icon="clock" href="/fr/launch/business-hours">
+    Configure les plannings d'appels et gestion de fuseau horaire
+  </Card>
+
+  <Card title="Bonnes Pratiques de Production" icon="star" href="/fr/launch/production-best-practices">
+    Optimise les performances de campagne et satisfaction client
+  </Card>
+
+  <Card title="Analytique & Rapports" icon="chart-bar" href="/fr/optimize/overview">
+    Analytique de campagne approfondie et suivi de conversion
+  </Card>
+</CardGroup>

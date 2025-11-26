@@ -1,0 +1,173 @@
+---
+title: "Distribuzione Telefono e SIP"
+description: "Connetti il tuo agente a numeri di telefono e trunk SIP per la gestione di chiamate live"
+icon: "phone-volume"
+keywords: "SIP trunk configuration, BYOC, bring your own carrier, phone number import, inbound calling, outbound calling, SIP authentication, VoIP setup, carrier integration"
+og:description: "Connetti gli agenti AI ai sistemi telefonici tramite trunk SIP. Configurazione BYOC per chiamate in entrata e in uscita con la tua infrastruttura carrier esistente."
+---
+
+## Panoramica della Distribuzione
+
+La distribuzione telefonica instrada le chiamate PSTN live attraverso il tuo agente testato utilizzando un approccio **Bring Your Own Carrier (BYOC)**. Importi i tuoi numeri di telefono esistenti e li connetti al tuo carrier tramite trunk SIP.
+
+**Processo di configurazione:**
+1. Configura il tuo trunk SIP con le credenziali del carrier
+2. Importa i tuoi numeri di telefono e collegali al trunk
+3. Assegna agenti per gestire le chiamate in entrata
+4. Testa la connessione
+
+Tutte le configurazioni utilizzano lo stesso stack di chiamata in tempo reale utilizzato dalla Modalità Test, garantendo un comportamento coerente.
+
+## Distribuzione Telefono in Entrata
+
+### Passo 1: Configura il Trunk SIP
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/sip/inbound-sip-light.png" alt="Finestra di dialogo Crea Trunk SIP che mostra il campo Nome Trunk SIP con testo segnaposto, schede Chiamate in Entrata e Chiamate in Uscita con Entrata selezionato, configurazione URI in Entrata che mostra l'indirizzo di inoltro del provider SIP, campo opzionale Sicurezza IP per limitare gli indirizzi IP, link Contatta supporto, pulsanti Annulla e Crea Trunk SIP" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/sip/inbound-sip-dark.png" alt="Finestra di dialogo Crea Trunk SIP che mostra il campo Nome Trunk SIP con testo segnaposto, schede Chiamate in Entrata e Chiamate in Uscita con Entrata selezionato, configurazione URI in Entrata che mostra l'indirizzo di inoltro del provider SIP, campo opzionale Sicurezza IP per limitare gli indirizzi IP, link Contatta supporto, pulsanti Annulla e Crea Trunk SIP" />
+  </div>
+</Frame>
+
+<br />
+
+<Accordion title="Configurazione trunk SIP">
+  1. Vai su **Telefonia → Trunk SIP** e clicca **+ Aggiungi Trunk**
+  2. Configura il tuo carrier per inviare chiamate all'endpoint SIP di itellicoAI:
+     - **SIP URI di destinazione**: `sip:50ebbp4vhpr.sip.livekit.cloud`
+     - **Porta**: 5060 (UDP) o 5061 (TLS)
+     - **Codec**: Opus, PCMU o PCMA
+  3. Nella dashboard di itellicoAI, crea un trunk con:
+     - **Nome Trunk**: Un nome descrittivo per il tuo carrier
+     - **IP Consentiti** (opzionale): Limita agli intervalli IP del tuo carrier per la sicurezza
+  4. **Assegna Agente**: Seleziona quale agente gestisce le chiamate da questo trunk
+  5. **Test**: Effettua una chiamata di test attraverso il tuo carrier per verificare il routing
+</Accordion>
+
+<Accordion title="Compatibilità carrier">
+  Carrier testati includono:
+  - Twilio Elastic SIP Trunking
+  - Vonage (precedentemente Nexmo)
+  - Bandwidth
+  - Telnyx
+  - La maggior parte dei provider SIP standard
+
+  **Requisiti**:
+  - Supporto per codec Opus o PCMU/PCMA
+  - DTMF tramite RFC 2833 (per input da tastiera)
+  - Supporto Reinvite per trasferimenti
+</Accordion>
+
+### Passo 2: Importa i Numeri di Telefono
+
+Una volta configurato il trunk SIP, importa i tuoi numeri di telefono esistenti:
+
+<Steps>
+  <Step title="Vai a Numeri di Telefono">
+    Vai su **Telefonia → Numeri di Telefono** e clicca **Importa Numero**
+  </Step>
+
+  <Step title="Configura i dettagli del numero">
+    Fornisci:
+    - **Numero di Telefono**: Formato E.164 (es. `+14155552671`)
+    - **Nome Descrittivo**: Etichetta opzionale (es. "Linea Supporto")
+    - **Trunk SIP**: Seleziona il trunk configurato nel Passo 1
+    - **Agente in Entrata**: Facoltativamente assegna un agente ora (o fallo più tardi)
+  </Step>
+
+  <Step title="Salva e verifica">
+    Clicca **Salva** per importare il numero. Il numero è ora collegato al tuo trunk SIP e pronto per le chiamate in entrata.
+  </Step>
+</Steps>
+
+### Passo 3: Assegna Agenti ai Numeri
+
+<Steps>
+  <Step title="Apri l'elenco dei Numeri di Telefono">
+    Vai su **Telefonia → Numeri di Telefono** per vedere tutti i numeri importati
+  </Step>
+
+  <Step title="Assegna o aggiorna l'agente">
+    Usa il selettore agente inline per selezionare quale agente deve rispondere alle chiamate a questo numero
+  </Step>
+
+  <Step title="Configura il forwarding del carrier e testa">
+    Configura il tuo carrier per inoltrare le chiamate all'**URI in Entrata** mostrato sul tuo trunk SIP (in **Telefonia → Trunk SIP**). Una volta attivo il forwarding del carrier, chiama il numero dal tuo telefono per testare. L'agente dovrebbe rispondere usando il saluto che hai configurato. Rivedi i log delle chiamate in **Conversazioni** per verificare il corretto flusso delle chiamate.
+  </Step>
+</Steps>
+
+<Accordion title="Risoluzione problemi routing chiamate">
+  Se le chiamate non raggiungono il tuo agente:
+
+  - **Verifica SIP URI**: Assicurati che il tuo carrier stia inviando chiamate a `sip:50ebbp4vhpr.sip.livekit.cloud`
+  - **Controlla supporto codec**: Verifica che il tuo carrier supporti Opus, PCMU o PCMA
+  - **Regole firewall**: Assicurati che il tuo carrier possa raggiungere l'endpoint SIP LiveKit
+  - **Log**: Controlla **Conversazioni → Log** o il portale del tuo carrier per codici di errore SIP
+
+  Problemi comuni:
+  - `404 Not Found`: Configurazione SIP URI errata
+  - `488 Not Acceptable Here`: Mancata corrispondenza codec (abilita Opus/PCMU/PCMA sul carrier)
+  - `503 Service Unavailable`: Problema di connettività temporaneo
+</Accordion>
+
+## Distribuzione Telefono in Uscita
+
+### Configura il Trunk SIP in Uscita
+
+Per chiamate in uscita attraverso il tuo carrier (campagne, chiamate proattive), configura il trunk SIP in uscita con autenticazione:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/sip/outbound-sip-light.png" alt="Finestra di dialogo Crea Trunk SIP che mostra il campo Nome Trunk SIP, schede Chiamate in Entrata e Chiamate in Uscita con Uscita selezionato, sezione Raccomandazione Autenticazione, campo Dominio Provider con segnaposto example.com:5060, campo Username per autenticazione SIP, campo Password per autenticazione SIP, link Contatta supporto, pulsanti Annulla e Crea Trunk SIP" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/sip/outbound-sip-dark.png" alt="Finestra di dialogo Crea Trunk SIP che mostra il campo Nome Trunk SIP, schede Chiamate in Entrata e Chiamate in Uscita con Uscita selezionato, sezione Raccomandazione Autenticazione, campo Dominio Provider con segnaposto example.com:5060, campo Username per autenticazione SIP, campo Password per autenticazione SIP, link Contatta supporto, pulsanti Annulla e Crea Trunk SIP" />
+  </div>
+</Frame>
+
+<br />
+
+<Accordion title="Configurazione SIP in uscita">
+  1. Vai su **Telefonia → Trunk SIP** e clicca **+ Aggiungi Trunk**
+  2. Passa alla scheda **Chiamate in Uscita**
+  3. Configura l'autenticazione per il tuo carrier:
+     - **Dominio Provider**: Il dominio SIP del tuo carrier (es. `sip.example.com:5060`)
+     - **Username**: Nome utente di autenticazione SIP dal tuo carrier
+     - **Password**: Password di autenticazione SIP dal tuo carrier
+  4. **Salva** la configurazione del trunk
+  5. **Assegna alle campagne**: Usa questo trunk quando crei campagne outbound
+
+  <Note>
+  Raccomandiamo vivamente di usare l'autenticazione username/password per le chiamate in uscita. L'autenticazione basata su IP non è supportata di default ma può essere implementata. Contatta il supporto se necessario.
+  </Note>
+</Accordion>
+
+<Accordion title="Casi d'uso chiamate in uscita">
+  **Campagne Automatizzate**:
+  - Vendite e qualificazione lead
+  - Promemoria appuntamenti
+  - Promemoria pagamenti
+  - Chiamate di sondaggio
+
+  **Notifiche Proattive**:
+  - Aggiornamenti stato ordine
+  - Notifiche di consegna
+  - Avvisi di servizio
+  - Chiamate di follow-up
+
+  Vedi [Lancio Campagne](/it/launch/campaign-outbound-launch) per la configurazione dettagliata delle campagne outbound.
+</Accordion>
+
+## Prossimi Passi
+
+<CardGroup cols={2}>
+  <Card title="Lancio Campagne" icon="bullhorn" href="/it/launch/campaign-outbound-launch">
+    Configura campagne di chiamata outbound automatizzate
+  </Card>
+
+  <Card title="Best Practice per la Produzione" icon="star" href="/it/launch/production-best-practices">
+    Ottimizza per affidabilità e soddisfazione del cliente
+  </Card>
+</CardGroup>

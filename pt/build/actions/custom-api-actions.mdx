@@ -1,0 +1,592 @@
+---
+title: "Ações de API Personalizadas"
+description: "Conecte seus agentes a sistemas externos via integrações HTTP"
+icon: "code"
+"keywords": "ações de API personalizadas, integração de API, integração de webhook, APIs externas, requisições HTTP, integrações personalizadas, chamadas de API de agente"
+"og:description": "Conecte seus agentes de IA a sistemas externos com integrações HTTP personalizadas e chamadas de API em tempo real."
+---
+
+## Visão Geral
+
+Ações de API personalizadas permitem que seus agentes de IA se integrem com sistemas externos durante conversas. Seus agentes podem recuperar dados de clientes, atualizar registros de CRM, verificar estoque, criar tickets e executar lógica de negócios - tudo em tempo real enquanto conversam com clientes.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/api-actions-light.png" alt="Modal Criar Ação Personalizada mostrando campo Nome da Ação 'Buscar Dados do Cliente', campo Descrição explicando uso da ação, quatro abas (Endpoint, Autenticação, Parâmetros, Variáveis) com aba Endpoint ativa, opções de Método HTTP (GET, POST, PUT, PATCH, DELETE) com POST selecionado, campo URL do Endpoint com placeholder, e botões Cancelar/Criar Ação" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/api-actions-dark.png" alt="Modal Criar Ação Personalizada mostrando campo Nome da Ação 'Buscar Dados do Cliente', campo Descrição explicando uso da ação, quatro abas (Endpoint, Autenticação, Parâmetros, Variáveis) com aba Endpoint ativa, opções de Método HTTP (GET, POST, PUT, PATCH, DELETE) com POST selecionado, campo URL do Endpoint com placeholder, e botões Cancelar/Criar Ação" />
+  </div>
+</Frame>
+
+**Como funciona:**
+1. **Configure o endpoint da API** - Configure método HTTP, URL, autenticação, cabeçalhos e corpo da requisição
+2. **Defina variáveis** - Especifique quais informações o agente precisa coletar antes de chamar a API
+3. **Agente utiliza** - Durante a conversa, o agente coleta as variáveis e chama sua API
+4. **API responde** - Seu sistema retorna dados que o agente usa para continuar a conversa
+
+<Info>
+Ações personalizadas são executadas **sincronicamente** durante conversas. Para operações que não precisam de respostas imediatas (registro, análise, processamento pós-chamada), use [Webhooks](/pt/build/actions/custom-api-actions) em vez disso.
+</Info>
+
+---
+
+## Exemplo de Fluxo
+
+```
+Cliente: "Qual é o status do meu pedido?"
+
+Agente: (coleta número do pedido do cliente)
+
+[Agente chama API]
+→ GET https://api.empresa.com/pedidos/12345
+← { "status": "enviado", "rastreamento": "1Z999AA10123456789" }
+
+Agente: "Seu pedido foi enviado! Seu número de rastreamento é
+       1Z999AA10123456789 e deve chegar na sexta-feira."
+```
+
+<Warning>
+**Segurança: Verifique a identidade do cliente antes de expor dados sensíveis.** Sempre autentique clientes antes de chamar APIs que retornam informações pessoais, detalhes de pedidos, dados de conta ou outras informações sensíveis.
+</Warning>
+
+### Exemplo Seguro com Verificação
+
+Para consultas de dados sensíveis, verifique a identidade do cliente primeiro:
+
+```
+Cliente: "Qual é o status do meu pedido?"
+
+Agente: "Ficarei feliz em verificar isso. Por segurança, preciso verificar
+       sua identidade primeiro. Qual é o seu número de cliente?"
+Cliente: "12345"
+
+Agente: "E para verificação, qual é o seu PIN telefônico?"
+Cliente: "5678"
+
+[Agente chama API de verificação primeiro]
+→ POST https://api.empresa.com/auth/verificar
+  Body: {"customer_id": "12345", "phone_pin": "5678"}
+← { "verified": true, "customer_name": "João Silva" }
+
+[Somente se verificado, então chama consulta de pedido]
+→ GET https://api.empresa.com/clientes/12345/pedidos
+← { "orders": [{"id": "PED-789", "status": "enviado", ...}] }
+
+Agente: "Obrigado, João. Verifiquei sua identidade. Seu pedido
+       PED-789 foi enviado e deve chegar na sexta-feira."
+```
+
+**Padrão de duas ações:**
+1. **Primeira ação:** "Verificar Cliente" - autentica usando ID do cliente + PIN/senha
+2. **Segunda ação:** "Consultar Pedido" - só executada se a verificação for bem-sucedida
+
+**Nas instruções do seu agente:**
+```
+Antes de consultar qualquer informação sensível do cliente:
+
+1. Colete ID do cliente e PIN telefônico
+2. Use a ação 'Verificar Cliente'
+3. Se a verificação falhar:
+   - "Não consigo verificar essa informação. Por segurança,
+      vou precisar transferi-lo para nossa equipe de verificação."
+   - Transferir para agente humano
+4. Se a verificação for bem-sucedida:
+   - Prossiga com 'Consultar Pedido' ou outras ações sensíveis
+```
+
+---
+
+## Criando uma Ação Personalizada
+
+<Steps>
+  <Step title="Navegue até Ações">
+    Vá para seu agente → **Habilidades → Ações** → **Adicionar Ação** → **API Personalizada**
+  </Step>
+  <Step title="Configure Informações Básicas">
+    - **Nome**: Nome descritivo (ex: "Consultar Status do Pedido")
+    - **Descrição**: Quando usar (10-200 caracteres)
+  </Step>
+  <Step title="Configure Endpoint">
+    Veja Configuração de Endpoint abaixo
+  </Step>
+  <Step title="Configure Autenticação">
+    Veja Métodos de Autenticação abaixo
+  </Step>
+  <Step title="Adicione Variáveis">
+    Defina quais informações o agente precisa coletar (veja seção Variáveis)
+  </Step>
+  <Step title="Teste">
+    Salve e teste com seu agente
+  </Step>
+</Steps>
+
+---
+
+## Configuração
+
+### Aba Endpoint
+
+**Método HTTP** (Obrigatório)
+- **GET** - Recuperar dados
+- **POST** - Criar registros
+- **PUT** - Substituir registros inteiros
+- **PATCH** - Atualizar campos específicos
+- **DELETE** - Remover registros
+
+**URL do Endpoint** (Obrigatório)
+- URL completa da API: `https://api.empresa.com/clientes`
+- Suporta variáveis de template: `https://api.empresa.com/pedidos/{{order_id}}`
+- Adiciona automaticamente `https://` se nenhum protocolo for especificado
+
+### Aba Autenticação
+
+Escolha o tipo de autenticação:
+
+<AccordionGroup>
+  <Accordion title="Nenhuma" icon="lock-open">
+    Nenhuma autenticação necessária
+
+    **Use para:**
+    - APIs públicas
+    - Endpoints internos em rede privada
+  </Accordion>
+
+  <Accordion title="Token Bearer" icon="key">
+    Mais comum para APIs modernas
+
+    **Configuração:**
+    - Token: Seu token de API/JWT
+
+    **Envia:**
+    ```
+    Authorization: Bearer {seu_token}
+    ```
+
+    **Use para:**
+    - Tokens de acesso OAuth 2.0
+    - Autenticação JWT
+    - APIs REST modernas
+  </Accordion>
+
+  <Accordion title="Autenticação Básica" icon="user-lock">
+    Autenticação com nome de usuário/senha
+
+    **Configuração:**
+    - Nome de usuário: Nome de usuário da API
+    - Senha: Senha da API (mascarada com bullets ao editar)
+
+    **Envia:**
+    ```
+    Authorization: Basic {base64(username:password)}
+    ```
+
+    **Use para:**
+    - APIs legadas
+    - Autenticação simples
+  </Accordion>
+
+  <Accordion title="Cabeçalho" icon="list">
+    Autenticação personalizada baseada em cabeçalho
+
+    **Configuração:**
+    - Nome do Cabeçalho: ex: `X-API-Key`
+    - Valor do Cabeçalho: Sua chave de API (mascarada ao editar)
+
+    **Envia:**
+    ```
+    X-API-Key: {sua_chave_api}
+    ```
+
+    **Use para:**
+    - Autenticação com chave de API
+    - Esquemas de autenticação personalizados
+  </Accordion>
+
+  <Accordion title="Corpo" icon="file-code">
+    Credenciais no corpo da requisição
+
+    **Configuração:**
+    - Nome do Parâmetro: ex: `api_key`
+    - Valor do Parâmetro: Sua credencial (mascarada ao editar)
+
+    **Envia no corpo:**
+    ```json
+    {
+      "api_key": "{sua_chave}",
+      ...outros params
+    }
+    ```
+
+    **Use para:**
+    - Esquemas de autenticação não padrão
+    - Endpoints de login
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+Credenciais são criptografadas no banco de dados e mascaradas na UI. Ao editar ações existentes, credenciais não alteradas são preservadas - você só precisa reinserí-las se estiver alterando.
+</Warning>
+
+### Aba Parâmetros
+
+**Cabeçalhos**
+- Adicione cabeçalhos HTTP personalizados (pares chave-valor)
+- Exemplo: `Content-Type: application/json`
+
+**Parâmetros de Consulta** (requisições GET)
+- Adicione parâmetros de consulta de URL (pares chave-valor)
+- Exemplo: `include=orders&limit=100`
+
+**Corpo da Requisição** (POST/PUT/PATCH)
+- Área de texto JSON com fonte estilo Monaco
+- Suporta variáveis de template: `{{nome_variavel}}`
+- Valida estrutura JSON permitindo placeholders de variáveis
+
+Exemplo:
+```json
+{
+  "customer_id": "{{customer_id}}",
+  "status": "contatado",
+  "timestamp": "{{current_datetime}}"
+}
+```
+
+### Aba Variáveis
+
+**Esta é a parte mais importante.** Variáveis definem quais informações seu agente precisa coletar antes de chamar a API.
+
+Cada variável cria um **parâmetro de função** que o LLM vê e coleta durante a conversa.
+
+**Campos de Variável:**
+- **Nome**: Nome da variável (ex: `numero_pedido`, `email_cliente`)
+- **Tipo**: string, integer, float, boolean, date, email, phone
+- **Descrição**: Para que serve esta variável (ajuda o LLM a entender)
+- **Exemplo**: Valor de exemplo (orienta o LLM)
+- **Obrigatório**: Toggle - se verdadeiro, LLM deve coletar antes de chamar API
+- **Valor Padrão**: Usado se não for obrigatório e não for fornecido
+
+**Exemplo de Variável:**
+```
+Nome: numero_pedido
+Tipo: string
+Descrição: Número do pedido do cliente
+Exemplo: PED-12345
+Obrigatório: Sim
+```
+
+O LLM vê isso como um parâmetro de função e sabe pedir ao cliente o número do pedido antes de chamar a API.
+
+---
+
+## Usando nas Instruções
+
+Referencie a ação pelo nome e explique quando usá-la:
+
+```
+Quando um cliente perguntar sobre o status do pedido:
+
+1. Peça o número do pedido
+2. Use a ação 'Consultar Status do Pedido'
+3. Compartilhe as informações de status com eles
+
+Se a ação retornar um erro:
+- 404: "Não vejo um pedido com esse número"
+- 500: "Estou com problemas para acessar o sistema agora"
+- Ofereça que alguém ligue de volta para eles
+```
+
+### Coleta de Variáveis
+
+O agente coleta automaticamente variáveis obrigatórias antes de chamar a API:
+
+```
+# Sua ação tem uma variável: numero_pedido (obrigatório, string)
+
+Cliente: "Qual é o status do meu pedido?"
+Agente: "Ficarei feliz em verificar isso. Qual é o número do seu pedido?"
+Cliente: "PED-12345"
+Agente: [Chama API com numero_pedido="PED-12345"]
+```
+
+### Usando Variáveis Opcionais
+
+```
+# Variável: email (não obrigatório, padrão: "nao-fornecido@exemplo.com")
+
+Agente coleta email se o cliente fornecer, caso contrário usa padrão
+```
+
+---
+
+## Variáveis de Template
+
+Use sintaxe `{{nome_variavel}}` em URLs, cabeçalhos, parâmetros de consulta e corpo da requisição.
+
+### Variáveis de Ação
+
+Variáveis que você definiu na aba Variáveis:
+
+```
+URL: https://api.empresa.com/pedidos/{{numero_pedido}}
+Body: {"email": "{{email_cliente}}"}
+```
+
+### Variáveis de Contexto
+
+Disponíveis automaticamente a partir do registro de contato e contexto da chamada:
+
+**Informações de Contato:**
+```
+{{contact.first_name}}
+{{contact.last_name}}
+{{contact.email}}
+{{contact.phone_number}}
+{{contact.id}}
+```
+
+**Contexto do Agente & Chamada:**
+```
+{{agent_number}}
+{{agent_name}}
+{{agent_id}}
+{{direction}}          # inbound/outbound
+{{medium}}            # phone/web
+{{current_datetime}}  # timestamp ISO 8601
+```
+
+### Conversão de Tipo
+
+Variáveis são automaticamente convertidas para seus tipos definidos:
+
+- `integer` → número em JSON
+- `float` → decimal em JSON
+- `boolean` → true/false em JSON
+- `string` → string entre aspas em JSON
+
+---
+
+## Testando
+
+<Steps>
+  <Step title="Teste Endpoint Independentemente">
+    Use Postman ou cURL para verificar:
+    - Endpoint está acessível
+    - Autenticação funciona
+    - Formato da requisição está correto
+    - Resposta está como esperado
+  </Step>
+  <Step title="Comece com Valores Estáticos">
+    Configure ação com valores fixos primeiro (sem variáveis)
+
+    Verifique funcionalidade básica antes de adicionar complexidade
+  </Step>
+  <Step title="Adicione Variáveis">
+    Substitua valores fixos por variáveis
+
+    Teste com registro de contato que tenha campos obrigatórios
+  </Step>
+  <Step title="Teste no Agente">
+    1. Inicie chamada web
+    2. Acione a ação através da conversa
+    3. Verifique se o agente coleta variáveis corretamente
+    4. Verifique se a API é chamada com dados corretos
+    5. Confirme que o agente usa a resposta apropriadamente
+  </Step>
+  <Step title="Teste Cenários de Erro">
+    - API retorna 404 (não encontrado)
+    - API retorna 500 (erro de servidor)
+    - Autenticação falha (401)
+    - Variáveis obrigatórias faltando
+  </Step>
+</Steps>
+
+---
+
+## Solução de Problemas
+
+<AccordionGroup>
+  <Accordion title="401 Não Autorizado" icon="lock-open">
+    **Causa:** Credenciais inválidas ou tipo de autenticação errado
+
+    **Solução:**
+    - Verifique se as credenciais estão corretas
+    - Verifique se o tipo de autenticação corresponde aos requisitos da API
+    - Teste com Postman usando as mesmas credenciais
+    - Verifique se o token não expirou
+  </Accordion>
+
+  <Accordion title="404 Não Encontrado" icon="magnifying-glass">
+    **Causa:** URL incorreta ou recurso não existe
+
+    **Solução:**
+    - Verifique se a URL do endpoint está correta
+    - Verifique se as variáveis de template são preenchidas corretamente
+    - Teste com valores estáticos primeiro
+  </Accordion>
+
+  <Accordion title="Agente Não Coleta Variáveis" icon="robot">
+    **Causa:** Variáveis não configuradas ou descrições pouco claras
+
+    **Solução:**
+    - Verifique se as variáveis estão definidas na aba Variáveis
+    - Adicione descrições e exemplos claros
+    - Defina required=true para variáveis essenciais
+    - Referencie a ação pelo nome exato nas instruções
+  </Accordion>
+
+  <Accordion title="Variáveis Não Estão Sendo Substituídas" icon="brackets-curly">
+    **Causa:** Sintaxe incorreta ou variável não existe
+
+    **Solução:**
+    - Use sintaxe exata: `{{nome_variavel}}`
+    - Verifique se a variável está definida na aba Variáveis
+    - Verifique se o registro de contato tem o campo preenchido
+    - Defina valor padrão na aba Variáveis para variáveis opcionais
+  </Accordion>
+
+  <Accordion title="Erros de Timeout" icon="clock">
+    **Causa:** API respondendo lentamente (&gt;2 minutos)
+
+    **Solução:**
+    - Otimize o tempo de resposta da API
+    - Considere usar webhooks para operações lentas
+    - Faça cache de dados frequentemente acessados
+  </Accordion>
+
+  <Accordion title="Agente Não Consegue Usar Dados de Resposta" icon="code">
+    **Causa:** API retornando não-JSON ou JSON malformado
+
+    **Solução:**
+    - Verifique se a API retorna JSON válido
+    - Verifique cabeçalho Content-Type na resposta
+    - Teste resposta com validador JSON
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Melhores Práticas de Segurança
+
+<AccordionGroup>
+  <Accordion title="Use Apenas HTTPS" icon="lock">
+    Sempre use endpoints HTTPS para criptografar dados em trânsito
+
+    ✅ `https://api.empresa.com/endpoint`
+    ❌ `http://api.empresa.com/endpoint`
+  </Accordion>
+
+  <Accordion title="Proteja Credenciais" icon="key">
+    - Nunca codifique credenciais em URLs
+    - Use configuração de autenticação
+    - Rotacione chaves de API regularmente
+    - Use chaves separadas para teste vs produção
+    - Revogue credenciais comprometidas imediatamente
+  </Accordion>
+
+  <Accordion title="Limite Permissões" icon="user-shield">
+    - Conceda permissões mínimas necessárias de API
+    - Use chaves somente leitura para ações de consulta
+    - Restrinja permissões de escrita a endpoints específicos
+    - Monitore atividades incomuns
+  </Accordion>
+
+  <Accordion title="Valide Entradas" icon="filter">
+    Sua API deve validar todas as entradas:
+    - Verifique tentativas de injeção
+    - Valide tipos e formatos de dados
+    - Limite comprimentos de string
+    - Use consultas parametrizadas
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Exemplos do Mundo Real
+
+<AccordionGroup>
+  <Accordion title="Consulta de Cliente em CRM" icon="user-check">
+    **Cenário:** Consultar cliente no Salesforce
+
+    **Configuração:**
+    - Método: GET
+    - URL: `https://api.salesforce.com/customers/{{customer_id}}`
+    - Autenticação: Token Bearer
+    - Variável: `customer_id` (string, obrigatório)
+
+    **Instruções do Agente:**
+    ```
+    Quando perguntado sobre detalhes da conta:
+    1. Peça o ID do cliente
+    2. Use a ação 'Consultar Cliente'
+    3. Compartilhe informações da conta da resposta
+    ```
+  </Accordion>
+
+  <Accordion title="Criar Ticket de Suporte" icon="ticket">
+    **Cenário:** Criar ticket no Zendesk
+
+    **Configuração:**
+    - Método: POST
+    - URL: `https://empresa.zendesk.com/api/v2/tickets`
+    - Autenticação: Básica (email/token)
+    - Variáveis: `descricao_problema` (string), `nivel_prioridade` (string)
+    - Corpo:
+    ```json
+    {
+      "ticket": {
+        "subject": "Chamada com {{contact.first_name}}",
+        "description": "{{descricao_problema}}",
+        "priority": "{{nivel_prioridade}}"
+      }
+    }
+    ```
+
+    **Instruções do Agente:**
+    ```
+    Quando o cliente tiver um problema que não consigo resolver:
+    1. Colete descrição detalhada do problema
+    2. Determine prioridade (normal, alta, urgente)
+    3. Use a ação 'Criar Ticket'
+    4. Forneça ao cliente o número do ticket
+    ```
+  </Accordion>
+
+  <Accordion title="Verificar Estoque de Produto" icon="boxes-stacked">
+    **Cenário:** Verificar disponibilidade de produto
+
+    **Configuração:**
+    - Método: GET
+    - URL: `https://estoque.empresa.com/produtos/{{sku}}/disponibilidade`
+    - Autenticação: Cabeçalho (`X-API-Key`)
+    - Variável: `sku` (string, obrigatório, exemplo: "PROD-12345")
+
+    **Instruções do Agente:**
+    ```
+    Quando perguntado sobre disponibilidade de produto:
+    1. Obtenha SKU do produto do cliente
+    2. Use a ação 'Verificar Estoque'
+    3. Se em estoque: confirme disponibilidade
+    4. Se fora de estoque: forneça data prevista de reabastecimento
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Próximos Passos
+
+<CardGroup cols={2}>
+  <Card title="Visão Geral de Ações" icon="bolt" href="/pt/build/actions/overview">
+    Aprenda sobre todos os tipos de ações
+  </Card>
+  <Card title="Ações de Reserva" icon="calendar" href="/pt/build/actions/booking-calendar">
+    Agendamento de compromissos Cal.com
+  </Card>
+  <Card title="Variáveis & Conteúdo Dinâmico" icon="brackets-curly" href="/pt/build/conversation/variables-dynamic-content">
+    Domine variáveis de template
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/pt/build/actions/custom-api-actions">
+    Integrações assíncronas
+  </Card>
+</CardGroup>

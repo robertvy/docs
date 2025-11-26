@@ -1,0 +1,315 @@
+---
+title: "Agent-Einstellungen-Übersicht"
+description: "Navigiere im Agent-Konfigurationspanel und verstehe die Einstellungshierarchie"
+icon: "sliders"
+keywords: "Agent-Einstellungen, Konfigurationspanel, Einstellungshierarchie, Agent-Konfiguration, Dashboard-Navigation, Einstellungsübersicht"
+og:description: "Navigiere im Agent-Konfigurationspanel und verstehe die Einstellungshierarchie. Komplette Übersicht aller Konfigurationsoptionen."
+---
+
+## Übersicht des Konfigurationspanels
+
+Das Agent-Konfigurationspanel ist in logische Abschnitte unterteilt, die verschiedene Aspekte des Verhaltens und der Fähigkeiten deines Agents steuern.
+
+## Hauptkonfigurationsabschnitte
+
+<CardGroup cols={2}>
+  <Card title="Models" icon="brain" href="#models-tab">
+    KI-Modellauswahl, Stimmkonfiguration, Transcriber-Einstellungen
+  </Card>
+  <Card title="Abilities" icon="wand-magic-sparkles" href="#abilities-tab">
+    Anweisungen, Begrüßungen, Wissen, Aktionen, DTMF, MCP-Server
+  </Card>
+  <Card title="Operations" icon="gear" href="#operations-tab">
+    Inaktivitätsbehandlung, Voice Activity Detection, dynamischer Kontext
+  </Card>
+  <Card title="Analytics" icon="chart-line" href="#analytics-tab">
+    Gesprächsziele, Post-Call-Analyse und Workflows
+  </Card>
+</CardGroup>
+
+---
+
+## Models-Tab
+
+Wähle die KI-Technologien aus und konfiguriere diese, die deinen Agent antreiben.
+
+### Model (LLM)
+Wähle das Sprachmodell für das Reasoning.
+
+**Anbieter:**
+- Azure OpenAI
+- OpenAI
+- Anthropic
+- Groq
+
+**Funktionen:**
+- Modellauswahl mit EU-Hosting-Badges
+- Temperaturkontrolle
+
+[Mehr über KI-Modelle erfahren →](/de/build/voice-speech/choose-ai-model)
+
+### Voice
+Wähle aus, wie dein Agent klingen soll.
+
+**Anbieter:**
+- ElevenLabs
+- Azure
+- Cartesia
+
+**Funktionen:**
+- Stimmbibliothek mit Vorschauen
+- Stimmkonfiguration (variiert je nach Anbieter)
+
+[Mehr über Stimmauswahl erfahren →](/de/build/voice-speech/select-voice)
+
+### Transcriber
+Konfiguriere Speech-to-Text.
+
+**Anbieter:**
+- Deepgram
+- Azure Speech
+
+**Funktionen:**
+- Sprachauswahl und mehrsprachige Unterstützung
+- Keyword-Boosting
+
+[Mehr über Transkription erfahren →](/de/build/voice-speech/transcriber)
+
+
+### Sound Effects
+Füge Umgebungsaudio zu Gesprächen hinzu.
+- Hintergrund-Ambiente (Büro, Café, Straße)
+
+[Mehr über Ambient Sound erfahren →](/de/build/voice-speech/ambient-sound)
+
+---
+
+## Abilities-Tab
+
+Konfigurieren du, was dein Agent tun kann und wie er sich in Gesprächen verhält.
+
+### Instructions (System Prompt)
+Definiere die Persönlichkeit, das Wissen und den Gesprächsablauf deines Agents.
+- Jinja-fähiger Editor mit Syntaxhervorhebung
+- Variableneinfügung
+- Prompt-Vorlagen und Schreibtipps
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/agent/agent-instruction-light.png" alt="Instructions editor in Abilities section showing navigation sidebar, text editor with Templates and Writing Guide buttons, variable helper, token counter, and save controls" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/agent/agent-instruction-dark.png" alt="Instructions editor in Abilities section showing navigation sidebar, text editor with Templates and Writing Guide buttons, variable helper, token counter, and save controls" />
+  </div>
+</Frame>
+
+[Mehr über Instructions erfahren →](/de/build/conversation/instructions)
+
+### Greeting
+Kontrollieren du, wie Gespräche beginnen.
+- Benutzer initiiert, KI-generiert oder feste Begrüßung
+- Eingehende vs. ausgehende Begrüßungs-Überschreibungen
+- Unterbrechbarkeit und Verzögerungseinstellungen
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/greeting/greeting-light.png" alt="Greeting configuration showing Inbound/Outbound tabs, three greeting options (User Initiates, AI Agent with Dynamic Message, AI Agent with Fixed Message), message editor, delay slider, and barge-in toggle" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/greeting/greeting-dark.png" alt="Greeting configuration showing Inbound/Outbound tabs, three greeting options (User Initiates, AI Agent with Dynamic Message, AI Agent with Fixed Message), message editor, delay slider, and barge-in toggle" />
+  </div>
+</Frame>
+
+[Mehr über Greetings erfahren →](/de/build/conversation/greeting-messages)
+
+### Knowledge Access
+Verbinde Wissensdatenbanken, Sammlungen und Dokumente.
+- Mehrere Wissensquellen anhängen
+- Context- oder RAG-Modus pro Quelle wählen
+- Unterstützung für mehrere Dateitypen und Website-Scraping
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/knowledge/knowledge-light.png" alt="Knowledge Access configuration showing Select Knowledge options (Entire Base, Folder, Specific Item), Knowledge Base dropdown, and Configure Access panel with RAG vs Context mode selection and detailed explanations" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/knowledge/knowledge-dark.png" alt="Knowledge Access configuration showing Select Knowledge options (Entire Base, Folder, Specific Item), Knowledge Base dropdown, and Configure Access panel with RAG vs Context mode selection and detailed explanations" />
+  </div>
+</Frame>
+
+[Mehr über Knowledge erfahren →](/de/build/knowledge/architecture)
+
+### Actions & Integrations
+Ermöglichen du deinem Agent, echte Aktionen durchzuführen.
+- Anrufe weiterleiten (Agent, Telefon, SIP)
+- Gespräche beenden
+- Smart Booking (Cal.com)
+- Benutzerdefinierte API-Aktionen
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/cal/booking-action-light.png" alt="Actions overview page showing Call Control section (Transfer Call, End Conversation) and Integration section (Custom Action, Calendar Booking) with Add buttons for each action type" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/cal/booking-action-dark.png" alt="Actions overview page showing Call Control section (Transfer Call, End Conversation) and Integration section (Custom Action, Calendar Booking) with Add buttons for each action type" />
+  </div>
+</Frame>
+
+[Mehr über Actions erfahren →](/de/build/actions/overview)
+
+### DTMF Controls
+Konfiguriere die Verarbeitung von Tastatureingaben.
+- Menümodus (einzelne Taste) oder Collector-Modus (mehrstellig)
+- Tonsendeeinstellung
+- Erfassungs- und Sendeeinstellungen
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/DTMF/dtmf-light.png" alt="DTMF Controls configuration showing Capture Mode options (Menu vs Collector), Enable DTMF toggle, Collector parameters (cooldown, timeout, gap), Send tone settings with digit limits and timeout, and key configuration options" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/DTMF/dtmf-dark.png" alt="DTMF Controls configuration showing Capture Mode options (Menu vs Collector), Enable DTMF toggle, Collector parameters (cooldown, timeout, gap), Send tone settings with digit limits and timeout, and key configuration options" />
+  </div>
+</Frame>
+
+[Mehr über DTMF erfahren →](/de/build/advanced/dtmf-controls)
+
+---
+
+## Operations-Tab
+
+Verfeinern du das operative Verhalten und die Gesprächsmechanik.
+
+### Inactivity & Timeout
+Behandeln du Stille und inaktive Kunden.
+- Check-in/Erinnerungskadenz
+- Benutzerdefinierte Timeout-Nachrichten
+- Inaktivitätsaktionen
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/timeout-light.png" alt="Inactivity & Timeout configuration showing MESSAGE SOURCE tabs (Check-ins, Pause Behavior, Monologue, Timeout), Inactivity Detection toggle, timing configuration with check-in timeout and max check-ins, check-in messages, and end message settings" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/timeout-dark.png" alt="Inactivity & Timeout configuration showing MESSAGE SOURCE tabs (Check-ins, Pause Behavior, Monologue, Timeout), Inactivity Detection toggle, timing configuration with check-in timeout and max check-ins, check-in messages, and end message settings" />
+  </div>
+</Frame>
+
+[Mehr über Inactivity erfahren →](/de/build/advanced/inactivity-timeout-settings)
+
+### Voice Activity Detection (VAD)
+Kontrollieren du, wann dein Agent spricht und zuhört.
+- Voreingestellte Modi (Low, Medium, High) oder Custom
+- Unterbrechungsbehandlung
+- Endpointing-Verzögerungskonfiguration
+- Smart-Endpointing-Umschalter
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/vad-light.png" alt="Voice Activity Detection configuration showing Smart Endpointing toggle, Allow Interruptions toggle, Preemptive Generation option, Voice Detection Sensitivity presets (Low, Medium, High, Custom), and advanced settings with sliders for interrupt speech duration, minimum words, and endpointing delay" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/vad-dark.png" alt="Voice Activity Detection configuration showing Smart Endpointing toggle, Allow Interruptions toggle, Preemptive Generation option, Voice Detection Sensitivity presets (Low, Medium, High, Custom), and advanced settings with sliders for interrupt speech duration, minimum words, and endpointing delay" />
+  </div>
+</Frame>
+
+[Mehr über VAD erfahren →](/de/build/advanced/vad-turn-detection)
+
+### Dynamic Context
+Rufen du personalisierte Daten vor Gesprächen ab.
+- Context-Endpunkt-Konfiguration
+- Authentifizierungs-Setup
+- Test-Request-Funktionalität
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/dynamic-light.png" alt="Dynamic Context configuration showing navigation sidebar with Operations section expanded, Endpoint Configuration with API Endpoint URL field and Test button, and Authentication Settings with Authentication Method dropdown" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/dynamic-dark.png" alt="Dynamic Context configuration showing navigation sidebar with Operations section expanded, Endpoint Configuration with API Endpoint URL field and Test button, and Authentication Settings with Authentication Method dropdown" />
+  </div>
+</Frame>
+
+[Mehr über Dynamic Context erfahren →](/de/build/advanced/dynamic-context)
+
+---
+
+## Analytics-Tab
+
+Konfiguriere Gesprächsmessung und Erfolgsverfolgung.
+
+### Goals
+Definiere, wie Erfolg aussieht.
+- Primäre und sekundäre Ziele
+- Zieltypen und Kriterien
+- Leistungsverfolgung
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/analytics-goal-light.png" alt="Goals configuration showing navigation sidebar with Analytics section expanded and Goals selected, Primary Goal and Secondary Goals tabs with Add Goal button, and empty state message 'No primary goal set'" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/analytics-goal-dark.png" alt="Goals configuration showing navigation sidebar with Analytics section expanded and Goals selected, Primary Goal and Secondary Goals tabs with Add Goal button, and empty state message 'No primary goal set'" />
+  </div>
+</Frame>
+
+[Mehr über Goals erfahren →](/de/build/analytics/conversation-goals)
+
+### Post-Call Analysis
+Konfiguriere automatisierte Gesprächsanalyse.
+- Strukturierte Informationen extrahieren
+- Analysekriterien
+- Bewertungssysteme
+- Leistungsmetriken
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/call-analysis-light.png" alt="Call Analysis configuration showing navigation sidebar with Analytics section expanded and Call Analysis selected, Default Analyses and Custom Analyses tabs with Add Analysis button, and categories including Communication, Interaction, Knowledge, Sentiment, and Technical with item counts" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/call-analysis-dark.png" alt="Call Analysis configuration showing navigation sidebar with Analytics section expanded and Call Analysis selected, Default Analyses and Custom Analyses tabs with Add Analysis button, and categories including Communication, Interaction, Knowledge, Sentiment, and Technical with item counts" />
+  </div>
+</Frame>
+
+[Mehr in Optimize erfahren →](/de/optimize/overview)
+
+---
+
+## Navigationstipps
+
+### Verwendung des Konfigurationspanels
+
+<Steps>
+  <Step title="Models konfigurieren">
+    Wähle KI-Modell, Stimme und Transcriber
+  </Step>
+  <Step title="Abilities einrichten">
+    Konfiguriere Anweisungen, Begrüßungen und Wissen
+  </Step>
+  <Step title="Operations feinabstimmen">
+    Passe VAD- und Timeout-Einstellungen nach dem Testen an
+  </Step>
+  <Step title="Analytics einrichten">
+    Definiere Ziele zur Messung
+  </Step>
+</Steps>
+
+### Speicherverhalten
+
+Einige Abschnitte (wie Modellauswahl) speichern automatisch. Andere erfordern das Klicken auf die Schaltfläche Speichern. Änderungen gelten nur für zukünftige Anrufe, nicht für laufende Anrufe.
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={3}>
+  <Card title="Anweisungen schreiben" icon="pen" href="/de/build/conversation/instructions">
+    Definiere das Verhalten deines Agents
+  </Card>
+  <Card title="Stimme konfigurieren" icon="microphone" href="/de/build/voice-speech/choose-ai-model">
+    Wähle KI-Modell und Stimme
+  </Card>
+  <Card title="Wissen hinzufügen" icon="book" href="/de/build/knowledge/architecture">
+    Verbinde deine Unternehmensinformationen
+  </Card>
+</CardGroup>

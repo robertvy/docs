@@ -1,0 +1,298 @@
+---
+title: "Débogage"
+description: "Outils et techniques pour identifier et corriger les problèmes d'agent"
+icon: "bug"
+keywords: "débogage, dépannage, journaux de conversation, débogage d'erreurs, problèmes de transcripteur, débogage LLM, débogage TTS, débogage d'actions"
+og:description: "Déboguez les problèmes d'agent vocal avec les journaux de conversation et un dépannage systématique. Identifiez et corrigez les problèmes de transcripteur, LLM, TTS et d'exécution d'actions."
+---
+
+## Aperçu
+
+Le débogage des agents vocaux nécessite une investigation systématique de plusieurs composants fonctionnant ensemble : la transcription, le raisonnement LLM, la synthèse vocale et l'exécution d'actions. Le tableau de bord itellicoAI fournit des journaux détaillés et des outils pour vous aider à identifier rapidement la cause profonde des problèmes.
+
+---
+
+## Outils de débogage du tableau de bord
+
+<CardGroup cols={2}>
+  <Card title="Journaux de conversation" icon="list">
+    Historique complet de chaque conversation avec transcriptions, actions et métadonnées
+  </Card>
+
+  <Card title="Transcription en temps réel" icon="closed-captioning">
+    Vue en direct de la transcription et des réponses de l'agent pendant les appels de test
+  </Card>
+
+  <Card title="Charges utiles d'actions" icon="code">
+    JSON détaillé de chaque appel API, exécution d'outil et webhook
+  </Card>
+
+  <Card title="Messages d'erreur" icon="triangle-exclamation">
+    Détails d'erreur spécifiques lorsque les composants échouent
+  </Card>
+</CardGroup>
+
+---
+
+## Approche de débogage systématique
+
+Lorsque quelque chose ne va pas, suivez ce processus systématique :
+
+<Steps>
+  <Step title="Reproduire le problème">
+    Testez à nouveau pour confirmer que le problème est cohérent
+
+    Notez les conditions exactes lorsqu'il se produit
+  </Step>
+
+  <Step title="Identifier le composant">
+    Déterminez quelle partie du pipeline a échoué :
+    - Transcripteur (parole → texte)
+    - LLM (compréhension → réponse)
+    - TTS (texte → parole)
+    - Exécution d'action/outil
+    - Récupération de connaissances
+  </Step>
+
+  <Step title="Examiner les journaux">
+    Ouvrez **Conversations** et trouvez l'appel problématique
+
+    Examinez les transcriptions, les charges utiles d'actions et les erreurs
+  </Step>
+
+  <Step title="Tester les composants individuellement">
+    Isolez le composant défaillant :
+    - Essayez un transcripteur différent
+    - Testez le LLM avec des invites plus simples
+    - Essayez une voix différente
+    - Testez les actions directement via l'API
+  </Step>
+
+  <Step title="Corriger et vérifier">
+    Apportez des modifications ciblées basées sur les résultats
+
+    Testez à nouveau pour confirmer la correction
+  </Step>
+</Steps>
+
+---
+
+## Débogage au niveau des composants
+
+<AccordionGroup>
+  <Accordion title="Problèmes de transcripteur" icon="microphone">
+    **Comment identifier :**
+    - Vérifiez la transcription dans les journaux de conversation
+    - Comparez ce qui a été dit avec ce qui a été transcrit
+    - Recherchez des mots manquants, des mots incorrects ou du charabia
+
+    **Causes courantes :**
+    - Bruit de fond
+    - Accent ou langue inadaptée
+    - Problèmes de qualité audio
+    - Mauvais modèle de transcripteur sélectionné
+
+    **Étapes de débogage :**
+    1. Accédez à **Modèles → Transcripteur**
+    2. Essayez un autre fournisseur de transcripteur (Deepgram ↔ Azure)
+    3. Essayez un modèle différent (par ex., Nova-2 ↔ Nova-3)
+    4. Vérifiez que le paramètre de langue correspond au locuteur
+    5. Testez dans un environnement plus calme
+    6. Vérifiez la qualité de l'entrée audio
+
+    **Ce qu'il faut vérifier dans les journaux :**
+    - Précision de la transcription
+    - Synchronisation de la transcription (retards ?)
+    - Transcriptions vides ou partielles
+    - Problèmes de détection de langue
+  </Accordion>
+
+  <Accordion title="Problèmes de réponse LLM" icon="brain">
+    **Comment identifier :**
+    - L'agent donne de mauvaises réponses
+    - L'agent sort du sujet
+    - L'agent se répète
+    - L'agent refuse de répondre à des questions valides
+    - L'agent hallucine des informations
+
+    **Causes courantes :**
+    - Instructions trop vagues ou contradictoires
+    - Base de connaissances manquant d'informations
+    - Débordement de fenêtre de contexte
+    - Modèle non adapté à la tâche
+    - Température trop élevée/basse
+
+    **Étapes de débogage :**
+    1. Examinez les instructions de l'agent dans **Capacités → Instructions**
+    2. Simplifiez les instructions pour isoler le problème
+    3. Vérifiez la base de connaissances pour les informations manquantes
+    4. Essayez un modèle LLM différent (Claude Haiku 4.5 ↔ GPT-4.1 mini)
+    5. Ajustez la température dans les paramètres du modèle
+    6. Examinez les journaux de conversation pour voir le contexte complet
+
+    **Ce qu'il faut vérifier dans les journaux :**
+    - Historique complet de la conversation menant à une mauvaise réponse
+    - Éléments de connaissance récupérés (si utilisation de RAG)
+    - Invites système et injection de contexte
+
+    <Tip>
+    Testez les invites problématiques dans le simulateur web d'abord—c'est plus rapide que les tests téléphoniques.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="Problèmes de voix/TTS" icon="volume">
+    **Comment identifier :**
+    - Modèles de parole non naturels
+    - Mauvaise prononciation
+    - Mauvaise emphase ou intonation
+    - Son robotique
+    - Vitesse trop rapide/lente
+
+    **Causes courantes :**
+    - Voix non adaptée au type de contenu
+    - Ponctuation affectant le rythme
+    - Nombres ou acronymes mal gérés
+    - Limitations du fournisseur de voix
+
+    **Étapes de débogage :**
+    1. Accédez à **Modèles → Voix**
+    2. Essayez une voix différente du même fournisseur
+    3. Essayez un fournisseur de voix totalement différent
+    4. Ajoutez des prononciations personnalisées pour les mots problématiques
+    5. Ajustez les paramètres de stabilité/clarté (ElevenLabs)
+    6. Ajustez le débit de parole
+    7. Modifiez la sortie texte pour améliorer le TTS
+
+    **Ce qu'il faut vérifier dans les journaux :**
+    - Écoutez l'enregistrement audio
+    - Comparez le texte avec la façon dont il a été prononcé
+    - Vérifiez les balises SSML (si utilisées)
+    - Vérifiez que les paramètres de voix sont appliqués
+  </Accordion>
+
+  <Accordion title="Problèmes d'exécution d'action/outil" icon="bolt">
+    **Comment identifier :**
+    - L'action ne se déclenche pas comme prévu
+    - L'action se déclenche mais échoue
+    - Mauvaises données envoyées à l'action
+    - L'action retourne une erreur
+
+    **Causes courantes :**
+    - Action mal configurée
+    - Point de terminaison API hors ligne ou lent
+    - Échec d'authentification
+    - Extraction de paramètres incorrecte
+    - Dépassement de délai réseau
+
+    **Étapes de débogage :**
+    1. Vérifiez si l'action a été déclenchée dans les journaux de conversation
+    2. Examinez la charge utile de l'action (JSON envoyé à l'API)
+    3. Vérifiez la réponse de l'API et le code de statut
+    4. Testez le point de terminaison API directement (Postman, curl)
+    5. Vérifiez les identifiants d'authentification
+    6. Vérifiez l'extraction des paramètres de la conversation
+    7. Examinez les instructions d'action dans l'invite de l'agent
+
+    **Ce qu'il faut vérifier dans les journaux :**
+    - Champs `custom_data.actions` ou similaires
+    - Charge utile de la requête API
+    - Corps de la réponse API
+    - Messages d'erreur et traces de pile
+    - Horodatage (y a-t-il eu un dépassement de délai ?)
+
+    <Note>
+    Les journaux de conversation affichent les charges utiles d'actions complètes, y compris les données de requête/réponse.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Problèmes de récupération de connaissances" icon="database">
+    **Comment identifier :**
+    - L'agent ne peut pas répondre aux questions qu'il devrait connaître
+    - L'agent récupère de mauvaises connaissances
+    - L'agent mélange des informations non pertinentes dans les réponses
+
+    **Causes courantes :**
+    - Connaissances pas encore indexées
+    - La récupération RAG ne trouve pas les éléments pertinents
+    - Base de connaissances non attribuée à l'agent
+
+    **Étapes de débogage :**
+    1. Vérifiez que la base de connaissances est attribuée à l'agent
+    2. Vérifiez que les éléments de connaissance sont **INDEXÉS** (pas seulement COMPLÉTÉS)
+    3. Examinez les titres des éléments de connaissance—rendez-les descriptifs
+    4. Testez avec une base de connaissances plus petite
+    5. Essayez le mode Contexte vs le mode RAG
+    6. Vérifiez les journaux de conversation pour les connaissances récupérées
+
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Utilisation des journaux de conversation pour le débogage
+
+Chaque appel de test crée un journal détaillé accessible dans **Conversations**.
+
+### Contenu des journaux :
+
+**Informations de base :**
+- Date, heure, durée de l'appel
+- Agent utilisé
+- Numéro de téléphone (si test téléphonique)
+- Statut de l'appel (terminé, échoué, etc.)
+
+**Données de conversation :**
+- Transcription complète (utilisateur + agent)
+- Horodatages pour chaque message
+- Enregistrement audio (si disponible)
+
+**Détails techniques :**
+- Actions déclenchées avec charges utiles
+- Entrées DTMF capturées
+- Résultats d'analyse des objectifs
+- Réponses d'analyse post-appel
+- Champs de données personnalisées
+- Messages d'erreur
+
+**Comment déboguer avec les journaux :**
+1. Filtrez par nom d'agent pour trouver les appels de test
+2. Ouvrez un appel spécifique pour voir tous les détails
+3. Lisez la transcription pour identifier où cela s'est mal passé
+4. Vérifiez les charges utiles d'actions si des actions ont échoué
+5. Écoutez l'audio si la transcription semble correcte mais l'audio était mauvais
+6. Examinez les horodatages pour identifier les problèmes de latence
+
+---
+
+## Obtenir de l'aide
+
+Lorsque vous avez besoin d'un soutien supplémentaire :
+
+<CardGroup cols={2}>
+  <Card title="Consulter la documentation" icon="book">
+    Vérifiez la documentation des fonctionnalités spécifiques pour les détails de configuration
+  </Card>
+
+  <Card title="Vérifier l'état du fournisseur" icon="signal">
+    Visitez les pages d'état pour OpenAI, Deepgram, ElevenLabs, Azure
+  </Card>
+
+  <Card title="Contacter le support" icon="headset">
+    Envoyez un e-mail à support@itellico.ai avec les journaux d'appel et les détails d'erreur
+  </Card>
+</CardGroup>
+
+**Lors du contact avec le support, incluez :**
+- ID ou nom de l'agent
+- ID de conversation des journaux
+- Messages d'erreur spécifiques
+- Étapes pour reproduire
+- Captures d'écran si applicable
+
+---
+
+## Prochaines étapes
+
+<Card title="Liste de vérification de lancement" icon="rocket" href="/fr/launch/overview">
+  Une fois que vous avez débogué votre agent, consultez la liste de vérification de lancement pour préparer la production
+</Card>

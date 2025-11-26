@@ -1,0 +1,325 @@
+---
+title: "Voice Activity Detection & Turn Detection"
+description: "Configure voice activity detection, turn detection, and interrupt handling for natural conversation flow"
+icon: "microphone-lines"
+"keywords": "VAD, voice activity detection, turn detection, interrupt handling, speech detection, conversation flow, endpointing"
+"og:description": "Configure voice activity detection and turn detection for natural, responsive AI conversation flow and interrupt handling."
+---
+
+## Overview
+
+Voice Activity Detection (VAD) and Turn Detection controls enable your AI agents to recognize when users are speaking, detect when they've finished their turn, and handle interruptions naturally. These settings are crucial for creating smooth, human-like conversations that feel responsive without cutting users off mid-sentence.
+
+VAD and turn detection work together to determine when to listen, when to respond, and how to handle interruptions - transforming basic speech recognition into natural conversational interactions.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/vad-light.png" alt="Voice Activity Detection (VAD) configuration showing navigation sidebar with Operations section expanded and Voice Activity Detection selected, Smart Endpointing toggle with info icon and description, Allow Interruptions toggle enabled, Preemptive Generation toggle, Voice Detection Sensitivity options (Low, Medium, High, Custom), and advanced settings including Interrupt Speech Duration slider, Minimum Words slider, and Endpointing Delay slider" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/vad-dark.png" alt="Voice Activity Detection (VAD) configuration showing navigation sidebar with Operations section expanded and Voice Activity Detection selected, Smart Endpointing toggle with info icon and description, Allow Interruptions toggle enabled, Preemptive Generation toggle, Voice Detection Sensitivity options (Low, Medium, High, Custom), and advanced settings including Interrupt Speech Duration slider, Minimum Words slider, and Endpointing Delay slider" />
+  </div>
+</Frame>
+
+<Note>
+**Universal Application:** VAD and turn detection settings apply to all conversation types, including phone calls (SIP/PSTN) and web-based conversations.
+
+Configuration is available in **Agent Settings → Operations → Voice Activity Detection (VAD)**. Settings include sensitivity presets, smart endpointing, interrupt handling, and advanced tuning parameters.
+</Note>
+
+---
+
+## What is Voice Activity Detection?
+
+### Understanding VAD Technology
+
+Voice Activity Detection (VAD) is the technology that determines when someone is speaking versus when there's silence or background noise. It's the foundation for knowing when to listen and when a user has finished speaking.
+
+**Key components:**
+- **Speech Detection:** Identifies when voice activity begins
+- **Silence Detection:** Recognizes when speech has ended
+- **Noise Filtering:** Distinguishes speech from background sounds
+
+### What is Turn Detection?
+
+Turn detection (also called "endpointing") determines when a speaker has finished their conversational turn and it's time for the agent to respond. This is more sophisticated than simple silence detection, as it accounts for natural pauses, thinking time, and conversational context.
+
+---
+
+## Smart Endpointing
+
+### AI-Powered Turn Detection
+
+Smart Endpointing uses an AI model to detect end-of-turn more accurately than basic VAD alone. This advanced feature helps prevent cutting users off during natural pauses while still maintaining responsive conversation flow.
+
+**Benefits:**
+- Reduces false cutoffs during natural pauses
+- Improves barge-in handling when users interrupt
+- Better handles multi-clause sentences
+- Accounts for conversational context
+
+<Warning>
+**Latency Tradeoff:** Smart Endpointing adds a few hundred milliseconds of latency to turn detection. This improves accuracy but makes the agent slightly less responsive. Disable it for time-critical applications where immediate response is more important than turn detection accuracy.
+</Warning>
+
+**Fallback behavior:** If the AI model is unavailable, the system automatically falls back to VAD-only detection to ensure reliable operation.
+
+<Card title="Smart Endpointing Toggle" icon="brain-circuit">
+  Enable or disable AI-based turn detection. When disabled, the system uses VAD-only detection with faster response times.
+</Card>
+
+---
+
+## Sensitivity Presets
+
+### Quick Configuration Options
+
+Choose from pre-configured sensitivity levels that balance responsiveness with accuracy. Each preset automatically adjusts multiple parameters for optimal performance in common scenarios.
+
+<AccordionGroup>
+  <Accordion title="Low Sensitivity" icon="turtle">
+    **Less sensitive, fewer interruptions**
+
+    Best for:
+    - Environments with background noise
+    - Users who speak with long pauses
+    - Formal conversations requiring patience
+  </Accordion>
+
+  <Accordion title="Medium Sensitivity (Recommended)" icon="gauge">
+    **Balanced sensitivity**
+
+    Best for:
+    - General-purpose conversations
+    - Mixed environments
+    - Most business use cases
+  </Accordion>
+
+  <Accordion title="High Sensitivity" icon="rabbit">
+    **More sensitive, quicker responses**
+
+    Best for:
+    - Quick-paced conversations
+    - Clean audio environments
+    - Time-sensitive interactions
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Advanced Settings
+
+### Custom Configuration
+
+For fine-tuned control, switch to "Custom" mode to access advanced parameters. These settings allow precise tuning for specific use cases or environments.
+
+### Interrupt Handling
+
+<AccordionGroup>
+  <Accordion title="Allow Interruptions" icon="circle-pause">
+    **Master switch for interrupt handling**
+
+    When enabled, users can interrupt the agent while it's speaking. When disabled, the agent will complete its response before accepting new input.
+
+    **Use cases:**
+    - **Enabled:** Natural conversations, customer support, interactive dialogues
+    - **Disabled:** Important announcements, legal disclaimers, structured scripts
+  </Accordion>
+
+  <Accordion title="Interrupt Speech Duration" icon="clock">
+    **Minimum speech duration before allowing interruption (0-5 seconds)**
+
+    Controls how long a user must speak before the agent recognizes it as an interruption attempt.
+
+    - **Lower values (0.2-0.5s):** More responsive, but may trigger on brief interjections
+    - **Higher values (1.0-2.0s):** More stable, requires sustained speech to interrupt
+
+    **Default:** 0.5 seconds
+  </Accordion>
+
+  <Accordion title="Minimum Words" icon="text">
+    **Minimum word count before allowing interruption (0-5 words)**
+
+    Requires the user to speak a certain number of words before recognizing an interruption.
+
+    - **0 words:** Interrupt on any speech detection
+    - **1-2 words:** Balance between responsiveness and stability
+    - **3-5 words:** Require substantial input before interrupting
+
+    **Default:** 0 words (interrupt on any speech)
+  </Accordion>
+
+  <Accordion title="Endpointing Delay" icon="timer">
+    **Minimum silence delay before considering speech ended (0-2 seconds)**
+
+    How long to wait in silence before determining the user has finished speaking.
+
+    - **Lower values (0.2-0.5s):** Faster responses, but may cut off thoughtful pauses
+    - **Higher values (1.0-2.0s):** More patient, allows for natural pauses and thinking time
+
+    **Default:** 0.5 seconds
+  </Accordion>
+
+  <Accordion title="VAD Threshold" icon="gauge-high">
+    **Sensitivity of voice detection (0.0 - 1.0)**
+
+    Controls how sensitive the system is when detecting speech versus silence or noise.
+
+    - **Lower values (0.1-0.3):** Less sensitive, requires clearer speech
+    - **Medium values (0.4-0.6):** Balanced for most environments
+    - **Higher values (0.7-1.0):** More sensitive, detects quieter speech
+
+    **Default:** 0.5
+
+    <Warning>
+    Very low values may miss soft-spoken users. Very high values may trigger on background noise.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Prefix Padding" icon="backward">
+    **Audio buffer before speech detection (0-500ms)**
+
+    Amount of audio to include before speech is detected. This helps prevent cutting off the beginning of words or sentences.
+
+    - **Lower values (0-50ms):** Minimal buffering, risk of clipping start of speech
+    - **Medium values (100-200ms):** Good balance for most cases
+    - **Higher values (300-500ms):** Maximum preservation of speech start
+
+    **Default:** 100ms
+  </Accordion>
+
+  <Accordion title="Silence Duration" icon="forward">
+    **Silence threshold before ending turn (0-2000ms)**
+
+    How long to wait in silence before considering the user's speech to be finished.
+
+    - **Lower values (100-300ms):** Quick responses, but may cut off pauses
+    - **Medium values (400-800ms):** Balanced for natural conversation
+    - **Higher values (1000-2000ms):** Very patient, allows long thinking pauses
+
+    **Default:** 500ms
+
+    <Tip>
+    Higher values work well for users who think while speaking or have speech patterns with natural pauses.
+    </Tip>
+  </Accordion>
+</AccordionGroup>
+
+### Preemptive Generation
+
+<Card title="Preemptive Generation" icon="rocket">
+  **Start generating responses before turn detection completes**
+
+  When enabled, the agent begins generating a response as soon as a final transcript is available, even before confirming end-of-turn. This can reduce perceived latency but may occasionally generate responses that get canceled if the user continues speaking.
+
+  **Best practices:**
+  - Works best with smart endpointing enabled
+  - Ideal for time-sensitive conversations
+  - May increase API costs due to canceled generations
+
+  **Default:** Disabled
+</Card>
+
+---
+
+## Configuration Best Practices
+
+### Choosing the Right Settings
+
+<Steps>
+  <Step title="Start with Presets">
+    Begin with the Medium sensitivity preset for most use cases. Test in your actual environment before customizing.
+  </Step>
+  <Step title="Test with Real Users">
+    Different accents, speech patterns, and speaking speeds may require different settings. Test with representative users.
+  </Step>
+  <Step title="Consider Smart Endpointing">
+    Only enable smart endpointing if the agent interrupts users mid-turn too often and other settings (endpointing delay, sensitivity) cannot fix it. Remember it adds latency.
+  </Step>
+  <Step title="Adjust Based on Environment">
+    Noisy environments benefit from lower sensitivity. Quiet environments can use higher sensitivity for more responsive interactions.
+  </Step>
+  <Step title="Consider Use Case">
+    - **Customer support:** Medium to high sensitivity
+    - **Information gathering:** Medium sensitivity with interrupts enabled
+    - **Announcements:** Low sensitivity with interrupts disabled
+    - **Sales calls:** Medium to high sensitivity with interrupts enabled
+  </Step>
+</Steps>
+
+---
+
+## Common Scenarios
+
+### Troubleshooting Guide
+
+<AccordionGroup>
+  <Accordion title="Agent cuts users off mid-sentence" icon="scissors">
+    **Symptoms:** Agent starts responding before users finish speaking
+
+    **Solutions:**
+    - Increase endpointing delay or silence duration
+    - Switch to a lower sensitivity preset
+    - If using custom settings, increase the minimum words requirement
+    - Consider enabling smart endpointing as a last resort (adds latency)
+  </Accordion>
+
+  <Accordion title="Agent responds too slowly" icon="hourglass">
+    **Symptoms:** Noticeable delay between user finishing and agent responding
+
+    **Solutions:**
+    - Decrease endpointing delay or silence duration
+    - Switch to a higher sensitivity preset
+    - Disable smart endpointing if enabled (reduces latency)
+    - Enable preemptive generation
+  </Accordion>
+
+  <Accordion title="Agent doesn't recognize interruptions" icon="ban">
+    **Symptoms:** Users can't interrupt the agent when speaking
+
+    **Solutions:**
+    - Ensure "Allow Interruptions" is enabled
+    - Decrease interrupt speech duration
+    - Reduce minimum words requirement
+    - Switch to higher sensitivity preset
+  </Accordion>
+
+  <Accordion title="False triggers from background noise" icon="volume-high">
+    **Symptoms:** Agent responds to background sounds or noise
+
+    **Solutions:**
+    - Switch to lower sensitivity preset
+    - Decrease VAD threshold
+    - Increase minimum words requirement
+    - Increase interrupt speech duration
+  </Accordion>
+
+  <Accordion title="Missed speech from soft-spoken users" icon="volume-low">
+    **Symptoms:** Agent doesn't detect when quiet users are speaking
+
+    **Solutions:**
+    - Switch to higher sensitivity preset
+    - Increase VAD threshold
+    - Decrease interrupt speech duration
+    - Verify microphone/audio input quality
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Related Features
+
+<CardGroup cols={2}>
+  <Card title="Voice Settings" icon="sliders" href="/build/voice-speech/voice-settings">
+    Configure voice speed, pitch, and other TTS parameters
+  </Card>
+  <Card title="Ambient Sound" icon="music" href="/build/voice-speech/ambient-sound">
+    Add background audio for more natural conversations
+  </Card>
+  <Card title="Custom Pronunciations" icon="spell-check" href="/build/voice-speech/custom-pronunciations">
+    Ensure proper pronunciation of names and technical terms
+  </Card>
+  <Card title="DTMF Controls" icon="hashtag" href="/build/advanced/dtmf-controls">
+    Configure phone keypad interaction for IVR navigation
+  </Card>
+</CardGroup>

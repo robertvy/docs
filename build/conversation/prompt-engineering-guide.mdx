@@ -1,0 +1,531 @@
+---
+title: "Prompt Engineering Guide"
+description: "Master the art of writing effective agent instructions"
+icon: "book"
+"keywords": "prompt engineering, AI prompts, conversational AI best practices, agent instructions, natural conversations, AI behavior design, prompt writing"
+"og:description": "Master the art of writing effective AI agent instructions with proven prompt engineering techniques and best practices."
+---
+
+## Introduction
+
+Designing a strong prompt (instructions) is how you turn a generic voice model into a reliable AI teammate. This comprehensive guide walks through how the itellicoAI agent runtime interprets your instructions, the structure we recommend, and repeatable patterns you can use for different use cases.
+
+<Tip>
+This is an advanced guide. If you're just getting started, see [Instructions Basics](/build/conversation/instructions) first.
+</Tip>
+
+---
+
+## Quick Start: The 5-Minute Prompt Formula
+
+New to writing agent prompts? Start here. This formula gets you from blank page to working agent in minutes.
+
+<Steps>
+  <Step title="Who is your agent? (30 seconds)">
+    Give your agent a clear identity and personality.
+
+    ```
+    You are [Name], a [role] at [Company].
+    Your personality is [trait 1], [trait 2], and [trait 3].
+    ```
+
+    **Example:**
+    ```
+    You are Sarah, a Customer Success Manager at TechCo.
+    Your personality is helpful, patient, and knowledgeable.
+    ```
+  </Step>
+
+  <Step title="What's the goal? (30 seconds)">
+    Define the specific, measurable outcome.
+
+    ```
+    Your objective is to [specific measurable outcome].
+    ```
+
+    **Example:**
+    ```
+    Your objective is to schedule product demos with qualified prospects
+    who have budget and timeline.
+    ```
+  </Step>
+
+  <Step title="How does the conversation flow? (3 minutes)">
+    Map out the key steps in order.
+
+    **Standard Flow:**
+    1. **Greeting** - Confirm identity
+    2. **Permission** - Ask if they have time
+    3. **Discovery** - Understand their needs
+    4. **Value** - Share how you can help
+    5. **Action** - Book meeting/close sale
+    6. **Closing** - Confirm next steps
+
+    **Write it in your prompt like this:**
+    ```
+    Conversation Flow:
+    1. Greeting - Confirm identity and thank them for their interest
+    2. Permission - Ask if they have 5 minutes to talk
+    3. Discovery - Understand their needs with open-ended questions
+    4. Value - Share how you can help based on what you learned
+    5. Action - Book meeting or close the sale using the appropriate action
+    6. Closing - Confirm next steps and thank them for their time
+    ```
+  </Step>
+
+  <Step title="What are the guardrails? (1 minute)">
+    Define what your agent should NEVER do and when to escalate.
+
+    **Write it in your prompt like this:**
+    ```
+    Guardrails - Never:
+    • Discuss pricing (transfer to sales team)
+    • Make promises about features or timelines
+    • Share customer data or account details
+    • Continue if customer is hostile (end call politely)
+
+    Transfer to a human when:
+    • Customer requests to speak with a manager
+    • Technical issue beyond your knowledge
+    • Customer is frustrated after 2 attempts to help
+    ```
+  </Step>
+
+  <Step title="What if they object? (1 minute)">
+    Prepare for common objections with exact responses.
+
+    ```
+    Objection Handling:
+    • "Not interested" → [Your response]
+    • "Too expensive" → [Your response]
+    • "Need to think about it" → [Your response]
+    ```
+
+    **Example:**
+    ```
+    Objection Handling:
+    • "Not interested" → "I understand. Can I ask what changed since you requested info?"
+    • "Too expensive" → "I hear you. Let's discuss what features matter most to your budget."
+    • "Need to think about it" → "Of course. What specific concerns should I address?"
+    ```
+  </Step>
+</Steps>
+
+---
+
+### Key Writing Principles
+
+Follow these three principles to make your prompts more effective:
+
+<AccordionGroup>
+  <Accordion title="Write Like You Talk" icon="comments">
+    Voice agents need conversational language, not corporate speak.
+
+    **Avoid:**
+    ```
+    "I am contacting you regarding..."
+    "Per our previous correspondence..."
+    ```
+
+    **Better:**
+    ```
+    "I'm calling about..."
+    "Following up on..."
+    ```
+
+    Test: Read it aloud. If it sounds stiff, simplify it.
+  </Accordion>
+
+  <Accordion title="Give Exact Words" icon="quote-left">
+    Don't describe what to say - write the actual words.
+
+    **Avoid:**
+    ```
+    "Introduce yourself professionally"
+    "Explain the benefits"
+    ```
+
+    **Better:**
+    ```
+    Say: "Hi, this is Alex from TechCo"
+    Say: "This saves you 10 hours per week on reporting"
+    ```
+
+    The more specific, the more consistent your agent will be.
+  </Accordion>
+
+  <Accordion title="Use If/Then Branching" icon="code-branch">
+    Handle different scenarios with conditional logic.
+
+    ```
+    If customer says yes → Continue to step 2
+
+    If customer says no → Ask: "When would be better?"
+
+    If customer is hostile → Say: "I apologize for
+    the inconvenience. Let me transfer you to a
+    manager who can help."
+    ```
+
+    Plan for success, objections, and edge cases.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+### Quick Tips for Better Prompts
+
+<AccordionGroup>
+  <Accordion title="Guardrails" icon="shield-halved">
+    Be explicit about what the agent should never do.
+
+    **Examples:**
+    ```
+    Guardrails - Never:
+    - Make promises about features in development
+    - Discuss competitor products
+    - Provide legal or medical advice
+    - Share pricing not in the approved price list
+    - Continue if customer asks to be removed from list
+    ```
+
+    Clear guardrails prevent costly mistakes.
+  </Accordion>
+
+  <Accordion title="Natural transitions" icon="arrow-right-arrow-left">
+    Help the agent move smoothly between conversation stages.
+
+    **Examples:**
+    ```
+    "Now that we've covered X, let me share Y..."
+    "Great question. Before I answer that, can I ask..."
+    "That makes sense. Based on what you've told me..."
+    "Perfect. So the next step would be..."
+    ```
+
+    Transitions make conversations feel natural, not scripted.
+  </Accordion>
+
+  <Accordion title="Confirmation protocols" icon="circle-check">
+    Always verify critical information before taking action.
+
+    **Examples:**
+    ```
+    Before booking:
+    "Let me confirm - that's Tuesday, March 15th at 2 PM Eastern. Is that correct?"
+
+    Before transferring:
+    "Just to make sure I have this right, you need help with [issue]. Correct?"
+
+    Before ending:
+    "Before we wrap up, is there anything else I can help with today?"
+    ```
+
+    Reduces errors and builds trust.
+  </Accordion>
+
+  <Accordion title="Graceful exits" icon="door-open">
+    Plan for every type of "no" with dignity.
+
+    **Examples:**
+    ```
+    Not interested:
+    "I completely understand. Thanks for your time, and feel free to reach
+    out if anything changes."
+
+    Wrong person:
+    "No problem. Do you know who I should speak with about [topic]?"
+
+    Bad timing:
+    "I appreciate you letting me know. When would be a better time to call back?"
+    ```
+
+    How you end matters as much as how you start.
+  </Accordion>
+
+  <Accordion title="Progressive disclosure" icon="layer-group">
+    Don't ask for everything upfront - build rapport first.
+
+    **Bad:**
+    ```
+    "Can I get your name, email, phone number, company, role, and budget?"
+    ```
+
+    **Better:**
+    ```
+    1. Start with name
+    2. Build rapport and establish value
+    3. Ask for email (for confirmation)
+    4. Naturally discover other details through conversation
+    ```
+
+    People share more when they understand why you're asking.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+<Note>
+**Remember:** The best voice agents don't sound like robots. They sound like the best version of your best employee on their best day. Write for conversation, not perfection.
+</Note>
+
+---
+
+## Understanding the Instruction Panel
+
+Inside **Agents → Abilities → Instructions** you provide a single block of text. The platform sends this block to the LLM on every turn together with:
+
+- **Structured context** - Contact data, recent action results
+- **Knowledge Base snippets** - Retrieved content relevant to the conversation
+- **Real-time transcript** - The ongoing conversation history
+
+### What the Agent Already Knows
+
+The platform automatically provides:
+- Full conversation history
+- Available actions and their parameters
+- Knowledge base content (when retrieved)
+- Current date, time, and timezone
+
+**Available via variables** (only when you reference them and contact exists in Contacts):
+- Contact information: `{{ contact.first_name }}`, `{{ contact.last_name }}`, `{{ contact.email }}`, `{{ contact.phone }}`, `{{ contact.full_name }}`
+- Context data: Dynamic values from API integrations
+
+---
+
+## Before You Write Anything
+
+Collect these inputs so the prompt speaks to a specific scenario instead of a generic persona:
+
+<Steps>
+  <Step title="Define Call Objective">
+    What should the caller achieve by the end of the conversation?
+
+    Examples:
+    - Get answer to product question
+    - Book an appointment
+    - Qualify as sales lead
+    - Resolve technical issue
+  </Step>
+
+  <Step title="Identify Must-Have Data">
+    What fields are needed for downstream actions?
+
+    Examples:
+    - Email address (for confirmations)
+    - Policy number (for lookups)
+    - Pain point (for qualification)
+    - Preferred date/time (for booking)
+  </Step>
+
+  <Step title="List Available Actions">
+    What actions can the agent trigger?
+
+    Examples:
+    - Transfer to Support
+    - Book Appointment
+    - Send Follow-up Email
+    - Update CRM
+
+    Include failover plans for each.
+  </Step>
+
+  <Step title="Map Knowledge Sources">
+    Which knowledge collections are attached?
+
+    Examples:
+    - Product FAQ
+    - Return Policies
+    - Technical Troubleshooting
+    - Pricing Information
+
+    When should each be referenced?
+  </Step>
+
+  <Step title="Define Guardrails">
+    What topics must be avoided? When to escalate?
+
+    Examples:
+    - Never discuss competitor products
+    - Never promise refunds (transfer instead)
+    - Escalate legal threats immediately
+    - Don't diagnose hardware (schedule technician)
+  </Step>
+</Steps>
+
+**Documenting these inputs first** keeps your prompt short, specific, and easier to maintain.
+
+---
+
+## Recommended Prompt Structure
+
+Use this structure as a template:
+
+| Section | Purpose | Tips |
+|---------|---------|------|
+| **Role & Tone** | Tell the LLM who it is representing and how it should sound | Include brand tone, languages allowed, pronunciation notes |
+| **Primary Goal** | Explain the desired outcome for the caller | Use bullets or numbered lists for clarity |
+| **Conversation Flow** | Lay out the core steps in order | Reference prerequisites, loops, exit criteria |
+| **Information Capture** | Call out required fields and confirmation steps | Highlight how to verify accuracy before proceeding |
+| **Action Triggers** | Describe when to run each action and with which inputs | Use explicit action names that match the configuration UI |
+| **Escalations & Guardrails** | Define forbidden topics and when to hand off or end calls | Pair rules with the relevant transfer/end action |
+| **Closure & Follow-up** | Spell out how to wrap up the call and confirm next steps | Include any follow-up messaging you promise the caller |
+
+<Tip>
+Keeping these sections in a consistent order helps later editors understand the prompt quickly.
+</Tip>
+
+---
+
+## Reusable Patterns
+
+<AccordionGroup>
+  <Accordion title="Pattern: Sequencing" icon="list-ol">
+    ```
+    Follow these steps in order:
+    1. [First step]
+    2. [Second step]
+    3. [Third step]
+
+    If interrupted, return to the first unfinished step before moving on.
+    ```
+
+    **Use when:** You need strict conversation flow
+  </Accordion>
+
+  <Accordion title="Pattern: Acknowledgement & Empathy" icon="heart">
+    ```
+    When customers express frustration:
+    - Acknowledge feelings: "I understand how frustrating that must be"
+    - Apologize when appropriate: "I'm sorry you're experiencing this"
+    - Take ownership: "Let me see what I can do to help"
+    - Avoid defensive language
+    ```
+
+    **Use when:** Tone matters for customer satisfaction
+  </Accordion>
+
+  <Accordion title="Pattern: Action Safety Nets" icon="shield">
+    ```
+    If the [Action Name] action fails:
+    1. Apologize sincerely: "I apologize, I'm having trouble with that"
+    2. Explain what went wrong briefly
+    3. Offer alternative: [describe alternative]
+    4. If alternative also fails, trigger [Fallback Action]
+    ```
+
+    **Use when:** Actions might fail and you need graceful recovery
+  </Accordion>
+
+  <Accordion title="Pattern: Multi-Language Support" icon="globe">
+    ```
+    Languages allowed: English, Spanish, French
+
+    If the caller speaks Spanish:
+    - Respond in Spanish
+    - Use formal addressing (usted)
+
+    If the caller speaks French:
+    - Respond in French
+    - Use formal addressing (vous)
+    ```
+
+    **Use when:** Serving multilingual customers
+  </Accordion>
+
+  <Accordion title="Pattern: Compliance Statements" icon="scale-balanced">
+    ```
+    Important compliance rules:
+    - NEVER promise service availability outside business hours
+    - NEVER discuss pricing not listed in the current price sheet
+    - NEVER share customer data without verification
+    - ALWAYS disclose that calls may be recorded (already in greeting)
+
+    If asked about regulated topics, say: "I need to transfer you to [Department] for that information."
+    ```
+
+    **Use when:** Legal/regulatory requirements exist
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Referencing Actions
+
+<Warning>
+Always reference actions by the **exact name** configured in the UI. The agent runtime exposes a function call with that name, so ambiguous wording can break execution.
+</Warning>
+
+### Example: Booking Action
+
+```text wrap
+When the caller confirms they want to schedule, call the `Schedule Dental Checkup` booking action with:
+- `date` and `time` gathered during the conversation
+- Ask for email if `contact.email` is missing; otherwise use contact email
+
+If the action returns an error:
+1. Apologize: "I'm sorry, I'm having trouble booking that time slot"
+2. Offer two alternative slots from the same day
+3. Retry once with the alternative
+4. If the second attempt fails, trigger the `Transfer to Front Desk` action
+```
+
+### Example: Transfer Action
+
+```text wrap
+Use the `Transfer to Tier 2 Support` action when:
+- Issue requires escalation beyond your capabilities
+- Customer explicitly requests human agent
+- Technical issue unresolved after troubleshooting
+- Legal or billing questions arise
+
+Before transferring:
+1. Explain why: "I'd like to connect you with a specialist who can better help with this"
+2. Ask permission: "May I transfer you to them now?"
+3. If they agree, trigger the transfer action
+```
+
+---
+
+## Variables and Conditional Content
+
+Use Jinja templating to personalize instructions with dynamic values from contacts and context.
+
+### Conditional Logic
+
+```jinja wrap
+{% if contact.email %}
+You have the customer's email on file: {{ contact.email }}
+{% else %}
+Ask for their email address before proceeding with the booking.
+{% endif %}
+
+{% if contact.first_name %}
+Greet them by name: "Hi {{ contact.first_name }}, thanks for calling!"
+{% else %}
+Use a general greeting: "Hi there, thanks for calling!"
+{% endif %}
+```
+
+---
+
+## Next Steps
+
+<CardGroup>
+  <Card title="Greeting Messages" icon="hand-wave" href="/build/conversation/greeting-messages">
+    Configure how conversations start
+  </Card>
+  <Card title="Variables & Dynamic Content" icon="brackets-curly" href="/build/conversation/variables-dynamic-content">
+    Master Jinja templating
+  </Card>
+  <Card title="Add Knowledge Base" icon="book" href="/build/knowledge/architecture">
+    Add your business information to knowledge bases
+  </Card>
+  <Card title="Configure Actions" icon="bolt" href="/build/actions/overview">
+    Enable your agent to take actions
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+Email [support@itellico.ai](mailto:support@itellico.ai) for assistance with prompt engineering and agent optimization.

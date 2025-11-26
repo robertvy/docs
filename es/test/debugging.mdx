@@ -1,0 +1,298 @@
+---
+title: "Depuración"
+description: "Herramientas y técnicas para identificar y solucionar problemas del agente"
+icon: "bug"
+keywords: 'depuración, resolución de problemas, registros de conversación, depuración de errores, problemas de transcriptor, depuración LLM, depuración TTS, depuración de acciones'
+og:description: 'Depure problemas de agentes de voz con registros de conversación y resolución sistemática de problemas. Identifique y solucione problemas de transcriptor, LLM, TTS y ejecución de acciones.'
+---
+
+## Descripción general
+
+La depuración de agentes de voz requiere una investigación sistemática de múltiples componentes que trabajan juntos: transcripción, razonamiento LLM, síntesis de voz y ejecución de acciones. El panel de itellicoAI proporciona registros detallados y herramientas para ayudarle a identificar rápidamente la causa raíz de los problemas.
+
+---
+
+## Herramientas de depuración del panel
+
+<CardGroup cols={2}>
+  <Card title="Registros de conversación" icon="list">
+    Historial completo de cada conversación con transcripciones, acciones y metadatos
+  </Card>
+
+  <Card title="Transcripción en tiempo real" icon="closed-captioning">
+    Vista en vivo de la transcripción y respuestas del agente durante las llamadas de prueba
+  </Card>
+
+  <Card title="Cargas útiles de acciones" icon="code">
+    JSON detallado de cada llamada API, ejecución de herramientas y webhook
+  </Card>
+
+  <Card title="Mensajes de error" icon="triangle-exclamation">
+    Detalles de error específicos cuando los componentes fallan
+  </Card>
+</CardGroup>
+
+---
+
+## Enfoque de depuración sistemático
+
+Cuando algo sale mal, siga este proceso sistemático:
+
+<Steps>
+  <Step title="Reproducir el problema">
+    Pruebe nuevamente para confirmar que el problema es consistente
+
+    Anote las condiciones exactas cuando ocurre
+  </Step>
+
+  <Step title="Identificar el componente">
+    Determine qué parte del pipeline falló:
+    - Transcriptor (habla → texto)
+    - LLM (comprensión → respuesta)
+    - TTS (texto → habla)
+    - Ejecución de acción/herramienta
+    - Recuperación de conocimientos
+  </Step>
+
+  <Step title="Revisar registros">
+    Abra **Conversaciones** y encuentre la llamada problemática
+
+    Examine transcripciones, cargas útiles de acciones y errores
+  </Step>
+
+  <Step title="Probar componentes individualmente">
+    Aísle el componente que falla:
+    - Pruebe un transcriptor diferente
+    - Pruebe LLM con indicaciones más simples
+    - Pruebe una voz diferente
+    - Pruebe acciones directamente a través de la API
+  </Step>
+
+  <Step title="Corregir y verificar">
+    Realice cambios específicos basados en los hallazgos
+
+    Pruebe nuevamente para confirmar la corrección
+  </Step>
+</Steps>
+
+---
+
+## Depuración a nivel de componentes
+
+<AccordionGroup>
+  <Accordion title="Problemas del transcriptor" icon="microphone">
+    **Cómo identificar:**
+    - Verifique la transcripción en los registros de conversación
+    - Compare lo que se dijo con lo que se transcribió
+    - Busque palabras faltantes, palabras incorrectas o galimatías
+
+    **Causas comunes:**
+    - Ruido de fondo
+    - Acento o idioma no coincidente
+    - Problemas de calidad de audio
+    - Modelo de transcriptor incorrecto seleccionado
+
+    **Pasos de depuración:**
+    1. Navegue a **Modelos → Transcriptor**
+    2. Pruebe un proveedor de transcriptor diferente (Deepgram ↔ Azure)
+    3. Pruebe un modelo diferente (ej., Nova-2 ↔ Nova-3)
+    4. Verifique que la configuración de idioma coincida con el hablante
+    5. Pruebe en un entorno más silencioso
+    6. Verifique la calidad de entrada de audio
+
+    **Qué verificar en los registros:**
+    - Precisión de la transcripción
+    - Sincronización de la transcripción (¿retrasos?)
+    - Transcripciones vacías o parciales
+    - Problemas de detección de idioma
+  </Accordion>
+
+  <Accordion title="Problemas de respuesta LLM" icon="brain">
+    **Cómo identificar:**
+    - El agente da respuestas incorrectas
+    - El agente se sale del tema
+    - El agente se repite
+    - El agente se niega a responder preguntas válidas
+    - El agente alucina información
+
+    **Causas comunes:**
+    - Instrucciones demasiado vagas o contradictorias
+    - Base de conocimientos falta información
+    - Desbordamiento de ventana de contexto
+    - Modelo no adecuado para la tarea
+    - Temperatura demasiado alta/baja
+
+    **Pasos de depuración:**
+    1. Revise las instrucciones del agente en **Habilidades → Instrucciones**
+    2. Simplifique las instrucciones para aislar el problema
+    3. Verifique la base de conocimientos para información faltante
+    4. Pruebe un modelo LLM diferente (Claude Haiku 4.5 ↔ GPT-4.1 mini)
+    5. Ajuste la temperatura en la configuración del modelo
+    6. Revise los registros de conversación para ver el contexto completo
+
+    **Qué verificar en los registros:**
+    - Historial completo de conversación que lleva a una mala respuesta
+    - Elementos de conocimiento recuperados (si usa RAG)
+    - Indicaciones del sistema e inyección de contexto
+
+    <Tip>
+    Pruebe indicaciones problemáticas en el simulador web primero—es más rápido que las pruebas telefónicas.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="Problemas de voz/TTS" icon="volume">
+    **Cómo identificar:**
+    - Patrones de habla poco naturales
+    - Pronunciaciones incorrectas
+    - Énfasis o entonación incorrecta
+    - Sonido robótico
+    - Velocidad demasiado rápida/lenta
+
+    **Causas comunes:**
+    - Voz no adecuada para el tipo de contenido
+    - Puntuación que afecta el ritmo
+    - Números o acrónimos no manejados bien
+    - Limitaciones del proveedor de voz
+
+    **Pasos de depuración:**
+    1. Navegue a **Modelos → Voz**
+    2. Pruebe una voz diferente del mismo proveedor
+    3. Pruebe un proveedor de voz completamente diferente
+    4. Agregue pronunciaciones personalizadas para palabras problemáticas
+    5. Ajuste la configuración de estabilidad/claridad (ElevenLabs)
+    6. Ajuste la velocidad de habla
+    7. Modifique la salida de texto para mejorar TTS
+
+    **Qué verificar en los registros:**
+    - Escuche la grabación de audio
+    - Compare el texto con cómo se habló
+    - Verifique las etiquetas SSML (si se usan)
+    - Verifique que se aplicó la configuración de voz
+  </Accordion>
+
+  <Accordion title="Problemas de ejecución de acción/herramienta" icon="bolt">
+    **Cómo identificar:**
+    - La acción no se activa cuando se espera
+    - La acción se activa pero falla
+    - Datos incorrectos enviados a la acción
+    - La acción devuelve un error
+
+    **Causas comunes:**
+    - Acción no configurada correctamente
+    - Endpoint de API caído o lento
+    - Fallo de autenticación
+    - Extracción de parámetros incorrecta
+    - Tiempo de espera de red agotado
+
+    **Pasos de depuración:**
+    1. Verifique si la acción se activó en los registros de conversación
+    2. Revise la carga útil de la acción (JSON enviado a la API)
+    3. Verifique la respuesta de la API y el código de estado
+    4. Pruebe el endpoint de la API directamente (Postman, curl)
+    5. Verifique las credenciales de autenticación
+    6. Verifique la extracción de parámetros de la conversación
+    7. Revise las instrucciones de acción en la indicación del agente
+
+    **Qué verificar en los registros:**
+    - Campos `custom_data.actions` o similares
+    - Carga útil de la solicitud de API
+    - Cuerpo de la respuesta de API
+    - Mensajes de error y trazas de pila
+    - Marca de tiempo (¿se agotó el tiempo de espera?)
+
+    <Note>
+    Los registros de conversación muestran las cargas útiles de acciones completas, incluidos los datos de solicitud/respuesta.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Problemas de recuperación de conocimientos" icon="database">
+    **Cómo identificar:**
+    - El agente no puede responder preguntas que debería saber
+    - El agente recupera conocimientos incorrectos
+    - El agente mezcla información irrelevante en las respuestas
+
+    **Causas comunes:**
+    - Conocimientos aún no indexados
+    - La recuperación RAG no encuentra elementos relevantes
+    - Base de conocimientos no asignada al agente
+
+    **Pasos de depuración:**
+    1. Verifique que la base de conocimientos esté asignada al agente
+    2. Verifique que los elementos de conocimiento estén **INDEXADOS** (no solo COMPLETADOS)
+    3. Revise los títulos de los elementos de conocimiento—hágalos descriptivos
+    4. Pruebe con una base de conocimientos más pequeña
+    5. Pruebe el modo Contexto vs el modo RAG
+    6. Verifique los registros de conversación para conocimientos recuperados
+
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Uso de registros de conversación para depuración
+
+Cada llamada de prueba crea un registro detallado accesible en **Conversaciones**.
+
+### Contenido de los registros:
+
+**Información básica:**
+- Fecha, hora, duración de la llamada
+- Agente utilizado
+- Número de teléfono (si es prueba telefónica)
+- Estado de la llamada (completado, fallido, etc.)
+
+**Datos de conversación:**
+- Transcripción completa (usuario + agente)
+- Marcas de tiempo para cada mensaje
+- Grabación de audio (si está disponible)
+
+**Detalles técnicos:**
+- Acciones activadas con cargas útiles
+- Entradas DTMF capturadas
+- Resultados de análisis de objetivos
+- Respuestas de análisis post-llamada
+- Campos de datos personalizados
+- Mensajes de error
+
+**Cómo depurar con registros:**
+1. Filtre por nombre del agente para encontrar llamadas de prueba
+2. Abra una llamada específica para ver todos los detalles
+3. Lea la transcripción para identificar dónde salió mal
+4. Verifique las cargas útiles de acciones si las acciones fallaron
+5. Escuche el audio si la transcripción se ve correcta pero el audio estaba mal
+6. Revise las marcas de tiempo para identificar problemas de latencia
+
+---
+
+## Obtener ayuda
+
+Cuando necesite soporte adicional:
+
+<CardGroup cols={2}>
+  <Card title="Revisar la documentación" icon="book">
+    Consulte la documentación de funciones específicas para detalles de configuración
+  </Card>
+
+  <Card title="Verificar estado del proveedor" icon="signal">
+    Visite las páginas de estado de OpenAI, Deepgram, ElevenLabs, Azure
+  </Card>
+
+  <Card title="Contactar soporte" icon="headset">
+    Envíe un correo electrónico a support@itellico.ai con registros de llamadas y detalles de error
+  </Card>
+</CardGroup>
+
+**Al contactar al soporte, incluya:**
+- ID o nombre del agente
+- ID de conversación de los registros
+- Mensajes de error específicos
+- Pasos para reproducir
+- Capturas de pantalla si corresponde
+
+---
+
+## Próximos pasos
+
+<Card title="Lista de verificación de lanzamiento" icon="rocket" href="/es/launch/overview">
+  Una vez que haya depurado su agente, revise la lista de verificación de lanzamiento para prepararse para producción
+</Card>

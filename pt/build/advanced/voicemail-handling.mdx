@@ -1,0 +1,530 @@
+---
+title: "Tratamento de Correio de Voz"
+description: "Configure Detecção de Secretária Eletrônica (AMD) para identificar e lidar com sistemas de correio de voz em campanhas de saída"
+icon: "voicemail"
+"keywords": "detecção de secretária eletrônica, AMD, detecção de correio de voz, chamadas de saída, tratamento de correio de voz, automação de campanha"
+"og:description": "Configure Detecção de Secretária Eletrônica para identificar e lidar automaticamente com sistemas de correio de voz em campanhas de IA de saída."
+---
+
+## Visão Geral
+
+A Detecção de Secretária Eletrônica (AMD) permite que seus agentes de IA detectem automaticamente quando chamadas de saída chegam ao correio de voz em vez de uma pessoa ao vivo. Quando o correio de voz é detectado, o agente desliga e registra o resultado, permitindo que você tente novamente em horários diferentes para maximizar as chances de alcançar uma pessoa ao vivo.
+
+Este recurso crítico evita tempo desperdiçado do agente falando com secretárias eletrônicas e otimiza a eficiência da campanha, focando recursos em conversas ao vivo em vez de sistemas de correio de voz.
+
+<Note>
+**Apenas Chamadas Telefônicas:** AMD aplica-se a chamadas telefônicas via conexões SIP/PSTN. Conversas baseadas na web sem uma perna telefônica não suportam interação DTMF.
+
+A configuração AMD é acessada durante a criação de campanha e chamadas de teste. AMD Baseado em Texto está sempre ativo. Você pode opcionalmente ativar AMD Baseado em ML como complemento para detecção mais rápida (~1.5s vs 5-15s).
+</Note>
+
+---
+
+## O que é Detecção de Secretária Eletrônica?
+
+### O Desafio
+
+Ao fazer chamadas de saída, você encontra dois cenários possíveis:
+
+**Cenário 1: Resposta ao Vivo**
+```text wrap
+Telefone toca → Pessoa atende → "Alô?"
+→ Agente deve engajar em conversa
+→ Capacidades completas do agente necessárias
+```
+
+**Cenário 2: Correio de Voz**
+```text wrap
+Telefone toca → Sistema de correio de voz atende → "Você ligou para John Smith..."
+→ Agente deve desligar e tentar novamente mais tarde
+→ Não desperdiçar tempo com script completo de conversa
+→ Não criar interação estranha falando sobre saudação de correio de voz
+```
+
+**O problema:** Como o agente sabe qual cenário ocorreu?
+
+### Solução AMD
+
+AMD analisa o áudio nos primeiros segundos após a conexão da chamada para determinar se um humano ou máquina atendeu:
+
+**Processo de detecção:**
+```text wrap
+1. Chamada conecta
+2. AMD analisa áudio (0.5-3 segundos dependendo do método)
+3. Classificação: HUMANO ou MÁQUINA
+4. Agente executa comportamento apropriado
+```
+
+**Benefícios:**
+- **Eficiência:** Não desperdiçar tempo do agente com correio de voz
+- **Melhor direcionamento:** Focar tentativas de nova chamada em diferentes horários para alcançar pessoa ao vivo
+- **Taxas de conexão mais altas:** Otimizar timing de chamada baseado em padrões de correio de voz
+- **Melhores análises:** Separar "alcançou correio de voz" de "sem resposta" em relatórios
+
+---
+
+## Métodos AMD
+
+### Visão Geral dos Tipos de Detecção
+
+<CardGroup cols={2}>
+  <Card title="AMD Baseado em Texto" icon="text">
+    Detecção baseada em palavras-chave usando transcritor e LLM - sempre ativo
+  </Card>
+  <Card title="AMD Baseado em ML (Opcional)" icon="brain">
+    Reconhecimento rápido de padrões usando Rede Neural Profunda - complemento opcional para velocidade
+  </Card>
+</CardGroup>
+
+### AMD Baseado em Texto
+
+**Papel:** Camada de detecção base que sempre é executada. Usa o transcritor e LLM do seu agente para identificar palavras-chave de correio de voz.
+
+**Como funciona:**
+```text wrap
+1. Chamada conecta
+2. Pipeline de voz de IA do agente (transcritor) recebe áudio
+3. Agente aguarda primeiro turno/enunciado completar (pausa detectada)
+4. LLM analisa transcrição para padrões semelhantes a correio de voz:
+   - "Você ligou para"
+   - "Deixe uma mensagem"
+   - "Não disponível"
+   - "Correio de voz"
+   - "Após o sinal"
+5. Se correio de voz detectado → Agente desliga
+6. Se pessoa ao vivo detectada → Agente continua conversa normal
+```
+
+**Características:**
+
+<AccordionGroup>
+  <Accordion title="Velocidade" icon="gauge">
+    **Mais lento:** Aguarda turno/enunciado completo terminar
+
+    Deve aguardar a saudação completa do correio de voz terminar (pausa detectada), então transcrever e analisar o texto completo. Detecção típica ocorre após 5-15+ segundos dependendo do comprimento da mensagem de correio de voz.
+
+    **Limitação:** Saudações longas de correio de voz significam tempos de espera mais longos antes da detecção
+
+    **Melhor para:** Campanhas onde precisão é mais importante que detecção imediata
+  </Accordion>
+
+  <Accordion title="Precisão" icon="chart-line">
+    **Alta precisão quando:**
+    - Saudações padrão de correio de voz com frases comuns
+    - Qualidade de áudio clara
+    - Idioma do correio de voz corresponde ao idioma do transcritor
+    - Ambientes B2B com saudações profissionais
+
+    **NÃO detectará:**
+    - Saudações de correio de voz em idiomas que o transcritor não suporta
+    - Sistemas de correio de voz sem saudação (apenas bips)
+    - Indicadores de correio de voz não verbais
+
+    **Precisão menor quando:**
+    - Saudações personalizadas sem palavras-chave padrão
+    - Saudações curtas ("Oi, deixe uma mensagem" - muito breve)
+    - Qualidade de áudio ruim ou ruído de fundo
+    - Ruído de fundo interferindo com transcrição
+  </Accordion>
+
+  <Accordion title="Melhores Casos de Uso" icon="briefcase">
+    **Ideal para:**
+    - **Campanhas B2B** - Correios de voz empresariais tipicamente usam fraseado padrão
+    - **Campanhas priorizando precisão** - Reduz falsos positivos analisando contexto completo do enunciado
+    - **Implantações conscientes de orçamento** - Menor custo computacional
+    - **Mercados de língua inglesa** - Detecção de palavras-chave otimizada para inglês
+
+    **Cenários de exemplo:**
+    - Alcance de vendas para números telefônicos empresariais
+    - Lembretes de consulta para linhas de escritório
+    - Campanhas de qualificação de leads B2B
+  </Accordion>
+
+  <Accordion title="Limitações" icon="triangle-exclamation">
+    **Pode ter dificuldades com:**
+    - Saudações pessoais e criativas de correio de voz ("Ei, é o Mike, você sabe o que fazer")
+    - Saudações muito curtas
+    - Idioma do correio de voz não corresponde ao idioma do transcritor
+    - Saudações que soam conversacionais ("Alô? Alô? Brincadeira, deixe uma mensagem")
+    - Música ou ruído de fundo na saudação
+
+    **Falsos positivos:** Humano que começa com "Você ligou para..." pode ser mal classificado
+
+    **Falsos negativos:** Correio de voz sem palavras-chave pode ser classificado como humano
+  </Accordion>
+</AccordionGroup>
+
+### AMD Baseado em ML (Complemento Opcional)
+
+**Papel:** Camada de detecção rápida opcional que você pode ativar para velocidade. Funciona em paralelo com AMD baseado em texto.
+
+**Como funciona:**
+```text wrap
+1. Chamada conecta
+2. Rede Neural Profunda (DNN) analisa áudio em tempo real:
+   - Padrões e cadência de fala
+   - Padrões de áudio de correio de voz
+   - Características acústicas
+   - Timing e ritmo
+   - Indicadores de fala natural vs. gravada
+3. Modelo treinado em dezenas de milhares de gravações de áudio
+4. Classificação: HUMANO ou MÁQUINA
+5. Detecção independente de idioma
+```
+
+**Características:**
+
+<AccordionGroup>
+  <Accordion title="Velocidade" icon="gauge-high">
+    **Rápido:** ~1.5 segundos
+
+    Identifica respostas humanas ao vivo em 1.5 segundos
+
+    **Muito mais rápido que AMD baseado em texto** que deve aguardar enunciado completo
+  </Accordion>
+
+  <Accordion title="Precisão" icon="chart-line">
+    **Precisão muito alta** em condições do mundo real
+
+    **Por que ativar AMD Baseado em ML:**
+    - **Independente de idioma:** Funciona em todos os idiomas (baseado em texto só funciona se idioma do transcritor corresponder)
+    - **Detecta correio de voz apenas com bip:** Captura sistemas de correio de voz sem saudação (baseado em texto não pode)
+    - **Lida com saudações criativas:** Detecta saudações pessoais/não padrão sem palavras-chave
+    - **Detecção baseada em padrões:** Não depende de palavras-chave específicas de correio de voz
+    - **Detecção rápida:** ~1.5 segundos vs 5-15+ segundos para apenas texto
+    - **Melhor para campanhas multi-idioma:** Nenhuma configuração de idioma necessária
+
+    **Limitações:**
+    - Conexões extremamente curtas (< 0.5 segundos de áudio)
+    - Qualidade de áudio altamente degradada
+  </Accordion>
+
+  <Accordion title="Melhores Casos de Uso" icon="briefcase">
+    **Ideal para:**
+    - **Campanhas de consumidores** - Correios de voz pessoais com saudações criativas
+    - **Campanhas multi-idioma** - Não dependente de palavras-chave em inglês
+    - **Campanhas focadas em qualidade** - Quando precisão é mais importante que velocidade
+    - **Mercados complexos** - Números empresariais/pessoais mistos
+
+    **Cenários de exemplo:**
+    - Chamadas de vendas para consumidores
+    - Campanhas políticas
+    - Arrecadação de fundos sem fins lucrativos
+    - Alcance de saúde
+    - Campanhas de suporte multi-idioma
+  </Accordion>
+
+  <Accordion title="Vantagens" icon="check">
+    **Lida bem com:**
+    - Saudações pessoais criativas
+    - Saudações curtas
+    - Correios de voz não-ingleses
+    - Saudações sem palavras-chave padrão
+    - Música de fundo ou efeitos sonoros
+    - Saudações que soam conversacionais naturalmente
+
+    **Robusto em:**
+    - Diferentes idiomas
+    - Sotaques regionais
+    - Vários sistemas de correio de voz
+    - Saudações personalizadas
+  </Accordion>
+</AccordionGroup>
+
+### Como AMD Funciona
+
+**AMD Baseado em Texto (Camada Base):**
+- Sempre ativo
+- Analisa transcrição para palavras-chave de correio de voz
+- Aguarda enunciado completo (5-15+ segundos)
+- Mais conservador - raramente desliga em pessoas ao vivo
+
+**AMD Baseado em ML (Complemento Opcional):**
+- Você pode opcionalmente ativar isso para detecção mais rápida
+- Analisa padrões de áudio em ~1.5 segundos
+- Funciona em paralelo com AMD baseado em texto
+- Mais rápido mas pode ocasionalmente desligar em pessoas ao vivo
+
+**Opções de Configuração:**
+
+**Apenas Baseado em Texto (Conservador):**
+- Apenas detecção baseada em texto ativa
+- Detecção mais lenta (5-15+ segundos)
+- Raramente desliga em pessoas ao vivo
+- **Compensação:** Pode perder alguns correios de voz e falar com eles
+- Melhor para: Quando você quer evitar desligar em pessoas ao vivo a todo custo
+
+**Baseado em Texto + Baseado em ML (Rápido e Recomendado):**
+- ML detecta em ~1.5 segundos
+- Baseado em texto valida em paralelo
+- Precisão muito alta
+- **Compensação:** Ocasionalmente pode desligar em pessoa ao vivo
+- Melhor para: Campanhas onde falar com correio de voz incorre em custo adicional
+
+<Tip>
+**Qual você deve escolher?**
+
+**Baseado em Texto + Baseado em ML (recomendado):** Se falar com correio de voz desperdiça tempo e incorre em custo adicional, e você pode tolerar ocasionalmente desligar em pessoa ao vivo.
+
+**Apenas Baseado em Texto:** Se desligar em pessoa real em ocorrências raras é pior que o custo adicional de falar com correio de voz.
+</Tip>
+
+---
+
+## Configurando AMD
+
+AMD pode ser configurado em dois lugares:
+
+<CardGroup cols={2}>
+  <Card title="Chamadas Telefônicas de Teste" icon="phone-volume" href="#chamadas-telefonicas-de-teste">
+    Ative AMD ao testar seu agente com chamadas telefônicas
+  </Card>
+  <Card title="Configurações de Campanha" icon="megaphone" href="#configuracoes-de-campanha">
+    Configure AMD para campanhas de saída
+  </Card>
+</CardGroup>
+
+### Chamadas Telefônicas de Teste
+
+Configure AMD ao testar seu agente via telefone:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/answering-machine/answering-light.png" alt="Diálogo Test Agent mostrando aba Phone Call selecionada, seção Call Settings com opções de Answering Machine Detection (AMD) incluindo abas Text-based e ML-based, menu suspenso From Number para selecionar número de telefone, campo To Number com número de telefone placeholder, e botão Start Phone Call" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/answering-machine/answering-dark.png" alt="Diálogo Test Agent mostrando aba Phone Call selecionada, seção Call Settings com opções de Answering Machine Detection (AMD) incluindo abas Text-based e ML-based, menu suspenso From Number para selecionar número de telefone, campo To Number com número de telefone placeholder, e botão Start Phone Call" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Abrir Agente">
+    Vá para sua página de **Agente**
+
+    Clique no botão **Test Call**
+  </Step>
+
+  <Step title="Selecionar Chamada Telefônica">
+    Escolha **Phone Call** como tipo de teste
+  </Step>
+
+  <Step title="Configurar AMD">
+    Encontre a configuração **Answering Machine Detection (AMD)**
+
+    Escolha entre:
+    - **Text-based** (padrão) - Evita desligar em pessoas ao vivo a todo custo
+    - **ML-based** - Detecção rápida (~1.5s) mas pode ocasionalmente desligar em pessoas ao vivo
+  </Step>
+
+  <Step title="Fazer Chamada de Teste">
+    Selecione seu From Number
+
+    Digite To Number (seu número de telefone para teste)
+
+    Clique em **Start Phone Call**
+
+    Se correio de voz for detectado, agente desligará
+  </Step>
+</Steps>
+
+### Configurações de Campanha
+
+Configure AMD para campanhas de saída:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/campaigns/create-campaign-light.png" alt="Diálogo Create Campaign mostrando menu suspenso Answering Machine Detection (AMD) com Text-based selecionado, campo Campaign Name com descrição, menu suspenso Agent para selecionar agente para chamadas de campanha, menu suspenso Phone Number para selecionar número de telefone de saída, seção Business Hours mostrando disponibilidade 24/7 com status Open, botões Cancel e Create Campaign" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/campaigns/create-campaign-dark.png" alt="Diálogo Create Campaign mostrando menu suspenso Answering Machine Detection (AMD) com Text-based selecionado, campo Campaign Name com descrição, menu suspenso Agent para selecionar agente para chamadas de campanha, menu suspenso Phone Number para selecionar número de telefone de saída, seção Business Hours mostrando disponibilidade 24/7 com status Open, botões Cancel e Create Campaign" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Criação de Campanha">
+    Vá para seção **Campaigns**
+
+    Clique em **Create Campaign**
+  </Step>
+
+  <Step title="Selecionar Estratégia AMD">
+    Encontre menu suspenso **Answering Machine Detection (AMD)**
+
+    *Escolha estratégia de detecção de correio de voz para esta campanha*
+
+    Selecione uma:
+    - **Text-based** - Evita desligar em pessoas ao vivo a todo custo (mais lento, 5-15s)
+    - **ML-based** - Detecção rápida (~1.5s) mas pode ocasionalmente desligar em pessoas ao vivo
+  </Step>
+
+  <Step title="Completar Configuração de Campanha">
+    Preencha outros campos obrigatórios:
+    - Campaign Name
+    - Agent
+    - Phone Number
+
+    Clique em **Create Campaign**
+  </Step>
+</Steps>
+
+**Alterando configurações AMD para campanhas existentes:**
+
+1. Navegue para aba **Settings** da campanha
+2. Localize menu suspenso **Answering Machine Detection (AMD)**
+3. Selecione estratégia diferente (Text-based ou ML-based)
+4. Salve alterações
+
+<Warning>
+Alterar configurações AMD no meio da campanha pode afetar consistência de análises. Considere criar nova campanha se precisar testar A/B configurações AMD.
+</Warning>
+
+---
+
+## Comportamento AMD
+
+Quando AMD detecta correio de voz, o agente automaticamente desliga e registra o resultado.
+
+A chamada é marcada como **MACHINE** nas análises de campanha, permitindo agendar novas tentativas em horários diferentes para aumentar chances de alcançar pessoa ao vivo.
+
+---
+
+## Testando Configuração AMD
+
+### Plano de Teste AMD
+
+<Steps>
+  <Step title="Testar AMD Baseado em ML">
+    **Configuração:**
+    1. Configurar agente com AMD Baseado em ML ativado
+    2. Preparar número de telefone de teste com correio de voz
+
+    **Teste:**
+    1. Iniciar chamada de teste para número de correio de voz
+    2. Deixar chamada ir para correio de voz
+    3. Monitorar comportamento do agente
+
+    **Validação:**
+    - Agente desliga em ~1.5 segundos
+    - Chamada marcada como MACHINE nos logs
+    - Nenhuma tentativa de conversa com saudação de correio de voz
+  </Step>
+
+  <Step title="Testar AMD Baseado em Texto">
+    **Configuração:**
+    1. Configurar agente com apenas AMD Baseado em Texto
+    2. Usar mesmo número de teste de correio de voz
+
+    **Teste:**
+    1. Iniciar chamada de teste
+    2. Deixar chamada ir para correio de voz com saudação padrão
+
+    **Validação:**
+    - Agente aguarda saudação completa (5-15+ segundos)
+    - Agente desliga após detectar palavras-chave
+    - Chamada marcada como MACHINE
+  </Step>
+
+  <Step title="Testar Detecção de Pessoa ao Vivo">
+    **Configuração:**
+    1. Testar com ambos métodos AMD
+    2. Atender chamada pessoalmente
+
+    **Teste:**
+    1. Iniciar chamada de teste
+    2. Atender e dizer "Alô?"
+    3. Verificar que agente continua conversa normalmente
+
+    **Validação:**
+    - Agente NÃO desliga
+    - Conversa normal prossegue
+    - Chamada NÃO marcada como MACHINE
+  </Step>
+
+  <Step title="Testar Casos Extremos">
+    **Cenários para testar:**
+
+    **Resposta silenciosa:**
+    - Atender mas não falar
+    - Verificar que AMD não classifica incorretamente
+
+    **Saudação rápida:**
+    - Atender com "Oi" muito breve
+    - Verificar que conversa continua
+
+    **Correio de voz sem palavras-chave:**
+    - Testar com saudação não padrão
+    - Monitorar desempenho ML vs baseado em texto
+
+    **Correio de voz apenas com bip:**
+    - Sistema de correio de voz sem saudação
+    - Verificar que baseado em ML detecta, baseado em texto pode perder
+  </Step>
+</Steps>
+
+---
+
+## Solução de Problemas
+
+<AccordionGroup>
+  <Accordion title="Método AMD Errado Selecionado" icon="circle-question">
+    **Sintomas:** Desempenho não correspondendo às expectativas
+
+    **Verificar:**
+    - Revisar configuração AMD da campanha
+    - Comparar velocidade de detecção esperada vs real
+    - Verificar taxas de falso positivo/negativo nos logs
+
+    **Solução:**
+    - Alternar entre Text-based e ML-based
+    - Testar ambos métodos com seus padrões de chamada
+    - Escolher baseado em sua prioridade (velocidade vs conservador)
+  </Accordion>
+
+  <Accordion title="Alta Taxa de Falso Positivo" icon="user-xmark">
+    **Sintomas:** Desligando em pessoas ao vivo frequentemente
+
+    **Análise:**
+    - Revisar gravações de chamadas de falsos positivos
+    - Verificar se AMD baseado em ML está sendo muito agressivo
+    - Identificar padrões comuns (ruído de fundo, saudações específicas)
+
+    **Solução:**
+    - Mudar para AMD Baseado em Texto (mais conservador)
+    - Melhorar qualidade de chamada/reduzir ruído de fundo
+    - Testar de números de telefone diferentes
+    - Contatar suporte se persistente
+  </Accordion>
+
+  <Accordion title="Alta Taxa de Falso Negativo" icon="voicemail">
+    **Sintomas:** Agente frequentemente fala com correio de voz
+
+    **Análise:**
+    - Verificar se correios de voz têm saudações não padrão
+    - Revisar se sistemas de correio de voz apenas com bip
+    - Verificar se idioma do transcritor corresponde ao idioma do correio de voz
+
+    **Solução:**
+    - Mudar para AMD Baseado em ML (melhor para saudações não padrão)
+    - ML detecta sistemas apenas com bip
+    - Garantir que agente fala mesmo idioma que público-alvo
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Próximos Passos
+
+<CardGroup cols={2}>
+  <Card title="Gerenciamento de Campanhas" icon="megaphone" href="/pt/launch/campaign-outbound-launch">
+    Crie e gerencie campanhas de chamadas de saída
+  </Card>
+  <Card title="Análises e Relatórios" icon="chart-line" href="/pt/optimize/overview">
+    Rastreie desempenho AMD e otimize campanhas
+  </Card>
+  <Card title="Instruções do Agente" icon="pen" href="/pt/build/conversation/instructions">
+    Escreva prompts eficazes para tratamento de chamadas
+  </Card>
+  <Card title="Horário Comercial" icon="clock" href="/pt/launch/business-hours">
+    Configure horários de chamada ideais baseados em dados AMD
+  </Card>
+</CardGroup>

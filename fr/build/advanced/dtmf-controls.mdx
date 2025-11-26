@@ -1,0 +1,990 @@
+---
+title: "Contrôles DTMF"
+description: "Configurez l'envoi et la capture des tonalités DTMF (Dual-Tone Multi-Frequency) pour les menus téléphoniques interactifs"
+icon: "hashtag"
+"keywords": "DTMF, tonalités clavier, navigation IVR, clavier téléphonique, détection tonalité, réponse vocale interactive, capture DTMF"
+"og:description": "Configurez l'envoi et la capture des tonalités DTMF pour la navigation IVR et l'automatisation des menus téléphoniques interactifs."
+---
+
+## Aperçu
+
+Les contrôles DTMF (Dual-Tone Multi-Frequency) permettent à vos agents IA d'envoyer et de capturer des tonalités de clavier téléphonique pendant les conversations. Cela permet aux agents de naviguer dans les systèmes IVR, d'interagir avec les systèmes téléphoniques existants et de collecter des saisies structurées des appelants via les touches du clavier - transformant votre agent d'un système vocal uniquement en un système d'automatisation téléphonique complet.
+
+Les capacités DTMF sont essentielles pour intégrer les agents IA avec l'infrastructure téléphonique commerciale existante, permettant des transferts transparents à travers des menus IVR complexes et la collecte de saisies numériques précises comme les numéros de compte, codes PIN ou sélections de menu.
+
+<Note>
+**Appels téléphoniques uniquement :** Le DTMF s'applique aux appels téléphoniques via les connexions SIP/PSTN. Les conversations Web sans connexion téléphonique ne prennent pas en charge l'interaction DTMF.
+
+La configuration DTMF est disponible dans l'onglet Capacités sous Contrôles DTMF. Les paramètres incluent l'activation/désactivation globale, les paramètres d'envoi de tonalités et la configuration du mode de capture.
+</Note>
+
+---
+
+## Qu'est-ce que le DTMF ?
+
+### Comprendre la technologie DTMF
+
+Le DTMF est le signal généré lorsque vous appuyez sur des touches d'un clavier téléphonique. Chaque touche produit deux tonalités simultanées à différentes fréquences - une haute et une basse - créant un son unique que les systèmes peuvent décoder pour identifier quelle touche a été pressée.
+
+**Touches disponibles :**
+- **Chiffres :** 0-9 (saisie numérique)
+- **Étoile :** * (souvent utilisé comme "retour" ou "annuler")
+- **Dièse/Hash :** # (souvent utilisé comme "confirmer" ou "entrée")
+
+**Utilisations courantes :**
+- Naviguer dans les menus IVR ("Appuyez sur 1 pour les ventes, 2 pour le support")
+- Entrer des numéros de compte ou des codes PIN
+- Confirmer ou annuler des actions
+
+---
+
+## Capacités DTMF
+
+### Deux fonctions principales
+
+<CardGroup cols={2}>
+  <Card title="Envoi de tonalités" icon="phone-arrow-up">
+    L'agent envoie des tonalités DTMF aux systèmes externes (navigation IVR)
+  </Card>
+  <Card title="Capture de tonalités" icon="phone-arrow-down">
+    L'agent reçoit et interprète les tonalités DTMF des appelants
+  </Card>
+</CardGroup>
+
+### Cas d'usage de l'envoi de tonalités
+
+<AccordionGroup>
+  <Accordion title="Navigation IVR" icon="sitemap">
+    L'agent navigue automatiquement dans les systèmes de menu téléphonique.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant IVR
+        Agent->>IVR: Appelle la ligne de support externe
+        IVR->>Agent: "Appuyez sur 1 pour la facturation, 2 pour le support"
+        Agent->>IVR: Envoie la tonalité "2"
+        IVR->>Agent: Achemine vers le support technique
+        Note over Agent: Continue au nom du client
+    ```
+  </Accordion>
+
+  <Accordion title="Authentification" icon="key">
+    L'agent entre les identifiants via les systèmes IVR.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant IVR Bancaire
+        Agent->>IVR Bancaire: Appelle pour vérifier le solde
+        IVR Bancaire->>Agent: "Entrez le numéro de compte"
+        Agent->>IVR Bancaire: Envoie les tonalités "5551234567"
+        IVR Bancaire->>Agent: "Entrez le code PIN"
+        Agent->>IVR Bancaire: Envoie les tonalités "9876"
+        IVR Bancaire->>Agent: Accorde l'accès au compte
+    ```
+  </Accordion>
+
+  <Accordion title="Intégration système" icon="diagram-project">
+    L'agent transfère les appels à travers des menus IVR à plusieurs niveaux.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant IVR
+        Agent->>IVR: Initie le transfert vers le numéro principal
+        IVR->>Agent: "Appuyez sur 3 pour le service client"
+        Agent->>IVR: Envoie la tonalité "3"
+        IVR->>Agent: "Appuyez sur 2 pour les clients existants"
+        Agent->>IVR: Envoie la tonalité "2"
+        Note over Agent,IVR: L'appel est acheminé vers le bon département
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Cas d'usage de la capture de tonalités
+
+<AccordionGroup>
+  <Accordion title="Sélection de menu" icon="list">
+    L'agent présente les options de menu et capture le choix du client.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant Client
+        Agent->>Client: "Appuyez sur 1 pour la facturation, 2 pour le support"
+        Client->>Agent: Appuie sur "1"
+        Note over Agent: Détecte la tonalité et achemine vers le flux facturation
+    ```
+  </Accordion>
+
+  <Accordion title="Collecte d'informations" icon="input-numeric">
+    L'agent collecte des données numériques structurées comme les numéros de compte.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant Client
+        Agent->>Client: "Entrez votre numéro de compte à 6 chiffres,<br/>suivi du dièse"
+        Client->>Agent: Appuie sur "123456#"
+        Note over Agent: Capture "123456" pour la recherche de compte
+    ```
+  </Accordion>
+
+  <Accordion title="Saisie clavier" icon="grid">
+    L'agent collecte des données sensibles via le clavier au lieu de la voix.
+
+    ```mermaid
+    sequenceDiagram
+        participant Agent
+        participant Client
+        Agent->>Client: "Entrez les 4 derniers chiffres du numéro de sécurité sociale<br/>en utilisant votre clavier"
+        Client->>Agent: Entre les chiffres via le clavier
+        Note over Agent: Capture les chiffres à partir des tonalités
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Configuration des contrôles DTMF
+
+### Accès aux paramètres DTMF
+
+<Steps>
+  <Step title="Accéder à la configuration DTMF">
+    Ouvrez la configuration de votre agent
+
+    Allez dans l'onglet **Capacités**
+
+    Faites défiler jusqu'à la section **Contrôles DTMF**
+  </Step>
+  <Step title="Activer le DTMF">
+    Activez **Support DTMF**
+
+    Cela active les capacités d'envoi et de capture
+  </Step>
+  <Step title="Configurer les paramètres">
+    Configurez les paramètres d'envoi de tonalités et le mode de capture (détaillé ci-dessous)
+  </Step>
+  <Step title="Enregistrer la configuration">
+    Enregistrez les modifications
+
+    La barre d'enregistrement apparaît si des modifications non enregistrées existent
+  </Step>
+</Steps>
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/DTMF/dtmf-light.png" alt="Configuration des contrôles DTMF montrant le mode de capture, les paramètres de tonalité et les paramètres du collecteur" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/DTMF/dtmf-dark.png" alt="Configuration des contrôles DTMF montrant le mode de capture, les paramètres de tonalité et les paramètres du collecteur" />
+  </div>
+</Frame>
+
+### Bouton DTMF global
+
+**Activer le DTMF pendant les appels**
+
+Permettre à l'agent d'envoyer des tonalités de clavier et de collecter des chiffres des appelants.
+
+**Quand activer :**
+- L'agent doit naviguer dans les systèmes IVR
+- L'agent doit collecter des saisies numériques structurées
+- L'intégration nécessite une interaction DTMF
+
+---
+
+## Configuration de l'envoi de tonalités
+
+### Envoi de tonalités
+
+Configurez votre agent pour envoyer des tonalités DTMF aux systèmes externes.
+
+**Bouton :** Permettre à l'agent d'envoyer des tonalités de clavier
+
+**Paramètres :**
+- **Délai entre les tonalités (secondes) :** 3 secondes (par défaut)
+- **Durée de la tonalité (ms) :** 120 ms (par défaut)
+- **Écart entre les tonalités (ms) :** 70 ms (par défaut)
+
+### Paramètres d'envoi de tonalités
+
+<AccordionGroup>
+  <Accordion title="Délai entre les tonalités (secondes)" icon="clock">
+    **Ce qu'il contrôle :** Temps minimum entre les transmissions de tonalités séquentielles
+
+    **Par défaut :** 3 secondes
+
+    **Plage :** 0,5s et plus (pas : 0,5s)
+
+    **Objectif :** Assure que l'IVR récepteur a le temps de traiter chaque tonalité avant l'arrivée de la suivante
+
+    **Quand ajuster :**
+    - **Augmenter (4-5s) :** Systèmes IVR lents/anciens manquant des tonalités
+    - **Diminuer (1-2s) :** Systèmes modernes rapides, réduire le temps de navigation total
+
+    **Exemple :**
+    ```
+    Envoi de "1234" avec un délai de 3s :
+    Tonalité "1" → pause 3s → Tonalité "2" → pause 3s →
+    Tonalité "3" → pause 3s → Tonalité "4"
+
+    Temps total : ~12 secondes
+    ```
+  </Accordion>
+
+  <Accordion title="Durée de la tonalité (ms)" icon="stopwatch">
+    **Ce qu'il contrôle :** Durée de chaque transmission de tonalité individuelle
+
+    **Par défaut :** 120ms
+
+    **Plage :** 40ms - 1000ms (pas : 10ms)
+
+    **Objectif :** Détermine combien de temps l'agent "maintient" chaque touche
+
+    **Quand ajuster :**
+    - **Augmenter (150-200ms) :** Systèmes IVR ne détectant pas les tonalités de manière fiable
+    - **Diminuer (80-100ms) :** Accélérer les interactions, réduire la latence
+
+    **Note technique :** La plupart des IVR nécessitent au minimum 60-80ms pour détecter une tonalité. En dessous de ce seuil, les tonalités peuvent être manquées.
+  </Accordion>
+
+  <Accordion title="Écart entre les tonalités (ms)" icon="grip-lines">
+    **Ce qu'il contrôle :** Écart silencieux entre la fin d'une tonalité et le début de la suivante
+
+    **Par défaut :** 70ms
+
+    **Plage :** 0ms - 1000ms (pas : 10ms)
+
+    **Objectif :** Fournit une séparation claire entre les tonalités consécutives pour éviter le mélange
+
+    **Quand ajuster :**
+    - **Augmenter (100-150ms) :** IVR traitant les tonalités rapides comme une seule saisie
+    - **Diminuer (40-50ms) :** Accélérer les séquences de plusieurs chiffres
+
+    **Relation avec le délai :**
+    ```
+    Temps total entre les tonalités = Durée de tonalité + Écart + Délai
+
+    Exemple avec les valeurs par défaut :
+    120ms (tonalité) + 70ms (écart) + 3000ms (délai) = 3,19s entre les débuts
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Paramètres recommandés par cas d'usage
+
+<AccordionGroup>
+  <Accordion title="IVR modernes rapides" icon="rocket">
+    **Paramètres :**
+    - **Délai :** 1-2 secondes
+    - **Durée de tonalité :** 100ms
+    - **Écart entre les tonalités :** 50ms
+
+    **Utiliser pour :** IVR basés sur le cloud, systèmes téléphoniques modernes
+
+    **Temps total par tonalité :** ~1,15s
+
+    Idéal pour les systèmes basés sur le cloud rapides qui peuvent traiter rapidement les saisies DTMF.
+  </Accordion>
+
+  <Accordion title="IVR standards (par défaut)" icon="phone">
+    **Paramètres :**
+    - **Délai :** 3 secondes (par défaut)
+    - **Durée de tonalité :** 120ms (par défaut)
+    - **Écart entre les tonalités :** 70ms (par défaut)
+
+    **Utiliser pour :** La plupart des systèmes téléphoniques commerciaux
+
+    **Temps total par tonalité :** ~3,19s
+
+    C'est la configuration par défaut recommandée qui fonctionne de manière fiable avec la majorité des systèmes IVR.
+  </Accordion>
+
+  <Accordion title="IVR lents/problématiques" icon="hourglass">
+    **Paramètres :**
+    - **Délai :** 4-5 secondes
+    - **Durée de tonalité :** 150ms
+    - **Écart entre les tonalités :** 100ms
+
+    **Utiliser pour :** Systèmes perdant des tonalités, infrastructure ancienne
+
+    **Temps total par tonalité :** ~4,25s
+
+    Utilisez ces paramètres plus lents lorsque vous observez des tonalités manquées ou des échecs de navigation avec des systèmes anciens.
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+Commencez avec les paramètres par défaut et n'ajustez que si vous observez des tonalités manquées ou des échecs de navigation IVR. Testez minutieusement après tout changement.
+</Tip>
+
+---
+
+## Configuration de la capture de tonalités
+
+### Modes de capture
+
+Choisissez comment votre agent reçoit et interprète les saisies DTMF des appelants.
+
+<CardGroup cols={2}>
+  <Card title="Menu (touche unique)" icon="list" href="#menu-mode">
+    Pression de touche unique → réponse immédiate. Pour les sélections de menu de type IVR.
+  </Card>
+  <Card title="Collecteur (multi-chiffres)" icon="input-numeric" href="#collector-mode">
+    Met en mémoire tampon plusieurs chiffres jusqu'à la touche de terminaison. Pour les numéros de compte, codes PIN, etc.
+  </Card>
+</CardGroup>
+
+### Mode Menu
+
+**Pour les sélections de menu de type IVR**
+
+Le mode Menu capture une pression de touche unique et l'envoie immédiatement à l'agent.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/DTMF/menu-dtmf-light.png" alt="Configuration des contrôles DTMF montrant les options du mode de capture avec les onglets Menu (touche unique) et Collecteur (multi-chiffres), mode Menu sélectionné, bouton Activer le DTMF pendant les appels, section Envoi de tonalités avec le bouton 'Permettre à l'agent d'envoyer des tonalités de clavier' et les paramètres pour le délai entre les tonalités (3 secondes), la durée de la tonalité (120 ms) et l'écart entre les tonalités (70 ms), section Capture clavier avec le bouton 'Collecter la saisie clavier de l'appelant', note expliquant que le mode Menu finalise sur le premier chiffre, et les boutons Annuler/Enregistrer les modifications" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/DTMF/menu-dtmf-dark.png" alt="Configuration des contrôles DTMF montrant les options du mode de capture avec les onglets Menu (touche unique) et Collecteur (multi-chiffres), mode Menu sélectionné, bouton Activer le DTMF pendant les appels, section Envoi de tonalités avec le bouton 'Permettre à l'agent d'envoyer des tonalités de clavier' et les paramètres pour le délai entre les tonalités (3 secondes), la durée de la tonalité (120 ms) et l'écart entre les tonalités (70 ms), section Capture clavier avec le bouton 'Collecter la saisie clavier de l'appelant', note expliquant que le mode Menu finalise sur le premier chiffre, et les boutons Annuler/Enregistrer les modifications" />
+  </div>
+</Frame>
+
+**Comment ça fonctionne :**
+- L'agent propose des options de menu
+- Le client appuie sur une touche unique (0-9, *, #)
+- L'agent reçoit le chiffre immédiatement
+- L'agent répond en fonction de la touche pressée
+
+**Exemple :**
+```text wrap
+Agent : "Appuyez sur 1 pour la facturation, 2 pour le support technique,
+       ou 3 pour parler à un représentant."
+
+Client : [Appuie sur 2]
+
+Agent : "Parfait, je vais vous aider avec le support technique."
+```
+
+**Configuration :**
+
+*Le mode Menu écoute une pression de touche unique et l'envoie immédiatement à l'agent.*
+
+Aucun paramètre supplémentaire - Le mode Menu automatiquement :
+- Capture la pression d'une touche unique
+- Traite immédiatement
+- Aucune touche de terminaison requise
+- Touche d'effacement non disponible
+
+**Cas d'usage :** Sélection de département, confirmations oui/non, échelles d'évaluation
+
+---
+
+### Mode Collecteur
+
+**Pour collecter des séquences comme les numéros de compte, codes PIN, numéros de téléphone**
+
+Le mode Collecteur met en mémoire tampon plusieurs chiffres jusqu'à ce que l'utilisateur appuie sur la touche de terminaison ou que le délai expire.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/DTMF/collector-dtmf-light.png" alt="Configuration des contrôles DTMF montrant le mode de capture avec l'onglet Collecteur (multi-chiffres) sélectionné, bouton Activer DTMF, section Envoi de tonalités avec les paramètres délai/durée/écart, section Capture clavier avec le bouton Collecter la saisie clavier de l'appelant, configuration des chiffres minimum/maximum, paramètres de délai, menus déroulants pour la touche de terminaison et la touche d'effacement, et bouton enregistrer les modifications" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/DTMF/collector-dtmf-dark.png" alt="Configuration des contrôles DTMF montrant le mode de capture avec l'onglet Collecteur (multi-chiffres) sélectionné, bouton Activer DTMF, section Envoi de tonalités avec les paramètres délai/durée/écart, section Capture clavier avec le bouton Collecter la saisie clavier de l'appelant, configuration des chiffres minimum/maximum, paramètres de délai, menus déroulants pour la touche de terminaison et la touche d'effacement, et bouton enregistrer les modifications" />
+  </div>
+</Frame>
+
+**Comment ça fonctionne :**
+- L'agent demande une saisie multi-chiffres
+- Le client entre plusieurs chiffres
+- Appuie sur la touche de terminaison (généralement #) lorsque terminé
+- L'agent reçoit la chaîne de chiffres complète
+
+**Exemple :**
+```text wrap
+Agent : "Veuillez entrer votre numéro de compte à 10 chiffres, suivi de la touche dièse."
+
+Client : [Appuie sur 5-5-5-1-2-3-4-5-6-7-#]
+
+Agent : "Merci. J'ai trouvé votre compte se terminant par 4567."
+```
+
+**Configuration :**
+- **Chiffres minimum :** 1 (par défaut)
+- **Chiffres maximum :** 25 (par défaut)
+- **Délai (ms) :** 6000ms (6 secondes, par défaut)
+- **Touche de terminaison :** # (Dièse)
+- **Touche d'effacement :** * (Étoile)
+
+**Cas d'usage :** Numéros de compte, codes PIN, numéros de téléphone, identifiants de commande
+
+### Paramètres du mode Collecteur
+
+<AccordionGroup>
+  <Accordion title="Chiffres minimum" icon="arrow-down-1-9">
+    **Ce qu'il contrôle :** Nombre minimum de chiffres requis avant que la saisie soit considérée comme valide
+
+    **Par défaut :** 1
+
+    **Plage :** 1 au maximum de chiffres (pas : 1)
+
+    **Objectif :** Empêche la soumission prématurée, valide la longueur de saisie attendue
+
+    **Exemples :**
+    - **Numéro de compte (10 chiffres) :** Définir à 10
+    - **Code PIN (4 chiffres) :** Définir à 4
+    - **Saisie flexible :** Définir à 1 (toute longueur acceptée)
+
+    **Comportement :**
+    - Si le client appuie sur # avant d'atteindre le minimum → Erreur, invite à ressaisir
+    - Si le client atteint le minimum → Peut appuyer sur # pour soumettre tôt
+  </Accordion>
+
+  <Accordion title="Chiffres maximum" icon="arrow-up-9-1">
+    **Ce qu'il contrôle :** Maximum de chiffres acceptés avant auto-soumission
+
+    **Par défaut :** 25
+
+    **Plage :** Chiffres minimum à 64 (pas : 1)
+
+    **Objectif :** Empêche les saisies excessivement longues, peut auto-soumettre lorsque le max est atteint
+
+    **Exemples :**
+    - **Numéro de téléphone :** Définir à 10 (format US)
+    - **Numéro de compte :** Définir à la longueur attendue
+    - **Longueur variable :** Définir plus haut que le maximum attendu
+
+    **Comportement :**
+    - Lorsque le nombre maximum de chiffres est entré → Soumet automatiquement sans nécessiter #
+    - Les tonalités après le max sont ignorées
+  </Accordion>
+
+  <Accordion title="Délai (ms)" icon="clock">
+    **Ce qu'il contrôle :** Temps d'attente pour le chiffre suivant avant expiration
+
+    **Par défaut :** 6000ms (6 secondes)
+
+    **Plage :** 500ms - 30000ms (pas : 500ms)
+
+    **Objectif :** Gère les saisies abandonnées, invite le client à continuer
+
+    **Comportement :**
+    - Le compteur démarre après chaque pression de chiffre
+    - Se réinitialise avec chaque nouveau chiffre
+    - Si le délai est atteint → Traiter comme complet ou inviter à continuer
+
+    **Exemples :**
+    - **Saisie rapide (PIN) :** 3000-4000ms (3-4 secondes)
+    - **Saisie longue (numéro de compte) :** 6000-8000ms (6-8 secondes)
+    - **Système patient :** 10000ms+ (10+ secondes)
+
+    **Gestion des instructions :**
+    ```
+    Si la saisie DTMF expire avant la touche de terminaison :
+    - Inviter le client : "Je n'ai pas reçu le numéro complet.
+      Veuillez réessayer et appuyer sur dièse lorsque vous avez terminé."
+    - Réinitialiser le collecteur et permettre une nouvelle tentative
+    ```
+  </Accordion>
+
+  <Accordion title="Touche de terminaison" icon="hashtag">
+    **Ce qu'il contrôle :** Quelle touche signale "saisie terminée"
+
+    **Options :** # (Dièse), * (Étoile), 0-9
+
+    **Par défaut :** # (Dièse)
+
+    **Objectif :** Permet une saisie de longueur variable avec un signal de complétion explicite
+
+    **Exemple :**
+    ```
+    Agent : "Entrez votre numéro de compte suivi de dièse."
+    Client entre : 123456#
+    → L'agent reçoit "123456"
+
+    Agent : "Entrez votre numéro de téléphone suivi de dièse."
+    Client entre : 5551234567#
+    → L'agent reçoit "5551234567"
+    ```
+  </Accordion>
+
+  <Accordion title="Touche d'effacement" icon="delete-left">
+    **Ce qu'il contrôle :** Quelle touche supprime le dernier chiffre entré
+
+    **Options :** * (Étoile), # (Dièse)
+
+    **Par défaut :** * (Étoile)
+
+    **Objectif :** Permet au client de corriger les erreurs sans recommencer
+
+    **Exemple :**
+    ```
+    Client entre : 1-2-3-4-5-6
+    Réalise une erreur, appuie sur : *
+    Système supprime le dernier chiffre : 1-2-3-4-5
+    Client continue : 7-8-#
+    Saisie finale : "12345678"
+    ```
+
+    **Note :** Si le client appuie sur la touche d'effacement sur un tampon vide, généralement ignoré (aucune action).
+  </Accordion>
+</AccordionGroup>
+
+### Paramètres collecteur recommandés par cas d'usage
+
+<AccordionGroup>
+  <Accordion title="Collecte de numéro de compte (10 chiffres)" icon="credit-card">
+    **Paramètres :**
+    - **Chiffres minimum :** 10
+    - **Chiffres maximum :** 10
+    - **Touche de terminaison :** # (optionnel, auto-soumet à 10)
+    - **Délai :** 6000ms (6 secondes)
+    - **Touche d'effacement :** *
+
+    **Résultat :** Auto-soumet à exactement 10 chiffres, ou le client peut appuyer sur # tôt
+  </Accordion>
+
+  <Accordion title="Collecte de code PIN (4-6 chiffres)" icon="lock">
+    **Paramètres :**
+    - **Chiffres minimum :** 4
+    - **Chiffres maximum :** 6
+    - **Touche de terminaison :** #
+    - **Délai :** 4000ms (4 secondes)
+    - **Touche d'effacement :** *
+
+    **Résultat :** Accepte les codes PIN de 4 à 6 chiffres, nécessite # pour 4-5 chiffres, auto-soumet à 6
+  </Accordion>
+
+  <Accordion title="Numéro de téléphone (format variable)" icon="phone">
+    **Paramètres :**
+    - **Chiffres minimum :** 7
+    - **Chiffres maximum :** 15
+    - **Touche de terminaison :** #
+    - **Délai :** 6000ms (6 secondes)
+    - **Touche d'effacement :** *
+
+    **Résultat :** Gère les formats US (10 chiffres) et internationaux (variable)
+  </Accordion>
+
+  <Accordion title="Saisie numérique flexible (par défaut)" icon="input-text">
+    **Paramètres :**
+    - **Chiffres minimum :** 1 (par défaut)
+    - **Chiffres maximum :** 25 (par défaut)
+    - **Touche de terminaison :** #
+    - **Délai :** 6000ms (6 secondes, par défaut)
+    - **Touche d'effacement :** *
+
+    **Résultat :** Accepte n'importe quelle longueur, le client contrôle la complétion avec #
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Utilisation du DTMF dans les instructions
+
+### Inviter à la saisie DTMF
+
+**Exemple de sélection de menu :**
+```text wrap
+Lors de la présentation d'options, instruisez clairement le client d'utiliser son clavier :
+
+Agent : "Je peux vous aider avec trois choses :
+       Pour le solde du compte, appuyez sur 1.
+       Pour les transactions récentes, appuyez sur 2.
+       Pour le service client, appuyez sur 3.
+
+       Veuillez appuyer sur un numéro maintenant."
+
+Attendez la saisie DTMF. Lorsque reçue, confirmez la sélection :
+
+Si le client appuie sur 1 : "Parfait, je vais consulter votre solde de compte."
+Si le client appuie sur 2 : "D'accord, je vais vous montrer les transactions récentes."
+Si le client appuie sur 3 : "Je vais vous mettre en relation avec le service client."
+```
+
+**Exemple de collecte multi-chiffres :**
+```text wrap
+Lors de la collecte de numéros de compte ou de codes PIN :
+
+Agent : "Pour des raisons de sécurité, je vais devoir vérifier votre compte.
+       Veuillez entrer votre numéro de compte à 8 chiffres en utilisant votre clavier,
+       suivi de la touche dièse."
+
+Attendez la saisie DTMF (mode collecteur avec min=8, max=8, term=#).
+
+Lorsque les chiffres sont reçus, confirmez la réception sans répéter le numéro complet :
+"Merci, j'ai localisé votre compte se terminant par [4 derniers chiffres]."
+```
+
+### Gestion des réponses DTMF
+
+**Traitement automatique :**
+
+Lorsque la capture DTMF est activée, l'agent reçoit automatiquement les chiffres collectés et peut y répondre. Aucune configuration supplémentaire nécessaire.
+
+**Avancé : Utilisation de l'outil wait_for_dtmf_input**
+
+Pour un contrôle explicite dans vos instructions d'agent, vous pouvez appeler l'outil `wait_for_dtmf_input`. Il retourne :
+
+```json
+{
+  "value": "1234",
+  "digits": ["1","2","3","4"],
+  "length": 4,
+  "met_minimum": true,
+  "reason": "termination"
+}
+```
+
+Utilisez ceci lorsque vous devez valider la saisie ou gérer des schémas de chiffres spécifiques dans vos instructions.
+
+**Validation de saisie multi-chiffres :**
+```text wrap
+Lorsque le client entre un numéro de compte via DTMF :
+
+Validez la saisie :
+- Vérifiez que la longueur correspond à l'attendu (ex : 10 chiffres pour un numéro de compte)
+- Vérifiez le format (numérique uniquement, schéma attendu)
+- Utilisez pour l'action de recherche de compte
+
+Si la validation échoue :
+"J'ai reçu {result.length} chiffres, mais les numéros de compte font
+10 chiffres. Essayons à nouveau. Veuillez entrer votre numéro de compte à 10 chiffres
+suivi de dièse."
+
+Si la validation réussit :
+Utilisez l'action 'Rechercher compte client' avec numéro_compte = result.value
+```
+
+### Retour à la voix
+
+**Offrir une alternative vocale :**
+```text wrap
+Offrez toujours une option de retour vocal pour les clients qui ne peuvent pas ou
+ne veulent pas utiliser le DTMF :
+
+Agent : "Vous pouvez entrer votre numéro de compte en utilisant votre clavier, ou
+       si vous préférez, vous pouvez le dire à voix haute. Que préférez-vous ?"
+
+Si le client dit "clavier" ou appuie sur une touche :
+→ Entrez en mode de collecte DTMF
+
+Si le client dit "le dire" ou prononce le numéro :
+→ Utilisez la reconnaissance vocale pour capturer le numéro de compte
+```
+
+**Gestion des échecs DTMF :**
+```text wrap
+Si le client ne répond pas à l'invite DTMF après 10 secondes :
+
+"Je n'ai pas reçu de saisie clavier. Si vous avez des problèmes avec
+votre clavier, vous pouvez également me donner votre numéro de compte verbalement.
+Voulez-vous réessayer le clavier ou dire le numéro ?"
+```
+
+---
+
+## Test de la configuration DTMF
+
+### Plan de test
+
+<Steps>
+  <Step title="Tester l'envoi de tonalités (Navigation IVR)">
+    **Configuration :**
+    1. Configurez l'agent avec une action de transfert vers un numéro de téléphone avec IVR
+    2. Ajoutez des instructions pour naviguer dans l'IVR en utilisant les tonalités DTMF
+
+    **Test :**
+    1. Démarrez l'appel test
+    2. Déclenchez l'action de transfert
+    3. Surveillez l'agent naviguant dans l'IVR (vérifiez les journaux pour les tonalités envoyées)
+    4. Vérifiez que l'agent atteint la destination correcte
+
+    **Validation :**
+    - Tonalités envoyées aux intervalles corrects
+    - L'IVR reconnaît toutes les tonalités
+    - La navigation se termine avec succès
+    - Aucune tonalité perdue ou mal interprétée
+  </Step>
+
+  <Step title="Tester le mode Menu (Capture de touche unique)">
+    **Configuration :**
+    1. Configurez le DTMF en mode Menu
+    2. Ajoutez des options de menu aux instructions
+
+    **Test :**
+    1. Démarrez l'appel test
+    2. Écoutez les options de menu
+    3. Appuyez sur une touche unique (1, 2, 3, etc.)
+    4. Vérifiez que l'agent reconnaît et répond de manière appropriée
+
+    **Matrice de test :**
+    | Touche | Action attendue |
+    |-----|----------------|
+    | 1   | Acheminer vers l'option 1 |
+    | 2   | Acheminer vers l'option 2 |
+    | 9   | Acheminer vers l'option 9 |
+    | *   | Gérer la touche étoile |
+    | #   | Gérer la touche dièse |
+    | Invalide | Gestion d'erreur |
+  </Step>
+
+  <Step title="Tester le mode Collecteur (Multi-chiffres)">
+    **Configuration :**
+    1. Configurez le DTMF en mode Collecteur
+    2. Définissez les chiffres min/max appropriés, touche de terminaison
+
+    **Test :**
+    1. Démarrez l'appel test
+    2. Invitez l'agent à collecter des chiffres
+    3. Entrez diverses séquences de chiffres :
+       - Exactement le minimum de chiffres + #
+       - Entre min et max chiffres + #
+       - Exactement le maximum de chiffres (auto-soumission)
+       - Utilisez la touche d'effacement (*) pour corriger les erreurs
+       - Laissez la saisie expirer
+    4. Vérifiez que l'agent reçoit la bonne chaîne de chiffres
+
+    **Validation :**
+    - L'application du minimum de chiffres fonctionne
+    - L'auto-soumission du maximum de chiffres fonctionne
+    - La touche de terminaison finalise correctement la saisie
+    - La touche d'effacement supprime correctement le dernier chiffre
+    - La gestion du délai est appropriée
+  </Step>
+
+  <Step title="Tester les cas limites">
+    **Scénarios à tester :**
+
+    **Saisie vide :**
+    - Appuyer sur # immédiatement (sans chiffres)
+    - Devrait rejeter si min > 0
+
+    **Scénarios de délai :**
+    - Entrer des chiffres partiels, attendre le délai
+    - Vérifier la gestion appropriée
+
+    **Saisie rapide :**
+    - Entrer des chiffres très rapidement
+    - Vérifier que tous sont capturés correctement
+
+    **Cas limites de la touche d'effacement :**
+    - Appuyer sur * sur un tampon vide (devrait ignorer)
+    - Appuyer sur * plusieurs fois (supprime plusieurs chiffres)
+    - Entrer des chiffres, tout effacer, entrer une nouvelle séquence
+
+    **Touches invalides :**
+    - Appuyer sur des touches en mauvais mode (ex : # en mode Menu)
+    - Maintenir une touche trop longtemps
+    - Appuyer sur plusieurs touches simultanément
+  </Step>
+
+  <Step title="Tester l'intégration avec les instructions">
+    **Validation :**
+    1. L'agent invite correctement à la saisie DTMF
+    2. L'agent attend la saisie (ne continue pas à parler)
+    3. L'agent confirme la réception de la saisie
+    4. L'agent traite correctement la valeur capturée
+    5. L'agent gère les saisies invalides avec élégance
+    6. L'agent offre un retour vocal lorsque approprié
+  </Step>
+</Steps>
+
+### Problèmes de test courants
+
+<AccordionGroup>
+  <Accordion title="Tonalités non détectées" icon="phone-slash">
+    **Symptômes :** Le client appuie sur des touches mais l'agent ne répond pas
+
+    **Causes possibles :**
+    1. Support DTMF pas activé globalement
+    2. Durée de tonalité trop courte pour la détection
+    3. Problèmes de réseau/codec dégradant les tonalités
+    4. Instructions ne gérant pas la variable DTMF
+
+    **Solutions :**
+    - Vérifier que le bouton Support DTMF est SUR
+    - Augmenter la durée de tonalité à 150-200ms
+    - Tester depuis un autre téléphone/réseau
+    - Vérifier les journaux pour confirmer que l'outil `wait_for_dtmf_input` est enregistré et invoqué
+    - Vérifier que `session.userdata.last_dtmf_input` est rempli dans les journaux worker
+  </Accordion>
+
+  <Accordion title="Mauvais chiffres capturés" icon="sort-numeric-down">
+    **Symptômes :** L'agent reçoit des chiffres différents de ceux pressés par le client
+
+    **Causes possibles :**
+    1. Écart entre tonalités trop court (tonalités se mélangeant)
+    2. Bruit de fond créant de fausses tonalités
+    3. Client appuyant sur les touches trop rapidement
+
+    **Solutions :**
+    - Augmenter l'écart entre tonalités à 100-150ms
+    - Tester dans un environnement calme
+    - Augmenter le délai pour ralentir la saisie du client
+    - Ajouter validation et confirmation dans les instructions
+  </Accordion>
+
+  <Accordion title="Échec de la navigation IVR" icon="phone-xmark">
+    **Symptômes :** L'agent envoie des tonalités mais l'IVR ne répond pas correctement
+
+    **Causes possibles :**
+    1. Délai entre les tonalités trop court
+    2. Durée de tonalité inadéquate pour IVR ancien
+    3. Tonalités envoyées avant que l'IVR soit prêt à recevoir
+
+    **Solutions :**
+    - Augmenter le délai à 4-5 secondes
+    - Augmenter la durée de tonalité à 150-200ms
+    - Ajouter des retards dans les instructions avant d'envoyer les tonalités :
+      ```
+      Attendez 2 secondes après que l'IVR réponde avant d'envoyer la première tonalité
+      pour garantir que l'IVR est prêt à recevoir la saisie.
+      ```
+    - Vérifier les journaux SIP/LiveKit pour confirmer que les événements DTMF sont envoyés (RFC2833 ou SIP INFO)
+  </Accordion>
+
+  <Accordion title="Touche d'effacement ne fonctionne pas" icon="delete-left">
+    **Symptômes :** Appuyer sur \* ne supprime pas le dernier chiffre
+
+    **Causes possibles :**
+    1. Touche d'effacement pas configurée correctement
+    2. Touche d'effacement pressée en mode Menu (non applicable)
+    3. \* assigné comme touche de terminaison (conflit)
+
+    **Solutions :**
+    - Vérifier que la touche d'effacement est définie à \* en mode Collecteur
+    - S'assurer que le mode est Collecteur (la touche d'effacement ne fonctionne qu'en mode Collecteur)
+    - Ne pas utiliser \* à la fois comme touche d'effacement et de terminaison
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Bonnes pratiques
+
+<AccordionGroup>
+  <Accordion title="Toujours offrir un retour vocal" icon="microphone">
+    **Ne jamais forcer l'interaction DTMF uniquement**
+
+    ```
+    Bon :
+    "Vous pouvez entrer votre numéro de compte en utilisant votre clavier, ou si vous
+    préférez, vous pouvez le dire à voix haute. Que préférez-vous ?"
+
+    Mauvais :
+    "Entrez votre numéro de compte en utilisant votre clavier maintenant."
+    [Aucune alternative fournie]
+    ```
+
+    **Pourquoi :** Tous les clients ne peuvent pas utiliser le DTMF :
+    - Téléphones mobiles dans des zones à mauvais signal
+    - Applications VoIP sans clavier
+    - Besoins d'accessibilité
+    - Préférence pour l'interaction vocale
+  </Accordion>
+
+  <Accordion title="Confirmer la saisie reçue" icon="check-double">
+    **Toujours confirmer ce que vous avez reçu, surtout pour la saisie multi-chiffres**
+
+    ```
+    Bon :
+    Client entre : 5551234567#
+    Agent : "Merci. J'ai localisé votre compte se terminant par 4567."
+
+    Mauvais :
+    Client entre : 5551234567#
+    Agent : [Continue sans confirmation]
+    [Client incertain si le bon numéro a été reçu]
+    ```
+
+    **Considération de sécurité :** Pour les saisies sensibles (PIN, numéro de sécurité sociale), confirmer partiellement :
+    ```
+    "J'ai reçu votre code PIN à 4 chiffres se terminant par 78."
+    ```
+    Ne répétez pas le numéro sensible complet.
+  </Accordion>
+
+  <Accordion title="Instructions claires pour les invites DTMF" icon="message">
+    **Soyez explicite sur les attentes**
+
+    ```
+    Bon :
+    "Veuillez entrer votre numéro de téléphone à 10 chiffres en utilisant votre clavier,
+    suivi de la touche dièse."
+
+    Mauvais :
+    "Entrez votre numéro de téléphone."
+    [Client ne sait pas s'il faut utiliser le clavier ou la voix]
+    [Ne sait pas comment signaler la complétion]
+    ```
+
+    **Inclure dans l'invite :**
+    - Quoi entrer (numéro de compte, PIN, sélection)
+    - Combien de chiffres (si longueur fixe)
+    - Touche de terminaison (si applicable)
+    - Méthode alternative (voix)
+  </Accordion>
+
+  <Accordion title="Commencer avec un timing conservateur" icon="gauge">
+    **Utilisez les paramètres par défaut initialement, optimisez en fonction des données réelles**
+
+    **Stratégie par défaut :**
+    1. Commencer avec les valeurs par défaut recommandées
+    2. Déployer sur un petit groupe de test
+    3. Surveiller les erreurs DTMF dans les journaux
+    4. Ajuster le timing en fonction des échecs réels
+    5. Déployer les paramètres optimisés
+
+    **À ne pas faire :**
+    - Définir un timing très rapide sans tester
+    - Supposer que tous les IVR se comportent de la même manière
+    - Optimiser pour la vitesse au détriment de la fiabilité
+  </Accordion>
+
+  <Accordion title="Gérer les nouvelles tentatives avec élégance" icon="rotate">
+    **Permettre plusieurs tentatives avec des retours utiles**
+
+    ```
+    Exemple d'instructions :
+
+    Suivre les tentatives DTMF (par exemple avec une variable mémoire ou structure de données personnalisée) :
+    tentatives += 1
+
+    Si tentative 1 : "Essayons à nouveau. N'oubliez pas d'appuyer sur dièse lorsque vous avez terminé."
+    Si tentative 2 : "Vous avez des difficultés ? Vous pouvez également dire le numéro à voix haute."
+    Si tentative 3 : "Je vais vous transférer à quelqu'un qui peut vous aider directement."
+    ```
+
+    **À ne pas faire :**
+    - Abandonner après un seul échec
+    - Répéter exactement les mêmes instructions (pas utile)
+    - Rester bloqué dans une boucle de nouvelle tentative infinie
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Prochaines étapes
+
+<CardGroup cols={2}>
+  <Card title="Aperçu des actions" icon="bolt" href="/fr/build/actions/overview">
+    Combinez le DTMF avec des actions pour une automatisation puissante
+  </Card>
+  <Card title="Détails du transfert" icon="phone-arrow-right" href="/fr/build/actions/transfer-details">
+    Utilisez le DTMF pour naviguer dans les IVR de transfert
+  </Card>
+  <Card title="Instructions" icon="pen" href="/fr/build/conversation/instructions">
+    Rédigez des invites efficaces pour les interactions DTMF
+  </Card>
+  <Card title="Variables et contenu dynamique" icon="brackets-curly" href="/fr/build/conversation/variables-dynamic-content">
+    Utilisez les variables DTMF dans vos invites
+  </Card>
+  <Card title="Testez votre agent" icon="vial" href="/fr/test/web-simulator">
+    Testez la fonctionnalité DTMF avec des appels web et téléphoniques
+  </Card>
+</CardGroup>

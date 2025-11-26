@@ -1,0 +1,388 @@
+---
+title: "Context vs RAG Mode"
+description: "Choose between Context injection and RAG retrieval for your knowledge bases"
+icon: "brain"
+"keywords": "RAG, context vs RAG, knowledge retrieval, AI knowledge base, retrieval augmented generation, context injection, AI memory"
+"og:description": "Learn when to use context injection vs. RAG retrieval to optimize your AI agent's knowledge access and performance."
+---
+
+## Overview
+
+When you assign knowledge to your agent, you need to choose how the agent accesses that information. itellicoAI offers two access methods: **Context Mode** (prompt injection) and **RAG Mode** (Retrieval-Augmented Generation).
+
+Understanding the difference between these approaches will help you optimize your agent's performance and accuracy.
+
+---
+
+## The Two Access Methods
+
+<CardGroup cols={2}>
+  <Card title="Context Mode" icon="file-import">
+    **Prompt Injection**
+
+    All knowledge is injected directly into the agent's conversation context at the start of each interaction.
+
+    **Best for:** Small knowledge bases with critical information the agent needs for every conversation.
+  </Card>
+  <Card title="RAG Mode" icon="magnifying-glass">
+    **Retrieval-Augmented Generation**
+
+    Agent dynamically searches and retrieves relevant knowledge based on the conversation topic.
+
+    **Best for:** Large knowledge bases where only specific sections are needed per conversation.
+  </Card>
+</CardGroup>
+
+---
+
+## Context Mode (Prompt Injection)
+
+### How It Works
+
+In Context Mode, your knowledge base content is loaded directly into the agent's system prompt at the beginning of each conversation:
+
+```text wrap
+System Prompt:
+You are a helpful customer service agent.
+
+[Your agent instructions...]
+
+==== KNOWLEDGE BASE: Customer Support FAQ ====
+
+### Billing & Payments
+- Question: How do I update my payment method?
+  Answer: You can update your payment method by...
+
+- Question: When will I be billed?
+  Answer: Billing occurs on the same day each month...
+
+### Return Policy
+[Full return policy content]
+
+### Shipping Information
+[Full shipping information]
+
+==== END KNOWLEDGE BASE ====
+
+Now assist the customer with their question.
+```
+
+The agent sees ALL knowledge content from the start and can reference it throughout the conversation.
+
+### Formatted Output
+
+By default, knowledge is injected with structured formatting:
+
+```text wrap
+========================================
+# Knowledge Base Name
+Knowledge base description
+
+## Folder Name
+Folder description
+
+### Item Title
+----------------------------------------
+Item content here
+----------------------------------------
+========================================
+```
+
+This formatting helps the agent understand the structure and organization of the knowledge.
+
+### When to Use Context Mode
+
+<AccordionGroup>
+  <Accordion title="Small knowledge bases (< 1,000 words)" icon="file">
+    If your knowledge base is compact, Context Mode ensures the agent always has full context.
+
+    **Example use case:**
+    A support agent with a knowledge base containing:
+    - 10 common FAQs
+    - Return policy (500 words)
+    - Contact information
+    - Shipping options
+
+    Total: ~3,000 words - easily fits in context.
+  </Accordion>
+
+  <Accordion title="Critical information needed every time" icon="circle-exclamation">
+    Information the agent must reference on most or all calls.
+
+    **Example use case:**
+    A booking agent that needs:
+    - Company policies (always)
+    - Available services (always)
+    - Pricing structure (always)
+    - Booking procedures (always)
+  </Accordion>
+
+  <Accordion title="Highly structured information" icon="table">
+    When knowledge items reference each other or form a cohesive whole.
+
+    **Example use case:**
+    Product configuration agent with:
+    - Option dependencies ("If they choose X, offer Y")
+    - Compatibility matrix
+    - Package bundles
+    - Pricing that depends on combinations
+  </Accordion>
+
+</AccordionGroup>
+
+### Context Mode Advantages
+
+<CardGroup cols={2}>
+  <Card title="Always Available" icon="check">
+    Agent has immediate access to all knowledge without search delay
+  </Card>
+  <Card title="Better for Small Sets" icon="gauge-high">
+    Efficient when knowledge fits comfortably in context window
+  </Card>
+  <Card title="Deterministic" icon="equals">
+    Agent sees exactly the same knowledge every time
+  </Card>
+  <Card title="Works with Variables" icon="brackets-curly">
+    Knowledge can include Jinja variables that resolve in context
+  </Card>
+</CardGroup>
+
+### Context Mode Limitations
+
+<Warning>
+Context Mode is **limited to 10,000 tokens total** across all assigned knowledge.
+</Warning>
+
+**Limitations:**
+- Keep knowledge bases small (< 1,000 words)
+- All knowledge is sent with every request (higher cost)
+- All knowledge is processed every time (higher latency)
+- Entire knowledge base is included even if only a small portion is relevant
+
+---
+
+## RAG Mode (Retrieval-Augmented Generation)
+
+### How It Works
+
+In RAG Mode, your knowledge base is stored in a vector database. When the agent needs information:
+
+1. **User asks a question:** "What's your return policy?"
+2. **Agent identifies need:** Agent determines it needs knowledge about returns
+3. **System searches:** RAG system searches knowledge base for relevant content
+4. **Relevant content retrieved:** Only the return policy section is fetched
+5. **Agent responds:** Agent uses retrieved knowledge to answer
+
+The agent only sees the knowledge it needs, when it needs it.
+
+### Intelligent Retrieval
+
+RAG uses semantic search with vector embeddings to find relevant knowledge:
+
+```text wrap
+User: "I need to send back the shoes I bought last week"
+
+RAG System thinks:
+- Keywords: "send back", "shoes", "bought"
+- Semantic meaning: Returns, possibly exchange
+- Search knowledge for: return policy, shipping, exchanges
+
+Retrieved knowledge:
+- Return Policy Overview
+- Return Shipping Instructions
+- Exchange Procedures
+
+NOT retrieved:
+- Billing FAQ
+- Product Specifications
+- Account Management
+```
+
+### RAG Mode Advantages
+
+<CardGroup cols={2}>
+  <Card title="Scales Infinitely" icon="up-right-and-down-left-from-center">
+    Support massive knowledge bases without context limits
+  </Card>
+  <Card title="Faster for Large Knowledge" icon="clock-rotate-left">
+    Reduces system prompt tokens for large knowledge bases
+  </Card>
+  <Card title="Efficient" icon="gauge-high">
+    Only retrieves what's needed for current topic
+  </Card>
+  <Card title="Better for Diversity" icon="shapes">
+    Handles wide variety of unrelated topics well
+  </Card>
+</CardGroup>
+
+### RAG Mode Considerations
+
+<Note>
+RAG relies on vector embedding quality. If your knowledge items aren't clearly written, retrieval may miss relevant information.
+</Note>
+
+**Retrieval quality depends on:**
+- Clear, descriptive knowledge item titles
+- Well-structured content
+- Proper categorization into folders
+- Avoiding duplicate or conflicting information
+
+---
+
+## Remaining Context Tokens Indicator
+
+When using Context Mode, monitor your remaining context tokens to ensure you have enough room for conversations.
+
+### Understanding the Indicator
+
+The dashboard shows your context usage in the Knowledge settings:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/knowledge-settings/settings-light.png" alt="Knowledge settings showing context usage" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/knowledge-settings/settings-dark.png" alt="Knowledge settings showing context usage" />
+  </div>
+</Frame>
+
+You can see:
+- **RAG Mode**: Dynamic vector search with unlimited knowledge size
+- **Context Mode**: Added to system prompt with a 10,000 token limit
+
+---
+
+## Choosing the Right Mode
+
+Use this decision guide to select the best access method:
+
+### Hybrid Approach
+
+You can use both modes for different knowledge bases on the same agent:
+
+**Example configuration:**
+- **Context Mode:** Small "Core Policies" knowledge base (always needed)
+- **RAG Mode:** Large "Product Catalog" knowledge base (retrieve as needed)
+
+This gives you the best of both worlds.
+
+---
+
+## Testing Your Configuration
+
+<Steps>
+  <Step title="Assign knowledge base">
+    Configure your agent with a knowledge base in either Context or RAG Mode.
+  </Step>
+
+  <Step title="Start test call">
+    Use the Test Call feature in the dashboard.
+  </Step>
+
+  <Step title="Ask about knowledge content">
+    Ask questions that should be answered from your knowledge base.
+
+    **Example questions:**
+    - "What's your return policy?"
+    - "How much does the Pro plan cost?"
+    - "What are your business hours?"
+  </Step>
+
+  <Step title="Verify responses">
+    Confirm the agent is correctly using knowledge content in responses.
+  </Step>
+
+  <Step title="Test edge cases">
+    Ask about topics NOT in your knowledge base to ensure agent responds appropriately ("I don't have that information").
+  </Step>
+</Steps>
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Start with RAG for large bases" icon="magnifying-glass">
+    When in doubt, use RAG Mode. It's safer for large knowledge bases and you can always switch to Context Mode if needed.
+  </Accordion>
+
+  <Accordion title="Write clear, complete content" icon="file-text">
+    RAG uses semantic search to find relevant knowledge. Write complete, well-written content that naturally includes the terms and concepts users will ask about.
+
+    **Good:** "Our return policy allows returns within 30 days of purchase for physical products. Digital products cannot be returned once downloaded."
+
+    **Bad:** "See policy doc" or incomplete sentence fragments
+  </Accordion>
+
+  <Accordion title="Test both modes" icon="vial">
+    Try both Context and RAG Mode with your knowledge base and see which performs better for your use case.
+  </Accordion>
+
+  <Accordion title="Combine strategically" icon="layer-group">
+    Use Context Mode for critical, frequently-needed info and RAG Mode for extensive reference material.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Agent isn't using knowledge (Context Mode)">
+    **Check:**
+    - Are all knowledge items in COMPLETED status?
+    - Is remaining context sufficient (not truncated)?
+
+    **Solution:**
+    - Fix failed items
+    - Reduce knowledge size or switch to RAG
+  </Accordion>
+
+  <Accordion title="Agent isn't finding knowledge (RAG Mode)">
+    **Check:**
+    - Is content well-organized?
+    - Are you asking questions that match the knowledge?
+
+    **Solution:**
+    - Add more detailed content
+    - Test with different phrasings
+    - Consider adding keywords to content
+  </Accordion>
+
+  <Accordion title="Agent provides wrong or outdated information">
+    **Check:**
+    - Is the knowledge content correct and current?
+    - Do you have conflicting information in multiple items?
+
+    **Solution:**
+    - Update knowledge content
+    - Remove duplicates and conflicts
+  </Accordion>
+
+  <Accordion title="Context usage too high">
+    **Solutions:**
+    - Switch to RAG Mode for large knowledge bases
+    - Split knowledge into smaller, focused bases
+    - Reduce agent instruction length
+    - Remove verbose or redundant content
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Create Knowledge Bases" icon="plus" href="/build/knowledge/create-knowledge-bases">
+    Build and organize your knowledge content
+  </Card>
+  <Card title="Content Types" icon="file-lines" href="/build/knowledge/content-types">
+    Learn about text, PDF, and URL items
+  </Card>
+  <Card title="Variables & Dynamic Content" icon="brackets-curly" href="/build/conversation/variables-dynamic-content">
+    Use knowledge references in instructions
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/web-simulator">
+    Test how your agent uses knowledge
+  </Card>
+</CardGroup>

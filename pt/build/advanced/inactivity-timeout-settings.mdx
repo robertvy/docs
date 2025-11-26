@@ -1,0 +1,473 @@
+---
+title: "Inatividade, Timeouts e Detecção de Pausa"
+description: "Configure check-ins, pausas e timeouts de conversa para gerenciar fluxo e duração de chamadas"
+icon: "hourglass"
+"keywords": "detecção de inatividade, timeout de conversa, detecção de pausa, duração de chamada, configurações de timeout, gerenciamento de conversa de IA"
+"og:description": "Configure check-ins inteligentes, detecção de pausa e timeouts para gerenciar fluxo e duração de conversas de IA."
+---
+
+## Visão Geral
+
+As configurações de inatividade e timeout permitem que seus agentes de IA lidem graciosamente com períodos de silêncio, gerenciem pausas naturais de conversa e apliquem durações máximas de conversa. Esses controles são essenciais para criar conversas profissionais e conscientes do tempo que respeitam tanto as necessidades do usuário quanto as restrições operacionais.
+
+Essas configurações trabalham juntas para criar um fluxo de conversa natural, evitando problemas comuns como chamadas abandonadas, tempos de espera excessivos e conversas descontroladas.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/inactivity/inactivity-light.png" alt="Configuração de Inatividade e Timeout mostrando barra lateral de navegação com seção Operations expandida e Inactivity & Timeout selecionado, abas MESSAGE SOURCE (Check-ins, Pause Behavior, Monologue, Timeout) com Check-ins ativa, alternância Inactivity Detection ativada, seção TIMING CONFIGURATION com Check-in Timeout definido para 6 segundos e Max Check-ins definido para 3, seção CHECK-IN MESSAGES mostrando mensagem 'Hallo??', e seção END MESSAGE com 'Auf Wiederhören.', além de alternância Default/Custom" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/inactivity/inactivity-dark.png" alt="Configuração de Inatividade e Timeout mostrando barra lateral de navegação com seção Operations expandida e Inactivity & Timeout selecionado, abas MESSAGE SOURCE (Check-ins, Pause Behavior, Monologue, Timeout) com Check-ins ativa, alternância Inactivity Detection ativada, seção TIMING CONFIGURATION com Check-in Timeout definido para 6 segundos e Max Check-ins definido para 3, seção CHECK-IN MESSAGES mostrando mensagem 'Hallo??', e seção END MESSAGE com 'Auf Wiederhören.', além de alternância Default/Custom" />
+  </div>
+</Frame>
+
+<Note>
+**Aplicação Universal:** As configurações de inatividade e timeout se aplicam a todos os tipos de conversa, incluindo chamadas telefônicas (SIP/PSTN) e conversas baseadas na web.
+
+A configuração está disponível em **Configurações do Agente → Operações → Inatividade e Timeout**. As configurações incluem lembretes de check-in, detecção de pausa e timeouts de conversa.
+</Note>
+
+---
+
+## Visão Geral dos Recursos
+
+### Três Componentes Principais
+
+<CardGroup cols={3}>
+  <Card title="Check-ins e Lembretes" icon="bell">
+    Avisos periódicos durante o silêncio para garantir que o usuário ainda está engajado
+  </Card>
+  <Card title="Detecção de Pausa" icon="pause">
+    Reconhecimento inteligente de pausas naturais quando os usuários precisam de tempo
+  </Card>
+  <Card title="Timeout de Conversa" icon="clock">
+    Duração máxima para toda a conversa
+  </Card>
+</CardGroup>
+
+---
+
+## Check-ins e Lembretes
+
+### Detectando Inatividade do Usuário
+
+Os check-ins ajudam a garantir que os usuários não tenham desconectado, ainda estejam prestando atenção ou precisem de assistência. Quando ativado, o agente periodicamente verificará com / lembrará o usuário durante períodos de silêncio.
+
+<Tabs>
+  <Tab title="Configuração">
+    ### Configurações Principais
+
+    <AccordionGroup>
+      <Accordion title="Detecção de Inatividade" icon="toggle-on">
+        **Interruptor mestre para funcionalidade de check-in**
+
+        Quando ativado, o agente monitorará períodos de silêncio do usuário e enviará mensagens de check-in. Quando desativado, nenhum check-in ocorrerá (embora o timeout de conversa ainda se aplique).
+
+        **Padrão:** Ativado
+      </Accordion>
+
+      <Accordion title="Timeout de Check-in" icon="timer">
+        **Segundos antes de enviar mensagem de check-in (5-300 segundos)**
+
+        Quanto tempo o agente espera em silêncio antes de enviar um lembrete ao usuário.
+
+        - **Recomendação típica (5-15s):** Bom para a maioria das conversas, mantém engajamento
+        - **Timeout estendido (20-45s):** Para cenários onde usuários podem precisar de tempo para pensar
+        - **Timeout longo (60-300s):** Quando usuários precisam buscar informações ou completar ações
+
+        **Padrão:** 10 segundos
+
+        <Tip>
+        Para cenários onde os usuários precisam buscar informações (números de conta, endereços, etc.), use valores de timeout estendidos ou longos para evitar interrompê-los.
+        </Tip>
+      </Accordion>
+
+      <Accordion title="Check-ins Máximos" icon="repeat">
+        **Número máximo de check-ins antes de encerrar chamada (0-10)**
+
+        Quantas vezes o agente tentará reengajar antes de encerrar graciosamente a conversa.
+
+        - **0 check-ins:** Desativado (conversa continua indefinidamente até timeout)
+        - **1-3 check-ins:** Saída rápida para chamadas provavelmente abandonadas
+        - **4-7 check-ins:** Persistência equilibrada
+        - **8-10 check-ins:** Muito paciente, múltiplas tentativas de reengajamento
+
+        **Padrão:** 3 check-ins
+
+        <Warning>
+        Definir isso como 0 desativa a funcionalidade de lembrete, mas NÃO desativa o timeout de conversa. A conversa ainda terminará quando o timeout geral for atingido.
+        </Warning>
+      </Accordion>
+    </AccordionGroup>
+
+    ### Como Funciona
+
+    ```mermaid
+    sequenceDiagram
+        participant User
+        participant Agent
+        User->>Agent: Olá, preciso de ajuda
+        Agent->>User: Como posso ajudá-lo?
+        Note over User,Agent: Usuário para de responder
+        Note over Agent: Aguarda 10 segundos (timeout de check-in)
+        Agent->>User: "Você ainda está aí?" (Check-in #1)
+        Note over User,Agent: Ainda sem resposta
+        Note over Agent: Aguarda mais 10 segundos
+        Agent->>User: "Alô? Você me ouve?" (Check-in #2)
+        Note over User,Agent: Ainda sem resposta
+        Note over Agent: Aguarda mais 10 segundos
+        Agent->>User: "Vou encerrar a chamada agora" (Check-in #3)
+        Agent->>User: Encerra conversa graciosamente
+    ```
+  </Tab>
+  <Tab title="Mensagens">
+    ### Mensagens de Check-in
+
+    Personalize o que o agente diz durante os check-ins. As mensagens podem ser rotacionadas para soar mais naturais em múltiplos check-ins.
+
+    <Tabs>
+      <Tab title="Mensagens Padrão">
+        **Mensagens fornecidas pelo sistema**
+
+        A plataforma fornece mensagens de check-in padrão que correspondem ao idioma configurado do seu agente. Essas mensagens são selecionadas automaticamente com base nas configurações de idioma de voz e transcritor do seu agente.
+
+        **Benefícios:**
+        - Nenhuma configuração necessária
+        - Elaboradas profissionalmente
+        - Variedade para soar natural
+      </Tab>
+      <Tab title="Mensagens Personalizadas">
+        **Crie suas próprias mensagens de check-in**
+
+        Mude para mensagens personalizadas para criar check-ins específicos da marca ou conscientes do contexto.
+
+        **Recursos:**
+        - Adicione múltiplas mensagens (rotacionadas automaticamente)
+        - Arraste para reordenar prioridade
+        - Personalização ilimitada
+
+        **Exemplos de mensagens personalizadas:**
+        1. "Ei, não entendi isso. Você ainda está comigo?"
+        2. "Só verificando - você precisa de mais tempo?"
+        3. "Estou aqui quando estiver pronto. Devo continuar?"
+
+        <Tip>
+        Adicione 3-5 mensagens variadas para fazer check-ins repetidos soarem mais naturais e menos robóticos.
+        </Tip>
+      </Tab>
+    </Tabs>
+
+    ### Mensagem Final
+
+    A mensagem final falada antes de encerrar a conversa após os check-ins máximos serem atingidos.
+
+    **Padrão:** "Vou encerrar a chamada agora. Sinta-se livre para ligar de volta a qualquer momento!"
+
+    **Exemplos personalizados:**
+    - "Como não ouvi você, vou desconectar agora. Tenha um ótimo dia!"
+    - "Vou deixar você ir agora. Obrigado por ligar e, por favor, entre em contato novamente se precisar de algo."
+    - "Parece que fomos desconectados. Estou encerrando a chamada, mas sinta-se livre para ligar de volta."
+  </Tab>
+  <Tab title="Casos de Uso">
+    ### Cenários Comuns
+
+    <AccordionGroup>
+      <Accordion title="Suporte ao Cliente" icon="headset">
+        **Cenário:** Interações gerais de atendimento ao cliente
+
+        **Configuração:**
+        - Timeout de check-in: 10 segundos
+        - Check-ins máximos: 3-4
+        - Ativar detecção de pausa: Sim
+        - Mensagens: "Você ainda está aí?"
+
+        **Por quê:** Timeout padrão com detecção de pausa para quando usuários precisam buscar informações
+      </Accordion>
+
+      <Accordion title="Coleta de Informações" icon="clipboard-list">
+        **Cenário:** Agente solicita números de conta, endereços ou outros dados
+
+        **Configuração:**
+        - Timeout de check-in: 10 segundos
+        - Check-ins máximos: 3-4
+        - Ativar detecção de pausa: Sim
+        - Mensagens: "Fique tranquilo. Estou pronto quando tiver essa informação."
+
+        **Por quê:** A detecção de pausa suspende automaticamente os check-ins quando os usuários dizem que estão procurando informações
+      </Accordion>
+
+      <Accordion title="Pesquisas Automatizadas" icon="clipboard-question">
+        **Cenário:** Pesquisa de voz ou coleta de feedback
+
+        **Configuração:**
+        - Timeout de check-in: 10 segundos
+        - Check-ins máximos: 2
+        - Ativar detecção de pausa: Não
+        - Mensagens: "Não ouvi uma resposta. Gostaria de continuar?"
+
+        **Por quê:** Ritmo rápido mantém engajamento, menos tentativas evitam longas esperas
+      </Accordion>
+
+      <Accordion title="Agendamento de Consultas" icon="calendar">
+        **Cenário:** Usuário está verificando sua agenda
+
+        **Configuração:**
+        - Timeout de check-in: 15 segundos
+        - Check-ins máximos: 4-5
+        - Ativar detecção de pausa: Sim
+        - Mensagens: "Vou esperar enquanto você verifica sua agenda. Me avise quando estiver pronto."
+
+        **Por quê:** A detecção de pausa suspende os check-ins quando os usuários dizem que estão verificando a agenda
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+</Tabs>
+
+---
+
+## Detecção de Pausa
+
+### Pausas Naturais de Conversa
+
+A detecção de pausa permite que o agente reconheça inteligentemente quando os usuários precisam de tempo para atividades específicas - sem bombardeá-los com mensagens de check-in. Isso cria um fluxo de conversa mais natural.
+
+<Tabs>
+  <Tab title="Visão Geral">
+    ### Como Funciona a Detecção de Pausa
+
+    O agente usa IA para detectar quando um usuário solicita explicitamente tempo para completar uma ação, e então suspende temporariamente os check-ins de inatividade.
+
+    **Gatilhos comuns de pausa:**
+    - "Deixe-me verificar minha agenda"
+    - "Espere, preciso encontrar esse documento"
+    - "Você pode me dar um minuto para perguntar ao meu colega?"
+    - "Estou procurando isso agora"
+    - "Deixe-me pegar meu cartão de crédito"
+
+    **Durante uma pausa:**
+    - ✅ Check-ins de inatividade são suspensos
+    - ✅ Duração máxima de pausa é aplicada
+    - ✅ Timeout geral de conversa ainda se aplica
+
+    ```mermaid
+    sequenceDiagram
+        participant User
+        participant Agent
+        User->>Agent: Preciso agendar uma consulta
+        Agent->>User: Claro! Quando funciona para você?
+        User->>Agent: Deixe-me verificar minha agenda
+        Note over Agent: Detecta solicitação de pausa
+        Note over Agent: Suspende check-ins por até 5 minutos
+        Note over User: Usuário verifica agenda (2 minutos)
+        User->>Agent: Que tal terça-feira às 14h?
+        Note over Agent: Retoma operação normal
+        Agent->>User: Terça-feira às 14h funciona perfeitamente!
+    ```
+  </Tab>
+  <Tab title="Configuração">
+    ### Configurações Padrão de Pausa
+
+    <AccordionGroup>
+      <Accordion title="Ativar Pausa Padrão" icon="toggle-on">
+        **Interruptor mestre para detecção automática de pausa**
+
+        Quando ativado, o agente detecta automaticamente cenários comuns de pausa e suspende temporariamente os check-ins.
+
+        **Padrão:** Ativado
+
+        <Note>
+        A detecção de pausa requer que a detecção de inatividade esteja ativada. Se a detecção de inatividade estiver desativada, a detecção de pausa também será desativada.
+        </Note>
+      </Accordion>
+
+      <Accordion title="Duração Máxima de Pausa" icon="clock">
+        **Tempo máximo antes de retomar verificações (1-3600 segundos)**
+
+        Quanto tempo o agente esperará durante uma pausa detectada antes de retomar o comportamento normal de check-in.
+
+        - **Duração curta (60-120s):** Apenas ações rápidas
+        - **Duração média (180-300s):** Cenários padrão de pausa
+        - **Duração longa (600-3600s):** Atividades estendidas
+
+        **Padrão:** 300 segundos (5 minutos)
+
+        <Tip>
+        Defina isso com base nas atividades típicas que seus usuários realizam. Por exemplo, verificar uma agenda pode precisar de 120s, enquanto reunir documentos pode precisar de 300s.
+        </Tip>
+      </Accordion>
+    </AccordionGroup>
+
+    ### Detecção Automática
+
+    O agente detecta automaticamente cenários de pausa com base na compreensão de linguagem natural. Padrões comuns incluem:
+
+    - **Solicitações temporais:** "me dê um segundo", "espere um minuto", "aguarde"
+    - **Declarações de ação:** "deixe-me verificar", "estou procurando", "preciso encontrar"
+    - **Consulta a outros:** "deixe-me perguntar", "vou precisar verificar com"
+    - **Coleta de informações:** "procurando isso agora", "puxando", "procurando por"
+
+    Nenhuma configuração explícita necessária - a IA lida com a detecção automaticamente.
+  </Tab>
+  <Tab title="Substituições Personalizadas">
+    ### Cenários Avançados de Pausa
+
+    Para casos de uso especializados, crie regras de substituição de pausa personalizadas com durações estendidas além da pausa padrão.
+
+    **Componentes de Substituição:**
+
+    <AccordionGroup>
+      <Accordion title="Nome da Substituição" icon="tag">
+        Nome descritivo para o cenário de pausa (ex: "Busca Estendida de Documentos", "Verificação de Múltiplas Agendas")
+      </Accordion>
+
+      <Accordion title="Duração Máxima" icon="timer">
+        Duração máxima personalizada para este cenário específico (substitui a duração padrão de pausa)
+
+        Defina durações mais longas para cenários onde os usuários precisam de tempo estendido além da pausa padrão de 5 minutos.
+      </Accordion>
+    </AccordionGroup>
+
+    ### Exemplo de Substituição
+
+    **Nome:** Coordenação Estendida de Agenda
+
+    **Duração Máxima:** 600 segundos (10 minutos)
+
+    **Caso de uso:** Usuários empresariais agendando em múltiplas agendas ou coordenando com equipes precisam de mais tempo do que a pausa padrão de 5 minutos. O agente detectará automaticamente quando eles dizem "deixe-me verificar minha agenda" e suspenderá os check-ins por até 10 minutos em vez dos 5 minutos padrão.
+  </Tab>
+</Tabs>
+
+---
+
+## Timeout de Conversa
+
+### Duração Máxima Geral
+
+O timeout de conversa define uma duração máxima absoluta para toda a conversa, independentemente do nível de atividade ou engajamento.
+
+<Card title="Por que os Timeouts de Conversa São Importantes" icon="shield-check">
+  Os timeouts de conversa:
+  - Evitam custos descontrolados de conversas intermináveis
+  - Aplicam políticas operacionais e SLAs
+  - Protegem contra abuso ou problemas do sistema
+  - Permitem planejamento previsível de recursos
+  - Garantem acesso justo em ambientes de alto volume
+</Card>
+
+### Configuração
+
+<AccordionGroup>
+  <Accordion title="Duração Máxima de Conversa" icon="clock">
+    **Duração total máxima de conversa em segundos (0-ilimitado)**
+
+    O tempo máximo absoluto para toda a conversa do início ao fim.
+
+    - **Timeout curto (120-300s):** Interações rápidas, casos de uso transacionais
+    - **Timeout médio (300-900s):** Chamadas padrão de atendimento ao cliente
+    - **Timeout longo (900-3600s):** Suporte complexo, consultas detalhadas
+    - **Timeout muito longo (3600+s):** Sessões estendidas, cenários especializados
+
+    **Padrão:** 300 segundos (5 minutos)
+
+    <Note>
+    Este é um limite rígido que não pode ser estendido. Planeje conservadoramente com base na duração típica de conversa mais tempo de buffer.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Mensagem Final de Timeout" icon="message">
+    **Mensagem falada quando o timeout de conversa é atingido**
+
+    O agente fala esta mensagem antes de encerrar a conversa devido ao alcance da duração máxima.
+
+    **Padrão:** "Atingimos nosso tempo máximo de chamada. Obrigado pelo seu tempo e, por favor, sinta-se livre para ligar de volta se precisar de mais ajuda!"
+
+    **Exemplos personalizados:**
+    - "Atingimos nosso limite de tempo. Obrigado por ligar e, por favor, não hesite em entrar em contato novamente se precisar de assistência."
+    - "Nosso tempo de sessão acabou. Por favor, ligue de volta a qualquer momento se precisar de mais ajuda."
+    - "Atingimos a duração máxima de chamada. Um resumo será enviado ao seu e-mail. Obrigado!"
+  </Accordion>
+</AccordionGroup>
+
+### Comportamento
+
+- **Sempre ativado:** O timeout é executado independentemente de todas as outras configurações
+- **Limite absoluto:** Não pode ser pausado ou estendido por nenhum mecanismo
+- **Inclui todo o tempo:** Conta o tempo total decorrido incluindo pausas e silêncio
+- **Encerramento gracioso:** Agente fala a mensagem final e termina educadamente
+
+---
+
+## Solução de Problemas
+
+### Problemas Comuns e Soluções
+
+<AccordionGroup>
+  <Accordion title="Agente faz check-ins com muita frequência" icon="bell-ring">
+    **Sintomas:** Check-ins interrompem usuários que ainda estão engajados
+
+    **Soluções:**
+    - Aumentar timeout de check-in (tente 15s em vez de 10s, ou 12s em vez de 8s)
+    - Ativar detecção de pausa se ainda não estiver ativa
+    - Revisar se os usuários estão pausando naturalmente (tempo de reflexão)
+    - Considerar se as configurações de detecção de atividade de voz estão cortando usuários
+  </Accordion>
+
+  <Accordion title="Agente não espera tempo suficiente durante pausas" icon="hourglass-end">
+    **Sintomas:** Check-ins são acionados enquanto usuários estão reunindo informações
+
+    **Soluções:**
+    - Aumentar duração padrão de pausa (tente 300-600s)
+    - Criar substituições de pausa personalizadas para cenários específicos
+    - Verificar se a detecção de pausa está ativada
+    - Verificar eventos de detecção de pausa em logs de conversa
+  </Accordion>
+
+  <Accordion title="Conversas terminam muito rapidamente" icon="clock-rotate-left">
+    **Sintomas:** Conversas legítimas são encerradas prematuramente
+
+    **Soluções:**
+    - Aumentar timeout de conversa para corresponder a durações típicas de chamada
+    - Revisar configuração de check-ins máximos (pode estar muito baixa)
+    - Analisar duração real de conversa nos logs
+    - Considerar se o timeout de check-in é muito agressivo
+  </Accordion>
+
+  <Accordion title="Respostas do agente são muito verbosas" icon="volume-high">
+    **Sintomas:** Agente fornece respostas excessivamente detalhadas ou longas
+
+    **Soluções:**
+    - Atualizar instruções do agente para encorajar brevidade
+    - Adicionar orientação de prompt como "Mantenha respostas sob 30 segundos"
+    - Usar exemplos de respostas concisas nas instruções
+    - Considerar se o modelo de IA tende a respostas verbosas
+  </Accordion>
+
+  <Accordion title="Conversas duram muito e custam muito" icon="coins">
+    **Sintomas:** Durações excessivas de conversa impactando custos
+
+    **Soluções:**
+    - Reduzir timeout de conversa para aplicar limites rígidos
+    - Atualizar instruções do agente para encorajar respostas breves e concisas
+    - Diminuir check-ins máximos para sair mais rápido de chamadas inativas
+    - Considerar reduzir timeout de check-in para detecção mais rápida de desengajamento
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Recursos Relacionados
+
+<CardGroup cols={2}>
+  <Card title="VAD e Detecção de Turno" icon="microphone-lines" href="/pt/build/advanced/vad-turn-detection">
+    Configure detecção de atividade de voz e comportamento de alternância de turnos
+  </Card>
+  <Card title="Ações de Controle de Chamada" icon="phone-hangup" href="/pt/build/actions/call-control">
+    Controle programático de chamadas incluindo ações de encerramento de chamada
+  </Card>
+  <Card title="Mensagens de Saudação" icon="hand-wave" href="/pt/build/conversation/greeting-messages">
+    Configure como as conversas começam
+  </Card>
+  <Card title="Objetivos de Conversa" icon="bullseye-arrow" href="/pt/build/analytics/conversation-goals">
+    Rastreie sucesso e conclusão de conversas
+  </Card>
+</CardGroup>

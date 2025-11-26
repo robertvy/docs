@@ -1,0 +1,298 @@
+---
+title: "Debug"
+description: "Strumenti e tecniche per identificare e risolvere i problemi degli agenti"
+icon: "bug"
+keywords: 'debug, risoluzione problemi, log conversazioni, debug errori, problemi trascrittore, debug LLM, debug TTS, debug azioni'
+og:description: 'Debug dei problemi degli agenti vocali con log delle conversazioni e risoluzione sistematica dei problemi. Identifica e risolvi problemi di trascrittore, LLM, TTS ed esecuzione azioni.'
+---
+
+## Panoramica
+
+Il debug degli agenti vocali richiede un'indagine sistematica di più componenti che lavorano insieme: trascrizione, ragionamento LLM, sintesi vocale ed esecuzione di azioni. Il dashboard di itellicoAI fornisce log dettagliati e strumenti per aiutarti a identificare rapidamente la causa principale dei problemi.
+
+---
+
+## Strumenti di debug del dashboard
+
+<CardGroup cols={2}>
+  <Card title="Log conversazioni" icon="list">
+    Storico completo di ogni conversazione con trascrizioni, azioni e metadati
+  </Card>
+
+  <Card title="Trascrizione in tempo reale" icon="closed-captioning">
+    Vista live della trascrizione e delle risposte dell'agente durante le chiamate di test
+  </Card>
+
+  <Card title="Payload azioni" icon="code">
+    JSON dettagliato di ogni chiamata API, esecuzione tool e webhook
+  </Card>
+
+  <Card title="Messaggi di errore" icon="triangle-exclamation">
+    Dettagli specifici dell'errore quando i componenti falliscono
+  </Card>
+</CardGroup>
+
+---
+
+## Approccio sistematico al debug
+
+Quando qualcosa va storto, segui questo processo sistematico:
+
+<Steps>
+  <Step title="Riprodurre il problema">
+    Testa di nuovo per confermare che il problema sia coerente
+
+    Annota le condizioni esatte quando si verifica
+  </Step>
+
+  <Step title="Identificare il componente">
+    Determina quale parte della pipeline ha fallito:
+    - Trascrittore (voce → testo)
+    - LLM (comprensione → risposta)
+    - TTS (testo → voce)
+    - Esecuzione azione/tool
+    - Recupero conoscenze
+  </Step>
+
+  <Step title="Rivedere i log">
+    Apri **Conversazioni** e trova la chiamata problematica
+
+    Esamina trascrizioni, payload azioni ed errori
+  </Step>
+
+  <Step title="Testare i componenti individualmente">
+    Isola il componente che fallisce:
+    - Prova un trascrittore diverso
+    - Testa LLM con prompt più semplici
+    - Prova una voce diversa
+    - Testa le azioni direttamente tramite API
+  </Step>
+
+  <Step title="Correggere e verificare">
+    Apporta modifiche mirate basate sui risultati
+
+    Testa di nuovo per confermare la correzione
+  </Step>
+</Steps>
+
+---
+
+## Debug a livello di componenti
+
+<AccordionGroup>
+  <Accordion title="Problemi del trascrittore" icon="microphone">
+    **Come identificare:**
+    - Controlla la trascrizione nei log delle conversazioni
+    - Confronta ciò che è stato detto con ciò che è stato trascritto
+    - Cerca parole mancanti, parole errate o incomprensibili
+
+    **Cause comuni:**
+    - Rumore di fondo
+    - Accento o lingua non corrispondente
+    - Problemi di qualità audio
+    - Modello di trascrittore errato selezionato
+
+    **Passaggi di debug:**
+    1. Vai su **Modelli → Trascrittore**
+    2. Prova un provider di trascrittore diverso (Deepgram ↔ Azure)
+    3. Prova un modello diverso (es., Nova-2 ↔ Nova-3)
+    4. Verifica che l'impostazione della lingua corrisponda all'oratore
+    5. Testa in un ambiente più silenzioso
+    6. Controlla la qualità dell'input audio
+
+    **Cosa controllare nei log:**
+    - Precisione della trascrizione
+    - Tempistica della trascrizione (ritardi?)
+    - Trascrizioni vuote o parziali
+    - Problemi di rilevamento lingua
+  </Accordion>
+
+  <Accordion title="Problemi di risposta LLM" icon="brain">
+    **Come identificare:**
+    - L'agente dà risposte errate
+    - L'agente va fuori tema
+    - L'agente si ripete
+    - L'agente rifiuta di rispondere a domande valide
+    - L'agente alluci informazioni
+
+    **Cause comuni:**
+    - Istruzioni troppo vaghe o contraddittorie
+    - Knowledge base mancante di informazioni
+    - Overflow della finestra di contesto
+    - Modello non adatto al compito
+    - Temperatura troppo alta/bassa
+
+    **Passaggi di debug:**
+    1. Rivedi le istruzioni dell'agente in **Abilità → Istruzioni**
+    2. Semplifica le istruzioni per isolare il problema
+    3. Controlla la knowledge base per informazioni mancanti
+    4. Prova un modello LLM diverso (Claude Haiku 4.5 ↔ GPT-4.1 mini)
+    5. Regola la temperatura nelle impostazioni del modello
+    6. Rivedi i log delle conversazioni per vedere il contesto completo
+
+    **Cosa controllare nei log:**
+    - Storico completo della conversazione che porta a una risposta errata
+    - Elementi di conoscenza recuperati (se si usa RAG)
+    - Prompt di sistema e iniezione di contesto
+
+    <Tip>
+    Testa i prompt problematici nel simulatore web prima—è più veloce dei test telefonici.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="Problemi voce/TTS" icon="volume">
+    **Come identificare:**
+    - Modelli di parlato innaturali
+    - Pronunce errate
+    - Enfasi o intonazione errata
+    - Suono robotico
+    - Velocità troppo veloce/lenta
+
+    **Cause comuni:**
+    - Voce non adatta al tipo di contenuto
+    - Punteggiatura che influenza il ritmo
+    - Numeri o acronimi non gestiti bene
+    - Limitazioni del provider vocale
+
+    **Passaggi di debug:**
+    1. Vai su **Modelli → Voce**
+    2. Prova una voce diversa dello stesso provider
+    3. Prova un provider vocale completamente diverso
+    4. Aggiungi pronunce personalizzate per parole problematiche
+    5. Regola le impostazioni di stabilità/chiarezza (ElevenLabs)
+    6. Regola la velocità di parlato
+    7. Modifica l'output di testo per migliorare TTS
+
+    **Cosa controllare nei log:**
+    - Ascolta la registrazione audio
+    - Confronta il testo con come è stato pronunciato
+    - Controlla i tag SSML (se usati)
+    - Verifica che le impostazioni vocali siano applicate
+  </Accordion>
+
+  <Accordion title="Problemi di esecuzione azione/tool" icon="bolt">
+    **Come identificare:**
+    - L'azione non si attiva quando previsto
+    - L'azione si attiva ma fallisce
+    - Dati errati inviati all'azione
+    - L'azione restituisce un errore
+
+    **Cause comuni:**
+    - Azione non configurata correttamente
+    - Endpoint API inattivo o lento
+    - Errore di autenticazione
+    - Estrazione parametri errata
+    - Timeout di rete
+
+    **Passaggi di debug:**
+    1. Controlla se l'azione è stata attivata nei log delle conversazioni
+    2. Rivedi il payload dell'azione (JSON inviato all'API)
+    3. Controlla la risposta dell'API e il codice di stato
+    4. Testa l'endpoint API direttamente (Postman, curl)
+    5. Verifica le credenziali di autenticazione
+    6. Controlla l'estrazione dei parametri dalla conversazione
+    7. Rivedi le istruzioni dell'azione nel prompt dell'agente
+
+    **Cosa controllare nei log:**
+    - Campi `custom_data.actions` o simili
+    - Payload della richiesta API
+    - Corpo della risposta API
+    - Messaggi di errore e stack trace
+    - Timestamp (c'è stato un timeout?)
+
+    <Note>
+    I log delle conversazioni mostrano i payload completi delle azioni, inclusi i dati di richiesta/risposta.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Problemi di recupero conoscenze" icon="database">
+    **Come identificare:**
+    - L'agente non può rispondere a domande che dovrebbe conoscere
+    - L'agente recupera conoscenze errate
+    - L'agente mescola informazioni irrilevanti nelle risposte
+
+    **Cause comuni:**
+    - Conoscenze non ancora indicizzate
+    - Il recupero RAG non trova elementi rilevanti
+    - Knowledge base non assegnata all'agente
+
+    **Passaggi di debug:**
+    1. Verifica che la knowledge base sia assegnata all'agente
+    2. Controlla che gli elementi di conoscenza siano **INDICIZZATI** (non solo COMPLETATI)
+    3. Rivedi i titoli degli elementi di conoscenza—rendili descrittivi
+    4. Testa con una knowledge base più piccola
+    5. Prova la modalità Contesto vs modalità RAG
+    6. Controlla i log delle conversazioni per le conoscenze recuperate
+
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Utilizzo dei log delle conversazioni per il debug
+
+Ogni chiamata di test crea un log dettagliato accessibile in **Conversazioni**.
+
+### Contenuto dei log:
+
+**Informazioni di base:**
+- Data, ora, durata della chiamata
+- Agente utilizzato
+- Numero di telefono (se test telefonico)
+- Stato della chiamata (completato, fallito, ecc.)
+
+**Dati conversazione:**
+- Trascrizione completa (utente + agente)
+- Timestamp per ogni messaggio
+- Registrazione audio (se disponibile)
+
+**Dettagli tecnici:**
+- Azioni attivate con payload
+- Input DTMF catturati
+- Risultati analisi obiettivi
+- Risposte analisi post-chiamata
+- Campi dati personalizzati
+- Messaggi di errore
+
+**Come fare debug con i log:**
+1. Filtra per nome agente per trovare le chiamate di test
+2. Apri una chiamata specifica per vedere tutti i dettagli
+3. Leggi la trascrizione per identificare dove è andato storto
+4. Controlla i payload delle azioni se le azioni sono fallite
+5. Ascolta l'audio se la trascrizione sembra corretta ma l'audio era sbagliato
+6. Rivedi i timestamp per identificare problemi di latenza
+
+---
+
+## Ottenere aiuto
+
+Quando hai bisogno di supporto aggiuntivo:
+
+<CardGroup cols={2}>
+  <Card title="Rivedi la documentazione" icon="book">
+    Controlla la documentazione delle funzionalità specifiche per i dettagli di configurazione
+  </Card>
+
+  <Card title="Controlla stato provider" icon="signal">
+    Visita le pagine di stato per OpenAI, Deepgram, ElevenLabs, Azure
+  </Card>
+
+  <Card title="Contatta il supporto" icon="headset">
+    Invia un'email a support@itellico.ai con log delle chiamate e dettagli degli errori
+  </Card>
+</CardGroup>
+
+**Quando contatti il supporto, includi:**
+- ID o nome dell'agente
+- ID conversazione dai log
+- Messaggi di errore specifici
+- Passaggi per riprodurre
+- Screenshot se applicabile
+
+---
+
+## Prossimi passi
+
+<Card title="Checklist di lancio" icon="rocket" href="/it/launch/overview">
+  Una volta eseguito il debug del tuo agente, rivedi la checklist di lancio per prepararti alla produzione
+</Card>

@@ -1,0 +1,351 @@
+---
+title: "Automatización de correos electrónicos post-llamada"
+description: "Automatizar correos electrónicos de seguimiento activados por resultados de conversación y analítica"
+icon: "envelope-open-text"
+"keywords": "automatización post-llamada, correos electrónicos automatizados, correos electrónicos de seguimiento, resultados de conversación, automatización de correo electrónico IA, acciones post-llamada"
+"og:description": "Automatiza correos electrónicos de seguimiento inteligentes activados por resultados de conversación, sentimiento y condiciones personalizadas."
+---
+
+## Descripción general
+
+Los correos electrónicos post-llamada se envían automáticamente después de las conversaciones según los resultados, objetivos, sentimiento o condiciones personalizadas que definas.
+
+**Acceso:** Editor de agente → **Analytics → Correos electrónicos post-llamada**
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/postcalls/postcall-email-light.png" alt="Interfaz de correos electrónicos post-llamada mostrando barra lateral de navegación con sección Analytics expandida y Correos electrónicos post-llamada seleccionado, área de contenido principal con título 'Correos electrónicos post-llamada' y subtítulo 'Enviar automáticamente correos electrónicos de seguimiento basados en resultados de llamada', estado vacío con icono de correo electrónico, mensaje 'Aún no hay correos electrónicos post-llamada' y descripción 'Crear correos electrónicos de seguimiento automatizados que se envían después de las llamadas', y botón Crear primer correo electrónico" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/postcalls/postcall-email-dark.png" alt="Interfaz de correos electrónicos post-llamada mostrando barra lateral de navegación con sección Analytics expandida y Correos electrónicos post-llamada seleccionado, área de contenido principal con título 'Correos electrónicos post-llamada' y subtítulo 'Enviar automáticamente correos electrónicos de seguimiento basados en resultados de llamada', estado vacío con icono de correo electrónico, mensaje 'Aún no hay correos electrónicos post-llamada' y descripción 'Crear correos electrónicos de seguimiento automatizados que se envían después de las llamadas', y botón Crear primer correo electrónico" />
+  </div>
+</Frame>
+
+**Casos de uso:** Confirmaciones de citas, solicitudes de devolución de llamada, escaladas de quejas, recopilación de comentarios, seguimientos de ventas, seguimiento de problemas no resueltos
+
+---
+
+## Configuración
+
+<Steps>
+  <Step title="Acceder a correos electrónicos post-llamada">
+    Editor de agente → **Analytics → Correos electrónicos post-llamada** → **Crear correo electrónico**
+  </Step>
+
+  <Step title="Elegir punto de partida (opcional)">
+    **Las plantillas** proporcionan activadores y contenido preconfigurados para casos de uso comunes:
+
+    - **Devolución de llamada solicitada** - El cliente solicita seguimiento
+    - **Cita reservada** - Reunión/consulta programada
+    - **Queja del cliente** - Escala la insatisfacción
+    - **Pregunta sin respuesta** - El agente no pudo responder
+    - **Problema técnico** - Dirige errores/bugs a equipos técnicos
+    - **Consulta de facturación** - Preguntas de pago/factura
+    - **Escalada necesaria** - Requiere atención de la gerencia
+    - **Pedido realizado** - Confirmación de compra
+    - **Solicitud de demostración** - Interés en demostración de producto
+    - **Comentarios positivos** - Compartir cumplidos con el equipo
+
+    <Info>
+    Las plantillas son puntos de partida totalmente personalizables. También puedes empezar desde cero.
+    </Info>
+  </Step>
+
+  <Step title="Configurar nombre de notificación">
+    **Nombre:** Identificador interno (p. ej., "Alerta de solicitud de devolución de llamada")
+  </Step>
+
+  <Step title="Establecer condición de activación">
+    Describe cuándo enviar (la IA analiza esto contra la transcripción de llamada):
+
+    ```
+    Ejemplo: "¿El cliente solicitó una devolución de llamada, pidió ser
+    contactado más tarde, o quiso que alguien hiciera seguimiento con él?"
+    ```
+
+    <Tip>
+    Sé específico. Cuanto más detallada sea tu descripción de activación, más precisa será la coincidencia de IA.
+    </Tip>
+
+    **O:** Activa "Siempre enviar después de cada llamada" para omitir la verificación de condiciones
+  </Step>
+
+  <Step title="Configurar destinatarios">
+    **Destinatarios fijos:** Ingresa direcciones de correo electrónico específicas (soporta múltiples)
+
+    ```
+    Ejemplo: soporte@empresa.com, gerente@empresa.com
+    ```
+
+    **Destinatarios dinámicos (impulsados por IA):** La IA dirige a diferentes destinatarios según el contenido de la llamada
+
+    ```
+    Ejemplo: Dirigir quejas por gravedad
+    - Si amenaza legal → legal@empresa.com
+    - Si enojado/cancelando → retencion@empresa.com
+    - Si problema de producto → calidad@empresa.com
+    - De lo contrario → soporte@empresa.com
+
+    Ejemplo: Dirigir problemas técnicos por tipo
+    - Si problema de sitio web → dev@empresa.com
+    - Si sistema de facturación → facturacion-tech@empresa.com
+    - De lo contrario → soporte-tech@empresa.com
+
+    Ejemplo: Dirigir pedidos por valor
+    - Si pedido mayor a $1000 → gerente-ventas@empresa.com
+    - De lo contrario → pedidos@empresa.com
+    ```
+  </Step>
+
+  <Step title="Diseñar plantilla de correo electrónico">
+    **Asunto:** `Devolución de llamada solicitada`
+
+    **Cuerpo:** Usa el editor de texto enriquecido con variables (ver [Variables de plantilla](#variables-de-plantilla) abajo)
+
+    - **Variables del sistema:** Haz clic en el selector de variables para insertar (p. ej., `{{customer_name}}`, `{{conversation_summary}}`)
+    - **Variables dinámicas:** Escribe `{{dyn_` + nombre descriptivo (p. ej., `{{dyn_appointment_date}}`)
+  </Step>
+
+  <Step title="Guardar y habilitar">
+    Guardar notificación → Activar interruptor **Habilitado**
+  </Step>
+</Steps>
+
+---
+
+## Variables de plantilla
+
+### Variables del sistema
+
+Usa el **selector de variables** en el editor para insertarlas.
+
+<Info>
+**Disponibilidad:** Algunas variables solo se completan bajo ciertas condiciones:
+- Números de teléfono (`customer_number`, `to_number`) - Solo llamadas telefónicas
+- Datos del cliente (`customer_name`, `customer_email`) - Solo si el llamante existe como contacto en tu sistema
+- Transcripción de conversación - Solo si la transcripción está habilitada
+</Info>
+
+**Detalles de conversación:**
+- `{{conversation_date}}` - Fecha/hora completa en formato de 24 horas
+- `{{conversation_time}}` - Hora en formato de 12 horas
+- `{{conversation_duration}}` - Duración en formato MM:SS
+- `{{conversation_status}}` - Estado (Completado, Fallido, etc.)
+- `{{conversation_direction}}` - Entrante/Saliente
+- `{{conversation_summary}}` - Resumen generado por IA
+- `{{conversation_transcript}}` - Transcripción completa con texto de respaldo
+- `{{transcript}}` - Transcripción simple (sin respaldo)
+- `{{conversation_url}}` - Enlace para ver conversación
+- `{{conversation_uuid}}` - Identificador único
+
+**Agente y cuenta:**
+- `{{agent_name}}` - Nombre del agente IA
+- `{{account_name}}` - Nombre de tu organización
+
+**Información del cliente** (solo si existe el contacto):
+- `{{customer_number}}` - Número de teléfono del cliente (solo llamadas telefónicas)
+- `{{customer_name}}` - Nombre del cliente (si existe el contacto)
+- `{{customer_email}}` - Correo electrónico del cliente (si existe el contacto)
+- `{{to_number}}` - Número de teléfono llamado (solo llamadas telefónicas)
+
+### Variables dinámicas
+
+**Cómo funcionan:** Escribe `{{dyn_` seguido de un nombre descriptivo. La IA analiza la transcripción de llamada y extrae la información.
+
+**Ejemplos:**
+```
+{{dyn_appointment_date}} → La IA encuentra la fecha mencionada en la llamada
+{{dyn_appointment_time}} → La IA encuentra la hora mencionada
+{{dyn_issue_summary}} → La IA resume el problema discutido
+{{dyn_ticket_number}} → La IA localiza cualquier referencia de ticket
+{{dyn_next_steps}} → La IA identifica los elementos de acción acordados
+{{dyn_shipping_address}} → La IA extrae la dirección mencionada
+{{dyn_order_number}} → La IA encuentra la referencia de pedido
+```
+
+<Tip>
+El nombre de la variable guía a la IA. Nombres más específicos = mejor precisión de extracción.
+
+✅ `{{dyn_rescheduled_appointment_date}}`
+❌ `{{dyn_date}}`
+</Tip>
+
+---
+
+## Ejemplos
+
+<AccordionGroup>
+  <Accordion title="Confirmación de cita" icon="calendar-check">
+    **Activador:**
+    ```
+    ¿El llamante programó, reservó o confirmó una cita o reunión?
+    ```
+
+    **Destinatarios:** Fijo - `equipo@empresa.com`
+
+    **Asunto:** `Cita confirmada - {{dyn_appointment_date}}`
+
+    **Cuerpo:**
+    ```
+    Hola {{customer_first_name}},
+
+    Tu cita está confirmada:
+
+    📅 {{dyn_appointment_date}} a las {{dyn_appointment_time}}
+    📍 {{dyn_location}}
+    🔗 {{dyn_meeting_link}}
+
+    ¿Necesitas reprogramar? Llama a {{agent_name}}
+
+    Saludos,
+    {{agent_name}}
+    ```
+
+    **Variables usadas:**
+    - Sistema: `{{customer_first_name}}`, `{{agent_name}}`
+    - Dinámicas: `{{dyn_appointment_date}}`, `{{dyn_appointment_time}}`, `{{dyn_location}}`, `{{dyn_meeting_link}}`
+  </Accordion>
+
+  <Accordion title="Solicitud de devolución de llamada" icon="phone">
+    **Activador:**
+    ```
+    ¿El cliente solicitó una devolución de llamada, llamada de seguimiento, o pidió ser contactado más tarde?
+    ```
+
+    **Destinatarios:** Fijo - `soporte@empresa.com`
+
+    **Asunto:** `Devolución de llamada solicitada`
+
+    **Cuerpo:**
+    ```
+    El cliente solicitó devolución de llamada:
+
+    Teléfono: {{customer_number}}
+    Fecha: {{conversation_date}}
+    Razón: {{conversation_summary}}
+
+    Ver llamada: {{conversation_url}}
+    ```
+
+    **Variables usadas:**
+    - Sistema: `{{customer_number}}`, `{{conversation_date}}`, `{{conversation_summary}}`, `{{conversation_url}}`
+  </Accordion>
+
+  <Accordion title="Enrutamiento inteligente por gravedad" icon="route">
+    **Activador:**
+    ```
+    ¿El cliente expresó insatisfacción, presentó una queja o reportó un problema?
+    ```
+
+    **Destinatarios:** Dinámico
+    ```
+    Dirigir por gravedad:
+    - Si amenaza legal → legal@empresa.com
+    - Si enojado/cancelando → retencion@empresa.com
+    - Si problema de producto → calidad@empresa.com
+    - De lo contrario → soporte@empresa.com
+    ```
+
+    **Asunto:** `Problema del cliente - {{dyn_severity}}`
+
+    **Cuerpo:**
+    ```
+    Problema reportado:
+
+    Cliente: {{customer_number}}
+    Gravedad: {{dyn_severity}}
+    Problema: {{dyn_issue_summary}}
+
+    Ver llamada completa: {{conversation_url}}
+    ```
+
+    **Variables usadas:**
+    - Sistema: `{{customer_number}}`, `{{conversation_url}}`
+    - Dinámicas: `{{dyn_severity}}`, `{{dyn_issue_summary}}`
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Consejos
+
+<AccordionGroup>
+  <Accordion title="Escribir activadores específicos" icon="bullseye">
+    ❌ Malo: "Cliente descontento"
+
+    ✅ Bueno: "¿El cliente expresó insatisfacción, frustración, mencionó estar descontento, o amenazó con cancelar/dejar una reseña negativa?"
+  </Accordion>
+
+  <Accordion title="Probar con llamadas reales" icon="vial">
+    Habilita la notificación y prueba con llamadas reales o de prueba para verificar la activación y el contenido.
+  </Accordion>
+
+  <Accordion title="Mantener los correos electrónicos cortos" icon="align-left">
+    - 3-5 párrafos máximo
+    - Un propósito claro
+    - Una sola llamada a la acción
+    - Viñetas para múltiples elementos
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Solución de problemas
+
+<AccordionGroup>
+  <Accordion title="El correo electrónico no se envía" icon="envelope-open-text">
+    **Posibles causas:**
+    - La notificación está deshabilitada
+    - La condición de activación no coincide con el contenido de la llamada
+    - El cliente no tiene una dirección de correo electrónico válida
+
+    **Soluciones:**
+    - Verificar que la notificación esté habilitada (activar)
+    - Revisar la descripción del activador y probar con llamadas coincidentes
+    - Verificar que el contacto tenga correo electrónico o usar extracción de destinatario dinámico
+  </Accordion>
+
+  <Accordion title="Las variables no se completan" icon="brackets-curly">
+    **Posibles causas:**
+    - Error tipográfico en el nombre de la variable
+    - Nombre de variable dinámica demasiado vago
+    - Datos no disponibles (p. ej., cliente no en el sistema)
+
+    **Soluciones:**
+    - Usar nombres de variables exactos del selector de variables
+    - Hacer los nombres de variables dinámicas más específicos y descriptivos
+    - Probar con llamadas reales para verificar la extracción
+    - Verificar [condiciones de disponibilidad](#variables-de-plantilla) para variables del sistema
+  </Accordion>
+
+  <Accordion title="Enrutamiento incorrecto" icon="route">
+    **Posibles causas:**
+    - Descripción de reglas de enrutamiento poco clara
+    - La IA interpreta mal el contenido de la llamada
+
+    **Soluciones:**
+    - Revisar y aclarar la descripción de las reglas de enrutamiento
+    - Hacer los criterios más explícitos con palabras clave específicas
+    - Probar con llamadas de muestra y ajustar reglas
+    - Agregar ruta de respaldo "De lo contrario"
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Próximos pasos
+
+<CardGroup cols={2}>
+  <Card title="Objetivos de conversación" icon="bullseye" href="/es/build/analytics/conversation-goals">
+    Establecer objetivos que activen correos electrónicos
+  </Card>
+  <Card title="Panel de control" icon="chart-line" href="/es/optimize/analytics-dashboard">
+    Monitorear rendimiento de correos electrónicos
+  </Card>
+  <Card title="Objetivos de conversación" icon="target" href="/es/build/analytics/conversation-goals">
+    Configurar condiciones de activación
+  </Card>
+  <Card title="Contexto dinámico" icon="brackets-curly" href="/es/build/advanced/dynamic-context">
+    Pasar datos para variables
+  </Card>
+</CardGroup>

@@ -1,0 +1,473 @@
+---
+title: "Inactivité, délais d'expiration et détection de pause"
+description: "Configurez les rappels, les pauses et les délais d'expiration de conversation pour gérer le flux et la durée des appels"
+icon: "hourglass"
+"keywords": "détection d'inactivité, délai d'expiration de conversation, détection de pause, durée d'appel, paramètres de délai, gestion de conversation IA"
+"og:description": "Configurez des rappels intelligents, la détection de pause et les délais d'expiration pour gérer le flux et la durée des conversations IA."
+---
+
+## Aperçu
+
+Les paramètres d'inactivité et de délai d'expiration permettent à vos agents IA de gérer avec élégance les périodes de silence, de gérer les pauses naturelles de conversation et d'appliquer des durées de conversation maximales. Ces contrôles sont essentiels pour créer des conversations professionnelles et conscientes du temps qui respectent à la fois les besoins des utilisateurs et les contraintes opérationnelles.
+
+Ces paramètres fonctionnent ensemble pour créer un flux de conversation naturel tout en évitant les problèmes courants comme les appels abandonnés, les temps d'attente excessifs et les conversations interminables.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/inactivity/inactivity-light.png" alt="Configuration Inactivité et délai d'expiration montrant la barre latérale de navigation avec la section Opérations développée et Inactivité et délai d'expiration sélectionné, onglets SOURCE DE MESSAGE (Rappels, Comportement de pause, Monologue, Délai d'expiration) avec Rappels actif, bouton Détection d'inactivité activé, section CONFIGURATION DE TIMING avec Délai de rappel défini à 6 secondes et Rappels max définis à 3, section MESSAGES DE RAPPEL montrant le message 'Hallo??', et section MESSAGE DE FIN avec 'Auf Wiederhören.', plus bouton Par défaut/Personnalisé" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/inactivity/inactivity-dark.png" alt="Configuration Inactivité et délai d'expiration montrant la barre latérale de navigation avec la section Opérations développée et Inactivité et délai d'expiration sélectionné, onglets SOURCE DE MESSAGE (Rappels, Comportement de pause, Monologue, Délai d'expiration) avec Rappels actif, bouton Détection d'inactivité activé, section CONFIGURATION DE TIMING avec Délai de rappel défini à 6 secondes et Rappels max définis à 3, section MESSAGES DE RAPPEL montrant le message 'Hallo??', et section MESSAGE DE FIN avec 'Auf Wiederhören.', plus bouton Par défaut/Personnalisé" />
+  </div>
+</Frame>
+
+<Note>
+**Application universelle :** Les paramètres d'inactivité et de délai d'expiration s'appliquent à tous les types de conversation, y compris les appels téléphoniques (SIP/PSTN) et les conversations basées sur le web.
+
+La configuration est disponible dans **Paramètres de l'agent → Opérations → Inactivité et délai d'expiration**. Les paramètres incluent les rappels, la détection de pause et les délais d'expiration de conversation.
+</Note>
+
+---
+
+## Aperçu des fonctionnalités
+
+### Trois composants clés
+
+<CardGroup cols={3}>
+  <Card title="Rappels" icon="bell">
+    Invites périodiques pendant le silence pour s'assurer que l'utilisateur est toujours engagé
+  </Card>
+  <Card title="Détection de pause" icon="pause">
+    Reconnaissance intelligente des pauses naturelles lorsque les utilisateurs ont besoin de temps
+  </Card>
+  <Card title="Délai d'expiration de conversation" icon="clock">
+    Durée maximale pour l'ensemble de la conversation
+  </Card>
+</CardGroup>
+
+---
+
+## Rappels
+
+### Détection de l'inactivité de l'utilisateur
+
+Les rappels aident à s'assurer que les utilisateurs ne se sont pas déconnectés, sont toujours attentifs ou ont besoin d'aide. Lorsqu'ils sont activés, l'agent vérifiera périodiquement / rappellera l'utilisateur pendant les périodes de silence.
+
+<Tabs>
+  <Tab title="Configuration">
+    ### Paramètres de base
+
+    <AccordionGroup>
+      <Accordion title="Détection d'inactivité" icon="toggle-on">
+        **Interrupteur principal pour la fonctionnalité de rappel**
+
+        Lorsqu'il est activé, l'agent surveillera les périodes de silence de l'utilisateur et enverra des messages de rappel. Lorsqu'il est désactivé, aucun rappel ne se produira (bien que le délai d'expiration de conversation s'applique toujours).
+
+        **Par défaut :** Activé
+      </Accordion>
+
+      <Accordion title="Délai de rappel" icon="timer">
+        **Secondes avant l'envoi d'un message de rappel (5-300 secondes)**
+
+        Combien de temps l'agent attend en silence avant d'envoyer un rappel à l'utilisateur.
+
+        - **Recommandation typique (5-15s) :** Bon pour la plupart des conversations, maintient l'engagement
+        - **Délai prolongé (20-45s) :** Pour les scénarios où les utilisateurs peuvent avoir besoin de temps pour réfléchir
+        - **Délai long (60-300s) :** Lorsque les utilisateurs doivent rechercher des informations ou effectuer des actions
+
+        **Par défaut :** 10 secondes
+
+        <Tip>
+        Pour les scénarios où les utilisateurs doivent rechercher des informations (numéros de compte, adresses, etc.), utilisez des valeurs de délai prolongées ou longues pour éviter de les interrompre.
+        </Tip>
+      </Accordion>
+
+      <Accordion title="Rappels max" icon="repeat">
+        **Nombre maximum de rappels avant de terminer l'appel (0-10)**
+
+        Combien de fois l'agent tentera de réengager avant de terminer gracieusement la conversation.
+
+        - **0 rappels :** Désactivé (la conversation continue indéfiniment jusqu'au délai d'expiration)
+        - **1-3 rappels :** Sortie rapide pour les appels probablement abandonnés
+        - **4-7 rappels :** Persistance équilibrée
+        - **8-10 rappels :** Très patient, plusieurs tentatives de réengagement
+
+        **Par défaut :** 3 rappels
+
+        <Warning>
+        Définir ceci à 0 désactive la fonctionnalité de rappel mais ne désactive PAS le délai d'expiration de conversation. La conversation se terminera toujours lorsque le délai d'expiration global est atteint.
+        </Warning>
+      </Accordion>
+    </AccordionGroup>
+
+    ### Comment ça fonctionne
+
+    ```mermaid
+    sequenceDiagram
+        participant Utilisateur
+        participant Agent
+        Utilisateur->>Agent: Bonjour, j'ai besoin d'aide
+        Agent->>Utilisateur: Comment puis-je vous aider ?
+        Note over Utilisateur,Agent: L'utilisateur arrête de répondre
+        Note over Agent: Attendre 10 secondes (délai de rappel)
+        Agent->>Utilisateur: "Êtes-vous toujours là ?" (Rappel #1)
+        Note over Utilisateur,Agent: Toujours pas de réponse
+        Note over Agent: Attendre encore 10 secondes
+        Agent->>Utilisateur: "Bonjour ? Pouvez-vous m'entendre ?" (Rappel #2)
+        Note over Utilisateur,Agent: Toujours pas de réponse
+        Note over Agent: Attendre encore 10 secondes
+        Agent->>Utilisateur: "Je vais terminer l'appel maintenant" (Rappel #3)
+        Agent->>Utilisateur: Termine la conversation gracieusement
+    ```
+  </Tab>
+  <Tab title="Messages">
+    ### Messages de rappel
+
+    Personnalisez ce que dit l'agent pendant les rappels. Les messages peuvent être alternés pour sonner plus naturel lors de plusieurs rappels.
+
+    <Tabs>
+      <Tab title="Messages par défaut">
+        **Messages fournis par le système**
+
+        La plateforme fournit des messages de rappel par défaut qui correspondent à la langue configurée de votre agent. Ces messages sont automatiquement sélectionnés en fonction des paramètres de langue de la voix et du transcripteur de votre agent.
+
+        **Avantages :**
+        - Aucune configuration requise
+        - Rédigés professionnellement
+        - Variété pour sonner naturel
+      </Tab>
+      <Tab title="Messages personnalisés">
+        **Créez vos propres messages de rappel**
+
+        Passez aux messages personnalisés pour créer des rappels spécifiques à la marque ou sensibles au contexte.
+
+        **Fonctionnalités :**
+        - Ajoutez plusieurs messages (alternés automatiquement)
+        - Faites glisser pour réorganiser la priorité
+        - Personnalisation illimitée
+
+        **Exemples de messages personnalisés :**
+        1. "Hé, je n'ai pas compris ça. Êtes-vous toujours avec moi ?"
+        2. "Juste pour vérifier - avez-vous besoin de plus de temps ?"
+        3. "Je suis là quand vous êtes prêt. Dois-je continuer ?"
+
+        <Tip>
+        Ajoutez 3 à 5 messages variés pour que les rappels répétés sonnent plus naturels et moins robotiques.
+        </Tip>
+      </Tab>
+    </Tabs>
+
+    ### Message de fin
+
+    Le message final prononcé avant de terminer la conversation après que le maximum de rappels soit atteint.
+
+    **Par défaut :** "Je vais terminer l'appel maintenant. N'hésitez pas à rappeler à tout moment !"
+
+    **Exemples personnalisés :**
+    - "Puisque je n'ai pas eu de vos nouvelles, je vais me déconnecter maintenant. Passez une excellente journée !"
+    - "Je vais vous laisser maintenant. Merci d'avoir appelé, et n'hésitez pas à nous contacter à nouveau si vous avez besoin de quoi que ce soit."
+    - "Il semble que nous nous soyons déconnectés. Je termine l'appel, mais n'hésitez pas à rappeler."
+  </Tab>
+  <Tab title="Cas d'usage">
+    ### Scénarios courants
+
+    <AccordionGroup>
+      <Accordion title="Support client" icon="headset">
+        **Scénario :** Interactions générales de service client
+
+        **Configuration :**
+        - Délai de rappel : 10 secondes
+        - Rappels max : 3-4
+        - Activer la détection de pause : Oui
+        - Messages : "Êtes-vous toujours là ?"
+
+        **Pourquoi :** Délai standard avec détection de pause pour quand les utilisateurs doivent rechercher des choses
+      </Accordion>
+
+      <Accordion title="Collecte d'informations" icon="clipboard-list">
+        **Scénario :** L'agent demande des numéros de compte, adresses ou autres données
+
+        **Configuration :**
+        - Délai de rappel : 10 secondes
+        - Rappels max : 3-4
+        - Activer la détection de pause : Oui
+        - Messages : "Prenez votre temps. Je suis prêt quand vous avez cette information."
+
+        **Pourquoi :** La détection de pause suspend automatiquement les rappels lorsque les utilisateurs disent qu'ils recherchent des informations
+      </Accordion>
+
+      <Accordion title="Sondages automatisés" icon="clipboard-question">
+        **Scénario :** Sondage vocal ou collecte de commentaires
+
+        **Configuration :**
+        - Délai de rappel : 10 secondes
+        - Rappels max : 2
+        - Activer la détection de pause : Non
+        - Messages : "Je n'ai pas entendu de réponse. Voulez-vous continuer ?"
+
+        **Pourquoi :** Rythme rapide maintient l'engagement, moins de tentatives évitent les longues attentes
+      </Accordion>
+
+      <Accordion title="Prise de rendez-vous" icon="calendar">
+        **Scénario :** L'utilisateur vérifie son calendrier
+
+        **Configuration :**
+        - Délai de rappel : 15 secondes
+        - Rappels max : 4-5
+        - Activer la détection de pause : Oui
+        - Messages : "J'attendrai pendant que vous vérifiez votre calendrier. Faites-moi savoir quand vous êtes prêt."
+
+        **Pourquoi :** La détection de pause suspend les rappels lorsque les utilisateurs disent qu'ils vérifient leur calendrier
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+</Tabs>
+
+---
+
+## Détection de pause
+
+### Pauses de conversation naturelles
+
+La détection de pause permet à l'agent de reconnaître intelligemment lorsque les utilisateurs ont besoin de temps pour des activités spécifiques - sans les bombarder de messages de rappel. Cela crée un flux de conversation plus naturel.
+
+<Tabs>
+  <Tab title="Aperçu">
+    ### Comment fonctionne la détection de pause
+
+    L'agent utilise l'IA pour détecter lorsqu'un utilisateur demande explicitement du temps pour effectuer une action, puis suspend temporairement les rappels d'inactivité.
+
+    **Déclencheurs de pause courants :**
+    - "Laissez-moi vérifier mon calendrier"
+    - "Attendez, je dois trouver ce document"
+    - "Pouvez-vous me donner une minute pour demander à mon collègue ?"
+    - "Je cherche ça maintenant"
+    - "Laissez-moi prendre ma carte de crédit"
+
+    **Pendant une pause :**
+    - ✅ Les rappels d'inactivité sont suspendus
+    - ✅ La durée de pause maximale est appliquée
+    - ✅ Le délai d'expiration global de conversation s'applique toujours
+
+    ```mermaid
+    sequenceDiagram
+        participant Utilisateur
+        participant Agent
+        Utilisateur->>Agent: J'ai besoin de prendre un rendez-vous
+        Agent->>Utilisateur: Bien sûr ! Quand cela vous convient-il ?
+        Utilisateur->>Agent: Laissez-moi vérifier mon calendrier
+        Note over Agent: Détecte la demande de pause
+        Note over Agent: Suspend les rappels jusqu'à 5 minutes
+        Note over Utilisateur: L'utilisateur vérifie le calendrier (2 minutes)
+        Utilisateur->>Agent: Que diriez-vous de mardi à 14h ?
+        Note over Agent: Reprend l'opération normale
+        Agent->>Utilisateur: Mardi à 14h fonctionne très bien !
+    ```
+  </Tab>
+  <Tab title="Configuration">
+    ### Paramètres de pause par défaut
+
+    <AccordionGroup>
+      <Accordion title="Activer la pause par défaut" icon="toggle-on">
+        **Interrupteur principal pour la détection automatique de pause**
+
+        Lorsqu'il est activé, l'agent détecte automatiquement les scénarios de pause courants et suspend temporairement les rappels.
+
+        **Par défaut :** Activé
+
+        <Note>
+        La détection de pause nécessite que la détection d'inactivité soit activée. Si la détection d'inactivité est désactivée, la détection de pause sera également désactivée.
+        </Note>
+      </Accordion>
+
+      <Accordion title="Durée de pause maximale" icon="clock">
+        **Temps maximum avant de reprendre les vérifications (1-3600 secondes)**
+
+        Combien de temps l'agent attendra pendant une pause détectée avant de reprendre le comportement de rappel normal.
+
+        - **Durée courte (60-120s) :** Actions rapides uniquement
+        - **Durée moyenne (180-300s) :** Scénarios de pause standard
+        - **Durée longue (600-3600s) :** Activités prolongées
+
+        **Par défaut :** 300 secondes (5 minutes)
+
+        <Tip>
+        Définissez ceci en fonction des activités typiques que vos utilisateurs effectuent. Par exemple, vérifier un calendrier pourrait nécessiter 120s, tandis que rassembler des documents pourrait nécessiter 300s.
+        </Tip>
+      </Accordion>
+    </AccordionGroup>
+
+    ### Détection automatique
+
+    L'agent détecte automatiquement les scénarios de pause basés sur la compréhension du langage naturel. Les modèles courants incluent :
+
+    - **Demandes temporelles :** "donnez-moi une seconde", "attendez une minute", "attendez"
+    - **Déclarations d'action :** "laissez-moi vérifier", "je cherche", "je dois trouver"
+    - **Consultation d'autres :** "laissez-moi demander", "je devrai vérifier avec"
+    - **Collecte d'informations :** "je cherche ça maintenant", "je consulte", "je cherche"
+
+    Aucune configuration explicite nécessaire - l'IA gère la détection automatiquement.
+  </Tab>
+  <Tab title="Remplacements personnalisés">
+    ### Scénarios de pause avancés
+
+    Pour les cas d'usage spécialisés, créez des règles de remplacement de pause personnalisées avec des durées prolongées au-delà de la pause par défaut.
+
+    **Composants de remplacement :**
+
+    <AccordionGroup>
+      <Accordion title="Nom du remplacement" icon="tag">
+        Nom descriptif pour le scénario de pause (ex : "Recherche de document étendue", "Vérification de calendrier multiple")
+      </Accordion>
+
+      <Accordion title="Durée max" icon="timer">
+        Durée maximale personnalisée pour ce scénario spécifique (remplace la durée de pause par défaut)
+
+        Définissez des durées plus longues pour les scénarios où les utilisateurs ont besoin de temps prolongé au-delà de la pause standard de 5 minutes.
+      </Accordion>
+    </AccordionGroup>
+
+    ### Exemple de remplacement
+
+    **Nom :** Coordination de calendrier étendue
+
+    **Durée max :** 600 secondes (10 minutes)
+
+    **Cas d'usage :** Les utilisateurs professionnels planifiant sur plusieurs calendriers ou coordonnant avec des équipes ont besoin de plus de temps que la pause par défaut de 5 minutes. L'agent détectera automatiquement quand ils disent "laissez-moi vérifier mon calendrier" et suspendra les rappels jusqu'à 10 minutes au lieu des 5 minutes par défaut.
+  </Tab>
+</Tabs>
+
+---
+
+## Délai d'expiration de conversation
+
+### Durée maximale globale
+
+Le délai d'expiration de conversation définit une durée maximale absolue pour l'ensemble de la conversation, quel que soit le niveau d'activité ou d'engagement.
+
+<Card title="Pourquoi les délais d'expiration de conversation sont importants" icon="shield-check">
+  Les délais d'expiration de conversation :
+  - Empêchent les coûts excessifs des conversations sans fin
+  - Appliquent les politiques opérationnelles et les SLA
+  - Protègent contre les abus ou les problèmes système
+  - Permettent une planification prévisible des ressources
+  - Assurent un accès équitable dans les environnements à fort volume
+</Card>
+
+### Configuration
+
+<AccordionGroup>
+  <Accordion title="Durée maximale de conversation" icon="clock">
+    **Durée maximale totale de conversation en secondes (0-illimité)**
+
+    Le temps maximum absolu pour l'ensemble de la conversation du début à la fin.
+
+    - **Délai court (120-300s) :** Interactions rapides, cas d'usage transactionnels
+    - **Délai moyen (300-900s) :** Appels de service client standard
+    - **Délai long (900-3600s) :** Support complexe, consultations détaillées
+    - **Délai très long (3600+s) :** Sessions prolongées, scénarios spécialisés
+
+    **Par défaut :** 300 secondes (5 minutes)
+
+    <Note>
+    C'est une limite stricte qui ne peut pas être prolongée. Planifiez de manière conservatrice en fonction de la durée de conversation typique plus un temps tampon.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Message de fin de délai d'expiration" icon="message">
+    **Message prononcé lorsque le délai d'expiration de conversation est atteint**
+
+    L'agent prononce ce message avant de terminer la conversation en raison du dépassement de la durée maximale.
+
+    **Par défaut :** "Nous avons atteint notre temps d'appel maximum. Merci pour votre temps, et n'hésitez pas à rappeler si vous avez besoin de plus d'aide !"
+
+    **Exemples personnalisés :**
+    - "Nous avons atteint notre limite de temps. Merci d'avoir appelé, et n'hésitez pas à nous recontacter si vous avez besoin d'assistance."
+    - "Notre temps de session est écoulé. Veuillez rappeler à tout moment si vous avez besoin de plus d'aide."
+    - "Nous avons atteint la durée maximale d'appel. Un résumé sera envoyé à votre email. Merci !"
+  </Accordion>
+</AccordionGroup>
+
+### Comportement
+
+- **Toujours activé :** Le délai d'expiration s'exécute indépendamment de tous les autres paramètres
+- **Limite absolue :** Ne peut pas être mis en pause ou prolongé par aucun mécanisme
+- **Inclut tout le temps :** Compte le temps total écoulé incluant les pauses et le silence
+- **Fin gracieuse :** L'agent prononce le message de fin et termine poliment
+
+---
+
+## Dépannage
+
+### Problèmes et solutions courants
+
+<AccordionGroup>
+  <Accordion title="L'agent vérifie trop fréquemment" icon="bell-ring">
+    **Symptômes :** Les rappels interrompent les utilisateurs qui sont toujours engagés
+
+    **Solutions :**
+    - Augmenter le délai de rappel (essayez 15s au lieu de 10s, ou 12s au lieu de 8s)
+    - Activer la détection de pause si ce n'est pas déjà fait
+    - Vérifier si les utilisateurs font naturellement des pauses (temps de réflexion)
+    - Considérer si les paramètres de détection d'activité vocale coupent les utilisateurs
+  </Accordion>
+
+  <Accordion title="L'agent n'attend pas assez longtemps pendant les pauses" icon="hourglass-end">
+    **Symptômes :** Les rappels se déclenchent pendant que les utilisateurs rassemblent des informations
+
+    **Solutions :**
+    - Augmenter la durée de pause par défaut (essayez 300-600s)
+    - Créer des remplacements de pause personnalisés pour des scénarios spécifiques
+    - Vérifier que la détection de pause est activée
+    - Vérifier les événements de détection de pause dans les journaux de conversation
+  </Accordion>
+
+  <Accordion title="Les conversations se terminent trop rapidement" icon="clock-rotate-left">
+    **Symptômes :** Les conversations légitimes sont terminées prématurément
+
+    **Solutions :**
+    - Augmenter le délai d'expiration de conversation pour correspondre aux durées d'appel typiques
+    - Vérifier le paramètre de rappels max (peut être trop bas)
+    - Analyser la durée de conversation réelle dans les journaux
+    - Considérer si le délai de rappel est trop agressif
+  </Accordion>
+
+  <Accordion title="Les réponses de l'agent sont trop verbeuses" icon="volume-high">
+    **Symptômes :** L'agent fournit des réponses trop détaillées ou longues
+
+    **Solutions :**
+    - Mettre à jour les instructions de l'agent pour encourager la brièveté
+    - Ajouter des directives d'invite comme "Gardez les réponses en dessous de 30 secondes"
+    - Utiliser des exemples de réponses concises dans les instructions
+    - Considérer si le modèle IA tend vers des réponses verbeuses
+  </Accordion>
+
+  <Accordion title="Les conversations durent trop longtemps et coûtent trop cher" icon="coins">
+    **Symptômes :** Durées de conversation excessives impactant les coûts
+
+    **Solutions :**
+    - Réduire le délai d'expiration de conversation pour appliquer des limites strictes
+    - Mettre à jour les instructions de l'agent pour encourager des réponses brèves et concises
+    - Réduire les rappels max pour quitter les appels inactifs plus rapidement
+    - Considérer la réduction du délai de rappel pour une détection de désengagement plus rapide
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Fonctionnalités connexes
+
+<CardGroup cols={2}>
+  <Card title="VAD et détection de tour" icon="microphone-lines" href="/fr/build/advanced/vad-turn-detection">
+    Configurez la détection d'activité vocale et le comportement de prise de tour
+  </Card>
+  <Card title="Actions de contrôle d'appel" icon="phone-hangup" href="/fr/build/actions/call-control">
+    Contrôle d'appel programmatique incluant les actions de fin d'appel
+  </Card>
+  <Card title="Messages d'accueil" icon="hand-wave" href="/fr/build/conversation/greeting-messages">
+    Configurez comment les conversations commencent
+  </Card>
+  <Card title="Objectifs de conversation" icon="bullseye-arrow" href="/fr/build/analytics/conversation-goals">
+    Suivez le succès et l'achèvement des conversations
+  </Card>
+</CardGroup>

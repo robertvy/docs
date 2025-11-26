@@ -1,0 +1,417 @@
+---
+title: "Greeting Messages"
+description: "Configure how your agent starts conversations"
+icon: "hand-wave"
+"keywords": "AI greeting messages, conversational AI greetings, dynamic greetings, personalized agent messages, conversation starters, AI welcome messages"
+"og:description": "Configure dynamic, personalized greeting messages that set the right tone for every AI agent conversation."
+---
+
+## Overview
+
+The greeting is the first thing customers hear when connecting with your agent. A well-crafted greeting sets the tone, establishes expectations, and guides the conversation in the right direction.
+
+## Greeting Modes
+
+Choose from three different greeting modes:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/greeting-light.png" alt="Greeting configuration showing navigation sidebar with Abilities section expanded and Greeting selected, Inbound and Outbound tabs, three greeting mode options (User Initiates, AI Agent Initiates with Dynamic Message, AI Agent Initiates with Fixed Message), fixed message editor with variable support, message delay slider, and barge-in toggle" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/greeting-dark.png" alt="Greeting configuration showing navigation sidebar with Abilities section expanded and Greeting selected, Inbound and Outbound tabs, three greeting mode options (User Initiates, AI Agent Initiates with Dynamic Message, AI Agent Initiates with Fixed Message), fixed message editor with variable support, message delay slider, and barge-in toggle" />
+  </div>
+</Frame>
+
+<Tabs>
+  <Tab title="Fixed Greeting">
+    **Best for**: Consistent, branded greetings
+
+    Your agent says the exact same greeting every time.
+
+    ```text wrap
+    Hey! Thanks for calling Acme support. This is Alex. What can I help you with?
+    ```
+
+    **Advantages:**
+    - Consistent brand messaging
+    - Predictable customer experience
+    - Easy to test and refine
+    - No AI variability
+
+    **Use when:**
+    - Brand voice is critical
+    - Greeting includes specific disclaimers
+    - Consistency across all calls needed
+  </Tab>
+
+  <Tab title="AI-Generated">
+    **Best for**: Personalized, context-aware greetings
+
+    Your agent generates greetings dynamically based on available context.
+
+    **Example variations:**
+    ```text wrap
+    # With customer name:
+    "Hi Sarah! Thanks for calling. What can I help you with today?"
+
+    # VIP customer:
+    "Hi Mr. Johnson! Thanks for calling. What can I help you with today?"
+
+    # Time-based:
+    "Good morning! Thanks for calling Acme support. What brings you in?"
+
+    # Campaign-specific:
+    "Hey! I see you requested info about our Enterprise plan. Happy to help with that!"
+    ```
+
+    **Advantages:**
+    - Personalized to each caller
+    - Context-aware (time, campaign, customer type)
+    - Natural variability
+    - Can reference available data
+
+    **Use when:**
+    - You have rich contact data
+    - Personalization improves experience
+    - Different customer segments need different approaches
+  </Tab>
+
+  <Tab title="User Initiates">
+    **Best for**: Outbound calls where recipient speaks first
+
+    The agent waits silently for the customer to speak before responding.
+
+    **Customer:** "Hello?" / "Yes?" / "Who is this?"
+    **Agent:** "Hi! This is Alex from Acme. I'm calling about your recent inquiry. Do you have a moment?"
+
+    **Advantages:**
+    - Natural for outbound scenarios
+    - Customer speaks first as expected
+    - Agent responds after customer picks up
+
+    **Use when:**
+    - Making outbound calls
+    - Recipient will naturally say something when answering
+    - You want the customer to initiate the conversation
+
+    <Note>
+    **For most use cases, we recommend Fixed Greeting instead.** User Initiates is only useful in certain outbound calling scenarios.
+    </Note>
+  </Tab>
+</Tabs>
+
+---
+
+## Greeting Configuration
+
+### Initial Delay
+
+Control how long the agent waits before speaking (0-5 seconds).
+
+A delay of **0.5 seconds** is a good starting point for most use cases.
+
+### Interruptibility
+
+Control whether customers can interrupt the greeting.
+
+**Non-Interruptible (Recommended):**
+- Greeting plays in full without interruption
+- Ensures customers hear complete message
+- Professional and clear introduction
+- Best for most use cases
+
+**Interruptible:**
+- Customer can speak during greeting
+- Agent stops mid-greeting and listens
+- Can lead to incomplete introductions
+- Use only if customers frequently interrupt and non-interruptible greetings lead to suboptimal conversations or hangups
+
+<Tip>
+Non-interruptible greetings ensure your brand introduction and purpose are always communicated clearly. Keep greetings concise (under 10 seconds) for best results.
+</Tip>
+
+---
+
+## Inbound vs Outbound Greetings
+
+### Inbound Greetings
+
+Customers are calling you. They initiated contact.
+
+**Best practices:**
+- Thank them for calling
+- Identify your company/service
+- Introduce the agent (optional name)
+- Ask how you can help
+
+**Examples:**
+
+```text wrap
+# Standard support:
+"Thank you for calling Acme Software support. How can I help you today?"
+
+# With agent name:
+"Hi! This is Alex from Acme support. What can I help you with?"
+
+# Friendly:
+"Hey there! Thanks for calling. What brings you in today?"
+
+# Department-specific:
+"Acme Billing department, this is Sam. How can I assist you?"
+```
+
+---
+
+### Outbound Greetings
+
+You're calling the customer. You need to establish legitimacy and purpose quickly.
+
+**Best practices:**
+- Identify yourself and company
+- State purpose of call
+- Confirm you're speaking with right person
+- Ask if it's a good time
+
+**Examples:**
+
+```text wrap
+# Appointment reminder:
+"Hi, this is Alex from Acme Dental. I'm calling to confirm your appointment tomorrow at 2 PM. Is this still a good time for you?"
+
+# Lead follow-up:
+"Hello, this is Sarah from Acme Software. You recently requested information about our Enterprise plan. Do you have a few minutes to discuss how we can help?"
+
+# Customer feedback:
+"Hi! This is Jordan from Acme. You recently purchased our product, and I wanted to get your quick feedback. Do you have two minutes?"
+
+# Payment reminder:
+"Hello, this is the billing team at Acme. I'm calling about your account. Can we take care of that payment today?"
+```
+
+### Outbound Greeting Overrides
+
+Configure separate greetings for outbound calls in the **Greeting** section.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/outbound-greeting-light.png" alt="Outbound greeting configuration showing Outbound (custom) tab selected with toggle for 'Use same as inbound', three greeting mode options (User Initiates, AI Agent Initiates with Dynamic Message, AI Agent Initiates with Fixed Message), outbound fixed message editor, message delay slider, barge-in toggle, and save changes button" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/outbound-greeting-dark.png" alt="Outbound greeting configuration showing Outbound (custom) tab selected with toggle for 'Use same as inbound', three greeting mode options (User Initiates, AI Agent Initiates with Dynamic Message, AI Agent Initiates with Fixed Message), outbound fixed message editor, message delay slider, barge-in toggle, and save changes button" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Enable outbound override">
+    Toggle "Configure separate outbound greeting"
+  </Step>
+  <Step title="Choose outbound greeting mode">
+    Fixed, AI-generated, or User initiates
+  </Step>
+  <Step title="Set outbound-specific delay">
+    Usually 0-0.5 seconds for outbound
+  </Step>
+  <Step title="Configure interruptibility">
+    Usually interruptible for natural feel
+  </Step>
+</Steps>
+
+<Note>
+By default, outbound calls mirror your inbound greeting. Use overrides when you need different behavior for proactive calls.
+</Note>
+
+---
+
+## Using Variables in Greetings
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/greeting-variables-light.png" alt="Greeting variables configuration showing Outbound (custom) tab with AI Agent Initiates with Fixed Message selected, outbound fixed message editor containing variable syntax, Detected Variables section showing test variable, message delay slider, and barge-in toggle" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/greeting-variables-dark.png" alt="Greeting variables configuration showing Outbound (custom) tab with AI Agent Initiates with Fixed Message selected, outbound fixed message editor containing variable syntax, Detected Variables section showing test variable, message delay slider, and barge-in toggle" />
+  </div>
+</Frame>
+
+### Contact Variables
+
+Personalize with customer information:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/contact-variables-light.png" alt="Contact variables in greeting showing Inbound tab with AI Agent Initiates with Fixed Message selected, fixed message editor with time-based and contact variable syntax using current_datetime and contact.full_name, Detected Variables section displaying the parsed variables, message delay slider, and barge-in toggle" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/contact-variables-dark.png" alt="Contact variables in greeting showing Inbound tab with AI Agent Initiates with Fixed Message selected, fixed message editor with time-based and contact variable syntax using current_datetime and contact.full_name, Detected Variables section displaying the parsed variables, message delay slider, and barge-in toggle" />
+  </div>
+</Frame>
+
+```jinja wrap
+Hi {{ contact.first_name | default("there") }}! Thanks for calling.
+```
+
+Time-based greetings using the built-in `current_datetime` variable:
+
+```jinja wrap
+Good {{ "morning" if current_datetime.hour < 12 else "afternoon" }}, {{ contact.full_name | default("there") }}!
+```
+
+<Tip>
+The `current_datetime` variable is automatically available in greetings and instructions for building time-based logic. See [Variables & Dynamic Content](/build/conversation/variables-dynamic-content) for more details.
+</Tip>
+
+### Conditional Greetings
+
+Use built-in contact variables:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/condition-greeting-light.png" alt="Conditional greeting configuration showing Inbound tab with AI Agent Initiates with Fixed Message selected, fixed message editor with if-else conditional logic using contact.email variable, Detected Variables section showing contact.first_name and contact.email, message delay slider, and barge-in toggle" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/condition-greeting-dark.png" alt="Conditional greeting configuration showing Inbound tab with AI Agent Initiates with Fixed Message selected, fixed message editor with if-else conditional logic using contact.email variable, Detected Variables section showing contact.first_name and contact.email, message delay slider, and barge-in toggle" />
+  </div>
+</Frame>
+
+```jinja wrap
+{% if contact.email %}
+Hello {{ contact.first_name }}, I have your email {{ contact.email }} on file.
+{% else %}
+Hi {{ contact.first_name }}, thanks for calling!
+{% endif %}
+How can I help you today?
+```
+
+Or use custom variables from your Dynamic Context API:
+
+```jinja wrap
+{% if account_tier == "premium" %}
+Hello {{ contact.first_name }}, thank you for being a valued premium customer.
+{% else %}
+Hi {{ contact.first_name }}, thanks for calling!
+{% endif %}
+How can I help you today?
+```
+
+<Note>
+Variables like `account_tier`, `company_name`, or custom fields must be provided via your [Dynamic Context API endpoint](/build/advanced/dynamic-context).
+</Note>
+
+---
+
+## Writing Great Greetings
+
+<AccordionGroup>
+  <Accordion title="Keep it brief" icon="clock">
+    Aim for under 10 seconds.
+
+    **Good:** "Hi! Thanks for calling Acme support. How can I help?"
+
+    **Too long:** "Hello and thank you for calling Acme Software technical support center. My name is Alex, and I'll be assisting you today..."
+  </Accordion>
+
+  <Accordion title="Sound natural" icon="comments">
+    Use conversational language.
+
+    **Good:** "Hey! Thanks for calling. What can I help with?"
+
+    **Avoid:** "Greetings, valued customer. Please state the nature of your inquiry."
+  </Accordion>
+
+  <Accordion title="Set expectations" icon="bullseye">
+    Make your purpose clear.
+
+    **Good:** "Hi! This is Alex from Acme Billing. I'm calling about your recent invoice."
+
+    **Avoid:** "Hello, this is Acme. I wanted to reach out to you today."
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Testing Greetings
+
+### What to Test
+
+<AccordionGroup>
+  <Accordion title="Timing" icon="clock">
+    - Is delay appropriate?
+    - Does agent start speaking too soon/late?
+    - Can customer interrupt if needed?
+  </Accordion>
+
+  <Accordion title="Content" icon="message">
+    - Is greeting clear and understandable?
+    - Does it establish purpose?
+    - Is tone appropriate?
+    - Any awkward phrasing?
+  </Accordion>
+
+  <Accordion title="Variables" icon="brackets-curly">
+    - Do variables render correctly?
+    - Are defaults working?
+    - Does conditional logic trigger properly?
+  </Accordion>
+
+  <Accordion title="Length" icon="ruler">
+    - Under 10 seconds?
+    - Customer stays engaged?
+    - No unnecessary words?
+  </Accordion>
+</AccordionGroup>
+
+### Testing Process
+
+1. **Test Call** in dashboard
+2. **Start Web Call**
+3. Listen to greeting multiple times
+4. Test with different contexts (VIP customer, different campaigns, etc.)
+5. Ask colleagues for feedback
+6. Refine based on actual call results
+
+---
+
+## Common Mistakes
+
+<AccordionGroup>
+  <Accordion title="Too formal" icon="user-tie">
+    **Avoid:** "Greetings. You have reached the Acme Corporation technical support division."
+
+    **Better:** "Hey! Thanks for calling Acme support. What can I help you with?"
+  </Accordion>
+
+  <Accordion title="Too casual" icon="face-smile">
+    **Avoid:** "Yo! What's up? What do you need?"
+
+    **Better:** "Hey there! Thanks for calling. What can I help with today?"
+  </Accordion>
+
+  <Accordion title="Missing company name" icon="building">
+    **Avoid:** "Hi, this is Alex. How can I help?"
+
+    **Better:** "Hey! This is Alex from Acme support. What brings you in today?"
+  </Accordion>
+
+  <Accordion title="No purpose for outbound calls" icon="phone-arrow-up-right">
+    **Avoid:** "Hi, is this Sarah? How are you today?"
+
+    **Better:** "Hi Sarah! This is Alex from Acme. You requested some info about our product - do you have a quick minute to chat?"
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Variables & Dynamic Content" icon="brackets-curly" href="/build/conversation/variables-dynamic-content">
+    Learn how to use variables in greetings and instructions
+  </Card>
+  <Card title="Prompt Engineering Guide" icon="book" href="/build/conversation/prompt-engineering-guide">
+    Master advanced instruction techniques
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/web-simulator">
+    Test your greetings and refine
+  </Card>
+</CardGroup>

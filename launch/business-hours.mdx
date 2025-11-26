@@ -1,0 +1,300 @@
+---
+title: "Business Hours & Availability"
+description: "Configure when outbound campaigns can place calls"
+icon: "clock"
+keywords: "campaign business hours, calling schedule, TCPA compliance, timezone management, outbound calling hours, DACH regulations, call time restrictions, holiday scheduling"
+og:description: "Configure business hours and calling schedules for outbound campaigns. Ensure TCPA and DACH compliance with timezone management and holiday scheduling."
+---
+
+## Overview
+
+Business hours control when outbound campaigns can place calls, ensuring calls only happen during appropriate times.
+
+Key benefits:
+- **Compliance**: Meet legal requirements like TCPA (8am-9pm local time in the U.S.)
+- **Customer experience**: Avoid calling during inconvenient hours
+- **Cost optimization**: Focus calling during high-answer-rate windows
+- **Timezone management**: Respect local time across regions
+
+## How Business Hours Work
+
+Business hours are configured separately and then assigned to campaigns. This allows you to:
+- Reuse the same business hours across multiple campaigns
+- Manage schedules centrally (e.g., "DACH Business Hours", "24/7 Support")
+- Configure holiday closures once for all campaigns
+
+### Creating Business Hours
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/hours/business-hours-light.png" alt="Create Business Hours dialog showing Name field with placeholder text 'Enter schedule name', Cancel and Create buttons for setting up new business hours schedule" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/hours/business-hours-dark.png" alt="Create Business Hours dialog showing Name field with placeholder text 'Enter schedule name', Cancel and Create buttons for setting up new business hours schedule" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Navigate to Business Hours">
+    Go to **Settings → Business Hours** and click **Create Business Hours**.
+  </Step>
+
+  <Step title="Configure basic settings">
+    - **Name**: Descriptive name (e.g., "Standard DACH Hours", "Weekend Sales")
+    - **Timezone**: Select timezone (e.g., Europe/Berlin, Europe/Vienna, Europe/Zurich)
+    - **Set as Default**: Optionally mark as default for new campaigns
+
+    <Frame>
+      <div className="block dark:hidden">
+        <img src="/images/hours/hours-settings-light.png" alt="Business Hours settings showing Name field with 'Test', Timezone dropdown with Europe/Vienna selected, weekly schedule with Monday-Friday 09:00 AM to 05:00 PM with toggle buttons and add time window options, Saturday-Sunday marked as Closed, Date Overrides section with Add Override button, Cancel and Save Changes buttons" />
+      </div>
+      <div className="hidden dark:block">
+        <img src="/images/hours/hours-settings-dark.png" alt="Business Hours settings showing Name field with 'Test', Timezone dropdown with Europe/Vienna selected, weekly schedule with Monday-Friday 09:00 AM to 05:00 PM with toggle buttons and add time window options, Saturday-Sunday marked as Closed, Date Overrides section with Add Override button, Cancel and Save Changes buttons" />
+      </div>
+    </Frame>
+  </Step>
+
+  <Step title="Set weekly schedule">
+    For each day of the week:
+    - Toggle day active/inactive
+    - Set start and end times (default: 09:00-17:00)
+    - Add multiple time windows per day if needed
+
+    Common configurations:
+    - **Mon-Fri 9am-5pm**: Standard office hours
+    - **Mon-Fri 9am-6pm, Sat 10am-2pm**: Extended availability
+    - **Mon-Thu 8am-8pm, Fri 8am-6pm**: DACH typical business hours
+  </Step>
+
+  <Step title="Add date overrides (optional)">
+    Configure special dates and holidays:
+    - **Start Date / End Date**: Date range for override
+    - **Reason**: Description (e.g., "Christmas Holiday", "Company Event")
+    - **Is Recurring**: Repeat annually
+    - **Is Closed**: No calls on these dates
+
+    <Frame>
+      <div className="block dark:hidden">
+        <img src="/images/hours/date-light.png" alt="Add Override dialog showing Single Date and Date Range options, Date field with 2025-11-13, Reason dropdown set to None, Recurring toggle off, Unavailable toggle on, Cancel and Add Override buttons" />
+      </div>
+      <div className="hidden dark:block">
+        <img src="/images/hours/date-dark.png" alt="Add Override dialog showing Single Date and Date Range options, Date field with 2025-11-13, Reason dropdown set to None, Recurring toggle off, Unavailable toggle on, Cancel and Add Override buttons" />
+      </div>
+    </Frame>
+  </Step>
+</Steps>
+
+### Assigning to Campaigns
+
+When creating or editing a campaign:
+1. Find the **Business Hours** field
+2. Select from your configured business hours
+3. Leave empty for 24/7 operation
+
+The campaign will only place calls during the configured hours in the selected timezone.
+
+### DACH Business Hours Examples
+
+<Accordion title="Common DACH Configurations">
+  **Standard Office Hours (Germany/Austria/Switzerland)**
+  - **Mon-Fri 9:00-17:00**: Conservative, compliant with all regulations
+  - **Mon-Fri 8:00-18:00**: Extended for better reach
+  - **Mon-Thu 8:00-20:00, Fri 8:00-18:00**: Maximum legal window in Germany
+
+  **With Date Overrides (German Public Holidays)**
+  Common recurring closures:
+  - New Year's Day (Jan 1)
+  - Good Friday, Easter Monday
+  - Labor Day (May 1)
+  - German Unity Day (Oct 3)
+  - Christmas (Dec 25-26)
+
+  Configure these as **recurring** date overrides marked as **closed**.
+</Accordion>
+
+### Holiday and Special Schedules
+
+For campaigns that run over weeks or months:
+
+<Steps>
+  <Step title="Add date overrides">
+    Configure holiday closures in your business hours:
+    - Add date override for each holiday
+    - Mark as **Recurring** to repeat annually
+    - Set **Is Closed** to block calls on those dates
+  </Step>
+
+  <Step title="Pause for unplanned events">
+    For ad-hoc closures, navigate to active campaign → **Pause Campaign**.
+  </Step>
+
+  <Step title="Adjust hours mid-campaign">
+    To modify calling hours:
+    1. Edit the assigned business hours (affects all campaigns using it)
+    2. Or create new business hours and reassign to campaign
+    3. Changes apply immediately to queued calls
+  </Step>
+</Steps>
+
+## Best Practices
+
+### Answer Rate Optimization
+
+The campaign dashboard provides a weekly heatmap showing answer rates for every hour, making it easy to identify the best times to call.
+
+<Steps>
+  <Step title="Review the heatmap">
+    After your first 50-100 calls, check the campaign dashboard's answer rate heatmap to see which hours perform best.
+  </Step>
+
+  <Step title="Adjust business hours">
+    Update your business hours configuration to focus on high-performing time windows shown in the heatmap.
+  </Step>
+
+  <Step title="Monitor voicemail patterns">
+    If AMD shows high voicemail rates (>60%) during certain hours, avoid those times—it signals people are busy/unavailable.
+  </Step>
+</Steps>
+
+## Compliance & Legal Requirements
+
+<Warning>
+**DACH Compliance**: Germany, Austria, and Switzerland have strict regulations on outbound calling. Cold calling to consumers without prior consent can result in fines up to €300,000 (Germany) or €50,000 per violation.
+</Warning>
+
+### DACH Region Regulations
+
+<AccordionGroup>
+  <Accordion title="Germany (UWG & DSGVO)">
+    Germany's [Gesetz gegen den unlauteren Wettbewerb (UWG)](https://www.gesetze-im-internet.de/englisch_uwg/) governs telemarketing alongside [GDPR (DSGVO)](https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng).
+
+    **B2C (Consumers):**
+    - **Prior explicit consent required** - Cold calling to consumers is prohibited without consent
+    - No presumed consent exists
+    - **Business Hours**: 8 AM to 9 PM local time (weekdays recommended)
+    - Providing a phone number in public directories does NOT constitute consent
+
+    **B2B (Businesses):**
+    - Allowed under **presumed consent** if:
+      - Prospect has documented interest in your product/service
+      - Interest must be concrete, not abstract
+      - You can demonstrate presumed agreement to be called
+    - **Documentation is critical** - Keep records of demonstrated interest
+
+    **Enforcement:**
+    - BNetzA (Federal Network Agency) enforces violations
+    - Fines up to €300,000 per violation
+    - Automated dialing systems (robocalls) prohibited without consent
+
+    **Implementation:**
+    1. Verify you have documented consent or legitimate business interest
+    2. Set business hours to 8 AM - 9 PM (Europe/Berlin timezone)
+    3. Keep detailed records of consent source and date
+    4. Never call numbers on opt-out lists
+  </Accordion>
+
+  <Accordion title="Austria (TKG)">
+    Austria's [Telecommunications Act (TKG 2021)](https://ris.bka.gv.at/Dokumente/Erv/ERV_2021_1_190/ERV_2021_1_190.pdf) implements strict cold calling rules.
+
+    **B2C (Consumers):**
+    - **Cold calling is prohibited** - No presumed consent framework exists
+    - Stricter than Germany - explicit opt-in required
+    - **ECG opt-out list** - National do-not-call registry
+
+    **B2B (Businesses):**
+    - More lenient than B2C but still requires justifiable business relationship
+    - Document business connection before calling
+
+    **Business Hours:**
+    - While not explicitly mandated, follow German standards: 8 AM - 9 PM local time
+    - Avoid weekends for cold outreach
+
+    **Recommended Setup:**
+    - Use Europe/Vienna timezone for Austrian campaigns
+    - Configure Mon-Fri 9 AM - 6 PM for conservative compliance
+    - Verify contacts are not on ECG opt-out list
+  </Accordion>
+
+  <Accordion title="Switzerland (UCA)">
+    Switzerland's [Unfair Competition Act (UCA)](https://www.fedlex.admin.ch/eli/cc/1988/223_223_223/en) governs telemarketing.
+
+    **Key Requirements:**
+    - **Asterisk opt-out**: Anyone can register their number with an asterisk (*) in the phone directory to opt out
+    - Calling opted-out numbers is unfair unless **pre-existing business relationship** exists
+    - **Caller ID display required**: Must show registered, authorized phone number
+
+    **Business Hours:**
+    - No specific legal hours, but best practice: 8 AM - 8 PM weekdays
+    - Respect business relationship context for timing
+
+    **GDPR Note:**
+    - Switzerland is not EU, but Swiss law heavily influenced by GDPR
+    - Apply similar data protection standards
+
+    **Recommended Setup:**
+    - Use Europe/Zurich timezone
+    - Configure Mon-Fri 9 AM - 6 PM
+    - Ensure your caller ID is properly registered
+    - Keep records of business relationships
+  </Accordion>
+</AccordionGroup>
+
+### Other European Regulations
+
+<AccordionGroup>
+  <Accordion title="EU ePrivacy & GDPR">
+    For campaigns targeting other EU countries, comply with the [ePrivacy Directive (2002/58/EC)](https://eur-lex.europa.eu/eli/dir/2002/58/oj/eng) and [GDPR (2016/679)](https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng):
+
+    - **Prior opt-in required** for marketing calls in most EU countries
+    - **Business Hours**: No EU-wide standard, but respect cultural norms
+    - **Recommended**: Mon-Fri 9 AM - 6 PM local time
+    - Avoid lunch hours (12-2 PM in many countries, especially France, Spain, Italy)
+  </Accordion>
+</AccordionGroup>
+
+### International Regulations
+
+<AccordionGroup>
+  <Accordion title="U.S. TCPA">
+    For campaigns targeting U.S. consumers, comply with the [Telephone Consumer Protection Act (47 USC § 227)](https://www.law.cornell.edu/uscode/text/47/227):
+
+    - **Time Restrictions**: 8 AM - 9 PM recipient's local time
+    - Applies to B2C marketing/sales calls
+    - Exemptions: Transactional calls, B2B, prior consent
+    - **Fines**: Up to $43,792 per violation
+    - [FCC TCPA Rules](https://www.fcc.gov/sites/default/files/tcpa-rules.pdf)
+
+    **Setup**: Use 8 AM - 9 PM with contact's timezone (America/New_York, America/Chicago, etc.)
+  </Accordion>
+
+  <Accordion title="Canada (CASL)">
+    Canada's [Anti-Spam Legislation (CASL)](https://fightspam.gc.ca/) governs commercial electronic messages:
+
+    - Prior consent required for commercial calls
+    - Provincial regulations vary
+    - Best practice: 8 AM - 9 PM local time
+    - Quebec has additional consumer protection rules
+    - Enforced by [CRTC](https://crtc.gc.ca/eng/internet/anti.htm)
+  </Accordion>
+
+  <Accordion title="Australia (Do Not Call Register Act)">
+    Australia's [Do Not Call Register Act 2006](https://www.legislation.gov.au/C2006A00088/latest/text) establishes strict telemarketing rules:
+
+    - **Time Restrictions**: Mon-Fri 9 AM - 8 PM, Sat 9 AM - 5 PM (no Sunday calls)
+    - Based on recipient's local time
+    - Heavy fines for violations
+    - Must check against [Do Not Call Register](https://www.donotcall.gov.au/)
+    - Managed by ACMA (Australian Media and Communications Authority)
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Campaign Launch" icon="bullhorn" href="/launch/campaign-outbound-launch">
+    Create your first outbound campaign
+  </Card>
+  <Card title="Voicemail Handling" icon="voicemail" href="/build/advanced/voicemail-handling">
+    Configure voicemail for after-hours calls
+  </Card>
+</CardGroup>

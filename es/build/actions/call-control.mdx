@@ -1,0 +1,217 @@
+---
+title: "Acciones de Control de Llamadas"
+description: "Gestiona el flujo de conversación con acciones de Transferencia y Finalizar Conversación"
+icon: "phone"
+"keywords": "control de llamadas, acción finalizar llamada, transferencia de llamadas, control telefónico IA, enrutamiento de llamadas, gestión de conversaciones, automatización telefónica"
+"og:description": "Gestiona el flujo de conversación con potentes acciones de transferencia y finalización de conversación para un control inteligente de llamadas IA."
+---
+
+## Descripción General
+
+Las acciones de control de llamadas otorgan a tus agentes de IA la capacidad de gestionar el ciclo de vida y enrutamiento de conversaciones. Estas acciones esenciales permiten a los agentes transferir llamadas cuando se necesita ayuda especializada y finalizar conversaciones profesionalmente cuando se cumplen los objetivos.
+
+Cada agente de voz debe tener acciones de control de llamadas configuradas para manejar escenarios comunes como solicitudes de escalamiento y finalización de conversaciones.
+
+---
+
+## Transferir Llamada
+
+La acción de Transferencia permite a tu agente enrutar llamadas activas a otros agentes de IA, números telefónicos o direcciones SIP cuando las situaciones lo requieren.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/transfer-call-light.png" alt="Modal de configuración de Acción de Transferencia mostrando campo Nombre con 'Transferir a soporte', campo Descripción, opciones de Tipo de Transferencia (Agente IA, Número Telefónico, Dirección SIP) con Agente IA seleccionado, menú desplegable Seleccionar Agente mostrando 'No hay agentes disponibles', interruptor Transferencia Silenciosa, campo Mensaje de Transferencia con opción de mensaje generado por LLM, interruptor Reproducir Música de Fondo, interruptor Sonar Antes de Transferir, y botones Cancelar/Guardar" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/transfer-call-dark.png" alt="Modal de configuración de Acción de Transferencia mostrando campo Nombre con 'Transferir a soporte', campo Descripción, opciones de Tipo de Transferencia (Agente IA, Número Telefónico, Dirección SIP) con Agente IA seleccionado, menú desplegable Seleccionar Agente mostrando 'No hay agentes disponibles', interruptor Transferencia Silenciosa, campo Mensaje de Transferencia con opción de mensaje generado por LLM, interruptor Reproducir Música de Fondo, interruptor Sonar Antes de Transferir, y botones Cancelar/Guardar" />
+  </div>
+</Frame>
+
+### Cuándo Usar
+
+- El cliente solicita hablar con un humano o departamento específico
+- El problema está más allá del conocimiento o capacidades del agente
+- La solicitud requiere experiencia especializada
+- Un agente de IA diferente es más adecuado para la solicitud
+
+### Configuración
+
+<Steps>
+  <Step title="Agregar Acción de Transferencia">
+    Navega a **Habilidades → Acciones** en la categoría Control de Llamadas y haz clic en **Agregar** en **Transferir Llamada**
+  </Step>
+  <Step title="Nombrar la Acción">
+    Dale un nombre claro y descriptivo como "Transferir a Soporte" o "Transferir a Facturación"
+  </Step>
+  <Step title="Agregar Descripción">
+    Describe qué hace esta transferencia: "Transfiere a otro agente de IA, número telefónico o dirección SIP"
+  </Step>
+  <Step title="Configurar Destino">
+    Configura tu destino de transferencia (consulta [Detalles de Transferencia](/es/build/actions/transfer-details) para opciones completas de configuración)
+  </Step>
+  <Step title="Guardar">
+    Haz clic en **Guardar** para agregar la acción de transferencia a tu agente
+  </Step>
+</Steps>
+
+### Uso en Instrucciones
+
+Referencia la acción de transferencia por su nombre exacto en las [instrucciones (prompt del sistema)](/es/build/conversation/prompt-engineering-guide) de tu agente:
+
+```jinja
+Cuando un cliente solicite hablar con un humano:
+1. Explica por qué lo estás transfiriendo
+2. Pregunta "¿Te gustaría que te transfiera ahora?"
+3. Espera confirmación
+4. Una vez confirmado, usa la acción 'Transferir a Soporte'
+
+Si el cliente menciona problemas de facturación:
+- Usa la acción 'Transferir a Facturación'
+```
+
+<Note>
+Consulta la página [Detalles de Transferencia](/es/build/actions/transfer-details) para configuración avanzada incluyendo modos de transferencia, múltiples destinos y enrutamiento SIP.
+</Note>
+
+---
+
+## Finalizar Conversación
+
+La acción Finalizar Conversación permite a tu agente terminar llamadas profesionalmente cuando se cumplen los objetivos de la conversación o cuando finalizar es apropiado.
+
+### Cuándo Usar
+
+- Pregunta del cliente respondida o tarea completada exitosamente
+- Cita agendada y confirmada
+- El cliente indica que no necesita ayuda adicional
+- La solicitud está completamente fuera del propósito del agente
+
+### Configuración
+
+<Steps>
+  <Step title="Agregar Acción Finalizar Conversación">
+    Ve a **Habilidades → Acciones** en la categoría Control de Llamadas y haz clic en **Agregar** en **Finalizar Conversación**
+  </Step>
+  <Step title="Nombrar la Acción">
+    Usa un nombre claro como "Finalizar Llamada Cortésmente" o "Finalizar Llamada"
+  </Step>
+  <Step title="Agregar Descripción">
+    Describe cuándo debe usarse: "Hacer que el agente finalice la conversación con un mensaje personalizado"
+  </Step>
+  <Step title="Establecer Mensaje de Despedida (Opcional)">
+    Opcionalmente proporciona un mensaje de despedida predeterminado:
+
+    "¡Gracias por llamar! ¡Que tengas un gran día!"
+
+    Déjalo en blanco para controlar el mensaje completamente a través de las instrucciones de tu agente.
+  </Step>
+  <Step title="Guardar">
+    Haz clic en **Guardar** para hacer que la acción esté disponible para tu agente
+  </Step>
+</Steps>
+
+### Uso en Instrucciones
+
+```jinja
+Una vez que hayas completado exitosamente su solicitud:
+1. Pregunta "¿Hay algo más en lo que pueda ayudarte?"
+2. Si dicen que no:
+   - Agradecer por llamar
+   - Usar la acción 'Finalizar Llamada Cortésmente'
+3. Si dicen que sí, continuar ayudando
+```
+
+<Warning>
+La acción Finalizar Conversación termina la llamada inmediatamente después de que el agente termine de hablar. Asegúrate de que tu agente diga todo lo necesario antes de invocar esta acción.
+</Warning>
+
+---
+
+## Mejores Prácticas
+
+<AccordionGroup>
+  <Accordion title="Solicitar Confirmación Antes de Acciones" icon="comments">
+    Indica a los agentes que soliciten confirmación del usuario antes de ejecutar acciones para evitar anunciar acciones que se ejecutan en el siguiente turno.
+
+    **Bien:**
+    ```
+    "Puedo transferirte a nuestro equipo de facturación. ¿Te gustaría que haga eso ahora?"
+    [Esperar respuesta]
+    [Ejecutar transferencia después de confirmación]
+    ```
+
+    **Mal:**
+    ```
+    "Te estoy transfiriendo ahora..."
+    [La acción se ejecuta en el siguiente turno, creando un retraso incómodo]
+    ```
+  </Accordion>
+
+  <Accordion title="Siempre Explicar Antes de Transferir" icon="comment">
+    Nunca transfieras llamadas sin contexto. Los agentes deben explicar por qué están transfiriendo, establecer expectativas y confirmar.
+
+    **Bien:**
+    ```
+    "Entiendo que necesitas ayuda con la facturación. Nuestro departamento de facturación puede acceder
+    a los detalles de tu cuenta. ¿Te gustaría que te transfiera ahora?"
+    [Esperar confirmación]
+    [Ejecutar transferencia después de confirmación]
+    ```
+
+    **Mal:**
+    ```
+    "Déjame transferirte a facturación."
+    [Transfiere sin explicación ni confirmación]
+    ```
+  </Accordion>
+
+  <Accordion title="Confirmar Antes de Finalizar" icon="circle-check">
+    Siempre pregunta si hay algo más antes de finalizar llamadas para evitar que los clientes se sientan apresurados.
+
+    **Bien:**
+    ```
+    "¿Hay algo más en lo que pueda ayudarte hoy?"
+    [Esperar respuesta]
+    [Si no] "¡Genial! ¡Gracias por llamar!"
+    [Usar acción Finalizar Llamada]
+    ```
+
+    **Mal:**
+    ```
+    "Tu cita está reservada. ¡Gracias!"
+    [Usa acción Finalizar Llamada sin verificar si necesitan algo más]
+    ```
+  </Accordion>
+
+  <Accordion title="Usar Nombres Descriptivos de Acciones" icon="tag">
+    Crea múltiples acciones para diferentes escenarios con nombres claros que coincidan con cómo las referenciarás en las instrucciones.
+
+    **Bien:**
+    - "Transferir a Departamento de Facturación"
+    - "Transferir a Soporte Técnico"
+    - "Finalizar Llamada Cortésmente"
+
+    **Mal:**
+    - "Transferencia 1"
+    - "Finalizar"
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Próximos Pasos
+
+<CardGroup cols={2}>
+  <Card title="Detalles de Transferencia" icon="right-left" href="/es/build/actions/transfer-details">
+    Profundiza en destinos de transferencia, modos y configuración avanzada
+  </Card>
+  <Card title="Descripción General de Acciones" icon="bolt" href="/es/build/actions/overview">
+    Aprende sobre todos los tipos de acciones disponibles
+  </Card>
+  <Card title="Acciones de Reserva" icon="calendar" href="/es/build/actions/booking-calendar">
+    Configura programación de citas con Cal.com
+  </Card>
+  <Card title="Acciones API Personalizadas" icon="code" href="/es/build/actions/custom-api-actions">
+    Conéctate a sistemas externos
+  </Card>
+</CardGroup>

@@ -1,0 +1,275 @@
+---
+title: "Configurazione Trascrittore"
+description: "Scegli e configura i modelli di trascrizione per un riconoscimento vocale accurato"
+icon: "ear"
+"keywords": "speech to text, trascrizione, configurazione STT, riconoscimento vocale, modelli trascrittore, riconoscimento voce, accuratezza trascrizione"
+"og:description": "Configura i modelli di trascrizione per un riconoscimento vocale-testo accurato nelle tue conversazioni vocali AI."
+---
+
+## Panoramica
+
+Il trascrittore è il primo passo nella pipeline di elaborazione del tuo agente. Converte il parlato del cliente in testo che il modello AI può comprendere e a cui può rispondere. Una trascrizione accurata è critica—gli errori in questo passaggio si propagano attraverso l'intera conversazione.
+
+<Note>
+Configura il trascrittore sotto **Models > Transcriber** nelle impostazioni del tuo agente. Le modifiche si applicano immediatamente.
+</Note>
+
+---
+
+## Trascrittori Disponibili
+
+<AccordionGroup>
+  <Accordion title="Deepgram Nova-3 General" defaultOpen>
+    **Ultima generazione con accuratezza migliorata e supporto multilingue.**
+
+    **Perché funziona:**
+    - Latenza ultra-bassa (~300ms) per conversazioni in tempo reale
+    - Supporta 21 lingue: varianti inglesi più bulgaro, ceco, finlandese, hindi, ungherese, giapponese, coreano, polacco, russo, ucraino, vietnamita e altre
+    - Forte accuratezza su audio telefonico e ambienti rumorosi
+    - Gestisce bene sovrapposizioni vocali e parole di riempimento
+
+    **Migliore per:**
+    - Raccomandazione predefinita quando la tua lingua è supportata
+    - Applicazioni critiche per la velocità
+    - Agenti multilingue (quando tutte le lingue sono coperte da Nova-3)
+    - Interazioni con clienti in tempo reale
+
+    **Lingue supportate:**
+    - **Modalità multilingue:** Inglese, spagnolo, francese, tedesco, hindi, russo, portoghese, giapponese, italiano, olandese
+    - **Inglese:** en-US, en-GB, en-AU, en-IN, en-NZ
+    - **Europee:** Tedesco (de), olandese (nl), svedese (sv), danese (da), bulgaro (bg), ceco (cs), finlandese (fi), ungherese (hu), polacco (pl), russo (ru), ucraino (uk)
+    - **Asiatiche:** Hindi (hi), giapponese (ja), coreano (ko), vietnamita (vi)
+  </Accordion>
+
+  <Accordion title="Azure Speech">
+    **Copertura linguistica massiccia (150+) con affidabilità di livello enterprise.**
+
+    **Perché funziona:**
+    - 150+ lingue e varianti locali
+    - Rilevamento automatico multilingue (2-10 lingue)
+    - Hosting UE disponibile
+    - Prezzi enterprise prevedibili
+    - Qualità coerente in tutte le lingue
+
+    **Migliore per:**
+    - Lingue non inglesi non coperte da Deepgram
+    - Agenti multilingue con esigenze di rilevamento automatico
+    - Requisiti di conformità enterprise
+    - Implementazioni globali che servono mercati diversi
+
+    **Lingue supportate:**
+    - **150+ lingue** incluse: 18 varianti arabe, 24 varianti spagnole, 18 varianti inglesi, più afrikaans, amarico, bengalese, catalano, cinese (6 varianti inclusi wu e cantonese), ceco, danese, olandese, filippino, finlandese, francese, tedesco, greco, ebraico, hindi, ungherese, indonesiano, italiano, giapponese, coreano, malese, norvegese, polacco, portoghese, rumeno, russo, svedese, thai, turco, ucraino, vietnamita e molte altre
+
+    **Compromessi:**
+    - Latenza più alta di Deepgram (~500-700ms)
+  </Accordion>
+</AccordionGroup>
+
+### Altri Trascrittori
+
+<AccordionGroup>
+  <Accordion title="Deepgram Nova-3 Medical">
+    **Specializzato per terminologia sanitaria (solo inglese).**
+
+    **Perché funziona:**
+    - Ottimizzato per vocabolario medico inglese
+    - Riconoscimento accurato di termini medici, procedure, farmaci
+    - Bassa latenza come Nova-3 General (~300ms)
+
+    **Migliore per:**
+    - Applicazioni sanitarie (conformità HIPAA disponibile con BAA)
+    - Prenotazione appuntamenti medici
+    - Servizi di telemedicina
+    - Documentazione clinica
+
+    **Lingue supportate:**
+    - Inglese: en-US, en-GB, en-AU, en-CA, en-IE, en-IN, en-NZ
+
+    **Limitazioni:**
+    - Solo inglese
+    - Richiede caso d'uso specifico sanitario
+  </Accordion>
+
+  <Accordion title="Deepgram Nova-2 General">
+    **Generazione precedente con copertura linguistica più ampia (40+).**
+
+    **Perché funziona:**
+    - Eccellente accuratezza e bassa latenza (~300ms)
+    - Lista di lingue più ampia: bulgaro, catalano, ceco, danese, tedesco, greco, estone, finlandese, francese, hindi, ungherese, indonesiano, italiano, giapponese, coreano, lituano, lettone, malese, olandese, norvegese, polacco, portoghese, rumeno, russo, slovacco, svedese, thai, turco, ucraino, vietnamita, varianti cinesi e altre
+    - Prestazioni comprovate per team globali
+    - Supporto keywords per nomi di brand
+
+    **Migliore per:**
+    - Lingue non ancora in Nova-3 (catalano, portoghese-BR, thai, cinese, ecc.)
+    - Implementazioni multilingue globali
+    - Team che necessitano di lingue regionali specifiche
+
+    **Lingue supportate:**
+    - **Modalità multilingue:** Solo inglese + spagnolo
+    - **40+ lingue** incluse: Catalano (ca), greco (el), estone (et), indonesiano (id), lituano (lt), lettone (lv), malese (ms), norvegese (no), portoghese (pt, pt-BR, pt-PT), rumeno (ro), slovacco (sk), thai (th), turco (tr), cinese (zh, zh-CN, zh-TW, zh-Hans, zh-Hant, zh-HK), francese (fr, fr-CA), spagnolo (es, es-419)
+
+    **Compromessi:**
+    - Leggermente dietro Nova-3 nei miglioramenti di accuratezza
+  </Accordion>
+
+  <Accordion title="Modelli Specializzati Deepgram Nova-2">
+    **Varianti specifiche per compito ottimizzate per casi d'uso ristretti.**
+
+    **Nova-2 Phone Call:**
+    - Ottimizzato specificamente per audio telefonico (solo inglese)
+    - Inglese: en-US, en-GB
+
+    **Nova-2 Meeting:**
+    - Ottimizzato per trascrizione riunioni (solo inglese)
+    - Inglese: en-US, en-GB
+
+    **Nova-2 Conversational AI:**
+    - Ottimizzato per conversazioni AI (solo inglese)
+    - Inglese: en-US, en-GB
+
+    **Quando usare:**
+    - La maggior parte dei team dovrebbe usare Nova-3 General o Nova-2 General
+    - Questi modelli specializzati sono per esigenze di ottimizzazione specifiche
+  </Accordion>
+</AccordionGroup>
+
+
+---
+
+## Scegliere il Trascrittore Giusto
+
+### Framework di Selezione
+
+<AccordionGroup>
+  <Accordion title="1. Requisiti Linguistici" icon="globe">
+    **Scegli in base alle lingue di cui hai bisogno:**
+
+    **Lingua supportata da Nova-3?** → Deepgram Nova-3 General (consigliato - più veloce e più accurato)
+    - 21 lingue: Inglese, spagnolo, francese, tedesco, olandese, svedese, danese, bulgaro, ceco, finlandese, hindi, ungherese, giapponese, coreano, polacco, russo, ucraino, vietnamita e altre
+    - Usa la modalità multilingue Nova-3 quando servi più lingue da questa lista
+
+    **Lingua solo in Nova-2?** → Deepgram Nova-2 General
+    - 40+ lingue incluse: Catalano, portoghese, thai, cinese, greco, estone, indonesiano, lituano, lettone, malese, norvegese, rumeno, slovacco, turco
+
+    **Lingua non in Deepgram?** → Azure Speech (150+ lingue)
+
+    **Più lingue con rilevamento automatico?** → Azure Speech (modalità multilingue per qualsiasi combinazione)
+
+    **Inglese sanitario?** → Deepgram Nova-3 Medical
+  </Accordion>
+
+  <Accordion title="2. Latenza vs. Copertura" icon="gauge-high">
+    **Velocità critica (sotto 400ms)?**
+    - Deepgram Nova-3 o Nova-2 (~300ms)
+
+    **Latenza moderata accettabile (sotto 700ms)?**
+    - Azure Speech (~500-700ms)
+
+    **Copertura linguistica più importante della velocità?**
+    - Azure Speech (150+ lingue, sacrifica velocità)
+  </Accordion>
+
+  <Accordion title="3. Conformità Regionale" icon="shield">
+    **Richiesto hosting UE?**
+    - Azure Speech (regioni UE: West Europe, North Europe)
+    - Deepgram usa endpoint UE ma i dati possono essere elaborati su server US
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Configurazione Lingua
+
+### Configurazione Lingua Singola
+
+Per agenti che servono una lingua:
+
+1. Apri **Models > Transcriber**
+2. Usa il **Language Picker** per filtrare i trascrittori
+3. Seleziona per nome lingua (es. "Italian") o codice locale (es. "it-IT")
+4. Scegli il trascrittore con migliore latenza/accuratezza per le tue esigenze
+
+**Varianti linguistiche comuni:**
+- **en-US:** Inglese americano
+- **en-GB:** Inglese britannico
+- **en-AU:** Inglese australiano
+- **en-IN:** Inglese indiano
+- **de-DE:** Tedesco
+- **es-ES:** Spagnolo (Spagna)
+- **fr-FR:** Francese
+- **zh-CN:** Cinese (semplificato)
+- **zh-TW:** Cinese (tradizionale)
+
+Seleziona la variante che corrisponde alla tua base clienti per migliore accuratezza.
+
+### Supporto Multilingue
+
+**Deepgram Nova-3 Multilingue:**
+- Modello singolo che supporta inglese, spagnolo, francese, tedesco, hindi, russo, portoghese, giapponese, italiano, olandese
+- Non è necessaria la selezione della lingua—gestisce automaticamente tutte le 10 lingue
+
+**Azure Speech Multilingue:**
+- Seleziona più lingue (2-10) per il rilevamento automatico
+- Azure rileva la lingua dalle prime parole e trascrive di conseguenza
+
+---
+
+## Keywords
+
+Aiuta il tuo trascrittore a riconoscere accuratamente nomi di brand e termini tecnici.
+
+<Note>
+Le keywords sono supportate sui modelli Deepgram Nova-2 e Azure Speech. Nova-3 attualmente non supporta le keywords.
+</Note>
+
+### Cosa Potenziare
+
+I trascrittori possono avere difficoltà con:
+- Nomi di brand (azienda, prodotti, concorrenti)
+- Gergo del settore (termini tecnici, acronimi)
+- Nomi propri (nomi di persone, luoghi)
+
+### Come Aggiungere Keywords
+
+1. Apri **Models > Transcriber**
+2. Seleziona un trascrittore Deepgram Nova-2 o Azure Speech
+3. Nella sezione **Recognition Keywords** in basso, digita le keywords e premi Invio dopo ciascuna
+4. Le keywords vengono salvate automaticamente
+
+Aggiungi keywords secondo necessità durante i test. Rivedi le trascrizioni delle chiamate per parole male sentite e aggiungile come keywords per migliorare il riconoscimento.
+
+---
+
+## Testare la Trascrizione
+
+1. Effettua una chiamata di test e parla scenari che i clienti usano (nomi di brand, indirizzi)
+2. Apri il log della conversazione e rivedi la trascrizione
+3. Nota eventuali parole male sentite
+4. Aggiungi errori ricorrenti alle keywords (se usi Nova-2 o Azure)
+5. Cambia trascrittori se i problemi persistono
+
+**Cosa testare:**
+- Nomi di brand e prodotti
+- Terminologia tecnica
+- Numeri e indirizzi
+- Accenti e modelli di parlato diversi
+- Condizioni di rumore di fondo
+
+---
+
+## Prossimi Passi
+
+<CardGroup cols={2}>
+  <Card title="Scegli Modello AI" icon="brain" href="/it/build/voice-speech/choose-ai-model">
+    Seleziona il modello linguistico che elabora il testo trascritto
+  </Card>
+  <Card title="Seleziona Voce" icon="microphone" href="/it/build/voice-speech/select-voice">
+    Scegli la voce che pronuncia le risposte
+  </Card>
+  <Card title="Pronunce Personalizzate" icon="spell-check" href="/it/build/voice-speech/custom-pronunciations">
+    Correggi come la voce pronuncia termini specifici
+  </Card>
+  <Card title="Supporto Multilingue" icon="language" href="/it/build/voice-speech/transcriber">
+    Configura agenti multilingue
+  </Card>
+</CardGroup>

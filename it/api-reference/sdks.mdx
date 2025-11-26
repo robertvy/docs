@@ -1,0 +1,218 @@
+---
+title: 'SDK'
+description: 'SDK ufficiali itellicoAI per creare applicazioni IA vocali'
+icon: 'code'
+keywords: 'SDK itellicoAI, SDK Python, SDK TypeScript, SDK IA vocale, libreria client API, SDK server, npm itellicoai, pypi itellicoai'
+og:description: 'SDK ufficiali Python e TypeScript per itellicoAI. Crea applicazioni IA vocali con librerie type-safe, autenticazione semplificata e migliore gestione degli errori.'
+---
+
+## SDK Server
+
+Crea integrazioni backend con SDK type-safe.
+
+<CardGroup cols={2}>
+  <Card title="Python" icon="python" href="/it/api-reference/python-sdk">
+    Libreria Python type-safe con supporto async
+  </Card>
+  <Card title="TypeScript" icon="js" href="/it/api-reference/typescript-sdk">
+    Supporto completo TypeScript con autocompletamento
+  </Card>
+</CardGroup>
+
+---
+
+## Ottenere la Tua Chiave API
+
+Prima di utilizzare gli SDK, avrai bisogno di una chiave API dal tuo pannello di controllo itellicoAI.
+
+<Steps>
+  <Step title="Vai a Sviluppatori">
+    Vai al tuo [pannello di controllo itellicoAI](https://app.itellico.ai) e naviga su **Sviluppatori** dalla barra laterale.
+  </Step>
+
+  <Step title="Vai a Chiavi API">
+    Clicca su **Chiavi API** nella sezione Sviluppatori.
+  </Step>
+
+  <Step title="Crea la tua chiave">
+    Clicca sul pulsante **Crea Chiave API** nell'angolo in alto a destra.
+
+    <Frame>
+      <div className="block dark:hidden">
+        <img src="/images/light.png" alt="Pannello delle chiavi API che mostra come creare una nuova chiave API" />
+      </div>
+      <div className="hidden dark:block">
+        <img src="/images/dark.png" alt="Pannello delle chiavi API che mostra come creare una nuova chiave API" />
+      </div>
+    </Frame>
+  </Step>
+
+  <Step title="Copia e usa con il tuo SDK">
+    Copia la chiave API generata e conservala in modo sicuro. Usa questa chiave durante l'inizializzazione dell'SDK.
+  </Step>
+</Steps>
+
+<Warning>
+Non condividere mai la tua chiave API e non caricarla nel controllo di versione. Usa variabili d'ambiente per memorizzare la tua chiave in modo sicuro.
+</Warning>
+
+---
+
+## Perché Usare gli SDK?
+
+<CardGroup cols={2}>
+  <Card title="Type Safety" icon="shield-check">
+    Definizioni TypeScript complete e type hint Python per tutti i metodi API
+  </Card>
+
+  <Card title="Autenticazione Semplificata" icon="key">
+    Gestione integrata della chiave API—nessun header manuale necessario
+  </Card>
+
+  <Card title="Errori Migliori" icon="triangle-exclamation">
+    Eccezioni strutturate per un debugging più facile
+  </Card>
+
+  <Card title="Meno Codice" icon="code">
+    Metodi puliti invece di richieste HTTP manuali
+  </Card>
+</CardGroup>
+
+---
+
+## Confronto Rapido
+
+### Creare un Agente
+
+<CodeGroup>
+```python Python SDK
+from itellicoai import Itellicoai
+
+# Initialize client
+client = Itellicoai(
+    api_key="your-api-key"
+)
+
+# Create an agent
+agent = client.agents.create(
+    account_id="your-account-id",
+    name="Customer Support Agent",
+    model={
+        "provider": "openai",
+        "model": "gpt-4o-mini"
+    },
+    voice={
+        "provider": "elevenlabs",
+        "voice_id": "EXAVITQu4vr4xnSDxMaL"
+    },
+    transcriber={
+        "provider": "deepgram",
+        "model": "nova-2:general",
+        "language": "en-US"
+    },
+    initial_message={
+        "mode": "fixed_message",
+        "message": "Hello! How can I assist you today?",
+        "delay_ms": 1000
+    },
+    max_duration_seconds=1800,
+    tags=["support", "customer-service"]
+)
+
+print(f"Created agent: {agent.id}")
+```
+
+```typescript TypeScript SDK
+import { Itellicoai } from 'itellicoai';
+
+// Initialize client
+const client = new Itellicoai({
+  apiKey: 'your-api-key',
+});
+
+// Create an agent
+const agent = await client.agents.create({
+  accountId: 'your-account-id',
+  name: 'Customer Support Agent',
+  model: {
+    provider: 'openai',
+    model: 'gpt-4o-mini',
+  },
+  voice: {
+    provider: 'elevenlabs',
+    voiceId: 'EXAVITQu4vr4xnSDxMaL',
+  },
+  transcriber: {
+    provider: 'deepgram',
+    model: 'nova-2:general',
+    language: 'en-US',
+  },
+  initialMessage: {
+    mode: 'fixed_message',
+    message: 'Hello! How can I assist you today?',
+    delayMs: 1000,
+  },
+  maxDurationSeconds: 1800,
+  tags: ['support', 'customer-service'],
+});
+
+console.log(`Created agent: ${agent.id}`);
+```
+
+```bash REST API
+curl -X POST https://api.itellico.ai/v1/agents \
+  -H "X-API-Key: your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Support Agent",
+    "model": {"provider": "azure", "model": "gpt-4o-mini"}
+  }'
+```
+</CodeGroup>
+
+---
+
+## Installazione
+
+<Tabs>
+  <Tab title="Python">
+    ```bash
+    pip install itellicoai
+    ```
+
+    [Visualizza la doc SDK Python →](/it/api-reference/python-sdk)
+  </Tab>
+
+  <Tab title="TypeScript">
+    ```bash
+    npm install itellicoai
+    ```
+
+    [Visualizza la doc SDK TypeScript →](/it/api-reference/typescript-sdk)
+  </Tab>
+</Tabs>
+
+---
+
+## Risorse
+
+<CardGroup cols={2}>
+  <Card title="Pacchetto NPM" icon="js" href="https://www.npmjs.com/package/itellicoai">
+    Installa l'SDK TypeScript da NPM
+  </Card>
+  <Card title="Pacchetto PyPI" icon="python" href="https://pypi.org/project/itellicoai/">
+    Installa l'SDK Python da PyPI
+  </Card>
+  <Card title="SDK TypeScript" icon="github" href="https://github.com/itellicoAI/server-sdk-typescript">
+    Visualizza il codice sorgente dell'SDK TypeScript
+  </Card>
+  <Card title="SDK Python" icon="github" href="https://github.com/itellicoAI/server-sdk-python">
+    Visualizza il codice sorgente dell'SDK Python
+  </Card>
+  <Card title="Riferimento API REST" icon="book" href="/it/api-reference/introduction">
+    Documentazione completa dell'API REST
+  </Card>
+  <Card title="Specifica OpenAPI" icon="file-code" href="https://api.itellico.ai/v1/openapi.json">
+    File di specifica OpenAPI
+  </Card>
+</CardGroup>

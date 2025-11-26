@@ -1,0 +1,266 @@
+---
+title: "Dashboard"
+description: "Traccia metriche, individua trend e misura le prestazioni dell'agente nel tempo"
+icon: "chart-line"
+keywords: "AI agent dashboard, conversation metrics, goal achievement rate, transfer rate, call duration analytics, action success rate, campaign analytics, answer rate heat map, voice AI KPIs, agent performance tracking"
+og:description: "Traccia metriche chiave e misura le prestazioni dell'agente AI nel tempo. Monitora raggiungimento obiettivi, tassi di trasferimento, durata chiamate e analisi delle campagne con dashboard complete."
+---
+
+La **Dashboard** ti fornisce insight quantitativi sulle prestazioni dell'agente. Traccia metriche chiave nel tempo, identifica trend e misura l'impatto delle modifiche.
+
+**Accesso:** Vai su **Dashboard** nel menu principale, o controlla le metriche specifiche della campagna in **Campagne → [Campagna] → Dashboard** e schede **Reporting**
+
+## Metriche Chiave
+
+<AccordionGroup>
+  <Accordion title="Tasso di Raggiungimento Obiettivi" icon="bullseye">
+    **Cosa misura:** Percentuale di conversazioni dove gli obiettivi configurati sono stati raggiunti
+
+    **Benchmark target:**
+    - ✅ Eccellente: &gt;85%
+    - 👍 Buono: 70-85%
+    - ⚠️ Necessita miglioramento: &lt;70%
+
+    **Come migliorare:**
+    - Rivedi conversazioni fallite per individuare pattern
+    - Aggiungi conoscenza mancante per motivi comuni di fallimento
+    - Affina le definizioni degli obiettivi per accuratezza
+    - Aggiorna le istruzioni per gestire casi limite
+
+    Configura gli obiettivi in **Impostazioni Agente → Analisi → Obiettivi**. Vedi [Obiettivi Conversazione](/it/build/analytics/conversation-goals).
+  </Accordion>
+
+  <Accordion title="Tasso di Risposta (Campagne)" icon="phone">
+    **Cosa misura:** Percentuale di contatti della campagna che hanno risposto al telefono
+
+    **Target:** Varia per settore (tipicamente 30-60%)
+
+    **Come migliorare:**
+    - Usa la mappa termica dei tassi di risposta per trovare i migliori orari di chiamata
+    - Aggiorna gli orari di apertura per concentrarti sulle finestre ad alte prestazioni
+    - Evita mattine presto, sere tarde e weekend a meno che i dati non lo supportino
+    - Testa giorni/orari diversi per il tuo pubblico specifico
+
+    Disponibile solo per le campagne. Visualizza nella scheda **Dashboard** della campagna sotto Mappa Termica Tasso di Risposta.
+  </Accordion>
+
+  <Accordion title="Tasso di Trasferimento" icon="phone-arrow-up-right">
+    **Cosa misura:** Percentuale di conversazioni trasferite a umani
+
+    **Benchmark target:**
+    - ✅ Eccellente: &lt;15%
+    - 👍 Buono: 15-25%
+    - ⚠️ Necessita miglioramento: &gt;25%
+
+    **Come migliorare:**
+    - Rivedi trascrizioni che hanno portato a trasferimenti
+    - Aggiungi conoscenza o azioni per gestire motivi comuni di trasferimento
+    - Aggiorna le istruzioni per gestire più scenari in automazione
+    - Imposta criteri più chiari per quando i trasferimenti sono appropriati
+
+    Nota: Alcuni trasferimenti sono previsti (es. questioni legali, escalation). Concentrati sulla riduzione dei trasferimenti non necessari.
+  </Accordion>
+
+  <Accordion title="Durata Media Chiamata" icon="clock">
+    **Cosa misura:** Lunghezza media di tutte le conversazioni
+
+    **Target:** Varia per caso d'uso (2-4 min supporto, 3-8 min vendite, 1-3 min prenotazione)
+
+    **Come interpretare:**
+    - ⬆️ In aumento: L'agente potrebbe essere verboso, recupero conoscenza lento, o gestione problemi complessi
+    - ⬇️ In diminuzione: Agente più efficiente O interruzione precoce chiamate
+    - 📊 Stabile: Prestazioni consistenti
+
+    **Come migliorare:**
+    - Accorcia le risposte dell'agente (rimuovi frasi ripetitive)
+    - Ottimizza la struttura della knowledge base
+    - Semplifica il flusso di conversazione (chiedi info in anticipo)
+    - Crea scorciatoie per scenari frequenti
+  </Accordion>
+
+  <Accordion title="Tasso di Successo Azioni" icon="wrench">
+    **Cosa misura:** Percentuale di azioni attivate che vengono eseguite con successo
+
+    **Benchmark target:**
+    - ✅ Eccellente: &gt;95%
+    - 👍 Buono: 90-95%
+    - ⚠️ Necessita miglioramento: &lt;90%
+
+    **Fallimenti comuni:**
+    - Endpoint API down o lenti
+    - Fallimenti autenticazione
+    - Parametri incorretti
+    - Timeout di rete
+
+    **Come migliorare:**
+    - Monitora salute API e tempi di risposta
+    - Migliora le istruzioni di estrazione parametri
+    - Aggiungi logica di retry per fallimenti transitori
+    - Migliore gestione errori nelle azioni
+  </Accordion>
+
+  <Accordion title="Tasso di Completamento" icon="circle-check">
+    **Cosa misura:** Percentuale di conversazioni che si completano normalmente (vs interruzione/errore)
+
+    **Target:** &gt;95%
+
+    **Basso completamento indica:**
+    - Problemi tecnici (audio, connettività)
+    - Esperienza utente scarsa che causa interruzioni
+    - Flusso di conversazione confuso
+    - Lunghi tempi di attesa o problemi di latenza
+  </Accordion>
+
+  <Accordion title="Costo Per Conversazione" icon="dollar-sign">
+    **Cosa misura:** Costo medio per gestire una conversazione completa
+
+    **Range tipici:**
+    - Q&A semplice: $0.10 - $0.30
+    - Supporto: $0.20 - $0.50
+    - Vendite: $0.40 - $1.00+
+
+    **Componenti di costo:**
+    - Inferenza LLM (40-60%)
+    - Text-to-Speech (20-35%)
+    - Speech-to-Text (15-25%)
+    - Operazioni conoscenza (piccola %)
+
+    Traccia i trend nel tempo per individuare aumenti di costo e misurare l'impatto dell'ottimizzazione.
+  </Accordion>
+</AccordionGroup>
+
+## Filtri e Intervalli di Date
+
+Usa i filtri per analizzare porzioni specifiche dei tuoi dati:
+
+**Intervallo Date:**
+- Oggi, Ieri, Ultimi 7 giorni, Ultimi 30 giorni
+- Questo mese, Mese scorso
+- Intervallo personalizzato
+
+**Filtro Agente:** Isola le prestazioni di agenti specifici o confronta multipli
+
+**Filtro Numero Telefono:** Traccia chiamate verso/da numeri specifici
+
+**Filtro Stato:** Filtra per esito (completato, fallito, trasferito)
+
+**Filtro Campagna:** Per chiamate di campagna, filtra per nome campagna
+
+## Dashboard e Reporting Campagna
+
+Per le campagne outbound, ogni campagna ha schede **Dashboard** e **Reporting** con insight specifici della campagna:
+
+<CardGroup cols={2}>
+  <Card title="Mappa Termica Tasso di Risposta" icon="chart-line">
+    Mappa termica settimanale che mostra tassi di risposta per ora e giorno. Dopo 50-100 chiamate, usala per identificare i migliori orari di chiamata e ottimizzare la configurazione degli orari di apertura.
+  </Card>
+
+  <Card title="Prestazioni Obiettivi" icon="bullseye">
+    Traccia i tassi di raggiungimento obiettivi della campagna per contatto. Vedi quali contatti hanno completato gli obiettivi e analizza pattern di successo.
+  </Card>
+
+  <Card title="Analisi Contatti" icon="users">
+    Metriche per contatto che combinano tutte le conversazioni, cronologia stati e risultati analisi per insight completi.
+  </Card>
+
+  <Card title="Volume Chiamate" icon="phone-volume">
+    Monitora tentativi di chiamata, tassi di connessione e progressione contatti nel tempo.
+  </Card>
+</CardGroup>
+
+## Esportazioni Dashboard
+
+Esporta dati per analisi più approfondite:
+
+**Da Dashboard (Conversazioni):**
+- Esporta dati conversazioni filtrati
+- Scegli formato CSV o Excel
+- Includi trascrizioni, obiettivi, azioni, costi
+
+**Da Dashboard/Reporting Campagna:**
+- Esporta riepilogo prestazioni campagna
+- Esporta contatti con tutti i dati conversazioni
+- Scegli formato XLSX, CSV virgola o CSV punto e virgola
+
+Vedi [Rivedi Conversazioni](/it/optimize/review-conversations) per dettagli su cosa è incluso nelle esportazioni e come usarle.
+
+## Routine di Revisione Settimanale
+
+Rendi la revisione dashboard un'abitudine:
+
+<Steps>
+  <Step title="Controlla anomalie">
+    Cerca cali o picchi improvvisi in qualsiasi metrica. È cambiato qualcosa di recente?
+  </Step>
+
+  <Step title="Confronta con la settimana scorsa">
+    Le metriche sono in trend crescente o decrescente? Cosa è cambiato tra i periodi?
+  </Step>
+
+  <Step title="Approfondisci gli outlier">
+    Se una metrica è fuori posto, passa alla vista **Conversazioni** per rivedere chiamate specifiche e capire perché.
+  </Step>
+
+  <Step title="Regola in base ai dati">
+    Usa gli insight per aggiornare istruzioni, conoscenza, orari di apertura o azioni. Testa le modifiche e monitora l'impatto la prossima settimana.
+  </Step>
+</Steps>
+
+## Combinazioni di Metriche
+
+Guarda le metriche insieme per insight più profondi:
+
+**Raggiungimento Obiettivi + Tasso Trasferimento:**
+- Obiettivi bassi, trasferimenti alti → L'agente non può gestire lo scopo
+- Obiettivi alti, trasferimenti bassi → Eccellente automazione ✅
+- Entrambi bassi → Problemi fondamentali
+
+**Durata + Raggiungimento Obiettivi:**
+- Lunga durata, obiettivi alti → Completo ma lento
+- Breve durata, obiettivi alti → Efficiente ed efficace ✅
+- Lunga durata, obiettivi bassi → Fatica ad aiutare
+- Breve durata, obiettivi bassi → Fallisce rapidamente
+
+**Successo Azioni + Raggiungimento Obiettivi:**
+- Alto successo azioni, obiettivi alti → Le azioni guidano il successo ✅
+- Basso successo azioni, obiettivi bassi → Integrazioni rotte che danneggiano i risultati
+
+## Best Practice
+
+<AccordionGroup>
+  <Accordion title="Concentrati sui trend, non sugli assoluti" icon="chart-line">
+    I cambiamenti settimanali contano più dei numeri di un singolo giorno. Cerca pattern su 2-4 settimane.
+  </Accordion>
+
+  <Accordion title="Combina quantitativo + qualitativo" icon="chart-mixed">
+    La Dashboard mostra cosa sta succedendo. La vista Conversazioni mostra perché. Usa entrambe.
+  </Accordion>
+
+  <Accordion title="Imposta baseline prima di ottimizzare" icon="ruler">
+    Esegui per 1-2 settimane per stabilire baseline. Poi fai una modifica alla volta e misura l'impatto.
+  </Accordion>
+
+  <Accordion title="Esporta per tracking a lungo termine" icon="file-export">
+    Non fare affidamento solo sulla dashboard. Esporta mensilmente per record e analisi trend in Excel o strumenti BI.
+  </Accordion>
+
+  <Accordion title="Agisci sugli insight" icon="bolt">
+    Misurare senza azione è uno spreco. Imposta obiettivi di miglioramento, apporta modifiche, testa, itera.
+  </Accordion>
+</AccordionGroup>
+
+## Prossimi Passi
+
+<CardGroup cols={2}>
+  <Card title="Rivedi Conversazioni" icon="messages" href="/it/optimize/review-conversations">
+    Passa dalle metriche al qualitativo: approfondisci chiamate specifiche
+  </Card>
+
+  <Card title="Obiettivi Conversazione" icon="bullseye" href="/it/build/analytics/conversation-goals">
+    Configura obiettivi per tracciare ciò che conta per il tuo caso d'uso
+  </Card>
+
+  <Card title="Analisi Post-Chiamata" icon="clipboard-list" href="/it/build/analytics/post-call-analysis">
+    Configura domande personalizzate per estrarre insight strutturati
+  </Card>
+</CardGroup>

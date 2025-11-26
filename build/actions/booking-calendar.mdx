@@ -1,0 +1,561 @@
+---
+title: "Booking & Calendar Integration"
+description: "Schedule appointments automatically with Cal.com integration"
+icon: "calendar"
+"keywords": "AI appointment booking, Cal.com integration, calendar integration, schedule appointments, AI booking automation, appointment scheduling"
+"og:description": "Enable automatic appointment scheduling with Cal.com integration for seamless AI-powered booking automation."
+---
+
+## Overview
+
+The Booking action lets your AI agents schedule appointments during live conversations. Integrated with Cal.com, your agents can check availability, present time slots, confirm bookings, and send automatic confirmations.
+
+<Note>
+Requires a Cal.com account and active integration. Works with Cal.com's free tier.
+</Note>
+
+<Info>
+**How it works:** The booking action provides two functions to your agent:
+1. **Get available slots** - Fetches available time slots from Cal.com
+2. **Book appointment** - Creates the booking with customer details
+
+This handles the core booking flow. For advanced workflows like confirming existing appointments, rescheduling, or cancelling, you'll need to build custom logic using [Custom API Actions](/build/actions/custom-api-actions) that integrate with the Cal.com API directly.
+</Info>
+
+---
+
+## Setup
+
+<Steps>
+  <Step title="Create Cal.com Event Types">
+    Set up event types in Cal.com for each appointment type:
+    - Duration (15 min, 30 min, 60 min, etc.)
+    - Meeting location (Zoom, Google Meet, phone, in-person)
+    - Availability windows
+
+    [Cal.com event types documentation](https://cal.com/docs/core-features/event-types)
+  </Step>
+  <Step title="Test Event Types">
+    Book a test appointment in Cal.com to verify availability, meeting links, and notifications work correctly.
+  </Step>
+  <Step title="Connect Cal.com">
+    Get your Cal.com API key and connect it to itellicoAI:
+
+    1. Go to [Cal.com Settings → Developer → API Keys](https://app.cal.com/settings/developer/api-keys)
+    2. Click **+ Add**, name it (e.g., "itellicoAI"), and save
+    3. In itellicoAI, go to **Integrations → Cal.com**
+    4. Paste your API key, click **Test Connection**, then **Connect**
+
+    <div style={{ maxWidth: '400px', marginBottom: '1rem' }}>
+      <Frame>
+        <div className="block dark:hidden">
+          <img src="/images/cal/test-cal-light.png" alt="Cal.com Integration" />
+        </div>
+        <div className="hidden dark:block">
+          <img src="/images/cal/test-cal-dark.png" alt="Cal.com Integration" />
+        </div>
+      </Frame>
+    </div>
+  </Step>
+</Steps>
+
+---
+
+## Using Your Existing Calendar System
+
+A common question: **"We use Google Calendar / Microsoft Outlook / Microsoft 365. Can we still use Cal.com?"**
+
+**Yes!** Cal.com integrates with your existing calendar system to prevent double bookings and check availability across all your calendars.
+
+### How It Works
+
+Cal.com connects to your company's calendar system (Google Calendar, Microsoft Outlook, Microsoft 365, Exchange) and:
+
+1. **Checks availability** - Reads your existing calendar to determine when you're free
+2. **Prevents conflicts** - Cross-references all connected calendars before showing available slots
+3. **Syncs bookings** - Adds confirmed appointments to your existing calendar automatically
+4. **Updates in real-time** - When customers book through itellicoAI, the appointment appears in your company calendar immediately
+
+<Note>
+Cal.com acts as a scheduling layer on top of your existing calendar system. You continue using Google Calendar, Outlook, or Microsoft 365 as normal - Cal.com just reads availability and writes bookings to it.
+</Note>
+
+### Supported Calendar Systems
+
+Cal.com integrates with:
+- **Google Calendar** - Personal and Google Workspace accounts
+- **Microsoft Outlook** - Outlook.com and Outlook desktop
+- **Microsoft 365** - Business and enterprise accounts
+- **Microsoft Exchange** - Exchange 2013, 2016, and newer
+- **Apple Calendar** - iCloud calendar
+
+### Setting Up Calendar Integration
+
+<Steps>
+  <Step title="Connect Your Calendar to Cal.com">
+    In Cal.com, go to **Settings → Calendars** and connect your calendar:
+
+    - **Google Calendar**: Click "Connect" and authorize Cal.com
+    - **Microsoft Outlook/365**: Click "Connect" and sign in with Microsoft
+    - **Exchange**: Click "Connect" and enter your Exchange server details
+
+    [Cal.com calendar connection guide](https://cal.com/docs)
+  </Step>
+  <Step title="Configure Conflict Checking">
+    Once connected, Cal.com automatically checks this calendar for conflicts. When someone tries to book with you:
+
+    1. Cal.com checks all connected calendars
+    2. Only shows times when you're actually available
+    3. Prevents double bookings across all systems
+  </Step>
+  <Step title="Select Booking Destination">
+    Choose which calendar receives new bookings:
+
+    - In Cal.com event type settings
+    - Select the calendar where appointments should be created
+    - This can be different from the calendars Cal.com checks for conflicts
+  </Step>
+</Steps>
+
+<Info>
+**Multiple calendars:** You can connect multiple calendars (e.g., personal Google Calendar + work Outlook). Cal.com checks all of them for conflicts and you choose which one receives new bookings.
+</Info>
+
+### Common Scenarios
+
+<AccordionGroup>
+  <Accordion title="Company Uses Microsoft 365" icon="microsoft">
+    **Setup:**
+    1. Connect your Microsoft 365 account to Cal.com
+    2. Cal.com reads your availability from Microsoft 365
+    3. New bookings appear in your Microsoft 365 calendar
+    4. Your AI agent books appointments through itellicoAI → Cal.com → Microsoft 365
+
+    **Benefit:** You and your team continue using Microsoft 365 normally. The AI agent automatically respects everyone's existing calendar commitments.
+  </Accordion>
+
+  <Accordion title="Company Uses Google Workspace" icon="google">
+    **Setup:**
+    1. Connect your Google Workspace account to Cal.com
+    2. Cal.com reads your availability from Google Calendar
+    3. New bookings appear in your Google Calendar
+    4. Your AI agent books appointments through itellicoAI → Cal.com → Google Calendar
+
+    **Benefit:** Seamless integration with your existing Google Workspace setup. All bookings sync instantly.
+  </Accordion>
+
+  <Accordion title="Team Members Use Different Calendar Systems" icon="users">
+    **Setup:**
+    Each team member connects their own calendar to their Cal.com account:
+    - Alice connects her Google Calendar
+    - Bob connects his Microsoft 365 calendar
+    - Carol connects her Outlook calendar
+
+    **Benefit:** Cal.com handles the complexity. Each person's availability is checked in their native calendar system.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Add Booking Action
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/cal/booking-action-light.png" alt="Actions page showing Calendar Booking option in the Integration section" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/cal/booking-action-dark.png" alt="Actions page showing Calendar Booking option in the Integration section" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Create Action">
+    1. Go to your agent → **Abilities → Actions**
+    2. Click **Add Action** → **Calendar Booking**
+    3. Select your Cal.com event type
+  </Step>
+  <Step title="Configure Settings">
+    The action is automatically named "Book [Event Type]" based on your Cal.com event. See configuration options below.
+  </Step>
+</Steps>
+
+---
+
+## Configuration
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/cal/event-config-light.png" alt="New Booking Action configuration dialog showing event settings, email configuration, SMS notifications, and scheduling preferences" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/cal/event-config-dark.png" alt="New Booking Action configuration dialog showing event settings, email configuration, SMS notifications, and scheduling preferences" />
+  </div>
+</Frame>
+
+### Event & Platform
+
+**Cal.com Event Type** (Required)
+- Select from dropdown or enter event ID manually
+- Each action maps to one Cal.com event type
+
+**Meeting Platform** (Required)
+- Choose how meetings are hosted:
+  - **Cal Video** - Built-in Cal.com video
+  - **Zoom** - Requires Zoom connected in Cal.com
+  - **Google Meet** - Requires Google Meet connected
+  - **Microsoft Teams** - Requires Teams connected
+  - **Phone** - Phone call appointment
+  - **In Person** - Physical meeting (address required)
+
+**Timezone** (Required)
+- Defaults to your browser's timezone (can be changed)
+- All suggested times are presented in this timezone
+- Searchable dropdown with all available timezones
+
+### Scheduling Preferences
+
+**Days to Look Ahead** (1-3 days, default: 2)
+- How many future days the agent considers when finding slots
+
+**Time Slots Per Day** (2-5 slots, default: 3)
+- How many time slots per day the agent offers
+
+**Hours Between Suggestions** (1-4 hours, default: 3)
+- Minimum spacing between suggested times
+
+**Start Date** (Optional)
+- Earliest date the agent can suggest
+- Leave blank for immediate availability
+
+### Email Configuration
+
+The agent uses this priority to find customer email:
+
+1. **Dynamic Context** - `cal_email` from your context API
+2. **Contact Record** - Email stored in itellicoAI contact
+3. **Fallback Email** - Team inbox (configure below)
+4. **Ask Customer** - Agent requests email during call
+
+**Fallback Email** (Optional)
+- Used when customer email is unavailable
+- Leave blank to force agent to always collect email
+
+### SMS Notifications
+
+**Send SMS Confirmation** (Default: enabled)
+- Sends SMS after booking completes
+- Includes meeting details and join link
+
+<Warning>
+SMS confirmations only work on **phone calls** where the caller's phone number is available in the system. They will not send for web calls or when the phone number is unavailable.
+</Warning>
+
+**SMS Template**
+- Customize the message with placeholders:
+  - `{date}` - Appointment date
+  - `{time}` - Appointment time
+  - `{link}` - Meeting link
+  - `{location}` - In-person address
+  - `{duration}` - Meeting duration
+
+**Default Booking Instructions** (Default: enabled)
+- Pre-built scheduling script for the agent
+- Disable only if you need more control over the booking conversation flow
+
+---
+
+## Scheduling for Multiple Employees
+
+A common scenario: **"We have 3 employees who can handle appointments, each with different availability. How do we schedule across the team?"**
+
+**Solution:** Use Cal.com Teams with Round Robin scheduling. This distributes appointments across team members based on their individual availability.
+
+### What is Cal.com Teams?
+
+Cal.com Teams allows you to create event types that can be handled by multiple team members. Instead of booking with a specific person, customers book with your team, and Cal.com automatically assigns the appointment to an available team member.
+
+<Note>
+Cal.com Teams requires a Teams or Organization plan. The round robin feature intelligently distributes appointments based on availability, priority, or rotation.
+</Note>
+
+### How Round Robin Works
+
+When a customer books an appointment:
+
+1. **Checks availability** - Cal.com checks each team member's calendar
+2. **Applies distribution logic** - Selects the best team member based on your chosen method:
+   - **Priority**: Assign to higher-priority team members first
+   - **Weighted**: Distribute proportionally (e.g., senior staff get more bookings)
+   - **Least recently booked**: Rotate evenly by who was booked least recently
+3. **Books with one person** - Customer gets scheduled with the selected team member
+4. **Updates calendar** - Appointment appears in that team member's calendar
+
+### Setting Up Team Event Types
+
+<Steps>
+  <Step title="Create a Team in Cal.com">
+    In Cal.com:
+    1. Go to **Teams** → **Create Team**
+    2. Name your team (e.g., "Sales Team", "Support Team")
+    3. Invite team members by email
+    4. Each member connects their own calendar (Google, Microsoft, etc.)
+  </Step>
+  <Step title="Create Team Event Type">
+    In your Cal.com team:
+    1. Go to **Event Types** → **New Event Type**
+    2. Select **Round Robin** as the event type
+    3. Configure duration, meeting platform, etc.
+    4. Select which team members can handle this event type
+  </Step>
+  <Step title="Configure Distribution Method">
+    Choose how appointments are distributed:
+
+    **Priority Ranking:**
+    - Assign each team member a priority (High, Medium, Low)
+    - Higher priority members get bookings first
+    - Use for senior staff or specialists
+
+    **Weighted Distribution:**
+    - Give each member a weight percentage (default 100%)
+    - Higher weights = more bookings
+    - Use for part-time vs full-time staff
+
+    **Least Recently Booked:**
+    - Automatically rotates through team members
+    - Ensures even distribution
+    - Use for equal workload sharing
+  </Step>
+  <Step title="Add to itellicoAI">
+    Once your team event type is created:
+    1. In itellicoAI, go to your agent → **Abilities → Actions**
+    2. Click **Add Action** → **Calendar Booking**
+    3. Select your team event type from the dropdown
+    4. The booking action will now schedule with your team
+  </Step>
+</Steps>
+
+### Advanced: Fixed + Round Robin Hosts
+
+For scenarios where one person must always attend, while others rotate:
+
+**Example:** Sales calls need a sales rep (rotating) + sales manager (always present)
+
+**Setup in Cal.com:**
+1. Create round robin event type
+2. Select **Fixed Hosts**: Sales Manager (always attends)
+3. Select **Round Robin Hosts**: Sales reps (one attends per call)
+4. Cal.com checks availability for both and books when both are free
+
+### Team Scheduling Examples
+
+<AccordionGroup>
+  <Accordion title="Sales Team: 3 Reps with Equal Distribution" icon="users">
+    **Scenario:** 3 sales reps should share demo calls equally
+
+    **Setup:**
+    - Create team "Sales Team" with 3 members
+    - Use **Least Recently Booked** distribution
+    - Each rep connects their calendar to Cal.com
+    - Create event type "Sales Demo" (30 min, round robin)
+
+    **Result:** Demos are automatically distributed evenly. Rep availability is checked in real-time from their individual calendars.
+  </Accordion>
+
+  <Accordion title="Support Team: Priority-Based Assignment" icon="headset">
+    **Scenario:** Senior support staff should get complex issues, junior staff get routine issues
+
+    **Setup:**
+    - Create event type "Technical Support Call" with priority distribution
+    - Senior staff: High priority
+    - Junior staff: Medium priority
+
+    **Result:** Senior staff get booked first when available. Junior staff handle overflow.
+  </Accordion>
+
+  <Accordion title="Part-Time Team: Weighted Distribution" icon="clock">
+    **Scenario:** 2 full-time employees and 1 part-time employee
+
+    **Setup:**
+    - Full-time staff: 100% weight each
+    - Part-time staff: 50% weight
+    - Use weighted distribution
+
+    **Result:** Part-timer gets half as many bookings as full-time staff.
+  </Accordion>
+
+  <Accordion title="Multi-Role Meetings" icon="user-group">
+    **Scenario:** Customer needs both a technical specialist and account manager
+
+    **Setup:**
+    - Use **Round Robin Groups** (advanced feature)
+    - Group 1: Technical specialists (one attends)
+    - Group 2: Account managers (one attends)
+
+    **Result:** Cal.com selects one person from each group, ensuring both roles are covered.
+  </Accordion>
+</AccordionGroup>
+
+### Team Integration with itellicoAI
+
+When you connect a Cal.com team event type to itellicoAI:
+
+1. **Your AI agent books with the team** - Not a specific person
+2. **Cal.com handles assignment** - Automatically selects the best team member
+3. **Customer gets confirmation** - With the assigned team member's details
+4. **Team member's calendar updates** - Appointment appears in their individual calendar
+
+**In your agent instructions:**
+
+```
+When a customer wants to schedule a consultation:
+
+1. Use 'Book Team Consultation' action
+2. The system will automatically assign an available team member
+3. Confirm: "Perfect! You're scheduled with [assigned team member]
+   on [date] at [time]. You'll receive a confirmation email."
+```
+
+<Info>
+**Flexibility:** Team members can update their individual Cal.com availability, and the round robin automatically respects those changes. No need to update anything in itellicoAI.
+</Info>
+
+---
+
+## Using in Instructions
+
+Reference the action by its auto-generated name (e.g., "Book 30-Minute Consultation") in your agent instructions:
+
+```
+When a customer wants to schedule a consultation:
+
+1. Confirm: "I'd be happy to schedule that for you"
+2. Ask availability: "What days work best this week?"
+3. Collect email if needed
+4. Use 'Book 30-Minute Consultation' action to present times
+5. Confirm verbally: "Perfect! You're all set for [day] at [time].
+   You'll receive a confirmation email with the meeting link."
+```
+
+<Info>
+The action name is automatically generated from your Cal.com event type title (e.g., "30-Minute Consultation" becomes "Book 30-Minute Consultation").
+</Info>
+
+### Handle Booking Failures
+
+```
+If 'Book 30-Minute Consultation' fails:
+
+1. Apologize: "I'm having trouble accessing the calendar right now"
+2. Offer alternative:
+   - "I can have someone call you back to schedule"
+   - Collect callback number and best time
+3. If no availability: "We're fully booked for [timeframe].
+   Would [alternative timeframe] work?"
+```
+
+---
+
+## Testing
+
+<Steps>
+  <Step title="Verify Integration">
+    - Cal.com integration shows "Connected"
+    - Event types appear in dropdown
+    - Meeting platforms configured in Cal.com
+  </Step>
+  <Step title="Test Booking Flow">
+    1. Start test call with your agent
+    2. Request appointment booking
+    3. Verify agent presents available times
+    4. Confirm booking completes
+  </Step>
+  <Step title="Check Confirmations">
+    - Email confirmation received
+    - SMS confirmation sent (if enabled)
+    - Meeting link works
+    - Calendar updated
+  </Step>
+  <Step title="Test Edge Cases">
+    - Request dates outside availability
+    - Test without email in contact record
+    - Verify failure handling
+  </Step>
+</Steps>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Booking Action Not Appearing" icon="eye-slash">
+    **Cause:** Cal.com not connected
+
+    **Solution:**
+    - Go to Integrations → Cal.com
+    - Verify status shows "Connected"
+  </Accordion>
+
+  <Accordion title="No Event Types in Dropdown" icon="calendar-xmark">
+    **Cause:** No event types in Cal.com or sync issue
+
+    **Solution:**
+    - Create event types in Cal.com
+    - Disconnect and reconnect integration if needed
+  </Accordion>
+
+  <Accordion title="Meeting Platform Disabled" icon="video-slash">
+    **Cause:** Platform not connected in Cal.com
+
+    **Solution:**
+    - Go to Cal.com event type settings
+    - Connect the platform (Zoom, Google Meet, etc.)
+    - Disconnect and reconnect integration to sync changes
+  </Accordion>
+
+  <Accordion title="Email Confirmation Not Received" icon="envelope-open-text">
+    **Possible causes:**
+    - Wrong email address
+    - Spam folder
+    - Cal.com email settings
+
+    **Solution:**
+    - Check spam/junk folder
+    - Verify email in booking confirmation
+    - Check Cal.com notification settings
+  </Accordion>
+
+  <Accordion title="Agent Doesn't Use Action" icon="robot">
+    **Possible causes:**
+    - Action name not referenced in instructions
+    - Agent doesn't recognize booking intent
+    - LLM model not performing well with function calling
+
+    **Solution:**
+    - Reference exact auto-generated name (e.g., 'Book 30-Minute Consultation')
+    - Check the Actions tab to see the actual name
+    - Verify action is added to the agent
+    - Add explicit booking flow to instructions
+    - Test with clear: "I want to book an appointment"
+    - Try GPT-4.1 or GPT-4.1-mini for most reliable function calling
+    - Reduce temperature for more consistent behavior
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Actions Overview" icon="bolt" href="/build/actions/overview">
+    Learn about all action types
+  </Card>
+  <Card title="Custom API Actions" icon="code" href="/build/actions/custom-api-actions">
+    Build custom booking flows
+  </Card>
+  <Card title="Transfer Actions" icon="right-left" href="/build/actions/transfer-details">
+    Route to human schedulers if needed
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/web-simulator">
+    Comprehensive testing guide
+  </Card>
+</CardGroup>

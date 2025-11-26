@@ -1,0 +1,351 @@
+---
+title: "Automazione Email Post-Chiamata"
+description: "Automatizza le email di follow-up attivate dai risultati delle conversazioni e dalle analisi"
+icon: "envelope-open-text"
+"keywords": "automazione post-chiamata, email automatizzate, email follow-up, risultati conversazioni, automazione email AI, azioni post-chiamata"
+"og:description": "Automatizza email di follow-up intelligenti attivate da risultati delle conversazioni, sentiment e condizioni personalizzate."
+---
+
+## Panoramica
+
+Le email post-chiamata vengono inviate automaticamente dopo le conversazioni in base a risultati, obiettivi, sentiment o condizioni personalizzate che definisci.
+
+**Accesso:** Editor agente → **Analytics → Email Post-Chiamata**
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/postcalls/postcall-email-light.png" alt="Interfaccia Email Post-Chiamata che mostra barra laterale di navigazione con sezione Analytics espansa e Email Post-Chiamata selezionata, area contenuto principale con titolo 'Email Post-Chiamata' e sottotitolo 'Invia automaticamente email di follow-up in base ai risultati delle chiamate', stato vuoto con icona email, messaggio 'Nessuna email post-chiamata ancora' e descrizione 'Crea email di follow-up automatizzate che vengono inviate dopo le chiamate', e pulsante Crea Prima Email" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/postcalls/postcall-email-dark.png" alt="Interfaccia Email Post-Chiamata che mostra barra laterale di navigazione con sezione Analytics espansa e Email Post-Chiamata selezionata, area contenuto principale con titolo 'Email Post-Chiamata' e sottotitolo 'Invia automaticamente email di follow-up in base ai risultati delle chiamate', stato vuoto con icona email, messaggio 'Nessuna email post-chiamata ancora' e descrizione 'Crea email di follow-up automatizzate che vengono inviate dopo le chiamate', e pulsante Crea Prima Email" />
+  </div>
+</Frame>
+
+**Casi d'uso:** Conferme appuntamenti, richieste di richiamata, escalation reclami, raccolta feedback, follow-up vendite, tracciamento problemi irrisolti
+
+---
+
+## Configurazione
+
+<Steps>
+  <Step title="Accedi alle Email Post-Chiamata">
+    Editor agente → **Analytics → Email Post-Chiamata** → **Crea Email**
+  </Step>
+
+  <Step title="Scegli il punto di partenza (opzionale)">
+    I **Template** forniscono trigger e contenuto pre-configurati per casi d'uso comuni:
+
+    - **Richiamata Richiesta** - Il cliente chiede un follow-up
+    - **Appuntamento Prenotato** - Riunione/consulenza programmata
+    - **Reclamo Cliente** - Escalation di insoddisfazione
+    - **Domanda Senza Risposta** - L'agente non ha potuto rispondere
+    - **Problema Tecnico** - Indirizza bug/errori ai team tecnici
+    - **Richiesta Fatturazione** - Domande su pagamenti/fatture
+    - **Escalation Necessaria** - Richiede attenzione del management
+    - **Ordine Effettuato** - Conferma acquisto
+    - **Richiesta Demo** - Interesse dimostrazione prodotto
+    - **Feedback Positivo** - Condividi complimenti con il team
+
+    <Info>
+    I template sono punti di partenza completamente personalizzabili. Puoi anche iniziare da zero.
+    </Info>
+  </Step>
+
+  <Step title="Configura il nome della notifica">
+    **Nome:** Identificatore interno (es. "Avviso Richiesta Richiamata")
+  </Step>
+
+  <Step title="Imposta la condizione di attivazione">
+    Descrivi quando inviare (l'AI analizza questo contro la trascrizione della chiamata):
+
+    ```
+    Esempio: "Il cliente ha richiesto una richiamata, ha chiesto di essere
+    contattato più tardi o voleva che qualcuno lo ricontattasse?"
+    ```
+
+    <Tip>
+    Sii specifico. Più dettagliata è la descrizione del trigger, più accurata sarà la corrispondenza AI.
+    </Tip>
+
+    **Oppure:** Attiva "Invia sempre dopo ogni chiamata" per bypassare il controllo delle condizioni
+  </Step>
+
+  <Step title="Configura i destinatari">
+    **Destinatari Fissi:** Inserisci indirizzi email specifici (supporta multipli)
+
+    ```
+    Esempio: supporto@azienda.com, manager@azienda.com
+    ```
+
+    **Destinatari Dinamici (basati su AI):** L'AI instrada a diversi destinatari in base al contenuto della chiamata
+
+    ```
+    Esempio: Instrada reclami per gravità
+    - Se minaccia legale → legale@azienda.com
+    - Se arrabbiato/cancellazione → retention@azienda.com
+    - Se problema prodotto → qualita@azienda.com
+    - Altrimenti → supporto@azienda.com
+
+    Esempio: Instrada problemi tecnici per tipo
+    - Se problema sito web → dev@azienda.com
+    - Se sistema fatturazione → fatturazione-tech@azienda.com
+    - Altrimenti → supporto-tech@azienda.com
+
+    Esempio: Instrada ordini per valore
+    - Se ordine oltre €1000 → manager-vendite@azienda.com
+    - Altrimenti → ordini@azienda.com
+    ```
+  </Step>
+
+  <Step title="Progetta il template email">
+    **Oggetto:** `Richiamata richiesta`
+
+    **Corpo:** Usa l'editor rich text con variabili (vedi [Variabili Template](#variabili-template) sotto)
+
+    - **Variabili di sistema:** Clicca il selettore variabili per inserire (es. `{{customer_name}}`, `{{conversation_summary}}`)
+    - **Variabili dinamiche:** Digita `{{dyn_` + nome descrittivo (es. `{{dyn_appointment_date}}`)
+  </Step>
+
+  <Step title="Salva e abilita">
+    Salva notifica → Attiva l'interruttore **Abilitato**
+  </Step>
+</Steps>
+
+---
+
+## Variabili Template
+
+### Variabili di Sistema
+
+Usa il **selettore variabili** nell'editor per inserirle.
+
+<Info>
+**Disponibilità:** Alcune variabili si popolano solo in determinate condizioni:
+- Numeri di telefono (`customer_number`, `to_number`) - Solo chiamate telefoniche
+- Dati cliente (`customer_name`, `customer_email`) - Solo se il chiamante esiste come contatto nel tuo sistema
+- Trascrizione conversazione - Solo se la trascrizione è abilitata
+</Info>
+
+**Dettagli Conversazione:**
+- `{{conversation_date}}` - Data/ora completa in formato 24 ore
+- `{{conversation_time}}` - Ora in formato 12 ore
+- `{{conversation_duration}}` - Durata in formato MM:SS
+- `{{conversation_status}}` - Stato (Completata, Fallita, ecc.)
+- `{{conversation_direction}}` - In entrata/In uscita
+- `{{conversation_summary}}` - Riepilogo generato da AI
+- `{{conversation_transcript}}` - Trascrizione completa con testo di fallback
+- `{{transcript}}` - Trascrizione semplice (senza fallback)
+- `{{conversation_url}}` - Link per visualizzare la conversazione
+- `{{conversation_uuid}}` - Identificatore univoco
+
+**Agente e Account:**
+- `{{agent_name}}` - Nome dell'agente AI
+- `{{account_name}}` - Nome della tua organizzazione
+
+**Informazioni Cliente** (solo se il contatto esiste):
+- `{{customer_number}}` - Numero di telefono cliente (solo chiamate telefoniche)
+- `{{customer_name}}` - Nome cliente (se il contatto esiste)
+- `{{customer_email}}` - Email cliente (se il contatto esiste)
+- `{{to_number}}` - Numero di telefono chiamato (solo chiamate telefoniche)
+
+### Variabili Dinamiche
+
+**Come funzionano:** Digita `{{dyn_` seguito da un nome descrittivo. L'AI analizza la trascrizione della chiamata ed estrae le informazioni.
+
+**Esempi:**
+```
+{{dyn_appointment_date}} → L'AI trova la data menzionata nella chiamata
+{{dyn_appointment_time}} → L'AI trova l'ora menzionata
+{{dyn_issue_summary}} → L'AI riassume il problema discusso
+{{dyn_ticket_number}} → L'AI localizza qualsiasi riferimento a ticket
+{{dyn_next_steps}} → L'AI identifica le azioni concordate
+{{dyn_shipping_address}} → L'AI estrae l'indirizzo menzionato
+{{dyn_order_number}} → L'AI trova il riferimento all'ordine
+```
+
+<Tip>
+Il nome della variabile guida l'AI. Nomi più specifici = migliore accuratezza di estrazione.
+
+✅ `{{dyn_rescheduled_appointment_date}}`
+❌ `{{dyn_date}}`
+</Tip>
+
+---
+
+## Esempi
+
+<AccordionGroup>
+  <Accordion title="Conferma Appuntamento" icon="calendar-check">
+    **Trigger:**
+    ```
+    Il chiamante ha programmato, prenotato o confermato un appuntamento o una riunione?
+    ```
+
+    **Destinatari:** Fissi - `team@azienda.com`
+
+    **Oggetto:** `Appuntamento confermato - {{dyn_appointment_date}}`
+
+    **Corpo:**
+    ```
+    Ciao {{customer_first_name}},
+
+    Il tuo appuntamento è confermato:
+
+    📅 {{dyn_appointment_date}} alle {{dyn_appointment_time}}
+    📍 {{dyn_location}}
+    🔗 {{dyn_meeting_link}}
+
+    Necessità di riprogrammare? Chiama {{agent_name}}
+
+    Cordiali saluti,
+    {{agent_name}}
+    ```
+
+    **Variabili utilizzate:**
+    - Sistema: `{{customer_first_name}}`, `{{agent_name}}`
+    - Dinamiche: `{{dyn_appointment_date}}`, `{{dyn_appointment_time}}`, `{{dyn_location}}`, `{{dyn_meeting_link}}`
+  </Accordion>
+
+  <Accordion title="Richiesta Richiamata" icon="phone">
+    **Trigger:**
+    ```
+    Il cliente ha richiesto una richiamata, una chiamata di follow-up o ha chiesto di essere contattato più tardi?
+    ```
+
+    **Destinatari:** Fissi - `supporto@azienda.com`
+
+    **Oggetto:** `Richiamata richiesta`
+
+    **Corpo:**
+    ```
+    Cliente ha richiesto richiamata:
+
+    Telefono: {{customer_number}}
+    Data: {{conversation_date}}
+    Motivo: {{conversation_summary}}
+
+    Visualizza chiamata: {{conversation_url}}
+    ```
+
+    **Variabili utilizzate:**
+    - Sistema: `{{customer_number}}`, `{{conversation_date}}`, `{{conversation_summary}}`, `{{conversation_url}}`
+  </Accordion>
+
+  <Accordion title="Instradamento Intelligente per Gravità" icon="route">
+    **Trigger:**
+    ```
+    Il cliente ha espresso insoddisfazione, ha presentato un reclamo o ha segnalato un problema?
+    ```
+
+    **Destinatari:** Dinamici
+    ```
+    Instrada per gravità:
+    - Se minaccia legale → legale@azienda.com
+    - Se arrabbiato/cancellazione → retention@azienda.com
+    - Se problema prodotto → qualita@azienda.com
+    - Altrimenti → supporto@azienda.com
+    ```
+
+    **Oggetto:** `Problema cliente - {{dyn_severity}}`
+
+    **Corpo:**
+    ```
+    Problema segnalato:
+
+    Cliente: {{customer_number}}
+    Gravità: {{dyn_severity}}
+    Problema: {{dyn_issue_summary}}
+
+    Visualizza chiamata completa: {{conversation_url}}
+    ```
+
+    **Variabili utilizzate:**
+    - Sistema: `{{customer_number}}`, `{{conversation_url}}`
+    - Dinamiche: `{{dyn_severity}}`, `{{dyn_issue_summary}}`
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Suggerimenti
+
+<AccordionGroup>
+  <Accordion title="Scrivi Trigger Specifici" icon="bullseye">
+    ❌ Male: "Cliente infelice"
+
+    ✅ Bene: "Il cliente ha espresso insoddisfazione, frustrazione, ha menzionato di essere infelice o ha minacciato di cancellare/lasciare recensione negativa?"
+  </Accordion>
+
+  <Accordion title="Testa con Chiamate Reali" icon="vial">
+    Abilita la notifica e testa con chiamate reali o di test per verificare l'attivazione e il contenuto.
+  </Accordion>
+
+  <Accordion title="Mantieni Email Brevi" icon="align-left">
+    - Massimo 3-5 paragrafi
+    - Un obiettivo chiaro
+    - Una sola call-to-action
+    - Elenchi puntati per più elementi
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Risoluzione Problemi
+
+<AccordionGroup>
+  <Accordion title="Email non inviata" icon="envelope-open-text">
+    **Possibili cause:**
+    - La notifica è disabilitata
+    - La condizione di trigger non corrisponde al contenuto della chiamata
+    - Il cliente non ha un indirizzo email valido
+
+    **Soluzioni:**
+    - Verifica che la notifica sia abilitata (interruttore su On)
+    - Rivedi la descrizione del trigger e testa con chiamate corrispondenti
+    - Verifica che il contatto abbia un'email o usa l'estrazione dinamica del destinatario
+  </Accordion>
+
+  <Accordion title="Variabili non popolate" icon="brackets-curly">
+    **Possibili cause:**
+    - Errore di battitura nel nome della variabile
+    - Nome variabile dinamica troppo vago
+    - Dati non disponibili (es. cliente non nel sistema)
+
+    **Soluzioni:**
+    - Usa nomi di variabili esatti dal selettore variabili
+    - Rendi i nomi delle variabili dinamiche più specifici e descrittivi
+    - Testa con chiamate reali per verificare l'estrazione
+    - Controlla le [condizioni di disponibilità](#variabili-template) per le variabili di sistema
+  </Accordion>
+
+  <Accordion title="Instradamento errato" icon="route">
+    **Possibili cause:**
+    - Descrizione regole di instradamento poco chiara
+    - L'AI interpreta male il contenuto della chiamata
+
+    **Soluzioni:**
+    - Rivedi e chiarisci la descrizione delle regole di instradamento
+    - Rendi i criteri più espliciti con parole chiave specifiche
+    - Testa con chiamate di esempio e adatta le regole
+    - Aggiungi un percorso di fallback "Altrimenti"
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Prossimi Passi
+
+<CardGroup cols={2}>
+  <Card title="Obiettivi Conversazione" icon="bullseye" href="/it/build/analytics/conversation-goals">
+    Imposta obiettivi che attivano email
+  </Card>
+  <Card title="Dashboard" icon="chart-line" href="/it/optimize/analytics-dashboard">
+    Monitora le prestazioni delle email
+  </Card>
+  <Card title="Obiettivi Conversazione" icon="target" href="/it/build/analytics/conversation-goals">
+    Configura condizioni di attivazione
+  </Card>
+  <Card title="Contesto Dinamico" icon="brackets-curly" href="/it/build/advanced/dynamic-context">
+    Passa dati per le variabili
+  </Card>
+</CardGroup>

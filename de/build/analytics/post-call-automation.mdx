@@ -1,0 +1,343 @@
+---
+title: "Post-Call-E-Mail-Automatisierung"
+description: "Automatisiere Follow-up-E-Mails, die durch Gesprächsergebnisse und Analysen ausgelöst werden"
+icon: "envelope-open-text"
+keywords: "Nachgesprächs-Automatisierung, Post-Call Automation, Workflow-Automatisierung, Follow-up"
+og:description: "Automatisiere Follow-ups und Workflows nach Gesprächen mit intelligenter Post-Call-Automatisierung."
+---
+
+## Übersicht
+
+Post-Call-E-Mails werden automatisch nach Gesprächen basierend auf Ergebnissen, Zielen, Sentiment oder von dir definierten benutzerdefinierten Bedingungen gesendet.
+
+**Zugriff:** Prompteditor → **Analytik → Post-Call-E-Mails**
+
+**Anwendungsfälle:** Terminbestätigungen, Rückrufanfragen, Beschwerdeeskalationen, Feedback-Erfassung, Vertriebs-Follow-ups, Verfolgung ungelöster Probleme
+
+---
+
+## Einrichtung
+
+<Steps>
+  <Step title="Zugriff auf Post-Call-E-Mails">
+    Prompteditor → **Analytik → Post-Call-E-Mails** → **E-Mail erstellen**
+  </Step>
+
+  <Step title="Ausgangspunkt wählen (optional)">
+    **Vorlagen** bieten vorkonfigurierte Trigger und Inhalte für gängige Anwendungsfälle:
+
+    - **Rückruf angefordert** - Kunde bittet um Follow-up
+    - **Termin gebucht** - Meeting/Beratung geplant
+    - **Kundenbeschwerde** - Eskaliert Unzufriedenheit
+    - **Unbeantwortete Frage** - Agent konnte nicht antworten
+    - **Technisches Problem** - Leitet Bugs/Fehler an Tech-Teams weiter
+    - **Rechnungsanfrage** - Zahlungs-/Rechnungsfragen
+    - **Eskalation erforderlich** - Erfordert Management-Aufmerksamkeit
+    - **Bestellung aufgegeben** - Kaufbestätigung
+    - **Demo-Anfrage** - Interesse an Produktvorführung
+    - **Positives Feedback** - Komplimente mit Team teilen
+
+    <Info>
+    Vorlagen sind vollständig anpassbare Ausgangspunkte. Du kannst auch von Grund auf neu beginnen.
+    </Info>
+  </Step>
+
+  <Step title="Benachrichtigungsname konfigurieren">
+    **Name:** Interner Bezeichner (z.B. "Rückrufanfrage-Alarm")
+  </Step>
+
+  <Step title="Triggerbedingung festlegen">
+    Beschreibe, wann gesendet werden soll (KI analysiert dies anhand des Anruftranskripts):
+
+    ```
+    Beispiel: "Hat der Kunde einen Rückruf angefordert, gebeten,
+    später kontaktiert zu werden, oder möchte er, dass sich jemand
+    mit ihm in Verbindung setzt?"
+    ```
+
+    <Tip>
+    Sei spezifisch. Je detaillierter deine Trigger-Beschreibung, desto genauer die KI-Übereinstimmung.
+    </Tip>
+
+    **Oder:** Schalte "Immer nach jedem Anruf senden" ein, um die Bedingungsprüfung zu umgehen
+  </Step>
+
+  <Step title="Empfänger konfigurieren">
+    **Feste Empfänger:** Gib spezifische E-Mail-Adressen ein (mehrere werden unterstützt)
+
+    ```
+    Beispiel: support@unternehmen.de, manager@unternehmen.de
+    ```
+
+    **Dynamische Empfänger (KI-gesteuert):** KI leitet an verschiedene Empfänger basierend auf Anrufinhalt weiter
+
+    ```
+    Beispiel: Beschwerden nach Schweregrad weiterleiten
+    - Bei rechtlicher Drohung → legal@unternehmen.de
+    - Bei wütend/Kündigung → retention@unternehmen.de
+    - Bei Produktproblem → qualitaet@unternehmen.de
+    - Sonst → support@unternehmen.de
+
+    Beispiel: Technische Probleme nach Typ weiterleiten
+    - Bei Website-Problem → dev@unternehmen.de
+    - Bei Abrechnungssystem → billing-tech@unternehmen.de
+    - Sonst → tech-support@unternehmen.de
+
+    Beispiel: Bestellungen nach Wert weiterleiten
+    - Bei Bestellung über 1000€ → sales-manager@unternehmen.de
+    - Sonst → orders@unternehmen.de
+    ```
+  </Step>
+
+  <Step title="E-Mail-Vorlage gestalten">
+    **Betreff:** `Rückruf angefordert`
+
+    **Text:** Verwende Rich-Text-Editor mit Variablen (siehe [Vorlagen-Variablen](#template-variables) unten)
+
+    - **Systemvariablen:** Klicke auf Variablenauswahl zum Einfügen (z.B. `{{customer_name}}`, `{{conversation_summary}}`)
+    - **Dynamische Variablen:** Tippe `{{dyn_` + beschreibenden Namen (z.B. `{{dyn_appointment_date}}`)
+  </Step>
+
+  <Step title="Speichern und aktivieren">
+    Benachrichtigung speichern → Schalter **Aktiviert** einschalten
+  </Step>
+</Steps>
+
+---
+
+## Vorlagen-Variablen
+
+### Systemvariablen
+
+Verwende die **Variablenauswahl** im Editor, um diese einzufügen.
+
+<Info>
+**Verfügbarkeit:** Einige Variablen werden nur unter bestimmten Bedingungen ausgefüllt:
+- Telefonnummern (`customer_number`, `to_number`) - Nur Telefonanrufe
+- Kundendaten (`customer_name`, `customer_email`) - Nur wenn Anrufer als Kontakt in deinem System existiert
+- Gesprächstranskript - Nur wenn Transkription aktiviert ist
+</Info>
+
+**Gesprächsdetails:**
+- `{{conversation_date}}` - Vollständiges Datum/Uhrzeit im 24-Stunden-Format
+- `{{conversation_time}}` - Zeit im 12-Stunden-Format
+- `{{conversation_duration}}` - Dauer im MM:SS-Format
+- `{{conversation_status}}` - Status (Abgeschlossen, Fehlgeschlagen, etc.)
+- `{{conversation_direction}}` - Eingehend/Ausgehend
+- `{{conversation_summary}}` - KI-generierte Zusammenfassung
+- `{{conversation_transcript}}` - Vollständiges Transkript mit Ersatztext
+- `{{transcript}}` - Einfaches Transkript (kein Ersatztext)
+- `{{conversation_url}}` - Link zum Anzeigen des Gesprächs
+- `{{conversation_uuid}}` - Eindeutiger Bezeichner
+
+**Agent & Konto:**
+- `{{agent_name}}` - Name des KI-Agenten
+- `{{account_name}}` - dein Organisationsname
+
+**Kundeninformationen** (nur wenn Kontakt existiert):
+- `{{customer_number}}` - Kunden-Telefonnummer (nur Telefonanrufe)
+- `{{customer_name}}` - Kundenname (wenn Kontakt existiert)
+- `{{customer_email}}` - Kunden-E-Mail (wenn Kontakt existiert)
+- `{{to_number}}` - Angerufene Telefonnummer (nur Telefonanrufe)
+
+### Dynamische Variablen
+
+**Wie sie funktionieren:** Tippe `{{dyn_` gefolgt von einem beschreibenden Namen. KI analysiert das Anruftranskript und extrahiert die Information.
+
+**Beispiele:**
+```
+{{dyn_appointment_date}} → KI findet das im Anruf erwähnte Datum
+{{dyn_appointment_time}} → KI findet die erwähnte Zeit
+{{dyn_issue_summary}} → KI fasst das besprochene Problem zusammen
+{{dyn_ticket_number}} → KI lokalisiert jegliche Ticket-Referenz
+{{dyn_next_steps}} → KI identifiziert vereinbarte Aktionspunkte
+{{dyn_shipping_address}} → KI extrahiert erwähnte Adresse
+{{dyn_order_number}} → KI findet Bestellreferenz
+```
+
+<Tip>
+Der Variablenname leitet die KI. Spezifischere Namen = bessere Extraktionsgenauigkeit.
+
+✅ `{{dyn_rescheduled_appointment_date}}`
+❌ `{{dyn_date}}`
+</Tip>
+
+---
+
+## Beispiele
+
+<AccordionGroup>
+  <Accordion title="Terminbestätigung" icon="calendar-check">
+    **Trigger:**
+    ```
+    Hat der Anrufer einen Termin vereinbart, gebucht oder bestätigt?
+    ```
+
+    **Empfänger:** Fest - `team@unternehmen.de`
+
+    **Betreff:** `Termin bestätigt - {{dyn_appointment_date}}`
+
+    **Text:**
+    ```
+    Hallo {{customer_first_name}},
+
+    Ihr Termin ist bestätigt:
+
+    📅 {{dyn_appointment_date}} um {{dyn_appointment_time}}
+    📍 {{dyn_location}}
+    🔗 {{dyn_meeting_link}}
+
+    Möchten Sie einen neuen Termin vereinbaren? Rufen Sie {{agent_name}} an
+
+    Mit freundlichen Grüßen,
+    {{agent_name}}
+    ```
+
+    **Verwendete Variablen:**
+    - System: `{{customer_first_name}}`, `{{agent_name}}`
+    - Dynamisch: `{{dyn_appointment_date}}`, `{{dyn_appointment_time}}`, `{{dyn_location}}`, `{{dyn_meeting_link}}`
+  </Accordion>
+
+  <Accordion title="Rückrufanfrage" icon="phone">
+    **Trigger:**
+    ```
+    Hat der Kunde einen Rückruf, einen Follow-up-Anruf angefordert oder gebeten, später kontaktiert zu werden?
+    ```
+
+    **Empfänger:** Fest - `support@unternehmen.de`
+
+    **Betreff:** `Rückruf angefordert`
+
+    **Text:**
+    ```
+    Kunde hat Rückruf angefordert:
+
+    Telefon: {{customer_number}}
+    Datum: {{conversation_date}}
+    Grund: {{conversation_summary}}
+
+    Anruf anzeigen: {{conversation_url}}
+    ```
+
+    **Verwendete Variablen:**
+    - System: `{{customer_number}}`, `{{conversation_date}}`, `{{conversation_summary}}`, `{{conversation_url}}`
+  </Accordion>
+
+  <Accordion title="Intelligente Weiterleitung nach Schweregrad" icon="route">
+    **Trigger:**
+    ```
+    Hat der Kunde Unzufriedenheit geäußert, eine Beschwerde eingereicht oder ein Problem gemeldet?
+    ```
+
+    **Empfänger:** Dynamisch
+    ```
+    Nach Schweregrad weiterleiten:
+    - Bei rechtlicher Drohung → legal@unternehmen.de
+    - Bei wütend/Kündigung → retention@unternehmen.de
+    - Bei Produktproblem → qualitaet@unternehmen.de
+    - Sonst → support@unternehmen.de
+    ```
+
+    **Betreff:** `Kundenproblem - {{dyn_severity}}`
+
+    **Text:**
+    ```
+    Problem gemeldet:
+
+    Kunde: {{customer_number}}
+    Schweregrad: {{dyn_severity}}
+    Problem: {{dyn_issue_summary}}
+
+    Vollständigen Anruf anzeigen: {{conversation_url}}
+    ```
+
+    **Verwendete Variablen:**
+    - System: `{{customer_number}}`, `{{conversation_url}}`
+    - Dynamisch: `{{dyn_severity}}`, `{{dyn_issue_summary}}`
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Tipps
+
+<AccordionGroup>
+  <Accordion title="Spezifische Trigger schreiben" icon="bullseye">
+    ❌ Schlecht: "Kunde unzufrieden"
+
+    ✅ Gut: "Hat der Kunde Unzufriedenheit, Frustration geäußert, erwähnt, unzufrieden zu sein, oder gedroht zu kündigen/negative Bewertung zu hinterlassen?"
+  </Accordion>
+
+  <Accordion title="Mit echten Anrufen testen" icon="vial">
+    Aktiviere die Benachrichtigung und teste mit echten oder Test-Anrufen, um Triggering und Inhalt zu überprüfen.
+  </Accordion>
+
+  <Accordion title="E-Mails kurz halten" icon="align-left">
+    - Maximal 3-5 Absätze
+    - Ein klarer Zweck
+    - Eine einzelne Handlungsaufforderung
+    - Aufzählungszeichen für mehrere Elemente
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Fehlerbehebung
+
+<AccordionGroup>
+  <Accordion title="E-Mail wird nicht gesendet" icon="envelope-open-text">
+    **Mögliche Ursachen:**
+    - Benachrichtigung ist deaktiviert
+    - Triggerbedingung entspricht nicht dem Anrufinhalt
+    - Kunde hat keine gültige E-Mail-Adresse
+
+    **Lösungen:**
+    - Überprüfe, ob die Benachrichtigung aktiviert ist (Schalter Ein)
+    - Überprüfe die Trigger-Beschreibung und teste mit passenden Anrufen
+    - Prüfe, ob der Kontakt eine E-Mail hat oder verwende dynamische Empfängerextraktion
+  </Accordion>
+
+  <Accordion title="Variablen werden nicht ausgefüllt" icon="brackets-curly">
+    **Mögliche Ursachen:**
+    - Tippfehler im Variablennamen
+    - Dynamischer Variablenname zu vage
+    - Daten nicht verfügbar (z.B. Kunde nicht im System)
+
+    **Lösungen:**
+    - Verwende exakte Variablennamen aus der Variablenauswahl
+    - Mache dynamische Variablennamen spezifischer und beschreibender
+    - Teste mit echten Anrufen, um Extraktion zu überprüfen
+    - Prüfe [Verfügbarkeitsbedingungen](#template-variables) für Systemvariablen
+  </Accordion>
+
+  <Accordion title="Falsche Weiterleitung" icon="route">
+    **Mögliche Ursachen:**
+    - Weiterleitungsregelbeschreibung unklar
+    - KI interpretiert Anrufinhalt falsch
+
+    **Lösungen:**
+    - Überprüfe und kläre die Beschreibung der Weiterleitungsregeln
+    - Mache Kriterien expliziter mit spezifischen Schlüsselwörtern
+    - Teste mit Beispielanrufen und passe Regeln an
+    - Füge "Sonst" Fallback-Weiterleitung hinzu
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Gesprächsziele" icon="bullseye" href="/de/build/analytics/conversation-goals">
+    Ziele festlegen, die E-Mails auslösen
+  </Card>
+  <Card title="Analytik-Dashboard" icon="chart-line" href="/de/optimize/analytics-dashboard">
+    E-Mail-Performance überwachen
+  </Card>
+  <Card title="Gesprächsziele" icon="target" href="/de/build/analytics/conversation-goals">
+    Triggerbedingungen konfigurieren
+  </Card>
+  <Card title="Dynamischer Kontext" icon="brackets-curly" href="/de/build/advanced/dynamic-context">
+    Daten für Variablen übergeben
+  </Card>
+</CardGroup>

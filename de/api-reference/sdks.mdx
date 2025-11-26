@@ -1,0 +1,218 @@
+---
+title: 'SDKs'
+description: 'Offizielle itellicoAI SDKs zum Erstellen von Voice-KI-Anwendungen'
+icon: 'code'
+keywords: 'itellicoAI SDK, Python SDK, TypeScript SDK, Voice KI SDK, API-Client-Bibliothek, Server SDK, itellicoai npm, itellicoai pypi'
+og:description: 'Offizielle Python- und TypeScript-SDKs für itellicoAI. Erstelle Voice-KI-Anwendungen mit typsicheren Bibliotheken, vereinfachter Authentifizierung und besserer Fehlerbehandlung.'
+---
+
+## Server-SDKs
+
+Erstelle Backend-Integrationen mit typsicheren SDKs.
+
+<CardGroup cols={2}>
+  <Card title="Python" icon="python" href="/de/api-reference/python-sdk">
+    Typsichere Python-Bibliothek mit Async-Unterstützung
+  </Card>
+  <Card title="TypeScript" icon="js" href="/de/api-reference/typescript-sdk">
+    Vollständige TypeScript-Unterstützung mit Autovervollständigung
+  </Card>
+</CardGroup>
+
+---
+
+## API-Schlüssel erhalten
+
+Bevor du die SDKs verwenden, benötigen du einen API-Schlüssel aus deinem itellicoAI-Dashboard.
+
+<Steps>
+  <Step title="Zum Bereich Entwickler navigieren">
+    Gehe zu deinem [itellicoAI-Dashboard](https://app.itellico.ai) und navigieren du über die Seitenleiste zu **Entwickler**.
+  </Step>
+
+  <Step title="Zu API-Schlüsseln gehen">
+    Klicke im Bereich Entwickler auf **API-Schlüssel**.
+  </Step>
+
+  <Step title="Schlüssel erstellen">
+    Klicke auf die Schaltfläche **API-Schlüssel erstellen** in der oberen rechten Ecke.
+
+    <Frame>
+      <div className="block dark:hidden">
+        <img src="/images/light.png" alt="API-Schlüssel-Dashboard zeigt, wie ein neuer API-Schlüssel erstellt wird" />
+      </div>
+      <div className="hidden dark:block">
+        <img src="/images/dark.png" alt="API-Schlüssel-Dashboard zeigt, wie ein neuer API-Schlüssel erstellt wird" />
+      </div>
+    </Frame>
+  </Step>
+
+  <Step title="Kopieren und mit deinem SDK verwenden">
+    Kopiere den generierten API-Schlüssel und speichere ihn sicher. Verwende diesen Schlüssel bei der Initialisierung des SDK.
+  </Step>
+</Steps>
+
+<Warning>
+Gib deinen API-Schlüssel niemals weiter und committen du ihn nicht in die Versionskontrolle. Verwende Umgebungsvariablen, um deinen Schlüssel sicher zu speichern.
+</Warning>
+
+---
+
+## Warum SDKs verwenden?
+
+<CardGroup cols={2}>
+  <Card title="Typsicherheit" icon="shield-check">
+    Vollständige TypeScript-Definitionen und Python-Type-Hints für alle API-Methoden
+  </Card>
+
+  <Card title="Vereinfachte Authentifizierung" icon="key">
+    Integrierte API-Schlüsselverwaltung – keine manuellen Header erforderlich
+  </Card>
+
+  <Card title="Bessere Fehlerbehandlung" icon="triangle-exclamation">
+    Strukturierte Exceptions für einfacheres Debugging
+  </Card>
+
+  <Card title="Weniger Code" icon="code">
+    Saubere Methoden anstelle von manuellen HTTP-Anfragen
+  </Card>
+</CardGroup>
+
+---
+
+## Schnellvergleich
+
+### Einen Agenten erstellen
+
+<CodeGroup>
+```python Python SDK
+from itellicoai import Itellicoai
+
+# Client initialisieren
+client = Itellicoai(
+    api_key="your-api-key"
+)
+
+# Einen Agenten erstellen
+agent = client.agents.create(
+    account_id="your-account-id",
+    name="Kundensupport-Agent",
+    model={
+        "provider": "openai",
+        "model": "gpt-4o-mini"
+    },
+    voice={
+        "provider": "elevenlabs",
+        "voice_id": "EXAVITQu4vr4xnSDxMaL"
+    },
+    transcriber={
+        "provider": "deepgram",
+        "model": "nova-2:general",
+        "language": "de-DE"
+    },
+    initial_message={
+        "mode": "fixed_message",
+        "message": "Hallo! Wie kann ich Ihnen heute helfen?",
+        "delay_ms": 1000
+    },
+    max_duration_seconds=1800,
+    tags=["support", "kundenservice"]
+)
+
+print(f"Agent erstellt: {agent.id}")
+```
+
+```typescript TypeScript SDK
+import { Itellicoai } from 'itellicoai';
+
+// Client initialisieren
+const client = new Itellicoai({
+  apiKey: 'your-api-key',
+});
+
+// Einen Agenten erstellen
+const agent = await client.agents.create({
+  accountId: 'your-account-id',
+  name: 'Kundensupport-Agent',
+  model: {
+    provider: 'openai',
+    model: 'gpt-4o-mini',
+  },
+  voice: {
+    provider: 'elevenlabs',
+    voiceId: 'EXAVITQu4vr4xnSDxMaL',
+  },
+  transcriber: {
+    provider: 'deepgram',
+    model: 'nova-2:general',
+    language: 'de-DE',
+  },
+  initialMessage: {
+    mode: 'fixed_message',
+    message: 'Hallo! Wie kann ich Ihnen heute helfen?',
+    delayMs: 1000,
+  },
+  maxDurationSeconds: 1800,
+  tags: ['support', 'kundenservice'],
+});
+
+console.log(`Agent erstellt: ${agent.id}`);
+```
+
+```bash REST API
+curl -X POST https://api.itellico.ai/v1/agents \
+  -H "X-API-Key: your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Support Agent",
+    "model": {"provider": "azure", "model": "gpt-4o-mini"}
+  }'
+```
+</CodeGroup>
+
+---
+
+## Installation
+
+<Tabs>
+  <Tab title="Python">
+    ```bash
+    pip install itellicoai
+    ```
+
+    [Python SDK-Dokumentation anzeigen →](/de/api-reference/python-sdk)
+  </Tab>
+
+  <Tab title="TypeScript">
+    ```bash
+    npm install itellicoai
+    ```
+
+    [TypeScript SDK-Dokumentation anzeigen →](/de/api-reference/typescript-sdk)
+  </Tab>
+</Tabs>
+
+---
+
+## Ressourcen
+
+<CardGroup cols={2}>
+  <Card title="NPM-Paket" icon="js" href="https://www.npmjs.com/package/itellicoai">
+    TypeScript SDK von NPM installieren
+  </Card>
+  <Card title="PyPI-Paket" icon="python" href="https://pypi.org/project/itellicoai/">
+    Python SDK von PyPI installieren
+  </Card>
+  <Card title="TypeScript SDK" icon="github" href="https://github.com/itellicoAI/server-sdk-typescript">
+    TypeScript SDK-Quellcode anzeigen
+  </Card>
+  <Card title="Python SDK" icon="github" href="https://github.com/itellicoAI/server-sdk-python">
+    Python SDK-Quellcode anzeigen
+  </Card>
+  <Card title="REST API-Referenz" icon="book" href="/de/api-reference/introduction">
+    Vollständige REST API-Dokumentation
+  </Card>
+  <Card title="OpenAPI-Spezifikation" icon="file-code" href="https://api.itellico.ai/v1/openapi.json">
+    OpenAPI-Spezifikationsdatei
+  </Card>
+</CardGroup>

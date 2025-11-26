@@ -1,0 +1,351 @@
+---
+title: "Automação de E-mail Pós-Chamada"
+description: "Automatize e-mails de acompanhamento acionados por resultados de conversação e análises"
+icon: "envelope-open-text"
+"keywords": "automação pós-chamada, e-mails automatizados, e-mails de acompanhamento, resultados de conversação, automação de e-mail de IA, ações pós-chamada"
+"og:description": "Automatize e-mails de acompanhamento inteligentes acionados por resultados de conversação, sentimento e condições personalizadas."
+---
+
+## Visão Geral
+
+E-mails pós-chamada são enviados automaticamente após conversações com base em resultados, objetivos, sentimento ou condições personalizadas que você definir.
+
+**Acesso:** Editor do agente → **Analytics → E-mails Pós-Chamada**
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/postcalls/postcall-email-light.png" alt="Interface de E-mails Pós-Chamada mostrando barra lateral de navegação com seção Analytics expandida e Post-Call Emails selecionado, área de conteúdo principal com título 'Post-Call Emails' e subtítulo 'Automatically send follow-up emails based on call outcomes', estado vazio com ícone de e-mail, mensagem 'No post-call emails yet' e descrição 'Create automated follow-up emails that send after calls', e botão Create First Email" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/postcalls/postcall-email-dark.png" alt="Interface de E-mails Pós-Chamada mostrando barra lateral de navegação com seção Analytics expandida e Post-Call Emails selecionado, área de conteúdo principal com título 'Post-Call Emails' e subtítulo 'Automatically send follow-up emails based on call outcomes', estado vazio com ícone de e-mail, mensagem 'No post-call emails yet' e descrição 'Create automated follow-up emails that send after calls', e botão Create First Email" />
+  </div>
+</Frame>
+
+**Casos de uso:** Confirmações de consulta, solicitações de retorno, escalações de reclamações, coleta de feedback, acompanhamentos de vendas, rastreamento de problemas não resolvidos
+
+---
+
+## Configuração
+
+<Steps>
+  <Step title="Acessar E-mails Pós-Chamada">
+    Editor do agente → **Analytics → E-mails Pós-Chamada** → **Criar E-mail**
+  </Step>
+
+  <Step title="Escolher ponto de partida (opcional)">
+    **Modelos** fornecem gatilhos e conteúdo pré-configurados para casos de uso comuns:
+
+    - **Callback Requested** - Cliente solicita acompanhamento
+    - **Appointment Booked** - Reunião/consulta agendada
+    - **Customer Complaint** - Escala insatisfação
+    - **Unanswered Question** - Agente não conseguiu responder
+    - **Technical Issue** - Encaminha bugs/erros para equipes técnicas
+    - **Billing Inquiry** - Perguntas sobre pagamento/fatura
+    - **Escalation Needed** - Requer atenção da gerência
+    - **Order Placed** - Confirmação de compra
+    - **Demo Request** - Interesse em demonstração do produto
+    - **Positive Feedback** - Compartilhar elogios com a equipe
+
+    <Info>
+    Modelos são pontos de partida totalmente personalizáveis. Você também pode começar do zero.
+    </Info>
+  </Step>
+
+  <Step title="Configurar nome da notificação">
+    **Nome:** Identificador interno (ex: "Alerta de Solicitação de Retorno")
+  </Step>
+
+  <Step title="Definir condição de gatilho">
+    Descreva quando enviar (IA analisa isso contra a transcrição da chamada):
+
+    ```
+    Exemplo: "O cliente solicitou um retorno de chamada, pediu para ser
+    contatado depois ou quer que alguém faça um acompanhamento?"
+    ```
+
+    <Tip>
+    Seja específico. Quanto mais detalhada sua descrição de gatilho, mais precisa a correspondência da IA.
+    </Tip>
+
+    **Ou:** Ative "Sempre enviar após cada chamada" para ignorar a verificação de condição
+  </Step>
+
+  <Step title="Configurar destinatários">
+    **Destinatários Fixos:** Insira endereços de e-mail específicos (suporta múltiplos)
+
+    ```
+    Exemplo: suporte@empresa.com, gerente@empresa.com
+    ```
+
+    **Destinatários Dinâmicos (com IA):** IA encaminha para diferentes destinatários com base no conteúdo da chamada
+
+    ```
+    Exemplo: Encaminhar reclamações por gravidade
+    - Se ameaça legal → juridico@empresa.com
+    - Se irritado/cancelando → retencao@empresa.com
+    - Se problema de produto → qualidade@empresa.com
+    - Caso contrário → suporte@empresa.com
+
+    Exemplo: Encaminhar problemas técnicos por tipo
+    - Se problema no site → dev@empresa.com
+    - Se sistema de faturamento → faturamento-tecnico@empresa.com
+    - Caso contrário → suporte-tecnico@empresa.com
+
+    Exemplo: Encaminhar pedidos por valor
+    - Se pedido acima de R$5000 → gerente-vendas@empresa.com
+    - Caso contrário → pedidos@empresa.com
+    ```
+  </Step>
+
+  <Step title="Criar modelo de e-mail">
+    **Assunto:** `Retorno de chamada solicitado`
+
+    **Corpo:** Use o editor de texto rico com variáveis (veja [Variáveis de Modelo](#variáveis-de-modelo) abaixo)
+
+    - **Variáveis do sistema:** Clique no seletor de variáveis para inserir (ex: `{{customer_name}}`, `{{conversation_summary}}`)
+    - **Variáveis dinâmicas:** Digite `{{dyn_` + nome descritivo (ex: `{{dyn_appointment_date}}`)
+  </Step>
+
+  <Step title="Salvar e habilitar">
+    Salvar notificação → Ativar interruptor **Habilitado**
+  </Step>
+</Steps>
+
+---
+
+## Variáveis de Modelo
+
+### Variáveis do Sistema
+
+Use o **seletor de variáveis** no editor para inserir estas.
+
+<Info>
+**Disponibilidade:** Algumas variáveis só são preenchidas sob certas condições:
+- Números de telefone (`customer_number`, `to_number`) - Apenas chamadas telefônicas
+- Dados do cliente (`customer_name`, `customer_email`) - Apenas se o chamador existir como contato em seu sistema
+- Transcrição da conversação - Apenas se a transcrição estiver habilitada
+</Info>
+
+**Detalhes da Conversação:**
+- `{{conversation_date}}` - Data/hora completa no formato 24 horas
+- `{{conversation_time}}` - Hora no formato 12 horas
+- `{{conversation_duration}}` - Duração no formato MM:SS
+- `{{conversation_status}}` - Status (Concluída, Falhou, etc.)
+- `{{conversation_direction}}` - Entrada/Saída
+- `{{conversation_summary}}` - Resumo gerado pela IA
+- `{{conversation_transcript}}` - Transcrição completa com texto alternativo
+- `{{transcript}}` - Transcrição simples (sem alternativo)
+- `{{conversation_url}}` - Link para visualizar conversação
+- `{{conversation_uuid}}` - Identificador único
+
+**Agente e Conta:**
+- `{{agent_name}}` - Nome do agente de IA
+- `{{account_name}}` - Nome da sua organização
+
+**Informações do Cliente** (apenas se o contato existir):
+- `{{customer_number}}` - Número de telefone do cliente (apenas chamadas telefônicas)
+- `{{customer_name}}` - Nome do cliente (se o contato existir)
+- `{{customer_email}}` - E-mail do cliente (se o contato existir)
+- `{{to_number}}` - Número de telefone chamado (apenas chamadas telefônicas)
+
+### Variáveis Dinâmicas
+
+**Como funcionam:** Digite `{{dyn_` seguido de um nome descritivo. A IA analisa a transcrição da chamada e extrai a informação.
+
+**Exemplos:**
+```
+{{dyn_appointment_date}} → IA encontra a data mencionada na chamada
+{{dyn_appointment_time}} → IA encontra a hora mencionada
+{{dyn_issue_summary}} → IA resume o problema discutido
+{{dyn_ticket_number}} → IA localiza qualquer referência de ticket
+{{dyn_next_steps}} → IA identifica itens de ação acordados
+{{dyn_shipping_address}} → IA extrai endereço mencionado
+{{dyn_order_number}} → IA encontra referência de pedido
+```
+
+<Tip>
+O nome da variável orienta a IA. Nomes mais específicos = melhor precisão de extração.
+
+✅ `{{dyn_rescheduled_appointment_date}}`
+❌ `{{dyn_date}}`
+</Tip>
+
+---
+
+## Exemplos
+
+<AccordionGroup>
+  <Accordion title="Confirmação de Consulta" icon="calendar-check">
+    **Gatilho:**
+    ```
+    O chamador agendou, marcou ou confirmou uma consulta ou reunião?
+    ```
+
+    **Destinatários:** Fixo - `equipe@empresa.com`
+
+    **Assunto:** `Consulta confirmada - {{dyn_appointment_date}}`
+
+    **Corpo:**
+    ```
+    Olá {{customer_first_name}},
+
+    Sua consulta está confirmada:
+
+    📅 {{dyn_appointment_date}} às {{dyn_appointment_time}}
+    📍 {{dyn_location}}
+    🔗 {{dyn_meeting_link}}
+
+    Precisa reagendar? Ligue para {{agent_name}}
+
+    Atenciosamente,
+    {{agent_name}}
+    ```
+
+    **Variáveis usadas:**
+    - Sistema: `{{customer_first_name}}`, `{{agent_name}}`
+    - Dinâmicas: `{{dyn_appointment_date}}`, `{{dyn_appointment_time}}`, `{{dyn_location}}`, `{{dyn_meeting_link}}`
+  </Accordion>
+
+  <Accordion title="Solicitação de Retorno" icon="phone">
+    **Gatilho:**
+    ```
+    O cliente solicitou um retorno de chamada, ligação de acompanhamento ou pediu para ser contatado depois?
+    ```
+
+    **Destinatários:** Fixo - `suporte@empresa.com`
+
+    **Assunto:** `Retorno de chamada solicitado`
+
+    **Corpo:**
+    ```
+    Cliente solicitou retorno:
+
+    Telefone: {{customer_number}}
+    Data: {{conversation_date}}
+    Motivo: {{conversation_summary}}
+
+    Ver chamada: {{conversation_url}}
+    ```
+
+    **Variáveis usadas:**
+    - Sistema: `{{customer_number}}`, `{{conversation_date}}`, `{{conversation_summary}}`, `{{conversation_url}}`
+  </Accordion>
+
+  <Accordion title="Roteamento Inteligente por Gravidade" icon="route">
+    **Gatilho:**
+    ```
+    O cliente expressou insatisfação, registrou uma reclamação ou relatou um problema?
+    ```
+
+    **Destinatários:** Dinâmico
+    ```
+    Encaminhar por gravidade:
+    - Se ameaça legal → juridico@empresa.com
+    - Se irritado/cancelando → retencao@empresa.com
+    - Se problema de produto → qualidade@empresa.com
+    - Caso contrário → suporte@empresa.com
+    ```
+
+    **Assunto:** `Problema do cliente - {{dyn_severity}}`
+
+    **Corpo:**
+    ```
+    Problema relatado:
+
+    Cliente: {{customer_number}}
+    Gravidade: {{dyn_severity}}
+    Problema: {{dyn_issue_summary}}
+
+    Ver chamada completa: {{conversation_url}}
+    ```
+
+    **Variáveis usadas:**
+    - Sistema: `{{customer_number}}`, `{{conversation_url}}`
+    - Dinâmicas: `{{dyn_severity}}`, `{{dyn_issue_summary}}`
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Dicas
+
+<AccordionGroup>
+  <Accordion title="Escreva Gatilhos Específicos" icon="bullseye">
+    ❌ Ruim: "Cliente infeliz"
+
+    ✅ Bom: "O cliente expressou insatisfação, frustração, mencionou estar infeliz ou ameaçou cancelar/deixar avaliação negativa?"
+  </Accordion>
+
+  <Accordion title="Teste com Chamadas Reais" icon="vial">
+    Habilite a notificação e teste com chamadas reais ou de teste para verificar o acionamento e conteúdo.
+  </Accordion>
+
+  <Accordion title="Mantenha E-mails Curtos" icon="align-left">
+    - Máximo de 3-5 parágrafos
+    - Um propósito claro
+    - Chamada para ação única
+    - Marcadores para múltiplos itens
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Solução de Problemas
+
+<AccordionGroup>
+  <Accordion title="E-mail não está sendo enviado" icon="envelope-open-text">
+    **Causas possíveis:**
+    - Notificação está desabilitada
+    - Condição de gatilho não corresponde ao conteúdo da chamada
+    - Cliente não tem endereço de e-mail válido
+
+    **Soluções:**
+    - Verifique se a notificação está habilitada (ative)
+    - Revise a descrição do gatilho e teste com chamadas correspondentes
+    - Verifique se o contato tem e-mail ou use extração dinâmica de destinatário
+  </Accordion>
+
+  <Accordion title="Variáveis não estão sendo preenchidas" icon="brackets-curly">
+    **Causas possíveis:**
+    - Erro de digitação no nome da variável
+    - Nome da variável dinâmica muito vago
+    - Dados não disponíveis (ex: cliente não está no sistema)
+
+    **Soluções:**
+    - Use nomes exatos de variáveis do seletor de variáveis
+    - Torne os nomes de variáveis dinâmicas mais específicos e descritivos
+    - Teste com chamadas reais para verificar a extração
+    - Verifique [condições de disponibilidade](#variáveis-de-modelo) para variáveis do sistema
+  </Accordion>
+
+  <Accordion title="Roteamento incorreto" icon="route">
+    **Causas possíveis:**
+    - Descrição das regras de roteamento pouco clara
+    - IA interpretando mal o conteúdo da chamada
+
+    **Soluções:**
+    - Revise e esclareça a descrição das regras de roteamento
+    - Torne os critérios mais explícitos com palavras-chave específicas
+    - Teste com chamadas de amostra e ajuste as regras
+    - Adicione rota de fallback "Caso contrário"
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Próximos Passos
+
+<CardGroup cols={2}>
+  <Card title="Objetivos de Conversação" icon="bullseye" href="/pt/build/analytics/conversation-goals">
+    Defina objetivos que acionam e-mails
+  </Card>
+  <Card title="Painel" icon="chart-line" href="/pt/optimize/analytics-dashboard">
+    Monitore o desempenho de e-mails
+  </Card>
+  <Card title="Objetivos de Conversação" icon="target" href="/pt/build/analytics/conversation-goals">
+    Configure condições de gatilho
+  </Card>
+  <Card title="Contexto Dinâmico" icon="brackets-curly" href="/pt/build/advanced/dynamic-context">
+    Passe dados para variáveis
+  </Card>
+</CardGroup>

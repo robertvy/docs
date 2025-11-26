@@ -1,0 +1,102 @@
+---
+title: "Telefon-Tests"
+description: "Teste deinen Agenten mit echten Telefonanrufen"
+icon: "phone"
+keywords: "Telefon-Test, Anruf-Testing, Telefonie-Test, SIP-Test, Anrufqualität"
+og:description: "Teste Telefon-Funktionen deines Agents gründlich. Best Practices für Telefonie-QA."
+---
+
+## Warum mit Telefonanrufen testen
+
+Wenn dein Anwendungsfall Telefonie beinhaltet, ist das Testen per Telefon unerlässlich, um die vollständige Kundenerfahrung zu validieren. Web-Tests verwenden WebRTC mit anderen Codecs und ohne PSTN-Infrastruktur, daher ermöglichen Telefon-Tests dir, Sprachqualität, Timing, Anrufbeantworter-Erkennung und Weiterleitungsabläufe genau so zu überprüfen, wie deine Kunden sie erleben werden.
+
+## So führen du einen Testanruf durch
+
+<Steps>
+  <Step title="Öffne Agent testen">
+    Gehe zu deinem Agenten und klicke auf **Agent testen** in der oberen rechten Ecke.
+  </Step>
+  <Step title="Wechseln zu Telefonanruf">
+    Klicke auf den Tab **Telefonanruf** oben im Test-Panel.
+  </Step>
+  <Step title="Wähle deine Anrufer-ID">
+    Wähle aus, von welcher Telefonnummer aus angerufen werden soll. Dies ist die Anrufer-ID, die dein Kontakt sieht.
+  </Step>
+  <Step title="Gib die Zielnummer ein">
+    Gib die Telefonnummer ein, die du anrufen möchten, im [E.164-Format](https://www.twilio.com/docs/glossary/what-e164) mit Ländervorwahl (z.B. +1 für USA).
+  </Step>
+  <Step title="Konfiguriere AMD (optional)">
+    Wähle den [Anrufbeantworter-Erkennungs](/de/build/advanced/voicemail-handling)-Modus: **Text** für Geschwindigkeit oder **ML** für Genauigkeit. Belassen du die Standardeinstellung, wenn du unsicher sind.
+  </Step>
+  <Step title="Starten den Anruf">
+    Klicke auf **Test starten**. dein Agent ruft die Nummer an und du können ein echtes Gespräch führen.
+  </Step>
+</Steps>
+
+## Was während des Anrufs zu überprüfen ist
+
+<CardGroup cols={2}>
+  <Card title="Latenz" icon="clock">
+    Zählen du die Schläge zwischen Sprechen und Hören des Agenten. Markieren du alles über ~600 ms.
+  </Card>
+  <Card title="AMD" icon="robot">
+    Lass die Mailbox antworten, um zu überprüfen, ob der ausgewählte AMD-Modus sich korrekt verhält.
+  </Card>
+  <Card title="Aktionen & Weiterleitungen" icon="bolt">
+    Lösen du benutzerdefinierte Aktionen, Buchungen oder Weiterleitungen aus, um zu bestätigen, dass sie auch dann ausgelöst werden, wenn Audio über PSTN fließt.
+  </Card>
+  <Card title="Kontext-Genauigkeit" icon="id-card">
+    Bestätigen du, dass anruferspezifische Prompts oder Wissensabfragen auch dann funktionieren, wenn der Anruf mit echten Metadaten initiiert wird.
+  </Card>
+  <Card title="Anrufende-Behandlung" icon="flag-checkered">
+    Stelle sicher, dass Abschlussnachrichten, Automatisierungen und Transkripte auch dann abgeschlossen werden, wenn der Anrufer zuerst auflegt.
+  </Card>
+</CardGroup>
+
+## Test-Szenarien
+
+<AccordionGroup>
+  <Accordion title="Gesprächsfluss" icon="comments">
+    Teste den vollständigen Gesprächspfad von der Begrüßung bis zum Abschluss des Ziels. Überprüfe, ob der Agent deinen Anweisungen folgt und das Gespräch natürlich führt.
+  </Accordion>
+  <Accordion title="Unterbrechungen" icon="hand">
+    Versuche, den Agenten während des Sprechens zu unterbrechen. Überprüfe, ob er elegant stoppt und angemessen auf deine Unterbrechung reagiert.
+  </Accordion>
+  <Accordion title="Verschiedene Umgebungen" icon="location-dot">
+    Teste von ruhigen Räumen, lauten Umgebungen und verschiedenen Standorten. Rufe nach Möglichkeit von Mobiltelefonen, Festnetztelefonen und verschiedenen Anbietern aus an.
+  </Accordion>
+  <Accordion title="Grenzfälle" icon="triangle-exclamation">
+    Teste unerwartete Eingaben, unklare Anfragen und Szenarien, in denen der Agent klärende Fragen stellen oder Verwirrung elegant behandeln muss.
+  </Accordion>
+</AccordionGroup>
+
+## Nach dem Anruf
+
+1. Gehe zum Tab **Konversationen** in deinem Dashboard
+2. Finde deinen Testanruf (suchen du nach dem Telefon-Symbol)
+3. Überprüfe das Transkript auf Genauigkeit
+4. Prüfe, ob Ziele korrekt nachverfolgt wurden
+5. Verifizieren du, dass alle Aktionen oder Automatisierungen wie erwartet ausgelöst wurden
+
+<Tip>
+Führe Notizen darüber, was funktioniert hat und was für jeden Testanruf verbessert werden muss.
+</Tip>
+
+## Häufige Probleme
+
+<AccordionGroup>
+  <Accordion title="Anruf verbindet sich nicht" icon="phone-xmark">
+    Überprüfe, ob deine ausgewählte Telefonnummer aktiv ist und ordnungsgemäß unter **Telefonie → Nummern** konfiguriert wurde.
+  </Accordion>
+  <Accordion title="Schlechte Audioqualität" icon="volume-xmark">
+    Versuche, von einem anderen Standort oder Gerät aus anzurufen.
+  </Accordion>
+  <Accordion title="Kein Transkript erscheint" icon="file-slash">
+    Warte einige Momente nach Anrufende für die Verarbeitung. Wenn es immer noch nicht erscheint, versuchen du einen weiteren Testanruf.
+  </Accordion>
+  <Accordion title="Agent klingt anders als im Web-Test" icon="waveform">
+    Dies ist normal - Telefonnetze verarbeiten Audio anders als Web-Anrufe. Teste mehrmals, um Konsistenz sicherzustellen.
+  </Accordion>
+</AccordionGroup>
+
+Sobald deine Telefon-Tests erfolgreich sind, sind du bereit, deinen Agenten für Kunden zu starten!

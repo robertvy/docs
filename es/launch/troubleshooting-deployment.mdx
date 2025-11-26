@@ -1,0 +1,625 @@
+---
+title: "Solución de problemas de implementación"
+description: "Depurar problemas comunes de producción y resolver problemas de implementación"
+icon: "wrench"
+keywords: "solución de problemas, depuración, problemas de producción, errores SIP, calidad de llamada, problemas de implementación, depuración de agente de voz"
+og:description: "Guía sistemática para diagnosticar y solucionar problemas de producción con agentes de voz IA. Depurar conectividad SIP, calidad de llamada y problemas de comportamiento del agente."
+---
+
+## Enfoque de diagnóstico
+
+Cuando surgen problemas en producción, utilice este proceso sistemático de solución de problemas:
+
+1. **Identificar síntomas** - ¿Qué está roto? ¿Llamadas fallando, agente comportándose mal, integraciones caídas?
+2. **Verificar alcance** - ¿Afecta todas las llamadas o un subconjunto específico? ¿Desde cuándo?
+3. **Revisar registros** - Buscar mensajes de error, patrones, trazas de pila
+4. **Aislar causa** - ¿Es un problema de configuración, integración, plataforma u operador?
+5. **Aplicar solución** - Implementar el cambio más pequeño que resuelva el problema
+6. **Validar** - Probar exhaustivamente antes de marcar como resuelto
+
+## Problemas comunes y soluciones
+
+### No se reciben llamadas
+
+**Síntoma**: El número de teléfono no suena, las llamadas van al silencio o "número fuera de servicio"
+
+<AccordionGroup>
+  <Accordion title="Verificar asignación de número de teléfono">
+    **Diagnóstico**:
+    1. Ir a **Telefonía → Números**
+    2. Encontrar su número, verificar la columna "Agente asignado"
+    3. Verificar que esté asignado al agente correcto (no "Sin asignar")
+
+    **Solución**:
+    - Hacer clic en el número → Seleccionar agente del menú desplegable → Guardar
+    - Esperar 30 segundos para que se propague la actualización de enrutamiento
+    - Probar llamando al número nuevamente
+  </Accordion>
+
+  <Accordion title="Verificar registro del trunk SIP">
+    **Diagnóstico**:
+    ```bash
+    # Verificar estado de registro SIP
+    curl -H "Authorization: Bearer YOUR_API_KEY" \
+         https://api.itellico.ai/v1/sip-trunks/trunk_123/status
+    ```
+
+    Buscar `"status": "registered"`. Si `"unregistered"` o `"failed"`:
+
+    **Causas comunes**:
+    - Credenciales SIP incorrectas (usuario/contraseña)
+    - IP no en lista blanca del operador
+    - Firewall bloqueando UDP 5060
+    - Punto final del operador caído
+
+    **Solución**:
+    - Verificar credenciales con el operador
+    - Verificar el portal del operador para configuración de lista blanca de IP
+    - Probar con `curl -v sip:carrier.com:5060` para verificar conectividad
+    - Contactar al operador si su punto final es inaccesible
+  </Accordion>
+
+  <Accordion title="Verificar aprovisionamiento del número">
+    **Diagnóstico**:
+    - El estado del número muestra "Pendiente" o "Fallido"
+    - El número fue comprado hace menos de 5 minutos
+
+    **Solución**:
+    - Esperar hasta 10 minutos para que se complete el aprovisionamiento
+    - Si está atascado >30 min, hacer clic en "Reintentar aprovisionamiento"
+    - Si sigue fallando, contactar al soporte con detalles del número
+  </Accordion>
+
+  <Accordion title="Problemas de enrutamiento del operador">
+    **Diagnóstico**:
+    - Las llamadas funcionan cuando USTED llama, pero no desde teléfonos de clientes
+    - Códigos de área específicos u operadores no pueden comunicarse
+
+    **Solución**:
+    - Verificar que la tabla de enrutamiento del operador incluya su rango de números
+    - Verificar el registro CNAM (Nombre de llamante)
+    - Verificar marcado de spam (usar herramientas gratuitas de búsqueda de operador)
+    - Puede necesitar contactar al operador para corregir el enrutamiento
+  </Accordion>
+</AccordionGroup>
+
+### Mala calidad de llamada
+
+**Síntoma**: Audio entrecortado, eco, voz robótica, retrasos largos
+
+<AccordionGroup>
+  <Accordion title="Problemas de audio (eco, ruido, cortes)">
+    **Diagnóstico**:
+    - Abrir **Conversaciones → Registros** → Seleccionar llamada afectada
+    - Verificar métricas de "Calidad de llamada":
+      - Jitter: Debe ser &lt;30ms
+      - Pérdida de paquetes: Debe ser &lt;1%
+      - RTT (tiempo de ida y vuelta): Debe ser &lt;200ms
+
+    **Soluciones por síntoma**:
+
+    | Síntoma | Causa probable | Solución |
+    |---------|----------------|----------|
+    | Eco | Eco acústico (retroalimentación del altavoz) | Habilitar AEC en configuración del agente |
+    | Entrecortado/Robótico | Pérdida de paquetes o jitter | Verificar ancho de banda de red, cambiar codec |
+    | Cortes | Firewall bloqueando RTP | Abrir puertos UDP 10000-60000 |
+    | Audio unidireccional | Problema de traversal NAT | Habilitar relé TURN |
+    | Ruido de fondo | Entorno ruidoso | Habilitar supresión de ruido |
+
+    **Configuración**:
+    ```json
+    // Configuración de audio del agente
+    {
+      "audio": {
+        "echo_cancellation": true,
+        "noise_suppression": true,
+        "codec": "opus",  // Mejor calidad, respaldo a PCMU
+        "bitrate": 64000  // Mayor = mejor calidad (64kbps recomendado)
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Alta latencia (el agente responde lentamente)">
+    **Diagnóstico**:
+    - Verificar **Panel → Métricas → Tiempo de respuesta promedio**
+    - Objetivo: &lt;500ms
+    - Si &gt;1000ms, investigar:
+
+    **Posibles causas**:
+    1. **Ralentización del proveedor del modelo**
+       - Verificar status.openai.com o status.anthropic.com
+       - Buscar latencias elevadas o interrupciones
+       - Cambiar a modelo de respaldo si está disponible
+
+    2. **Ventana de contexto grande**
+       - Instrucciones largas o recuperaciones masivas de base de conocimientos
+       - Solución: Reducir longitud de instrucciones, limitar chunks de KB a 3
+
+    3. **Lentitud de API externa**
+       - Verificar **Analítica → Acciones** para llamadas API lentas
+       - APIs que tardan >2s retrasarán la respuesta del agente
+       - Agregar límites de tiempo de espera y respuestas de respaldo
+
+    4. **Problemas de red**
+       - Verificar desde múltiples ubicaciones
+       - Si una región específica está afectada, puede ser un problema de enrutamiento del ISP
+       - Contactar al soporte para investigar
+
+    **Solución rápida**:
+    - Cambiar a modelo más rápido (GPT-4 → GPT-3.5 Turbo)
+    - Reducir el número de chunks de base de conocimientos recuperados
+    - Aumentar tiempos de espera de API para evitar esperas
+  </Accordion>
+
+  <Accordion title="Errores de transcripción (palabras incorrectas)">
+    **Diagnóstico**:
+    - Revisar transcripción en Conversaciones → Registros
+    - Buscar patrones:
+      - Términos técnicos mal escuchados → Agregar a vocabulario personalizado
+      - Acentos mal entendidos → Probar diferente transcriptor
+      - Ruido de fondo → Habilitar supresión de ruido
+
+    **Soluciones**:
+
+    **Agregar vocabulario personalizado**:
+    ```json
+    // En configuración del agente → Transcriptor → Vocabulario personalizado
+    {
+      "custom_words": [
+        {"word": "itellicoAI", "pronunciation": "eye-TELL-ih-koh AI"},
+        {"word": "Kubernetes", "pronunciation": "koo-ber-NET-eez"},
+        {"word": "API", "pronunciation": "A P I"}  // Deletrear acrónimos
+      ]
+    }
+    ```
+
+    **Probar diferente transcriptor**:
+    - Deepgram: Mejor para acentos, entornos ruidosos
+    - Azure: Mejor para términos técnicos
+    - Whisper: Mejor para multilingüe
+
+    **Mejorar entrada de audio**:
+    - Usar codec de mayor tasa de bits (Opus 64kbps)
+    - Habilitar supresión de ruido
+    - Probar con teléfono/micrófono diferente para llamadas web
+  </Accordion>
+</AccordionGroup>
+
+### El agente no responde correctamente
+
+**Síntoma**: El agente da respuestas incorrectas, ignora instrucciones, se comporta erráticamente
+
+<AccordionGroup>
+  <Accordion title="El agente no sigue las instrucciones">
+    **Diagnóstico**:
+    - Abrir configuración del agente → **Conversación → Instrucciones**
+    - Probar en simulador con escenario exacto
+    - Verificar si el problema es:
+      - Siempre ocurre → Problema de instrucciones
+      - Intermitente → Problema de contexto o modelo
+
+    **Soluciones**:
+
+    **1. Instrucciones demasiado vagas**:
+    ```markdown
+    ❌ Malo: "Sea útil y responda preguntas."
+
+    ✅ Bueno: "Usted es el soporte de Acme Corp. Responda preguntas sobre:
+    - Características del producto (consultar base de conocimientos)
+    - Precios (planes actuales: Basic $49, Pro $99)
+    - Facturación (transferir a departamento de facturación)
+
+    NO responda preguntas sobre:
+    - Comparaciones con competidores
+    - Hoja de ruta futura
+    - Legal/cumplimiento"
+    ```
+
+    **2. Instrucciones demasiado largas** (>500 palabras):
+    - El modelo pierde el foco en prompts largos
+    - Solución: Dividir en secciones claras, usar viñetas
+
+    **3. Instrucciones contradictorias**:
+    - Ejemplo: "Sea conciso" pero también "Proporcione explicaciones detalladas"
+    - Solución: Priorizar un comportamiento, eliminar conflicto
+
+    **Pruebas**:
+    - Ejecutar 10 llamadas de prueba cubriendo casos límite
+    - Revisar transcripciones para cumplimiento
+    - Iterar instrucciones basándose en fallos
+  </Accordion>
+
+  <Accordion title="El agente alucina o inventa hechos">
+    **Diagnóstico**:
+    - El agente dice cosas que no están en la base de conocimientos o instrucciones
+    - Proporciona detalles de producto, precios o políticas incorrectos
+
+    **Causas raíz**:
+    1. Base de conocimientos no lo suficientemente completa
+    2. Las instrucciones no enfatizan "usar solo información proporcionada"
+    3. Modelo demasiado creativo (temperatura demasiado alta)
+
+    **Soluciones**:
+
+    **1. Agregar barandillas explícitas**:
+    ```markdown
+    CRÍTICO: Proporcione información solo de:
+    1. La base de conocimientos
+    2. Las instrucciones anteriores
+    3. Información que el llamante proporciona
+
+    Si no sabe algo, diga: "No tengo esa información. Permítame transferirlo a alguien que pueda ayudar."
+
+    NUNCA invente hechos, precios o políticas.
+    ```
+
+    **2. Expandir base de conocimientos**:
+    - Revisar respuestas "No lo sé" en registros
+    - Agregar contenido faltante a KB
+    - Probar recuperación con consultas de ejemplo
+
+    **3. Reducir temperatura del modelo**:
+    ```json
+    {
+      "model_settings": {
+        "temperature": 0.3  // Menor = más determinista (predeterminado: 0.7)
+      }
+    }
+    ```
+
+    **4. Usar modo de cita** (si está disponible):
+    - Obliga al agente a citar fuentes de KB
+    - Hace obvio cuando la información no está en KB
+  </Accordion>
+
+  <Accordion title="El agente se queda atascado en bucles">
+    **Diagnóstico**:
+    - El agente repite la misma pregunta 3+ veces
+    - La conversación da vueltas en círculos
+    - El llamante se frustra
+
+    **Causas raíz**:
+    1. El agente no reconoce que el llamante respondió
+    2. La transcripción falló (no escuchó la respuesta)
+    3. Las instrucciones no manejan el caso límite
+
+    **Soluciones**:
+
+    **1. Agregar detección de bucles**:
+    ```markdown
+    Si ha hecho la misma pregunta dos veces y el cliente parece confundido,
+    intente reformular la pregunta u ofrezca transferir a un humano.
+
+    Ejemplo:
+    Agente: "¿Cuál es su correo electrónico de cuenta?"
+    Llamante: [respuesta poco clara]
+    Agente: "No capté eso. ¿Bajo qué dirección de correo electrónico está su cuenta?"
+    Llamante: [todavía poco claro]
+    Agente: "Tengo problemas para escuchar. Permítame conectarlo con alguien que pueda ayudar."
+    ```
+
+    **2. Mejorar reconocimiento de intención**:
+    - Agregar ejemplos de respuestas de casos límite a instrucciones
+    - Usar respuestas estructuradas (DTMF para información crítica)
+    - Habilitar respaldo "No estoy seguro" a humano
+
+    **3. Probar casos límite**:
+    - Llamante silencioso
+    - Llamante divagador
+    - Llamante con acento marcado
+    - Entorno ruidoso
+  </Accordion>
+</AccordionGroup>
+
+### Fallos de integración
+
+**Síntoma**: Las acciones no se activan, las llamadas API fallan, las transferencias no funcionan
+
+<AccordionGroup>
+  <Accordion title="La acción API falla">
+    **Diagnóstico**:
+    1. Abrir **Conversaciones → Registros** → Seleccionar llamada fallida
+    2. Navegar a la pestaña **Acciones**
+    3. Buscar mensaje de error (ej. "Tiempo de espera de API", "401 No autorizado")
+
+    **Errores comunes y soluciones**:
+
+    | Error | Causa | Solución |
+    |-------|-------|----------|
+    | `401 Unauthorized` | Clave API incorrecta | Regenerar clave, actualizar configuración del agente |
+    | `403 Forbidden` | Problema de permisos | Otorgar al agente acceso al recurso |
+    | `404 Not Found` | URL de punto final incorrecta | Verificar URL en configuración de acción |
+    | `408 Timeout` | API demasiado lenta | Aumentar tiempo de espera (predeterminado 5s → 10s) |
+    | `500 Internal Server Error` | API externa caída | Verificar página de estado de API, agregar lógica de reintento |
+    | `SSL Certificate Error` | Problema HTTPS | Verificar certificado válido, no expirado |
+
+    **Pruebas**:
+    ```bash
+    # Probar punto final de API manualmente
+    curl -X POST https://api.example.com/action \
+         -H "Authorization: Bearer YOUR_KEY" \
+         -H "Content-Type: application/json" \
+         -d '{"test": "data"}'
+    ```
+
+    Si curl manual funciona pero el agente falla, verificar:
+    - Lista blanca de IP (las IP del agente pueden necesitar estar en lista blanca)
+    - Limitación de tasa (el agente puede alcanzar límites más rápido que pruebas manuales)
+  </Accordion>
+
+  <Accordion title="La transferencia falla">
+    **Diagnóstico**:
+    - El agente dice "Transfiriendo..." pero la llamada se cae o no pasa nada
+    - Verificar **Registros → Acciones** para estado de transferencia
+
+    **Problemas comunes**:
+
+    **1. Número de transferencia inválido**:
+    - Verificar formato del número (debe ser E.164: +1234567890)
+    - Verificar que el número sea alcanzable (llamarlo manualmente)
+
+    **2. Fallo de reinvitación SIP**:
+    - Algunos operadores no admiten SIP REFER para transferencias
+    - Solución: Usar "transferencia asistida" en lugar de "transferencia ciega"
+    - O habilitar modo "puente de llamada"
+
+    **3. El operador no admite transferencias**:
+    - Verificar con el operador si las transferencias están habilitadas
+    - Puede necesitar actualizar el trunk SIP para admitirlas
+
+    **Configuración**:
+    ```json
+    {
+      "transfer": {
+        "type": "attended",  // Más confiable que "blind"
+        "timeout": 30,       // Segundos para esperar respuesta
+        "announcement": "Lo estoy transfiriendo ahora..."
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="La base de conocimientos no recupera">
+    **Diagnóstico**:
+    - El agente dice "No lo sé" cuando la respuesta está en KB
+    - Probar recuperación manualmente:
+
+    ```bash
+    # Probar búsqueda de KB
+    curl -X POST https://api.itellico.ai/v1/knowledge-bases/kb_123/search \
+         -H "Authorization: Bearer YOUR_API_KEY" \
+         -d '{"query": "cuál es su política de reembolso"}'
+    ```
+
+    **Causas comunes**:
+
+    **1. KB no vinculada al agente**:
+    - Verificar configuración del agente → **Conocimiento** → Verificar KB asignada
+
+    **2. Contenido no indexado**:
+    - El contenido recién cargado tarda 2-5 minutos en indexarse
+    - Verificar que el estado de KB muestre "Indexado" no "Procesando"
+
+    **3. La consulta no coincide con el contenido**:
+    - El cliente pregunta "¿Puedo recuperar dinero?" pero KB dice "Política de reembolso"
+    - Solución: Agregar sinónimos, reescribir contenido de KB para coincidir con frases comunes
+
+    **4. Configuración de recuperación demasiado restrictiva**:
+    - Umbral mínimo de similitud demasiado alto (ej. 0.9)
+    - Solución: Reducir a 0.7-0.8
+
+    **Configuración**:
+    ```json
+    {
+      "knowledge_retrieval": {
+        "min_similarity": 0.75,  // Menor = más permisivo
+        "max_chunks": 5,         // Recuperar más chunks
+        "rerank": true           // Reclasificar por relevancia
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Capacidad y rendimiento
+
+<AccordionGroup>
+  <Accordion title="Alcanzando límites de concurrencia">
+    **Síntoma**: Señal de ocupado, llamadas en cola durante minutos, mensaje "Todos los agentes ocupados"
+
+    **Diagnóstico**:
+    - Verificar **Panel → Capacidad** para concurrencia actual/máxima
+    - Revisar gráfico de volumen de llamadas para horas pico
+
+    **Soluciones a corto plazo**:
+    1. **Habilitar cola**: Dejar que los llamantes esperen en lugar de señal de ocupado
+    2. **Agregar agente de desbordamiento**: Enrutar a agente de respaldo cuando el principal está a capacidad
+    3. **Extender horario comercial**: Distribuir volumen en más horas
+    4. **Ofrecer devolución de llamada**: "Le devolveremos la llamada en 10 minutos"
+
+    **Soluciones a largo plazo**:
+    1. **Actualizar plan**: Aumentar límite de llamadas concurrentes
+    2. **Equilibrio de carga**: Crear múltiples agentes, distribuir números
+    3. **Auto-escalado**: Habilitar escalado dinámico de capacidad (Empresa)
+    4. **Incentivos fuera de horas pico**: Fomentar llamadas durante tiempos de bajo tráfico
+  </Accordion>
+
+  <Accordion title="Alto volumen de llamadas abruma el sistema">
+    **Síntoma**: Las llamadas tardan más en conectarse, la cola se acumula, los errores aumentan
+
+    **Diagnóstico**:
+    - Pico de tráfico repentino (3x+ volumen normal)
+    - Verificar:
+      - ¿Campaña de marketing lanzada?
+      - ¿Mención en medios / publicación viral?
+      - ¿Interrupción del sistema causando tormenta de reintentos?
+
+    **Acciones inmediatas**:
+    1. **Limitación de tasa**: Reducir temporalmente llamadas concurrentes máximas para estabilizar
+    2. **Cola agresiva**: Retener llamadas en lugar de descartarlas
+    3. **Mensaje de respaldo**: "Volumen inusualmente alto. Por favor intente de nuevo en 15 minutos."
+    4. **Escalado de emergencia**: Contactar al soporte para aumento temporal de capacidad
+
+    **Prevención**:
+    - Pronosticar tráfico para eventos conocidos (lanzamientos de productos, ventas)
+    - Pre-escalar capacidad antes de picos esperados
+    - Configurar disparadores de auto-escalado
+  </Accordion>
+
+  <Accordion title="Costos más altos de lo esperado">
+    **Diagnóstico**:
+    - Verificar **Facturación → Uso** para desglose:
+      - Costos de API del modelo
+      - Minutos de telefonía
+      - Costos de almacenamiento
+      - Características premium (ML-AMD, etc.)
+
+    **Culpables comunes**:
+
+    **1. Duraciones de llamada largas**:
+    - Llamada promedio >10 minutos (típico es 3-5 min)
+    - Causa: Agente demasiado verboso, bucles, no finaliza llamadas
+    - Solución: Agregar objetivos de duración de llamada, habilitar tiempo de espera
+
+    **2. Modelo costoso**:
+    - Usar GPT-4 para llamadas FAQ simples
+    - Solución: Cambiar a GPT-3.5 Turbo (3x más barato)
+
+    **3. Costos altos de buzón de voz**:
+    - No usar AMD, cobrando minutos completos por buzones de voz
+    - Solución: Habilitar AMD basado en texto (gratis) o ML-AMD (+$0.01/llamada pero ahorra $0.50+/VM)
+
+    **4. Transcripción costosa**:
+    - Usar transcriptor premium para todas las llamadas
+    - Solución: Usar transcriptor estándar a menos que la precisión sea crítica
+
+    **Lista de verificación de optimización**:
+    - [ ] Habilitar AMD para campañas salientes
+    - [ ] Establecer duración máxima de llamada (ej. 15 minutos)
+    - [ ] Usar modelo más barato para llamadas simples
+    - [ ] Comprimir grabaciones de audio (tasa de bits más baja)
+    - [ ] Eliminar automáticamente grabaciones antiguas después de 30 días
+  </Accordion>
+</AccordionGroup>
+
+## Herramientas y técnicas de depuración
+
+### Análisis de registros
+
+**Acceso a registros**:
+```bash
+# Exportar registros a través de API
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+     "https://api.itellico.ai/v1/conversations?start_date=2024-01-01&end_date=2024-01-02" \
+     > logs.json
+
+# Filtrar por errores
+cat logs.json | jq '.[] | select(.error != null)'
+
+# Encontrar patrones de error comunes
+cat logs.json | jq '.error.type' | sort | uniq -c | sort -rn
+```
+
+**Panel web**:
+- **Conversaciones → Registros** → Usar filtros:
+  - Estado: Fallido
+  - Rango de fechas: Últimas 24 horas
+  - Agente: agente específico
+  - Tipo de error: error específico
+
+### Depuración en vivo
+
+**Modo susurro**:
+- Unirse a llamada en vivo sin que el cliente escuche
+- Guiar al agente susurrando instrucciones
+- Ver transcripción en tiempo real
+
+**Pasos**:
+1. Abrir **Conversaciones → Monitor en vivo**
+2. Encontrar llamada activa
+3. Hacer clic en **Susurrar**
+4. Hablar instrucciones (el agente escucha, el cliente no)
+
+**Casos de uso**:
+- Agente atascado → "Transferir a departamento de facturación"
+- Agente a punto de dar información incorrecta → "Verificar base de conocimientos para precios"
+- Caso límite → Guiar al agente a través de escenario inusual
+
+### Pruebas en producción
+
+**Llamadas canario**:
+- Hacer llamadas de prueba durante horario comercial
+- Usar escenarios conocidos
+- Comparar con comportamiento esperado
+- Etiquetar como prueba para filtrado: `metadata: {test_call: true}`
+
+**Monitoreo sintético**:
+- Llamadas de prueba automatizadas cada hora
+- Verificar que los flujos clave sigan funcionando
+- Alertar si las pruebas comienzan a fallar
+
+```python
+# Script de prueba automatizado
+import requests
+import time
+
+def run_test_call():
+    response = requests.post(
+        'https://api.itellico.ai/v1/calls',
+        headers={'Authorization': f'Bearer {API_KEY}'},
+        json={
+            'agent_id': 'agent_123',
+            'to_number': '+1234567890',  # Su número de prueba
+            'from_number': '+1987654321',
+            'metadata': {'test_call': True, 'scenario': 'pricing_inquiry'}
+        }
+    )
+    return response.json()
+
+# Ejecutar cada hora
+while True:
+    result = run_test_call()
+    if result.get('status') != 'success':
+        send_alert(f"Llamada de prueba falló: {result}")
+    time.sleep(3600)
+```
+
+## Cuándo contactar al soporte
+
+Contacte a support@itellico.ai cuando:
+
+- <Icon icon="server" /> **Problemas de plataforma**: Interrupciones generalizadas, errores de API que afectan a todos los agentes
+- <Icon icon="lock" /> **Incidentes de seguridad**: Violación sospechada, patrones de acceso inusuales
+- <Icon icon="file-circle-question" /> **Disputas de facturación**: Cargos inesperados, discrepancias de uso
+- <Icon icon="phone-xmark" /> **Problemas de operador**: Trunk SIP no se registra, problemas de portabilidad de números
+- <Icon icon="bug" /> **Informes de errores**: Errores claros de plataforma (no problemas de configuración)
+
+**Incluir en solicitud de soporte**:
+- ID de agente e ID de llamadas que muestran el problema
+- Mensajes de error de registros
+- Pasos para reproducir
+- Lo que ya intentó
+- Impacto comercial (cuántos usuarios afectados)
+
+**Tiempos de respuesta**:
+- Crítico (producción caída): &lt;1 hora
+- Alto (característica principal rota): &lt;4 horas
+- Medio (existe solución alternativa): &lt;24 horas
+- Bajo (solicitud de característica, pregunta): &lt;48 horas
+
+## Próximos pasos
+
+<CardGroup cols={2}>
+  <Card title="Mejores prácticas de producción" icon="star" href="/es/launch/production-best-practices">
+    Mantener sistemas de producción saludables
+  </Card>
+
+  <Card title="Descripción general de pruebas" icon="vial" href="/es/test/overview">
+    Mejorar las pruebas para detectar problemas antes
+  </Card>
+
+  <Card title="Recursos de soporte" icon="life-ring" href="/es/resources/overview">
+    Obtener ayuda de la comunidad y documentación
+  </Card>
+</CardGroup>

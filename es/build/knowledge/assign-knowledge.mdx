@@ -1,0 +1,248 @@
+---
+title: "Asignar Conocimiento a Agentes"
+description: "Vincule bases de conocimiento a sus agentes y controle qué información pueden acceder"
+icon: "link"
+"keywords": "asignar base de conocimiento, conectar conocimiento, configuración de conocimiento del agente, asignación de conocimiento, configuración de agente de IA, integración de conocimiento"
+"og:description": "Aprenda cómo vincular bases de conocimiento a sus agentes y controlar qué información pueden acceder para conversaciones inteligentes."
+---
+
+## Descripción General
+
+Después de crear su base de conocimiento, el siguiente paso es conectarla a sus agentes. Usted controla exactamente a qué conocimiento puede acceder cada agente, desde bases de conocimiento completas hasta elementos individuales.
+
+Esta flexibilidad le permite:
+- Dar a diferentes agentes acceso a diferente información
+- Asegurar que los agentes solo referencien contenido relevante y aprobado
+- Actualizar el conocimiento del agente sin cambiar la configuración del agente
+
+---
+
+## Niveles de Asignación
+
+Puede asignar conocimiento a agentes en tres niveles diferentes de granularidad:
+
+<CardGroup cols={3}>
+  <Card title="Base de Conocimiento Completa" icon="database">
+    El agente tiene acceso a todas las carpetas y elementos dentro de la base de conocimiento.
+
+    **Mejor para:** Agentes que necesitan acceso completo a toda la información en una categoría.
+
+    **Ejemplo:** Agente de soporte al cliente con acceso a toda la base de conocimiento de "Recursos de Soporte".
+  </Card>
+  <Card title="Carpeta Específica" icon="folder">
+    El agente solo accede a una carpeta dentro de una base de conocimiento.
+
+    **Mejor para:** Agentes especializados que solo necesitan información de una categoría.
+
+    **Ejemplo:** Agente de facturación con acceso solo a la carpeta "Facturación y Pagos".
+  </Card>
+  <Card title="Elementos Individuales" icon="file">
+    El agente tiene acceso solo a elementos de conocimiento específicos.
+
+    **Mejor para:** Agentes que necesitan información muy específica y controlada.
+
+    **Ejemplo:** Agente de citas con acceso solo a "Política de Cancelación" y "Directrices de Programación".
+  </Card>
+</CardGroup>
+
+---
+
+## Cómo Asignar Conocimiento
+
+### Paso 1: Navegar a la Configuración del Agente
+
+<Steps>
+  <Step title="Abra su agente">
+    Vaya a **Agentes** en la barra lateral izquierda y seleccione el agente que desea configurar.
+  </Step>
+
+  <Step title="Vaya a Habilidades → Conocimiento">
+    Haga clic en **Habilidades** en la navegación izquierda, luego seleccione la sección **Conocimiento**.
+  </Step>
+</Steps>
+
+### Paso 2: Agregar Conocimiento
+
+<Steps>
+  <Step title="Haga clic en 'Agregar Conocimiento'">
+    Haga clic en el botón **+ Agregar Conocimiento** para abrir el selector de conocimiento.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/knowledge/knowledge-light.png" alt="Diálogo de Agregar Conocimiento que muestra opciones de selección de conocimiento (Base Completa, Carpeta, Elemento Específico) y configuración del método de acceso (RAG vs Modo Contexto)" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/knowledge/knowledge-dark.png" alt="Diálogo de Agregar Conocimiento que muestra opciones de selección de conocimiento (Base Completa, Carpeta, Elemento Específico) y configuración del método de acceso (RAG vs Modo Contexto)" />
+  </div>
+</Frame>
+  </Step>
+
+  <Step title="Elija el nivel de asignación">
+    Seleccione qué desea asignar:
+    - **Base de Conocimiento** - Base de conocimiento completa
+    - **Carpeta** - Carpeta específica dentro de una base
+    - **Elemento** - Elemento de conocimiento individual
+  </Step>
+
+  <Step title="Seleccione el conocimiento">
+    Busque o navegue para encontrar la base de conocimiento, carpeta o elemento que desea asignar.
+  </Step>
+
+  <Step title="Elija el modo de acceso">
+    Seleccione cómo el agente debe acceder a este conocimiento:
+    - **Modo Contexto** - Inyectar todo el conocimiento en el prompt del sistema (limitado a 10k tokens en total)
+    - **Modo RAG** - Recuperar dinámicamente conocimiento relevante basado en la conversación
+
+    Aprenda más: [Contexto vs RAG](/es/build/knowledge/context-vs-rag)
+  </Step>
+
+  <Step title="Guardar">
+    Haga clic en **Agregar** para asignar el conocimiento a su agente.
+  </Step>
+</Steps>
+
+---
+
+## Gestión del Conocimiento del Agente
+
+### Ver Conocimiento Asignado
+
+En la sección de Conocimiento del agente, verá todas las bases de conocimiento, carpetas y elementos asignados con sus modos de acceso.
+
+### Modificar Asignación
+
+- **Cambiar modo de acceso:** Elimine el conocimiento y vuelva a agregarlo con el modo deseado (Contexto o RAG)
+- **Eliminar conocimiento:** Haga clic en el icono de eliminar para desvincular conocimiento del agente
+- **Agregar más:** Haga clic en **+ Agregar Conocimiento** para asignar conocimiento adicional
+
+### Probar Acceso al Conocimiento
+
+Después de asignar conocimiento:
+
+<Steps>
+  <Step title="Haga una llamada de prueba">
+    Use la función **Probar** para llamar a su agente.
+  </Step>
+
+  <Step title="Haga preguntas basadas en conocimiento">
+    Haga preguntas que deberían ser respondidas usando el conocimiento asignado.
+  </Step>
+
+  <Step title="Verifique las respuestas">
+    Confirme que el agente está accediendo y usando el conocimiento correctamente.
+  </Step>
+
+  <Step title="Ajuste si es necesario">
+    Si las respuestas no son precisas, verifique:
+    - ¿Está asignado el conocimiento correcto?
+    - ¿Es apropiado el modo de acceso (Contexto vs RAG)?
+    - ¿Es el contenido del conocimiento preciso y actualizado?
+  </Step>
+</Steps>
+
+---
+
+## Mejores Prácticas
+
+### Comience Pequeño, Luego Expanda
+
+<AccordionGroup>
+  <Accordion title="Comience con conocimiento esencial" icon="circle-1">
+    Comience asignando solo el conocimiento más crítico que su agente necesita.
+
+    **Ejemplo:**
+    - Inicio: Política de devolución, horario comercial, información de contacto (3 elementos)
+    - Después: Agregue detalles de productos, preguntas frecuentes, solución de problemas (20+ elementos)
+
+    **Por qué:** Es más fácil verificar la precisión y solucionar problemas con menos conocimiento.
+  </Accordion>
+
+  <Accordion title="Pruebe exhaustivamente después de cada adición" icon="circle-2">
+    Cada vez que agregue conocimiento, pruebe para asegurar que el agente lo use correctamente.
+
+    **Lista de verificación de prueba:**
+    - Haga preguntas directas sobre el nuevo conocimiento
+    - Haga casos límite o escenarios difíciles
+    - Verifique que el agente no alucine o invente información
+    - Confirme que el agente dice correctamente "No tengo esa información" cuando el conocimiento no cubre un tema
+  </Accordion>
+
+  <Accordion title="Monitorear y refinar" icon="circle-3">
+    Después del despliegue, monitoree conversaciones reales para ver cómo se está usando el conocimiento.
+
+    **Busque:**
+    - Preguntas que el agente no pudo responder (conocimiento faltante)
+    - Respuestas incorrectas (el conocimiento necesita actualización)
+    - Respuestas confusas (demasiado conocimiento similar)
+  </Accordion>
+</AccordionGroup>
+
+### Elija el Nivel de Asignación Correcto
+
+- **Base de Conocimiento Completa** - Cuando el agente necesita todo en una categoría
+- **Carpeta Específica** - Cuando el agente tiene un rol especializado
+- **Elementos Individuales** - Cuando necesita control preciso sobre lo que el agente sabe
+
+<Warning>
+Evite asignar conocimiento superpuesto en diferentes niveles. Por ejemplo, no asigne tanto "BC de Soporte al Cliente" (base completa) Y "Carpeta de Devoluciones" (de la misma base). Esto crea redundancia.
+</Warning>
+
+---
+
+## Solución de Problemas
+
+<AccordionGroup>
+  <Accordion title="El agente no está usando el conocimiento asignado" icon="triangle-exclamation">
+    **Verifique:**
+    1. ¿Está realmente asignado el conocimiento al agente?
+    2. ¿Es el estado de indexación vectorial "INDEXADO"? (Verifique en Base de Conocimiento > Elementos)
+    3. ¿Es apropiado el modo de acceso? (Intente cambiar Contexto/RAG)
+    4. ¿Está la pregunta formulada de manera que el conocimiento pueda responder?
+
+    **Prueba:** Haga una pregunta muy directa que esté claramente en el conocimiento. Si el agente todavía no lo usa, hay un problema de configuración.
+  </Accordion>
+
+  <Accordion title="El agente da información incorrecta" icon="triangle-exclamation">
+    **Verifique:**
+    1. ¿Es preciso el contenido del conocimiento mismo?
+    2. ¿Hay elementos conflictivos en la base de conocimiento?
+    3. ¿Todavía está asignado conocimiento obsoleto?
+
+    **Corrección:**
+    - Revise y actualice el contenido del conocimiento, elimine elementos conflictivos/obsoletos
+    - **Reduzca la configuración de temperatura** (en configuración del Modelo de IA) para que el agente se adhiera más al conocimiento
+    - **Agregue conocimiento crítico al Modo Contexto** en lugar de RAG para garantizar la inclusión en cada conversación
+    - **Cambie a un modelo más capaz** en la configuración del Modelo de IA (por ejemplo, GPT-4.1 en lugar de GPT-4.1 Mini, o Claude Sonnet en lugar de Haiku)
+  </Accordion>
+
+  <Accordion title="El agente dice 'No sé' pero el conocimiento existe" icon="triangle-exclamation">
+    **Posibles causas:**
+    1. El conocimiento aún no está indexado (verifique el estado vectorial)
+    2. El modo RAG no puede encontrar coincidencias relevantes (intente modo Contexto)
+    3. El título/contenido del conocimiento no coincide con las palabras clave de la pregunta
+
+    **Corrección:**
+    - Espere a que se complete la indexación
+    - Mejore los títulos y contenido de los elementos de conocimiento para incluir palabras clave comunes de preguntas
+    - Considere usar el modo Contexto para información crítica
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Próximos Pasos
+
+<CardGroup cols={2}>
+  <Card title="Contexto vs RAG" icon="brain" href="/es/build/knowledge/context-vs-rag">
+    Profundice en la elección del método de acceso correcto
+  </Card>
+  <Card title="Crear Bases de Conocimiento" icon="plus" href="/es/build/knowledge/create-knowledge-bases">
+    Aprenda cómo construir y organizar su conocimiento
+  </Card>
+  <Card title="Pruebe su Agente" icon="flask" href="/es/test/web-simulator">
+    Pruebe el conocimiento de su agente en acción
+  </Card>
+  <Card title="Variables y Contenido Dinámico" icon="brackets-curly" href="/es/build/conversation/variables-dynamic-content">
+    Referencias de conocimiento en instrucciones del agente
+  </Card>
+</CardGroup>

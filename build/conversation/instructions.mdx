@@ -1,0 +1,218 @@
+---
+title: "Instructions (System Prompt)"
+description: "Define your agent's personality, knowledge, and conversational behavior"
+icon: "pen"
+"keywords": "AI agent instructions, system prompt, agent configuration, conversational AI behavior, AI personality, agent rules, prompt engineering"
+"og:description": "Learn how to define your AI agent's personality, knowledge, and conversational behavior through effective system prompts."
+---
+
+## Overview
+
+The Instructions field (also called the system prompt) is where you define your agent's personality, conversational style, objectives, and behavioral rules. This is the most important configuration for your agent's success.
+
+Instructions are a text block sent to the AI model with every conversation turn. They tell the model:
+
+- **Who it is** (role and identity)
+- **How to behave** (tone, style, guardrails)
+- **What to achieve** (objectives and goals)
+- **When to use tools** (actions, knowledge, transfers)
+
+<Note>
+  The platform automatically provides conversation history, contact data, and knowledge base content. Focus your instructions on rules and guidance only you can provide.
+</Note>
+
+---
+
+## The Instruction Editor
+
+The instruction editor includes helpful features to make writing instructions easier:
+
+<CardGroup cols={2}>
+  <Card title="Large Text Editor" icon="text">
+    Spacious editor for writing detailed instructions
+  </Card>
+  <Card title="Jinja Support" icon="code">
+    Full Jinja2 templating with variables and conditionals
+  </Card>
+  <Card title="Prompt Templates" icon="book">
+    Pre-built templates for common use cases
+  </Card>
+  <Card title="Syntax Highlighting" icon="code">
+    Jinja syntax highlighting and error detection
+  </Card>
+</CardGroup>
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/agent/agent-instruction-light.png" alt="Agent Instructions editor showing text area with Templates and Writing Guide buttons, variable helper, token counter, and save controls" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/agent/agent-instruction-dark.png" alt="Agent Instructions editor showing text area with Templates and Writing Guide buttons, variable helper, token counter, and save controls" />
+  </div>
+</Frame>
+
+---
+
+## Using Prompt Templates
+
+The instruction editor includes a **Prompt Library** with ready-to-use templates:
+
+- **Lead Qualification** - B2B sales with BANT framework
+- **Appointment Booking** - Service scheduling with confirmations
+- **Customer Feedback** - NPS surveys with recovery workflows
+- **Information Gathering** - Research and data collection
+- **Outreach** - Cold calling with value-first approach
+- **Industry-Specific** - Healthcare, real estate, home services, and more
+
+**To use a template:**
+
+1. Click "Browse Templates" in the instruction editor
+2. Select a template that matches your use case
+3. Customize the placeholders (`company_name`, `service_type`, etc.)
+4. Test and refine based on your specific needs
+
+<Frame>
+  <img
+    className="block dark:hidden rounded-lg my-4"
+    src="/images/prompt_templates.png"
+    alt="Prompt template library showing available templates in light mode"
+  />
+  <img
+    className="hidden dark:block rounded-lg my-4"
+    src="/images/prompt_templates_dark.png"
+    alt="Prompt template library showing available templates in dark mode"
+  />
+</Frame>
+
+<Tip>
+  Templates follow a proven structure: Role → Goal → Conversation Flow → Quick Reference. Start with a template and adapt it rather than starting from scratch.
+</Tip>
+
+---
+
+## Basic Instruction Structure
+
+Here's a simple template to get started:
+
+```text wrap
+You are [NAME/ROLE] for [COMPANY NAME].
+
+Your role:
+- [Primary responsibility]
+- [Secondary responsibility]
+- [Additional tasks]
+
+Tone: [Describe communication style]
+
+Important guidelines:
+- [Key rule 1]
+- [Key rule 2]
+- [Key rule 3]
+
+When [SITUATION], you should [ACTION].
+```
+
+### Example: Customer Support Agent
+
+```text wrap
+You are Alex, a friendly customer support agent for Acme Software.
+
+Your role:
+- Answer customer questions about our products and services
+- Troubleshoot common technical issues
+- Provide account information when requested
+- Escalate complex issues to human support
+
+Tone: Professional but warm, patient, and helpful. Keep responses concise and clear.
+
+Important guidelines:
+- Always greet customers warmly and ask how you can help
+- Never make promises about features or pricing you're unsure of
+- If you don't know something, admit it honestly and offer to transfer
+- Confirm understanding before moving to solutions
+- End by asking if there's anything else you can help with
+
+When a customer mentions billing issues, provide basic information but always offer to transfer to the billing department for detailed help.
+```
+
+---
+
+## What the Agent Already Knows
+
+The platform automatically provides the following context to your agent with every conversation turn. **You don't need to include these in your instructions:**
+
+<AccordionGroup>
+  <Accordion title="Conversation Transcript" icon="messages">
+    The complete conversation history between the agent and the contact, including all messages and tool calls.
+  </Accordion>
+  <Accordion title="Contact Information" icon="user">
+    Contact data like name, email, and phone number. Access via variables like `{{ contact.first_name }}`.
+  </Accordion>
+  <Accordion title="Knowledge Base Content" icon="book">
+    When relevant, the platform automatically retrieves and includes content from your knowledge bases.
+  </Accordion>
+  <Accordion title="Available Actions" icon="bolt">
+    The platform tells the agent what actions are available (transfer, book appointment, custom API actions). You just need to explain when to use them.
+  </Accordion>
+  <Accordion title="Current Date/Time" icon="clock">
+    The agent automatically knows the current date, time, and timezone.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Common Mistakes
+
+<AccordionGroup>
+  <Accordion title="Instructions too long" icon="text-size">
+    Keep instructions under 3000 words. Long instructions confuse the model and slow response times.
+
+    **Fix:** Focus on essential rules and conversation flow. Move facts and policies to knowledge bases.
+  </Accordion>
+  <Accordion title="Too vague" icon="circle-question">
+    "Be helpful" doesn't provide actionable guidance.
+
+    **Fix:** Be specific. Instead write: "Answer questions in under 30 seconds, ask one clarifying question at a time, and confirm understanding before providing solutions."
+  </Accordion>
+  <Accordion title="Contradictory rules" icon="triangle-exclamation">
+    Conflicting instructions confuse the agent.
+
+    **Fix:** Review carefully to ensure guidelines don't contradict each other. Test thoroughly.
+  </Accordion>
+  <Accordion title="Hardcoded facts" icon="database">
+    Facts, product details, and policies belong in knowledge bases, not instructions.
+
+    **Fix:** Move all factual content to knowledge bases. Instructions should contain only behavioral rules and conversation guidance.
+  </Accordion>
+  <Accordion title="Overly complex logic" icon="code">
+    Deeply nested conditionals and complex Jinja logic often fail.
+
+    **Fix:** Keep logic simple and clear. Use straightforward if/then statements.
+
+    **Alternative:** Build a team of agents that can transfer to one another, each with a dedicated task and simpler instructions.
+  </Accordion>
+  <Accordion title="Incorrect action names" icon="bolt">
+    Mismatched action names prevent the agent from using actions correctly.
+
+    **Fix:** Always reference exact action names from the Actions section. Copy them directly from the UI.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Prompt Engineering Guide" icon="book" href="/build/conversation/prompt-engineering-guide">
+    Advanced techniques for writing effective instructions
+  </Card>
+  <Card title="Greeting Messages" icon="hand-wave" href="/build/conversation/greeting-messages">
+    Configure how conversations start
+  </Card>
+  <Card title="Variables & Dynamic Content" icon="brackets-curly" href="/build/conversation/variables-dynamic-content">
+    Master Jinja templating and variables
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/web-simulator">
+    Learn how to test your agent effectively
+  </Card>
+</CardGroup>

@@ -1,0 +1,248 @@
+---
+title: "Attribuer des Connaissances aux Agents"
+description: "Lier les bases de connaissances à tes agents et contrôler les informations auxquelles ils peuvent accéder"
+icon: "link"
+"keywords": "attribuer base de connaissances, connecter connaissances, configuration connaissances agent, attribution connaissances, configuration agent IA, intégration connaissances"
+"og:description": "Apprends comment lier les bases de connaissances à tes agents et contrôler les informations auxquelles ils peuvent accéder pour des conversations intelligentes."
+---
+
+## Vue d'ensemble
+
+Après avoir créé ta base de connaissances, l'étape suivante consiste à la connecter à tes agents. Tu contrôles exactement quelles connaissances chaque agent peut accéder—des bases de connaissances entières jusqu'aux éléments individuels.
+
+Cette flexibilité te permet de :
+- Donner à différents agents accès à différentes informations
+- Garantir que les agents ne référencent que du contenu pertinent et approuvé
+- Mettre à jour les connaissances de l'agent sans changer la configuration de l'agent
+
+---
+
+## Niveaux d'Attribution
+
+Tu peux attribuer des connaissances aux agents à trois niveaux de granularité différents :
+
+<CardGroup cols={3}>
+  <Card title="Base de Connaissances Entière" icon="database">
+    L'agent a accès à tous les dossiers et éléments de la base de connaissances.
+
+    **Idéal pour :** Les agents qui ont besoin d'un accès complet à toutes les informations d'une catégorie.
+
+    **Exemple :** Agent support client avec accès à toute la base de connaissances "Ressources Support".
+  </Card>
+  <Card title="Dossier Spécifique" icon="folder">
+    L'agent n'accède qu'à un seul dossier dans une base de connaissances.
+
+    **Idéal pour :** Les agents spécialisés qui n'ont besoin que d'informations d'une seule catégorie.
+
+    **Exemple :** Agent facturation avec accès uniquement au dossier "Facturation & Paiements".
+  </Card>
+  <Card title="Éléments Individuels" icon="file">
+    L'agent n'a accès qu'à des éléments de connaissance spécifiques.
+
+    **Idéal pour :** Les agents qui ont besoin d'informations très spécifiques et contrôlées.
+
+    **Exemple :** Agent rendez-vous avec accès uniquement à "Politique d'Annulation" et "Directives de Planification".
+  </Card>
+</CardGroup>
+
+---
+
+## Comment Attribuer des Connaissances
+
+### Étape 1 : Navigue vers la Configuration de l'Agent
+
+<Steps>
+  <Step title="Ouvrir ton agent">
+    Va dans **Agents** dans la barre latérale gauche et Sélectionne l'agent que tu souhaites configurer.
+  </Step>
+
+  <Step title="Aller dans Capacités → Connaissances">
+    Clique sur **Capacités** dans la navigation de gauche, puis Sélectionne la section **Connaissances**.
+  </Step>
+</Steps>
+
+### Étape 2 : Ajouter des Connaissances
+
+<Steps>
+  <Step title="Cliquer sur 'Ajouter des Connaissances'">
+    Clique sur le bouton **+ Ajouter des Connaissances** pour ouvrir le sélecteur de connaissances.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/knowledge/knowledge-light.png" alt="Dialogue Ajouter des Connaissances montrant les options de sélection de connaissances (Base Entière, Dossier, Élément Spécifique) et la configuration de la méthode d'accès (RAG vs Mode Contexte)" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/knowledge/knowledge-dark.png" alt="Dialogue Ajouter des Connaissances montrant les options de sélection de connaissances (Base Entière, Dossier, Élément Spécifique) et la configuration de la méthode d'accès (RAG vs Mode Contexte)" />
+  </div>
+</Frame>
+  </Step>
+
+  <Step title="Choisir le niveau d'attribution">
+    Sélectionne ce que tu souhaites attribuer :
+    - **Base de Connaissances** - Base de connaissances entière
+    - **Dossier** - Dossier spécifique dans une base
+    - **Élément** - Élément de connaissance individuel
+  </Step>
+
+  <Step title="Sélectionner les connaissances">
+    Parcours ou Recherche pour trouver la base de connaissances, le dossier ou l'élément que tu souhaites attribuer.
+  </Step>
+
+  <Step title="Choisir le mode d'accès">
+    Sélectionne comment l'agent doit accéder à ces connaissances :
+    - **Mode Contexte** - Injecter toutes les connaissances dans le prompt système (limité à 10k tokens au total)
+    - **Mode RAG** - Récupérer dynamiquement les connaissances pertinentes en fonction de la conversation
+
+    En savoir plus : [Contexte vs RAG](/fr/build/knowledge/context-vs-rag)
+  </Step>
+
+  <Step title="Enregistrer">
+    Clique sur **Ajouter** pour attribuer les connaissances à ton agent.
+  </Step>
+</Steps>
+
+---
+
+## Gestion des Connaissances de l'Agent
+
+### Voir les Connaissances Attribuées
+
+Dans la section Connaissances de l'agent, tu verras toutes les bases de connaissances, dossiers et éléments attribués avec leurs modes d'accès.
+
+### Modifier l'Attribution
+
+- **Changer le mode d'accès :** Supprime les connaissances et rajoutez-les avec le mode souhaité (Contexte ou RAG)
+- **Supprimer les connaissances :** Clique sur l'icône supprimer pour délier les connaissances de l'agent
+- **Ajouter plus :** Clique sur **+ Ajouter des Connaissances** pour attribuer des connaissances supplémentaires
+
+### Tester l'Accès aux Connaissances
+
+Après avoir attribué des connaissances :
+
+<Steps>
+  <Step title="Effectuer un appel test">
+    Utilise la fonctionnalité **Test** pour appeler ton agent.
+  </Step>
+
+  <Step title="Poser des questions basées sur les connaissances">
+    Pose des questions qui devraient être répondues en utilisant les connaissances attribuées.
+  </Step>
+
+  <Step title="Vérifier les réponses">
+    Confirme que l'agent accède et utilise les connaissances correctement.
+  </Step>
+
+  <Step title="Ajuster si nécessaire">
+    Si les réponses ne sont pas précises, Vérifie :
+    - Les bonnes connaissances sont-elles attribuées ?
+    - Le mode d'accès est-il approprié (Contexte vs RAG) ?
+    - Le contenu des connaissances est-il précis et à jour ?
+  </Step>
+</Steps>
+
+---
+
+## Meilleures Pratiques
+
+### Commencer Petit, Puis Étendre
+
+<AccordionGroup>
+  <Accordion title="Commencer avec les connaissances essentielles" icon="circle-1">
+    Commence par attribuer uniquement les connaissances les plus critiques dont ton agent a besoin.
+
+    **Exemple :**
+    - Début : Politique de retour, horaires d'ouverture, coordonnées (3 éléments)
+    - Plus tard : Ajouter détails produits, FAQ, dépannage (20+ éléments)
+
+    **Pourquoi :** Plus facile de vérifier la précision et résoudre les problèmes avec moins de connaissances.
+  </Accordion>
+
+  <Accordion title="Tester minutieusement après chaque ajout" icon="circle-2">
+    Chaque fois que vous Ajoute des connaissances, Teste pour garantir que l'agent les utilise correctement.
+
+    **Liste de vérification test :**
+    - Poser des questions directes sur les nouvelles connaissances
+    - Poser des cas limites ou scénarios délicats
+    - Vérifier que l'agent n'hallucine pas ou n'invente pas d'informations
+    - Confirmer que l'agent dit correctement "Je ne sais pas" quand les connaissances ne couvrent pas un sujet
+  </Accordion>
+
+  <Accordion title="Surveiller et affiner" icon="circle-3">
+    Après le déploiement, surveillez les conversations réelles pour voir comment les connaissances sont utilisées.
+
+    **Rechercher :**
+    - Questions auxquelles l'agent ne pouvait pas répondre (connaissances manquantes)
+    - Réponses incorrectes (connaissances nécessitant une mise à jour)
+    - Réponses confuses (trop de connaissances similaires)
+  </Accordion>
+</AccordionGroup>
+
+### Choisir le Bon Niveau d'Attribution
+
+- **Base de Connaissances Entière** - Quand l'agent a besoin de tout dans une catégorie
+- **Dossier Spécifique** - Quand l'agent a un rôle spécialisé
+- **Éléments Individuels** - Quand tu as besoin d'un contrôle précis sur ce que l'agent sait
+
+<Warning>
+Évite d'attribuer des connaissances qui se chevauchent à différents niveaux. Par exemple, n'Attribue pas à la fois "KB Support Client" (base entière) ET "Dossier Retours" (de la même base). Cela crée de la redondance.
+</Warning>
+
+---
+
+## Dépannage
+
+<AccordionGroup>
+  <Accordion title="L'agent n'utilise pas les connaissances attribuées" icon="triangle-exclamation">
+    **Vérifier :**
+    1. Les connaissances sont-elles réellement attribuées à l'agent ?
+    2. Le statut d'indexation vectorielle est-il "INDEXED" ? (Vérifier dans Base de Connaissances > Éléments)
+    3. Le mode d'accès est-il approprié ? (Essayer de changer Contexte/RAG)
+    4. La question est-elle formulée de manière à ce que les connaissances puissent y répondre ?
+
+    **Test :** Pose une question très directe qui est clairement dans les connaissances. Si l'agent ne les utilise toujours pas, il y a un problème de configuration.
+  </Accordion>
+
+  <Accordion title="L'agent donne des informations incorrectes" icon="triangle-exclamation">
+    **Vérifier :**
+    1. Le contenu des connaissances lui-même est-il précis ?
+    2. Y a-t-il des éléments contradictoires dans la base de connaissances ?
+    3. Des connaissances obsolètes sont-elles toujours attribuées ?
+
+    **Corriger :**
+    - Réviser et mettre à jour le contenu des connaissances, supprimer les éléments contradictoires/obsolètes
+    - **Baisser le paramètre de température** (dans les paramètres du Modèle IA) pour que l'agent s'en tienne plus aux connaissances
+    - **Ajouter les connaissances critiques au Mode Contexte** au lieu de RAG pour garantir l'inclusion dans chaque conversation
+    - **Passer à un modèle plus capable** dans les paramètres du Modèle IA (par ex., GPT-4.1 au lieu de GPT-4.1 Mini, ou Claude Sonnet au lieu de Haiku)
+  </Accordion>
+
+  <Accordion title="L'agent dit 'Je ne sais pas' mais les connaissances existent" icon="triangle-exclamation">
+    **Causes possibles :**
+    1. Les connaissances ne sont pas encore indexées (vérifier le statut vectoriel)
+    2. Le mode RAG ne peut pas trouver de correspondances pertinentes (essayer le mode Contexte)
+    3. Le titre/contenu des connaissances ne correspond pas aux mots-clés de la question
+
+    **Corriger :**
+    - Attendre la fin de l'indexation
+    - Améliorer les titres et le contenu des éléments de connaissance pour inclure les mots-clés de questions courantes
+    - Envisager d'utiliser le mode Contexte pour les informations critiques
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Prochaines Étapes
+
+<CardGroup cols={2}>
+  <Card title="Contexte vs RAG" icon="brain" href="/fr/build/knowledge/context-vs-rag">
+    Plongée approfondie dans le choix de la bonne méthode d'accès
+  </Card>
+  <Card title="Créer des Bases de Connaissances" icon="plus" href="/fr/build/knowledge/create-knowledge-bases">
+    Apprendre à construire et organiser tes connaissances
+  </Card>
+  <Card title="Tester Ton Agent" icon="flask" href="/fr/test/web-simulator">
+    Tester les connaissances de ton agent en action
+  </Card>
+  <Card title="Variables & Contenu Dynamique" icon="brackets-curly" href="/fr/build/conversation/variables-dynamic-content">
+    Référencer les connaissances dans les instructions de l'agent
+  </Card>
+</CardGroup>

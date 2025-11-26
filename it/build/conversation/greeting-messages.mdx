@@ -1,0 +1,417 @@
+---
+title: "Messaggi di saluto"
+description: "Configura come il tuo agente avvia le conversazioni"
+icon: "hand-wave"
+"keywords": "Messaggi di saluto IA, saluti IA conversazionale, saluti dinamici, messaggi personalizzati agente, avviatori di conversazione, messaggi di benvenuto IA"
+"og:description": "Configura messaggi di saluto dinamici e personalizzati che danno il giusto tono a ogni conversazione con un agente IA."
+---
+
+## Panoramica
+
+Il saluto è la prima cosa che i clienti sentono quando si connettono al tuo agente. Un saluto ben progettato stabilisce il tono, fissa le aspettative e guida la conversazione nella giusta direzione.
+
+## Modalità di saluto
+
+Scegli tra tre diverse modalità di saluto:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/greeting-light.png" alt="Configurazione del saluto che mostra la barra laterale di navigazione con la sezione Abilità espansa e Saluto selezionato, schede In entrata e In uscita, tre opzioni di modalità di saluto (L'utente inizia, L'agente IA inizia con messaggio dinamico, L'agente IA inizia con messaggio fisso), editor di messaggi fissi con supporto variabili, cursore di ritardo messaggio e pulsante di interruzione" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/greeting-dark.png" alt="Configurazione del saluto che mostra la barra laterale di navigazione con la sezione Abilità espansa e Saluto selezionato, schede In entrata e In uscita, tre opzioni di modalità di saluto (L'utente inizia, L'agente IA inizia con messaggio dinamico, L'agente IA inizia con messaggio fisso), editor di messaggi fissi con supporto variabili, cursore di ritardo messaggio e pulsante di interruzione" />
+  </div>
+</Frame>
+
+<Tabs>
+  <Tab title="Saluto fisso">
+    **Ideale per**: Saluti coerenti e di marca
+
+    Il tuo agente dice esattamente lo stesso saluto ogni volta.
+
+    ```text wrap
+    Ciao! Grazie per aver chiamato l'assistenza Acme. Sono Alex. Come posso aiutarti?
+    ```
+
+    **Vantaggi:**
+    - Messaggistica di marca coerente
+    - Esperienza cliente prevedibile
+    - Facile da testare e perfezionare
+    - Nessuna variabilità IA
+
+    **Usa quando:**
+    - La voce del marchio è critica
+    - Il saluto include disclaimer specifici
+    - È necessaria coerenza in tutte le chiamate
+  </Tab>
+
+  <Tab title="Generato dall'IA">
+    **Ideale per**: Saluti personalizzati e contestuali
+
+    Il tuo agente genera saluti dinamicamente in base al contesto disponibile.
+
+    **Esempi di variazioni:**
+    ```text wrap
+    # Con nome cliente:
+    "Ciao Sarah! Grazie per aver chiamato. Come posso aiutarti oggi?"
+
+    # Cliente VIP:
+    "Buongiorno Sig. Rossi! Grazie per aver chiamato. Come posso aiutarla oggi?"
+
+    # Basato sull'ora:
+    "Buongiorno! Grazie per aver chiamato l'assistenza Acme. Cosa ti porta qui?"
+
+    # Specifico per campagna:
+    "Ciao! Vedo che hai richiesto informazioni sul nostro piano Enterprise. Sarò felice di aiutarti!"
+    ```
+
+    **Vantaggi:**
+    - Personalizzato per ogni chiamante
+    - Consapevole del contesto (ora, campagna, tipo di cliente)
+    - Variabilità naturale
+    - Può fare riferimento ai dati disponibili
+
+    **Usa quando:**
+    - Hai dati di contatto ricchi
+    - La personalizzazione migliora l'esperienza
+    - Diversi segmenti di clienti necessitano approcci diversi
+  </Tab>
+
+  <Tab title="L'utente inizia">
+    **Ideale per**: Chiamate in uscita dove il destinatario parla per primo
+
+    L'agente attende silenziosamente che il cliente parli prima di rispondere.
+
+    **Cliente:** "Pronto?" / "Sì?" / "Chi è?"
+    **Agente:** "Ciao! Sono Alex di Acme. Chiamo per la tua richiesta recente. Hai un momento?"
+
+    **Vantaggi:**
+    - Naturale per scenari in uscita
+    - Il cliente parla per primo come previsto
+    - L'agente risponde dopo che il cliente ha risposto
+
+    **Usa quando:**
+    - Effettui chiamate in uscita
+    - Il destinatario dirà naturalmente qualcosa rispondendo
+    - Vuoi che il cliente inizi la conversazione
+
+    <Note>
+    **Per la maggior parte dei casi d'uso, consigliamo Saluto fisso.** L'utente inizia è utile solo in certi scenari di chiamate in uscita.
+    </Note>
+  </Tab>
+</Tabs>
+
+---
+
+## Configurazione del saluto
+
+### Ritardo iniziale
+
+Controlla quanto tempo l'agente attende prima di parlare (0-5 secondi).
+
+Un ritardo di **0,5 secondi** è un buon punto di partenza per la maggior parte dei casi d'uso.
+
+### Interrompibilità
+
+Controlla se i clienti possono interrompere il saluto.
+
+**Non interrompibile (Consigliato):**
+- Il saluto viene riprodotto per intero senza interruzioni
+- Garantisce che i clienti ascoltino il messaggio completo
+- Introduzione professionale e chiara
+- Migliore per la maggior parte dei casi d'uso
+
+**Interrompibile:**
+- Il cliente può parlare durante il saluto
+- L'agente si ferma a metà saluto e ascolta
+- Può portare a introduzioni incomplete
+- Usa solo se i clienti interrompono frequentemente e i saluti non interrompibili portano a conversazioni non ottimali o riagganciamenti
+
+<Tip>
+I saluti non interrompibili assicurano che l'introduzione del marchio e lo scopo siano sempre comunicati chiaramente. Mantieni i saluti concisi (meno di 10 secondi) per migliori risultati.
+</Tip>
+
+---
+
+## Saluti in entrata vs in uscita
+
+### Saluti in entrata
+
+I clienti ti stanno chiamando. Hanno avviato il contatto.
+
+**Migliori pratiche:**
+- Ringraziali per aver chiamato
+- Identifica la tua azienda/servizio
+- Presenta l'agente (nome opzionale)
+- Chiedi come puoi aiutare
+
+**Esempi:**
+
+```text wrap
+# Supporto standard:
+"Grazie per aver chiamato l'assistenza Acme Software. Come posso aiutarti oggi?"
+
+# Con nome agente:
+"Ciao! Sono Alex dell'assistenza Acme. In cosa posso aiutarti?"
+
+# Amichevole:
+"Ciao! Grazie per aver chiamato. Cosa ti porta qui oggi?"
+
+# Specifico per reparto:
+"Reparto fatturazione Acme, sono Sara. Come posso assisterti?"
+```
+
+---
+
+### Saluti in uscita
+
+Stai chiamando il cliente. Devi stabilire legittimità e scopo rapidamente.
+
+**Migliori pratiche:**
+- Identificati tu e la tua azienda
+- Indica lo scopo della chiamata
+- Conferma di parlare con la persona giusta
+- Chiedi se è un buon momento
+
+**Esempi:**
+
+```text wrap
+# Promemoria appuntamento:
+"Ciao, sono Alex dello studio dentistico Acme. Chiamo per confermare il tuo appuntamento domani alle 14. Va ancora bene?"
+
+# Seguito prospect:
+"Ciao, sono Sara di Acme Software. Hai recentemente richiesto informazioni sul nostro piano Enterprise. Hai qualche minuto per discutere di come possiamo aiutarti?"
+
+# Feedback cliente:
+"Ciao! Sono Giordano di Acme. Hai recentemente acquistato il nostro prodotto e volevo il tuo rapido feedback. Hai due minuti?"
+
+# Promemoria pagamento:
+"Ciao, sono del team fatturazione di Acme. Chiamo per il tuo account. Possiamo occuparci di quel pagamento oggi?"
+```
+
+### Personalizzazioni saluti in uscita
+
+Configura saluti separati per chiamate in uscita nella sezione **Saluto**.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/outbound-greeting-light.png" alt="Configurazione saluto in uscita che mostra la scheda In uscita (personalizzato) selezionata con pulsante 'Usa lo stesso di in entrata', tre opzioni di modalità saluto (L'utente inizia, L'agente IA inizia con messaggio dinamico, L'agente IA inizia con messaggio fisso), editor messaggio fisso in uscita, cursore ritardo messaggio, pulsante interruzione e pulsante salva modifiche" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/outbound-greeting-dark.png" alt="Configurazione saluto in uscita che mostra la scheda In uscita (personalizzato) selezionata con pulsante 'Usa lo stesso di in entrata', tre opzioni di modalità saluto (L'utente inizia, L'agente IA inizia con messaggio dinamico, L'agente IA inizia con messaggio fisso), editor messaggio fisso in uscita, cursore ritardo messaggio, pulsante interruzione e pulsante salva modifiche" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Abilita personalizzazione in uscita">
+    Attiva "Configura saluto in uscita separato"
+  </Step>
+  <Step title="Scegli modalità saluto in uscita">
+    Fisso, generato dall'IA o L'utente inizia
+  </Step>
+  <Step title="Imposta ritardo specifico in uscita">
+    Solitamente 0-0,5 secondi per in uscita
+  </Step>
+  <Step title="Configura interrompibilità">
+    Solitamente interrompibile per sensazione naturale
+  </Step>
+</Steps>
+
+<Note>
+Per impostazione predefinita, le chiamate in uscita rispecchiano il tuo saluto in entrata. Usa le personalizzazioni quando hai bisogno di un comportamento diverso per chiamate proattive.
+</Note>
+
+---
+
+## Uso delle variabili nei saluti
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/greeting-variables-light.png" alt="Configurazione variabili saluto che mostra la scheda In uscita (personalizzato) con L'agente IA inizia con messaggio fisso selezionato, editor messaggio fisso in uscita contenente sintassi variabili, sezione Variabili rilevate che mostra variabile di test, cursore ritardo messaggio e pulsante interruzione" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/greeting-variables-dark.png" alt="Configurazione variabili saluto che mostra la scheda In uscita (personalizzato) con L'agente IA inizia con messaggio fisso selezionato, editor messaggio fisso in uscita contenente sintassi variabili, sezione Variabili rilevate che mostra variabile di test, cursore ritardo messaggio e pulsante interruzione" />
+  </div>
+</Frame>
+
+### Variabili di contatto
+
+Personalizza con informazioni cliente:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/contact-variables-light.png" alt="Variabili di contatto nel saluto che mostra la scheda In entrata con L'agente IA inizia con messaggio fisso selezionato, editor messaggio fisso con sintassi variabili basate su tempo e contatto usando current_datetime e contact.full_name, sezione Variabili rilevate che mostra le variabili analizzate, cursore ritardo messaggio e pulsante interruzione" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/contact-variables-dark.png" alt="Variabili di contatto nel saluto che mostra la scheda In entrata con L'agente IA inizia con messaggio fisso selezionato, editor messaggio fisso con sintassi variabili basate su tempo e contatto usando current_datetime e contact.full_name, sezione Variabili rilevate che mostra le variabili analizzate, cursore ritardo messaggio e pulsante interruzione" />
+  </div>
+</Frame>
+
+```jinja wrap
+Ciao {{ contact.first_name | default("") }}! Grazie per aver chiamato.
+```
+
+Saluti basati sull'ora usando la variabile integrata `current_datetime`:
+
+```jinja wrap
+Buon{{ "giorno" if current_datetime.hour < 12 else "asera" }}, {{ contact.full_name | default("") }}!
+```
+
+<Tip>
+La variabile `current_datetime` è automaticamente disponibile nei saluti e nelle istruzioni per costruire logica basata sul tempo. Vedi [Variabili e contenuto dinamico](/it/build/conversation/variables-dynamic-content) per maggiori dettagli.
+</Tip>
+
+### Saluti condizionali
+
+Usa variabili di contatto integrate:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/condition-greeting-light.png" alt="Configurazione saluto condizionale che mostra la scheda In entrata con L'agente IA inizia con messaggio fisso selezionato, editor messaggio fisso con logica condizionale if-else usando la variabile contact.email, sezione Variabili rilevate che mostra contact.first_name e contact.email, cursore ritardo messaggio e pulsante interruzione" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/condition-greeting-dark.png" alt="Configurazione saluto condizionale che mostra la scheda In entrata con L'agente IA inizia con messaggio fisso selezionato, editor messaggio fisso con logica condizionale if-else usando la variabile contact.email, sezione Variabili rilevate che mostra contact.first_name e contact.email, cursore ritardo messaggio e pulsante interruzione" />
+  </div>
+</Frame>
+
+```jinja wrap
+{% if contact.email %}
+Ciao {{ contact.first_name }}, ho la tua email {{ contact.email }} in archivio.
+{% else %}
+Ciao {{ contact.first_name }}, grazie per aver chiamato!
+{% endif %}
+Come posso aiutarti oggi?
+```
+
+O usa variabili personalizzate dalla tua API di contesto dinamico:
+
+```jinja wrap
+{% if account_tier == "premium" %}
+Ciao {{ contact.first_name }}, grazie per essere un prezioso cliente premium.
+{% else %}
+Ciao {{ contact.first_name }}, grazie per aver chiamato!
+{% endif %}
+Come posso aiutarti oggi?
+```
+
+<Note>
+Variabili come `account_tier`, `company_name` o campi personalizzati devono essere fornite tramite il tuo [endpoint API di contesto dinamico](/it/build/advanced/dynamic-context).
+</Note>
+
+---
+
+## Scrivere ottimi saluti
+
+<AccordionGroup>
+  <Accordion title="Mantienilo breve" icon="clock">
+    Punta a meno di 10 secondi.
+
+    **Buono:** "Ciao! Grazie per aver chiamato l'assistenza Acme. Come posso aiutare?"
+
+    **Troppo lungo:** "Buongiorno e grazie per aver chiamato il centro di assistenza tecnica Acme Software. Mi chiamo Alex e ti assisterò oggi..."
+  </Accordion>
+
+  <Accordion title="Suona naturale" icon="comments">
+    Usa linguaggio conversazionale.
+
+    **Buono:** "Ciao! Grazie per aver chiamato. In cosa posso aiutarti?"
+
+    **Evita:** "Saluti, stimato cliente. Prego indicare la natura della sua richiesta."
+  </Accordion>
+
+  <Accordion title="Stabilisci aspettative" icon="bullseye">
+    Rendi chiaro il tuo scopo.
+
+    **Buono:** "Ciao! Sono Alex della fatturazione Acme. Chiamo per la tua fattura recente."
+
+    **Evita:** "Ciao, sono di Acme. Volevo contattarti oggi."
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Testare i saluti
+
+### Cosa testare
+
+<AccordionGroup>
+  <Accordion title="Tempistica" icon="clock">
+    - Il ritardo è appropriato?
+    - L'agente inizia a parlare troppo presto/tardi?
+    - Il cliente può interrompere se necessario?
+  </Accordion>
+
+  <Accordion title="Contenuto" icon="message">
+    - Il saluto è chiaro e comprensibile?
+    - Stabilisce lo scopo?
+    - Il tono è appropriato?
+    - Ci sono formulazioni imbarazzanti?
+  </Accordion>
+
+  <Accordion title="Variabili" icon="brackets-curly">
+    - Le variabili vengono renderizzate correttamente?
+    - I valori predefiniti funzionano?
+    - La logica condizionale si attiva correttamente?
+  </Accordion>
+
+  <Accordion title="Lunghezza" icon="ruler">
+    - Meno di 10 secondi?
+    - Il cliente rimane coinvolto?
+    - Nessuna parola inutile?
+  </Accordion>
+</AccordionGroup>
+
+### Processo di test
+
+1. **Chiamata di test** nel pannello di controllo
+2. **Avvia chiamata web**
+3. Ascolta il saluto più volte
+4. Testa con contesti diversi (cliente VIP, campagne diverse, ecc.)
+5. Chiedi feedback ai colleghi
+6. Perfeziona in base ai risultati delle chiamate reali
+
+---
+
+## Errori comuni
+
+<AccordionGroup>
+  <Accordion title="Troppo formale" icon="user-tie">
+    **Evita:** "Saluti. Ha contattato la divisione di assistenza tecnica Acme Corporation."
+
+    **Meglio:** "Ciao! Grazie per aver chiamato l'assistenza Acme. In cosa posso aiutarti?"
+  </Accordion>
+
+  <Accordion title="Troppo informale" icon="face-smile">
+    **Evita:** "Ehi! Come va? Di cosa hai bisogno?"
+
+    **Meglio:** "Ciao! Grazie per aver chiamato. In cosa posso aiutarti oggi?"
+  </Accordion>
+
+  <Accordion title="Nome azienda mancante" icon="building">
+    **Evita:** "Ciao, sono Alex. Come posso aiutarti?"
+
+    **Meglio:** "Ciao! Sono Alex dell'assistenza Acme. Cosa ti porta qui oggi?"
+  </Accordion>
+
+  <Accordion title="Nessuno scopo per chiamate in uscita" icon="phone-arrow-up-right">
+    **Evita:** "Ciao, sei Sara? Come stai oggi?"
+
+    **Meglio:** "Ciao Sara! Sono Alex di Acme. Hai richiesto informazioni sul nostro prodotto - hai un minuto veloce per parlare?"
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Prossimi passi
+
+<CardGroup cols={2}>
+  <Card title="Variabili e contenuto dinamico" icon="brackets-curly" href="/it/build/conversation/variables-dynamic-content">
+    Impara a usare le variabili nei saluti e nelle istruzioni
+  </Card>
+  <Card title="Guida all'ingegneria dei prompt" icon="book" href="/it/build/conversation/prompt-engineering-guide">
+    Padroneggia tecniche di istruzioni avanzate
+  </Card>
+  <Card title="Testa il tuo agente" icon="vial" href="/it/test/web-simulator">
+    Testa i tuoi saluti e perfeziona
+  </Card>
+</CardGroup>

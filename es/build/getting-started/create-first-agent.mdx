@@ -1,0 +1,234 @@
+---
+title: "Crea tu Primer Agente"
+description: "Guía paso a paso para construir tu primer agente de voz IA"
+icon: "plus"
+"keywords": "crear agente IA, tutorial construir bot de voz, guía configuración agente IA, configuración asistente de voz, agente de voz GPT, instrucciones agente"
+"og:description": "Tutorial completo para crear tu primer agente de voz IA. Configura modelos, voces, saludos e instrucciones para lanzar tu agente."
+---
+
+## Antes de Comenzar
+
+Asegúrate de tener:
+
+- Cuenta activa de itellicoAI
+- Caso de uso claro en mente (soporte, reservas, ventas, etc.)
+- Idea básica de lo que quieres que tu agente diga y haga
+
+<Tip>
+Si aún no lo has hecho, completa el [Inicio Rápido](/es/quickstart) para una introducción más rápida.
+</Tip>
+
+## Paso 1: Navega a Agentes
+
+1. Inicia sesión en tu [panel de itellicoAI](https://app.itellico.ai/register)
+2. Haz clic en **Agentes** en el menú de navegación izquierdo
+3. Haz clic en el botón **Crear Agente** (o **Crear Primer Agente** si es tu primero)
+
+## Paso 2: Establece Información Básica
+
+Completa los detalles esenciales:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/agent/create-agent-light.png" alt="Diálogo Crear Nuevo Agente con campo de nombre" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/agent/create-agent-dark.png" alt="Diálogo Crear Nuevo Agente con campo de nombre" />
+  </div>
+</Frame>
+
+### Nombre del Agente
+Elige un nombre descriptivo que refleje el propósito del agente.
+
+**Ejemplos:**
+- "Agente de Soporte al Cliente"
+- "Asistente de Reserva de Citas"
+- "Bot de Calificación de Ventas"
+- "Línea de Ayuda de Estado de Pedidos"
+
+<Tip>
+Usa nombres que faciliten identificar la función del agente cuando tengas múltiples agentes funcionando.
+</Tip>
+
+## Paso 3: Configura Ajustes Básicos
+
+### Elige tu Modelo IA
+
+itellicoAI soporta múltiples proveedores y modelos de IA. Para comenzar, recomendamos Azure OpenAI por confiabilidad y rendimiento. Puedes explorar otros proveedores más adelante en la configuración.
+
+**Modelos recomendados para comenzar:**
+
+<CardGroup cols={2}>
+  <Card title="GPT-4.1 Mini" icon="bolt">
+    Bueno para la mayoría de casos de uso
+  </Card>
+  <Card title="GPT-4.1" icon="brain">
+    Para flujos de conversación complejos
+  </Card>
+</CardGroup>
+
+### Selecciona Voz
+
+Elige cómo suena tu agente:
+
+1. Haz clic en **Voz** en el panel de configuración
+2. Previsualiza voces haciendo clic en el botón de reproducción (solo voces ElevenLabs)
+3. Selecciona una voz que coincida con tu marca
+4. Ajusta velocidad y otros parámetros si es necesario
+
+<Tip>
+Las voces de ElevenLabs ofrecen la calidad de sonido más natural. Previsualiza varias opciones antes de decidir.
+</Tip>
+
+### Configura Transcriptor
+
+Configura el transcriptor:
+
+1. Haz clic en **Transcriptor** bajo Modelos
+2. Selecciona **Deepgram Nova-3 General** (recomendado)
+3. Elige tu idioma o selecciona **Multilingüe** si sirves múltiples idiomas
+
+## Paso 4: Escribe las Instrucciones de tu Agente
+
+Aquí es donde defines el comportamiento, personalidad y flujo conversacional de tu agente.
+
+1. Navega a **Habilidades → Instrucciones** en el panel de configuración
+2. Ingresa las instrucciones de tu agente en el campo de texto
+
+### Plantilla de Instrucciones Básicas
+
+```text wrap
+Eres un agente de soporte al cliente amigable para [Nombre de Tu Empresa].
+
+Tu rol es:
+1. Saludar a los clientes calurosamente
+2. Escuchar su pregunta o problema
+3. Proporcionar información útil y precisa
+4. Ofrecer ayuda con cualquier otra cosa antes de terminar la llamada
+
+Tono: Profesional pero amigable, paciente y servicial
+
+Pautas importantes:
+- Siempre sé cortés y respetuoso
+- Si no sabes algo, dilo honestamente
+- Nunca hagas promesas sobre cosas de las que no estás seguro
+- Habla claramente y a un ritmo moderado
+```
+
+<Note>
+Cubriremos ingeniería de prompts avanzada en la [Guía de Ingeniería de Prompts](/es/build/conversation/prompt-engineering-guide). Por ahora, una instrucción simple y clara funciona bien.
+</Note>
+
+## Paso 5: Configura el Mensaje de Saludo
+
+Configura cómo tu agente inicia conversaciones. **Recomendamos Saludo Fijo para la mayoría de casos de uso.**
+
+<Note>
+**Mejor práctica:** Haz tu saludo no interrumpible para asegurar que los clientes escuchen el saludo completo antes de hablar.
+</Note>
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/greeting/greeting-light.png" alt="Configuración de saludo mostrando tres opciones: Usuario Inicia, Agente IA con Mensaje Dinámico, y Agente IA con Mensaje Fijo, incluyendo control deslizante de retraso de mensaje y palanca de barge-in" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/greeting/greeting-dark.png" alt="Configuración de saludo mostrando tres opciones: Usuario Inicia, Agente IA con Mensaje Dinámico, y Agente IA con Mensaje Fijo, incluyendo control deslizante de retraso de mensaje y palanca de barge-in" />
+  </div>
+</Frame>
+
+<Tabs>
+  <Tab title="Saludo Fijo (Recomendado)">
+    **Mejor para**: La mayoría de casos de uso entrantes y salientes
+
+    Tu agente dice el mismo saludo cada vez:
+
+    ```
+    ¡Hola! Gracias por llamar a [Nombre de la Empresa]. Mi nombre es Alex, y estoy aquí para ayudarte hoy. ¿Cómo puedo asistirte?
+    ```
+  </Tab>
+
+  <Tab title="Generado por IA">
+    **Mejor para**: Saludos personalizados con conocimiento del contexto
+
+    Tu agente genera saludos basándose en el contexto disponible (información del interlocutor, hora del día, etc.):
+
+    Habilita esta opción y tu agente seguirá las pautas de saludo en tus instrucciones.
+  </Tab>
+
+  <Tab title="Usuario Inicia">
+    **Mejor para**: Llamadas salientes donde el destinatario habla primero
+
+    El agente espera a que el cliente hable primero antes de responder. Usa esto cuando llames a clientes que naturalmente dirán algo (ej., "¿Hola?", "¿Sí?", "¿Quién es?") cuando contesten.
+  </Tab>
+</Tabs>
+
+## Paso 6: Prueba tu Agente
+
+Antes de implementar, prueba tu agente:
+
+1. Haz clic en **Llamada de Prueba** en la esquina superior derecha
+2. Haz clic en **Iniciar Llamada Web**
+3. Concede permisos de micrófono cuando se solicite
+4. Ten una conversación con tu agente
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/web-call/web-call-light.png" alt="Diálogo Probar Agente mostrando opciones de Llamada Web y Llamada Telefónica con botón Iniciar Llamada Web" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/web-call/web-call-dark.png" alt="Diálogo Probar Agente mostrando opciones de Llamada Web y Llamada Telefónica con botón Iniciar Llamada Web" />
+  </div>
+</Frame>
+
+**Escenarios de prueba para probar:**
+- Respuesta de saludo simple
+- Hacer una pregunta sobre tu negocio
+- Probar casos extremos (solicitudes poco claras, interrupciones)
+- Verificar que la voz suene bien y las respuestas sean apropiadas
+
+<Warning>
+Siempre prueba tu agente exhaustivamente antes de conectarlo a números telefónicos en vivo o implementarlo en producción.
+</Warning>
+
+## ¿Qué Sigue?
+
+¡Tu agente está creado! Ahora puedes mejorarlo con:
+
+<CardGroup cols={2}>
+  <Card title="Agregar Base de Conocimiento" icon="book" href="/es/build/knowledge/architecture">
+    Sube FAQs, políticas y documentos para que tu agente pueda responder preguntas específicas
+  </Card>
+  <Card title="Configurar Acciones" icon="bolt" href="/es/build/actions/overview">
+    Habilita transferencias, reservas e integraciones personalizadas
+  </Card>
+  <Card title="Mejorar Instrucciones" icon="pen" href="/es/build/conversation/prompt-engineering-guide">
+    Aprende técnicas avanzadas de ingeniería de prompts
+  </Card>
+  <Card title="Implementa tu Agente" icon="rocket" href="/es/launch/overview">
+    Conecta a números telefónicos o integra en tu sitio web
+  </Card>
+</CardGroup>
+
+## Problemas Comunes de Primera Vez
+
+<AccordionGroup>
+  <Accordion title="El agente responde muy lento">
+    Intenta seleccionar un modelo más rápido como GPT-4.1 Mini o ajusta tu configuración de Detección de Actividad de Voz en [Controles Operacionales](/es/build/advanced/vad-turn-detection).
+  </Accordion>
+
+  <Accordion title="El agente interrumpe muy seguido">
+    Ajusta el retraso de finalización en la configuración de Detección de Actividad de Voz o habilita Finalización Inteligente para mejor detección de turno.
+  </Accordion>
+
+  <Accordion title="El agente no conoce mi información empresarial">
+    Agrega una Base de Conocimiento con tu información empresarial, FAQs y políticas. Ver [Base de Conocimiento](/es/build/knowledge/architecture).
+  </Accordion>
+
+  <Accordion title="La voz suena poco natural">
+    Prueba diferentes proveedores de voz (ElevenLabs recomendado) y ajusta configuraciones de velocidad/tono en [Configuración de Voz](/es/build/voice-speech/voice-settings).
+  </Accordion>
+</AccordionGroup>
+
+## ¿Necesitas Ayuda?
+
+Envía un correo a [support@itellico.ai](mailto:support@itellico.ai) para asistencia con creación y configuración de agentes.

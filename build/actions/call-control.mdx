@@ -1,0 +1,217 @@
+---
+title: "Call Control Actions"
+description: "Manage conversation flow with Transfer and End Conversation actions"
+icon: "phone"
+"keywords": "call control, end call action, call transfer, AI phone control, call routing, conversation management, phone automation"
+"og:description": "Manage conversation flow with powerful transfer and end conversation actions for intelligent AI call control."
+---
+
+## Overview
+
+Call control actions give your AI agents the ability to manage conversation lifecycle and routing. These essential actions enable agents to transfer calls when specialized help is needed and end conversations professionally when objectives are met.
+
+Every voice agent should have call control actions configured to handle common scenarios like escalation requests and conversation completion.
+
+---
+
+## Transfer Call
+
+The Transfer action enables your agent to route active calls to other AI agents, phone numbers, or SIP addresses when situations require it.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/transfer-call-light.png" alt="Transfer Action configuration modal showing Name field with 'Transfer to support', Description field, Transfer Type options (AI Agent, Phone Number, SIP Address) with AI Agent selected, Select Agent dropdown showing 'No agents available', Silent Transfer toggle, Transfer Message field with LLM-generated message option, Play Background Music toggle, Ring Before Transfer toggle, and Cancel/Save buttons" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/transfer-call-dark.png" alt="Transfer Action configuration modal showing Name field with 'Transfer to support', Description field, Transfer Type options (AI Agent, Phone Number, SIP Address) with AI Agent selected, Select Agent dropdown showing 'No agents available', Silent Transfer toggle, Transfer Message field with LLM-generated message option, Play Background Music toggle, Ring Before Transfer toggle, and Cancel/Save buttons" />
+  </div>
+</Frame>
+
+### When to Use
+
+- Customer asks to speak with a human or specific department
+- Issue is beyond agent's knowledge or capabilities
+- Request requires specialized expertise
+- Different AI agent is better suited for the request
+
+### Configuration
+
+<Steps>
+  <Step title="Add Transfer Action">
+    Navigate to **Abilities → Actions** in Call Control category and click **Add** on **Transfer Call**
+  </Step>
+  <Step title="Name the Action">
+    Give it a clear, descriptive name like "Transfer to Support" or "Transfer to Billing"
+  </Step>
+  <Step title="Add Description">
+    Describe what this transfer does: "Transfers to another AI agent, phone number, or SIP address"
+  </Step>
+  <Step title="Configure Destination">
+    Set up your transfer destination (see [Transfer Details](/build/actions/transfer-details) for complete configuration options)
+  </Step>
+  <Step title="Save">
+    Click **Save** to add the transfer action to your agent
+  </Step>
+</Steps>
+
+### Using in Instructions
+
+Reference the transfer action by its exact name in your agent's [instructions (system prompt)](/build/conversation/prompt-engineering-guide):
+
+```jinja
+When a customer asks to speak with a human:
+1. Explain why you're transferring them
+2. Ask "Would you like me to transfer you now?"
+3. Wait for confirmation
+4. Once confirmed, use the 'Transfer to Support' action
+
+If the customer mentions billing problems:
+- Use the 'Transfer to Billing' action
+```
+
+<Note>
+See the [Transfer Details](/build/actions/transfer-details) page for advanced configuration including transfer modes, multiple destinations, and SIP routing.
+</Note>
+
+---
+
+## End Conversation
+
+The End Conversation action allows your agent to terminate calls professionally when conversation objectives are met or when ending is appropriate.
+
+### When to Use
+
+- Customer's question answered or task completed successfully
+- Appointment scheduled and confirmed
+- Customer indicates they don't need additional help
+- Request is completely outside agent's purpose
+
+### Configuration
+
+<Steps>
+  <Step title="Add End Conversation Action">
+    Go to **Abilities → Actions** in Call Control category and click **Add** on **End Conversation**
+  </Step>
+  <Step title="Name the Action">
+    Use a clear name like "End Call Politely" or "End Call"
+  </Step>
+  <Step title="Add Description">
+    Describe when this should be used: "Have the agent end the conversation with a custom message"
+  </Step>
+  <Step title="Set Goodbye Message (Optional)">
+    Optionally provide a default farewell message:
+
+    "Thank you for calling! Have a great day."
+
+    Leave blank to control the message entirely through your agent instructions.
+  </Step>
+  <Step title="Save">
+    Click **Save** to make the action available to your agent
+  </Step>
+</Steps>
+
+### Using in Instructions
+
+```jinja
+Once you've successfully completed their request:
+1. Ask "Is there anything else I can help you with?"
+2. If they say no:
+   - Thank them for calling
+   - Use the 'End Call Politely' action
+3. If they say yes, continue helping
+```
+
+<Warning>
+The End Conversation action terminates the call immediately after the agent finishes speaking. Ensure your agent says everything needed before invoking this action.
+</Warning>
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Ask for Confirmation Before Actions" icon="comments">
+    Prompt agents to ask for user confirmation before executing actions to avoid announcing actions that execute on the next turn.
+
+    **Good:**
+    ```
+    "I can transfer you to our billing team. Would you like me to do that now?"
+    [Wait for response]
+    [Execute transfer after confirmation]
+    ```
+
+    **Poor:**
+    ```
+    "I'm transferring you now..."
+    [Action executes next turn, creating awkward delay]
+    ```
+  </Accordion>
+
+  <Accordion title="Always Explain Before Transferring" icon="comment">
+    Never transfer calls without context. Agents should explain why they're transferring, set expectations, and confirm.
+
+    **Good:**
+    ```
+    "I understand you need help with billing. Our billing department can access
+    your account details. Would you like me to transfer you now?"
+    [Wait for confirmation]
+    [Execute transfer after confirmation]
+    ```
+
+    **Poor:**
+    ```
+    "Let me transfer you to billing."
+    [Transfers without explanation or confirmation]
+    ```
+  </Accordion>
+
+  <Accordion title="Confirm Before Ending" icon="circle-check">
+    Always ask if there's anything else before ending calls to prevent customers from feeling rushed.
+
+    **Good:**
+    ```
+    "Is there anything else I can help you with today?"
+    [Wait for response]
+    [If no] "Great! Thanks for calling!"
+    [Use End Call action]
+    ```
+
+    **Poor:**
+    ```
+    "Your appointment is booked. Thanks!"
+    [Uses End Call action without checking if they need anything else]
+    ```
+  </Accordion>
+
+  <Accordion title="Use Descriptive Action Names" icon="tag">
+    Create multiple actions for different scenarios with clear names that match how you'll reference them in instructions.
+
+    **Good:**
+    - "Transfer to Billing Department"
+    - "Transfer to Technical Support"
+    - "End Call Politely"
+
+    **Poor:**
+    - "Transfer 1"
+    - "End"
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Transfer Details" icon="right-left" href="/build/actions/transfer-details">
+    Deep dive into transfer destinations, modes, and advanced configuration
+  </Card>
+  <Card title="Actions Overview" icon="bolt" href="/build/actions/overview">
+    Learn about all available action types
+  </Card>
+  <Card title="Booking Actions" icon="calendar" href="/build/actions/booking-calendar">
+    Set up appointment scheduling with Cal.com
+  </Card>
+  <Card title="Custom API Actions" icon="code" href="/build/actions/custom-api-actions">
+    Connect to external systems
+  </Card>
+</CardGroup>

@@ -1,0 +1,388 @@
+---
+title: "Context vs RAG Modus"
+description: "Wähle zwischen Context-Injektion und RAG-Abruf für deine Wissensdatenbanken"
+icon: "brain"
+keywords: "Kontext vs RAG, Prompt-Kontext, Retrieval-Augmented Generation, Wissensintegration"
+og:description: "Verstehen du den Unterschied zwischen Prompt-Kontext und RAG für optimale Wissensvermittlung."
+---
+
+## Überblick
+
+Wenn du Wissen deinem Agent zuweisen, müssen du wählen, wie der Agent auf diese Informationen zugreift. itellicoAI bietet zwei Zugriffsmethoden: **Context Mode** (Prompt-Injektion) und **RAG Mode** (Retrieval-Augmented Generation).
+
+Das Verständnis des Unterschieds zwischen diesen Ansätzen hilft dir, die Leistung und Genauigkeit deines Agenten zu optimieren.
+
+---
+
+## Die zwei Zugriffsmethoden
+
+<CardGroup cols={2}>
+  <Card title="Context Mode" icon="file-import">
+    **Prompt-Injektion**
+
+    Alles Wissen wird direkt zu Beginn jeder Interaktion in den Konversationskontext des Agenten eingefügt.
+
+    **Am besten für:** Kleine Wissensdatenbanken mit kritischen Informationen, die der Agent für jedes Gespräch benötigt.
+  </Card>
+  <Card title="RAG Mode" icon="magnifying-glass">
+    **Retrieval-Augmented Generation**
+
+    Agent sucht und ruft dynamisch relevantes Wissen basierend auf dem Gesprächsthema ab.
+
+    **Am besten für:** Große Wissensdatenbanken, bei denen nur bestimmte Abschnitte pro Gespräch benötigt werden.
+  </Card>
+</CardGroup>
+
+---
+
+## Context Mode (Prompt-Injektion)
+
+### Wie es funktioniert
+
+Im Context Mode wird der Inhalt deiner Wissensdatenbank zu Beginn jedes Gesprächs direkt in den System-Prompt des Agenten geladen:
+
+```text wrap
+System Prompt:
+Sie sind ein hilfreicher Kundenservice-Agent.
+
+[Ihre Agentenanweisungen...]
+
+==== WISSENSDATENBANK: Kunden-Support-FAQ ====
+
+### Abrechnung & Zahlungen
+- Frage: Wie aktualisiere ich meine Zahlungsmethode?
+  Antwort: Sie können Ihre Zahlungsmethode aktualisieren, indem...
+
+- Frage: Wann werde ich abgerechnet?
+  Antwort: Die Abrechnung erfolgt am selben Tag jeden Monat...
+
+### Rückgaberichtlinie
+[Vollständiger Rückgaberichtlinieninhalt]
+
+### Versandinformationen
+[Vollständige Versandinformationen]
+
+==== ENDE WISSENSDATENBANK ====
+
+Unterstützen Sie nun den Kunden bei seiner Frage.
+```
+
+Der Agent sieht ALLE Wissensinhalte von Anfang an und kann sie während des gesamten Gesprächs referenzieren.
+
+### Formatierte Ausgabe
+
+Standardmäßig wird Wissen mit strukturierter Formatierung eingefügt:
+
+```text wrap
+========================================
+# Wissensdatenbank-Name
+Wissensdatenbank-Beschreibung
+
+## Ordnername
+Ordnerbeschreibung
+
+### Elementtitel
+----------------------------------------
+Elementinhalt hier
+----------------------------------------
+========================================
+```
+
+Diese Formatierung hilft dem Agent, die Struktur und Organisation des Wissens zu verstehen.
+
+### Wann Context Mode verwendet werden sollte
+
+<AccordionGroup>
+  <Accordion title="Kleine Wissensdatenbanken (< 1.000 Wörter)" icon="file">
+    Wenn deine Wissensdatenbank kompakt ist, stellt Context Mode sicher, dass der Agent immer den vollen Kontext hat.
+
+    **Beispiel-Anwendungsfall:**
+    Ein Support-Agent mit einer Wissensdatenbank, die enthält:
+    - 10 häufige FAQs
+    - Rückgaberichtlinie (500 Wörter)
+    - Kontaktinformationen
+    - Versandoptionen
+
+    Insgesamt: ~3.000 Wörter - passt problemlos in den Kontext.
+  </Accordion>
+
+  <Accordion title="Kritische Informationen, die jedes Mal benötigt werden" icon="circle-exclamation">
+    Informationen, die der Agent bei den meisten oder allen Anrufen referenzieren muss.
+
+    **Beispiel-Anwendungsfall:**
+    Ein Buchungsagent, der benötigt:
+    - Unternehmensrichtlinien (immer)
+    - Verfügbare Dienste (immer)
+    - Preisstruktur (immer)
+    - Buchungsverfahren (immer)
+  </Accordion>
+
+  <Accordion title="Hochstrukturierte Informationen" icon="table">
+    Wenn Wissenselemente aufeinander verweisen oder ein zusammenhängendes Ganzes bilden.
+
+    **Beispiel-Anwendungsfall:**
+    Produktkonfigurations-Agent mit:
+    - Optionsabhängigkeiten ("Wenn sie X wählen, biete Y an")
+    - Kompatibilitätsmatrix
+    - Paketbündel
+    - Preise, die von Kombinationen abhängen
+  </Accordion>
+
+</AccordionGroup>
+
+### Vorteile des Context Mode
+
+<CardGroup cols={2}>
+  <Card title="Immer verfügbar" icon="check">
+    Agent hat sofortigen Zugriff auf alles Wissen ohne Suchverzögerung
+  </Card>
+  <Card title="Besser für kleine Mengen" icon="gauge-high">
+    Effizient, wenn Wissen bequem ins Kontextfenster passt
+  </Card>
+  <Card title="Deterministisch" icon="equals">
+    Agent sieht jedes Mal genau dasselbe Wissen
+  </Card>
+  <Card title="Funktioniert mit Variablen" icon="brackets-curly">
+    Wissen kann Jinja-Variablen enthalten, die im Kontext aufgelöst werden
+  </Card>
+</CardGroup>
+
+### Einschränkungen des Context Mode
+
+<Warning>
+Context Mode ist **auf insgesamt 10.000 Token** über alles zugewiesene Wissen begrenzt.
+</Warning>
+
+**Einschränkungen:**
+- Halte Wissensdatenbanken klein (< 1.000 Wörter)
+- Alles Wissen wird mit jeder Anfrage gesendet (höhere Kosten)
+- Alles Wissen wird jedes Mal verarbeitet (höhere Latenz)
+- Die gesamte Wissensdatenbank ist eingeschlossen, auch wenn nur ein kleiner Teil relevant ist
+
+---
+
+## RAG Mode (Retrieval-Augmented Generation)
+
+### Wie es funktioniert
+
+Im RAG Mode wird deine Wissensdatenbank in einer Vektordatenbank gespeichert. Wenn der Agent Informationen benötigt:
+
+1. **Benutzer stellt eine Frage:** "Was ist deine Rückgaberichtlinie?"
+2. **Agent identifiziert Bedarf:** Agent bestimmt, dass er Wissen über Rücksendungen benötigt
+3. **System sucht:** RAG-System durchsucht Wissensdatenbank nach relevantem Inhalt
+4. **Relevanter Inhalt abgerufen:** Nur der Rückgaberichtlinienabschnitt wird abgerufen
+5. **Agent antwortet:** Agent verwendet abgerufenes Wissen, um zu antworten
+
+Der Agent sieht nur das Wissen, das er benötigt, wenn er es benötigt.
+
+### Intelligenter Abruf
+
+RAG verwendet semantische Suche mit Vektoreinbettungen, um relevantes Wissen zu finden:
+
+```text wrap
+Benutzer: "Ich muss die Schuhe zurückschicken, die ich letzte Woche gekauft habe"
+
+RAG-System denkt:
+- Schlüsselwörter: "zurückschicken", "Schuhe", "gekauft"
+- Semantische Bedeutung: Rücksendungen, möglicherweise Umtausch
+- Suche Wissen nach: Rückgaberichtlinie, Versand, Umtausch
+
+Abgerufenes Wissen:
+- Rückgaberichtlinien-Übersicht
+- Rücksendeversandanleitung
+- Umtauschverfahren
+
+NICHT abgerufen:
+- Abrechnungs-FAQ
+- Produktspezifikationen
+- Kontoverwaltung
+```
+
+### Vorteile des RAG Mode
+
+<CardGroup cols={2}>
+  <Card title="Skaliert unendlich" icon="up-right-and-down-left-from-center">
+    Unterstützt massive Wissensdatenbanken ohne Kontextlimits
+  </Card>
+  <Card title="Schneller für großes Wissen" icon="clock-rotate-left">
+    Reduziert System-Prompt-Token für große Wissensdatenbanken
+  </Card>
+  <Card title="Effizient" icon="gauge-high">
+    Ruft nur ab, was für das aktuelle Thema benötigt wird
+  </Card>
+  <Card title="Besser für Vielfalt" icon="shapes">
+    Handhabt große Vielfalt unzusammenhängender Themen gut
+  </Card>
+</CardGroup>
+
+### Überlegungen zum RAG Mode
+
+<Note>
+RAG basiert auf der Qualität der Vektoreinbettung. Wenn deine Wissenselemente nicht klar geschrieben sind, kann der Abruf relevante Informationen übersehen.
+</Note>
+
+**Abrufqualität hängt ab von:**
+- Klaren, beschreibenden Wissenselement-Titeln
+- Gut strukturiertem Inhalt
+- Ordnungsgemäßer Kategorisierung in Ordnern
+- Vermeidung von doppelten oder widersprüchlichen Informationen
+
+---
+
+## Indikator für verbleibende Kontext-Token
+
+Wenn du Context Mode verwenden, überwachen du deine verbleibenden Kontext-Token, um sicherzustellen, dass du genug Platz für Gespräche haben.
+
+### Den Indikator verstehen
+
+Das Dashboard zeigt deine Kontextnutzung in den Wissenseinstellungen:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/knowledge-settings/settings-light.png" alt="Wissenseinstellungen zeigen Kontextnutzung" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/knowledge-settings/settings-dark.png" alt="Wissenseinstellungen zeigen Kontextnutzung" />
+  </div>
+</Frame>
+
+du können sehen:
+- **RAG-Modus**: Dynamische Vektorsuche mit unbegrenzter Wissensgröße
+- **Kontext-Modus**: Zum System-Prompt hinzugefügt mit 10.000 Token-Limit
+
+---
+
+## Den richtigen Modus wählen
+
+Verwende diesen Entscheidungsleitfaden, um die beste Zugriffsmethode auszuwählen:
+
+### Hybrid-Ansatz
+
+du können beide Modi für verschiedene Wissensdatenbanken beim selben Agent verwenden:
+
+**Beispielkonfiguration:**
+- **Context Mode:** Kleine "Kernrichtlinien"-Wissensdatenbank (immer benötigt)
+- **RAG Mode:** Große "Produktkatalog"-Wissensdatenbank (bei Bedarf abrufen)
+
+Dies gibt dir das Beste aus beiden Welten.
+
+---
+
+## deine Konfiguration testen
+
+<Steps>
+  <Step title="Wissensdatenbank zuweisen">
+    Konfiguriere deinen Agent mit einer Wissensdatenbank im Context- oder RAG-Modus.
+  </Step>
+
+  <Step title="Testanruf starten">
+    Verwende die Testanruf-Funktion im Dashboard.
+  </Step>
+
+  <Step title="Nach Wissensinhalten fragen">
+    Stelle Fragen, die aus deiner Wissensdatenbank beantwortet werden sollten.
+
+    **Beispielfragen:**
+    - "Was ist deine Rückgaberichtlinie?"
+    - "Wie viel kostet der Pro-Plan?"
+    - "Was sind deine Geschäftszeiten?"
+  </Step>
+
+  <Step title="Antworten überprüfen">
+    Bestätigen du, dass der Agent Wissensinhalte korrekt in Antworten verwendet.
+  </Step>
+
+  <Step title="Grenzfälle testen">
+    Fragen du nach Themen NICHT in deiner Wissensdatenbank, um sicherzustellen, dass der Agent angemessen antwortet ("Ich habe diese Information nicht").
+  </Step>
+</Steps>
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Beginne mit RAG für große Datenbanken" icon="magnifying-glass">
+    Im Zweifelsfall verwenden du RAG Mode. Er ist sicherer für große Wissensdatenbanken und du können bei Bedarf immer zu Context Mode wechseln.
+  </Accordion>
+
+  <Accordion title="Schreibe klare, vollständige Inhalte" icon="file-text">
+    RAG verwendet semantische Suche, um relevantes Wissen zu finden. Schreibe vollständige, gut geschriebene Inhalte, die natürlich die Begriffe und Konzepte enthalten, nach denen Benutzer fragen werden.
+
+    **Gut:** "Unsere Rückgaberichtlinie erlaubt Rücksendungen innerhalb von 30 Tagen nach dem Kauf für physische Produkte. Digitale Produkte können nicht zurückgegeben werden, sobald sie heruntergeladen wurden."
+
+    **Schlecht:** "Siehe Richtliniendokument" oder unvollständige Satzfragmente
+  </Accordion>
+
+  <Accordion title="Teste beide Modi" icon="vial">
+    Probieren du sowohl Context- als auch RAG-Modus mit deiner Wissensdatenbank aus und sehen du, welcher für deinen Anwendungsfall besser funktioniert.
+  </Accordion>
+
+  <Accordion title="Strategisch kombinieren" icon="layer-group">
+    Verwende Context Mode für kritische, häufig benötigte Informationen und RAG Mode für umfangreiches Referenzmaterial.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Fehlerbehebung
+
+<AccordionGroup>
+  <Accordion title="Agent verwendet Wissen nicht (Context Mode)">
+    **Prüfen:**
+    - Sind alle Wissenselemente im COMPLETED-Status?
+    - Ist der verbleibende Kontext ausreichend (nicht abgeschnitten)?
+
+    **Lösung:**
+    - Fehlgeschlagene Elemente beheben
+    - Wissensgröße reduzieren oder zu RAG wechseln
+  </Accordion>
+
+  <Accordion title="Agent findet Wissen nicht (RAG Mode)">
+    **Prüfen:**
+    - Ist der Inhalt gut organisiert?
+    - Stelle Fragen, die zum Wissen passen?
+
+    **Lösung:**
+    - Detaillierteren Inhalt hinzufügen
+    - Mit verschiedenen Formulierungen testen
+    - Erwägen du, Schlüsselwörter zum Inhalt hinzuzufügen
+  </Accordion>
+
+  <Accordion title="Agent liefert falsche oder veraltete Informationen">
+    **Prüfen:**
+    - Ist der Wissensinhalt korrekt und aktuell?
+    - Haben du widersprüchliche Informationen in mehreren Elementen?
+
+    **Lösung:**
+    - Wissensinhalt aktualisieren
+    - Duplikate und Widersprüche entfernen
+  </Accordion>
+
+  <Accordion title="Kontextnutzung zu hoch">
+    **Lösungen:**
+    - Zu RAG Mode für große Wissensdatenbanken wechseln
+    - Wissen in kleinere, fokussierte Datenbanken aufteilen
+    - Länge der Agentenanweisungen reduzieren
+    - Ausführlichen oder redundanten Inhalt entfernen
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Wissensdatenbanken erstellen" icon="plus" href="/de/build/knowledge/create-knowledge-bases">
+    Bauen und organisieren du deine Wissensinhalte
+  </Card>
+  <Card title="Inhaltstypen" icon="file-lines" href="/de/build/knowledge/content-types">
+    Erfahren du mehr über Text-, PDF- und URL-Elemente
+  </Card>
+  <Card title="Variablen & Dynamische Inhalte" icon="brackets-curly" href="/de/build/conversation/variables-dynamic-content">
+    Verwende Wissensreferenzen in Anweisungen
+  </Card>
+  <Card title="deinen Agent testen" icon="vial" href="/de/test/web-simulator">
+    Testen du, wie dein Agent Wissen verwendet
+  </Card>
+</CardGroup>

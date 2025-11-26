@@ -1,0 +1,530 @@
+---
+title: "Gestione Segreteria"
+description: "Configura il Rilevamento Segreteria (AMD) per identificare e gestire sistemi di segreteria in campagne outbound"
+icon: "voicemail"
+"keywords": "rilevamento segreteria, AMD, rilevamento voicemail, chiamate outbound, gestione voicemail, automazione campagne"
+"og:description": "Configura il Rilevamento Segreteria per identificare e gestire automaticamente i sistemi di segreteria nelle campagne AI outbound."
+---
+
+## Panoramica
+
+Il Rilevamento Segreteria (AMD - Answering Machine Detection) consente ai tuoi agenti AI di rilevare automaticamente quando le chiamate outbound raggiungono una segreteria invece di una persona dal vivo. Quando viene rilevata una segreteria, l'agente riaggancia e registra l'esito, permettendoti di riprovare in momenti diversi per massimizzare le possibilità di raggiungere una persona dal vivo.
+
+Questa funzionalità critica previene lo spreco di tempo dell'agente parlando con segreterie e ottimizza l'efficienza della campagna concentrando le risorse sulle conversazioni dal vivo piuttosto che sui sistemi di segreteria.
+
+<Note>
+**Solo Chiamate Telefoniche:** AMD si applica alle chiamate telefoniche tramite connessioni SIP/PSTN. Le conversazioni basate sul web senza una gamba telefonica non supportano l'interazione DTMF.
+
+La configurazione AMD è accessibile durante la creazione di campagne e chiamate di test. L'AMD Basato su Testo è sempre attivo. Puoi opzionalmente abilitare AMD Basato su ML come addon per rilevamento più veloce (~1,5s vs 5-15s).
+</Note>
+
+---
+
+## Cos'è il Rilevamento Segreteria?
+
+### La Sfida
+
+Quando effettui chiamate outbound, incontri due possibili scenari:
+
+**Scenario 1: Risposta dal Vivo**
+```text wrap
+Telefono squilla → Persona risponde → "Pronto?"
+→ L'agente dovrebbe impegnarsi in conversazione
+→ Capacità agente complete necessarie
+```
+
+**Scenario 2: Segreteria**
+```text wrap
+Telefono squilla → Sistema segreteria risponde → "Hai raggiunto John Smith..."
+→ L'agente dovrebbe riagganciare e riprovare più tardi
+→ Non sprecare tempo con script conversazione completo
+→ Non creare interazione imbarazzante parlando sopra messaggio segreteria
+```
+
+**Il problema:** Come fa l'agente a sapere quale scenario si è verificato?
+
+### Soluzione AMD
+
+AMD analizza l'audio nei primi secondi dopo la connessione della chiamata per determinare se ha risposto un umano o una macchina:
+
+**Processo di rilevamento:**
+```text wrap
+1. Chiamata si connette
+2. AMD analizza audio (0,5-3 secondi a seconda del metodo)
+3. Classificazione: UMANO o MACCHINA
+4. Agente esegue comportamento appropriato
+```
+
+**Vantaggi:**
+- **Efficienza:** Non sprecare tempo agente su segreteria
+- **Targeting migliore:** Concentra tentativi retry su orari diversi per raggiungere persona dal vivo
+- **Tassi connessione più alti:** Ottimizza tempistiche chiamata basate su pattern segreteria
+- **Analytics migliori:** Separa "raggiunta segreteria" da "nessuna risposta" nel reporting
+
+---
+
+## Metodi AMD
+
+### Panoramica Tipi di Rilevamento
+
+<CardGroup cols={2}>
+  <Card title="AMD Basato su Testo" icon="text">
+    Rilevamento basato su parole chiave usando trascrittore e LLM - sempre attivo
+  </Card>
+  <Card title="AMD Basato su ML (Opzionale)" icon="brain">
+    Riconoscimento pattern veloce usando Deep Neural Network - addon opzionale per velocità
+  </Card>
+</CardGroup>
+
+### AMD Basato su Testo
+
+**Ruolo:** Layer rilevamento base che funziona sempre. Usa il trascrittore e LLM del tuo agente per identificare parole chiave segreteria.
+
+**Come funziona:**
+```text wrap
+1. Chiamata si connette
+2. Pipeline voce AI agente (trascrittore) riceve audio
+3. Agente attende completamento primo turno/utterance (pausa rilevata)
+4. LLM analizza trascrizione per pattern tipo segreteria:
+   - "Hai raggiunto"
+   - "Lascia un messaggio"
+   - "Non disponibile"
+   - "Segreteria"
+   - "Dopo il segnale acustico"
+5. Se segreteria rilevata → Agente riaggancia
+6. Se persona dal vivo rilevata → Agente continua conversazione normale
+```
+
+**Caratteristiche:**
+
+<AccordionGroup>
+  <Accordion title="Velocità" icon="gauge">
+    **Più lento:** Attende completamento turno/utterance completo
+
+    Deve attendere che l'intero messaggio segreteria finisca (pausa rilevata), poi trascrivere e analizzare testo completo. Il rilevamento tipico avviene dopo 5-15+ secondi a seconda della lunghezza del messaggio segreteria.
+
+    **Limitazione:** Messaggi segreteria lunghi significano tempi attesa più lunghi prima del rilevamento
+
+    **Ideale per:** Campagne dove accuratezza è più importante del rilevamento immediato
+  </Accordion>
+
+  <Accordion title="Accuratezza" icon="chart-line">
+    **Alta accuratezza quando:**
+    - Messaggi segreteria standard con frasi comuni
+    - Qualità audio chiara
+    - Lingua segreteria corrisponde lingua trascrittore
+    - Ambienti B2B con messaggi professionali
+
+    **NON rileverà:**
+    - Messaggi segreteria in lingue non supportate dal trascrittore
+    - Sistemi segreteria senza messaggio (solo segnali acustici)
+    - Indicatori segreteria non verbali
+
+    **Accuratezza più bassa quando:**
+    - Messaggi personalizzati senza parole chiave standard
+    - Messaggi brevi ("Ciao, lascia un messaggio" - molto breve)
+    - Qualità audio scarsa o rumore di fondo
+    - Rumore di fondo che interferisce con trascrizione
+  </Accordion>
+
+  <Accordion title="Casi d'Uso Migliori" icon="briefcase">
+    **Ideale per:**
+    - **Campagne B2B** - Segreterie aziendali tipicamente usano fraseologia standard
+    - **Campagne che prioritizzano accuratezza** - Riduce falsi positivi analizzando contesto utterance completo
+    - **Distribuzioni attente al budget** - Costo computazionale più basso
+    - **Mercati lingua inglese** - Rilevamento parole chiave ottimizzato per inglese
+
+    **Scenari esempio:**
+    - Outreach vendite a numeri aziendali
+    - Promemoria appuntamenti a linee ufficio
+    - Campagne qualificazione lead B2B
+  </Accordion>
+
+  <Accordion title="Limitazioni" icon="triangle-exclamation">
+    **Può avere difficoltà con:**
+    - Messaggi segreteria personali, creativi ("Ehi, sono Mike, sai cosa fare")
+    - Messaggi molto brevi
+    - Lingua segreteria non corrisponde lingua trascrittore
+    - Messaggi che suonano conversazionali ("Pronto? Pronto? Sto scherzando, lascia un messaggio")
+    - Musica o rumore di fondo nel messaggio
+
+    **Falsi positivi:** Umano che inizia con "Hai raggiunto..." potrebbe essere classificato male
+
+    **Falsi negativi:** Segreteria senza parole chiave potrebbe essere classificata come umano
+  </Accordion>
+</AccordionGroup>
+
+### AMD Basato su ML (Addon Opzionale)
+
+**Ruolo:** Layer rilevamento veloce opzionale che puoi abilitare per velocità. Funziona in parallelo con AMD basato su testo.
+
+**Come funziona:**
+```text wrap
+1. Chiamata si connette
+2. Deep Neural Network (DNN) analizza audio in tempo reale:
+   - Pattern e cadenza parlato
+   - Pattern audio segreteria
+   - Caratteristiche acustiche
+   - Tempistiche e ritmo
+   - Indicatori parlato naturale vs registrato
+3. Modello addestrato su decine di migliaia di registrazioni audio
+4. Classificazione: UMANO o MACCHINA
+5. Rilevamento indipendente dalla lingua
+```
+
+**Caratteristiche:**
+
+<AccordionGroup>
+  <Accordion title="Velocità" icon="gauge-high">
+    **Veloce:** ~1,5 secondi
+
+    Identifica risposte umane dal vivo entro 1,5 secondi
+
+    **Molto più veloce di AMD basato su testo** che deve attendere utterance completo
+  </Accordion>
+
+  <Accordion title="Accuratezza" icon="chart-line">
+    **Accuratezza molto alta** in condizioni reali
+
+    **Perché abilitare AMD Basato su ML:**
+    - **Indipendente dalla lingua:** Funziona attraverso tutte le lingue (basato su testo funziona solo se lingua trascrittore corrisponde)
+    - **Rileva segreteria solo-segnale:** Cattura sistemi segreteria senza messaggio (basato su testo non può)
+    - **Gestisce messaggi creativi:** Rileva messaggi personali/non standard senza parole chiave
+    - **Rilevamento basato su pattern:** Non dipende da specifiche parole chiave segreteria
+    - **Rilevamento veloce:** ~1,5 secondi vs 5-15+ secondi per solo testo
+    - **Migliore per campagne multi-lingua:** Nessuna configurazione lingua necessaria
+
+    **Limitazioni:**
+    - Connessioni estremamente brevi (< 0,5 secondi di audio)
+    - Qualità audio altamente degradata
+  </Accordion>
+
+  <Accordion title="Casi d'Uso Migliori" icon="briefcase">
+    **Ideale per:**
+    - **Campagne consumer** - Segreterie personali con messaggi creativi
+    - **Campagne multi-lingua** - Non dipendente da parole chiave inglesi
+    - **Campagne focalizzate sulla qualità** - Quando accuratezza è più importante della velocità
+    - **Mercati complessi** - Numeri aziendali/personali misti
+
+    **Scenari esempio:**
+    - Chiamate vendite consumer
+    - Campagne politiche
+    - Fundraising non-profit
+    - Outreach sanitario
+    - Campagne supporto multi-lingua
+  </Accordion>
+
+  <Accordion title="Vantaggi" icon="check">
+    **Gestisce bene:**
+    - Messaggi personali creativi
+    - Messaggi brevi
+    - Segreterie non inglesi
+    - Messaggi senza parole chiave standard
+    - Musica o effetti sonori di fondo
+    - Messaggi che suonano conversazionali naturali
+
+    **Robusto attraverso:**
+    - Lingue diverse
+    - Accenti regionali
+    - Vari sistemi segreteria
+    - Messaggi personalizzati
+  </Accordion>
+</AccordionGroup>
+
+### Come Funziona AMD
+
+**AMD Basato su Testo (Layer Base):**
+- Sempre attivo
+- Analizza trascrizione per parole chiave segreteria
+- Attende utterance completo (5-15+ secondi)
+- Più conservativo - raramente riaggancia su persone dal vivo
+
+**AMD Basato su ML (Addon Opzionale):**
+- Puoi opzionalmente abilitare questo per rilevamento più veloce
+- Analizza pattern audio in ~1,5 secondi
+- Funziona in parallelo con AMD basato su testo
+- Più veloce ma può occasionalmente riagganciare su persone dal vivo
+
+**Opzioni Configurazione:**
+
+**Solo Basato su Testo (Conservativo):**
+- Solo rilevamento basato su testo attivo
+- Rilevamento più lento (5-15+ secondi)
+- Raramente riaggancia su persone dal vivo
+- **Compromesso:** Potrebbe perdere alcune segreterie e parlare con loro
+- Ideale per: Quando vuoi evitare di riagganciare su persone dal vivo a tutti i costi
+
+**Basato su Testo + Basato su ML (Veloce e Raccomandato):**
+- ML rileva in ~1,5 secondi
+- Basato su testo valida in parallelo
+- Accuratezza molto alta
+- **Compromesso:** Occasionalmente potrebbe riagganciare su persona dal vivo
+- Ideale per: Campagne dove parlare con segreteria comporta costo aggiuntivo
+
+<Tip>
+**Quale dovresti scegliere?**
+
+**Basato su Testo + Basato su ML (raccomandato):** Se parlare con segreteria spreca tempo e comporta costo aggiuntivo, e puoi tollerare occasionalmente riagganciare su persona dal vivo.
+
+**Solo Basato su Testo:** Se riagganciare su persona reale in rare occasioni è peggio del costo aggiuntivo di parlare con segreteria.
+</Tip>
+
+---
+
+## Configurare AMD
+
+AMD può essere configurato in due posti:
+
+<CardGroup cols={2}>
+  <Card title="Chiamate Telefoniche Test" icon="phone-volume" href="#chiamate-telefoniche-test">
+    Abilita AMD quando testi il tuo agente con chiamate telefoniche
+  </Card>
+  <Card title="Impostazioni Campagna" icon="megaphone" href="#impostazioni-campagna">
+    Configura AMD per campagne outbound
+  </Card>
+</CardGroup>
+
+### Chiamate Telefoniche Test
+
+Configura AMD quando testi il tuo agente via telefono:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/answering-machine/answering-light.png" alt="Dialog Test Agent che mostra scheda Phone Call selezionata, sezione Call Settings con opzioni Answering Machine Detection (AMD) incluse schede Text-based e ML-based, dropdown From Number per selezionare numero telefono, campo To Number con placeholder numero telefono e pulsante Start Phone Call" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/answering-machine/answering-dark.png" alt="Dialog Test Agent che mostra scheda Phone Call selezionata, sezione Call Settings con opzioni Answering Machine Detection (AMD) incluse schede Text-based e ML-based, dropdown From Number per selezionare numero telefono, campo To Number con placeholder numero telefono e pulsante Start Phone Call" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Apri Agente">
+    Vai alla pagina **Agent**
+
+    Clicca pulsante **Test Call**
+  </Step>
+
+  <Step title="Seleziona Phone Call">
+    Scegli **Phone Call** come tipo test
+  </Step>
+
+  <Step title="Configura AMD">
+    Trova impostazione **Answering Machine Detection (AMD)**
+
+    Scegli tra:
+    - **Text-based** (predefinito) - Evita riagganciare su persone dal vivo a tutti i costi
+    - **ML-based** - Rilevamento veloce (~1,5s) ma può occasionalmente riagganciare su persone dal vivo
+  </Step>
+
+  <Step title="Effettua Chiamata Test">
+    Seleziona tuo From Number
+
+    Inserisci To Number (tuo numero telefono per test)
+
+    Clicca **Start Phone Call**
+
+    Se segreteria è rilevata, agente riagganc herà
+  </Step>
+</Steps>
+
+### Impostazioni Campagna
+
+Configura AMD per campagne outbound:
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/campaigns/create-campaign-light.png" alt="Dialog Create Campaign che mostra dropdown Answering Machine Detection (AMD) con Text-based selezionato, campo Campaign Name con descrizione, dropdown Agent per selezionare agente per chiamate campagna, dropdown Phone Number per selezionare numero telefono outbound, sezione Business Hours che mostra disponibilità 24/7 con stato Open, pulsanti Cancel e Create Campaign" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/campaigns/create-campaign-dark.png" alt="Dialog Create Campaign che mostra dropdown Answering Machine Detection (AMD) con Text-based selezionato, campo Campaign Name con descrizione, dropdown Agent per selezionare agente per chiamate campagna, dropdown Phone Number per selezionare numero telefono outbound, sezione Business Hours che mostra disponibilità 24/7 con stato Open, pulsanti Cancel e Create Campaign" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Creazione Campagna">
+    Vai alla sezione **Campaigns**
+
+    Clicca **Create Campaign**
+  </Step>
+
+  <Step title="Seleziona Strategia AMD">
+    Trova dropdown **Answering Machine Detection (AMD)**
+
+    *Scegli strategia rilevamento segreteria per questa campagna*
+
+    Seleziona uno:
+    - **Text-based** - Evita riagganciare su persone dal vivo a tutti i costi (più lento, 5-15s)
+    - **ML-based** - Rilevamento veloce (~1,5s) ma può occasionalmente riagganciare su persone dal vivo
+  </Step>
+
+  <Step title="Completa Setup Campagna">
+    Compila altri campi richiesti:
+    - Nome Campagna
+    - Agente
+    - Numero Telefono
+
+    Clicca **Create Campaign**
+  </Step>
+</Steps>
+
+**Modificare impostazioni AMD per campagne esistenti:**
+
+1. Naviga alla scheda **Settings** campagna
+2. Localizza dropdown **Answering Machine Detection (AMD)**
+3. Seleziona strategia diversa (Text-based o ML-based)
+4. Salva modifiche
+
+<Warning>
+Modificare impostazioni AMD a metà campagna può influenzare consistenza analytics. Considera creare nuova campagna se devi testare A/B configurazioni AMD.
+</Warning>
+
+---
+
+## Comportamento AMD
+
+Quando AMD rileva segreteria, l'agente riaggancia automaticamente e registra l'esito.
+
+La chiamata è marcata come **MACHINE** in analytics campagna, permettendoti di programmare retry in orari diversi per aumentare possibilità di raggiungere persona dal vivo.
+
+---
+
+## Testare Configurazione AMD
+
+### Piano Test AMD
+
+<Steps>
+  <Step title="Testa AMD Basato su ML">
+    **Setup:**
+    1. Configura agente con AMD Basato su ML abilitato
+    2. Prepara numero telefono test con segreteria
+
+    **Test:**
+    1. Inizia chiamata test a numero segreteria
+    2. Lascia che chiamata vada a segreteria
+    3. Monitora comportamento agente
+
+    **Validazione:**
+    - Agente riaggancia entro ~1,5 secondi
+    - Chiamata marcata come MACHINE nei log
+    - Nessun tentativo conversazione con messaggio segreteria
+  </Step>
+
+  <Step title="Testa AMD Basato su Testo">
+    **Setup:**
+    1. Configura agente con solo AMD Basato su Testo
+    2. Usa stesso numero test segreteria
+
+    **Test:**
+    1. Inizia chiamata test
+    2. Lascia che chiamata vada a segreteria con messaggio standard
+
+    **Validazione:**
+    - Agente attende messaggio completo (5-15+ secondi)
+    - Agente riaggancia dopo rilevamento parole chiave
+    - Chiamata marcata come MACHINE
+  </Step>
+
+  <Step title="Testa Rilevamento Persona dal Vivo">
+    **Setup:**
+    1. Testa con entrambi metodi AMD
+    2. Rispondi chiamata personalmente
+
+    **Test:**
+    1. Inizia chiamata test
+    2. Rispondi e dì "Pronto?"
+    3. Verifica che agente continui conversazione normalmente
+
+    **Validazione:**
+    - Agente NON riaggancia
+    - Conversazione normale procede
+    - Chiamata NON marcata come MACHINE
+  </Step>
+
+  <Step title="Testa Casi Limite">
+    **Scenari da testare:**
+
+    **Risposta silenziosa:**
+    - Rispondi ma non parlare
+    - Verifica che AMD non classifichi male
+
+    **Messaggio rapido:**
+    - Rispondi con "Ciao" molto breve
+    - Verifica che conversazione continui
+
+    **Segreteria senza parole chiave:**
+    - Testa con messaggio non standard
+    - Monitora performance ML vs basato su testo
+
+    **Segreteria solo-segnale:**
+    - Sistema segreteria senza messaggio
+    - Verifica che basato su ML rilevi, basato su testo potrebbe perdere
+  </Step>
+</Steps>
+
+---
+
+## Risoluzione dei Problemi
+
+<AccordionGroup>
+  <Accordion title="Metodo AMD Sbagliato Selezionato" icon="circle-question">
+    **Sintomi:** Performance non corrisponde aspettative
+
+    **Controlla:**
+    - Rivedi impostazione AMD campagna
+    - Confronta velocità rilevamento attesa vs reale
+    - Controlla tassi falsi positivi/negativi nei log
+
+    **Soluzione:**
+    - Cambia tra Text-based e ML-based
+    - Testa entrambi metodi con i tuoi pattern chiamata
+    - Scegli in base alla tua priorità (velocità vs conservativo)
+  </Accordion>
+
+  <Accordion title="Alto Tasso Falsi Positivi" icon="user-xmark">
+    **Sintomi:** Riagganciare frequentemente su persone dal vivo
+
+    **Analisi:**
+    - Rivedi registrazioni chiamata di falsi positivi
+    - Controlla se AMD basato su ML è troppo aggressivo
+    - Identifica pattern comuni (rumore di fondo, messaggi specifici)
+
+    **Soluzione:**
+    - Passa a AMD Basato su Testo (più conservativo)
+    - Migliora qualità chiamata/riduci rumore di fondo
+    - Testa da numeri telefono diversi
+    - Contatta supporto se persistente
+  </Accordion>
+
+  <Accordion title="Alto Tasso Falsi Negativi" icon="voicemail">
+    **Sintomi:** Agente parla frequentemente con segreteria
+
+    **Analisi:**
+    - Controlla se segreterie hanno messaggi non standard
+    - Rivedi se sistemi segreteria solo-segnale
+    - Verifica che lingua trascrittore corrisponda lingua segreteria
+
+    **Soluzione:**
+    - Passa a AMD Basato su ML (migliore per messaggi non standard)
+    - Basato su ML rileva sistemi solo-segnale
+    - Assicura che agente parli stessa lingua del pubblico target
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Passi Successivi
+
+<CardGroup cols={2}>
+  <Card title="Gestione Campagne" icon="megaphone" href="/it/launch/campaign-outbound-launch">
+    Crea e gestisci campagne chiamata outbound
+  </Card>
+  <Card title="Analytics e Reporting" icon="chart-line" href="/it/optimize/overview">
+    Traccia performance AMD e ottimizza campagne
+  </Card>
+  <Card title="Istruzioni Agente" icon="pen" href="/it/build/conversation/instructions">
+    Scrivi prompt efficaci per gestione chiamate
+  </Card>
+  <Card title="Orari Lavorativi" icon="clock" href="/it/launch/business-hours">
+    Configura orari chiamata ottimali basati su dati AMD
+  </Card>
+</CardGroup>

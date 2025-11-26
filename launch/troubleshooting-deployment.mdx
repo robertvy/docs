@@ -1,0 +1,625 @@
+---
+title: "Troubleshooting Deployment"
+description: "Debug common production issues and resolve deployment problems"
+icon: "wrench"
+keywords: "troubleshooting, debugging, production issues, SIP errors, call quality, deployment problems, voice agent debugging"
+og:description: "Systematic guide to diagnose and fix production issues with AI voice agents. Debug SIP connectivity, call quality, and agent behavior problems."
+---
+
+## Diagnostic Approach
+
+When issues arise in production, use this systematic troubleshooting process:
+
+1. **Identify symptoms** - What's broken? Calls failing, agent behaving wrong, integrations down?
+2. **Check scope** - Affecting all calls or specific subset? Started when?
+3. **Review logs** - Look for error messages, patterns, stack traces
+4. **Isolate cause** - Is it config, integration, platform, or carrier issue?
+5. **Apply fix** - Deploy smallest change that resolves issue
+6. **Validate** - Test thoroughly before marking resolved
+
+## Common Issues & Solutions
+
+### No Calls Being Received
+
+**Symptom**: Phone number isn't ringing, calls go to dead air or "number not in service"
+
+<AccordionGroup>
+  <Accordion title="Check phone number assignment">
+    **Diagnostic**:
+    1. Go to **Telephony → Numbers**
+    2. Find your number, check "Assigned Agent" column
+    3. Verify it's assigned to correct agent (not "Unassigned")
+
+    **Fix**:
+    - Click number → Select agent from dropdown → Save
+    - Wait 30 seconds for routing update to propagate
+    - Test by calling number again
+  </Accordion>
+
+  <Accordion title="Verify SIP trunk registration">
+    **Diagnostic**:
+    ```bash
+    # Check SIP registration status
+    curl -H "Authorization: Bearer YOUR_API_KEY" \
+         https://api.itellico.ai/v1/sip-trunks/trunk_123/status
+    ```
+
+    Look for `"status": "registered"`. If `"unregistered"` or `"failed"`:
+
+    **Common Causes**:
+    - Wrong SIP credentials (username/password)
+    - IP not allowlisted with carrier
+    - Firewall blocking UDP 5060
+    - Carrier endpoint down
+
+    **Fix**:
+    - Verify credentials with carrier
+    - Check carrier's portal for IP allowlist settings
+    - Test with `curl -v sip:carrier.com:5060` to check connectivity
+    - Contact carrier if their endpoint is unreachable
+  </Accordion>
+
+  <Accordion title="Check number provisioning">
+    **Diagnostic**:
+    - Number status shows "Pending" or "Failed"
+    - Number was just purchased &lt;5 minutes ago
+
+    **Fix**:
+    - Wait up to 10 minutes for provisioning to complete
+    - If stuck >30 min, click "Retry Provisioning"
+    - If still failing, contact support with number details
+  </Accordion>
+
+  <Accordion title="Carrier routing issues">
+    **Diagnostic**:
+    - Calls work when YOU call, but not from customer phones
+    - Specific area codes or carriers can't reach you
+
+    **Fix**:
+    - Check carrier's routing table includes your number range
+    - Verify CNAM (Caller Name) registration
+    - Check for spam flagging (use free carrier lookup tools)
+    - May need to contact carrier to fix routing
+  </Accordion>
+</AccordionGroup>
+
+### Poor Call Quality
+
+**Symptom**: Choppy audio, echo, robotic voice, long delays
+
+<AccordionGroup>
+  <Accordion title="Audio issues (echo, noise, cutting out)">
+    **Diagnostic**:
+    - Open **Conversations → Logs** → Select affected call
+    - Check "Call Quality" metrics:
+      - Jitter: Should be &lt;30ms
+      - Packet Loss: Should be &lt;1%
+      - RTT (Round Trip Time): Should be &lt;200ms
+
+    **Fixes by Symptom**:
+
+    | Symptom | Likely Cause | Fix |
+    |---------|-------------|-----|
+    | Echo | Acoustic echo (speaker feedback) | Enable AEC in agent settings |
+    | Choppy/Robotic | Packet loss or jitter | Check network bandwidth, switch codec |
+    | Cutting Out | Firewall blocking RTP | Open UDP ports 10000-60000 |
+    | One-Way Audio | NAT traversal issue | Enable TURN relay |
+    | Background Noise | Noisy environment | Enable noise suppression |
+
+    **Configuration**:
+    ```json
+    // Agent audio settings
+    {
+      "audio": {
+        "echo_cancellation": true,
+        "noise_suppression": true,
+        "codec": "opus",  // Best quality, fallback to PCMU
+        "bitrate": 64000  // Higher = better quality (64kbps recommended)
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="High latency (agent responds slowly)">
+    **Diagnostic**:
+    - Check **Dashboard → Metrics → Average Response Time**
+    - Target: &lt;500ms
+    - If &gt;1000ms, investigate:
+
+    **Possible Causes**:
+    1. **Model Provider Slowdown**
+       - Check status.openai.com or status.anthropic.com
+       - Look for elevated latencies or outages
+       - Switch to fallback model if available
+
+    2. **Large Context Window**
+       - Long instructions or huge knowledge base retrievals
+       - Solution: Reduce instruction length, limit KB chunks to 3
+
+    3. **External API Slowness**
+       - Check **Analytics → Actions** for slow API calls
+       - APIs taking >2s will delay agent response
+       - Add timeout limits and fallback responses
+
+    4. **Network Issues**
+       - Check from multiple locations
+       - If specific region affected, may be ISP routing issue
+       - Contact support to investigate
+
+    **Quick Fix**:
+    - Switch to faster model (GPT-4 → GPT-3.5 Turbo)
+    - Reduce # of knowledge base chunks retrieved
+    - Increase API timeouts to avoid waiting
+  </Accordion>
+
+  <Accordion title="Transcription errors (wrong words)">
+    **Diagnostic**:
+    - Review transcript in Conversations → Logs
+    - Look for patterns:
+      - Technical terms misheard → Add to custom vocabulary
+      - Accents misunderstood → Try different transcriber
+      - Background noise → Enable noise suppression
+
+    **Fixes**:
+
+    **Add Custom Vocabulary**:
+    ```json
+    // In agent settings → Transcriber → Custom Vocabulary
+    {
+      "custom_words": [
+        {"word": "itellicoAI", "pronunciation": "eye-TELL-ih-koh AI"},
+        {"word": "Kubernetes", "pronunciation": "koo-ber-NET-eez"},
+        {"word": "API", "pronunciation": "A P I"}  // Spell out acronyms
+      ]
+    }
+    ```
+
+    **Try Different Transcriber**:
+    - Deepgram: Best for accents, noisy environments
+    - Azure: Best for technical terms
+    - Whisper: Best for multilingual
+
+    **Improve Audio Input**:
+    - Use higher bitrate codec (Opus 64kbps)
+    - Enable noise suppression
+    - Test with different phone/mic for web calls
+  </Accordion>
+</AccordionGroup>
+
+### Agent Not Responding Correctly
+
+**Symptom**: Agent gives wrong answers, ignores instructions, behaves erratically
+
+<AccordionGroup>
+  <Accordion title="Agent doesn't follow instructions">
+    **Diagnostic**:
+    - Open agent settings → **Conversation → Instructions**
+    - Test in simulator with exact scenario
+    - Check if issue is:
+      - Always happening → Instruction problem
+      - Intermittent → Context or model issue
+
+    **Fixes**:
+
+    **1. Instructions Too Vague**:
+    ```markdown
+    ❌ Bad: "Be helpful and answer questions."
+
+    ✅ Good: "You are Acme Corp support. Answer questions about:
+    - Product features (refer to knowledge base)
+    - Pricing (current plans: Basic $49, Pro $99)
+    - Billing (transfer to billing dept)
+
+    Do NOT answer questions about:
+    - Competitor comparisons
+    - Future roadmap
+    - Legal/compliance"
+    ```
+
+    **2. Instructions Too Long** (>500 words):
+    - Model loses focus on long prompts
+    - Solution: Break into clear sections, use bullet points
+
+    **3. Conflicting Instructions**:
+    - Example: "Be concise" but also "Provide detailed explanations"
+    - Solution: Prioritize one behavior, remove conflict
+
+    **Testing**:
+    - Run 10 test calls covering edge cases
+    - Review transcripts for compliance
+    - Iterate instructions based on failures
+  </Accordion>
+
+  <Accordion title="Agent hallucinates or makes up facts">
+    **Diagnostic**:
+    - Agent says things not in knowledge base or instructions
+    - Provides wrong product details, prices, or policies
+
+    **Root Causes**:
+    1. Knowledge base not comprehensive enough
+    2. Instructions don't emphasize "only use provided info"
+    3. Model too creative (temperature too high)
+
+    **Fixes**:
+
+    **1. Add Explicit Guardrails**:
+    ```markdown
+    CRITICAL: Only provide information from:
+    1. The knowledge base
+    2. The instructions above
+    3. Information the caller provides
+
+    If you don't know something, say: "I don't have that information. Let me transfer you to someone who can help."
+
+    NEVER make up facts, prices, or policies.
+    ```
+
+    **2. Expand Knowledge Base**:
+    - Review "I don't know" responses in logs
+    - Add missing content to KB
+    - Test retrieval with sample queries
+
+    **3. Lower Model Temperature**:
+    ```json
+    {
+      "model_settings": {
+        "temperature": 0.3  // Lower = more deterministic (default: 0.7)
+      }
+    }
+    ```
+
+    **4. Use Citation Mode** (if available):
+    - Forces agent to cite KB sources
+    - Makes it obvious when info not in KB
+  </Accordion>
+
+  <Accordion title="Agent gets stuck in loops">
+    **Diagnostic**:
+    - Agent repeats same question 3+ times
+    - Conversation goes in circles
+    - Caller gets frustrated
+
+    **Root Causes**:
+    1. Agent doesn't recognize caller answered
+    2. Transcription failed (didn't hear response)
+    3. Instructions don't handle edge case
+
+    **Fixes**:
+
+    **1. Add Loop Detection**:
+    ```markdown
+    If you've asked the same question twice and the customer seems confused,
+    try rephrasing the question or offer to transfer to a human.
+
+    Example:
+    Agent: "What's your account email?"
+    Caller: [unclear response]
+    Agent: "I didn't quite catch that. What email address is your account under?"
+    Caller: [still unclear]
+    Agent: "I'm having trouble hearing. Let me connect you with someone who can help."
+    ```
+
+    **2. Improve Intent Recognition**:
+    - Add examples of edge case responses to instructions
+    - Use structured responses (DTMF for critical info)
+    - Enable "I'm not sure" fallback to human
+
+    **3. Test Edge Cases**:
+    - Silent caller
+    - Rambling caller
+    - Caller with thick accent
+    - Noisy environment
+  </Accordion>
+</AccordionGroup>
+
+### Integration Failures
+
+**Symptom**: Actions don't trigger, API calls fail, transfers don't work
+
+<AccordionGroup>
+  <Accordion title="API action fails">
+    **Diagnostic**:
+    1. Open **Conversations → Logs** → Select failed call
+    2. Navigate to **Actions** tab
+    3. Look for error message (e.g., "API timeout", "401 Unauthorized")
+
+    **Common Errors & Fixes**:
+
+    | Error | Cause | Fix |
+    |-------|-------|-----|
+    | `401 Unauthorized` | Wrong API key | Regenerate key, update agent config |
+    | `403 Forbidden` | Permissions issue | Grant agent access to resource |
+    | `404 Not Found` | Wrong endpoint URL | Verify URL in action configuration |
+    | `408 Timeout` | API too slow | Increase timeout (default 5s → 10s) |
+    | `500 Internal Server Error` | External API down | Check API status page, add retry logic |
+    | `SSL Certificate Error` | HTTPS issue | Verify certificate valid, not expired |
+
+    **Testing**:
+    ```bash
+    # Test API endpoint manually
+    curl -X POST https://api.example.com/action \
+         -H "Authorization: Bearer YOUR_KEY" \
+         -H "Content-Type: application/json" \
+         -d '{"test": "data"}'
+    ```
+
+    If manual curl works but agent fails, check:
+    - IP allowlisting (agent's IPs may need to be allowlisted)
+    - Rate limiting (agent may hit limits faster than manual testing)
+  </Accordion>
+
+  <Accordion title="Transfer fails">
+    **Diagnostic**:
+    - Agent says "Transferring..." but call drops or nothing happens
+    - Check **Logs → Actions** for transfer status
+
+    **Common Issues**:
+
+    **1. Invalid Transfer Number**:
+    - Check number format (must be E.164: +1234567890)
+    - Verify number is reachable (call it manually)
+
+    **2. SIP Reinvite Failure**:
+    - Some carriers don't support SIP REFER for transfers
+    - Solution: Use "attended transfer" instead of "blind transfer"
+    - Or enable "call bridging" mode
+
+    **3. Carrier Doesn't Support Transfers**:
+    - Check with carrier if transfers are enabled
+    - May need to upgrade SIP trunk to support
+
+    **Configuration**:
+    ```json
+    {
+      "transfer": {
+        "type": "attended",  // More reliable than "blind"
+        "timeout": 30,       // Seconds to wait for answer
+        "announcement": "Transferring you now..."
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Knowledge base not retrieving">
+    **Diagnostic**:
+    - Agent says "I don't know" when answer is in KB
+    - Test retrieval manually:
+
+    ```bash
+    # Test KB search
+    curl -X POST https://api.itellico.ai/v1/knowledge-bases/kb_123/search \
+         -H "Authorization: Bearer YOUR_API_KEY" \
+         -d '{"query": "what is your refund policy"}'
+    ```
+
+    **Common Causes**:
+
+    **1. KB Not Linked to Agent**:
+    - Check agent settings → **Knowledge** → Verify KB assigned
+
+    **2. Content Not Indexed**:
+    - Recently uploaded content takes 2-5 minutes to index
+    - Check KB status shows "Indexed" not "Processing"
+
+    **3. Query Doesn't Match Content**:
+    - Customer asks "Can I get money back?" but KB says "Refund Policy"
+    - Solution: Add synonyms, rewrite KB content to match common phrasings
+
+    **4. Retrieval Settings Too Restrictive**:
+    - Minimum similarity threshold too high (e.g., 0.9)
+    - Solution: Lower to 0.7-0.8
+
+    **Configuration**:
+    ```json
+    {
+      "knowledge_retrieval": {
+        "min_similarity": 0.75,  // Lower = more permissive
+        "max_chunks": 5,         // Retrieve more chunks
+        "rerank": true           // Re-rank by relevance
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Capacity & Performance
+
+<AccordionGroup>
+  <Accordion title="Hitting concurrency limits">
+    **Symptom**: Busy signal, calls queued for minutes, "All agents busy" message
+
+    **Diagnostic**:
+    - Check **Dashboard → Capacity** for current/max concurrency
+    - Review call volume graph for peak times
+
+    **Short-Term Fixes**:
+    1. **Enable Queueing**: Let callers wait instead of busy signal
+    2. **Add Overflow Agent**: Route to backup agent when primary at capacity
+    3. **Extend Business Hours**: Spread volume over more hours
+    4. **Callback Offer**: "We'll call you back in 10 minutes"
+
+    **Long-Term Solutions**:
+    1. **Upgrade Plan**: Increase concurrent call limit
+    2. **Load Balance**: Create multiple agents, distribute numbers
+    3. **Auto-Scaling**: Enable dynamic capacity scaling (Enterprise)
+    4. **Off-Peak Incentives**: Encourage calls during low-traffic times
+  </Accordion>
+
+  <Accordion title="High call volume overwhelming system">
+    **Symptom**: Calls taking longer to connect, queue building, errors spiking
+
+    **Diagnostic**:
+    - Sudden traffic spike (3x+ normal volume)
+    - Check for:
+      - Marketing campaign launched?
+      - Media mention / viral post?
+      - System outage causing retry storm?
+
+    **Immediate Actions**:
+    1. **Rate Limit**: Temporarily reduce max concurrent calls to stabilize
+    2. **Queue Aggressively**: Hold calls instead of dropping
+    3. **Fallback Message**: "Unusually high volume. Please try again in 15 minutes."
+    4. **Emergency Scaling**: Contact support for temporary capacity increase
+
+    **Prevention**:
+    - Forecast traffic for known events (product launches, sales)
+    - Pre-scale capacity before expected spikes
+    - Set up auto-scaling triggers
+  </Accordion>
+
+  <Accordion title="Costs higher than expected">
+    **Diagnostic**:
+    - Check **Billing → Usage** for breakdown:
+      - Model API costs
+      - Telephony minutes
+      - Storage costs
+      - Premium features (ML-AMD, etc.)
+
+    **Common Culprits**:
+
+    **1. Long Call Durations**:
+    - Average call >10 minutes (typical is 3-5 min)
+    - Cause: Agent too verbose, loops, doesn't end calls
+    - Fix: Add call duration goals, enable timeout
+
+    **2. Expensive Model**:
+    - Using GPT-4 for simple FAQ calls
+    - Fix: Switch to GPT-3.5 Turbo (3x cheaper)
+
+    **3. High Voicemail Costs**:
+    - Not using AMD, charging full minutes for voicemails
+    - Fix: Enable text-based AMD (free) or ML-AMD (+$0.01/call but saves $0.50+/VM)
+
+    **4. Expensive Transcription**:
+    - Using premium transcriber for all calls
+    - Fix: Use standard transcriber unless accuracy critical
+
+    **Optimization Checklist**:
+    - [ ] Enable AMD for outbound campaigns
+    - [ ] Set max call duration (e.g., 15 minutes)
+    - [ ] Use cheaper model for simple calls
+    - [ ] Compress audio recordings (lower bitrate)
+    - [ ] Auto-delete old recordings after 30 days
+  </Accordion>
+</AccordionGroup>
+
+## Debugging Tools & Techniques
+
+### Log Analysis
+
+**Accessing Logs**:
+```bash
+# Export logs via API
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+     "https://api.itellico.ai/v1/conversations?start_date=2024-01-01&end_date=2024-01-02" \
+     > logs.json
+
+# Filter for errors
+cat logs.json | jq '.[] | select(.error != null)'
+
+# Find common error patterns
+cat logs.json | jq '.error.type' | sort | uniq -c | sort -rn
+```
+
+**Web Dashboard**:
+- **Conversations → Logs** → Use filters:
+  - Status: Failed
+  - Date range: Last 24 hours
+  - Agent: specific agent
+  - Error type: specific error
+
+### Live Debugging
+
+**Whisper Mode**:
+- Join live call without customer hearing
+- Guide agent by whispering instructions
+- See transcript in real-time
+
+**Steps**:
+1. Open **Conversations → Live Monitor**
+2. Find active call
+3. Click **Whisper**
+4. Speak instructions (agent hears, customer doesn't)
+
+**Use Cases**:
+- Agent stuck → "Transfer to billing department"
+- Agent about to give wrong info → "Check knowledge base for pricing"
+- Edge case → Guide agent through unusual scenario
+
+### Testing in Production
+
+**Canary Calls**:
+- Make test calls during business hours
+- Use known scenarios
+- Compare to expected behavior
+- Tag as test for filtering: `metadata: {test_call: true}`
+
+**Synthetic Monitoring**:
+- Automated test calls every hour
+- Verify key flows still work
+- Alert if tests start failing
+
+```python
+# Automated test script
+import requests
+import time
+
+def run_test_call():
+    response = requests.post(
+        'https://api.itellico.ai/v1/calls',
+        headers={'Authorization': f'Bearer {API_KEY}'},
+        json={
+            'agent_id': 'agent_123',
+            'to_number': '+1234567890',  # Your test number
+            'from_number': '+1987654321',
+            'metadata': {'test_call': True, 'scenario': 'pricing_inquiry'}
+        }
+    )
+    return response.json()
+
+# Run every hour
+while True:
+    result = run_test_call()
+    if result.get('status') != 'success':
+        send_alert(f"Test call failed: {result}")
+    time.sleep(3600)
+```
+
+## When to Contact Support
+
+Contact support@itellico.ai when:
+
+- <Icon icon="server" /> **Platform Issues**: Widespread outages, API errors affecting all agents
+- <Icon icon="lock" /> **Security Incidents**: Suspected breach, unusual access patterns
+- <Icon icon="file-circle-question" /> **Billing Disputes**: Unexpected charges, usage discrepancies
+- <Icon icon="phone-xmark" /> **Carrier Issues**: SIP trunk not registering, number porting problems
+- <Icon icon="bug" /> **Bug Reports**: Clear platform bugs (not configuration issues)
+
+**Include in Support Request**:
+- Agent ID and call IDs showing issue
+- Error messages from logs
+- Steps to reproduce
+- What you've already tried
+- Business impact (how many users affected)
+
+**Response Times**:
+- Critical (production down): &lt;1 hour
+- High (major feature broken): &lt;4 hours
+- Medium (workaround exists): &lt;24 hours
+- Low (feature request, question): &lt;48 hours
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Production Best Practices" icon="star" href="/launch/production-best-practices">
+    Maintain healthy production systems
+  </Card>
+
+  <Card title="Test Overview" icon="vial" href="/test/overview">
+    Improve testing to catch issues earlier
+  </Card>
+
+  <Card title="Support Resources" icon="life-ring" href="/resources/overview">
+    Get help from community and documentation
+  </Card>
+</CardGroup>

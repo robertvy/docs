@@ -1,0 +1,453 @@
+---
+title: "Variabili e contenuto dinamico"
+description: "Usa i template Jinja per personalizzare istruzioni e saluti dell'agente"
+icon: "brackets-curly"
+"keywords": "Variabili template IA, template Jinja, contenuto dinamico, conversazioni IA personalizzate, sintassi template, logica condizionale, personalizzazione IA"
+"og:description": "Padroneggia le variabili template Jinja per creare conversazioni agente IA dinamiche e personalizzate con logica condizionale e dati personalizzati."
+---
+
+## Panoramica
+
+Le variabili ti permettono di personalizzare le istruzioni del tuo agente con dati dinamici. itellicoAI usa [template Jinja2](https://jinja.palletsprojects.com/en/stable/).
+
+---
+
+## Come funzionano le variabili
+
+### Variabili di contatto integrate
+
+Se un contatto esiste nel tuo account itellicoAI, questi 5 campi sono automaticamente disponibili:
+
+```jinja wrap
+{{ contact.first_name }}
+{{ contact.last_name }}
+{{ contact.full_name }}
+{{ contact.email }}
+{{ contact.phone }}
+```
+
+**Esempio:**
+```jinja wrap
+Ciao {{ contact.first_name }}!
+La tua email è {{ contact.email }}.
+```
+
+✅ Nessuna configurazione necessaria - funziona automaticamente se il contatto esiste
+
+---
+
+### Tutto il resto: API di contesto dinamico
+
+**Tutti gli altri dati** devono provenire dal tuo [endpoint API di contesto dinamico](/it/build/advanced/dynamic-context) come **variabili di livello superiore**.
+
+Puoi restituire qualsiasi campo desideri. Per esempio:
+
+```jinja wrap
+{{ language }}
+{{ account_tier }}
+{{ company_name }}
+{{ order_id }}
+{{ customer_since }}
+{{ any_field_you_need }}
+```
+
+**Esempio - La tua API restituisce:**
+```json
+{
+  "language": "it",
+  "account_tier": "premium",
+  "company_name": "Acme Corp"
+}
+```
+
+**Allora il tuo agente può usare:**
+```jinja wrap
+{% if language == "it" %}
+Ciao! Lavori per {{ company_name }}.
+{% endif %}
+
+{% if account_tier == "premium" %}
+Supporto prioritario disponibile.
+{% endif %}
+```
+
+⚙️ Richiede configurazione - vedi [API di contesto dinamico](/it/build/advanced/dynamic-context)
+
+---
+
+## Variabili disponibili
+
+### Variabili di contatto integrate
+
+Queste variabili sono automaticamente disponibili dai tuoi contatti itellicoAI:
+
+```jinja wrap
+{{ contact.first_name }}
+{{ contact.last_name }}
+{{ contact.full_name }}
+{{ contact.email }}
+{{ contact.phone }}
+```
+
+**Esempio d'uso:**
+
+```text wrap
+Stai parlando con {{ contact.first_name }} {{ contact.last_name }}.
+La loro email è {{ contact.email | default("non fornita") }}.
+Il loro numero di telefono è {{ contact.phone }}.
+
+```
+
+<Note>
+**I campi personalizzati** NON sono annidati sotto `contact.` — sono variabili di livello superiore come `{{ language }}` o `{{ account_tier }}`. Devi fornirli tramite la tua [API di contesto dinamico](/it/build/advanced/dynamic-context).
+</Note>
+
+### Variabili di contesto dinamico
+
+Qualsiasi dato personalizzato che fornisci tramite il tuo endpoint API di contesto dinamico diventa disponibile come variabili di **livello superiore**:
+
+```jinja wrap
+{{ account_tier }}
+{{ language }}
+{{ company_name }}
+{{ preferred_contact_method }}
+```
+
+**Esempio con variabili personalizzate:**
+
+```jinja wrap
+{% if account_tier == "premium" %}
+Come cliente premium, hai supporto prioritario.
+{% endif %}
+
+{% if language == "it" %}
+Parla italiano.
+{% endif %}
+
+Azienda: {{ company_name | default("cliente stimato") }}
+
+```
+
+<Tip>
+Configura un endpoint API di contesto dinamico per fornire variabili personalizzate. Qualsiasi campo JSON che restituisci diventa variabili di livello superiore (es., `{"language": "it"}` → `{{ language }}`).
+</Tip>
+
+### Data e ora
+
+La data e ora correnti sono automaticamente disponibili come `current_datetime` sia nei **saluti che nelle istruzioni**:
+
+```jinja wrap
+{{ current_datetime }}                      # Timestamp corrente
+{{ current_datetime.hour }}                 # Ora corrente (0-23)
+{{ current_datetime | datetime("%H:%M") }}  # Formato con filtro datetime
+{{ current_datetime | datetime("%A") }}     # Nome del giorno (Lunedì, Martedì, ecc.)
+```
+
+**Esempio d'uso:**
+
+```jinja wrap
+{% if current_datetime.hour < 12 %}
+Buongiorno, {{ contact.first_name }}!
+{% elif current_datetime.hour < 17 %}
+Buon pomeriggio, {{ contact.first_name }}!
+{% else %}
+Buonasera, {{ contact.first_name }}!
+{% endif %}
+```
+
+<Tip>
+Usa `current_datetime` per costruire logica avanzata basata sul tempo come routing orario d'ufficio, saluti basati sull'ora del giorno o vincoli di programmazione senza bisogno di fonti dati esterne.
+</Tip>
+
+<Note>
+Usa il filtro `datetime` per la formattazione. Il metodo `.strftime()` non è disponibile per restrizioni di sicurezza.
+</Note>
+
+---
+
+## Logica condizionale
+
+### Istruzione If
+
+```jinja wrap
+{% if condition %}
+  Questo viene mostrato se la condizione è vera
+{% endif %}
+```
+
+### If-Else
+
+```jinja wrap
+{% if account_tier == "VIP" %}
+  Fornire servizio VIP
+{% else %}
+  Fornire servizio standard
+{% endif %}
+```
+
+### If-Elif-Else
+
+```jinja wrap
+{% if account_value > 10000 %}
+  Cliente livello Enterprise
+{% elif account_value > 1000 %}
+  Cliente livello Professional
+{% else %}
+  Cliente livello Standard
+{% endif %}
+```
+
+### Esempio del mondo reale
+
+```jinja wrap
+{% if language == "es" %}
+Rispondi in spagnolo. Usa indirizzamento formale (usted).
+{% elif language == "fr" %}
+Rispondi in francese. Usa indirizzamento formale (vous).
+{% elif language == "de" %}
+Rispondi in tedesco. Usa indirizzamento formale (Sie).
+{% else %}
+Rispondi in inglese. Usa tono amichevole e conversazionale.
+{% endif %}
+```
+
+---
+
+## Filtri
+
+I filtri trasformano i valori delle variabili.
+
+### Filtri comuni
+
+**default:** Fornire valore di fallback
+
+```jinja wrap
+{{ contact.first_name | default("") }}
+```
+
+**upper:** Convertire in maiuscolo
+
+```jinja wrap
+{{ contact.last_name | upper }}
+```
+
+**lower:** Convertire in minuscolo
+
+```jinja wrap
+{{ contact.email | lower }}
+```
+
+**title:** Iniziale maiuscola
+
+```jinja wrap
+{{ contact.first_name | title }}
+```
+
+**length:** Ottenere lunghezza
+
+```jinja wrap
+{% if contact.phone | length > 10 %}
+  Numero internazionale rilevato
+{% endif %}
+```
+
+**datetime:** Formattare oggetti datetime
+
+```jinja wrap
+{{ current_datetime | datetime("%H:%M") }}         # 14:30
+{{ current_datetime | datetime("%d.%m.%Y") }}      # 24.01.2025
+{{ current_datetime | datetime("%A, %B %d") }}     # Lunedì, 24 gennaio
+```
+
+### Concatenamento filtri
+
+```jinja wrap
+{{ contact.first_name | default("Amico") | title }}
+```
+
+---
+
+## Loop
+
+Iterare su liste (caso d'uso avanzato):
+
+```jinja wrap
+{% for item in list_variable %}
+  Elabora {{ item }}
+{% endfor %}
+```
+
+---
+
+## Esempi pratici
+
+### Esempio 1: Saluto personalizzato
+
+```jinja wrap
+{% if contact.first_name %}
+Ciao {{ contact.first_name }}, è bello sentirti!
+{% else %}
+Ciao! Grazie per aver chiamato!
+{% endif %}
+
+{% if contact.email %}
+Ho le tue informazioni di contatto in archivio, quindi posso inviarti una conferma dopo la nostra chiamata.
+{% endif %}
+```
+
+### Esempio 2: Logica aziendale personalizzata (Richiede API di contesto dinamico)
+
+```jinja wrap
+{% if contact.first_name %}
+Ciao {{ contact.first_name }}, grazie per aver chiamato {{ company_name }}!
+{% else %}
+Ciao! Grazie per aver chiamato {{ company_name }}!
+{% endif %}
+
+{% if account_tier == "premium" %}
+Come cliente premium, hai supporto prioritario. Come posso aiutarti oggi?
+{% else %}
+Come posso aiutarti oggi?
+{% endif %}
+```
+
+<Note>
+Variabili come `company_name` e `account_tier` devono essere fornite dal tuo endpoint API di contesto dinamico.
+</Note>
+
+### Esempio 3: Istruzioni basate sul tempo
+
+```jinja wrap
+Ora corrente: {{ current_datetime | datetime("%H:%M") }}
+
+{% if current_datetime.hour >= 17 or current_datetime.hour < 9 %}
+Fuori dall'orario d'ufficio normale. Se il cliente ha bisogno di assistenza immediata:
+"Il nostro orario di supporto regolare è dalle 9 alle 17. Per problemi urgenti, posso prendere le tue informazioni e qualcuno ti chiamerà per prima cosa domattina, oppure puoi chiamare la nostra linea d'emergenza al [numero]."
+{% else %}
+Nell'orario d'ufficio. Supporto completo disponibile.
+{% endif %}
+```
+
+### Esempio 4: Supporto multilingue (Richiede API di contesto dinamico)
+
+```jinja wrap
+Lingua preferita del cliente: {{ language | default("it") }}
+
+{% if language == "es" %}
+Lingua: Spagnolo
+Saluto: "¡Hola!"
+Tono: Formale (usa "usted")
+Raccolta conoscenze: "FAQ Español"
+{% elif language == "de" %}
+Lingua: Tedesco
+Saluto: "Guten Tag!"
+Tono: Formale (usa "Sie")
+Raccolta conoscenze: "FAQ Deutsch"
+{% else %}
+Lingua: Italiano
+Saluto: "Ciao!"
+Tono: Amichevole e conversazionale
+Raccolta conoscenze: "FAQ Italiano"
+{% endif %}
+```
+
+### Esempio 5: Logica livello account
+
+```jinja wrap
+Valore account: €{{ account_value | default(0) }}
+
+{% if account_value >= 50000 %}
+🌟 CLIENTE ENTERPRISE
+- Offrire servizio white-glove
+- Accesso diretto all'account manager
+- Tempi di risposta prioritari
+- Soluzioni personalizzate disponibili
+{% elif account_value >= 10000 %}
+💼 CLIENTE PROFESSIONAL
+- Livello supporto premium
+- Team supporto dedicato
+- Coda prioritaria
+{% else %}
+👤 CLIENTE STANDARD
+- Supporto standard
+- Base di conoscenza prima
+- Trasferimento per problemi complessi
+{% endif %}
+```
+
+---
+
+## Testare le variabili
+
+### Testare con dati diversi
+
+1. Vai a **Chiamata di test**
+2. Testa scenari con dati di contatto diversi:
+   - Con nome vs senza
+   - Cliente VIP vs cliente standard
+   - Lingue diverse
+   - Fusi orari diversi
+
+### Problemi comuni
+
+| Problema | Causa | Soluzione |
+|----------|-------|-----------|
+| La variabile appare vuota | Nessun valore predefinito fornito | Aggiungi `\| default("fallback")` |
+| Errore di sintassi | Errore di battitura nel nome variabile | Controlla l'ortografia contro le variabili disponibili |
+| La condizione non funziona | Operatore di confronto sbagliato | Usa `==` non `=` |
+| Il filtro non si applica | Il filtro non esiste | Controlla l'ortografia del nome del filtro |
+
+---
+
+## Best practice
+
+<AccordionGroup>
+  <Accordion title="Usa sempre valori predefiniti" icon="shield">
+    Non assumere mai che una variabile abbia un valore. Fornisci sempre valori predefiniti.
+
+    ❌ **Sbagliato:**
+    ```jinja
+    Ciao {{ contact.first_name }}!
+    ```
+
+    ✅ **Corretto:**
+    ```jinja
+    Ciao {{ contact.first_name | default("") }}!
+    ```
+  </Accordion>
+
+  <Accordion title="Mantieni la logica semplice" icon="lightbulb">
+    Le condizioni annidate complesse sono difficili da debuggare. Mantienilo semplice.
+
+    ❌ **Troppo complesso:**
+    ```jinja
+    {% if account_tier == "VIP" and account_value > 10000 and region == "IT" %}
+    ```
+
+    ✅ **Più semplice:**
+    ```jinja
+    {% if account_tier == "VIP" %}
+    ```
+  </Accordion>
+
+  <Accordion title="Testa casi limite" icon="vial">
+    Testa con:
+    - Dati mancanti (tutti i campi vuoti)
+    - Valori inaspettati
+    - Stringhe molto lunghe
+    - Caratteri speciali
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Prossimi passi
+
+<CardGroup cols={2}>
+  <Card title="Guida all'ingegneria dei prompt" icon="book" href="/it/build/conversation/prompt-engineering-guide">
+    Vedi le variabili in azione con esempi completi
+  </Card>
+  <Card title="Testa il tuo agente" icon="vial" href="/it/test/web-simulator">
+    Testa che le tue variabili funzionino correttamente
+  </Card>
+</CardGroup>

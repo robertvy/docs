@@ -1,0 +1,462 @@
+---
+title: "Chiavi API"
+description: "Crea e gestisci l'accesso programmatico al tuo account"
+icon: "key"
+keywords: "chiavi API, autenticazione, accesso programmatico, sicurezza API, gestione chiavi, token API, rotazione chiavi, Bearer token"
+og:description: "Crea e gestisci chiavi API per l'accesso programmatico. Scopri le migliori pratiche per la rotazione delle chiavi, la sicurezza e l'autenticazione con l'API itellicoAI."
+---
+
+## Panoramica
+
+Le chiavi API forniscono accesso programmatico alla piattaforma itellicoAI, permettendoti di integrare gli agenti nelle tue applicazioni, automatizzare attività e creare flussi di lavoro personalizzati.
+
+## Cosa sono le Chiavi API?
+
+Le chiavi API sono token sicuri che autenticano le tue richieste API senza richiedere credenziali di accesso utente.
+
+**Caratteristiche principali:**
+- **Ambito account**: Ogni chiave appartiene a un account specifico
+- **Segrete**: Tratta come una password - non condividere mai o committare nel controllo versione
+- **Revocabili**: Possono essere disabilitate o eliminate in qualsiasi momento
+- **Tracciabili**: Monitora il timestamp dell'ultimo utilizzo e l'attività
+
+## Creazione Chiavi API
+
+### Come Creare
+
+<Steps>
+  <Step title="Vai a Chiavi API">
+    Vai a **Impostazioni → Chiavi API** nel tuo account
+  </Step>
+
+  <Step title="Clicca Crea Chiave API">
+    Clicca sul pulsante **Crea Chiave API**
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/keys/create-key-light.png" alt="Finestra di dialogo Crea Chiave API con campi nome chiave e data di scadenza" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/keys/create-key-dark.png" alt="Finestra di dialogo Crea Chiave API con campi nome chiave e data di scadenza" />
+  </div>
+</Frame>
+  </Step>
+
+  <Step title="Inserisci un'Etichetta">
+    Assegna alla tua chiave un nome descrittivo:
+    - "Server di Produzione"
+    - "Ambiente di Sviluppo"
+    - "Pipeline CI/CD"
+    - "App Mobile - iOS"
+  </Step>
+
+  <Step title="Imposta Scadenza (Opzionale)">
+    Imposta opzionalmente una data di scadenza per la rotazione automatica della chiave
+  </Step>
+
+  <Step title="Copia la Chiave">
+    **⚠️ IMPORTANTE**: La chiave completa viene mostrata solo una volta!
+
+    Copiala immediatamente e conservala in modo sicuro.
+  </Step>
+
+  <Step title="Conserva in Modo Sicuro">
+    Salva la chiave in:
+    - Variabili d'ambiente
+    - Gestore di segreti (AWS Secrets Manager, HashiCorp Vault, ecc.)
+    - Gestore di password
+
+    **Mai** committare su git o condividere pubblicamente!
+  </Step>
+</Steps>
+
+<Warning>
+La chiave API completa viene visualizzata **solo una volta** alla creazione. Se la perdi, devi creare una nuova chiave.
+</Warning>
+
+## Utilizzo Chiavi API
+
+### Header di Autenticazione
+
+Includi la tua chiave API nell'header `Authorization`:
+
+```bash
+curl https://api.itellico.ai/v1/agents \
+  -H "Authorization: Bearer sk-a1b2c3d4.xyz789..." \
+  -H "Content-Type: application/json"
+```
+
+### Contesto Account
+
+Le chiavi API sono associate al loro account. Quando crei una chiave in un account principale, può accedere sia all'account principale che a tutti i subaccount.
+
+Per accedere a un account specifico, includi l'ID account nel percorso URL:
+
+```bash
+# Accedi all'account principale
+curl https://api.itellico.ai/v1/accounts/me/agents \
+  -H "Authorization: Bearer sk-a1b2c3d4.xyz789..." \
+  -H "Content-Type: application/json"
+
+# Accedi a un subaccount specifico
+curl https://api.itellico.ai/v1/accounts/{account-id}/agents \
+  -H "Authorization: Bearer sk-a1b2c3d4.xyz789..." \
+  -H "Content-Type: application/json"
+```
+
+### SDK
+
+Utilizzando i nostri SDK ufficiali:
+
+<CodeGroup>
+
+```python Python
+from itellico import ItellicoAI
+
+client = ItellicoAI(api_key="sk-a1b2c3d4.xyz789...")
+
+# Elenca agenti
+agents = client.agents.list()
+```
+
+```typescript TypeScript
+import { ItellicoAI } from '@itellico/sdk';
+
+const client = new ItellicoAI({
+  apiKey: 'sk-a1b2c3d4.xyz789...'
+});
+
+// Elenca agenti
+const agents = await client.agents.list();
+```
+
+</CodeGroup>
+
+<Tip>
+Memorizza le chiavi API nelle variabili d'ambiente e non codificarle mai direttamente nel codice sorgente.
+</Tip>
+
+## Gestione Chiavi API
+
+### Visualizzazione Chiavi
+
+La pagina Chiavi API mostra:
+- **Etichetta**: Il tuo nome descrittivo
+- **Chiave Parziale**: Primi caratteri (es. `sk-a1b2c3d4...`)
+- **Stato**: Attiva, Revocata o Scaduta
+- **Creata**: Quando è stata creata la chiave
+- **Ultimo Utilizzo**: Quando è stata utilizzata l'ultima volta per una richiesta API
+- **Scade**: Data di scadenza (se impostata)
+
+<Note>
+La chiave completa **non** viene mai mostrata dopo la creazione - solo i primi caratteri per l'identificazione.
+</Note>
+
+### Modifica Chiavi
+
+Puoi aggiornare:
+- **Etichetta**: Modifica il nome descrittivo
+- **Data di scadenza**: Estendi o imposta la scadenza
+
+**Non** puoi modificare:
+- La chiave stessa (crea una nuova invece)
+- L'account a cui appartiene
+
+### Revoca Chiavi
+
+Per disabilitare temporaneamente una chiave senza eliminarla:
+
+1. Vai a **Impostazioni → Chiavi API**
+2. Trova la chiave nell'elenco
+3. Clicca **Revoca**
+4. La chiave viene disabilitata immediatamente
+
+**Perché revocare invece di eliminare?**
+- Mantiene la chiave nei log per l'audit
+- Può essere riattivata se revocata per errore
+- Preserva la data di creazione e la cronologia
+
+### Riattivazione Chiavi
+
+Per ripristinare una chiave revocata:
+
+1. Trova la chiave revocata nell'elenco
+2. Clicca **Riattiva**
+3. La chiave funziona immediatamente
+
+### Eliminazione Chiavi
+
+Per rimuovere permanentemente una chiave:
+
+1. Vai a **Impostazioni → Chiavi API**
+2. Trova la chiave nell'elenco
+3. Clicca sul menu (⋯) → **Elimina**
+4. Conferma l'eliminazione
+
+<Warning>
+L'eliminazione è permanente e non può essere annullata. La chiave smetterà immediatamente di funzionare.
+</Warning>
+
+## Stati delle Chiavi
+
+| Stato | Descrizione | Accesso API |
+|--------|-------------|------------|
+| **Attiva** | La chiave funziona normalmente | ✅ Sì |
+| **Revocata** | Disabilitata manualmente | ❌ No |
+| **Scaduta** | Oltre la data di scadenza | ❌ No |
+
+## Migliori Pratiche
+
+<AccordionGroup>
+  <Accordion title="Una Chiave per Ambiente" icon="server">
+    Crea chiavi separate per ogni ambiente:
+
+    - **Sviluppo**: "Chiave Server Dev"
+    - **Staging**: "Ambiente Staging"
+    - **Produzione**: "Server di Produzione"
+
+    **Vantaggi:**
+    - Revoca le chiavi dev senza influenzare la produzione
+    - Traccia l'utilizzo per ambiente
+    - Politiche di scadenza diverse per ambiente
+  </Accordion>
+
+  <Accordion title="Usa Variabili d'Ambiente" icon="code">
+    Non codificare mai le chiavi API nel codice sorgente.
+
+    **Corretto:**
+    ```python
+    import os
+    api_key = os.environ['ITELLICO_API_KEY']
+    ```
+
+    **Errato:**
+    ```python
+    api_key = "sk-a1b2c3d4.xyz789..."  # NON FARLO!
+    ```
+
+    **File di ambiente (.env):**
+    ```bash
+    ITELLICO_API_KEY=sk-a1b2c3d4.xyz789...
+    ```
+
+    **Aggiungi a .gitignore:**
+    ```
+    .env
+    .env.local
+    *.key
+    ```
+  </Accordion>
+
+  <Accordion title="Rotazione Regolare delle Chiavi" icon="rotate">
+    Ruota le chiavi API periodicamente per sicurezza:
+
+    **Calendario raccomandato:**
+    - **Produzione**: Ogni 90 giorni
+    - **Staging**: Ogni 180 giorni
+    - **Sviluppo**: Annualmente o al cambio degli sviluppatori
+
+    **Processo di rotazione:**
+    1. Crea nuova chiave con data di scadenza
+    2. Aggiorna le applicazioni con la nuova chiave
+    3. Testa accuratamente
+    4. Revoca la vecchia chiave
+    5. Elimina la vecchia chiave dopo 30 giorni
+  </Accordion>
+
+  <Accordion title="Imposta Date di Scadenza" icon="calendar-xmark">
+    Usa le date di scadenza per:
+    - **Accesso temporaneo**: Consulenti, demo, POC
+    - **Rotazione forzata**: Chiavi di produzione impostate per scadere in 90 giorni
+    - **Funzionalità a tempo limitato**: Test beta, prove
+
+    **Esempio:**
+    - Crea chiave il 1° gennaio
+    - Imposta scadenza al 1° aprile (90 giorni)
+    - Ricevi notifica 7 giorni prima della scadenza
+    - Ruota la chiave prima della scadenza
+  </Accordion>
+
+  <Accordion title="Monitora l'Utilizzo" icon="chart-line">
+    Controlla regolarmente i timestamp "Ultimo Utilizzo":
+
+    - **Mai utilizzata**: Elimina le chiavi inutilizzate
+    - **Timestamp vecchio**: Potrebbe essere sicuro revocare
+    - **Attività recente**: La chiave è attiva
+
+    Rivedi le tue chiavi API mensilmente per rimuovere quelle inattive.
+  </Accordion>
+
+  <Accordion title="Etichette Descrittive" icon="tag">
+    Usa nomi chiave chiari e descrittivi:
+
+    **Etichette corrette:**
+    - "Server API Produzione - us-east-1"
+    - "App Mobile - iOS - Produzione"
+    - "CI/CD - GitHub Actions"
+    - "Gestore Webhook - Staging"
+
+    **Etichette errate:**
+    - "Chiave API 1"
+    - "Test"
+    - "La Mia Chiave"
+    - "Nuova Chiave"
+  </Accordion>
+
+  <Accordion title="Gestione Segreti" icon="vault">
+    Usa un gestore di segreti in produzione:
+
+    **Opzioni:**
+    - AWS Secrets Manager
+    - HashiCorp Vault
+    - Azure Key Vault
+    - Google Secret Manager
+    - 1Password / LastPass (per team)
+
+    **Vantaggi:**
+    - Archiviazione centralizzata dei segreti
+    - Rotazione automatica
+    - Log di audit
+    - Controlli di accesso
+  </Accordion>
+</AccordionGroup>
+
+## Considerazioni sulla Sicurezza
+
+<Warning>
+**Non committare mai le chiavi API nel controllo versione!**
+
+Se committi accidentalmente una chiave:
+1. Revoca immediatamente la chiave
+2. Crea una nuova chiave
+3. Usa `git filter-branch` o BFG Repo-Cleaner per rimuoverla dalla cronologia
+4. Forza push al remoto
+5. Notifica i membri del team di scaricare l'ultima versione
+</Warning>
+
+### Se una Chiave è Compromessa
+
+<Steps>
+  <Step title="Revoca Immediatamente">
+    Vai a **Impostazioni → Chiavi API** e revoca la chiave compromessa
+  </Step>
+
+  <Step title="Crea Nuova Chiave">
+    Genera una chiave sostitutiva con una nuova etichetta
+  </Step>
+
+  <Step title="Aggiorna le Applicazioni">
+    Distribuisci la nuova chiave a tutte le applicazioni interessate
+  </Step>
+
+  <Step title="Esamina i Log">
+    Controlla i log di utilizzo per attività sospette
+  </Step>
+
+  <Step title="Notifica il Team">
+    Informa il tuo team sull'incidente
+  </Step>
+
+  <Step title="Indaga">
+    Determina come la chiave è stata compromessa e previeni il ripetersi
+  </Step>
+</Steps>
+
+## Risoluzione Problemi
+
+<AccordionGroup>
+  <Accordion title="401 Unauthorized" icon="lock">
+    **Cause:**
+    - Chiave API non valida
+    - Chiave revocata o scaduta
+    - Header `Authorization` mancante
+    - Formato header errato
+
+    **Soluzioni:**
+    - Verifica che la chiave sia attiva nelle Impostazioni
+    - Controlla l'header: `Authorization: Bearer sk-...`
+    - Assicurati che non ci siano spazi o caratteri extra
+    - Crea una nuova chiave se persa
+  </Accordion>
+
+  <Accordion title="403 Forbidden" icon="ban">
+    **Cause:**
+    - La chiave non ha accesso all'account richiesto
+    - Richiesta di un subaccount a cui la chiave non può accedere
+    - L'account è inattivo
+
+    **Soluzioni:**
+    - Verifica che la chiave sia stata creata nell'account principale o nel subaccount a cui stai accedendo
+    - Controlla che l'ID account nell'URL sia corretto
+    - Verifica che lo stato dell'account sia attivo
+  </Accordion>
+
+  <Accordion title="429 Too Many Requests" icon="gauge-high">
+    **Cause:**
+    - Superati i limiti di frequenza
+    - Troppe richieste simultanee
+
+    **Soluzioni:**
+    - Implementa il backoff esponenziale
+    - Memorizza in cache le risposte quando possibile
+    - Passa a un piano di livello superiore
+    - Distribuisci le richieste nel tempo
+  </Accordion>
+
+  <Accordion title="La chiave non funziona dopo la creazione" icon="circle-xmark">
+    **Possibili cause:**
+    - Uso della chiave errata (prefisso vs chiave completa)
+    - Caratteri extra (nuove righe, spazi)
+    - Revocata immediatamente dopo la creazione
+
+    **Soluzioni:**
+    - Copia la chiave completa incluso il prefisso `sk-`
+    - Rimuovi gli spazi dalla chiave memorizzata
+    - Verifica che lo stato sia "Attiva"
+  </Accordion>
+</AccordionGroup>
+
+## FAQ
+
+<AccordionGroup>
+  <Accordion title="Quante chiavi API posso creare?">
+    Nessun limite rigido, ma raccomandiamo:
+    - Team piccoli: 3-5 chiavi
+    - Team medi: 10-15 chiavi
+    - Enterprise: Secondo necessità per ambiente
+  </Accordion>
+
+  <Accordion title="Posso usare una chiave su più account?">
+    Le chiavi API create in un account principale possono accedere sia all'account principale che a tutti i suoi subaccount. Le chiavi create in un subaccount possono accedere solo a quel subaccount.
+  </Accordion>
+
+  <Accordion title="Cosa succede se elimino una chiave?">
+    Le richieste API che usano quella chiave falliranno immediatamente con 401 Unauthorized. Aggiorna prima le tue applicazioni!
+  </Accordion>
+
+  <Accordion title="Posso vedere per cosa è stata usata una chiave?">
+    Sì. Il timestamp "Ultimo Utilizzo" mostra quando è stata utilizzata l'ultima volta. Per log dettagliati, contatta il supporto per i log di accesso API.
+  </Accordion>
+
+  <Accordion title="Le chiavi API scadono automaticamente?">
+    Solo se imposti una data di scadenza. Altrimenti, le chiavi rimangono attive fino alla revoca o eliminazione.
+  </Accordion>
+
+  <Accordion title="I subaccount possono avere le proprie chiavi API?">
+    Sì! Ogni subaccount può creare chiavi API indipendenti associate al contesto di quel subaccount.
+  </Accordion>
+</AccordionGroup>
+
+## Prossimi Passi
+
+<CardGroup cols={2}>
+  <Card title="Riferimento API" icon="book" href="/it/api-reference/introduction">
+    Esplora gli endpoint API disponibili
+  </Card>
+  <Card title="SDK" icon="code" href="/it/api-reference/sdks">
+    Usa i nostri SDK ufficiali Python e TypeScript
+  </Card>
+  <Card title="Gestione Team" icon="users" href="/it/accounts/team-management">
+    Gestisci i membri del team
+  </Card>
+</CardGroup>

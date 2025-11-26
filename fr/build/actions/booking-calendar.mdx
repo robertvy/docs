@@ -1,0 +1,561 @@
+---
+title: "Intégration de Réservation & Calendrier"
+description: "Planifiez automatiquement des rendez-vous avec l'intégration Cal.com"
+icon: "calendar"
+"keywords": "réservation de rendez-vous IA, intégration Cal.com, intégration de calendrier, planifier des rendez-vous, automatisation de réservation IA, planification de rendez-vous"
+"og:description": "Activez la planification automatique de rendez-vous avec l'intégration Cal.com pour une automatisation de réservation IA transparente."
+---
+
+## Vue d'ensemble
+
+L'action de Réservation permet à vos agents IA de planifier des rendez-vous pendant les conversations en direct. Intégrée avec Cal.com, vos agents peuvent vérifier la disponibilité, présenter des créneaux horaires, confirmer des réservations et envoyer des confirmations automatiques.
+
+<Note>
+Nécessite un compte Cal.com et une intégration active. Fonctionne avec le niveau gratuit de Cal.com.
+</Note>
+
+<Info>
+**Comment ça marche :** L'action de réservation fournit deux fonctions à votre agent :
+1. **Obtenir les créneaux disponibles** - Récupère les créneaux horaires disponibles depuis Cal.com
+2. **Réserver un rendez-vous** - Crée la réservation avec les détails du client
+
+Cela gère le flux de réservation principal. Pour des workflows avancés comme confirmer des rendez-vous existants, reprogrammer ou annuler, vous devrez construire une logique personnalisée en utilisant les [Actions API Personnalisées](/fr/build/actions/custom-api-actions) qui s'intègrent directement avec l'API Cal.com.
+</Info>
+
+---
+
+## Configuration
+
+<Steps>
+  <Step title="Créer des Types d'Événements Cal.com">
+    Configurez des types d'événements dans Cal.com pour chaque type de rendez-vous :
+    - Durée (15 min, 30 min, 60 min, etc.)
+    - Lieu de réunion (Zoom, Google Meet, téléphone, en personne)
+    - Fenêtres de disponibilité
+
+    [Documentation des types d'événements Cal.com](https://cal.com/docs/core-features/event-types)
+  </Step>
+  <Step title="Tester les Types d'Événements">
+    Réservez un rendez-vous de test dans Cal.com pour vérifier que la disponibilité, les liens de réunion et les notifications fonctionnent correctement.
+  </Step>
+  <Step title="Connecter Cal.com">
+    Obtenez votre clé API Cal.com et connectez-la à itellicoAI :
+
+    1. Allez dans [Paramètres Cal.com → Développeur → Clés API](https://app.cal.com/settings/developer/api-keys)
+    2. Cliquez sur **+ Add**, nommez-la (par exemple, "itellicoAI"), et enregistrez
+    3. Dans itellicoAI, allez dans **Integrations → Cal.com**
+    4. Collez votre clé API, cliquez sur **Test Connection**, puis **Connect**
+
+    <div style={{ maxWidth: '400px', marginBottom: '1rem' }}>
+      <Frame>
+        <div className="block dark:hidden">
+          <img src="/images/cal/test-cal-light.png" alt="Cal.com Integration" />
+        </div>
+        <div className="hidden dark:block">
+          <img src="/images/cal/test-cal-dark.png" alt="Cal.com Integration" />
+        </div>
+      </Frame>
+    </div>
+  </Step>
+</Steps>
+
+---
+
+## Utiliser Votre Système de Calendrier Existant
+
+Une question courante : **"Nous utilisons Google Calendar / Microsoft Outlook / Microsoft 365. Pouvons-nous quand même utiliser Cal.com ?"**
+
+**Oui !** Cal.com s'intègre avec votre système de calendrier existant pour éviter les doubles réservations et vérifier la disponibilité sur tous vos calendriers.
+
+### Comment Ça Marche
+
+Cal.com se connecte au système de calendrier de votre entreprise (Google Calendar, Microsoft Outlook, Microsoft 365, Exchange) et :
+
+1. **Vérifie la disponibilité** - Lit votre calendrier existant pour déterminer quand vous êtes libre
+2. **Évite les conflits** - Compare tous les calendriers connectés avant de montrer les créneaux disponibles
+3. **Synchronise les réservations** - Ajoute automatiquement les rendez-vous confirmés à votre calendrier existant
+4. **Met à jour en temps réel** - Lorsque les clients réservent via itellicoAI, le rendez-vous apparaît immédiatement dans votre calendrier d'entreprise
+
+<Note>
+Cal.com agit comme une couche de planification au-dessus de votre système de calendrier existant. Vous continuez à utiliser Google Calendar, Outlook ou Microsoft 365 normalement - Cal.com ne fait que lire la disponibilité et écrire les réservations dedans.
+</Note>
+
+### Systèmes de Calendrier Pris en Charge
+
+Cal.com s'intègre avec :
+- **Google Calendar** - Comptes personnels et Google Workspace
+- **Microsoft Outlook** - Outlook.com et Outlook desktop
+- **Microsoft 365** - Comptes professionnels et entreprise
+- **Microsoft Exchange** - Exchange 2013, 2016 et plus récent
+- **Apple Calendar** - Calendrier iCloud
+
+### Configuration de l'Intégration du Calendrier
+
+<Steps>
+  <Step title="Connecter Votre Calendrier à Cal.com">
+    Dans Cal.com, allez dans **Settings → Calendars** et connectez votre calendrier :
+
+    - **Google Calendar** : Cliquez sur "Connect" et autorisez Cal.com
+    - **Microsoft Outlook/365** : Cliquez sur "Connect" et connectez-vous avec Microsoft
+    - **Exchange** : Cliquez sur "Connect" et entrez les détails de votre serveur Exchange
+
+    [Guide de connexion de calendrier Cal.com](https://cal.com/docs)
+  </Step>
+  <Step title="Configurer la Vérification des Conflits">
+    Une fois connecté, Cal.com vérifie automatiquement ce calendrier pour les conflits. Lorsque quelqu'un essaie de réserver avec vous :
+
+    1. Cal.com vérifie tous les calendriers connectés
+    2. Ne montre que les horaires où vous êtes réellement disponible
+    3. Empêche les doubles réservations sur tous les systèmes
+  </Step>
+  <Step title="Sélectionner la Destination de Réservation">
+    Choisissez quel calendrier reçoit les nouvelles réservations :
+
+    - Dans les paramètres de type d'événement Cal.com
+    - Sélectionnez le calendrier où les rendez-vous doivent être créés
+    - Cela peut être différent des calendriers que Cal.com vérifie pour les conflits
+  </Step>
+</Steps>
+
+<Info>
+**Plusieurs calendriers :** Vous pouvez connecter plusieurs calendriers (par exemple, Google Calendar personnel + Outlook professionnel). Cal.com les vérifie tous pour les conflits et vous choisissez lequel reçoit les nouvelles réservations.
+</Info>
+
+### Scénarios Courants
+
+<AccordionGroup>
+  <Accordion title="L'Entreprise Utilise Microsoft 365" icon="microsoft">
+    **Configuration :**
+    1. Connectez votre compte Microsoft 365 à Cal.com
+    2. Cal.com lit votre disponibilité depuis Microsoft 365
+    3. Les nouvelles réservations apparaissent dans votre calendrier Microsoft 365
+    4. Votre agent IA réserve des rendez-vous via itellicoAI → Cal.com → Microsoft 365
+
+    **Avantage :** Vous et votre équipe continuez à utiliser Microsoft 365 normalement. L'agent IA respecte automatiquement les engagements de calendrier existants de tout le monde.
+  </Accordion>
+
+  <Accordion title="L'Entreprise Utilise Google Workspace" icon="google">
+    **Configuration :**
+    1. Connectez votre compte Google Workspace à Cal.com
+    2. Cal.com lit votre disponibilité depuis Google Calendar
+    3. Les nouvelles réservations apparaissent dans votre Google Calendar
+    4. Votre agent IA réserve des rendez-vous via itellicoAI → Cal.com → Google Calendar
+
+    **Avantage :** Intégration transparente avec votre configuration Google Workspace existante. Toutes les réservations se synchronisent instantanément.
+  </Accordion>
+
+  <Accordion title="Les Membres de l'Équipe Utilisent Différents Systèmes de Calendrier" icon="users">
+    **Configuration :**
+    Chaque membre de l'équipe connecte son propre calendrier à son compte Cal.com :
+    - Alice connecte son Google Calendar
+    - Bob connecte son calendrier Microsoft 365
+    - Carol connecte son calendrier Outlook
+
+    **Avantage :** Cal.com gère la complexité. La disponibilité de chaque personne est vérifiée dans son système de calendrier natif.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Ajouter une Action de Réservation
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/cal/booking-action-light.png" alt="Page Actions montrant l'option Réservation Calendrier dans la section Intégration" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/cal/booking-action-dark.png" alt="Page Actions montrant l'option Réservation Calendrier dans la section Intégration" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Créer l'Action">
+    1. Allez dans votre agent → **Abilities → Actions**
+    2. Cliquez sur **Add Action** → **Calendar Booking**
+    3. Sélectionnez votre type d'événement Cal.com
+  </Step>
+  <Step title="Configurer les Paramètres">
+    L'action est automatiquement nommée "Book [Event Type]" en fonction de votre événement Cal.com. Voir les options de configuration ci-dessous.
+  </Step>
+</Steps>
+
+---
+
+## Configuration
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/cal/event-config-light.png" alt="Dialogue de configuration Nouvelle Action de Réservation montrant les paramètres d'événement, configuration email, notifications SMS et préférences de planification" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/cal/event-config-dark.png" alt="Dialogue de configuration Nouvelle Action de Réservation montrant les paramètres d'événement, configuration email, notifications SMS et préférences de planification" />
+  </div>
+</Frame>
+
+### Événement & Plateforme
+
+**Type d'Événement Cal.com** (Requis)
+- Sélectionner dans le menu déroulant ou entrer l'ID d'événement manuellement
+- Chaque action correspond à un type d'événement Cal.com
+
+**Plateforme de Réunion** (Requis)
+- Choisir comment les réunions sont hébergées :
+  - **Cal Video** - Vidéo intégrée Cal.com
+  - **Zoom** - Nécessite Zoom connecté dans Cal.com
+  - **Google Meet** - Nécessite Google Meet connecté
+  - **Microsoft Teams** - Nécessite Teams connecté
+  - **Phone** - Rendez-vous téléphonique
+  - **In Person** - Réunion physique (adresse requise)
+
+**Fuseau Horaire** (Requis)
+- Par défaut, le fuseau horaire de votre navigateur (peut être changé)
+- Tous les horaires suggérés sont présentés dans ce fuseau horaire
+- Menu déroulant avec recherche de tous les fuseaux horaires disponibles
+
+### Préférences de Planification
+
+**Jours à Regarder en Avant** (1-3 jours, par défaut : 2)
+- Combien de jours futurs l'agent considère lors de la recherche de créneaux
+
+**Créneaux Horaires par Jour** (2-5 créneaux, par défaut : 3)
+- Combien de créneaux horaires par jour l'agent propose
+
+**Heures entre les Suggestions** (1-4 heures, par défaut : 3)
+- Espacement minimum entre les horaires suggérés
+
+**Date de Début** (Optionnel)
+- Date la plus tôt que l'agent peut suggérer
+- Laisser vide pour disponibilité immédiate
+
+### Configuration Email
+
+L'agent utilise cette priorité pour trouver l'email du client :
+
+1. **Contexte Dynamique** - `cal_email` depuis votre API de contexte
+2. **Dossier de Contact** - Email stocké dans le contact itellicoAI
+3. **Email de Secours** - Boîte de réception d'équipe (configurer ci-dessous)
+4. **Demander au Client** - L'agent demande l'email pendant l'appel
+
+**Email de Secours** (Optionnel)
+- Utilisé quand l'email du client n'est pas disponible
+- Laisser vide pour forcer l'agent à toujours collecter l'email
+
+### Notifications SMS
+
+**Envoyer une Confirmation SMS** (Par défaut : activé)
+- Envoie un SMS après la fin de la réservation
+- Inclut les détails de la réunion et le lien de participation
+
+<Warning>
+Les confirmations SMS ne fonctionnent que sur les **appels téléphoniques** où le numéro de téléphone de l'appelant est disponible dans le système. Elles ne seront pas envoyées pour les appels web ou lorsque le numéro de téléphone n'est pas disponible.
+</Warning>
+
+**Modèle SMS**
+- Personnalisez le message avec des espaces réservés :
+  - `{date}` - Date du rendez-vous
+  - `{time}` - Heure du rendez-vous
+  - `{link}` - Lien de réunion
+  - `{location}` - Adresse en personne
+  - `{duration}` - Durée de la réunion
+
+**Instructions de Réservation par Défaut** (Par défaut : activé)
+- Script de planification pré-construit pour l'agent
+- Désactiver seulement si vous avez besoin de plus de contrôle sur le flux de conversation de réservation
+
+---
+
+## Planification pour Plusieurs Employés
+
+Un scénario courant : **"Nous avons 3 employés qui peuvent gérer des rendez-vous, chacun avec une disponibilité différente. Comment planifier pour toute l'équipe ?"**
+
+**Solution :** Utilisez les équipes Cal.com avec planification Round Robin. Cela distribue les rendez-vous entre les membres de l'équipe en fonction de leur disponibilité individuelle.
+
+### Qu'est-ce que les Équipes Cal.com ?
+
+Les équipes Cal.com vous permettent de créer des types d'événements qui peuvent être gérés par plusieurs membres d'équipe. Au lieu de réserver avec une personne spécifique, les clients réservent avec votre équipe, et Cal.com attribue automatiquement le rendez-vous à un membre d'équipe disponible.
+
+<Note>
+Les équipes Cal.com nécessitent un plan Teams ou Organization. La fonctionnalité round robin distribue intelligemment les rendez-vous en fonction de la disponibilité, de la priorité ou de la rotation.
+</Note>
+
+### Comment Fonctionne le Round Robin
+
+Lorsqu'un client réserve un rendez-vous :
+
+1. **Vérifie la disponibilité** - Cal.com vérifie le calendrier de chaque membre d'équipe
+2. **Applique la logique de distribution** - Sélectionne le meilleur membre d'équipe en fonction de votre méthode choisie :
+   - **Priorité** : Attribuer d'abord aux membres d'équipe de priorité supérieure
+   - **Pondéré** : Distribuer proportionnellement (par exemple, le personnel senior obtient plus de réservations)
+   - **Moins récemment réservé** : Rotation uniforme par qui a été réservé le moins récemment
+3. **Réserve avec une personne** - Le client est programmé avec le membre d'équipe sélectionné
+4. **Met à jour le calendrier** - Le rendez-vous apparaît dans le calendrier de ce membre d'équipe
+
+### Configuration des Types d'Événements d'Équipe
+
+<Steps>
+  <Step title="Créer une Équipe dans Cal.com">
+    Dans Cal.com :
+    1. Allez dans **Teams** → **Create Team**
+    2. Nommez votre équipe (par exemple, "Sales Team", "Support Team")
+    3. Invitez les membres d'équipe par email
+    4. Chaque membre connecte son propre calendrier (Google, Microsoft, etc.)
+  </Step>
+  <Step title="Créer un Type d'Événement d'Équipe">
+    Dans votre équipe Cal.com :
+    1. Allez dans **Event Types** → **New Event Type**
+    2. Sélectionnez **Round Robin** comme type d'événement
+    3. Configurez la durée, la plateforme de réunion, etc.
+    4. Sélectionnez quels membres d'équipe peuvent gérer ce type d'événement
+  </Step>
+  <Step title="Configurer la Méthode de Distribution">
+    Choisissez comment les rendez-vous sont distribués :
+
+    **Classement par Priorité :**
+    - Attribuez à chaque membre d'équipe une priorité (Haute, Moyenne, Basse)
+    - Les membres de priorité supérieure obtiennent d'abord les réservations
+    - Utilisez pour le personnel senior ou les spécialistes
+
+    **Distribution Pondérée :**
+    - Donnez à chaque membre un pourcentage de poids (par défaut 100%)
+    - Les poids plus élevés = plus de réservations
+    - Utilisez pour le personnel à temps partiel vs temps plein
+
+    **Moins Récemment Réservé :**
+    - Rotation automatique à travers les membres d'équipe
+    - Assure une distribution uniforme
+    - Utilisez pour un partage équitable de la charge de travail
+  </Step>
+  <Step title="Ajouter à itellicoAI">
+    Une fois votre type d'événement d'équipe créé :
+    1. Dans itellicoAI, allez dans votre agent → **Abilities → Actions**
+    2. Cliquez sur **Add Action** → **Calendar Booking**
+    3. Sélectionnez votre type d'événement d'équipe dans le menu déroulant
+    4. L'action de réservation planifiera maintenant avec votre équipe
+  </Step>
+</Steps>
+
+### Avancé : Hôtes Fixes + Round Robin
+
+Pour les scénarios où une personne doit toujours assister, tandis que d'autres tournent :
+
+**Exemple :** Les appels de vente nécessitent un représentant commercial (rotation) + directeur des ventes (toujours présent)
+
+**Configuration dans Cal.com :**
+1. Créez un type d'événement round robin
+2. Sélectionnez **Fixed Hosts** : Directeur des Ventes (assiste toujours)
+3. Sélectionnez **Round Robin Hosts** : Représentants commerciaux (un assiste par appel)
+4. Cal.com vérifie la disponibilité des deux et réserve quand les deux sont libres
+
+### Exemples de Planification d'Équipe
+
+<AccordionGroup>
+  <Accordion title="Équipe de Vente : 3 Représentants avec Distribution Égale" icon="users">
+    **Scénario :** 3 représentants commerciaux doivent partager les appels de démonstration équitablement
+
+    **Configuration :**
+    - Créez l'équipe "Sales Team" avec 3 membres
+    - Utilisez la distribution **Moins Récemment Réservé**
+    - Chaque représentant connecte son calendrier à Cal.com
+    - Créez le type d'événement "Sales Demo" (30 min, round robin)
+
+    **Résultat :** Les démonstrations sont automatiquement distribuées équitablement. La disponibilité des représentants est vérifiée en temps réel depuis leurs calendriers individuels.
+  </Accordion>
+
+  <Accordion title="Équipe de Support : Attribution Basée sur la Priorité" icon="headset">
+    **Scénario :** Le personnel de support senior devrait obtenir les problèmes complexes, le personnel junior obtient les problèmes de routine
+
+    **Configuration :**
+    - Créez le type d'événement "Technical Support Call" avec distribution par priorité
+    - Personnel senior : Priorité haute
+    - Personnel junior : Priorité moyenne
+
+    **Résultat :** Le personnel senior est réservé en premier lorsque disponible. Le personnel junior gère le débordement.
+  </Accordion>
+
+  <Accordion title="Équipe à Temps Partiel : Distribution Pondérée" icon="clock">
+    **Scénario :** 2 employés à temps plein et 1 employé à temps partiel
+
+    **Configuration :**
+    - Personnel à temps plein : 100% de poids chacun
+    - Personnel à temps partiel : 50% de poids
+    - Utilisez la distribution pondérée
+
+    **Résultat :** Le temps partiel obtient la moitié des réservations du personnel à temps plein.
+  </Accordion>
+
+  <Accordion title="Réunions Multi-Rôles" icon="user-group">
+    **Scénario :** Le client a besoin à la fois d'un spécialiste technique et d'un responsable de compte
+
+    **Configuration :**
+    - Utilisez **Round Robin Groups** (fonctionnalité avancée)
+    - Groupe 1 : Spécialistes techniques (un assiste)
+    - Groupe 2 : Responsables de compte (un assiste)
+
+    **Résultat :** Cal.com sélectionne une personne de chaque groupe, assurant que les deux rôles sont couverts.
+  </Accordion>
+</AccordionGroup>
+
+### Intégration d'Équipe avec itellicoAI
+
+Lorsque vous connectez un type d'événement d'équipe Cal.com à itellicoAI :
+
+1. **Votre agent IA réserve avec l'équipe** - Pas une personne spécifique
+2. **Cal.com gère l'attribution** - Sélectionne automatiquement le meilleur membre d'équipe
+3. **Le client obtient une confirmation** - Avec les détails du membre d'équipe attribué
+4. **Le calendrier du membre d'équipe se met à jour** - Le rendez-vous apparaît dans son calendrier individuel
+
+**Dans vos instructions d'agent :**
+
+```
+Lorsqu'un client souhaite planifier une consultation :
+
+1. Utilisez l'action 'Book Team Consultation'
+2. Le système attribuera automatiquement un membre d'équipe disponible
+3. Confirmez : "Parfait ! Vous êtes programmé avec [membre d'équipe attribué]
+   le [date] à [heure]. Vous recevrez un email de confirmation."
+```
+
+<Info>
+**Flexibilité :** Les membres d'équipe peuvent mettre à jour leur disponibilité individuelle Cal.com, et le round robin respecte automatiquement ces changements. Pas besoin de mettre à jour quoi que ce soit dans itellicoAI.
+</Info>
+
+---
+
+## Utilisation dans les Instructions
+
+Référencez l'action par son nom auto-généré (par exemple, "Book 30-Minute Consultation") dans les instructions de votre agent :
+
+```
+Lorsqu'un client souhaite planifier une consultation :
+
+1. Confirmez : "Je serais ravi de planifier cela pour vous"
+2. Demandez la disponibilité : "Quels jours vous conviennent cette semaine ?"
+3. Collectez l'email si nécessaire
+4. Utilisez l'action 'Book 30-Minute Consultation' pour présenter les horaires
+5. Confirmez verbalement : "Parfait ! Vous êtes programmé pour le [jour] à [heure].
+   Vous recevrez un email de confirmation avec le lien de réunion."
+```
+
+<Info>
+Le nom de l'action est automatiquement généré à partir du titre de votre type d'événement Cal.com (par exemple, "30-Minute Consultation" devient "Book 30-Minute Consultation").
+</Info>
+
+### Gérer les Échecs de Réservation
+
+```
+Si 'Book 30-Minute Consultation' échoue :
+
+1. Excusez-vous : "Je rencontre des difficultés à accéder au calendrier en ce moment"
+2. Proposez une alternative :
+   - "Je peux demander à notre équipe de support de vous rappeler pour planifier"
+   - Collectez le numéro de rappel et le meilleur moment
+3. Si aucune disponibilité : "Nous sommes complets pour [période].
+   [période alternative] vous conviendrait-il ?"
+```
+
+---
+
+## Tests
+
+<Steps>
+  <Step title="Vérifier l'Intégration">
+    - L'intégration Cal.com affiche "Connected"
+    - Les types d'événements apparaissent dans le menu déroulant
+    - Les plateformes de réunion configurées dans Cal.com
+  </Step>
+  <Step title="Tester le Flux de Réservation">
+    1. Démarrez un appel de test avec votre agent
+    2. Demandez une réservation de rendez-vous
+    3. Vérifiez que l'agent présente les horaires disponibles
+    4. Confirmez que la réservation se termine
+  </Step>
+  <Step title="Vérifier les Confirmations">
+    - Confirmation email reçue
+    - Confirmation SMS envoyée (si activée)
+    - Le lien de réunion fonctionne
+    - Le calendrier mis à jour
+  </Step>
+  <Step title="Tester les Cas Limites">
+    - Demandez des dates en dehors de la disponibilité
+    - Testez sans email dans le dossier de contact
+    - Vérifiez la gestion des échecs
+  </Step>
+</Steps>
+
+---
+
+## Dépannage
+
+<AccordionGroup>
+  <Accordion title="L'Action de Réservation n'Apparaît Pas" icon="eye-slash">
+    **Cause :** Cal.com non connecté
+
+    **Solution :**
+    - Allez dans Integrations → Cal.com
+    - Vérifiez que le statut affiche "Connected"
+  </Accordion>
+
+  <Accordion title="Aucun Type d'Événement dans le Menu Déroulant" icon="calendar-xmark">
+    **Cause :** Aucun type d'événement dans Cal.com ou problème de synchronisation
+
+    **Solution :**
+    - Créez des types d'événements dans Cal.com
+    - Déconnectez et reconnectez l'intégration si nécessaire
+  </Accordion>
+
+  <Accordion title="Plateforme de Réunion Désactivée" icon="video-slash">
+    **Cause :** Plateforme non connectée dans Cal.com
+
+    **Solution :**
+    - Allez dans les paramètres de type d'événement Cal.com
+    - Connectez la plateforme (Zoom, Google Meet, etc.)
+    - Déconnectez et reconnectez l'intégration pour synchroniser les changements
+  </Accordion>
+
+  <Accordion title="Confirmation Email Non Reçue" icon="envelope-open-text">
+    **Causes possibles :**
+    - Mauvaise adresse email
+    - Dossier spam
+    - Paramètres email Cal.com
+
+    **Solution :**
+    - Vérifiez le dossier spam/courrier indésirable
+    - Vérifiez l'email dans la confirmation de réservation
+    - Vérifiez les paramètres de notification Cal.com
+  </Accordion>
+
+  <Accordion title="L'Agent n'Utilise Pas l'Action" icon="robot">
+    **Causes possibles :**
+    - Nom d'action non référencé dans les instructions
+    - L'agent ne reconnaît pas l'intention de réservation
+    - Le modèle LLM ne performe pas bien avec l'appel de fonction
+
+    **Solution :**
+    - Référencez le nom auto-généré exact (par exemple, 'Book 30-Minute Consultation')
+    - Vérifiez l'onglet Actions pour voir le nom réel
+    - Vérifiez que l'action est ajoutée à l'agent
+    - Ajoutez un flux de réservation explicite aux instructions
+    - Testez avec clair : "Je veux réserver un rendez-vous"
+    - Essayez GPT-4.1 ou GPT-4.1-mini pour l'appel de fonction le plus fiable
+    - Réduisez la température pour un comportement plus cohérent
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Prochaines Étapes
+
+<CardGroup cols={2}>
+  <Card title="Aperçu des Actions" icon="bolt" href="/fr/build/actions/overview">
+    Découvrez tous les types d'actions
+  </Card>
+  <Card title="Actions API Personnalisées" icon="code" href="/fr/build/actions/custom-api-actions">
+    Créez des flux de réservation personnalisés
+  </Card>
+  <Card title="Actions de Transfert" icon="right-left" href="/fr/build/actions/transfer-details">
+    Routez vers des planificateurs humains si nécessaire
+  </Card>
+  <Card title="Testez Votre Agent" icon="vial" href="/fr/test/web-simulator">
+    Guide de test complet
+  </Card>
+</CardGroup>

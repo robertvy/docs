@@ -1,0 +1,462 @@
+---
+title: "API Keys"
+description: "Create and manage programmatic access to your account"
+icon: "key"
+keywords: 'API keys, authentication, programmatic access, API security, key management, API tokens, key rotation, Bearer token'
+og:description: 'Create and manage API keys for programmatic access. Learn best practices for key rotation, security, and authentication with itellicoAI API.'
+---
+
+## Overview
+
+API keys provide programmatic access to the itellicoAI platform, allowing you to integrate agents into your applications, automate tasks, and build custom workflows.
+
+## What are API Keys?
+
+API keys are secure tokens that authenticate your API requests without requiring user login credentials.
+
+**Key characteristics:**
+- **Account-scoped**: Each key belongs to a specific account
+- **Secret**: Treat like a password - never share or commit to version control
+- **Revocable**: Can be disabled or deleted at any time
+- **Trackable**: Monitor last used timestamp and activity
+
+## Creating API Keys
+
+### How to Create
+
+<Steps>
+  <Step title="Navigate to API Keys">
+    Go to **Settings → API Keys** in your account
+  </Step>
+
+  <Step title="Click Create API Key">
+    Click the **Create API Key** button
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/keys/create-key-light.png" alt="Create API Key dialog with key name and expiration date fields" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/keys/create-key-dark.png" alt="Create API Key dialog with key name and expiration date fields" />
+  </div>
+</Frame>
+  </Step>
+
+  <Step title="Enter a Label">
+    Give your key a descriptive name:
+    - "Production Server"
+    - "Development Environment"
+    - "CI/CD Pipeline"
+    - "Mobile App - iOS"
+  </Step>
+
+  <Step title="Set Expiration (Optional)">
+    Optionally set an expiration date for automatic key rotation
+  </Step>
+
+  <Step title="Copy the Key">
+    **⚠️ IMPORTANT**: The full key is shown only once!
+
+    Copy it immediately and store securely.
+  </Step>
+
+  <Step title="Store Securely">
+    Save the key in:
+    - Environment variables
+    - Secrets manager (AWS Secrets Manager, HashiCorp Vault, etc.)
+    - Password manager
+
+    **Never** commit to git or share publicly!
+  </Step>
+</Steps>
+
+<Warning>
+The full API key is displayed **only once** at creation. If you lose it, you must create a new key.
+</Warning>
+
+## Using API Keys
+
+### Authentication Header
+
+Include your API key in the `Authorization` header:
+
+```bash
+curl https://api.itellico.ai/v1/agents \
+  -H "Authorization: Bearer sk-a1b2c3d4.xyz789..." \
+  -H "Content-Type: application/json"
+```
+
+### Account Context
+
+API keys are scoped to their account. When you create a key in a parent account, it can access both the parent and all subaccounts.
+
+To access a specific account, include the account ID in the URL path:
+
+```bash
+# Access parent account
+curl https://api.itellico.ai/v1/accounts/me/agents \
+  -H "Authorization: Bearer sk-a1b2c3d4.xyz789..." \
+  -H "Content-Type: application/json"
+
+# Access specific subaccount
+curl https://api.itellico.ai/v1/accounts/{account-id}/agents \
+  -H "Authorization: Bearer sk-a1b2c3d4.xyz789..." \
+  -H "Content-Type: application/json"
+```
+
+### SDKs
+
+Using our official SDKs:
+
+<CodeGroup>
+
+```python Python
+from itellico import ItellicoAI
+
+client = ItellicoAI(api_key="sk-a1b2c3d4.xyz789...")
+
+# List agents
+agents = client.agents.list()
+```
+
+```typescript TypeScript
+import { ItellicoAI } from '@itellico/sdk';
+
+const client = new ItellicoAI({
+  apiKey: 'sk-a1b2c3d4.xyz789...'
+});
+
+// List agents
+const agents = await client.agents.list();
+```
+
+</CodeGroup>
+
+<Tip>
+Store API keys in environment variables and never hardcode them in your source code.
+</Tip>
+
+## Managing API Keys
+
+### Viewing Keys
+
+The API Keys page shows:
+- **Label**: Your descriptive name
+- **Partial Key**: First few characters (e.g., `sk-a1b2c3d4...`)
+- **Status**: Active, Revoked, or Expired
+- **Created**: When the key was created
+- **Last Used**: When it was last used for an API request
+- **Expires**: Expiration date (if set)
+
+<Note>
+The full key is **never** shown after creation - only the first few characters for identification.
+</Note>
+
+### Editing Keys
+
+You can update:
+- **Label**: Change the descriptive name
+- **Expiration date**: Extend or set expiration
+
+You **cannot** change:
+- The key itself (create a new one instead)
+- The account it belongs to
+
+### Revoking Keys
+
+To temporarily disable a key without deleting:
+
+1. Go to **Settings → API Keys**
+2. Find the key in the list
+3. Click **Revoke**
+4. The key is disabled immediately
+
+**Why revoke instead of delete?**
+- Keeps the key in logs for auditing
+- Can reactivate if revoked by mistake
+- Preserves creation date and history
+
+### Reactivating Keys
+
+To restore a revoked key:
+
+1. Find the revoked key in the list
+2. Click **Reactivate**
+3. The key works immediately
+
+### Deleting Keys
+
+To permanently remove a key:
+
+1. Go to **Settings → API Keys**
+2. Find the key in the list
+3. Click the menu (⋯) → **Delete**
+4. Confirm deletion
+
+<Warning>
+Deletion is permanent and cannot be undone. The key will immediately stop working.
+</Warning>
+
+## Key Statuses
+
+| Status | Description | API Access |
+|--------|-------------|------------|
+| **Active** | Key is working normally | ✅ Yes |
+| **Revoked** | Manually disabled | ❌ No |
+| **Expired** | Past expiration date | ❌ No |
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="One Key Per Environment" icon="server">
+    Create separate keys for each environment:
+
+    - **Development**: "Dev Server Key"
+    - **Staging**: "Staging Environment"
+    - **Production**: "Production Server"
+
+    **Benefits:**
+    - Revoke dev keys without affecting production
+    - Track usage by environment
+    - Different expiration policies per environment
+  </Accordion>
+
+  <Accordion title="Use Environment Variables" icon="code">
+    Never hardcode API keys in your source code.
+
+    **Good:**
+    ```python
+    import os
+    api_key = os.environ['ITELLICO_API_KEY']
+    ```
+
+    **Bad:**
+    ```python
+    api_key = "sk-a1b2c3d4.xyz789..."  # DON'T DO THIS!
+    ```
+
+    **Environment files (.env):**
+    ```bash
+    ITELLICO_API_KEY=sk-a1b2c3d4.xyz789...
+    ```
+
+    **Add to .gitignore:**
+    ```
+    .env
+    .env.local
+    *.key
+    ```
+  </Accordion>
+
+  <Accordion title="Regular Key Rotation" icon="rotate">
+    Rotate API keys periodically for security:
+
+    **Recommended schedule:**
+    - **Production**: Every 90 days
+    - **Staging**: Every 180 days
+    - **Development**: Yearly or when developers change
+
+    **Rotation process:**
+    1. Create new key with expiration date
+    2. Update applications with new key
+    3. Test thoroughly
+    4. Revoke old key
+    5. Delete old key after 30 days
+  </Accordion>
+
+  <Accordion title="Set Expiration Dates" icon="calendar-xmark">
+    Use expiration dates for:
+    - **Temporary access**: Contractors, demos, POCs
+    - **Forced rotation**: Production keys set to expire in 90 days
+    - **Time-limited features**: Beta testing, trials
+
+    **Example:**
+    - Create key on Jan 1
+    - Set expiration to Apr 1 (90 days)
+    - Get notified 7 days before expiration
+    - Rotate key before expiration
+  </Accordion>
+
+  <Accordion title="Monitor Usage" icon="chart-line">
+    Check "Last Used" timestamps regularly:
+
+    - **Never used**: Delete unused keys
+    - **Old timestamp**: Might be safe to revoke
+    - **Recent activity**: Key is active
+
+    Review your API keys monthly to remove inactive ones.
+  </Accordion>
+
+  <Accordion title="Descriptive Labels" icon="tag">
+    Use clear, descriptive key names:
+
+    **Good labels:**
+    - "Production API Server - us-east-1"
+    - "Mobile App - iOS - Production"
+    - "CI/CD - GitHub Actions"
+    - "Webhook Handler - Staging"
+
+    **Bad labels:**
+    - "API Key 1"
+    - "Test"
+    - "My Key"
+    - "New Key"
+  </Accordion>
+
+  <Accordion title="Secrets Management" icon="vault">
+    Use a secrets manager in production:
+
+    **Options:**
+    - AWS Secrets Manager
+    - HashiCorp Vault
+    - Azure Key Vault
+    - Google Secret Manager
+    - 1Password / LastPass (for teams)
+
+    **Benefits:**
+    - Centralized secret storage
+    - Automatic rotation
+    - Audit logs
+    - Access controls
+  </Accordion>
+</AccordionGroup>
+
+## Security Considerations
+
+<Warning>
+**Never commit API keys to version control!**
+
+If you accidentally commit a key:
+1. Revoke the key immediately
+2. Create a new key
+3. Use `git filter-branch` or BFG Repo-Cleaner to remove from history
+4. Force push to remote
+5. Notify team members to pull latest
+</Warning>
+
+### If a Key is Compromised
+
+<Steps>
+  <Step title="Revoke Immediately">
+    Go to **Settings → API Keys** and revoke the compromised key
+  </Step>
+
+  <Step title="Create New Key">
+    Generate a replacement key with a new label
+  </Step>
+
+  <Step title="Update Applications">
+    Deploy the new key to all affected applications
+  </Step>
+
+  <Step title="Review Logs">
+    Check usage logs for suspicious activity
+  </Step>
+
+  <Step title="Notify Team">
+    Inform your team about the incident
+  </Step>
+
+  <Step title="Investigate">
+    Determine how the key was compromised and prevent recurrence
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="401 Unauthorized" icon="lock">
+    **Causes:**
+    - Invalid API key
+    - Revoked or expired key
+    - Missing `Authorization` header
+    - Incorrect header format
+
+    **Solutions:**
+    - Verify the key is active in Settings
+    - Check the header: `Authorization: Bearer sk-...`
+    - Ensure no extra spaces or characters
+    - Create a new key if lost
+  </Accordion>
+
+  <Accordion title="403 Forbidden" icon="ban">
+    **Causes:**
+    - Key doesn't have access to the requested account
+    - Requesting a subaccount the key can't access
+    - Account is inactive
+
+    **Solutions:**
+    - Verify the key was created in the parent account or the subaccount you're accessing
+    - Check that the account ID in the URL is correct
+    - Verify account status is active
+  </Accordion>
+
+  <Accordion title="429 Too Many Requests" icon="gauge-high">
+    **Causes:**
+    - Exceeded rate limits
+    - Too many concurrent requests
+
+    **Solutions:**
+    - Implement exponential backoff
+    - Cache responses when possible
+    - Upgrade to higher tier plan
+    - Spread requests over time
+  </Accordion>
+
+  <Accordion title="Key not working after creation" icon="circle-xmark">
+    **Possible causes:**
+    - Using wrong key (prefix vs full key)
+    - Extra characters (newlines, spaces)
+    - Revoked immediately after creation
+
+    **Solutions:**
+    - Copy the full key including `sk-` prefix
+    - Trim whitespace from stored key
+    - Verify status is "Active"
+  </Accordion>
+</AccordionGroup>
+
+## FAQs
+
+<AccordionGroup>
+  <Accordion title="How many API keys can I create?">
+    No hard limit, but we recommend:
+    - Small teams: 3-5 keys
+    - Medium teams: 10-15 keys
+    - Enterprise: As needed per environment
+  </Accordion>
+
+  <Accordion title="Can I use one key across multiple accounts?">
+    API keys created in a parent account can access both the parent and all its subaccounts. Keys created in a subaccount can only access that subaccount.
+  </Accordion>
+
+  <Accordion title="What happens if I delete a key?">
+    API requests using that key will immediately fail with 401 Unauthorized. Update your applications first!
+  </Accordion>
+
+  <Accordion title="Can I see what a key was used for?">
+    Yes. The "Last Used" timestamp shows when it was last accessed. For detailed logs, contact support about API access logs.
+  </Accordion>
+
+  <Accordion title="Do API keys expire automatically?">
+    Only if you set an expiration date. Otherwise, keys remain active until revoked or deleted.
+  </Accordion>
+
+  <Accordion title="Can subaccounts have their own API keys?">
+    Yes! Each subaccount can create independent API keys scoped to that subaccount's context.
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="API Reference" icon="book" href="/api-reference/introduction">
+    Explore available API endpoints
+  </Card>
+  <Card title="SDKs" icon="code" href="/api-reference/sdks">
+    Use our official Python and TypeScript SDKs
+  </Card>
+  <Card title="Team Management" icon="users" href="/accounts/team-management">
+    Manage team members
+  </Card>
+</CardGroup>

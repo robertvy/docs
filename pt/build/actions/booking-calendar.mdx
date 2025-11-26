@@ -1,0 +1,561 @@
+---
+title: "Integração de Agendamento e Calendário"
+description: "Agende compromissos automaticamente com integração Cal.com"
+icon: "calendar"
+"keywords": "agendamento de compromissos por IA, integração Cal.com, integração de calendário, agendar compromissos, automação de agendamento por IA, agendamento de compromissos"
+"og:description": "Ative agendamento automático de compromissos com integração Cal.com para automação de agendamento perfeita por IA."
+---
+
+## Visão Geral
+
+A ação de Agendamento permite que seus agentes de IA agendem compromissos durante conversas ao vivo. Integrado com Cal.com, seus agentes podem verificar disponibilidade, apresentar horários, confirmar agendamentos e enviar confirmações automáticas.
+
+<Note>
+Requer uma conta Cal.com e integração ativa. Funciona com o plano gratuito do Cal.com.
+</Note>
+
+<Info>
+**Como funciona:** A ação de agendamento fornece duas funções ao seu agente:
+1. **Obter horários disponíveis** - Busca horários disponíveis do Cal.com
+2. **Agendar compromisso** - Cria o agendamento com detalhes do cliente
+
+Isso lida com o fluxo de agendamento principal. Para fluxos de trabalho avançados como confirmar compromissos existentes, reagendar ou cancelar, você precisará construir lógica personalizada usando [Ações de API Personalizadas](/pt/build/actions/custom-api-actions) que integram diretamente com a API do Cal.com.
+</Info>
+
+---
+
+## Configuração
+
+<Steps>
+  <Step title="Criar Tipos de Eventos Cal.com">
+    Configure tipos de eventos no Cal.com para cada tipo de compromisso:
+    - Duração (15 min, 30 min, 60 min, etc.)
+    - Local da reunião (Zoom, Google Meet, telefone, presencial)
+    - Janelas de disponibilidade
+
+    [Documentação de tipos de eventos Cal.com](https://cal.com/docs/core-features/event-types)
+  </Step>
+  <Step title="Testar Tipos de Eventos">
+    Agende um compromisso de teste no Cal.com para verificar se disponibilidade, links de reunião e notificações funcionam corretamente.
+  </Step>
+  <Step title="Conectar Cal.com">
+    Obtenha sua chave de API Cal.com e conecte ao itellicoAI:
+
+    1. Vá para [Cal.com Configurações → Desenvolvedor → Chaves de API](https://app.cal.com/settings/developer/api-keys)
+    2. Clique em **+ Adicionar**, nomeie (ex: "itellicoAI"), e salve
+    3. No itellicoAI, vá para **Integrações → Cal.com**
+    4. Cole sua chave de API, clique em **Testar Conexão**, depois **Conectar**
+
+    <div style={{ maxWidth: '400px', marginBottom: '1rem' }}>
+      <Frame>
+        <div className="block dark:hidden">
+          <img src="/images/cal/test-cal-light.png" alt="Integração Cal.com" />
+        </div>
+        <div className="hidden dark:block">
+          <img src="/images/cal/test-cal-dark.png" alt="Integração Cal.com" />
+        </div>
+      </Frame>
+    </div>
+  </Step>
+</Steps>
+
+---
+
+## Usando Seu Sistema de Calendário Existente
+
+Uma pergunta comum: **"Usamos Google Calendar / Microsoft Outlook / Microsoft 365. Ainda podemos usar Cal.com?"**
+
+**Sim!** Cal.com integra com seu sistema de calendário existente para prevenir agendamentos duplos e verificar disponibilidade em todos os seus calendários.
+
+### Como Funciona
+
+Cal.com conecta ao sistema de calendário da sua empresa (Google Calendar, Microsoft Outlook, Microsoft 365, Exchange) e:
+
+1. **Verifica disponibilidade** - Lê seu calendário existente para determinar quando você está livre
+2. **Previne conflitos** - Faz referência cruzada de todos os calendários conectados antes de mostrar horários disponíveis
+3. **Sincroniza agendamentos** - Adiciona compromissos confirmados ao seu calendário existente automaticamente
+4. **Atualiza em tempo real** - Quando clientes agendam através do itellicoAI, o compromisso aparece no calendário da sua empresa imediatamente
+
+<Note>
+Cal.com atua como uma camada de agendamento sobre seu sistema de calendário existente. Você continua usando Google Calendar, Outlook ou Microsoft 365 normalmente - Cal.com apenas lê disponibilidade e escreve agendamentos nele.
+</Note>
+
+### Sistemas de Calendário Suportados
+
+Cal.com integra com:
+- **Google Calendar** - Contas pessoais e Google Workspace
+- **Microsoft Outlook** - Outlook.com e Outlook desktop
+- **Microsoft 365** - Contas empresariais e corporativas
+- **Microsoft Exchange** - Exchange 2013, 2016 e mais recentes
+- **Apple Calendar** - Calendário iCloud
+
+### Configurando Integração de Calendário
+
+<Steps>
+  <Step title="Conecte Seu Calendário ao Cal.com">
+    No Cal.com, vá para **Configurações → Calendários** e conecte seu calendário:
+
+    - **Google Calendar**: Clique em "Conectar" e autorize Cal.com
+    - **Microsoft Outlook/365**: Clique em "Conectar" e faça login com Microsoft
+    - **Exchange**: Clique em "Conectar" e insira detalhes do servidor Exchange
+
+    [Guia de conexão de calendário Cal.com](https://cal.com/docs)
+  </Step>
+  <Step title="Configurar Verificação de Conflitos">
+    Uma vez conectado, Cal.com automaticamente verifica este calendário para conflitos. Quando alguém tenta agendar com você:
+
+    1. Cal.com verifica todos os calendários conectados
+    2. Mostra apenas horários quando você está realmente disponível
+    3. Previne agendamentos duplos em todos os sistemas
+  </Step>
+  <Step title="Selecionar Destino de Agendamento">
+    Escolha qual calendário recebe novos agendamentos:
+
+    - Nas configurações de tipo de evento Cal.com
+    - Selecione o calendário onde compromissos devem ser criados
+    - Este pode ser diferente dos calendários que Cal.com verifica para conflitos
+  </Step>
+</Steps>
+
+<Info>
+**Múltiplos calendários:** Você pode conectar múltiplos calendários (ex: Google Calendar pessoal + Outlook do trabalho). Cal.com verifica todos para conflitos e você escolhe qual recebe novos agendamentos.
+</Info>
+
+### Cenários Comuns
+
+<AccordionGroup>
+  <Accordion title="Empresa Usa Microsoft 365" icon="microsoft">
+    **Configuração:**
+    1. Conecte sua conta Microsoft 365 ao Cal.com
+    2. Cal.com lê sua disponibilidade do Microsoft 365
+    3. Novos agendamentos aparecem no seu calendário Microsoft 365
+    4. Seu agente de IA agenda compromissos através de itellicoAI → Cal.com → Microsoft 365
+
+    **Benefício:** Você e sua equipe continuam usando Microsoft 365 normalmente. O agente de IA automaticamente respeita os compromissos de calendário existentes de todos.
+  </Accordion>
+
+  <Accordion title="Empresa Usa Google Workspace" icon="google">
+    **Configuração:**
+    1. Conecte sua conta Google Workspace ao Cal.com
+    2. Cal.com lê sua disponibilidade do Google Calendar
+    3. Novos agendamentos aparecem no seu Google Calendar
+    4. Seu agente de IA agenda compromissos através de itellicoAI → Cal.com → Google Calendar
+
+    **Benefício:** Integração perfeita com sua configuração Google Workspace existente. Todos os agendamentos sincronizam instantaneamente.
+  </Accordion>
+
+  <Accordion title="Membros da Equipe Usam Sistemas de Calendário Diferentes" icon="users">
+    **Configuração:**
+    Cada membro da equipe conecta seu próprio calendário à conta Cal.com:
+    - Alice conecta seu Google Calendar
+    - Bob conecta seu calendário Microsoft 365
+    - Carol conecta seu calendário Outlook
+
+    **Benefício:** Cal.com lida com a complexidade. A disponibilidade de cada pessoa é verificada em seu sistema de calendário nativo.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Adicionar Ação de Agendamento
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/cal/booking-action-light.png" alt="Página de Ações mostrando opção de Agendamento de Calendário na seção Integração" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/cal/booking-action-dark.png" alt="Página de Ações mostrando opção de Agendamento de Calendário na seção Integração" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Criar Ação">
+    1. Vá para seu agente → **Habilidades → Ações**
+    2. Clique em **Adicionar Ação** → **Agendamento de Calendário**
+    3. Selecione seu tipo de evento Cal.com
+  </Step>
+  <Step title="Configurar Definições">
+    A ação é automaticamente nomeada "Agendar [Tipo de Evento]" baseado no seu evento Cal.com. Veja opções de configuração abaixo.
+  </Step>
+</Steps>
+
+---
+
+## Configuração
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/cal/event-config-light.png" alt="Diálogo de configuração de Nova Ação de Agendamento mostrando configurações de evento, configuração de email, notificações SMS e preferências de agendamento" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/cal/event-config-dark.png" alt="Diálogo de configuração de Nova Ação de Agendamento mostrando configurações de evento, configuração de email, notificações SMS e preferências de agendamento" />
+  </div>
+</Frame>
+
+### Evento e Plataforma
+
+**Tipo de Evento Cal.com** (Obrigatório)
+- Selecione no menu suspenso ou insira ID do evento manualmente
+- Cada ação mapeia para um tipo de evento Cal.com
+
+**Plataforma de Reunião** (Obrigatório)
+- Escolha como reuniões são hospedadas:
+  - **Cal Video** - Vídeo integrado Cal.com
+  - **Zoom** - Requer Zoom conectado no Cal.com
+  - **Google Meet** - Requer Google Meet conectado
+  - **Microsoft Teams** - Requer Teams conectado
+  - **Telefone** - Compromisso de ligação telefônica
+  - **Presencial** - Reunião física (endereço obrigatório)
+
+**Fuso Horário** (Obrigatório)
+- Padrão para o fuso horário do seu navegador (pode ser alterado)
+- Todos os horários sugeridos são apresentados neste fuso horário
+- Menu suspenso pesquisável com todos os fusos horários disponíveis
+
+### Preferências de Agendamento
+
+**Dias a Considerar** (1-3 dias, padrão: 2)
+- Quantos dias futuros o agente considera ao encontrar horários
+
+**Horários Por Dia** (2-5 horários, padrão: 3)
+- Quantos horários por dia o agente oferece
+
+**Horas Entre Sugestões** (1-4 horas, padrão: 3)
+- Espaçamento mínimo entre horários sugeridos
+
+**Data de Início** (Opcional)
+- Data mais cedo que o agente pode sugerir
+- Deixe em branco para disponibilidade imediata
+
+### Configuração de Email
+
+O agente usa esta prioridade para encontrar email do cliente:
+
+1. **Contexto Dinâmico** - `cal_email` da sua API de contexto
+2. **Registro de Contato** - Email armazenado no contato itellicoAI
+3. **Email de Fallback** - Caixa de entrada da equipe (configure abaixo)
+4. **Perguntar ao Cliente** - Agente solicita email durante a chamada
+
+**Email de Fallback** (Opcional)
+- Usado quando email do cliente está indisponível
+- Deixe em branco para forçar agente a sempre coletar email
+
+### Notificações SMS
+
+**Enviar Confirmação por SMS** (Padrão: ativado)
+- Envia SMS após agendamento completar
+- Inclui detalhes da reunião e link de participação
+
+<Warning>
+Confirmações por SMS funcionam apenas em **chamadas telefônicas** onde o número de telefone do chamador está disponível no sistema. Elas não serão enviadas para chamadas web ou quando o número de telefone estiver indisponível.
+</Warning>
+
+**Modelo SMS**
+- Personalize a mensagem com marcadores:
+  - `{date}` - Data do compromisso
+  - `{time}` - Horário do compromisso
+  - `{link}` - Link da reunião
+  - `{location}` - Endereço presencial
+  - `{duration}` - Duração da reunião
+
+**Instruções de Agendamento Padrão** (Padrão: ativado)
+- Script de agendamento pré-construído para o agente
+- Desative apenas se precisar de mais controle sobre o fluxo de conversa de agendamento
+
+---
+
+## Agendamento para Múltiplos Funcionários
+
+Um cenário comum: **"Temos 3 funcionários que podem atender compromissos, cada um com disponibilidade diferente. Como agendamos para toda a equipe?"**
+
+**Solução:** Use Equipes Cal.com com agendamento Round Robin. Isso distribui compromissos entre membros da equipe baseado em sua disponibilidade individual.
+
+### O Que São Equipes Cal.com?
+
+Equipes Cal.com permitem criar tipos de eventos que podem ser atendidos por múltiplos membros da equipe. Em vez de agendar com uma pessoa específica, clientes agendam com sua equipe, e Cal.com automaticamente atribui o compromisso a um membro da equipe disponível.
+
+<Note>
+Equipes Cal.com requer plano Teams ou Organization. O recurso round robin distribui inteligentemente compromissos baseado em disponibilidade, prioridade ou rotação.
+</Note>
+
+### Como Round Robin Funciona
+
+Quando um cliente agenda um compromisso:
+
+1. **Verifica disponibilidade** - Cal.com verifica o calendário de cada membro da equipe
+2. **Aplica lógica de distribuição** - Seleciona o melhor membro da equipe baseado no método escolhido:
+   - **Prioridade**: Atribui a membros de prioridade mais alta primeiro
+   - **Ponderado**: Distribui proporcionalmente (ex: funcionários sênior recebem mais agendamentos)
+   - **Menos recentemente agendado**: Rotaciona uniformemente por quem foi agendado menos recentemente
+3. **Agenda com uma pessoa** - Cliente é agendado com o membro da equipe selecionado
+4. **Atualiza calendário** - Compromisso aparece no calendário daquele membro da equipe
+
+### Configurando Tipos de Eventos de Equipe
+
+<Steps>
+  <Step title="Criar uma Equipe no Cal.com">
+    No Cal.com:
+    1. Vá para **Equipes** → **Criar Equipe**
+    2. Nomeie sua equipe (ex: "Equipe de Vendas", "Equipe de Suporte")
+    3. Convide membros da equipe por email
+    4. Cada membro conecta seu próprio calendário (Google, Microsoft, etc.)
+  </Step>
+  <Step title="Criar Tipo de Evento de Equipe">
+    Na sua equipe Cal.com:
+    1. Vá para **Tipos de Eventos** → **Novo Tipo de Evento**
+    2. Selecione **Round Robin** como tipo de evento
+    3. Configure duração, plataforma de reunião, etc.
+    4. Selecione quais membros da equipe podem atender este tipo de evento
+  </Step>
+  <Step title="Configurar Método de Distribuição">
+    Escolha como compromissos são distribuídos:
+
+    **Classificação por Prioridade:**
+    - Atribua cada membro da equipe uma prioridade (Alta, Média, Baixa)
+    - Membros de prioridade mais alta recebem agendamentos primeiro
+    - Use para funcionários sênior ou especialistas
+
+    **Distribuição Ponderada:**
+    - Dê a cada membro um peso percentual (padrão 100%)
+    - Pesos mais altos = mais agendamentos
+    - Use para funcionários meio período vs tempo integral
+
+    **Menos Recentemente Agendado:**
+    - Rotaciona automaticamente entre membros da equipe
+    - Garante distribuição uniforme
+    - Use para compartilhamento igual de carga de trabalho
+  </Step>
+  <Step title="Adicionar ao itellicoAI">
+    Uma vez que seu tipo de evento de equipe está criado:
+    1. No itellicoAI, vá para seu agente → **Habilidades → Ações**
+    2. Clique em **Adicionar Ação** → **Agendamento de Calendário**
+    3. Selecione seu tipo de evento de equipe no menu suspenso
+    4. A ação de agendamento agora agendará com sua equipe
+  </Step>
+</Steps>
+
+### Avançado: Anfitriões Fixos + Round Robin
+
+Para cenários onde uma pessoa deve sempre participar, enquanto outras rotacionam:
+
+**Exemplo:** Chamadas de vendas precisam de um representante de vendas (rotação) + gerente de vendas (sempre presente)
+
+**Configuração no Cal.com:**
+1. Criar tipo de evento round robin
+2. Selecionar **Anfitriões Fixos**: Gerente de Vendas (sempre participa)
+3. Selecionar **Anfitriões Round Robin**: Representantes de vendas (um participa por chamada)
+4. Cal.com verifica disponibilidade de ambos e agenda quando ambos estão livres
+
+### Exemplos de Agendamento de Equipe
+
+<AccordionGroup>
+  <Accordion title="Equipe de Vendas: 3 Representantes com Distribuição Igual" icon="users">
+    **Cenário:** 3 representantes de vendas devem compartilhar chamadas de demonstração igualmente
+
+    **Configuração:**
+    - Criar equipe "Equipe de Vendas" com 3 membros
+    - Usar distribuição **Menos Recentemente Agendado**
+    - Cada representante conecta seu calendário ao Cal.com
+    - Criar tipo de evento "Demonstração de Vendas" (30 min, round robin)
+
+    **Resultado:** Demonstrações são automaticamente distribuídas uniformemente. Disponibilidade do representante é verificada em tempo real de seus calendários individuais.
+  </Accordion>
+
+  <Accordion title="Equipe de Suporte: Atribuição Baseada em Prioridade" icon="headset">
+    **Cenário:** Funcionários de suporte sênior devem receber problemas complexos, funcionários júnior recebem problemas de rotina
+
+    **Configuração:**
+    - Criar tipo de evento "Chamada de Suporte Técnico" com distribuição por prioridade
+    - Funcionários sênior: Prioridade alta
+    - Funcionários júnior: Prioridade média
+
+    **Resultado:** Funcionários sênior são agendados primeiro quando disponíveis. Funcionários júnior lidam com excesso.
+  </Accordion>
+
+  <Accordion title="Equipe Meio Período: Distribuição Ponderada" icon="clock">
+    **Cenário:** 2 funcionários tempo integral e 1 funcionário meio período
+
+    **Configuração:**
+    - Funcionários tempo integral: peso 100% cada
+    - Funcionário meio período: peso 50%
+    - Usar distribuição ponderada
+
+    **Resultado:** Funcionário meio período recebe metade dos agendamentos dos funcionários tempo integral.
+  </Accordion>
+
+  <Accordion title="Reuniões Multi-Função" icon="user-group">
+    **Cenário:** Cliente precisa tanto de especialista técnico quanto de gerente de conta
+
+    **Configuração:**
+    - Usar **Grupos Round Robin** (recurso avançado)
+    - Grupo 1: Especialistas técnicos (um participa)
+    - Grupo 2: Gerentes de conta (um participa)
+
+    **Resultado:** Cal.com seleciona uma pessoa de cada grupo, garantindo que ambas as funções são cobertas.
+  </Accordion>
+</AccordionGroup>
+
+### Integração de Equipe com itellicoAI
+
+Quando você conecta um tipo de evento de equipe Cal.com ao itellicoAI:
+
+1. **Seu agente de IA agenda com a equipe** - Não uma pessoa específica
+2. **Cal.com lida com atribuição** - Seleciona automaticamente o melhor membro da equipe
+3. **Cliente recebe confirmação** - Com detalhes do membro da equipe atribuído
+4. **Calendário do membro da equipe atualiza** - Compromisso aparece em seu calendário individual
+
+**Nas instruções do seu agente:**
+
+```
+Quando um cliente quiser agendar uma consulta:
+
+1. Use a ação 'Agendar Consulta de Equipe'
+2. O sistema atribuirá automaticamente um membro da equipe disponível
+3. Confirme: "Perfeito! Você está agendado com [membro da equipe atribuído]
+   em [data] às [hora]. Você receberá um email de confirmação."
+```
+
+<Info>
+**Flexibilidade:** Membros da equipe podem atualizar sua disponibilidade individual Cal.com, e o round robin automaticamente respeita essas mudanças. Não precisa atualizar nada no itellicoAI.
+</Info>
+
+---
+
+## Usando nas Instruções
+
+Referencie a ação pelo seu nome auto-gerado (ex: "Agendar Consulta de 30 Minutos") nas instruções do seu agente:
+
+```
+Quando um cliente quiser agendar uma consulta:
+
+1. Confirme: "Fico feliz em agendar isso para você"
+2. Pergunte disponibilidade: "Que dias funcionam melhor esta semana?"
+3. Colete email se necessário
+4. Use a ação 'Agendar Consulta de 30 Minutos' para apresentar horários
+5. Confirme verbalmente: "Perfeito! Você está agendado para [dia] às [hora].
+   Você receberá um email de confirmação com o link da reunião."
+```
+
+<Info>
+O nome da ação é gerado automaticamente a partir do título do tipo de evento Cal.com (ex: "Consulta de 30 Minutos" torna-se "Agendar Consulta de 30 Minutos").
+</Info>
+
+### Tratar Falhas de Agendamento
+
+```
+Se 'Agendar Consulta de 30 Minutos' falhar:
+
+1. Peça desculpas: "Estou tendo problemas para acessar o calendário agora"
+2. Ofereça alternativa:
+   - "Posso fazer alguém ligar de volta para agendar"
+   - Colete número de retorno e melhor horário
+3. Se sem disponibilidade: "Estamos totalmente reservados para [período].
+   [Período alternativo] funcionaria?"
+```
+
+---
+
+## Testando
+
+<Steps>
+  <Step title="Verificar Integração">
+    - Integração Cal.com mostra "Conectado"
+    - Tipos de eventos aparecem no menu suspenso
+    - Plataformas de reunião configuradas no Cal.com
+  </Step>
+  <Step title="Testar Fluxo de Agendamento">
+    1. Iniciar chamada de teste com seu agente
+    2. Solicitar agendamento de compromisso
+    3. Verificar se agente apresenta horários disponíveis
+    4. Confirmar que agendamento completa
+  </Step>
+  <Step title="Verificar Confirmações">
+    - Confirmação por email recebida
+    - Confirmação por SMS enviada (se ativada)
+    - Link da reunião funciona
+    - Calendário atualizado
+  </Step>
+  <Step title="Testar Casos Extremos">
+    - Solicitar datas fora da disponibilidade
+    - Testar sem email no registro de contato
+    - Verificar tratamento de falhas
+  </Step>
+</Steps>
+
+---
+
+## Solução de Problemas
+
+<AccordionGroup>
+  <Accordion title="Ação de Agendamento Não Aparece" icon="eye-slash">
+    **Causa:** Cal.com não conectado
+
+    **Solução:**
+    - Vá para Integrações → Cal.com
+    - Verifique se status mostra "Conectado"
+  </Accordion>
+
+  <Accordion title="Sem Tipos de Eventos no Menu Suspenso" icon="calendar-xmark">
+    **Causa:** Sem tipos de eventos no Cal.com ou problema de sincronização
+
+    **Solução:**
+    - Criar tipos de eventos no Cal.com
+    - Desconectar e reconectar integração se necessário
+  </Accordion>
+
+  <Accordion title="Plataforma de Reunião Desativada" icon="video-slash">
+    **Causa:** Plataforma não conectada no Cal.com
+
+    **Solução:**
+    - Vá para configurações de tipo de evento Cal.com
+    - Conecte a plataforma (Zoom, Google Meet, etc.)
+    - Desconecte e reconecte integração para sincronizar mudanças
+  </Accordion>
+
+  <Accordion title="Confirmação por Email Não Recebida" icon="envelope-open-text">
+    **Possíveis causas:**
+    - Endereço de email errado
+    - Pasta de spam
+    - Configurações de email Cal.com
+
+    **Solução:**
+    - Verificar pasta de spam/lixo eletrônico
+    - Verificar email na confirmação de agendamento
+    - Verificar configurações de notificação Cal.com
+  </Accordion>
+
+  <Accordion title="Agente Não Usa a Ação" icon="robot">
+    **Possíveis causas:**
+    - Nome da ação não referenciado nas instruções
+    - Agente não reconhece intenção de agendamento
+    - Modelo LLM não performando bem com chamada de função
+
+    **Solução:**
+    - Referencie nome auto-gerado exato (ex: 'Agendar Consulta de 30 Minutos')
+    - Verifique aba Ações para ver o nome real
+    - Verifique se ação está adicionada ao agente
+    - Adicione fluxo de agendamento explícito às instruções
+    - Teste com claro: "Quero agendar um compromisso"
+    - Tente GPT-4.1 ou GPT-4.1-mini para chamada de função mais confiável
+    - Reduza temperatura para comportamento mais consistente
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Próximos Passos
+
+<CardGroup cols={2}>
+  <Card title="Visão Geral de Ações" icon="bolt" href="/pt/build/actions/overview">
+    Aprenda sobre todos os tipos de ações
+  </Card>
+  <Card title="Ações de API Personalizadas" icon="code" href="/pt/build/actions/custom-api-actions">
+    Construa fluxos de agendamento personalizados
+  </Card>
+  <Card title="Ações de Transferência" icon="right-left" href="/pt/build/actions/transfer-details">
+    Roteie para agendadores humanos se necessário
+  </Card>
+  <Card title="Teste Seu Agente" icon="vial" href="/pt/test/web-simulator">
+    Guia de teste abrangente
+  </Card>
+</CardGroup>

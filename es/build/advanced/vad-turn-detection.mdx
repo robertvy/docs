@@ -1,0 +1,325 @@
+---
+title: "Detección de Actividad de Voz y Detección de Turno"
+description: "Configura la detección de actividad de voz, detección de turno y manejo de interrupciones para un flujo de conversación natural"
+icon: "microphone-lines"
+"keywords": "VAD, detección de actividad de voz, detección de turno, manejo de interrupciones, detección de habla, flujo de conversación, finalización de turno"
+"og:description": "Configura la detección de actividad de voz y detección de turno para un flujo de conversación natural y responsivo con IA y manejo de interrupciones."
+---
+
+## Descripción General
+
+Los controles de Detección de Actividad de Voz (VAD) y Detección de Turno permiten que tus agentes de IA reconozcan cuando los usuarios están hablando, detecten cuándo han terminado su turno y manejen las interrupciones de forma natural. Estas configuraciones son cruciales para crear conversaciones fluidas y similares a las humanas que se sientan responsivas sin cortar a los usuarios a mitad de frase.
+
+VAD y detección de turno trabajan juntos para determinar cuándo escuchar, cuándo responder y cómo manejar las interrupciones - transformando el reconocimiento básico de voz en interacciones conversacionales naturales.
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/operations/vad-light.png" alt="Configuración de Detección de Actividad de Voz (VAD) mostrando barra lateral de navegación con sección de Operaciones expandida y Detección de Actividad de Voz seleccionada, alternador de Finalización Inteligente con icono de información y descripción, alternador de Permitir Interrupciones habilitado, alternador de Generación Preventiva, opciones de Sensibilidad de Detección de Voz (Baja, Media, Alta, Personalizada), y configuraciones avanzadas incluyendo control deslizante de Duración de Habla de Interrupción, control deslizante de Palabras Mínimas y control deslizante de Retraso de Finalización" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/operations/vad-dark.png" alt="Configuración de Detección de Actividad de Voz (VAD) mostrando barra lateral de navegación con sección de Operaciones expandida y Detección de Actividad de Voz seleccionada, alternador de Finalización Inteligente con icono de información y descripción, alternador de Permitir Interrupciones habilitado, alternador de Generación Preventiva, opciones de Sensibilidad de Detección de Voz (Baja, Media, Alta, Personalizada), y configuraciones avanzadas incluyendo control deslizante de Duración de Habla de Interrupción, control deslizante de Palabras Mínimas y control deslizante de Retraso de Finalización" />
+  </div>
+</Frame>
+
+<Note>
+**Aplicación Universal:** Las configuraciones de VAD y detección de turno se aplican a todos los tipos de conversación, incluyendo llamadas telefónicas (SIP/PSTN) y conversaciones basadas en web.
+
+La configuración está disponible en **Configuración del Agente → Operaciones → Detección de Actividad de Voz (VAD)**. Las configuraciones incluyen preajustes de sensibilidad, finalización inteligente, manejo de interrupciones y parámetros de ajuste avanzado.
+</Note>
+
+---
+
+## ¿Qué es la Detección de Actividad de Voz?
+
+### Comprendiendo la Tecnología VAD
+
+La Detección de Actividad de Voz (VAD) es la tecnología que determina cuándo alguien está hablando versus cuando hay silencio o ruido de fondo. Es la base para saber cuándo escuchar y cuándo un usuario ha terminado de hablar.
+
+**Componentes clave:**
+- **Detección de Habla:** Identifica cuándo comienza la actividad de voz
+- **Detección de Silencio:** Reconoce cuándo el habla ha terminado
+- **Filtrado de Ruido:** Distingue el habla de los sonidos de fondo
+
+### ¿Qué es la Detección de Turno?
+
+La detección de turno (también llamada "finalización") determina cuándo un hablante ha terminado su turno conversacional y es momento de que el agente responda. Esto es más sofisticado que la simple detección de silencio, ya que tiene en cuenta las pausas naturales, el tiempo de pensamiento y el contexto conversacional.
+
+---
+
+## Finalización Inteligente
+
+### Detección de Fin de Turno Impulsada por IA
+
+La Finalización Inteligente utiliza un modelo de IA para detectar el fin de turno con mayor precisión que solo VAD básico. Esta característica avanzada ayuda a prevenir cortar a los usuarios durante pausas naturales mientras mantiene un flujo de conversación responsivo.
+
+**Beneficios:**
+- Reduce los cortes falsos durante pausas naturales
+- Mejora el manejo de interrupciones cuando los usuarios interrumpen
+- Maneja mejor oraciones de múltiples cláusulas
+- Tiene en cuenta el contexto conversacional
+
+<Warning>
+**Compromiso de Latencia:** La Finalización Inteligente agrega unos cientos de milisegundos de latencia a la detección de turno. Esto mejora la precisión pero hace que el agente sea ligeramente menos responsivo. Desactívala para aplicaciones críticas en tiempo donde la respuesta inmediata es más importante que la precisión de detección de turno.
+</Warning>
+
+**Comportamiento de respaldo:** Si el modelo de IA no está disponible, el sistema automáticamente recurre a la detección solo basada en VAD para asegurar un funcionamiento confiable.
+
+<Card title="Alternador de Finalización Inteligente" icon="brain-circuit">
+  Activa o desactiva la detección de turno basada en IA. Cuando está desactivada, el sistema usa detección solo basada en VAD con tiempos de respuesta más rápidos.
+</Card>
+
+---
+
+## Preajustes de Sensibilidad
+
+### Opciones de Configuración Rápida
+
+Elige entre niveles de sensibilidad preconfigurados que equilibran la responsividad con la precisión. Cada preajuste ajusta automáticamente múltiples parámetros para un rendimiento óptimo en escenarios comunes.
+
+<AccordionGroup>
+  <Accordion title="Sensibilidad Baja" icon="turtle">
+    **Menos sensible, menos interrupciones**
+
+    Mejor para:
+    - Entornos con ruido de fondo
+    - Usuarios que hablan con pausas largas
+    - Conversaciones formales que requieren paciencia
+  </Accordion>
+
+  <Accordion title="Sensibilidad Media (Recomendada)" icon="gauge">
+    **Sensibilidad equilibrada**
+
+    Mejor para:
+    - Conversaciones de propósito general
+    - Entornos mixtos
+    - La mayoría de casos de uso empresarial
+  </Accordion>
+
+  <Accordion title="Sensibilidad Alta" icon="rabbit">
+    **Más sensible, respuestas más rápidas**
+
+    Mejor para:
+    - Conversaciones de ritmo rápido
+    - Entornos de audio limpio
+    - Interacciones sensibles al tiempo
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Configuraciones Avanzadas
+
+### Configuración Personalizada
+
+Para un control ajustado, cambia al modo "Personalizado" para acceder a parámetros avanzados. Estas configuraciones permiten un ajuste preciso para casos de uso o entornos específicos.
+
+### Manejo de Interrupciones
+
+<AccordionGroup>
+  <Accordion title="Permitir Interrupciones" icon="circle-pause">
+    **Interruptor principal para el manejo de interrupciones**
+
+    Cuando está habilitado, los usuarios pueden interrumpir al agente mientras está hablando. Cuando está deshabilitado, el agente completará su respuesta antes de aceptar nueva entrada.
+
+    **Casos de uso:**
+    - **Habilitado:** Conversaciones naturales, atención al cliente, diálogos interactivos
+    - **Deshabilitado:** Anuncios importantes, exenciones legales, guiones estructurados
+  </Accordion>
+
+  <Accordion title="Duración de Habla de Interrupción" icon="clock">
+    **Duración mínima de habla antes de permitir interrupción (0-5 segundos)**
+
+    Controla cuánto tiempo debe hablar un usuario antes de que el agente reconozca como un intento de interrupción.
+
+    - **Valores más bajos (0.2-0.5s):** Más responsivo, pero puede activarse con interjecciones breves
+    - **Valores más altos (1.0-2.0s):** Más estable, requiere habla sostenida para interrumpir
+
+    **Predeterminado:** 0.5 segundos
+  </Accordion>
+
+  <Accordion title="Palabras Mínimas" icon="text">
+    **Conteo mínimo de palabras antes de permitir interrupción (0-5 palabras)**
+
+    Requiere que el usuario hable un cierto número de palabras antes de reconocer una interrupción.
+
+    - **0 palabras:** Interrumpe con cualquier detección de habla
+    - **1-2 palabras:** Equilibrio entre responsividad y estabilidad
+    - **3-5 palabras:** Requiere entrada sustancial antes de interrumpir
+
+    **Predeterminado:** 0 palabras (interrumpe con cualquier habla)
+  </Accordion>
+
+  <Accordion title="Retraso de Finalización" icon="timer">
+    **Retraso de silencio mínimo antes de considerar que el habla ha terminado (0-2 segundos)**
+
+    Cuánto tiempo esperar en silencio antes de determinar que el usuario ha terminado de hablar.
+
+    - **Valores más bajos (0.2-0.5s):** Respuestas más rápidas, pero pueden cortar pausas reflexivas
+    - **Valores más altos (1.0-2.0s):** Más paciente, permite pausas naturales y tiempo de pensamiento
+
+    **Predeterminado:** 0.5 segundos
+  </Accordion>
+
+  <Accordion title="Umbral VAD" icon="gauge-high">
+    **Sensibilidad de detección de voz (0.0 - 1.0)**
+
+    Controla qué tan sensible es el sistema al detectar habla versus silencio o ruido.
+
+    - **Valores más bajos (0.1-0.3):** Menos sensible, requiere habla más clara
+    - **Valores medios (0.4-0.6):** Equilibrado para la mayoría de entornos
+    - **Valores más altos (0.7-1.0):** Más sensible, detecta habla más silenciosa
+
+    **Predeterminado:** 0.5
+
+    <Warning>
+    Valores muy bajos pueden perder usuarios que hablan suavemente. Valores muy altos pueden activarse con ruido de fondo.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Relleno de Prefijo" icon="backward">
+    **Buffer de audio antes de la detección de habla (0-500ms)**
+
+    Cantidad de audio a incluir antes de que se detecte el habla. Esto ayuda a prevenir cortar el inicio de palabras u oraciones.
+
+    - **Valores más bajos (0-50ms):** Buffer mínimo, riesgo de recortar inicio del habla
+    - **Valores medios (100-200ms):** Buen equilibrio para la mayoría de casos
+    - **Valores más altos (300-500ms):** Máxima preservación del inicio del habla
+
+    **Predeterminado:** 100ms
+  </Accordion>
+
+  <Accordion title="Duración de Silencio" icon="forward">
+    **Umbral de silencio antes de finalizar turno (0-2000ms)**
+
+    Cuánto tiempo esperar en silencio antes de considerar que el habla del usuario ha terminado.
+
+    - **Valores más bajos (100-300ms):** Respuestas rápidas, pero pueden cortar pausas
+    - **Valores medios (400-800ms):** Equilibrado para conversación natural
+    - **Valores más altos (1000-2000ms):** Muy paciente, permite pausas de pensamiento largas
+
+    **Predeterminado:** 500ms
+
+    <Tip>
+    Valores más altos funcionan bien para usuarios que piensan mientras hablan o tienen patrones de habla con pausas naturales.
+    </Tip>
+  </Accordion>
+</AccordionGroup>
+
+### Generación Preventiva
+
+<Card title="Generación Preventiva" icon="rocket">
+  **Comienza a generar respuestas antes de que se complete la detección de turno**
+
+  Cuando está habilitado, el agente comienza a generar una respuesta tan pronto como una transcripción final esté disponible, incluso antes de confirmar el fin de turno. Esto puede reducir la latencia percibida pero ocasionalmente puede generar respuestas que se cancelan si el usuario continúa hablando.
+
+  **Mejores prácticas:**
+  - Funciona mejor con finalización inteligente habilitada
+  - Ideal para conversaciones sensibles al tiempo
+  - Puede aumentar los costos de API debido a generaciones canceladas
+
+  **Predeterminado:** Deshabilitado
+</Card>
+
+---
+
+## Mejores Prácticas de Configuración
+
+### Elegir las Configuraciones Correctas
+
+<Steps>
+  <Step title="Comienza con Preajustes">
+    Comienza con el preajuste de sensibilidad Media para la mayoría de casos de uso. Prueba en tu entorno real antes de personalizar.
+  </Step>
+  <Step title="Prueba con Usuarios Reales">
+    Diferentes acentos, patrones de habla y velocidades de habla pueden requerir diferentes configuraciones. Prueba con usuarios representativos.
+  </Step>
+  <Step title="Considera la Finalización Inteligente">
+    Solo habilita la finalización inteligente si el agente interrumpe a los usuarios a mitad de turno con demasiada frecuencia y otras configuraciones (retraso de finalización, sensibilidad) no pueden solucionarlo. Recuerda que agrega latencia.
+  </Step>
+  <Step title="Ajusta Según el Entorno">
+    Los entornos ruidosos se benefician de menor sensibilidad. Los entornos silenciosos pueden usar mayor sensibilidad para interacciones más responsivas.
+  </Step>
+  <Step title="Considera el Caso de Uso">
+    - **Atención al cliente:** Sensibilidad media a alta
+    - **Recopilación de información:** Sensibilidad media con interrupciones habilitadas
+    - **Anuncios:** Sensibilidad baja con interrupciones deshabilitadas
+    - **Llamadas de ventas:** Sensibilidad media a alta con interrupciones habilitadas
+  </Step>
+</Steps>
+
+---
+
+## Escenarios Comunes
+
+### Guía de Solución de Problemas
+
+<AccordionGroup>
+  <Accordion title="El agente corta a los usuarios a mitad de frase" icon="scissors">
+    **Síntomas:** El agente comienza a responder antes de que los usuarios terminen de hablar
+
+    **Soluciones:**
+    - Aumenta el retraso de finalización o duración de silencio
+    - Cambia a un preajuste de sensibilidad más baja
+    - Si usas configuraciones personalizadas, aumenta el requisito de palabras mínimas
+    - Considera habilitar la finalización inteligente como último recurso (agrega latencia)
+  </Accordion>
+
+  <Accordion title="El agente responde demasiado lentamente" icon="hourglass">
+    **Síntomas:** Retraso notable entre que el usuario termina y el agente responde
+
+    **Soluciones:**
+    - Disminuye el retraso de finalización o duración de silencio
+    - Cambia a un preajuste de sensibilidad más alta
+    - Desactiva la finalización inteligente si está habilitada (reduce latencia)
+    - Habilita la generación preventiva
+  </Accordion>
+
+  <Accordion title="El agente no reconoce interrupciones" icon="ban">
+    **Síntomas:** Los usuarios no pueden interrumpir al agente cuando está hablando
+
+    **Soluciones:**
+    - Asegúrate de que "Permitir Interrupciones" esté habilitado
+    - Disminuye la duración de habla de interrupción
+    - Reduce el requisito de palabras mínimas
+    - Cambia a preajuste de sensibilidad más alta
+  </Accordion>
+
+  <Accordion title="Activaciones falsas por ruido de fondo" icon="volume-high">
+    **Síntomas:** El agente responde a sonidos de fondo o ruido
+
+    **Soluciones:**
+    - Cambia a preajuste de sensibilidad más baja
+    - Disminuye el umbral VAD
+    - Aumenta el requisito de palabras mínimas
+    - Aumenta la duración de habla de interrupción
+  </Accordion>
+
+  <Accordion title="Habla perdida de usuarios que hablan suavemente" icon="volume-low">
+    **Síntomas:** El agente no detecta cuando usuarios silenciosos están hablando
+
+    **Soluciones:**
+    - Cambia a preajuste de sensibilidad más alta
+    - Aumenta el umbral VAD
+    - Disminuye la duración de habla de interrupción
+    - Verifica la calidad del micrófono/entrada de audio
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Características Relacionadas
+
+<CardGroup cols={2}>
+  <Card title="Configuración de Voz" icon="sliders" href="/es/build/voice-speech/voice-settings">
+    Configura la velocidad de voz, tono y otros parámetros TTS
+  </Card>
+  <Card title="Sonido Ambiente" icon="music" href="/es/build/voice-speech/ambient-sound">
+    Agrega audio de fondo para conversaciones más naturales
+  </Card>
+  <Card title="Pronunciaciones Personalizadas" icon="spell-check" href="/es/build/voice-speech/custom-pronunciations">
+    Asegura la pronunciación correcta de nombres y términos técnicos
+  </Card>
+  <Card title="Controles DTMF" icon="hashtag" href="/es/build/advanced/dtmf-controls">
+    Configura la interacción con el teclado telefónico para navegación IVR
+  </Card>
+</CardGroup>

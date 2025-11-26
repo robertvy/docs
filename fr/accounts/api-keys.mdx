@@ -1,0 +1,462 @@
+---
+title: "Clés API"
+description: "Créer et gérer l'accès programmatique à votre compte"
+icon: "key"
+keywords: 'clés API, authentification, accès programmatique, sécurité API, gestion de clés, jetons API, rotation de clés, jeton Bearer'
+og:description: 'Créez et gérez des clés API pour l accès programmatique. Apprenez les meilleures pratiques pour la rotation de clés, la sécurité et l authentification avec l API itellicoAI.'
+---
+
+## Vue d'ensemble
+
+Les clés API fournissent un accès programmatique à la plateforme itellicoAI, vous permettant d'intégrer des agents dans vos applications, d'automatiser des tâches et de créer des flux de travail personnalisés.
+
+## Qu'est-ce qu'une clé API ?
+
+Les clés API sont des jetons sécurisés qui authentifient vos requêtes API sans nécessiter d'identifiants de connexion utilisateur.
+
+**Caractéristiques clés :**
+- **Limitée au compte** : Chaque clé appartient à un compte spécifique
+- **Secrète** : À traiter comme un mot de passe - ne jamais partager ou commiter dans le contrôle de version
+- **Révocable** : Peut être désactivée ou supprimée à tout moment
+- **Traçable** : Surveiller l'horodatage de dernière utilisation et l'activité
+
+## Création de clés API
+
+### Comment créer
+
+<Steps>
+  <Step title="Accéder aux clés API">
+    Allez dans **Paramètres → Clés API** dans votre compte
+  </Step>
+
+  <Step title="Cliquer sur Créer une clé API">
+    Cliquez sur le bouton **Créer une clé API**
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/keys/create-key-light.png" alt="Dialogue de création de clé API avec les champs nom de clé et date d'expiration" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/keys/create-key-dark.png" alt="Dialogue de création de clé API avec les champs nom de clé et date d'expiration" />
+  </div>
+</Frame>
+  </Step>
+
+  <Step title="Entrer un libellé">
+    Donnez à votre clé un nom descriptif :
+    - "Serveur de production"
+    - "Environnement de développement"
+    - "Pipeline CI/CD"
+    - "Application mobile - iOS"
+  </Step>
+
+  <Step title="Définir l'expiration (Optionnel)">
+    Définissez éventuellement une date d'expiration pour une rotation automatique des clés
+  </Step>
+
+  <Step title="Copier la clé">
+    **⚠️ IMPORTANT** : La clé complète n'est affichée qu'une seule fois !
+
+    Copiez-la immédiatement et stockez-la en toute sécurité.
+  </Step>
+
+  <Step title="Stocker en toute sécurité">
+    Enregistrez la clé dans :
+    - Variables d'environnement
+    - Gestionnaire de secrets (AWS Secrets Manager, HashiCorp Vault, etc.)
+    - Gestionnaire de mots de passe
+
+    **Jamais** commiter dans git ou partager publiquement !
+  </Step>
+</Steps>
+
+<Warning>
+La clé API complète n'est affichée **qu'une seule fois** lors de la création. Si vous la perdez, vous devez créer une nouvelle clé.
+</Warning>
+
+## Utilisation des clés API
+
+### En-tête d'authentification
+
+Incluez votre clé API dans l'en-tête `Authorization` :
+
+```bash
+curl https://api.itellico.ai/v1/agents \
+  -H "Authorization: Bearer sk-a1b2c3d4.xyz789..." \
+  -H "Content-Type: application/json"
+```
+
+### Contexte de compte
+
+Les clés API sont limitées à leur compte. Lorsque vous créez une clé dans un compte parent, elle peut accéder à la fois au parent et à tous les sous-comptes.
+
+Pour accéder à un compte spécifique, incluez l'ID du compte dans le chemin de l'URL :
+
+```bash
+# Accéder au compte parent
+curl https://api.itellico.ai/v1/accounts/me/agents \
+  -H "Authorization: Bearer sk-a1b2c3d4.xyz789..." \
+  -H "Content-Type: application/json"
+
+# Accéder à un sous-compte spécifique
+curl https://api.itellico.ai/v1/accounts/{account-id}/agents \
+  -H "Authorization: Bearer sk-a1b2c3d4.xyz789..." \
+  -H "Content-Type: application/json"
+```
+
+### SDKs
+
+Utilisation de nos SDKs officiels :
+
+<CodeGroup>
+
+```python Python
+from itellico import ItellicoAI
+
+client = ItellicoAI(api_key="sk-a1b2c3d4.xyz789...")
+
+# Lister les agents
+agents = client.agents.list()
+```
+
+```typescript TypeScript
+import { ItellicoAI } from '@itellico/sdk';
+
+const client = new ItellicoAI({
+  apiKey: 'sk-a1b2c3d4.xyz789...'
+});
+
+// Lister les agents
+const agents = await client.agents.list();
+```
+
+</CodeGroup>
+
+<Tip>
+Stockez les clés API dans des variables d'environnement et ne les codez jamais en dur dans votre code source.
+</Tip>
+
+## Gestion des clés API
+
+### Affichage des clés
+
+La page Clés API affiche :
+- **Libellé** : Votre nom descriptif
+- **Clé partielle** : Premiers caractères (ex : `sk-a1b2c3d4...`)
+- **Statut** : Active, Révoquée ou Expirée
+- **Créée** : Date de création de la clé
+- **Dernière utilisation** : Date de dernière utilisation pour une requête API
+- **Expire** : Date d'expiration (si définie)
+
+<Note>
+La clé complète n'est **jamais** affichée après la création - seulement les premiers caractères pour l'identification.
+</Note>
+
+### Modification des clés
+
+Vous pouvez mettre à jour :
+- **Libellé** : Modifier le nom descriptif
+- **Date d'expiration** : Prolonger ou définir l'expiration
+
+Vous **ne pouvez pas** modifier :
+- La clé elle-même (créez-en une nouvelle à la place)
+- Le compte auquel elle appartient
+
+### Révocation des clés
+
+Pour désactiver temporairement une clé sans la supprimer :
+
+1. Allez dans **Paramètres → Clés API**
+2. Trouvez la clé dans la liste
+3. Cliquez sur **Révoquer**
+4. La clé est désactivée immédiatement
+
+**Pourquoi révoquer au lieu de supprimer ?**
+- Conserve la clé dans les journaux pour l'audit
+- Peut être réactivée si révoquée par erreur
+- Préserve la date de création et l'historique
+
+### Réactivation des clés
+
+Pour restaurer une clé révoquée :
+
+1. Trouvez la clé révoquée dans la liste
+2. Cliquez sur **Réactiver**
+3. La clé fonctionne immédiatement
+
+### Suppression des clés
+
+Pour supprimer définitivement une clé :
+
+1. Allez dans **Paramètres → Clés API**
+2. Trouvez la clé dans la liste
+3. Cliquez sur le menu (⋯) → **Supprimer**
+4. Confirmez la suppression
+
+<Warning>
+La suppression est permanente et ne peut pas être annulée. La clé cessera immédiatement de fonctionner.
+</Warning>
+
+## Statuts des clés
+
+| Statut | Description | Accès API |
+|--------|-------------|-----------|
+| **Active** | La clé fonctionne normalement | ✅ Oui |
+| **Révoquée** | Désactivée manuellement | ❌ Non |
+| **Expirée** | Passée la date d'expiration | ❌ Non |
+
+## Bonnes pratiques
+
+<AccordionGroup>
+  <Accordion title="Une clé par environnement" icon="server">
+    Créez des clés séparées pour chaque environnement :
+
+    - **Développement** : "Clé serveur dev"
+    - **Staging** : "Environnement de staging"
+    - **Production** : "Serveur de production"
+
+    **Avantages :**
+    - Révoquer les clés de dev sans affecter la production
+    - Suivre l'utilisation par environnement
+    - Différentes politiques d'expiration par environnement
+  </Accordion>
+
+  <Accordion title="Utiliser des variables d'environnement" icon="code">
+    Ne codez jamais en dur les clés API dans votre code source.
+
+    **Bon :**
+    ```python
+    import os
+    api_key = os.environ['ITELLICO_API_KEY']
+    ```
+
+    **Mauvais :**
+    ```python
+    api_key = "sk-a1b2c3d4.xyz789..."  # NE FAITES PAS ÇA !
+    ```
+
+    **Fichiers d'environnement (.env) :**
+    ```bash
+    ITELLICO_API_KEY=sk-a1b2c3d4.xyz789...
+    ```
+
+    **Ajouter à .gitignore :**
+    ```
+    .env
+    .env.local
+    *.key
+    ```
+  </Accordion>
+
+  <Accordion title="Rotation régulière des clés" icon="rotate">
+    Faites tourner les clés API périodiquement pour la sécurité :
+
+    **Calendrier recommandé :**
+    - **Production** : Tous les 90 jours
+    - **Staging** : Tous les 180 jours
+    - **Développement** : Annuellement ou lors de changements de développeurs
+
+    **Processus de rotation :**
+    1. Créer une nouvelle clé avec date d'expiration
+    2. Mettre à jour les applications avec la nouvelle clé
+    3. Tester minutieusement
+    4. Révoquer l'ancienne clé
+    5. Supprimer l'ancienne clé après 30 jours
+  </Accordion>
+
+  <Accordion title="Définir des dates d'expiration" icon="calendar-xmark">
+    Utilisez des dates d'expiration pour :
+    - **Accès temporaire** : Contractuels, démos, POCs
+    - **Rotation forcée** : Clés de production expiration à 90 jours
+    - **Fonctionnalités limitées dans le temps** : Tests bêta, essais
+
+    **Exemple :**
+    - Créer une clé le 1er janvier
+    - Définir l'expiration au 1er avril (90 jours)
+    - Recevoir une notification 7 jours avant l'expiration
+    - Faire tourner la clé avant l'expiration
+  </Accordion>
+
+  <Accordion title="Surveiller l'utilisation" icon="chart-line">
+    Vérifiez régulièrement les horodatages "Dernière utilisation" :
+
+    - **Jamais utilisée** : Supprimer les clés inutilisées
+    - **Ancien horodatage** : Peut être sûr de révoquer
+    - **Activité récente** : La clé est active
+
+    Examinez vos clés API mensuellement pour supprimer celles qui sont inactives.
+  </Accordion>
+
+  <Accordion title="Libellés descriptifs" icon="tag">
+    Utilisez des noms de clés clairs et descriptifs :
+
+    **Bons libellés :**
+    - "Serveur API Production - us-east-1"
+    - "Application mobile - iOS - Production"
+    - "CI/CD - GitHub Actions"
+    - "Gestionnaire de webhooks - Staging"
+
+    **Mauvais libellés :**
+    - "Clé API 1"
+    - "Test"
+    - "Ma clé"
+    - "Nouvelle clé"
+  </Accordion>
+
+  <Accordion title="Gestion des secrets" icon="vault">
+    Utilisez un gestionnaire de secrets en production :
+
+    **Options :**
+    - AWS Secrets Manager
+    - HashiCorp Vault
+    - Azure Key Vault
+    - Google Secret Manager
+    - 1Password / LastPass (pour les équipes)
+
+    **Avantages :**
+    - Stockage centralisé des secrets
+    - Rotation automatique
+    - Journaux d'audit
+    - Contrôles d'accès
+  </Accordion>
+</AccordionGroup>
+
+## Considérations de sécurité
+
+<Warning>
+**Ne commitez jamais les clés API dans le contrôle de version !**
+
+Si vous commitez accidentellement une clé :
+1. Révoquez la clé immédiatement
+2. Créez une nouvelle clé
+3. Utilisez `git filter-branch` ou BFG Repo-Cleaner pour la supprimer de l'historique
+4. Force push vers le dépôt distant
+5. Notifiez les membres de l'équipe de récupérer la dernière version
+</Warning>
+
+### Si une clé est compromise
+
+<Steps>
+  <Step title="Révoquer immédiatement">
+    Allez dans **Paramètres → Clés API** et révoquez la clé compromise
+  </Step>
+
+  <Step title="Créer une nouvelle clé">
+    Générez une clé de remplacement avec un nouveau libellé
+  </Step>
+
+  <Step title="Mettre à jour les applications">
+    Déployez la nouvelle clé dans toutes les applications affectées
+  </Step>
+
+  <Step title="Examiner les journaux">
+    Vérifiez les journaux d'utilisation pour détecter toute activité suspecte
+  </Step>
+
+  <Step title="Notifier l'équipe">
+    Informez votre équipe de l'incident
+  </Step>
+
+  <Step title="Enquêter">
+    Déterminez comment la clé a été compromise et empêchez la récurrence
+  </Step>
+</Steps>
+
+## Dépannage
+
+<AccordionGroup>
+  <Accordion title="401 Non autorisé" icon="lock">
+    **Causes :**
+    - Clé API invalide
+    - Clé révoquée ou expirée
+    - En-tête `Authorization` manquant
+    - Format d'en-tête incorrect
+
+    **Solutions :**
+    - Vérifiez que la clé est active dans les paramètres
+    - Vérifiez l'en-tête : `Authorization: Bearer sk-...`
+    - Assurez-vous qu'il n'y a pas d'espaces ou de caractères supplémentaires
+    - Créez une nouvelle clé si perdue
+  </Accordion>
+
+  <Accordion title="403 Interdit" icon="ban">
+    **Causes :**
+    - La clé n'a pas accès au compte demandé
+    - Demande d'un sous-compte auquel la clé ne peut pas accéder
+    - Le compte est inactif
+
+    **Solutions :**
+    - Vérifiez que la clé a été créée dans le compte parent ou le sous-compte auquel vous accédez
+    - Vérifiez que l'ID de compte dans l'URL est correct
+    - Vérifiez que le statut du compte est actif
+  </Accordion>
+
+  <Accordion title="429 Trop de requêtes" icon="gauge-high">
+    **Causes :**
+    - Limites de taux dépassées
+    - Trop de requêtes simultanées
+
+    **Solutions :**
+    - Implémenter un backoff exponentiel
+    - Mettre en cache les réponses lorsque possible
+    - Passer à un plan de niveau supérieur
+    - Répartir les requêtes dans le temps
+  </Accordion>
+
+  <Accordion title="La clé ne fonctionne pas après la création" icon="circle-xmark">
+    **Causes possibles :**
+    - Utilisation de la mauvaise clé (préfixe vs clé complète)
+    - Caractères supplémentaires (sauts de ligne, espaces)
+    - Révoquée immédiatement après la création
+
+    **Solutions :**
+    - Copiez la clé complète incluant le préfixe `sk-`
+    - Supprimez les espaces de la clé stockée
+    - Vérifiez que le statut est "Active"
+  </Accordion>
+</AccordionGroup>
+
+## FAQ
+
+<AccordionGroup>
+  <Accordion title="Combien de clés API puis-je créer ?">
+    Pas de limite stricte, mais nous recommandons :
+    - Petites équipes : 3-5 clés
+    - Équipes moyennes : 10-15 clés
+    - Entreprise : Selon les besoins par environnement
+  </Accordion>
+
+  <Accordion title="Puis-je utiliser une clé sur plusieurs comptes ?">
+    Les clés API créées dans un compte parent peuvent accéder à la fois au parent et à tous ses sous-comptes. Les clés créées dans un sous-compte ne peuvent accéder qu'à ce sous-compte.
+  </Accordion>
+
+  <Accordion title="Que se passe-t-il si je supprime une clé ?">
+    Les requêtes API utilisant cette clé échoueront immédiatement avec 401 Non autorisé. Mettez d'abord à jour vos applications !
+  </Accordion>
+
+  <Accordion title="Puis-je voir ce pour quoi une clé a été utilisée ?">
+    Oui. L'horodatage "Dernière utilisation" indique quand elle a été accédée pour la dernière fois. Pour des journaux détaillés, contactez le support concernant les journaux d'accès API.
+  </Accordion>
+
+  <Accordion title="Les clés API expirent-elles automatiquement ?">
+    Seulement si vous définissez une date d'expiration. Sinon, les clés restent actives jusqu'à ce qu'elles soient révoquées ou supprimées.
+  </Accordion>
+
+  <Accordion title="Les sous-comptes peuvent-ils avoir leurs propres clés API ?">
+    Oui ! Chaque sous-compte peut créer des clés API indépendantes limitées au contexte de ce sous-compte.
+  </Accordion>
+</AccordionGroup>
+
+## Prochaines étapes
+
+<CardGroup cols={2}>
+  <Card title="Référence API" icon="book" href="/fr/api-reference/introduction">
+    Explorez les endpoints API disponibles
+  </Card>
+  <Card title="SDKs" icon="code" href="/fr/api-reference/sdks">
+    Utilisez nos SDKs officiels Python et TypeScript
+  </Card>
+  <Card title="Gestion d'équipe" icon="users" href="/fr/accounts/team-management">
+    Gérer les membres de l'équipe
+  </Card>
+</CardGroup>

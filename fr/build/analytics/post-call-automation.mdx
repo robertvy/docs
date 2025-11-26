@@ -1,0 +1,351 @@
+---
+title: "Automatisation des emails post-appel"
+description: "Automatiser les emails de suivi déclenchés par les résultats de conversation et l'analytique"
+icon: "envelope-open-text"
+"keywords": "automatisation post-appel, emails automatisés, emails de suivi, résultats de conversation, automatisation email IA, actions post-appel"
+"og:description": "Automatisez les emails de suivi intelligents déclenchés par les résultats de conversation, le sentiment et les conditions personnalisées."
+---
+
+## Aperçu
+
+Les emails post-appel sont envoyés automatiquement après les conversations en fonction des résultats, des objectifs, du sentiment ou des conditions personnalisées que vous définissez.
+
+**Accès :** Éditeur d'agent → **Analytics → Emails post-appel**
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/postcalls/postcall-email-light.png" alt="Interface Emails post-appel montrant la barre latérale de navigation avec la section Analytics développée et Emails post-appel sélectionnée, zone de contenu principale avec titre 'Emails post-appel' et sous-titre 'Envoyer automatiquement des emails de suivi basés sur les résultats d'appel', état vide avec icône email, message 'Pas encore d'emails post-appel' et description 'Créer des emails de suivi automatisés qui s'envoient après les appels', et bouton Créer le premier email" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/postcalls/postcall-email-dark.png" alt="Interface Emails post-appel montrant la barre latérale de navigation avec la section Analytics développée et Emails post-appel sélectionnée, zone de contenu principale avec titre 'Emails post-appel' et sous-titre 'Envoyer automatiquement des emails de suivi basés sur les résultats d'appel', état vide avec icône email, message 'Pas encore d'emails post-appel' et description 'Créer des emails de suivi automatisés qui s'envoient après les appels', et bouton Créer le premier email" />
+  </div>
+</Frame>
+
+**Cas d'usage :** Confirmations de rendez-vous, demandes de rappel, escalades de plaintes, collecte de retours, suivis de ventes, suivi de problèmes non résolus
+
+---
+
+## Configuration
+
+<Steps>
+  <Step title="Accéder aux emails post-appel">
+    Éditeur d'agent → **Analytics → Emails post-appel** → **Créer un email**
+  </Step>
+
+  <Step title="Choisir un point de départ (optionnel)">
+    **Les modèles** fournissent des déclencheurs et du contenu pré-configurés pour les cas d'usage courants :
+
+    - **Rappel demandé** - Le client demande un suivi
+    - **Rendez-vous réservé** - Réunion/consultation planifiée
+    - **Plainte client** - Escalade d'insatisfaction
+    - **Question sans réponse** - L'agent n'a pas pu répondre
+    - **Problème technique** - Achemine les bugs/erreurs aux équipes techniques
+    - **Demande de facturation** - Questions de paiement/facture
+    - **Escalade nécessaire** - Nécessite l'attention de la direction
+    - **Commande passée** - Confirmation d'achat
+    - **Demande de démo** - Intérêt pour une démonstration produit
+    - **Retours positifs** - Partager les compliments avec l'équipe
+
+    <Info>
+    Les modèles sont des points de départ entièrement personnalisables. Vous pouvez aussi partir de zéro.
+    </Info>
+  </Step>
+
+  <Step title="Configurer le nom de notification">
+    **Nom :** Identifiant interne (par ex., "Alerte de demande de rappel")
+  </Step>
+
+  <Step title="Définir la condition de déclenchement">
+    Décrivez quand envoyer (l'IA analyse cela par rapport à la transcription d'appel) :
+
+    ```
+    Exemple : "Le client a-t-il demandé un rappel, demandé à être
+    contacté plus tard, ou souhaité qu'on le suive ?"
+    ```
+
+    <Tip>
+    Soyez spécifique. Plus votre description de déclenchement est détaillée, plus la correspondance IA est précise.
+    </Tip>
+
+    **Ou :** Activez "Toujours envoyer après chaque appel" pour contourner la vérification de condition
+  </Step>
+
+  <Step title="Configurer les destinataires">
+    **Destinataires fixes :** Saisissez des adresses email spécifiques (plusieurs supportées)
+
+    ```
+    Exemple : support@entreprise.com, manager@entreprise.com
+    ```
+
+    **Destinataires dynamiques (propulsés par IA) :** L'IA route vers différents destinataires selon le contenu de l'appel
+
+    ```
+    Exemple : Router les plaintes par gravité
+    - Si menace légale → legal@entreprise.com
+    - Si en colère/annulation → retention@entreprise.com
+    - Si problème produit → qualite@entreprise.com
+    - Sinon → support@entreprise.com
+
+    Exemple : Router les problèmes techniques par type
+    - Si problème site web → dev@entreprise.com
+    - Si système de facturation → facturation-tech@entreprise.com
+    - Sinon → support-tech@entreprise.com
+
+    Exemple : Router les commandes par valeur
+    - Si commande supérieure à 1000€ → responsable-ventes@entreprise.com
+    - Sinon → commandes@entreprise.com
+    ```
+  </Step>
+
+  <Step title="Concevoir le modèle d'email">
+    **Objet :** `Rappel demandé`
+
+    **Corps :** Utilisez l'éditeur de texte enrichi avec des variables (voir [Variables de modèle](#variables-de-modele) ci-dessous)
+
+    - **Variables système :** Cliquez sur le sélecteur de variables pour insérer (par ex., `{{customer_name}}`, `{{conversation_summary}}`)
+    - **Variables dynamiques :** Tapez `{{dyn_` + nom descriptif (par ex., `{{dyn_appointment_date}}`)
+  </Step>
+
+  <Step title="Enregistrer et activer">
+    Enregistrer la notification → Activer l'interrupteur **Activé**
+  </Step>
+</Steps>
+
+---
+
+## Variables de modèle
+
+### Variables système
+
+Utilisez le **sélecteur de variables** dans l'éditeur pour les insérer.
+
+<Info>
+**Disponibilité :** Certaines variables ne se remplissent que sous certaines conditions :
+- Numéros de téléphone (`customer_number`, `to_number`) - Appels téléphoniques uniquement
+- Données client (`customer_name`, `customer_email`) - Seulement si l'appelant existe comme contact dans votre système
+- Transcription de conversation - Seulement si la transcription est activée
+</Info>
+
+**Détails de conversation :**
+- `{{conversation_date}}` - Date/heure complète au format 24 heures
+- `{{conversation_time}}` - Heure au format 12 heures
+- `{{conversation_duration}}` - Durée au format MM:SS
+- `{{conversation_status}}` - Statut (Terminé, Échoué, etc.)
+- `{{conversation_direction}}` - Entrant/Sortant
+- `{{conversation_summary}}` - Résumé généré par IA
+- `{{conversation_transcript}}` - Transcription complète avec texte de secours
+- `{{transcript}}` - Transcription simple (sans secours)
+- `{{conversation_url}}` - Lien pour voir la conversation
+- `{{conversation_uuid}}` - Identifiant unique
+
+**Agent & Compte :**
+- `{{agent_name}}` - Nom de l'agent IA
+- `{{account_name}}` - Nom de votre organisation
+
+**Informations client** (seulement si le contact existe) :
+- `{{customer_number}}` - Numéro de téléphone du client (appels téléphoniques uniquement)
+- `{{customer_name}}` - Nom du client (si le contact existe)
+- `{{customer_email}}` - Email du client (si le contact existe)
+- `{{to_number}}` - Numéro de téléphone appelé (appels téléphoniques uniquement)
+
+### Variables dynamiques
+
+**Comment elles fonctionnent :** Tapez `{{dyn_` suivi d'un nom descriptif. L'IA analyse la transcription de l'appel et extrait l'information.
+
+**Exemples :**
+```
+{{dyn_appointment_date}} → L'IA trouve la date mentionnée dans l'appel
+{{dyn_appointment_time}} → L'IA trouve l'heure mentionnée
+{{dyn_issue_summary}} → L'IA résume le problème discuté
+{{dyn_ticket_number}} → L'IA localise toute référence de ticket
+{{dyn_next_steps}} → L'IA identifie les actions convenues
+{{dyn_shipping_address}} → L'IA extrait l'adresse mentionnée
+{{dyn_order_number}} → L'IA trouve la référence de commande
+```
+
+<Tip>
+Le nom de la variable guide l'IA. Des noms plus spécifiques = meilleure précision d'extraction.
+
+✅ `{{dyn_rescheduled_appointment_date}}`
+❌ `{{dyn_date}}`
+</Tip>
+
+---
+
+## Exemples
+
+<AccordionGroup>
+  <Accordion title="Confirmation de rendez-vous" icon="calendar-check">
+    **Déclencheur :**
+    ```
+    L'appelant a-t-il planifié, réservé ou confirmé un rendez-vous ou une réunion ?
+    ```
+
+    **Destinataires :** Fixe - `equipe@entreprise.com`
+
+    **Objet :** `Rendez-vous confirmé - {{dyn_appointment_date}}`
+
+    **Corps :**
+    ```
+    Bonjour {{customer_first_name}},
+
+    Votre rendez-vous est confirmé :
+
+    📅 {{dyn_appointment_date}} à {{dyn_appointment_time}}
+    📍 {{dyn_location}}
+    🔗 {{dyn_meeting_link}}
+
+    Besoin de reprogrammer ? Appelez {{agent_name}}
+
+    Cordialement,
+    {{agent_name}}
+    ```
+
+    **Variables utilisées :**
+    - Système : `{{customer_first_name}}`, `{{agent_name}}`
+    - Dynamiques : `{{dyn_appointment_date}}`, `{{dyn_appointment_time}}`, `{{dyn_location}}`, `{{dyn_meeting_link}}`
+  </Accordion>
+
+  <Accordion title="Demande de rappel" icon="phone">
+    **Déclencheur :**
+    ```
+    Le client a-t-il demandé un rappel, un appel de suivi, ou demandé à être contacté plus tard ?
+    ```
+
+    **Destinataires :** Fixe - `support@entreprise.com`
+
+    **Objet :** `Rappel demandé`
+
+    **Corps :**
+    ```
+    Le client a demandé un rappel :
+
+    Téléphone : {{customer_number}}
+    Date : {{conversation_date}}
+    Raison : {{conversation_summary}}
+
+    Voir l'appel : {{conversation_url}}
+    ```
+
+    **Variables utilisées :**
+    - Système : `{{customer_number}}`, `{{conversation_date}}`, `{{conversation_summary}}`, `{{conversation_url}}`
+  </Accordion>
+
+  <Accordion title="Routage intelligent par gravité" icon="route">
+    **Déclencheur :**
+    ```
+    Le client a-t-il exprimé son insatisfaction, déposé une plainte, ou signalé un problème ?
+    ```
+
+    **Destinataires :** Dynamique
+    ```
+    Router par gravité :
+    - Si menace légale → legal@entreprise.com
+    - Si en colère/annulation → retention@entreprise.com
+    - Si problème produit → qualite@entreprise.com
+    - Sinon → support@entreprise.com
+    ```
+
+    **Objet :** `Problème client - {{dyn_severity}}`
+
+    **Corps :**
+    ```
+    Problème signalé :
+
+    Client : {{customer_number}}
+    Gravité : {{dyn_severity}}
+    Problème : {{dyn_issue_summary}}
+
+    Voir l'appel complet : {{conversation_url}}
+    ```
+
+    **Variables utilisées :**
+    - Système : `{{customer_number}}`, `{{conversation_url}}`
+    - Dynamiques : `{{dyn_severity}}`, `{{dyn_issue_summary}}`
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Conseils
+
+<AccordionGroup>
+  <Accordion title="Écrire des déclencheurs spécifiques" icon="bullseye">
+    ❌ Mauvais : "Client mécontent"
+
+    ✅ Bon : "Le client a-t-il exprimé son insatisfaction, sa frustration, mentionné être mécontent, ou menacé d'annuler/laisser un avis négatif ?"
+  </Accordion>
+
+  <Accordion title="Tester avec de vrais appels" icon="vial">
+    Activez la notification et testez avec de vrais appels ou des appels test pour vérifier le déclenchement et le contenu.
+  </Accordion>
+
+  <Accordion title="Garder les emails courts" icon="align-left">
+    - 3-5 paragraphes maximum
+    - Un objectif clair
+    - Un seul appel à l'action
+    - Puces pour plusieurs éléments
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Dépannage
+
+<AccordionGroup>
+  <Accordion title="L'email ne s'envoie pas" icon="envelope-open-text">
+    **Causes possibles :**
+    - La notification est désactivée
+    - La condition de déclenchement ne correspond pas au contenu de l'appel
+    - Le client n'a pas d'adresse email valide
+
+    **Solutions :**
+    - Vérifier que la notification est activée (basculer sur Activé)
+    - Réviser la description du déclencheur et tester avec des appels correspondants
+    - Vérifier que le contact a un email ou utiliser l'extraction de destinataire dynamique
+  </Accordion>
+
+  <Accordion title="Les variables ne se remplissent pas" icon="brackets-curly">
+    **Causes possibles :**
+    - Faute de frappe dans le nom de la variable
+    - Nom de variable dynamique trop vague
+    - Données non disponibles (par ex., client pas dans le système)
+
+    **Solutions :**
+    - Utiliser les noms de variables exacts du sélecteur de variables
+    - Rendre les noms de variables dynamiques plus spécifiques et descriptifs
+    - Tester avec de vrais appels pour vérifier l'extraction
+    - Vérifier les [conditions de disponibilité](#variables-de-modele) pour les variables système
+  </Accordion>
+
+  <Accordion title="Mauvais routage" icon="route">
+    **Causes possibles :**
+    - Description des règles de routage peu claire
+    - L'IA interprète mal le contenu de l'appel
+
+    **Solutions :**
+    - Réviser et clarifier la description des règles de routage
+    - Rendre les critères plus explicites avec des mots-clés spécifiques
+    - Tester avec des appels exemples et ajuster les règles
+    - Ajouter une route de secours "Sinon"
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Prochaines étapes
+
+<CardGroup cols={2}>
+  <Card title="Objectifs de conversation" icon="bullseye" href="/fr/build/analytics/conversation-goals">
+    Définir des objectifs qui déclenchent des emails
+  </Card>
+  <Card title="Tableau de bord" icon="chart-line" href="/fr/optimize/analytics-dashboard">
+    Surveiller la performance des emails
+  </Card>
+  <Card title="Objectifs de conversation" icon="target" href="/fr/build/analytics/conversation-goals">
+    Configurer les conditions de déclenchement
+  </Card>
+  <Card title="Contexte dynamique" icon="brackets-curly" href="/fr/build/advanced/dynamic-context">
+    Passer des données pour les variables
+  </Card>
+</CardGroup>

@@ -1,0 +1,462 @@
+---
+title: "API-Schlüssel"
+description: "Programmatischen Zugriff auf dein Konto erstellen und verwalten"
+icon: "key"
+keywords: 'API-Schlüssel, Authentifizierung, Programmatischer Zugriff, API-Sicherheit, Schlüsselverwaltung, API-Tokens, Schlüsselrotation, Bearer-Token'
+og:description: 'Erstellen und verwalten du API-Schlüssel für programmatischen Zugriff. Lernen du Best Practices für Schlüsselrotation, Sicherheit und Authentifizierung mit der itellicoAI-API.'
+---
+
+## Übersicht
+
+API-Schlüssel ermöglichen programmatischen Zugriff auf die itellicoAI-Plattform und erlauben es dir, Agenten in deine Anwendungen zu integrieren, Aufgaben zu automatisieren und benutzerdefinierte Workflows zu erstellen.
+
+## Was sind API-Schlüssel?
+
+API-Schlüssel sind sichere Tokens, die deine API-Anfragen authentifizieren, ohne dass Benutzer-Anmeldedaten erforderlich sind.
+
+**Hauptmerkmale:**
+- **Account-gebunden**: Jeder Schlüssel gehört zu einem bestimmten Konto
+- **Geheim**: Behandeln du ihn wie ein Passwort - niemals teilen oder in Versionskontrolle einchecken
+- **Widerrufbar**: Kann jederzeit deaktiviert oder gelöscht werden
+- **Nachverfolgbar**: Überwache den Zeitstempel der letzten Verwendung und Aktivität
+
+## API-Schlüssel erstellen
+
+### Wie erstellt man einen Schlüssel
+
+<Steps>
+  <Step title="Zu API-Schlüssel navigieren">
+    Gehe zu **Einstellungen → API-Schlüssel** in deinem Konto
+  </Step>
+
+  <Step title="API-Schlüssel erstellen klicken">
+    Klicke auf die Schaltfläche **API-Schlüssel erstellen**
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/keys/create-key-light.png" alt="API-Schlüssel erstellen Dialog mit Schlüsselnamen und Ablaufdatum" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/keys/create-key-dark.png" alt="API-Schlüssel erstellen Dialog mit Schlüsselnamen und Ablaufdatum" />
+  </div>
+</Frame>
+  </Step>
+
+  <Step title="Bezeichnung eingeben">
+    Gib deinem Schlüssel einen aussagekräftigen Namen:
+    - "Produktionsserver"
+    - "Entwicklungsumgebung"
+    - "CI/CD-Pipeline"
+    - "Mobile App - iOS"
+  </Step>
+
+  <Step title="Ablaufdatum festlegen (Optional)">
+    Optional können du ein Ablaufdatum für automatische Schlüsselrotation festlegen
+  </Step>
+
+  <Step title="Schlüssel kopieren">
+    **⚠️ WICHTIG**: Der vollständige Schlüssel wird nur einmal angezeigt!
+
+    Kopiere ihn sofort und speichere ihn sicher.
+  </Step>
+
+  <Step title="Sicher speichern">
+    Speichern du den Schlüssel in:
+    - Umgebungsvariablen
+    - Secrets Manager (AWS Secrets Manager, HashiCorp Vault, etc.)
+    - Passwort-Manager
+
+    **Niemals** in Git einchecken oder öffentlich teilen!
+  </Step>
+</Steps>
+
+<Warning>
+Der vollständige API-Schlüssel wird **nur einmal** bei der Erstellung angezeigt. Wenn du ihn verlieren, müssen du einen neuen Schlüssel erstellen.
+</Warning>
+
+## API-Schlüssel verwenden
+
+### Authentifizierungs-Header
+
+Füge deinen API-Schlüssel in den `Authorization`-Header ein:
+
+```bash
+curl https://api.itellico.ai/v1/agents \
+  -H "Authorization: Bearer sk-a1b2c3d4.xyz789..." \
+  -H "Content-Type: application/json"
+```
+
+### Account-Kontext
+
+API-Schlüssel sind auf ihr Konto beschränkt. Wenn du einen Schlüssel in einem Elternkonto erstellen, kann er auf das Elternkonto und alle Unterkonten zugreifen.
+
+Um auf ein bestimmtes Konto zuzugreifen, füge die Account-ID in den URL-Pfad ein:
+
+```bash
+# Auf Elternkonto zugreifen
+curl https://api.itellico.ai/v1/accounts/me/agents \
+  -H "Authorization: Bearer sk-a1b2c3d4.xyz789..." \
+  -H "Content-Type: application/json"
+
+# Auf bestimmtes Unterkonto zugreifen
+curl https://api.itellico.ai/v1/accounts/{account-id}/agents \
+  -H "Authorization: Bearer sk-a1b2c3d4.xyz789..." \
+  -H "Content-Type: application/json"
+```
+
+### SDKs
+
+Verwendung unserer offiziellen SDKs:
+
+<CodeGroup>
+
+```python Python
+from itellico import ItellicoAI
+
+client = ItellicoAI(api_key="sk-a1b2c3d4.xyz789...")
+
+# Agenten auflisten
+agents = client.agents.list()
+```
+
+```typescript TypeScript
+import { ItellicoAI } from '@itellico/sdk';
+
+const client = new ItellicoAI({
+  apiKey: 'sk-a1b2c3d4.xyz789...'
+});
+
+// Agenten auflisten
+const agents = await client.agents.list();
+```
+
+</CodeGroup>
+
+<Tip>
+Speichern du API-Schlüssel in Umgebungsvariablen und codieren du sie niemals fest in deinen Quellcode.
+</Tip>
+
+## API-Schlüssel verwalten
+
+### Schlüssel anzeigen
+
+Die API-Schlüssel-Seite zeigt:
+- **Bezeichnung**: dein beschreibender Name
+- **Teilschlüssel**: Erste Zeichen (z.B. `sk-a1b2c3d4...`)
+- **Status**: Aktiv, Widerrufen oder Abgelaufen
+- **Erstellt**: Wann der Schlüssel erstellt wurde
+- **Zuletzt verwendet**: Wann er zuletzt für eine API-Anfrage verwendet wurde
+- **Läuft ab**: Ablaufdatum (falls festgelegt)
+
+<Note>
+Der vollständige Schlüssel wird nach der Erstellung **niemals** angezeigt - nur die ersten Zeichen zur Identifikation.
+</Note>
+
+### Schlüssel bearbeiten
+
+du können aktualisieren:
+- **Bezeichnung**: Ändern du den beschreibenden Namen
+- **Ablaufdatum**: Verlängern oder Ablaufdatum festlegen
+
+du **können nicht** ändern:
+- Den Schlüssel selbst (erstelle stattdessen einen neuen)
+- Das Konto, zu dem er gehört
+
+### Schlüssel widerrufen
+
+Um einen Schlüssel vorübergehend zu deaktivieren, ohne ihn zu löschen:
+
+1. Gehe zu **Einstellungen → API-Schlüssel**
+2. Finden du den Schlüssel in der Liste
+3. Klicke auf **Widerrufen**
+4. Der Schlüssel wird sofort deaktiviert
+
+**Warum widerrufen statt löschen?**
+- Behält den Schlüssel in Logs zur Prüfung
+- Kann reaktiviert werden, falls versehentlich widerrufen
+- Bewahrt Erstellungsdatum und Verlauf
+
+### Schlüssel reaktivieren
+
+Um einen widerrufenen Schlüssel wiederherzustellen:
+
+1. Finden du den widerrufenen Schlüssel in der Liste
+2. Klicke auf **Reaktivieren**
+3. Der Schlüssel funktioniert sofort
+
+### Schlüssel löschen
+
+Um einen Schlüssel dauerhaft zu entfernen:
+
+1. Gehe zu **Einstellungen → API-Schlüssel**
+2. Finden du den Schlüssel in der Liste
+3. Klicke auf das Menü (⋯) → **Löschen**
+4. Löschen bestätigen
+
+<Warning>
+Die Löschung ist dauerhaft und kann nicht rückgängig gemacht werden. Der Schlüssel funktioniert sofort nicht mehr.
+</Warning>
+
+## Schlüsselstatus
+
+| Status | Beschreibung | API-Zugriff |
+|--------|-------------|------------|
+| **Aktiv** | Schlüssel funktioniert normal | ✅ Ja |
+| **Widerrufen** | Manuell deaktiviert | ❌ Nein |
+| **Abgelaufen** | Nach Ablaufdatum | ❌ Nein |
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Ein Schlüssel pro Umgebung" icon="server">
+    Erstelle separate Schlüssel für jede Umgebung:
+
+    - **Entwicklung**: "Dev-Server-Schlüssel"
+    - **Staging**: "Staging-Umgebung"
+    - **Produktion**: "Produktionsserver"
+
+    **Vorteile:**
+    - Dev-Schlüssel widerrufen, ohne Produktion zu beeinträchtigen
+    - Nutzung nach Umgebung nachverfolgen
+    - Unterschiedliche Ablaufrichtlinien pro Umgebung
+  </Accordion>
+
+  <Accordion title="Umgebungsvariablen verwenden" icon="code">
+    Codieren du API-Schlüssel niemals fest in deinen Quellcode.
+
+    **Gut:**
+    ```python
+    import os
+    api_key = os.environ['ITELLICO_API_KEY']
+    ```
+
+    **Schlecht:**
+    ```python
+    api_key = "sk-a1b2c3d4.xyz789..."  # MACHEN SIE DAS NICHT!
+    ```
+
+    **Umgebungsdateien (.env):**
+    ```bash
+    ITELLICO_API_KEY=sk-a1b2c3d4.xyz789...
+    ```
+
+    **Zu .gitignore hinzufügen:**
+    ```
+    .env
+    .env.local
+    *.key
+    ```
+  </Accordion>
+
+  <Accordion title="Regelmäßige Schlüsselrotation" icon="rotate">
+    Rotieren du API-Schlüssel regelmäßig aus Sicherheitsgründen:
+
+    **Empfohlener Zeitplan:**
+    - **Produktion**: Alle 90 Tage
+    - **Staging**: Alle 180 Tage
+    - **Entwicklung**: Jährlich oder bei Entwicklerwechsel
+
+    **Rotationsprozess:**
+    1. Neuen Schlüssel mit Ablaufdatum erstellen
+    2. Anwendungen mit neuem Schlüssel aktualisieren
+    3. Gründlich testen
+    4. Alten Schlüssel widerrufen
+    5. Alten Schlüssel nach 30 Tagen löschen
+  </Accordion>
+
+  <Accordion title="Ablaufdaten festlegen" icon="calendar-xmark">
+    Verwende Ablaufdaten für:
+    - **Temporärer Zugriff**: Auftragnehmer, Demos, POCs
+    - **Erzwungene Rotation**: Produktionsschlüssel auf 90 Tage Ablauf gesetzt
+    - **Zeitlich begrenzte Funktionen**: Beta-Tests, Testversionen
+
+    **Beispiel:**
+    - Schlüssel am 1. Januar erstellen
+    - Ablauf auf 1. April setzen (90 Tage)
+    - 7 Tage vor Ablauf benachrichtigt werden
+    - Schlüssel vor Ablauf rotieren
+  </Accordion>
+
+  <Accordion title="Nutzung überwachen" icon="chart-line">
+    Überprüfe regelmäßig die Zeitstempel "Zuletzt verwendet":
+
+    - **Nie verwendet**: Ungenutzte Schlüssel löschen
+    - **Alter Zeitstempel**: Könnte sicher widerrufen werden
+    - **Aktuelle Aktivität**: Schlüssel ist aktiv
+
+    Überprüfe deine API-Schlüssel monatlich, um inaktive zu entfernen.
+  </Accordion>
+
+  <Accordion title="Beschreibende Bezeichnungen" icon="tag">
+    Verwende klare, beschreibende Schlüsselnamen:
+
+    **Gute Bezeichnungen:**
+    - "Produktions-API-Server - us-east-1"
+    - "Mobile App - iOS - Produktion"
+    - "CI/CD - GitHub Actions"
+    - "Webhook-Handler - Staging"
+
+    **Schlechte Bezeichnungen:**
+    - "API-Schlüssel 1"
+    - "Test"
+    - "Mein Schlüssel"
+    - "Neuer Schlüssel"
+  </Accordion>
+
+  <Accordion title="Secrets-Management" icon="vault">
+    Verwende einen Secrets Manager in der Produktion:
+
+    **Optionen:**
+    - AWS Secrets Manager
+    - HashiCorp Vault
+    - Azure Key Vault
+    - Google Secret Manager
+    - 1Password / LastPass (für Teams)
+
+    **Vorteile:**
+    - Zentralisierte Secret-Speicherung
+    - Automatische Rotation
+    - Audit-Logs
+    - Zugriffskontrollen
+  </Accordion>
+</AccordionGroup>
+
+## Sicherheitsüberlegungen
+
+<Warning>
+**Checken du niemals API-Schlüssel in Versionskontrolle ein!**
+
+Wenn du versehentlich einen Schlüssel einchecken:
+1. Widerrufen du den Schlüssel sofort
+2. Erstelle einen neuen Schlüssel
+3. Verwende `git filter-branch` oder BFG Repo-Cleaner, um ihn aus dem Verlauf zu entfernen
+4. Force Push zum Remote
+5. Benachrichtigen du Teammitglieder, die neueste Version zu pullen
+</Warning>
+
+### Wenn ein Schlüssel kompromittiert ist
+
+<Steps>
+  <Step title="Sofort widerrufen">
+    Gehe zu **Einstellungen → API-Schlüssel** und widerrufen du den kompromittierten Schlüssel
+  </Step>
+
+  <Step title="Neuen Schlüssel erstellen">
+    Generieren du einen Ersatzschlüssel mit neuer Bezeichnung
+  </Step>
+
+  <Step title="Anwendungen aktualisieren">
+    Deployen du den neuen Schlüssel in allen betroffenen Anwendungen
+  </Step>
+
+  <Step title="Logs überprüfen">
+    Überprüfe Nutzungslogs auf verdächtige Aktivitäten
+  </Step>
+
+  <Step title="Team benachrichtigen">
+    Informieren du dein Team über den Vorfall
+  </Step>
+
+  <Step title="Untersuchen">
+    Ermitteln du, wie der Schlüssel kompromittiert wurde und verhindern du Wiederholung
+  </Step>
+</Steps>
+
+## Fehlerbehebung
+
+<AccordionGroup>
+  <Accordion title="401 Unauthorized" icon="lock">
+    **Ursachen:**
+    - Ungültiger API-Schlüssel
+    - Widerrufener oder abgelaufener Schlüssel
+    - Fehlender `Authorization`-Header
+    - Falsches Header-Format
+
+    **Lösungen:**
+    - Überprüfe, ob der Schlüssel in den Einstellungen aktiv ist
+    - Prüfe den Header: `Authorization: Bearer sk-...`
+    - Stelle sicher, dass keine zusätzlichen Leerzeichen oder Zeichen vorhanden sind
+    - Erstelle einen neuen Schlüssel, falls verloren
+  </Accordion>
+
+  <Accordion title="403 Forbidden" icon="ban">
+    **Ursachen:**
+    - Schlüssel hat keinen Zugriff auf das angeforderte Konto
+    - Anforderung eines Unterkontos, auf das der Schlüssel nicht zugreifen kann
+    - Konto ist inaktiv
+
+    **Lösungen:**
+    - Überprüfe, ob der Schlüssel im Elternkonto oder dem Unterkonto erstellt wurde, auf das du zugreifen
+    - Prüfen du, ob die Account-ID in der URL korrekt ist
+    - Überprüfe, ob der Kontostatus aktiv ist
+  </Accordion>
+
+  <Accordion title="429 Too Many Requests" icon="gauge-high">
+    **Ursachen:**
+    - Ratenlimits überschritten
+    - Zu viele gleichzeitige Anfragen
+
+    **Lösungen:**
+    - Implementieren du exponentielles Backoff
+    - Cachen du Antworten wenn möglich
+    - Upgraden du auf höheren Tarif
+    - Verteilen du Anfragen über die Zeit
+  </Accordion>
+
+  <Accordion title="Schlüssel funktioniert nach Erstellung nicht" icon="circle-xmark">
+    **Mögliche Ursachen:**
+    - Falscher Schlüssel verwendet (Präfix vs. vollständiger Schlüssel)
+    - Zusätzliche Zeichen (Zeilenumbrüche, Leerzeichen)
+    - Sofort nach Erstellung widerrufen
+
+    **Lösungen:**
+    - Kopiere den vollständigen Schlüssel einschließlich `sk-`-Präfix
+    - Entferne Leerzeichen aus dem gespeicherten Schlüssel
+    - Überprüfe, ob der Status "Aktiv" ist
+  </Accordion>
+</AccordionGroup>
+
+## FAQs
+
+<AccordionGroup>
+  <Accordion title="Wie viele API-Schlüssel kann ich erstellen?">
+    Keine harte Grenze, aber wir empfehlen:
+    - Kleine Teams: 3-5 Schlüssel
+    - Mittlere Teams: 10-15 Schlüssel
+    - Enterprise: Nach Bedarf pro Umgebung
+  </Accordion>
+
+  <Accordion title="Kann ich einen Schlüssel über mehrere Konten verwenden?">
+    API-Schlüssel, die in einem Elternkonto erstellt wurden, können auf das Elternkonto und alle seine Unterkonten zugreifen. Schlüssel, die in einem Unterkonto erstellt wurden, können nur auf dieses Unterkonto zugreifen.
+  </Accordion>
+
+  <Accordion title="Was passiert, wenn ich einen Schlüssel lösche?">
+    API-Anfragen mit diesem Schlüssel schlagen sofort mit 401 Unauthorized fehl. Aktualisieren du zuerst deine Anwendungen!
+  </Accordion>
+
+  <Accordion title="Kann ich sehen, wofür ein Schlüssel verwendet wurde?">
+    Ja. Der Zeitstempel "Zuletzt verwendet" zeigt, wann er zuletzt aufgerufen wurde. Für detaillierte Logs wenden du sich an den Support bezüglich API-Zugriffslogs.
+  </Accordion>
+
+  <Accordion title="Laufen API-Schlüssel automatisch ab?">
+    Nur wenn du ein Ablaufdatum festlegen. Andernfalls bleiben Schlüssel aktiv, bis sie widerrufen oder gelöscht werden.
+  </Accordion>
+
+  <Accordion title="Können Unterkonten eigene API-Schlüssel haben?">
+    Ja! Jedes Unterkonto kann unabhängige API-Schlüssel erstellen, die auf den Kontext dieses Unterkontos beschränkt sind.
+  </Accordion>
+</AccordionGroup>
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="API-Referenz" icon="book" href="/de/api-reference/introduction">
+    Verfügbare API-Endpunkte erkunden
+  </Card>
+  <Card title="SDKs" icon="code" href="/de/api-reference/sdks">
+    Verwende unsere offiziellen Python- und TypeScript-SDKs
+  </Card>
+  <Card title="Teamverwaltung" icon="users" href="/de/accounts/team-management">
+    Teammitglieder verwalten
+  </Card>
+</CardGroup>

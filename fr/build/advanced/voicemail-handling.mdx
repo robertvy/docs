@@ -1,0 +1,530 @@
+---
+title: "Gestion de la messagerie vocale"
+description: "Configurez la détection de répondeur automatique (AMD) pour identifier et gérer les systèmes de messagerie vocale dans les campagnes sortantes"
+icon: "voicemail"
+"keywords": "détection de répondeur automatique, AMD, détection de messagerie vocale, appels sortants, gestion de messagerie vocale, automatisation de campagne"
+"og:description": "Configurez la détection de répondeur automatique pour identifier et gérer automatiquement les systèmes de messagerie vocale dans les campagnes IA sortantes."
+---
+
+## Aperçu
+
+La détection de répondeur automatique (AMD) permet à vos agents IA de détecter automatiquement lorsque les appels sortants atteignent une messagerie vocale au lieu d'une personne réelle. Lorsqu'une messagerie vocale est détectée, l'agent raccroche et enregistre le résultat, vous permettant de réessayer à différents moments pour maximiser les chances d'atteindre une personne réelle.
+
+Cette fonctionnalité critique empêche le gaspillage de temps d'agent à parler à des répondeurs et optimise l'efficacité de la campagne en concentrant les ressources sur les conversations en direct plutôt que sur les systèmes de messagerie vocale.
+
+<Note>
+**Appels téléphoniques uniquement :** L'AMD s'applique aux appels téléphoniques via les connexions SIP/PSTN. Les conversations basées sur le web sans connexion téléphonique ne prennent pas en charge l'interaction DTMF.
+
+La configuration AMD est accessible lors de la création de campagne et des appels de test. L'AMD basée sur texte est toujours active. Vous pouvez optionnellement activer l'AMD basée sur ML comme module complémentaire pour une détection plus rapide (~1,5s contre 5-15s).
+</Note>
+
+---
+
+## Qu'est-ce que la détection de répondeur automatique ?
+
+### Le défi
+
+Lors d'appels sortants, vous rencontrez deux scénarios possibles :
+
+**Scénario 1 : Réponse en direct**
+```text wrap
+Le téléphone sonne → Une personne répond → "Bonjour ?"
+→ L'agent doit engager la conversation
+→ Capacités complètes de l'agent nécessaires
+```
+
+**Scénario 2 : Messagerie vocale**
+```text wrap
+Le téléphone sonne → Le système de messagerie vocale répond → "Vous avez joint Jean Dupont..."
+→ L'agent doit raccrocher et réessayer plus tard
+→ Ne pas perdre de temps avec le script de conversation complet
+→ Ne pas créer d'interaction gênante en parlant par-dessus le message d'accueil de la messagerie vocale
+```
+
+**Le problème :** Comment l'agent sait-il quel scénario s'est produit ?
+
+### Solution AMD
+
+L'AMD analyse l'audio dans les premières secondes après la connexion de l'appel pour déterminer si un humain ou une machine a répondu :
+
+**Processus de détection :**
+```text wrap
+1. L'appel se connecte
+2. L'AMD analyse l'audio (0,5-3 secondes selon la méthode)
+3. Classification : HUMAIN ou MACHINE
+4. L'agent exécute le comportement approprié
+```
+
+**Avantages :**
+- **Efficacité :** Ne pas perdre de temps d'agent sur la messagerie vocale
+- **Meilleur ciblage :** Concentrer les tentatives de rappel sur différents moments pour atteindre une personne réelle
+- **Taux de connexion plus élevés :** Optimiser le timing d'appel basé sur les modèles de messagerie vocale
+- **Meilleures analyses :** Séparer "messagerie vocale atteinte" de "pas de réponse" dans les rapports
+
+---
+
+## Méthodes AMD
+
+### Aperçu des types de détection
+
+<CardGroup cols={2}>
+  <Card title="AMD basée sur texte" icon="text">
+    Détection basée sur mots-clés utilisant le transcripteur et le LLM - toujours active
+  </Card>
+  <Card title="AMD basée sur ML (optionnelle)" icon="brain">
+    Reconnaissance de modèles rapide utilisant un réseau de neurones profonds - module complémentaire optionnel pour la vitesse
+  </Card>
+</CardGroup>
+
+### AMD basée sur texte
+
+**Rôle :** Couche de détection de base qui s'exécute toujours. Utilise le transcripteur et le LLM de votre agent pour identifier les mots-clés de messagerie vocale.
+
+**Comment ça fonctionne :**
+```text wrap
+1. L'appel se connecte
+2. Le pipeline vocal IA de l'agent (transcripteur) reçoit l'audio
+3. L'agent attend que le premier tour/énoncé soit terminé (pause détectée)
+4. Le LLM analyse la transcription pour des modèles de type messagerie vocale :
+   - "Vous avez joint"
+   - "Laissez un message"
+   - "Pas disponible"
+   - "Messagerie vocale"
+   - "Après le bip"
+5. Si messagerie vocale détectée → L'agent raccroche
+6. Si personne réelle détectée → L'agent continue la conversation normale
+```
+
+**Caractéristiques :**
+
+<AccordionGroup>
+  <Accordion title="Vitesse" icon="gauge">
+    **Plus lent :** Attend que le tour/énoncé complet soit terminé
+
+    Doit attendre que tout le message d'accueil de la messagerie vocale soit terminé (pause détectée), puis transcrire et analyser le texte complet. La détection typique se produit après 5-15+ secondes selon la longueur du message de messagerie vocale.
+
+    **Limitation :** Les longs messages d'accueil de messagerie vocale signifient des temps d'attente plus longs avant la détection
+
+    **Idéal pour :** Campagnes où la précision est plus importante que la détection immédiate
+  </Accordion>
+
+  <Accordion title="Précision" icon="chart-line">
+    **Haute précision quand :**
+    - Messages d'accueil de messagerie vocale standards avec phrases courantes
+    - Qualité audio claire
+    - La langue de la messagerie vocale correspond à la langue du transcripteur
+    - Environnements B2B avec des messages d'accueil professionnels
+
+    **Ne détectera PAS :**
+    - Messages d'accueil de messagerie vocale dans des langues que le transcripteur ne supporte pas
+    - Systèmes de messagerie vocale sans message d'accueil (juste des bips)
+    - Indicateurs de messagerie vocale non verbaux
+
+    **Précision plus faible quand :**
+    - Messages d'accueil personnalisés sans mots-clés standard
+    - Messages d'accueil courts ("Salut, laissez un message" - très bref)
+    - Mauvaise qualité audio ou bruit de fond
+    - Bruit de fond interférant avec la transcription
+  </Accordion>
+
+  <Accordion title="Meilleurs cas d'usage" icon="briefcase">
+    **Idéal pour :**
+    - **Campagnes B2B** - Les messageries vocales d'entreprise utilisent généralement un phrasé standard
+    - **Campagnes privilégiant la précision** - Réduit les faux positifs en analysant le contexte complet de l'énoncé
+    - **Déploiements soucieux du budget** - Coût de calcul plus faible
+    - **Marchés anglophones** - Détection de mots-clés optimisée pour l'anglais
+
+    **Exemples de scénarios :**
+    - Prospection commerciale vers des numéros de téléphone d'entreprise
+    - Rappels de rendez-vous vers des lignes de bureau
+    - Campagnes de qualification de prospects B2B
+  </Accordion>
+
+  <Accordion title="Limitations" icon="triangle-exclamation">
+    **Peut avoir des difficultés avec :**
+    - Messages d'accueil de messagerie vocale personnels et créatifs ("Salut, c'est Mike, vous savez quoi faire")
+    - Messages d'accueil très courts
+    - La langue de la messagerie vocale ne correspond pas à la langue du transcripteur
+    - Messages d'accueil qui sonnent conversationnels ("Bonjour ? Bonjour ? Je plaisante, laissez un message")
+    - Musique ou bruit de fond dans le message d'accueil
+
+    **Faux positifs :** Un humain qui commence par "Vous avez joint..." pourrait être mal classé
+
+    **Faux négatifs :** Une messagerie vocale sans mots-clés pourrait être classée comme humain
+  </Accordion>
+</AccordionGroup>
+
+### AMD basée sur ML (module complémentaire optionnel)
+
+**Rôle :** Couche de détection rapide optionnelle que vous pouvez activer pour la vitesse. Fonctionne en parallèle avec l'AMD basée sur texte.
+
+**Comment ça fonctionne :**
+```text wrap
+1. L'appel se connecte
+2. Réseau de neurones profonds (DNN) analyse l'audio en temps réel :
+   - Modèles et cadence de parole
+   - Modèles audio de messagerie vocale
+   - Caractéristiques acoustiques
+   - Timing et rythme
+   - Indicateurs de parole naturelle vs enregistrée
+3. Modèle entraîné sur des dizaines de milliers d'enregistrements audio
+4. Classification : HUMAIN ou MACHINE
+5. Détection indépendante de la langue
+```
+
+**Caractéristiques :**
+
+<AccordionGroup>
+  <Accordion title="Vitesse" icon="gauge-high">
+    **Rapide :** ~1,5 secondes
+
+    Identifie les réponses humaines en direct en 1,5 secondes
+
+    **Beaucoup plus rapide que l'AMD basée sur texte** qui doit attendre l'énoncé complet
+  </Accordion>
+
+  <Accordion title="Précision" icon="chart-line">
+    **Très haute précision** dans des conditions réelles
+
+    **Pourquoi activer l'AMD basée sur ML :**
+    - **Indépendante de la langue :** Fonctionne dans toutes les langues (basée sur texte fonctionne seulement si la langue du transcripteur correspond)
+    - **Détecte la messagerie vocale avec bip uniquement :** Attrape les systèmes de messagerie vocale sans message d'accueil (basée sur texte ne peut pas)
+    - **Gère les messages d'accueil créatifs :** Détecte les messages d'accueil personnels/non standards sans mots-clés
+    - **Détection basée sur les modèles :** Ne dépend pas de mots-clés de messagerie vocale spécifiques
+    - **Détection rapide :** ~1,5 secondes contre 5-15+ secondes pour texte uniquement
+    - **Mieux pour les campagnes multilingues :** Aucune configuration de langue nécessaire
+
+    **Limitations :**
+    - Connexions extrêmement courtes (< 0,5 secondes d'audio)
+    - Qualité audio très dégradée
+  </Accordion>
+
+  <Accordion title="Meilleurs cas d'usage" icon="briefcase">
+    **Idéal pour :**
+    - **Campagnes consommateur** - Messageries vocales personnelles avec des messages d'accueil créatifs
+    - **Campagnes multilingues** - Pas dépendant des mots-clés anglais
+    - **Campagnes axées sur la qualité** - Quand la précision est plus importante que la vitesse
+    - **Marchés complexes** - Numéros entreprise/personnels mixtes
+
+    **Exemples de scénarios :**
+    - Appels de vente consommateur
+    - Campagnes politiques
+    - Collecte de fonds pour organisations à but non lucratif
+    - Sensibilisation santé
+    - Campagnes de support multilingues
+  </Accordion>
+
+  <Accordion title="Avantages" icon="check">
+    **Gère bien :**
+    - Messages d'accueil personnels créatifs
+    - Messages d'accueil courts
+    - Messageries vocales non anglaises
+    - Messages d'accueil sans mots-clés standard
+    - Musique ou effets sonores de fond
+    - Messages d'accueil sonnant conversationnels naturels
+
+    **Robuste à travers :**
+    - Différentes langues
+    - Accents régionaux
+    - Divers systèmes de messagerie vocale
+    - Messages d'accueil personnalisés
+  </Accordion>
+</AccordionGroup>
+
+### Comment fonctionne l'AMD
+
+**AMD basée sur texte (couche de base) :**
+- Toujours active
+- Analyse la transcription pour les mots-clés de messagerie vocale
+- Attend l'énoncé complet (5-15+ secondes)
+- Plus conservateur - raccroche rarement sur des personnes réelles
+
+**AMD basée sur ML (module complémentaire optionnel) :**
+- Vous pouvez optionnellement activer ceci pour une détection plus rapide
+- Analyse les modèles audio en ~1,5 secondes
+- Fonctionne en parallèle avec l'AMD basée sur texte
+- Plus rapide mais peut occasionnellement raccrocher sur des personnes réelles
+
+**Options de configuration :**
+
+**Basée sur texte uniquement (conservateur) :**
+- Seule la détection basée sur texte est active
+- Détection plus lente (5-15+ secondes)
+- Raccroche rarement sur des personnes réelles
+- **Compromis :** Pourrait manquer certaines messageries vocales et leur parler
+- Idéal pour : Lorsque vous voulez éviter de raccrocher sur des personnes réelles à tout prix
+
+**Basée sur texte + Basée sur ML (rapide et recommandé) :**
+- ML détecte en ~1,5 secondes
+- Basée sur texte valide en parallèle
+- Très haute précision
+- **Compromis :** Occasionnellement pourrait raccrocher sur une personne réelle
+- Idéal pour : Campagnes où parler à la messagerie vocale entraîne un coût supplémentaire
+
+<Tip>
+**Lequel devriez-vous choisir ?**
+
+**Basée sur texte + Basée sur ML (recommandé) :** Si parler à la messagerie vocale gaspille du temps et entraîne un coût supplémentaire, et que vous pouvez tolérer de raccrocher occasionnellement sur une personne réelle.
+
+**Basée sur texte uniquement :** Si raccrocher sur une vraie personne dans de rares occurrences est pire que le coût supplémentaire de parler à la messagerie vocale.
+</Tip>
+
+---
+
+## Configuration de l'AMD
+
+L'AMD peut être configurée à deux endroits :
+
+<CardGroup cols={2}>
+  <Card title="Appels téléphoniques de test" icon="phone-volume" href="#test-phone-calls">
+    Activez l'AMD lors des tests de votre agent avec des appels téléphoniques
+  </Card>
+  <Card title="Paramètres de campagne" icon="megaphone" href="#campaign-settings">
+    Configurez l'AMD pour les campagnes sortantes
+  </Card>
+</CardGroup>
+
+### Appels téléphoniques de test
+
+Configurez l'AMD lors des tests de votre agent par téléphone :
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/answering-machine/answering-light.png" alt="Dialogue Tester l'agent montrant l'onglet Appel téléphonique sélectionné, section Paramètres d'appel avec les options de détection de répondeur automatique (AMD) incluant les onglets Basée sur texte et Basée sur ML, menu déroulant Du numéro pour sélectionner le numéro de téléphone, champ Vers le numéro avec numéro de téléphone de substitution, et bouton Démarrer l'appel téléphonique" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/answering-machine/answering-dark.png" alt="Dialogue Tester l'agent montrant l'onglet Appel téléphonique sélectionné, section Paramètres d'appel avec les options de détection de répondeur automatique (AMD) incluant les onglets Basée sur texte et Basée sur ML, menu déroulant Du numéro pour sélectionner le numéro de téléphone, champ Vers le numéro avec numéro de téléphone de substitution, et bouton Démarrer l'appel téléphonique" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Ouvrir l'agent">
+    Allez à la page de votre **Agent**
+
+    Cliquez sur le bouton **Appel de test**
+  </Step>
+
+  <Step title="Sélectionner Appel téléphonique">
+    Choisissez **Appel téléphonique** comme type de test
+  </Step>
+
+  <Step title="Configurer l'AMD">
+    Trouvez le paramètre **Détection de répondeur automatique (AMD)**
+
+    Choisissez entre :
+    - **Basée sur texte** (par défaut) - Évite de raccrocher sur des personnes réelles à tout prix
+    - **Basée sur ML** - Détection rapide (~1,5s) mais peut occasionnellement raccrocher sur des personnes réelles
+  </Step>
+
+  <Step title="Faire un appel de test">
+    Sélectionnez votre numéro de départ
+
+    Entrez le numéro de destination (votre numéro de téléphone pour le test)
+
+    Cliquez sur **Démarrer l'appel téléphonique**
+
+    Si une messagerie vocale est détectée, l'agent raccrochera
+  </Step>
+</Steps>
+
+### Paramètres de campagne
+
+Configurez l'AMD pour les campagnes sortantes :
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/campaigns/create-campaign-light.png" alt="Dialogue Créer une campagne montrant le menu déroulant Détection de répondeur automatique (AMD) avec Basée sur texte sélectionné, champ Nom de campagne avec description, menu déroulant Agent pour sélectionner l'agent pour les appels de campagne, menu déroulant Numéro de téléphone pour sélectionner le numéro de téléphone sortant, section Heures d'ouverture montrant une disponibilité 24/7 avec statut Ouvert, boutons Annuler et Créer une campagne" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/campaigns/create-campaign-dark.png" alt="Dialogue Créer une campagne montrant le menu déroulant Détection de répondeur automatique (AMD) avec Basée sur texte sélectionné, champ Nom de campagne avec description, menu déroulant Agent pour sélectionner l'agent pour les appels de campagne, menu déroulant Numéro de téléphone pour sélectionner le numéro de téléphone sortant, section Heures d'ouverture montrant une disponibilité 24/7 avec statut Ouvert, boutons Annuler et Créer une campagne" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Création de campagne">
+    Allez à la section **Campagnes**
+
+    Cliquez sur **Créer une campagne**
+  </Step>
+
+  <Step title="Sélectionner la stratégie AMD">
+    Trouvez le menu déroulant **Détection de répondeur automatique (AMD)**
+
+    *Choisissez la stratégie de détection de messagerie vocale pour cette campagne*
+
+    Sélectionnez l'une :
+    - **Basée sur texte** - Évite de raccrocher sur des personnes réelles à tout prix (plus lent, 5-15s)
+    - **Basée sur ML** - Détection rapide (~1,5s) mais peut occasionnellement raccrocher sur des personnes réelles
+  </Step>
+
+  <Step title="Terminer la configuration de campagne">
+    Remplissez les autres champs requis :
+    - Nom de campagne
+    - Agent
+    - Numéro de téléphone
+
+    Cliquez sur **Créer une campagne**
+  </Step>
+</Steps>
+
+**Modification des paramètres AMD pour les campagnes existantes :**
+
+1. Naviguez vers l'onglet **Paramètres** de la campagne
+2. Localisez le menu déroulant **Détection de répondeur automatique (AMD)**
+3. Sélectionnez une stratégie différente (Basée sur texte ou Basée sur ML)
+4. Enregistrez les modifications
+
+<Warning>
+Modifier les paramètres AMD en milieu de campagne peut affecter la cohérence des analyses. Envisagez de créer une nouvelle campagne si vous devez tester A/B les configurations AMD.
+</Warning>
+
+---
+
+## Comportement AMD
+
+Lorsque l'AMD détecte une messagerie vocale, l'agent raccroche automatiquement et enregistre le résultat.
+
+L'appel est marqué comme **MACHINE** dans les analyses de campagne, vous permettant de planifier des rappels à différents moments pour augmenter les chances d'atteindre une personne réelle.
+
+---
+
+## Test de la configuration AMD
+
+### Plan de test AMD
+
+<Steps>
+  <Step title="Tester l'AMD basée sur ML">
+    **Configuration :**
+    1. Configurez l'agent avec l'AMD basée sur ML activée
+    2. Préparez un numéro de téléphone de test avec messagerie vocale
+
+    **Test :**
+    1. Démarrez l'appel de test vers le numéro de messagerie vocale
+    2. Laissez l'appel aller à la messagerie vocale
+    3. Surveillez le comportement de l'agent
+
+    **Validation :**
+    - L'agent raccroche en ~1,5 secondes
+    - L'appel est marqué comme MACHINE dans les journaux
+    - Aucune tentative de conversation avec le message d'accueil de la messagerie vocale
+  </Step>
+
+  <Step title="Tester l'AMD basée sur texte">
+    **Configuration :**
+    1. Configurez l'agent avec l'AMD basée sur texte uniquement
+    2. Utilisez le même numéro de test de messagerie vocale
+
+    **Test :**
+    1. Démarrez l'appel de test
+    2. Laissez l'appel aller à la messagerie vocale avec message d'accueil standard
+
+    **Validation :**
+    - L'agent attend le message d'accueil complet (5-15+ secondes)
+    - L'agent raccroche après avoir détecté les mots-clés
+    - L'appel est marqué comme MACHINE
+  </Step>
+
+  <Step title="Tester la détection de personne réelle">
+    **Configuration :**
+    1. Testez avec les deux méthodes AMD
+    2. Répondez à l'appel personnellement
+
+    **Test :**
+    1. Démarrez l'appel de test
+    2. Répondez et dites "Bonjour ?"
+    3. Vérifiez que l'agent continue la conversation normalement
+
+    **Validation :**
+    - L'agent ne raccroche PAS
+    - La conversation normale se poursuit
+    - L'appel n'est PAS marqué comme MACHINE
+  </Step>
+
+  <Step title="Tester les cas limites">
+    **Scénarios à tester :**
+
+    **Réponse silencieuse :**
+    - Répondez mais ne parlez pas
+    - Vérifiez que l'AMD ne classe pas mal
+
+    **Message d'accueil rapide :**
+    - Répondez avec un très bref "Salut"
+    - Vérifiez que la conversation continue
+
+    **Messagerie vocale sans mots-clés :**
+    - Testez avec message d'accueil non standard
+    - Surveillez les performances ML vs basée sur texte
+
+    **Messagerie vocale avec bip uniquement :**
+    - Système de messagerie vocale sans message d'accueil
+    - Vérifiez que le basé sur ML détecte, le basé sur texte peut manquer
+  </Step>
+</Steps>
+
+---
+
+## Dépannage
+
+<AccordionGroup>
+  <Accordion title="Mauvaise méthode AMD sélectionnée" icon="circle-question">
+    **Symptômes :** Les performances ne correspondent pas aux attentes
+
+    **Vérifier :**
+    - Examinez le paramètre AMD de la campagne
+    - Comparez la vitesse de détection attendue vs réelle
+    - Vérifiez les taux de faux positifs/négatifs dans les journaux
+
+    **Solution :**
+    - Basculer entre Basée sur texte et Basée sur ML
+    - Testez les deux méthodes avec vos modèles d'appel
+    - Choisissez en fonction de votre priorité (vitesse vs conservateur)
+  </Accordion>
+
+  <Accordion title="Taux de faux positifs élevé" icon="user-xmark">
+    **Symptômes :** Raccroche fréquemment sur des personnes réelles
+
+    **Analyse :**
+    - Examinez les enregistrements d'appels des faux positifs
+    - Vérifiez si l'AMD basée sur ML est trop agressive
+    - Identifiez les modèles communs (bruit de fond, messages d'accueil spécifiques)
+
+    **Solution :**
+    - Basculez vers l'AMD basée sur texte (plus conservateur)
+    - Améliorez la qualité d'appel/réduisez le bruit de fond
+    - Testez depuis différents numéros de téléphone
+    - Contactez le support si persistant
+  </Accordion>
+
+  <Accordion title="Taux de faux négatifs élevé" icon="voicemail">
+    **Symptômes :** L'agent parle fréquemment à la messagerie vocale
+
+    **Analyse :**
+    - Vérifiez si les messageries vocales ont des messages d'accueil non standards
+    - Examinez si systèmes de messagerie vocale avec bip uniquement
+    - Vérifiez que la langue du transcripteur correspond à la langue de la messagerie vocale
+
+    **Solution :**
+    - Basculez vers l'AMD basée sur ML (meilleure pour les messages d'accueil non standards)
+    - Le basé sur ML détecte les systèmes avec bip uniquement
+    - Assurez-vous que l'agent parle la même langue que l'audience cible
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Prochaines étapes
+
+<CardGroup cols={2}>
+  <Card title="Gestion de campagne" icon="megaphone" href="/fr/launch/campaign-outbound-launch">
+    Créez et gérez des campagnes d'appels sortants
+  </Card>
+  <Card title="Analyses et rapports" icon="chart-line" href="/fr/optimize/overview">
+    Suivez les performances AMD et optimisez les campagnes
+  </Card>
+  <Card title="Instructions d'agent" icon="pen" href="/fr/build/conversation/instructions">
+    Rédigez des invites efficaces pour la gestion d'appel
+  </Card>
+  <Card title="Heures d'ouverture" icon="clock" href="/fr/launch/business-hours">
+    Configurez les heures d'appel optimales basées sur les données AMD
+  </Card>
+</CardGroup>

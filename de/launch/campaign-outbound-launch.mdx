@@ -1,0 +1,450 @@
+---
+title: "Kampagnen & Outbound-Start"
+description: "Automatisierte ausgehende Anrufkampagnen in großem Maßstab einsetzen"
+icon: "bullhorn"
+keywords: "Outbound-Kampagne, ausgehende Anrufe, Kampagnen-Start, automatische Anrufe"
+og:description: "Starten du automatisierte Outbound-Kampagnen. Planen und führen du ausgehende Anrufe im großen Maßstab durch."
+---
+
+Outbound-Kampagnen automatisieren hochvolumige Anrufe für Vertrieb, Erinnerungen, Umfragen und Benachrichtigungen. Jede Kampagne verbindet deinen Agenten mit einer Kontaktliste, verwaltet Anrufpläne und verfolgt Ergebnisse.
+
+## Hauptfunktionen
+
+<CardGroup cols={3}>
+  <Card title="Automatisiertes Wählen" icon="phone-volume">
+    Progressives Wählen mit konfigurierbarer Wiederholungslogik
+  </Card>
+
+  <Card title="Geschäftszeiten" icon="clock">
+    Durchsetzung von Anruffenstern und Zeitzonenplanung
+  </Card>
+
+  <Card title="Intelligente AMD" icon="voicemail">
+    Voicemail überspringen mit Text- oder ML-Erkennung
+  </Card>
+
+  <Card title="Kontakt-Lebenszyklus" icon="arrows-spin">
+    Automatische Statusverfolgung mit Wiederholungsverwaltung
+  </Card>
+
+  <Card title="Analytik & Reporting" icon="chart-line">
+    Heatmap, Ziele und Pro-Kontakt-Analyse
+  </Card>
+
+  <Card title="Export & Historie" icon="file-export">
+    Kontakte mit Metriken exportieren und Aufträge verfolgen
+  </Card>
+</CardGroup>
+
+## deine erste Kampagne erstellen
+
+<Frame>
+  <div className="block dark:hidden">
+    <img src="/images/campaigns/create-campaign-light.png" alt="Dialog zum Erstellen einer Kampagne mit Dropdown für Anrufbeantworter-Erkennung (AMD) mit textbasiert ausgewählt, Kampagnenname-Feld mit Beschreibung, Agent-Dropdown zur Auswahl des Agenten für Kampagnenanrufe, Telefonnummer-Dropdown zur Auswahl der ausgehenden Telefonnummer, Geschäftszeiten-Bereich mit 24/7-Verfügbarkeit und Offen-Status, Abbrechen- und Kampagne erstellen-Schaltflächen" />
+  </div>
+  <div className="hidden dark:block">
+    <img src="/images/campaigns/create-campaign-dark.png" alt="Dialog zum Erstellen einer Kampagne mit Dropdown für Anrufbeantworter-Erkennung (AMD) mit textbasiert ausgewählt, Kampagnenname-Feld mit Beschreibung, Agent-Dropdown zur Auswahl des Agenten für Kampagnenanrufe, Telefonnummer-Dropdown zur Auswahl der ausgehenden Telefonnummer, Geschäftszeiten-Bereich mit 24/7-Verfügbarkeit und Offen-Status, Abbrechen- und Kampagne erstellen-Schaltflächen" />
+  </div>
+</Frame>
+
+<Steps>
+  <Step title="Zu Kampagnen navigieren">
+    Gehe zu **Kampagnen** und klicke auf **Kampagne erstellen** (oder **Erste Kampagne erstellen**, wenn dies deine erste ist).
+  </Step>
+
+  <Step title="Erforderliche Einstellungen konfigurieren">
+    **Kampagnenname**: Beschreibender Name für interne Nutzung (z.B. "Q1 Vertriebsakquise")
+
+    **Agent**: Wähle aus, welcher KI-Agent die Anrufe bearbeitet
+
+    **Telefonnummer**: Wähle eine Telefonnummer für diese Kampagne. Nummern, die bereits aktiven oder pausierten Kampagnen zugewiesen sind, erscheinen nicht in der Liste. Wenn du noch keine Telefonnummer eingerichtet haben, siehe [Telefon & SIP-Bereitstellung](/de/launch/phone-sip-deployment).
+
+    **Anrufbeantworter-Erkennung (AMD)**: Wähle textbasiert (schnell) oder ML-basiert (genau). [Mehr über AMD erfahren](#answering-machine-detection).
+  </Step>
+
+  <Step title="Optionale Einstellungen konfigurieren">
+    **Geschäftszeiten**: Anrufe auf einen bestimmten Zeitplan begrenzen (Standard ist 24/7). du können Zeitpläne unter **Einstellungen → Geschäftszeiten** erstellen. [Mehr über Geschäftszeiten erfahren](/de/launch/business-hours).
+
+    Klicke auf **Kampagne erstellen**, um fortzufahren.
+  </Step>
+
+  <Step title="Kampagneneinstellungen konfigurieren">
+    Nach der Erstellung gehen du zum Tab **Einstellungen**:
+
+    **Grundeinstellungen**:
+    - **Kampagnenname**: Kampagnennamen jederzeit aktualisieren
+    - **Telefonnummer**: Kann nach Erstellung nicht geändert werden
+    - **Agent**: Bei Bedarf zu einem anderen Agenten wechseln
+
+    **Planung**:
+    - **Startdatum & -zeit**: Wann mit Anrufen begonnen werden soll (leer lassen für sofortigen Start, erlaubt Daten bis zu 24 Stunden in der Vergangenheit)
+    - **Anrufintervall**: Wartezeit zwischen Anrufen - wähle aus: 5s, 10s, 20s, 30s, 1min, 2min, 5min, 10min, 20min, 30min
+    - **Klingel-Timeout**: Wie lange das Telefon klingeln soll - wähle aus: 10s, 15s, 20s, 25s, 30s, 45s, 60s
+    - **Geschäftszeiten**: Zeitplan jederzeit aktualisieren oder ändern (zeigt Echtzeit-Offen/Geschlossen-Status mit visuellem Indikator)
+
+    **Erkennung**:
+    - **AMD-Modus**: Zwischen textbasierter (schnell) oder ML-basierter (genau) Anrufbeantworter-Erkennung wechseln
+
+    **Wiederholungslogik**:
+    - **Max. Wiederholungsversuche**: Wie oft wiederholt werden soll (0-10, Standard: 2)
+    - **Wiederholungsintervall**: Kalenderzeit zwischen Wiederholungen (nicht Geschäftszeiten). Mit Einheitenauswahl konfigurieren (Minuten, Stunden oder Tage)
+    - **Kontaktabschluss-Timeout**: Maximale Zeit für einen Kontakt, um nach der Analyse den abgeschlossenen Status zu erreichen. Mit Einheitenauswahl konfigurieren (Minuten, Stunden oder Tage)
+  </Step>
+
+  <Step title="Kontakte hinzufügen">
+    Gehe zum Tab **Kontakte**, um deine Kampagnenkontakte zu verwalten.
+
+    Die Oberfläche hat zwei Bereiche:
+    - **Linker Bereich**: Verfügbare Kontakte aus deiner Kontaktliste
+    - **Rechter Bereich**: Zu dieser Kampagne hinzugefügte Kontakte
+
+    **Kontakte hinzufügen**:
+    - Klicke auf **+ Hinzufügen** neben einzelnen Kontakten
+    - Wähle mehrere Kontakte aus und klicke auf **Ausgewählte hinzufügen**
+    - Verwende **Alle hinzufügen**, um alle gefilterten Kontakte hinzuzufügen (große Stapel laufen im Hintergrund)
+
+    Verwende Such- und Tag-Filter, um Kontakte vor dem Hinzufügen einzugrenzen.
+  </Step>
+
+  <Step title="Ziele und Analysen festlegen">
+    **Ziele-Tab**: Kampagnenziele mit zwei Typen erstellen:
+    - **Hauptziel** (Limit: 1): Haupterfolgskriterium für die Kampagne
+    - **Nebenziele** (unbegrenzt): Zusätzliche zu verfolgende Ziele
+
+    Ziele bewerten jeden Kontakt basierend auf allen ihren Gesprächen. Ergebnisse werden angezeigt als: Erreicht, Teilweise erreicht, Nicht erreicht oder Unbekannt.
+
+    **Analysen-Tab**: Benutzerdefinierte Analysen mit Fragetypen definieren:
+    - **Ja/Nein**: Binäre Ergebnisfragen
+    - **Offener Text**: Freiform-Analyseantworten
+    - **Bewertungsskala**: 1-5 Bewertung (Niedrig/Schlecht bis Hoch/Ausgezeichnet)
+
+    Jede Analyse kann aktiv/inaktiv geschaltet werden und läuft pro Kontakt über alle Gespräche.
+  </Step>
+
+  <Step title="Kampagne starten">
+    Kampagnen werden standardmäßig im Status **Pausiert** erstellt. Setze den Status auf **Aktiv**, um mit dem Wählen zu beginnen. Sobald aktiv, beginnt die Kampagne zur konfigurierten Startzeit. Überwache den Fortschritt in den Tabs **Dashboard** und **Reporting**.
+  </Step>
+</Steps>
+
+## Kampagnenverwaltung
+
+Nach der Erstellung hat deine Kampagne sechs Haupt-Tabs:
+
+<AccordionGroup>
+  <Accordion title="Dashboard" icon="gauge">
+    Kampagnenübersicht in einem 2x2-Rasterlayout:
+
+    **Schnellstatistiken** (oben links):
+    - Hauptziel-Erreichungsrate
+    - Gesamtgespräche
+    - Durchschnittliche Anrufdauer
+    - Menschliche Annahmerate
+
+    **Kontaktstatus** (oben rechts):
+    - Alle 7 Status mit Zählungen und Prozentsätzen
+    - Visuelle Trennung zwischen aktiven und finalen Zuständen
+
+    **Zielanalyse** (unten links):
+    - Erreicht (grün) / Teilweise erreicht (gelb) / Nicht erreicht (rot) / Unbekannt (grau)
+    - Fortschrittsbalken zeigen Verteilung
+
+    **Annahmequoten-Heatmap** (unten rechts):
+    - Wöchentliches 7-Tage x 24-Stunden-Raster
+    - Farbintensität zeigt Annahmequoten (0-30%+)
+    - Beste Anrufzeiten und -tage identifizieren
+  </Accordion>
+
+  <Accordion title="Reporting" icon="chart-bar">
+    Pro-Kontakt-Detailanalysetabelle mit erweiterter Filterung:
+
+    **Tabellenspalten**: Kontaktname/Tags, Telefon mit Flagge, Status-Badge, Hauptziel-Indikator, Zielerreichungsring, Gesprächsanzahl/Dauer, Zeitstempel des letzten Anrufs, Aktionen
+
+    **Filteroptionen**:
+    - Tags (Mehrfachauswahl, durchsuchbar)
+    - Status (alle 7 Typen)
+    - Min/Max Wiederholungsversuche
+    - Hauptziel-Status (erreicht, teilweise erreicht, nicht erreicht, unbekannt)
+    - Suche nach Name/Telefon
+
+    **Aktionen**:
+    - Ausgewählte Kontakte in Masse wiederholen
+    - Detaillierte Analytik pro Kontakt anzeigen
+    - Mit Formatauswahl exportieren (XLSX, CSV)
+  </Accordion>
+
+  <Accordion title="Kontakte" icon="users">
+    Zwei-Bereiche-Oberfläche zur Verwaltung von Kampagnenkontakten:
+
+    **Linker Bereich (Verfügbare Kontakte)**:
+    - Suchen und nach Tags filtern
+    - Einzelne Kontakte oder in Masse hinzufügen
+    - "Alle gefilterten hinzufügen" für große Stapel (läuft im Hintergrund)
+
+    **Rechter Bereich (Kampagnenkontakte)**:
+    - Nach Tags und Status filtern
+    - Nur **Ausstehende** Kontakte entfernen (andere gesperrt)
+    - In Masse entfernen mit Bestätigung
+    - Auf Kontakt klicken für Schnellanalyseansicht
+  </Accordion>
+
+  <Accordion title="Ziele" icon="bullseye">
+    Kampagnenziele mit zwei Tabs erstellen und verwalten:
+
+    **Hauptziel-Tab**:
+    - Limit: 1 Hauptziel maximal
+    - Vorherige Hauptziele archivieren/wiederherstellen
+
+    **Nebenziele-Tab**:
+    - Unbegrenzte Nebenziele
+    - Archivierungs-/Wiederherstellungs-Workflow
+
+    Alle Ziele bewerten Kontakte basierend auf allen ihren Gesprächen (nicht pro Gespräch wie Agentenziele). Ergebnisse: Erreicht, Teilweise erreicht, Nicht erreicht, Unbekannt.
+  </Accordion>
+
+  <Accordion title="Analysen" icon="microscope">
+    Benutzerdefinierte Analysen mit drei Fragetypen konfigurieren:
+    - **Ja/Nein**: Binäre Ergebnisse
+    - **Offener Text**: Freiform-Antworten
+    - **Bewertungsskala**: 1-5 Bewertungen
+
+    **Funktionen**:
+    - Analysen aktiv/inaktiv schalten ohne zu löschen
+    - Archivierungs-/Wiederherstellungs-Workflow
+    - Jede Analyse läuft pro Kontakt über alle Gespräche
+  </Accordion>
+
+  <Accordion title="Einstellungen" icon="gear">
+    Alle Kampagnenparameter in zwei Spalten organisiert anpassen:
+
+    **Linke Spalte**: Kampagnenname, Telefonnummer (gesperrt), Agent, Startdatum/-zeit, Geschäftszeiten (mit Echtzeit-Offen/Geschlossen-Indikator)
+
+    **Rechte Spalte**: Anrufintervall (10 Optionen), Klingel-Timeout (7 Optionen), AMD-Modus, Max. Wiederholungsversuche, Abschluss-Timeout (mit Einheitenauswahl), Wiederholungsintervall (mit Einheitenauswahl)
+  </Accordion>
+</AccordionGroup>
+
+## Kontakt-Lebenszyklus
+
+Kontakte durchlaufen diese Status, die mit farbigen Badges und Symbolen in der gesamten Benutzeroberfläche angezeigt werden:
+
+### Aktive Zustände
+
+<CardGroup cols={2}>
+  <Card title="Ausstehend" icon="clock">
+    **Graues Badge mit Uhr-Symbol**
+
+    Kontakt ist in der Warteschlange und wartet darauf, gewählt zu werden
+  </Card>
+
+  <Card title="Wählt" icon="phone">
+    **Gelbes Badge mit Telefon-Symbol**
+
+    Anruf läuft gerade - Kontakt wird gewählt
+  </Card>
+
+  <Card title="Angerufen" icon="phone">
+    **Violettes Badge**
+
+    Anruf wurde getätigt, wartet auf nächsten Schritt
+  </Card>
+
+  <Card title="Wiederholen" icon="arrows-rotate">
+    **Blaues Badge mit Aktualisierungs-Symbol**
+
+    Kein sinnvolles Gespräch erfolgt, Anruf für Wiederholung geplant
+  </Card>
+</CardGroup>
+
+### Finale Zustände
+
+<CardGroup cols={3}>
+  <Card title="Abgeschlossen" icon="circle-check">
+    **Grünes Badge mit Häkchen-Kreis-Symbol**
+
+    Kontakt hat alle Kampagnenziele erfolgreich abgeschlossen
+  </Card>
+
+  <Card title="Fehlgeschlagen" icon="circle-xmark">
+    **Rotes Badge mit X-Kreis-Symbol**
+
+    Anruf dauerhaft fehlgeschlagen und wird nicht wiederholt
+  </Card>
+
+  <Card title="Kein Gespräch" icon="phone-slash">
+    **Graues Badge mit Telefon-X-Symbol**
+
+    Kontakt hat nicht abgehoben oder nicht reagiert
+  </Card>
+</CardGroup>
+
+<Note>
+Das System verwaltet Statusübergänge automatisch basierend auf Anrufergebnissen. du können Kontakte manuell über die Tabs Kontakte oder Reporting wiederholen. Nur Kontakte im Status **Ausstehend** können aus der Kampagne entfernt werden.
+</Note>
+
+## Verwaltung aktiver Kampagnen
+
+### Kampagnenstatus ändern
+
+Navigiere zur **Kampagnen**-Liste und klicke auf das Status-Badge zum Ändern:
+
+- **Aktiv**: Kampagne wählt aktiv Kontakte
+- **Pausiert**: Wählen vorübergehend stoppen, während gesamter Fortschritt erhalten bleibt
+- **Abgeschlossen**: Kampagne als beendet markieren
+- **Abgebrochen**: Kampagne abbrechen
+
+### Kontakte während laufender Kampagne hinzufügen
+
+du können weitere Kontakte zu einer laufenden Kampagne hinzufügen:
+1. Gehe zum Tab **Kontakte**
+2. Verwende die Zwei-Bereiche-Oberfläche, um neue Kontakte hinzuzufügen
+3. Neue Kontakte treten automatisch in die Warteschlange ein
+
+### Einstellungen aktualisieren
+
+Kampagneneinstellungen jederzeit ändern:
+- **Geschäftszeiten** aktualisieren, um Anruffenster anzupassen
+- **Wiederholungslogik** basierend auf Leistung ändern
+- **Anrufintervall** oder **Klingel-Timeout** modifizieren
+- Änderungen gelten sofort für wartende Anrufe
+
+## Kampagnen-Reporting
+
+<CardGroup cols={2}>
+  <Card title="Annahmequoten-Heatmap" icon="chart-line">
+    Wöchentliche Heatmap zeigt Annahmequoten nach Stunde und Tag. Nach 50-100 Anrufen verwenden du diese, um die besten Anrufzeiten zu identifizieren und deine Geschäftszeiten-Konfiguration zu optimieren.
+  </Card>
+
+  <Card title="Ziel-Leistung" icon="bullseye">
+    Kampagnenziel-Erreichungsraten pro Kontakt verfolgen. Sehen du, welche Kontakte Ziele abgeschlossen haben, und analysieren du Erfolgsmuster.
+  </Card>
+
+  <Card title="Kontakt-Analytik" icon="users">
+    Pro-Kontakt-Metriken kombinieren alle Gespräche, Statushistorie und Analyseergebnisse für umfassende Einblicke.
+  </Card>
+
+  <Card title="Anrufvolumen" icon="phone-volume">
+    Anrufversuche, Verbindungsraten und Kontaktfortschritt im Zeitverlauf überwachen.
+  </Card>
+</CardGroup>
+
+## Kontakt-Exporte
+
+<AccordionGroup>
+  <Accordion title="Exportoptionen" icon="file-export">
+    Vom Tab **Kontakte** oder **Reporting** Kontaktdaten mit flexiblen Formatoptionen exportieren:
+
+    **Umfang**:
+    - **Aktuelle Auswahl exportieren**: Nur ausgewählte Kontakte
+    - **Gefilterte Kontakte exportieren**: Alle Kontakte, die aktiven Filtern entsprechen
+    - **Gesamte Kampagne exportieren**: Vollständige Kontaktliste mit allen Metriken
+
+    **Formatoptionen**:
+    - **XLSX (empfohlen)**: Excel-Format mit vollständiger Formatierungsunterstützung
+    - **CSV kommagetrennt**: Standard-CSV mit Komma-Trennzeichen
+    - **CSV semikolongetrennt**: Europäisches CSV-Format für Regionen mit Komma-Dezimaltrennzeichen
+
+    Exporte enthalten Kontaktdetails, Status, Gesprächsdaten, Zielergebnisse und Analyseergebnisse.
+  </Accordion>
+
+  <Accordion title="Export-Historie" icon="clock">
+    Alle Exportaufträge vom Tab **Kontakte** verfolgen:
+    - Laufende Exporte mit Statusaktualisierungen und Dateiformat anzeigen
+    - Abgeschlossene Dateien herunterladen (Format angezeigt: .xlsx, .csv (,) oder .csv (;))
+    - Weiterarbeiten, während Exporte im Hintergrund laufen
+
+    Große Exporte werden im Hintergrund verarbeitet, damit du deine Kampagne weiter verwalten können. Jeder Export zeigt sein Format-Symbol (Excel oder CSV) zur schnellen Identifizierung.
+  </Accordion>
+</AccordionGroup>
+
+## Eingehende Anruf-Integration
+
+Wenn Kontakte zurückrufen, verknüpft das System den Anruf automatisch mit dem Kampagnenkontakt unter Verwendung einer zweistufigen Matching-Strategie:
+
+### Matching-Logik
+
+**Primäres Match (DID-basiert)**:
+- Gleicht Telefonnummer des Kontakts (anrufende Nummer) mit Telefonnummer der Kampagne (angerufene Nummer) ab
+- Funktioniert für aktive oder pausierte Kampagnen
+- Zuverlässigste Methode - erfordert kein Agenten-Match
+
+**Fallback-Match (Agenten-basiert)**:
+- Aktiviert sich nur, wenn:
+  - Kein DID-Match gefunden, UND
+  - Kontakt hat einen kürzlichen ausgehenden Anruf (innerhalb von 30 Tagen) von irgendeiner Kampagne
+- Gleicht Telefonnummer des Kontakts mit Kampagnen ab, die denselben Agenten verwenden
+- Verwendet zuletzt aktualisierten Kampagnenkontakt
+
+### Status-Aktualisierungen
+
+Wenn ein eingehender Anruf mit einem Kampagnenkontakt in diesen Status abgeglichen wird, aktualisiert er automatisch zu **Angerufen**:
+- Wiederholen → Angerufen
+- Abgeschlossen → Angerufen
+- Kein Gespräch → Angerufen
+
+Dies ermöglicht Rückrufen, Kontaktmöglichkeiten wieder zu öffnen und den Kampagnen-Workflow fortzusetzen.
+
+### Vorteile
+
+- **Automatische Verknüpfung**: Keine manuelle Intervention erforderlich
+- **Kontext-Kontinuität**: Agent hat Zugriff auf alle vorherigen Kampagneninteraktionen
+- **Status-Aktualisierungen**: Kontakt-Lebenszyklus passt sich automatisch für Rückrufe an
+- **Einheitliches Reporting**: Alle Interaktionen (ausgehend + eingehend) gemeinsam pro Kontakt verfolgt
+
+## Best Practices
+
+### Klein beginnen
+
+<Warning>
+Beginne immer mit einem Pilot-Stapel von 10-20 Kontakten, bevor du auf Tausende skalieren. Dies validiert die Konfiguration und verhindert Fehler in großem Maßstab.
+</Warning>
+
+**Pilot-Workflow**:
+1. Testliste mit freundlichen Kontakten erstellen (Kollegen, Testnummern)
+2. Kampagne starten und in **Gespräche → Live-Monitor** überwachen
+3. Ergebnisse überprüfen:
+   - Annahmerate
+   - AMD-Genauigkeit
+   - Zielerreichungsrate
+   - Durchschnittliche Anrufdauer
+4. Agentenanweisungen, AMD-Einstellungen oder Geschäftszeiten nach Bedarf anpassen
+5. Schrittweise skalieren: 50 → 200 → 1.000+ Kontakte
+
+### Kontaktlisten-Qualität
+
+Vor dem Hochladen von Kontakten:
+- Doppelte Nummern entfernen
+- Telefonnummernformat validieren (E.164: +1234567890)
+- Gegen deine interne Nicht-Anrufen-Liste prüfen
+- Gegen nationale DNC-Register prüfen, falls zutreffend
+
+### Zeitzonen-Optimierung
+
+Für Kontakte über mehrere Zeitzonen:
+1. Geschäftszeiten unter **Einstellungen → Geschäftszeiten** mit geeigneter Zeitzone erstellen
+2. Kampagne zuweisen, damit Anrufe während lokaler Geschäftszeiten erfolgen
+3. Annahmequoten-Heatmap verwenden, um optimale Anruffenster pro Region zu finden
+
+### Segmentierung
+
+Separate Kampagnen erstellen für:
+- Verschiedene Kundensegmente (Test- vs. zahlende Kunden)
+- Verschiedene Skripte oder Ziele
+- Verschiedene Sprachen
+- A/B-Test-Variationen
+
+Dies ermöglicht es dir, Leistung zu verfolgen und jedes Segment unabhängig zu optimieren.
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Geschäftszeiten" icon="clock" href="/de/launch/business-hours">
+    Anrufpläne und Zeitzonenbehandlung konfigurieren
+  </Card>
+
+  <Card title="Produktions-Best Practices" icon="star" href="/de/launch/production-best-practices">
+    Kampagnenleistung und Kundenzufriedenheit optimieren
+  </Card>
+
+  <Card title="Analytik & Reporting" icon="chart-bar" href="/de/optimize/overview">
+    Detaillierte Kampagnenanalytik und Conversion-Tracking
+  </Card>
+</CardGroup>

@@ -1,0 +1,214 @@
+---
+title: "Custom Pronunciations"
+description: "Define pronunciation rules for brand names, technical terms, and difficult words"
+icon: "spell-check"
+"keywords": "custom pronunciations, TTS pronunciation, voice pronunciation, phonetic spelling, brand names, pronunciation rules"
+"og:description": "Define custom pronunciation rules for brand names, technical terms, and acronyms to ensure accurate AI voice delivery."
+---
+
+## Overview
+
+Custom pronunciations let you define how specific words should sound, ensuring your agent always pronounces brand names, technical terms, and acronyms correctly.
+
+**How it works:**
+1. Agent generates response: "Call us at itellicoAI for help"
+2. System applies pronunciation rules: "Call us at eye-tell-ee-co A I for help"
+3. Voice synthesizer speaks the modified text
+4. Customer hears correct pronunciation
+
+<Note>
+Pronunciation replacements are available under **Voice > Pronunciations** in your agent configuration.
+</Note>
+
+---
+
+## Adding Pronunciations
+
+### Single Replacement
+
+1. Click **Add Replacement**
+2. Enter the **target word** (the word to replace)
+3. Enter the **pronunciation** (how it should sound)
+4. Click **Add**
+
+**Examples:**
+- **Target:** Nike → **Pronunciation:** Nai-key
+- **Target:** API → **Pronunciation:** A-P-I
+- **Target:** 24/7 → **Pronunciation:** twenty-four seven
+- **Target:** EST → **Pronunciation:** Eastern Time
+
+<Warning>
+**Target words must be single words only** - spaces are not allowed. Use complete words like `Nike` or `API`, not phrases like `customer service`.
+</Warning>
+
+### Bulk Import via CSV
+
+For importing many pronunciations at once:
+
+1. Click **Import CSV**
+2. Download the template if needed
+3. Prepare your CSV with two columns: `target`, `replacement`
+4. Drag and drop your CSV file or click to select
+5. Review the preview and click **Import**
+
+**CSV format:**
+```csv
+target,replacement
+Nike,Nai-key
+EST,Eastern Time
+24/7,twenty-four seven
+API,A-P-I
+```
+
+**Limits:**
+- Maximum 500 pronunciations per agent
+- CSV file max size: 5MB
+
+---
+
+## Phonetic Spelling Tips
+
+### Simple Phonetic Spelling
+
+Write replacements as simple, readable phonetic text:
+
+**Good examples:**
+- Nike → Nai-key
+- SQL → sequel (or) S-Q-L
+- Wi-Fi → why-figh
+- iOS → eye-oh-ess
+
+**Tips:**
+- Use hyphens to separate syllables: Nai-key, A-P-I
+- Spell it like you'd explain pronunciation to someone
+- Test with your voice to hear how it sounds
+
+### Common Patterns
+
+**Acronyms (spell out each letter):**
+- API → A-P-I
+- URL → U-R-L
+- HTTP → H-T-T-P
+- AWS → A-W-S
+
+**Brand names (phonetic spelling):**
+- Nike → Nai-key
+- Adidas → ah-dee-dahs
+- Chipotle → chih-poht-lay
+
+**Numbers and time:**
+- 24/7 → twenty-four seven
+- 9am → nine A-M
+- EST → Eastern Time
+- 5pm → five P-M
+
+**Technical terms:**
+- SQL → sequel (or) S-Q-L
+- API → A-P-I
+- URL → you-are-ell
+- WiFi → why-figh
+
+---
+
+## Advanced: IPA Phonemes
+
+For precise pronunciation control, you can use International Phonetic Alphabet (IPA) notation with the `<< >>` format:
+
+**Format:** `<<phoneme|phoneme|phoneme>>`
+
+**Example:**
+```
+espresso → <<ɛ|s|p|r|ɛ|s|oʊ>>
+```
+
+<Note>
+IPA phonemes provide precise control but require knowledge of phonetic notation. Simple phonetic spelling (Nai-key) works well for most cases.
+</Note>
+
+---
+
+## Managing Pronunciations
+
+### Editing Existing Replacements
+
+1. Click on any replacement chip in the list
+2. Modify the target or pronunciation
+3. Click **Save**
+
+### Deleting Replacements
+
+- Click the **trash icon** on any replacement chip to delete it
+- Or click **Clear All** to remove all pronunciations (requires confirmation)
+
+### Exporting Pronunciations
+
+1. Click **Export CSV**
+2. CSV file downloads with all your current pronunciations
+3. Filename format: `{agent_name}_pronunciations.csv`
+
+Use exported CSV files to back up your pronunciations or copy them to other agents.
+
+---
+
+## Testing Pronunciations
+
+After adding pronunciations:
+
+1. Make a test call to your agent
+2. Trigger responses containing the target words
+3. Listen to verify the pronunciation sounds correct
+4. Adjust the phonetic spelling if needed
+
+**Testing tips:**
+- Test in context, not isolation
+- Have team members listen
+- Adjust hyphenation or spelling if it doesn't sound right
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Start with Common Issues" icon="bullseye">
+    Add pronunciations for words you know are mispronounced in real calls. Review call transcripts to identify recurring pronunciation problems.
+  </Accordion>
+
+  <Accordion title="Keep It Simple" icon="sparkles">
+    Use phonetic spelling (Nai-key) rather than complex IPA unless necessary. Simple phonetic text is easier to maintain and works well for most cases.
+  </Accordion>
+
+  <Accordion title="Test Before Deploying" icon="vial">
+    Always test pronunciations with real calls before going live. Make a test call and trigger responses containing the target words to verify they sound correct.
+  </Accordion>
+
+  <Accordion title="Document Your Rules" icon="file-arrow-down">
+    Export your CSV regularly as backup. Use the Export CSV button to save your pronunciations and keep them versioned alongside your agent configuration.
+  </Accordion>
+
+  <Accordion title="Use Consistent Spelling" icon="check">
+    If you have "API" spelled out as "A-P-I", use that format consistently across all your pronunciations. Consistency improves maintainability.
+  </Accordion>
+
+  <Accordion title="Single Words Only" icon="letter-a">
+    Remember that target words cannot contain spaces - only complete single words work. Use `Nike` or `API`, not phrases like `customer service`.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Voice Settings" icon="sliders" href="/build/voice-speech/voice-settings">
+    Fine-tune voice parameters
+  </Card>
+  <Card title="Select Voice" icon="microphone" href="/build/voice-speech/select-voice">
+    Choose a different voice
+  </Card>
+  <Card title="Ambient Sound" icon="volume" href="/build/voice-speech/ambient-sound">
+    Add background ambience
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/web-simulator">
+    Test pronunciations with web calls
+  </Card>
+</CardGroup>

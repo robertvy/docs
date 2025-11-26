@@ -1,0 +1,821 @@
+---
+title: "Content Types & Processing"
+description: "Understand text, PDF, and URL knowledge items and how they're processed"
+icon: "file-lines"
+"keywords": "knowledge base file types, PDF processing, URL ingestion, text knowledge, document processing, content types, knowledge sources"
+"og:description": "Learn about text, PDF, and URL knowledge items and how they're processed for AI agent knowledge bases."
+---
+
+## Overview
+
+itellicoAI supports three types of knowledge items, each designed for different content sources and use cases. Understanding how each type works and how they're processed will help you choose the right format for your information.
+
+---
+
+## Content Type Overview
+
+<CardGroup cols={3}>
+  <Card title="Text Items" icon="text">
+    Direct content entry using the built-in editor
+  </Card>
+  <Card title="File Uploads" icon="file-pdf">
+    Upload PDF, DOC, DOCX, TXT, and other document formats up to 10MB
+  </Card>
+  <Card title="URL Scraping" icon="link">
+    Pull content from web pages
+  </Card>
+</CardGroup>
+
+---
+
+## Text Items
+
+### What Are Text Items?
+
+Text items are content you enter directly into the itellicoAI knowledge base editor. They're the most straightforward and reliable content type.
+
+### When to Use Text Items
+
+<AccordionGroup>
+  <Accordion title="Writing FAQs" icon="circle-question">
+    Create question-and-answer pairs directly in the system.
+
+    **Example:**
+    ```text wrap
+    Title: How do I reset my password?
+
+    Content:
+    To reset your password:
+
+    1. Go to the login page
+    2. Click "Forgot Password"
+    3. Enter your email address
+    4. Check your email for a reset link
+    5. Click the link and create a new password
+
+    Password requirements:
+    - Minimum 8 characters
+    - At least one uppercase letter
+    - At least one number
+    - At least one special character
+
+    If you don't receive the email within 5 minutes, check your spam
+    folder or contact support@company.com.
+    ```
+  </Accordion>
+
+  <Accordion title="Creating policy summaries" icon="book">
+    Write clear, concise policy statements.
+
+    **Example:**
+    ```text wrap
+    Title: Return Policy - Digital Products
+
+    Content:
+    Digital products can be refunded within 30 days of purchase if:
+
+    Eligible for refund:
+    - Product has a technical defect preventing usage
+    - Product description was materially inaccurate
+    - Customer has not accessed or downloaded the product
+
+    Not eligible for refund:
+    - Change of mind after accessing the product
+    - Compatibility issues disclosed in product description
+    - User error or misunderstanding of features
+
+    To request a refund:
+    Email support@company.com with your order number and reason
+    for the refund request.
+
+    Processing time: 5-7 business days
+    Refund method: Original payment method
+    ```
+  </Accordion>
+
+  <Accordion title="Documenting procedures" icon="list-check">
+    Step-by-step instructions for processes.
+
+    **Example:**
+    ```
+    Title: Order Modification Process
+
+    Content:
+    Customers can modify orders within 24 hours of placement.
+
+    What can be modified:
+    - Shipping address
+    - Delivery speed
+    - Item quantities (if inventory available)
+
+    What cannot be modified:
+    - Payment method (must cancel and reorder)
+    - Items after processing has begun
+    - Orders placed more than 24 hours ago
+
+    Modification process:
+    1. Customer contacts support via phone or email
+    2. Agent verifies order is within modification window
+    3. Agent checks inventory for requested changes
+    4. Agent updates order in system
+    5. Customer receives confirmation email
+
+    If order has already shipped, customer must use return process instead.
+    ```
+  </Accordion>
+
+  <Accordion title="Quick reference information" icon="clock">
+    Brief, frequently referenced information.
+
+    **Example:**
+    ```
+    Title: Business Hours & Contact Information
+
+    Content:
+    Customer Support:
+    - Phone: 1-800-555-0123
+    - Email: support@company.com
+    - Hours: Monday-Friday, 9 AM - 6 PM EST
+    - After-hours: emergency@company.com (urgent issues only)
+
+    Sales:
+    - Phone: 1-800-555-0124
+    - Email: sales@company.com
+    - Hours: Monday-Friday, 8 AM - 8 PM EST
+
+    Billing:
+    - Phone: 1-800-555-0125
+    - Email: billing@company.com
+    - Hours: Monday-Friday, 9 AM - 5 PM EST
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Creating Text Items
+
+<Steps>
+  <Step title="Navigate to folder">
+    Open the folder where you want to add the item.
+  </Step>
+
+  <Step title="Click 'Add Knowledge Item'">
+    Click the button to create a new item.
+  </Step>
+
+  <Step title="Select 'TEXT' category">
+    Choose TEXT from the content type options.
+  </Step>
+
+  <Step title="Enter title">
+    Give your item a clear, descriptive title.
+  </Step>
+
+  <Step title="Write content">
+    Enter your content in the editor. Use formatting for clarity:
+    - Headings for sections
+    - Bullet points for lists
+    - Numbers for steps
+    - Bold for emphasis
+  </Step>
+
+  <Step title="Click 'Create'">
+    Save your text item. Status will immediately show as COMPLETED.
+  </Step>
+</Steps>
+
+### Text Item JSON Example
+
+```json wrap
+{
+  "category": "TEXT",
+  "title": "Product Pricing Information",
+  "content": "Our pricing tiers include Basic ($29/month), Pro ($99/month), and Enterprise (custom pricing).",
+  "status": "COMPLETED"
+}
+```
+
+### Advantages of Text Items
+
+<CardGroup cols={2}>
+  <Card title="Instant Processing" icon="bolt">
+    Text items are immediately available - no processing delay
+  </Card>
+  <Card title="Full Control" icon="sliders">
+    Complete control over formatting and content structure
+  </Card>
+  <Card title="Easy Updates" icon="pen">
+    Quick to edit and update when information changes
+  </Card>
+  <Card title="Reliable" icon="check">
+    No processing errors or extraction issues
+  </Card>
+</CardGroup>
+
+<Tip>
+Text items are the most reliable content type. When possible, enter content as text rather than uploading files.
+</Tip>
+
+---
+
+## File Upload Items
+
+### What Are File Upload Items?
+
+File upload items allow you to upload existing documents in various formats. The system extracts the text content and makes it available to your agents.
+
+### When to Use File Uploads
+
+<AccordionGroup>
+  <Accordion title="Existing documentation" icon="file">
+    You already have content in document format.
+
+    **Examples:**
+    - User manuals
+    - Product specifications
+    - Legal documents
+    - Training materials
+  </Accordion>
+
+  <Accordion title="Formatted documents" icon="file-pdf">
+    Documents with specific layouts that are easier to maintain as files.
+
+    **Examples:**
+    - Technical diagrams
+    - Tables and charts
+    - Multi-column layouts
+    - Branded templates
+  </Accordion>
+
+  <Accordion title="Third-party documents" icon="building">
+    Documentation you receive from vendors or partners.
+
+    **Examples:**
+    - Supplier catalogs
+    - Compliance documents
+    - Certification materials
+  </Accordion>
+</AccordionGroup>
+
+### File Requirements
+
+**File specifications:**
+- **Formats:** PDF, DOC, DOCX, TXT, and other document formats
+- **Size limit:** 10MB maximum
+- **Content:** Text-based documents and scanned images (advanced parsing handles most scans)
+- **Protection:** No password protection
+
+<Note>
+The system uses advanced document parsing to extract text from scanned images and PDFs. Most scanned documents will process correctly, though very poor quality scans may require manual text entry.
+</Note>
+
+### Creating File Items
+
+<Steps>
+  <Step title="Navigate to folder">
+    Open the folder where you want to add the file.
+  </Step>
+
+  <Step title="Click 'Add Knowledge Item'">
+    Click the button to create a new item.
+  </Step>
+
+  <Step title="Select 'FILE' category">
+    Choose FILE from the content type options.
+  </Step>
+
+  <Step title="Enter title">
+    Give your file a descriptive title (this is separate from the filename).
+  </Step>
+
+  <Step title="Upload file">
+    Click **Upload** and select your document from your computer.
+  </Step>
+
+  <Step title="Click 'Create'">
+    The system will upload and begin processing your file.
+
+    Status progression:
+    - PENDING → File uploaded, queued for processing
+    - PROCESSING → Extracting text content
+    - COMPLETED → Ready for use
+    - FAILED → Processing error occurred
+  </Step>
+</Steps>
+
+### File Item JSON Example
+
+```json wrap
+{
+  "category": "FILE",
+  "title": "User Manual - Product X",
+  "file": "/uploads/knowledge/user-manual-product-x.pdf",
+  "status": "COMPLETED"
+}
+```
+
+### Processing Time
+
+File processing time varies based on:
+- **File size:** Larger files take longer
+- **Page count:** More pages = longer processing
+- **Complexity:** Tables, images, and complex layouts slow processing
+- **Text quality:** Clean, simple text extracts faster
+
+**Typical processing times:**
+- Small files (< 1MB, 10 pages): 10-30 seconds
+- Medium files (1-5MB, 10-50 pages): 30-90 seconds
+- Large files (5-10MB, 50+ pages): 2-5 minutes
+
+### Common File Issues
+
+<AccordionGroup>
+  <Accordion title="Processing failed" icon="circle-xmark">
+    **Causes:**
+    - File exceeds 10MB
+    - File is password-protected
+    - File is corrupted
+    - Very poor quality scanned images
+
+    **Solutions:**
+    - Compress file or split into smaller files
+    - Remove password protection
+    - Re-export file from source
+    - For very poor quality scans, copy content into text item instead
+  </Accordion>
+
+  <Accordion title="Content extracted incorrectly" icon="text-slash">
+    **Causes:**
+    - Complex layouts (multi-column, tables)
+    - Very poor quality scanned images
+    - Special fonts or encoding
+    - Form fields and interactive elements
+
+    **Solutions:**
+    - Check extracted content in edit mode
+    - Re-create as text item with proper formatting
+    - Simplify document layout before uploading
+    - Export as plain text document
+  </Accordion>
+
+  <Accordion title="Processing takes too long" icon="clock">
+    **What to do:**
+    - Wait 5-10 minutes before assuming failure
+    - Check file size and page count
+    - For large files, consider splitting into multiple files
+    - Convert to text and upload as TEXT items instead
+  </Accordion>
+</AccordionGroup>
+
+### File Upload Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Optimize before upload" icon="compress">
+    - Compress large files
+    - Remove unnecessary images
+    - Use text-based documents
+    - Keep under 5MB when possible
+  </Card>
+  <Card title="Test extraction" icon="vial">
+    - Review extracted content after processing
+    - Check for formatting issues
+    - Verify critical information is accurate
+    - Re-upload if extraction is poor
+  </Card>
+</CardGroup>
+
+---
+
+## URL Items
+
+### What Are URL Items?
+
+URL items scrape content from web pages and store it in your knowledge base. This is useful for referencing online documentation, help centers, or blog posts.
+
+### When to Use URL Items
+
+<AccordionGroup>
+  <Accordion title="Public documentation" icon="globe">
+    Reference external documentation you don't maintain.
+
+    **Examples:**
+    - API documentation (your own or third-party)
+    - Public knowledge bases
+    - Help center articles
+    - Product pages
+  </Accordion>
+
+  <Accordion title="Frequently updated content" icon="arrows-rotate">
+    Content that changes regularly and you want to keep current by re-scraping.
+
+    **Examples:**
+    - Pricing pages
+    - Product availability
+    - Current promotions
+    - Status pages
+  </Accordion>
+
+  <Accordion title="Blog posts or articles" icon="newspaper">
+    Educational content or announcements.
+
+    **Examples:**
+    - How-to guides
+    - Best practices articles
+    - Product announcements
+    - Feature tutorials
+  </Accordion>
+</AccordionGroup>
+
+### Creating URL Items
+
+<Steps>
+  <Step title="Navigate to folder">
+    Open the folder where you want to add the URL.
+  </Step>
+
+  <Step title="Click 'Add Knowledge Item'">
+    Click the button to create a new item.
+  </Step>
+
+  <Step title="Select 'URL' category">
+    Choose URL from the content type options.
+  </Step>
+
+  <Step title="Enter title">
+    Give the content a descriptive title.
+  </Step>
+
+  <Step title="Enter source URL">
+    Paste the complete URL including https://
+
+    **Example:**
+    ```
+    https://docs.company.com/api/authentication
+    ```
+  </Step>
+
+  <Step title="Click 'Create'">
+    The system will fetch and process the web page.
+
+    Status progression:
+    - PENDING → URL queued for scraping
+    - PROCESSING → Fetching and extracting content
+    - COMPLETED → Content available
+    - FAILED → Scraping error occurred
+  </Step>
+</Steps>
+
+### URL Item JSON Example
+
+```json wrap
+{
+  "category": "URL",
+  "title": "API Authentication Documentation",
+  "source_url": "https://docs.company.com/api/authentication",
+  "status": "COMPLETED"
+}
+```
+
+### URL Requirements
+
+**Working URLs:**
+- Publicly accessible (no login required)
+- Simple HTML content pages
+- Documentation sites
+- Blog posts and articles
+- Static content pages
+
+**Problematic URLs:**
+- Pages requiring authentication
+- JavaScript-heavy applications (SPAs)
+- Paywalled content
+- Dynamically loaded content
+- Interactive applications
+
+<Note>
+URL scraping works best with simple, text-based web pages. Complex web applications may not scrape successfully.
+</Note>
+
+### Common URL Issues
+
+<AccordionGroup>
+  <Accordion title="Scraping failed" icon="circle-xmark">
+    **Causes:**
+    - Page requires login/authentication
+    - URL is incorrect or broken
+    - Content loads via JavaScript
+    - Website blocks scraping (robots.txt)
+    - Page doesn't exist (404)
+
+    **Solutions:**
+    - Verify URL is publicly accessible
+    - Test URL in incognito browser window
+    - Check URL is complete and correct
+    - Copy content manually into text item
+    - Use PDF export of page instead
+  </Accordion>
+
+  <Accordion title="Content incomplete or wrong" icon="puzzle-piece">
+    **Causes:**
+    - JavaScript-rendered content not captured
+    - Dynamic content loading
+    - Multiple tabs/sections on page
+    - Comments or sidebar scraped instead of main content
+
+    **Solutions:**
+    - Inspect scraped content in edit mode
+    - Use direct URL to specific content
+    - Copy desired content into text item
+    - Export page as PDF and upload instead
+  </Accordion>
+
+  <Accordion title="Content becomes outdated" icon="calendar">
+    **Solution:**
+    URL content is scraped once at creation time. To update:
+    - Delete and re-create the URL item
+    - Or copy current content into a text item for manual updates
+
+    For frequently changing content, consider:
+    - Manual text items you update regularly
+    - PDF exports you refresh periodically
+  </Accordion>
+</AccordionGroup>
+
+### URL Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Test accessibility" icon="unlock">
+    - Open URL in incognito window
+    - Verify no login required
+    - Check content is visible
+    - Ensure page loads quickly
+  </Card>
+  <Card title="Review scraped content" icon="eye">
+    - Check content after scraping
+    - Verify correct content was captured
+    - Look for formatting issues
+    - Confirm no extra content (ads, sidebars)
+  </Card>
+</CardGroup>
+
+---
+
+## Processing Status Flow
+
+Knowledge items go through two separate processing pipelines:
+
+1. **Content Processing** - Extracting text from files/URLs
+2. **Vector Indexing** - Preparing content for RAG (semantic search)
+
+### Content Processing Status
+
+This tracks the extraction of text content from your source.
+
+<Steps>
+  <Step title="PENDING">
+    **Meaning:** Item created, queued for content extraction
+
+    **What's happening:**
+    - Item has been saved to database
+    - Waiting for processing worker to pick it up
+    - Usually very brief (seconds)
+
+    **Action needed:** None - wait for processing to begin
+  </Step>
+
+  <Step title="PROCESSING">
+    **Meaning:** Item content is being extracted right now
+
+    **What's happening:**
+    - For FILES: Extracting text from PDF, Word, etc.
+    - For URLs: Fetching and scraping the specific web page
+    - For TEXT: N/A (skips directly to COMPLETED)
+
+    **Action needed:** Wait for processing to complete
+  </Step>
+
+  <Step title="COMPLETED">
+    **Meaning:** Content extraction finished successfully
+
+    **What's happening:**
+    - Content has been extracted and stored
+    - Vector indexing will begin automatically
+    - Item will be available once indexing completes
+
+    **Action needed:** None - wait for vector indexing
+  </Step>
+
+  <Step title="FAILED">
+    **Meaning:** Content extraction encountered an error
+
+    **What's happening:**
+    - File extraction failed (corrupted PDF, unsupported format)
+    - URL scraping failed (page not found, blocked, requires auth)
+    - Content is not available to agents
+
+    **Action needed:** Check error message and fix the issue
+  </Step>
+</Steps>
+
+**Content Processing Flow:**
+CREATED → PENDING → PROCESSING → COMPLETED or FAILED
+
+---
+
+### Vector Indexing Status
+
+After content is extracted, it must be indexed for RAG (semantic search). This allows agents to find relevant knowledge based on meaning, not just keywords.
+
+<Steps>
+  <Step title="PENDING">
+    **Meaning:** Waiting for vector indexing to start
+
+    **What's happening:**
+    - Content processing completed successfully
+    - Queued for embedding generation
+    - Usually brief (seconds to minutes)
+
+    **Action needed:** None
+  </Step>
+
+  <Step title="INDEXING">
+    **Meaning:** Creating vector embeddings for RAG
+
+    **What's happening:**
+    - Content is being split into chunks
+    - AI embeddings being generated for each chunk
+    - Vectors being stored in the knowledge base
+
+    **Action needed:** Wait - this can take several minutes for large documents
+  </Step>
+
+  <Step title="INDEXED">
+    **Meaning:** Item is fully ready for RAG retrieval
+
+    **What's happening:**
+    - Vector embeddings stored successfully
+    - Item can be retrieved via semantic search
+    - Agents can now use this knowledge
+
+    **Action needed:** None - item is fully ready
+  </Step>
+
+  <Step title="FAILED">
+    **Meaning:** Vector indexing failed
+
+    **What's happening:**
+    - Embedding generation encountered an error
+    - Item won't appear in RAG results
+    - May be available for context injection only
+
+    **Action needed:** Try re-indexing or contact support
+  </Step>
+
+  <Step title="REMOVED">
+    **Meaning:** Vectors were deleted
+
+    **What's happening:**
+    - Item was deleted or explicitly removed from index
+    - No longer available for RAG
+
+    **Action needed:** Re-index if needed
+  </Step>
+</Steps>
+
+**Vector Indexing Flow:**
+PENDING → INDEXING → INDEXED or FAILED
+
+<Note>
+**Both statuses must succeed for full functionality:**
+- Content Status: COMPLETED
+- Vector Status: INDEXED
+
+Only then can the item be used in both context injection and RAG retrieval.
+</Note>
+
+---
+
+## Error Handling
+
+### When Items Fail
+
+If a knowledge item shows FAILED status:
+
+<Steps>
+  <Step title="Check the error message">
+    Click on the failed item to see error details.
+  </Step>
+
+  <Step title="Identify the cause">
+    Common causes:
+    - **Files:** File too large, corrupted, password-protected, scanned image
+    - **URL:** Authentication required, broken link, content not accessible
+  </Step>
+
+  <Step title="Try solutions">
+    - **For Files:** Compress, remove protection, add text layer, or convert to text
+    - **For URLs:** Verify accessibility, try different URL, or copy content to text item
+  </Step>
+
+  <Step title="Recreate or convert">
+    - Delete failed item
+    - Create new item with fixes applied
+    - Or convert to text item by copying content manually
+  </Step>
+</Steps>
+
+### Preventing Errors
+
+<CardGroup cols={2}>
+  <Card title="File Prevention" icon="file-pdf">
+    - Keep files under 5MB
+    - Use text-based documents or quality scans
+    - Remove passwords
+    - Test with small file first
+  </Card>
+  <Card title="URL Prevention" icon="link">
+    - Test URL in incognito mode
+    - Use simple HTML pages
+    - Avoid authenticated content
+    - Check robots.txt compatibility
+  </Card>
+</CardGroup>
+
+---
+
+## Monitoring Processing
+
+### Dashboard Indicators
+
+In your knowledge base dashboard, you can see processing status at a glance for each item in your folders:
+
+**Status indicators:**
+- Green checkmark = COMPLETED
+- Hourglass = PROCESSING
+- Pause symbol = PENDING
+- Red X = FAILED
+
+**Example folder view:**
+- User Manual.pdf - COMPLETED
+- Quick Start Guide.pdf - PROCESSING
+- API Documentation - PENDING
+- Legacy Manual.pdf - FAILED
+
+### Bulk Processing
+
+When uploading multiple items:
+
+1. Items process sequentially or in parallel (system-dependent)
+2. Check back after 5-10 minutes for large batches
+3. Review status of each item
+4. Fix any failures individually
+
+<Tip>
+Upload a test item first to verify format and processing before bulk uploading.
+</Tip>
+
+---
+
+## Choosing the Right Content Type
+
+Use this decision tree to select the best content type:
+
+**Do you have existing content?**
+- No → Use TEXT (write directly)
+- Yes, it's a document →
+  - Under 10MB → Use FILE
+  - Over 10MB → Extract text, use TEXT
+- Yes, it's a web page →
+  - Publicly accessible → Use URL (if scraping fails, copy to TEXT)
+  - Not accessible → Copy content to TEXT
+
+### Quick Recommendations
+
+| Your Situation | Best Content Type |
+|---------------|-------------------|
+| Writing FAQs from scratch | TEXT |
+| Have existing Word/PDF docs | Upload as FILE |
+| Have documents under 10MB | FILE |
+| Have documents over 10MB | Split into smaller files or extract to TEXT |
+| Public web documentation | URL (with TEXT as backup) |
+| Private/authenticated content | Copy to TEXT |
+| Need immediate availability | TEXT (no processing delay) |
+| Complex formatting matters | FILE |
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Context vs RAG" icon="brain" href="/build/knowledge/context-vs-rag">
+    Learn how agents access your knowledge content
+  </Card>
+  <Card title="Create Knowledge Bases" icon="plus" href="/build/knowledge/create-knowledge-bases">
+    Step-by-step creation guide
+  </Card>
+  <Card title="Architecture Overview" icon="sitemap" href="/build/knowledge/architecture">
+    Understand knowledge base structure
+  </Card>
+  <Card title="Variables & Dynamic Content" icon="brackets-curly" href="/build/conversation/variables-dynamic-content">
+    Reference knowledge in agent instructions
+  </Card>
+</CardGroup>

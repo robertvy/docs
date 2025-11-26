@@ -1,0 +1,512 @@
+---
+title: "Voicemail-Behandlung"
+description: "Konfiguriere Anrufbeantwortererkennung (AMD), um Voicemail-Systeme in ausgehenden Kampagnen zu identifizieren und zu behandeln"
+icon: "voicemail"
+keywords: "Voicemail, Anrufbeantworter, Mailbox-Erkennung, Voicemail-Behandlung"
+og:description: "Erkennen und behandeln du Voicemail-Systeme intelligent während ausgehender Anrufe."
+---
+
+## Überblick
+
+Anrufbeantwortererkennung (AMD) ermöglicht es deinen KI-Agenten, automatisch zu erkennen, wenn ausgehende Anrufe auf Voicemail statt auf eine lebende Person treffen. Wenn Voicemail erkannt wird, legt der Agent auf und protokolliert das Ergebnis, sodass du zu verschiedenen Zeiten erneut versuchen können, um die Chancen zu maximieren, eine lebende Person zu erreichen.
+
+Diese kritische Funktion verhindert verschwendete Agentenzeit beim Sprechen mit Anrufbeantwortern und optimiert die Kampagneneffizienz, indem Ressourcen auf lebende Gespräche statt auf Voicemail-Systeme konzentriert werden.
+
+<Note>
+**Nur Telefonanrufe:** AMD gilt für Telefonanrufe über SIP/PSTN-Verbindungen. Webbasierte Gespräche ohne Telefonteil unterstützen keine DTMF-Interaktion.
+
+Die AMD-Konfiguration erfolgt während der Kampagnenerstellung und Testanrufen. Textbasiertes AMD ist immer aktiv. du können optional ML-basiertes AMD als Addon für schnellere Erkennung aktivieren (~1,5s vs. 5-15s).
+</Note>
+
+---
+
+## Was ist Anrufbeantwortererkennung?
+
+### Die Herausforderung
+
+Beim Tätigen ausgehender Anrufe stoßen du auf zwei mögliche Szenarien:
+
+**Szenario 1: Lebende Antwort**
+```text wrap
+Telefon klingelt → Person antwortet → "Hallo?"
+→ Agent sollte Gespräch beginnen
+→ Volle Agentenfähigkeiten erforderlich
+```
+
+**Szenario 2: Voicemail**
+```text wrap
+Telefon klingelt → Voicemail-System antwortet → "Sie haben John Smith erreicht..."
+→ Agent sollte auflegen und später erneut versuchen
+→ Keine Zeit mit vollem Gesprächsskript verschwenden
+→ Keine unangenehme Interaktion beim Sprechen über Voicemail-Ansage
+```
+
+**Das Problem:** Wie weiß der Agent, welches Szenario aufgetreten ist?
+
+### AMD-Lösung
+
+AMD analysiert das Audio in den ersten Sekunden nach Anrufverbindung, um festzustellen, ob ein Mensch oder eine Maschine geantwortet hat:
+
+**Erkennungsprozess:**
+```text wrap
+1. Anruf verbunden
+2. AMD analysiert Audio (0,5-3 Sekunden je nach Methode)
+3. Klassifikation: MENSCH oder MASCHINE
+4. Agent führt entsprechendes Verhalten aus
+```
+
+**Vorteile:**
+- **Effizienz:** Keine Agentenzeit mit Voicemail verschwenden
+- **Bessere Ausrichtung:** Wiederholungsversuche auf verschiedene Zeiten fokussieren, um lebende Person zu erreichen
+- **Höhere Verbindungsraten:** Anrufzeit basierend auf Voicemail-Mustern optimieren
+- **Bessere Analysen:** "Voicemail erreicht" von "keine Antwort" in Berichten trennen
+
+---
+
+## AMD-Methoden
+
+### Übersicht der Erkennungstypen
+
+<CardGroup cols={2}>
+  <Card title="Textbasiertes AMD" icon="text">
+    Schlüsselwortbasierte Erkennung mit Transkriptor und LLM - immer aktiv
+  </Card>
+  <Card title="ML-basiertes AMD (Optional)" icon="brain">
+    Schnelle Mustererkennung mit Deep Neural Network - optionales Addon für Geschwindigkeit
+  </Card>
+</CardGroup>
+
+### Textbasiertes AMD
+
+**Rolle:** Basis-Erkennungsebene, die immer läuft. Verwendet den Transkriptor und das LLM deines Agenten, um Voicemail-Schlüsselwörter zu identifizieren.
+
+**Funktionsweise:**
+```text wrap
+1. Anruf verbunden
+2. KI-Sprach-Pipeline des Agenten (Transkriptor) empfängt Audio
+3. Agent wartet auf Abschluss des ersten Turns/der ersten Äußerung (Pause erkannt)
+4. LLM analysiert Transkription auf voicemail-ähnliche Muster:
+   - "Sie haben erreicht"
+   - "Hinterlassen Sie eine Nachricht"
+   - "Nicht verfügbar"
+   - "Voicemail"
+   - "Nach dem Signalton"
+5. Wenn Voicemail erkannt → Agent legt auf
+6. Wenn lebende Person erkannt → Agent setzt normales Gespräch fort
+```
+
+**Eigenschaften:**
+
+<AccordionGroup>
+  <Accordion title="Geschwindigkeit" icon="gauge">
+    **Langsamer:** Wartet auf vollständige Turn/Äußerung-Beendigung
+
+    Muss auf vollständige Beendigung der Voicemail-Ansage warten (Pause erkannt), dann transkribieren und den vollständigen Text analysieren. Typische Erkennung erfolgt nach 5-15+ Sekunden, abhängig von der Länge der Voicemail-Nachricht.
+
+    **Einschränkung:** Lange Voicemail-Ansagen bedeuten längere Wartezeiten vor Erkennung
+
+    **Am besten für:** Kampagnen, bei denen Genauigkeit wichtiger ist als sofortige Erkennung
+  </Accordion>
+
+  <Accordion title="Genauigkeit" icon="chart-line">
+    **Hohe Genauigkeit wenn:**
+    - Standard-Voicemail-Ansagen mit gängigen Phrasen
+    - Klare Audioqualität
+    - Voicemail-Sprache passt zur Transkriptor-Sprache
+    - B2B-Umgebungen mit professionellen Ansagen
+
+    **Erkennt NICHT:**
+    - Voicemail-Ansagen in Sprachen, die der Transkriptor nicht unterstützt
+    - Voicemail-Systeme ohne Ansage (nur Pieptöne)
+    - Nicht-verbale Voicemail-Indikatoren
+
+    **Geringere Genauigkeit wenn:**
+    - Benutzerdefinierte Ansagen ohne Standard-Schlüsselwörter
+    - Kurze Ansagen ("Hi, hinterlassen du eine Nachricht" - sehr kurz)
+    - Schlechte Audioqualität oder Hintergrundgeräusche
+    - Hintergrundgeräusche stören Transkription
+  </Accordion>
+
+  <Accordion title="Beste Anwendungsfälle" icon="briefcase">
+    **Ideal für:**
+    - **B2B-Kampagnen** - Geschäftsvoicemails verwenden typischerweise Standardphrasen
+    - **Kampagnen mit Priorität auf Genauigkeit** - Reduziert Fehlalarme durch Analyse des vollständigen Äußerungskontexts
+    - **Budgetbewusste Bereitstellungen** - Niedrigere Rechenkosten
+    - **Englischsprachige Märkte** - Schlüsselworterkennung für Englisch optimiert
+
+    **Beispielszenarien:**
+    - Verkaufsansprache an Geschäftstelefonnummern
+    - Terminerinnerungen an Büroleitungen
+    - B2B-Lead-Qualifikationskampagnen
+  </Accordion>
+
+  <Accordion title="Einschränkungen" icon="triangle-exclamation">
+    **Kann Probleme haben mit:**
+    - Persönlichen, kreativen Voicemail-Ansagen ("Hey, hier ist Mike, du weißt, was zu tun ist")
+    - Sehr kurzen Ansagen
+    - Voicemail-Sprache passt nicht zur Transkriptor-Sprache
+    - Ansagen, die gesprächsartig klingen ("Hallo? Hallo? Nur Spaß, hinterlassen du eine Nachricht")
+    - Hintergrundmusik oder Geräusche in der Ansage
+
+    **Fehlalarme:** Mensch, der mit "du hast erreicht..." beginnt, könnte falsch klassifiziert werden
+
+    **Falsch negative:** Voicemail ohne Schlüsselwörter könnte als Mensch klassifiziert werden
+  </Accordion>
+</AccordionGroup>
+
+### ML-basiertes AMD (Optionales Addon)
+
+**Rolle:** Optionale schnelle Erkennungsebene, die du für Geschwindigkeit aktivieren können. Arbeitet parallel mit textbasiertem AMD.
+
+**Funktionsweise:**
+```text wrap
+1. Anruf verbunden
+2. Deep Neural Network (DNN) analysiert Audio in Echtzeit:
+   - Sprachmuster und Kadenz
+   - Voicemail-Audiomuster
+   - Akustische Merkmale
+   - Timing und Rhythmus
+   - Natürliche vs. aufgezeichnete Sprache-Indikatoren
+3. Modell trainiert auf Zehntausenden von Audioaufnahmen
+4. Klassifikation: MENSCH oder MASCHINE
+5. Sprachunabhängige Erkennung
+```
+
+**Eigenschaften:**
+
+<AccordionGroup>
+  <Accordion title="Geschwindigkeit" icon="gauge-high">
+    **Schnell:** ~1,5 Sekunden
+
+    Identifiziert lebende menschliche Antworten innerhalb von 1,5 Sekunden
+
+    **Viel schneller als textbasiertes AMD**, das auf vollständige Äußerung warten muss
+  </Accordion>
+
+  <Accordion title="Genauigkeit" icon="chart-line">
+    **Sehr hohe Genauigkeit** unter realen Bedingungen
+
+    **Warum ML-basiertes AMD aktivieren:**
+    - **Sprachunabhängig:** Funktioniert über alle Sprachen hinweg (textbasiert funktioniert nur, wenn Transkriptor-Sprache übereinstimmt)
+    - **Erkennt Voicemail nur mit Piepston:** Erfasst Voicemail-Systeme ohne Ansage (textbasiert kann nicht)
+    - **Behandelt kreative Ansagen:** Erkennt persönliche/nicht-standardisierte Ansagen ohne Schlüsselwörter
+    - **Musterbasierte Erkennung:** Verlässt sich nicht auf spezifische Voicemail-Schlüsselwörter
+    - **Schnelle Erkennung:** ~1,5 Sekunden vs. 5-15+ Sekunden nur mit Text
+    - **Besser für mehrsprachige Kampagnen:** Keine Sprachkonfiguration erforderlich
+
+    **Einschränkungen:**
+    - Extrem kurze Verbindungen (< 0,5 Sekunden Audio)
+    - Stark verschlechterte Audioqualität
+  </Accordion>
+
+  <Accordion title="Beste Anwendungsfälle" icon="briefcase">
+    **Ideal für:**
+    - **Verbraucherkampagnen** - Persönliche Voicemails mit kreativen Ansagen
+    - **Mehrsprachige Kampagnen** - Nicht abhängig von englischen Schlüsselwörtern
+    - **Qualitätsfokussierte Kampagnen** - Wenn Genauigkeit wichtiger ist als Geschwindigkeit
+    - **Komplexe Märkte** - Gemischte Geschäfts-/Privatnummern
+
+    **Beispielszenarien:**
+    - Verbraucherverkaufsanrufe
+    - Politische Kampagnen
+    - Non-Profit-Fundraising
+    - Gesundheitsansprache
+    - Mehrsprachige Support-Kampagnen
+  </Accordion>
+
+  <Accordion title="Vorteile" icon="check">
+    **Behandelt gut:**
+    - Kreative persönliche Ansagen
+    - Kurze Ansagen
+    - Nicht-englische Voicemails
+    - Ansagen ohne Standard-Schlüsselwörter
+    - Hintergrundmusik oder Soundeffekte
+    - Natürlich klingende gesprächsartige Ansagen
+
+    **Robust über:**
+    - Verschiedene Sprachen
+    - Regionale Akzente
+    - Verschiedene Voicemail-Systeme
+    - Benutzerdefinierte Ansagen
+  </Accordion>
+</AccordionGroup>
+
+### Wie AMD funktioniert
+
+**Textbasiertes AMD (Basis-Ebene):**
+- Immer aktiv
+- Analysiert Transkription auf Voicemail-Schlüsselwörter
+- Wartet auf vollständige Äußerung (5-15+ Sekunden)
+- Konservativer - legt selten bei lebenden Personen auf
+
+**ML-basiertes AMD (Optionales Addon):**
+- du können dies optional für schnellere Erkennung aktivieren
+- Analysiert Audiomuster in ~1,5 Sekunden
+- Arbeitet parallel mit textbasiertem AMD
+- Schneller, kann aber gelegentlich bei lebenden Personen auflegen
+
+**Konfigurationsoptionen:**
+
+**Nur textbasiert (Konservativ):**
+- Nur textbasierte Erkennung aktiv
+- Langsamere Erkennung (5-15+ Sekunden)
+- Legt selten bei lebenden Personen auf
+- **Kompromiss:** Könnte einige Voicemails verpassen und mit ihnen sprechen
+- Am besten für: Wenn du vermeiden möchten, bei lebenden Personen um jeden Preis aufzulegen
+
+**Textbasiert + ML-basiert (Schnell & Empfohlen):**
+- ML erkennt in ~1,5 Sekunden
+- Textbasiert validiert parallel
+- Sehr hohe Genauigkeit
+- **Kompromiss:** Könnte gelegentlich bei einer lebenden Person auflegen
+- Am besten für: Kampagnen, bei denen das Sprechen mit Voicemail zusätzliche Kosten verursacht
+
+<Tip>
+**Welche sollten du wählen?**
+
+**Textbasiert + ML-basiert (empfohlen):** Wenn das Sprechen mit Voicemail Zeit verschwendet und zusätzliche Kosten verursacht und du es tolerieren können, gelegentlich bei einer lebenden Person aufzulegen.
+
+**Nur textbasiert:** Wenn das Auflegen bei einer echten Person in seltenen Fällen schlimmer ist als die zusätzlichen Kosten des Sprechens mit Voicemail.
+</Tip>
+
+---
+
+## AMD konfigurieren
+
+AMD kann an zwei Stellen konfiguriert werden:
+
+<CardGroup cols={2}>
+  <Card title="Test-Telefonanrufe" icon="phone-volume" href="#test-phone-calls">
+    AMD aktivieren beim Testen deines Agenten mit Telefonanrufen
+  </Card>
+  <Card title="Kampagneneinstellungen" icon="megaphone" href="#campaign-settings">
+    AMD für ausgehende Kampagnen konfigurieren
+  </Card>
+</CardGroup>
+
+### Test-Telefonanrufe
+
+AMD konfigurieren beim Testen deines Agenten über Telefon:
+
+<Steps>
+  <Step title="Agent öffnen">
+    Gehe zu deiner **Agent**-Seite
+
+    Klicke auf **Testanruf**-Button
+  </Step>
+
+  <Step title="Telefonanruf auswählen">
+    Wähle **Telefonanruf** als Testtyp
+  </Step>
+
+  <Step title="AMD konfigurieren">
+    Finden du die Einstellung **Anrufbeantwortererkennung (AMD)**
+
+    Wähle zwischen:
+    - **Textbasiert** (Standard) - Vermeidet Auflegen bei lebenden Personen um jeden Preis
+    - **ML-basiert** - Schnelle Erkennung (~1,5s), kann aber gelegentlich bei lebenden Personen auflegen
+  </Step>
+
+  <Step title="Testanruf tätigen">
+    Wähle deine Von-Nummer
+
+    Gib An-Nummer ein (deine Telefonnummer zum Testen)
+
+    Klicke **Telefonanruf starten**
+
+    Wenn Voicemail erkannt wird, legt Agent auf
+  </Step>
+</Steps>
+
+### Kampagneneinstellungen
+
+AMD für ausgehende Kampagnen konfigurieren:
+
+<Steps>
+  <Step title="Kampagnenerstellung">
+    Gehe zum Abschnitt **Kampagnen**
+
+    Klicke **Kampagne erstellen**
+  </Step>
+
+  <Step title="AMD-Strategie auswählen">
+    Finden du Dropdown **Anrufbeantwortererkennung (AMD)**
+
+    *Wähle Voicemail-Erkennungsstrategie für diese Kampagne*
+
+    Wähle eine:
+    - **Textbasiert** - Vermeidet Auflegen bei lebenden Personen um jeden Preis (langsamer, 5-15s)
+    - **ML-basiert** - Schnelle Erkennung (~1,5s), kann aber gelegentlich bei lebenden Personen auflegen
+  </Step>
+
+  <Step title="Kampagnen-Setup abschließen">
+    Fülle andere erforderliche Felder aus:
+    - Kampagnenname
+    - Agent
+    - Telefonnummer
+
+    Klicke **Kampagne erstellen**
+  </Step>
+</Steps>
+
+**AMD-Einstellungen für bestehende Kampagnen ändern:**
+
+1. Navigiere zum Kampagnen-Tab **Einstellungen**
+2. Finden du Dropdown **Anrufbeantwortererkennung (AMD)**
+3. Wähle andere Strategie (Textbasiert oder ML-basiert)
+4. Änderungen speichern
+
+<Warning>
+Das Ändern von AMD-Einstellungen während einer laufenden Kampagne kann die Analysekonsistenz beeinflussen. Erwägen du, eine neue Kampagne zu erstellen, wenn du AMD-Konfigurationen A/B-testen müssen.
+</Warning>
+
+---
+
+## AMD-Verhalten
+
+Wenn AMD Voicemail erkennt, legt der Agent automatisch auf und protokolliert das Ergebnis.
+
+Der Anruf wird in den Kampagnenanalysen als **MACHINE** markiert, sodass du Wiederholungsversuche zu verschiedenen Zeiten planen können, um die Chancen zu erhöhen, eine lebende Person zu erreichen.
+
+---
+
+## AMD-Konfiguration testen
+
+### AMD-Testplan
+
+<Steps>
+  <Step title="ML-basiertes AMD testen">
+    **Setup:**
+    1. Agent mit aktiviertem ML-basiertem AMD konfigurieren
+    2. Testtelefonnummer mit Voicemail vorbereiten
+
+    **Test:**
+    1. Testanruf zu Voicemail-Nummer starten
+    2. Anruf zur Voicemail gehen lassen
+    3. Agentenverhalten überwachen
+
+    **Validierung:**
+    - Agent legt innerhalb von ~1,5 Sekunden auf
+    - Anruf als MACHINE in Protokollen markiert
+    - Kein Gesprächsversuch mit Voicemail-Ansage
+  </Step>
+
+  <Step title="Textbasiertes AMD testen">
+    **Setup:**
+    1. Agent nur mit textbasiertem AMD konfigurieren
+    2. Dieselbe Voicemail-Testnummer verwenden
+
+    **Test:**
+    1. Testanruf starten
+    2. Anruf zur Voicemail mit Standard-Ansage gehen lassen
+
+    **Validierung:**
+    - Agent wartet auf vollständige Ansage (5-15+ Sekunden)
+    - Agent legt nach Erkennung von Schlüsselwörtern auf
+    - Anruf als MACHINE markiert
+  </Step>
+
+  <Step title="Erkennung lebender Person testen">
+    **Setup:**
+    1. Mit beiden AMD-Methoden testen
+    2. Anruf persönlich beantworten
+
+    **Test:**
+    1. Testanruf starten
+    2. Antworten und "Hallo?" sagen
+    3. Überprüfen, ob Agent Gespräch normal fortsetzt
+
+    **Validierung:**
+    - Agent legt NICHT auf
+    - Normales Gespräch verläuft
+    - Anruf NICHT als MACHINE markiert
+  </Step>
+
+  <Step title="Grenzfälle testen">
+    **Zu testende Szenarien:**
+
+    **Stille Antwort:**
+    - Antworten, aber nicht sprechen
+    - Überprüfen, ob AMD nicht falsch klassifiziert
+
+    **Schnelle Begrüßung:**
+    - Mit sehr kurzem "Hi" antworten
+    - Überprüfen, ob Gespräch fortgesetzt wird
+
+    **Voicemail ohne Schlüsselwörter:**
+    - Mit nicht-standardisierter Ansage testen
+    - ML- vs. textbasierte Leistung überwachen
+
+    **Voicemail nur mit Piepston:**
+    - Voicemail-System ohne Ansage
+    - Überprüfen, ob ML-basiert erkennt, textbasiert könnte verpassen
+  </Step>
+</Steps>
+
+---
+
+## Fehlerbehebung
+
+<AccordionGroup>
+  <Accordion title="Falsche AMD-Methode ausgewählt" icon="circle-question">
+    **Symptome:** Leistung entspricht nicht den Erwartungen
+
+    **Überprüfen:**
+    - Kampagnen-AMD-Einstellung überprüfen
+    - Erwartete vs. tatsächliche Erkennungsgeschwindigkeit vergleichen
+    - Fehlalarm-/Negativ-Raten in Protokollen prüfen
+
+    **Lösung:**
+    - Zwischen Text- und ML-basiert wechseln
+    - Beide Methoden mit deinen Anrufmustern testen
+    - Basierend auf deiner Priorität wählen (Geschwindigkeit vs. konservativ)
+  </Accordion>
+
+  <Accordion title="Hohe Fehlalarmrate" icon="user-xmark">
+    **Symptome:** Häufiges Auflegen bei lebenden Personen
+
+    **Analyse:**
+    - Aufzeichnungen von Fehlalarmen überprüfen
+    - Prüfen, ob ML-basiertes AMD zu aggressiv ist
+    - Häufige Muster identifizieren (Hintergrundgeräusche, spezifische Begrüßungen)
+
+    **Lösung:**
+    - Zu textbasiertem AMD wechseln (konservativer)
+    - Anrufqualität verbessern/Hintergrundgeräusche reduzieren
+    - Von verschiedenen Telefonnummern testen
+    - Support kontaktieren, falls anhaltend
+  </Accordion>
+
+  <Accordion title="Hohe Falsch-Negativ-Rate" icon="voicemail">
+    **Symptome:** Agent spricht häufig mit Voicemail
+
+    **Analyse:**
+    - Prüfen, ob Voicemails nicht-standardisierte Ansagen haben
+    - Überprüfen, ob Voicemail-Systeme nur mit Piepston
+    - Überprüfen, ob Transkriptor-Sprache zur Voicemail-Sprache passt
+
+    **Lösung:**
+    - Zu ML-basiertem AMD wechseln (besser für nicht-standardisierte Ansagen)
+    - ML-basiert erkennt Systeme nur mit Piepston
+    - Sicherstellen, dass Agent dieselbe Sprache wie Zielgruppe spricht
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Kampagnenverwaltung" icon="megaphone" href="/de/launch/campaign-outbound-launch">
+    Erstellen und verwalten du ausgehende Anrufkampagnen
+  </Card>
+  <Card title="Analysen & Berichterstattung" icon="chart-line" href="/de/optimize/overview">
+    Verfolge AMD-Leistung und optimiere Kampagnen
+  </Card>
+  <Card title="Agentenanweisungen" icon="pen" href="/de/build/conversation/instructions">
+    Schreibe effektive Prompts für Anrufbehandlung
+  </Card>
+  <Card title="Geschäftszeiten" icon="clock" href="/de/launch/business-hours">
+    Konfiguriere optimale Anrufzeiten basierend auf AMD-Daten
+  </Card>
+</CardGroup>

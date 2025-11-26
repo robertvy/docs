@@ -1,0 +1,625 @@
+---
+title: "Fehlerbehebung bei der Bereitstellung"
+description: "Häufige Produktionsprobleme debuggen und Bereitstellungsprobleme lösen"
+icon: "wrench"
+keywords: "Fehlerbehebung, Debugging, Produktionsprobleme, SIP-Fehler, Anrufqualität, Bereitstellungsprobleme, Voice-Agent-Debugging"
+og:description: "Systematische Anleitung zur Diagnose und Behebung von Produktionsproblemen mit KI-Voice-Agents. SIP-Konnektivität, Anrufqualität und Agent-Verhaltensprobleme debuggen."
+---
+
+## Diagnoseverfahren
+
+Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fehlerbehebungsprozess:
+
+1. **Symptome identifizieren** - Was ist kaputt? Anrufe schlagen fehl, Agent verhält sich falsch, Integrationen sind ausgefallen?
+2. **Umfang prüfen** - Betrifft alle Anrufe oder nur eine bestimmte Teilmenge? Seit wann?
+3. **Protokolle überprüfen** - Nach Fehlermeldungen, Mustern, Stack Traces suchen
+4. **Ursache isolieren** - Ist es ein Konfigurations-, Integrations-, Plattform- oder Carrier-Problem?
+5. **Lösung anwenden** - Kleinste Änderung bereitstellen, die das Problem löst
+6. **Validieren** - Gründlich testen, bevor als gelöst markiert
+
+## Häufige Probleme & Lösungen
+
+### Keine Anrufe werden empfangen
+
+**Symptom**: Telefonnummer klingelt nicht, Anrufe gehen ins Leere oder "Nummer nicht vergeben"
+
+<AccordionGroup>
+  <Accordion title="Telefonnummerzuweisung überprüfen">
+    **Diagnose**:
+    1. Gehe zu **Telefonie → Nummern**
+    2. Finden du deine Nummer, überprüfen du die Spalte "Zugewiesener Agent"
+    3. Überprüfe, ob sie dem richtigen Agenten zugewiesen ist (nicht "Nicht zugewiesen")
+
+    **Lösung**:
+    - Klicke auf die Nummer → Wähle den Agenten aus dem Dropdown → Speichern
+    - Warten du 30 Sekunden, bis die Routing-Aktualisierung propagiert ist
+    - Teste durch erneutes Anrufen der Nummer
+  </Accordion>
+
+  <Accordion title="SIP-Trunk-Registrierung überprüfen">
+    **Diagnose**:
+    ```bash
+    # SIP-Registrierungsstatus überprüfen
+    curl -H "Authorization: Bearer YOUR_API_KEY" \
+         https://api.itellico.ai/v1/sip-trunks/trunk_123/status
+    ```
+
+    Suchen du nach `"status": "registered"`. Wenn `"unregistered"` oder `"failed"`:
+
+    **Häufige Ursachen**:
+    - Falsche SIP-Anmeldedaten (Benutzername/Passwort)
+    - IP nicht auf der Allowlist des Carriers
+    - Firewall blockiert UDP 5060
+    - Carrier-Endpunkt ist ausgefallen
+
+    **Lösung**:
+    - Anmeldedaten beim Carrier überprüfen
+    - Überprüfe das Carrier-Portal für IP-Allowlist-Einstellungen
+    - Teste mit `curl -v sip:carrier.com:5060`, um die Konnektivität zu überprüfen
+    - Kontaktiere den Carrier, wenn ihr Endpunkt nicht erreichbar ist
+  </Accordion>
+
+  <Accordion title="Nummernbereitstellung überprüfen">
+    **Diagnose**:
+    - Nummernstatus zeigt "Ausstehend" oder "Fehlgeschlagen"
+    - Nummer wurde gerade vor weniger als 5 Minuten gekauft
+
+    **Lösung**:
+    - Warten du bis zu 10 Minuten, bis die Bereitstellung abgeschlossen ist
+    - Wenn länger als 30 Min. hängt, klicke auf "Bereitstellung wiederholen"
+    - Wenn weiterhin fehlschlägt, kontaktiere den Support mit Nummerndetails
+  </Accordion>
+
+  <Accordion title="Carrier-Routing-Probleme">
+    **Diagnose**:
+    - Anrufe funktionieren, wenn SIE anrufen, aber nicht von Kundentelefonen
+    - Bestimmte Vorwahlen oder Carrier können du nicht erreichen
+
+    **Lösung**:
+    - Überprüfe, ob die Routing-Tabelle des Carriers deinen Nummernbereich enthält
+    - CNAM (Caller Name) Registrierung überprüfen
+    - Auf Spam-Kennzeichnung prüfen (verwenden du kostenlose Carrier-Lookup-Tools)
+    - Möglicherweise müssen du den Carrier kontaktieren, um das Routing zu korrigieren
+  </Accordion>
+</AccordionGroup>
+
+### Schlechte Anrufqualität
+
+**Symptom**: Abgehackte Audio, Echo, roboterhafte Stimme, lange Verzögerungen
+
+<AccordionGroup>
+  <Accordion title="Audioprobleme (Echo, Rauschen, Aussetzer)">
+    **Diagnose**:
+    - Öffne **Konversationen → Protokolle** → Wähle betroffenen Anruf
+    - Überprüfe "Anrufqualität"-Metriken:
+      - Jitter: Sollte &lt;30ms sein
+      - Paketverlust: Sollte &lt;1% sein
+      - RTT (Round Trip Time): Sollte &lt;200ms sein
+
+    **Lösungen nach Symptom**:
+
+    | Symptom | Wahrscheinliche Ursache | Lösung |
+    |---------|-------------------------|--------|
+    | Echo | Akustisches Echo (Lautsprecher-Feedback) | AEC in Agenteneinstellungen aktivieren |
+    | Abgehackt/Roboterhaft | Paketverlust oder Jitter | Netzwerkbandbreite prüfen, Codec wechseln |
+    | Aussetzer | Firewall blockiert RTP | UDP-Ports 10000-60000 öffnen |
+    | Einseitiges Audio | NAT-Traversal-Problem | TURN-Relay aktivieren |
+    | Hintergrundgeräusche | Geräuschvolle Umgebung | Rauschunterdrückung aktivieren |
+
+    **Konfiguration**:
+    ```json
+    // Agenten-Audioeinstellungen
+    {
+      "audio": {
+        "echo_cancellation": true,
+        "noise_suppression": true,
+        "codec": "opus",  // Beste Qualität, Fallback auf PCMU
+        "bitrate": 64000  // Höher = bessere Qualität (64kbps empfohlen)
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Hohe Latenz (Agent antwortet langsam)">
+    **Diagnose**:
+    - Überprüfe **Dashboard → Metriken → Durchschnittliche Antwortzeit**
+    - Zielwert: &lt;500ms
+    - Wenn &gt;1000ms, untersuchen:
+
+    **Mögliche Ursachen**:
+    1. **Verlangsamung des Modellanbieters**
+       - Überprüfe status.openai.com oder status.anthropic.com
+       - Suchen du nach erhöhten Latenzen oder Ausfällen
+       - Wechseln du zu Fallback-Modell, falls verfügbar
+
+    2. **Großes Kontextfenster**
+       - Lange Anweisungen oder riesige Wissensdatenbank-Abrufe
+       - Lösung: Anweisungslänge reduzieren, KB-Chunks auf 3 begrenzen
+
+    3. **Langsame externe API**
+       - Überprüfe **Analytik → Aktionen** für langsame API-Aufrufe
+       - APIs, die >2s benötigen, verzögern die Agentenantwort
+       - Timeout-Limits und Fallback-Antworten hinzufügen
+
+    4. **Netzwerkprobleme**
+       - Von mehreren Standorten aus überprüfen
+       - Wenn bestimmte Region betroffen ist, könnte es ein ISP-Routing-Problem sein
+       - Kontaktiere den Support zur Untersuchung
+
+    **Schnelle Lösung**:
+    - Wechseln du zu schnellerem Modell (GPT-4 → GPT-3.5 Turbo)
+    - Reduzieren du die Anzahl der abgerufenen Wissensdatenbank-Chunks
+    - Erhöhen du API-Timeouts, um Wartezeiten zu vermeiden
+  </Accordion>
+
+  <Accordion title="Transkriptionsfehler (falsche Wörter)">
+    **Diagnose**:
+    - Transkript in Konversationen → Protokolle überprüfen
+    - Nach Mustern suchen:
+      - Fachbegriffe falsch verstanden → Zu benutzerdefiniertem Vokabular hinzufügen
+      - Akzente missverstanden → Anderen Transkribierer ausprobieren
+      - Hintergrundgeräusche → Rauschunterdrückung aktivieren
+
+    **Lösungen**:
+
+    **Benutzerdefiniertes Vokabular hinzufügen**:
+    ```json
+    // In Agenteneinstellungen → Transkribierer → Benutzerdefiniertes Vokabular
+    {
+      "custom_words": [
+        {"word": "itellicoAI", "pronunciation": "eye-TELL-ih-koh AI"},
+        {"word": "Kubernetes", "pronunciation": "koo-ber-NET-eez"},
+        {"word": "API", "pronunciation": "A P I"}  // Akronyme buchstabieren
+      ]
+    }
+    ```
+
+    **Anderen Transkribierer ausprobieren**:
+    - Deepgram: Am besten für Akzente, geräuschvolle Umgebungen
+    - Azure: Am besten für Fachbegriffe
+    - Whisper: Am besten für mehrsprachig
+
+    **Audio-Eingabe verbessern**:
+    - Höheren Bitrate-Codec verwenden (Opus 64kbps)
+    - Rauschunterdrückung aktivieren
+    - Mit anderem Telefon/Mikrofon für Web-Anrufe testen
+  </Accordion>
+</AccordionGroup>
+
+### Agent antwortet nicht korrekt
+
+**Symptom**: Agent gibt falsche Antworten, ignoriert Anweisungen, verhält sich unberechenbar
+
+<AccordionGroup>
+  <Accordion title="Agent folgt Anweisungen nicht">
+    **Diagnose**:
+    - Öffne Agenteneinstellungen → **Konversation → Anweisungen**
+    - Im Simulator mit genauem Szenario testen
+    - Prüfen du, ob das Problem:
+      - Immer auftritt → Anweisungsproblem
+      - Intermittierend → Kontext- oder Modellproblem
+
+    **Lösungen**:
+
+    **1. Anweisungen zu vage**:
+    ```markdown
+    ❌ Schlecht: "Seien Sie hilfreich und beantworten Sie Fragen."
+
+    ✅ Gut: "Sie sind der Support von Acme Corp. Beantworten Sie Fragen zu:
+    - Produktfunktionen (siehe Wissensdatenbank)
+    - Preise (aktuelle Pläne: Basic 49€, Pro 99€)
+    - Abrechnung (an Abrechnungsabteilung weiterleiten)
+
+    Beantworten Sie KEINE Fragen zu:
+    - Wettbewerbsvergleichen
+    - Zukünftiger Roadmap
+    - Rechtlichem/Compliance"
+    ```
+
+    **2. Anweisungen zu lang** (>500 Wörter):
+    - Modell verliert Fokus bei langen Prompts
+    - Lösung: In klare Abschnitte unterteilen, Aufzählungszeichen verwenden
+
+    **3. Widersprüchliche Anweisungen**:
+    - Beispiel: "Sei prägnant" aber auch "Gib detaillierte Erklärungen"
+    - Lösung: Ein Verhalten priorisieren, Konflikt entfernen
+
+    **Testen**:
+    - 10 Testanrufe mit Grenzfällen durchführen
+    - Transkripte auf Compliance überprüfen
+    - Anweisungen basierend auf Fehlern iterieren
+  </Accordion>
+
+  <Accordion title="Agent halluziniert oder erfindet Fakten">
+    **Diagnose**:
+    - Agent sagt Dinge, die nicht in der Wissensdatenbank oder den Anweisungen stehen
+    - Liefert falsche Produktdetails, Preise oder Richtlinien
+
+    **Grundursachen**:
+    1. Wissensdatenbank nicht umfassend genug
+    2. Anweisungen betonen nicht "nur bereitgestellte Informationen verwenden"
+    3. Modell zu kreativ (Temperatur zu hoch)
+
+    **Lösungen**:
+
+    **1. Explizite Leitplanken hinzufügen**:
+    ```markdown
+    KRITISCH: Geben Sie nur Informationen aus:
+    1. Der Wissensdatenbank
+    2. Den obigen Anweisungen
+    3. Informationen, die der Anrufer bereitstellt
+
+    Wenn Sie etwas nicht wissen, sagen Sie: "Ich habe diese Information nicht. Lassen Sie mich Sie an jemanden weiterleiten, der helfen kann."
+
+    Erfinden Sie NIEMALS Fakten, Preise oder Richtlinien.
+    ```
+
+    **2. Wissensdatenbank erweitern**:
+    - "Ich weiß nicht"-Antworten in Protokollen überprüfen
+    - Fehlende Inhalte zu KB hinzufügen
+    - Abruf mit Beispielabfragen testen
+
+    **3. Modelltemperatur senken**:
+    ```json
+    {
+      "model_settings": {
+        "temperature": 0.3  // Niedriger = deterministischer (Standard: 0.7)
+      }
+    }
+    ```
+
+    **4. Zitiermodus verwenden** (falls verfügbar):
+    - Zwingt Agent, KB-Quellen zu zitieren
+    - Macht offensichtlich, wenn Info nicht in KB
+  </Accordion>
+
+  <Accordion title="Agent bleibt in Schleifen hängen">
+    **Diagnose**:
+    - Agent wiederholt dieselbe Frage 3+ Mal
+    - Konversation dreht sich im Kreis
+    - Anrufer wird frustriert
+
+    **Grundursachen**:
+    1. Agent erkennt nicht, dass Anrufer geantwortet hat
+    2. Transkription fehlgeschlagen (Antwort nicht gehört)
+    3. Anweisungen behandeln Grenzfall nicht
+
+    **Lösungen**:
+
+    **1. Schleifenerkennung hinzufügen**:
+    ```markdown
+    Wenn Sie dieselbe Frage zweimal gestellt haben und der Kunde verwirrt scheint,
+    versuchen Sie, die Frage umzuformulieren oder bieten Sie an, an einen Menschen weiterzuleiten.
+
+    Beispiel:
+    Agent: "Was ist Ihre Konto-E-Mail?"
+    Anrufer: [unklare Antwort]
+    Agent: "Ich habe das nicht ganz verstanden. Unter welcher E-Mail-Adresse läuft Ihr Konto?"
+    Anrufer: [immer noch unklar]
+    Agent: "Ich habe Schwierigkeiten zu hören. Lassen Sie mich Sie mit jemandem verbinden, der helfen kann."
+    ```
+
+    **2. Absichtserkennung verbessern**:
+    - Beispiele für Grenzfallantworten zu Anweisungen hinzufügen
+    - Strukturierte Antworten verwenden (DTMF für kritische Infos)
+    - "Ich bin mir nicht sicher"-Fallback zu Mensch aktivieren
+
+    **3. Grenzfälle testen**:
+    - Schweigender Anrufer
+    - Weitschweifiger Anrufer
+    - Anrufer mit starkem Akzent
+    - Geräuschvolle Umgebung
+  </Accordion>
+</AccordionGroup>
+
+### Integrationsfehler
+
+**Symptom**: Aktionen werden nicht ausgelöst, API-Aufrufe schlagen fehl, Weiterleitungen funktionieren nicht
+
+<AccordionGroup>
+  <Accordion title="API-Aktion schlägt fehl">
+    **Diagnose**:
+    1. Öffne **Konversationen → Protokolle** → Wähle fehlgeschlagenen Anruf
+    2. Navigiere zum Tab **Aktionen**
+    3. Suchen du nach Fehlermeldung (z. B. "API-Timeout", "401 Unauthorized")
+
+    **Häufige Fehler & Lösungen**:
+
+    | Fehler | Ursache | Lösung |
+    |--------|---------|--------|
+    | `401 Unauthorized` | Falscher API-Schlüssel | Schlüssel neu generieren, Agentenkonfiguration aktualisieren |
+    | `403 Forbidden` | Berechtigungsproblem | Agent Zugriff auf Ressource gewähren |
+    | `404 Not Found` | Falsche Endpunkt-URL | URL in Aktionskonfiguration überprüfen |
+    | `408 Timeout` | API zu langsam | Timeout erhöhen (Standard 5s → 10s) |
+    | `500 Internal Server Error` | Externe API ausgefallen | API-Statusseite prüfen, Wiederholungslogik hinzufügen |
+    | `SSL Certificate Error` | HTTPS-Problem | Zertifikat gültig, nicht abgelaufen überprüfen |
+
+    **Testen**:
+    ```bash
+    # API-Endpunkt manuell testen
+    curl -X POST https://api.example.com/action \
+         -H "Authorization: Bearer YOUR_KEY" \
+         -H "Content-Type: application/json" \
+         -d '{"test": "data"}'
+    ```
+
+    Wenn manueller Curl funktioniert, aber Agent fehlschlägt, überprüfen:
+    - IP-Allowlisting (Agenten-IPs müssen möglicherweise auf Allowlist gesetzt werden)
+    - Rate-Limiting (Agent kann Limits schneller erreichen als manuelles Testen)
+  </Accordion>
+
+  <Accordion title="Weiterleitung schlägt fehl">
+    **Diagnose**:
+    - Agent sagt "Weiterleitung..." aber Anruf bricht ab oder nichts passiert
+    - Überprüfe **Protokolle → Aktionen** für Weiterleitungsstatus
+
+    **Häufige Probleme**:
+
+    **1. Ungültige Weiterleitungsnummer**:
+    - Nummernformat überprüfen (muss E.164 sein: +1234567890)
+    - Überprüfe, ob Nummer erreichbar ist (manuell anrufen)
+
+    **2. SIP-Reinvite-Fehler**:
+    - Einige Carrier unterstützen SIP REFER für Weiterleitungen nicht
+    - Lösung: "Betreute Weiterleitung" statt "Blindweiterleitung" verwenden
+    - Oder "Anruf-Bridging"-Modus aktivieren
+
+    **3. Carrier unterstützt keine Weiterleitungen**:
+    - Bei Carrier prüfen, ob Weiterleitungen aktiviert sind
+    - Möglicherweise SIP-Trunk upgraden, um zu unterstützen
+
+    **Konfiguration**:
+    ```json
+    {
+      "transfer": {
+        "type": "attended",  // Zuverlässiger als "blind"
+        "timeout": 30,       // Sekunden bis Antwort warten
+        "announcement": "Ich verbinde Sie jetzt..."
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Wissensdatenbank ruft nicht ab">
+    **Diagnose**:
+    - Agent sagt "Ich weiß nicht", wenn Antwort in KB ist
+    - Abruf manuell testen:
+
+    ```bash
+    # KB-Suche testen
+    curl -X POST https://api.itellico.ai/v1/knowledge-bases/kb_123/search \
+         -H "Authorization: Bearer YOUR_API_KEY" \
+         -d '{"query": "was ist Ihre Rückerstattungsrichtlinie"}'
+    ```
+
+    **Häufige Ursachen**:
+
+    **1. KB nicht mit Agent verknüpft**:
+    - Überprüfe Agenteneinstellungen → **Wissen** → KB zugewiesen überprüfen
+
+    **2. Inhalt nicht indiziert**:
+    - Kürzlich hochgeladener Inhalt benötigt 2-5 Minuten zum Indizieren
+    - Überprüfe, dass KB-Status "Indiziert" zeigt, nicht "Verarbeitung läuft"
+
+    **3. Abfrage stimmt nicht mit Inhalt überein**:
+    - Kunde fragt "Kann ich Geld zurückbekommen?" aber KB sagt "Rückerstattungsrichtlinie"
+    - Lösung: Synonyme hinzufügen, KB-Inhalt umschreiben, um gängige Formulierungen zu entsprechen
+
+    **4. Abrufeinstellungen zu restriktiv**:
+    - Minimale Ähnlichkeitsschwelle zu hoch (z. B. 0,9)
+    - Lösung: Auf 0,7-0,8 senken
+
+    **Konfiguration**:
+    ```json
+    {
+      "knowledge_retrieval": {
+        "min_similarity": 0.75,  // Niedriger = permissiver
+        "max_chunks": 5,         // Mehr Chunks abrufen
+        "rerank": true           // Nach Relevanz neu ordnen
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Kapazität & Leistung
+
+<AccordionGroup>
+  <Accordion title="Gleichzeitigkeitslimits erreichen">
+    **Symptom**: Besetztzeichen, Anrufe minutenlang in Warteschlange, "Alle Agenten beschäftigt"-Meldung
+
+    **Diagnose**:
+    - Überprüfe **Dashboard → Kapazität** für aktuelle/max Gleichzeitigkeit
+    - Anrufvolumen-Diagramm für Spitzenzeiten überprüfen
+
+    **Kurzfristige Lösungen**:
+    1. **Warteschlange aktivieren**: Anrufer warten lassen statt Besetztzeichen
+    2. **Überlauf-Agent hinzufügen**: Bei Kapazität an Backup-Agent weiterleiten
+    3. **Geschäftszeiten erweitern**: Volumen über mehr Stunden verteilen
+    4. **Rückruf anbieten**: "Wir rufen du in 10 Minuten zurück"
+
+    **Langfristige Lösungen**:
+    1. **Plan upgraden**: Limit für gleichzeitige Anrufe erhöhen
+    2. **Lastverteilung**: Mehrere Agenten erstellen, Nummern verteilen
+    3. **Auto-Skalierung**: Dynamische Kapazitätsskalierung aktivieren (Enterprise)
+    4. **Außerhalb der Spitzenzeiten Anreize**: Anrufe während verkehrsschwacher Zeiten fördern
+  </Accordion>
+
+  <Accordion title="Hohes Anrufvolumen überlastet System">
+    **Symptom**: Anrufe brauchen länger zum Verbinden, Warteschlange baut sich auf, Fehler steigen sprunghaft
+
+    **Diagnose**:
+    - Plötzlicher Verkehrsspike (3x+ normales Volumen)
+    - Überprüfe auf:
+      - Marketingkampagne gestartet?
+      - Medienerwähnung / viraler Beitrag?
+      - Systemausfall verursacht Wiederholungssturm?
+
+    **Sofortmaßnahmen**:
+    1. **Rate-Limit**: Vorübergehend max. gleichzeitige Anrufe reduzieren, um zu stabilisieren
+    2. **Aggressiv in Warteschlange**: Anrufe halten statt fallen lassen
+    3. **Fallback-Nachricht**: "Ungewöhnlich hohes Volumen. Bitte versuchen du es in 15 Minuten erneut."
+    4. **Notfall-Skalierung**: Support für vorübergehende Kapazitätserhöhung kontaktieren
+
+    **Prävention**:
+    - Verkehr für bekannte Ereignisse vorhersagen (Produkteinführungen, Verkäufe)
+    - Kapazität vor erwarteten Spitzen vorskalieren
+    - Auto-Skalierungs-Trigger einrichten
+  </Accordion>
+
+  <Accordion title="Kosten höher als erwartet">
+    **Diagnose**:
+    - Überprüfe **Abrechnung → Nutzung** für Aufschlüsselung:
+      - Modell-API-Kosten
+      - Telefonie-Minuten
+      - Speicherkosten
+      - Premium-Funktionen (ML-AMD usw.)
+
+    **Häufige Übeltäter**:
+
+    **1. Lange Anrufdauer**:
+    - Durchschnittlicher Anruf >10 Minuten (typisch ist 3-5 Min.)
+    - Ursache: Agent zu wortreich, Schleifen, beendet Anrufe nicht
+    - Lösung: Anrufdauerziele hinzufügen, Timeout aktivieren
+
+    **2. Teures Modell**:
+    - GPT-4 für einfache FAQ-Anrufe verwenden
+    - Lösung: Zu GPT-3.5 Turbo wechseln (3x günstiger)
+
+    **3. Hohe Voicemail-Kosten**:
+    - AMD nicht verwenden, volle Minuten für Voicemails berechnen
+    - Lösung: Textbasiertes AMD aktivieren (kostenlos) oder ML-AMD (+0,01€/Anruf, spart aber 0,50€+/VM)
+
+    **4. Teure Transkription**:
+    - Premium-Transkribierer für alle Anrufe verwenden
+    - Lösung: Standard-Transkribierer verwenden, außer Genauigkeit ist kritisch
+
+    **Optimierungs-Checkliste**:
+    - [ ] AMD für ausgehende Kampagnen aktivieren
+    - [ ] Max. Anrufdauer festlegen (z. B. 15 Minuten)
+    - [ ] Günstigeres Modell für einfache Anrufe verwenden
+    - [ ] Audioaufnahmen komprimieren (niedrigere Bitrate)
+    - [ ] Alte Aufnahmen nach 30 Tagen automatisch löschen
+  </Accordion>
+</AccordionGroup>
+
+## Debugging-Tools & Techniken
+
+### Protokollanalyse
+
+**Zugriff auf Protokolle**:
+```bash
+# Protokolle über API exportieren
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+     "https://api.itellico.ai/v1/conversations?start_date=2024-01-01&end_date=2024-01-02" \
+     > logs.json
+
+# Nach Fehlern filtern
+cat logs.json | jq '.[] | select(.error != null)'
+
+# Häufige Fehlermuster finden
+cat logs.json | jq '.error.type' | sort | uniq -c | sort -rn
+```
+
+**Web-Dashboard**:
+- **Konversationen → Protokolle** → Filter verwenden:
+  - Status: Fehlgeschlagen
+  - Datumsbereich: Letzte 24 Stunden
+  - Agent: Spezifischer Agent
+  - Fehlertyp: Spezifischer Fehler
+
+### Live-Debugging
+
+**Flüstermodus**:
+- Live-Anruf beitreten, ohne dass Kunde hört
+- Agent durch Flüstern von Anweisungen leiten
+- Transkript in Echtzeit sehen
+
+**Schritte**:
+1. Öffne **Konversationen → Live-Monitor**
+2. Finden du aktiven Anruf
+3. Klicke auf **Flüstern**
+4. Sprechen du Anweisungen (Agent hört, Kunde nicht)
+
+**Anwendungsfälle**:
+- Agent steckt fest → "An Abrechnungsabteilung weiterleiten"
+- Agent kurz davor, falsche Info zu geben → "Wissensdatenbank für Preise überprüfen"
+- Grenzfall → Agent durch ungewöhnliches Szenario führen
+
+### Testen in Produktion
+
+**Kanarienvogel-Anrufe**:
+- Testanrufe während Geschäftszeiten durchführen
+- Bekannte Szenarien verwenden
+- Mit erwartetem Verhalten vergleichen
+- Als Test markieren zum Filtern: `metadata: {test_call: true}`
+
+**Synthetisches Monitoring**:
+- Automatisierte Testanrufe jede Stunde
+- Überprüfen, dass wichtige Abläufe noch funktionieren
+- Alarmieren, wenn Tests zu scheitern beginnen
+
+```python
+# Automatisiertes Testskript
+import requests
+import time
+
+def run_test_call():
+    response = requests.post(
+        'https://api.itellico.ai/v1/calls',
+        headers={'Authorization': f'Bearer {API_KEY}'},
+        json={
+            'agent_id': 'agent_123',
+            'to_number': '+1234567890',  # Ihre Testnummer
+            'from_number': '+1987654321',
+            'metadata': {'test_call': True, 'scenario': 'pricing_inquiry'}
+        }
+    )
+    return response.json()
+
+# Jede Stunde ausführen
+while True:
+    result = run_test_call()
+    if result.get('status') != 'success':
+        send_alert(f"Testanruf fehlgeschlagen: {result}")
+    time.sleep(3600)
+```
+
+## Wann Support kontaktieren
+
+Kontaktiere support@itellico.ai wenn:
+
+- <Icon icon="server" /> **Plattformprobleme**: Weitreichende Ausfälle, API-Fehler, die alle Agenten betreffen
+- <Icon icon="lock" /> **Sicherheitsvorfälle**: Vermutete Verletzung, ungewöhnliche Zugriffsmuster
+- <Icon icon="file-circle-question" /> **Abrechnungsstreitigkeiten**: Unerwartete Gebühren, Nutzungsdiskrepanzen
+- <Icon icon="phone-xmark" /> **Carrier-Probleme**: SIP-Trunk registriert sich nicht, Nummernportierungsprobleme
+- <Icon icon="bug" /> **Fehlerberichte**: Klare Plattformfehler (keine Konfigurationsprobleme)
+
+**In Support-Anfrage einschließen**:
+- Agenten-ID und Anruf-IDs, die Problem zeigen
+- Fehlermeldungen aus Protokollen
+- Schritte zur Reproduktion
+- Was du bereits versucht haben
+- Geschäftliche Auswirkungen (wie viele Benutzer betroffen)
+
+**Antwortzeiten**:
+- Kritisch (Produktion ausgefallen): &lt;1 Stunde
+- Hoch (Hauptfunktion defekt): &lt;4 Stunden
+- Mittel (Workaround existiert): &lt;24 Stunden
+- Niedrig (Feature-Request, Frage): &lt;48 Stunden
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Best Practices für Produktion" icon="star" href="/de/launch/production-best-practices">
+    Gesunde Produktionssysteme aufrechterhalten
+  </Card>
+
+  <Card title="Test-Übersicht" icon="vial" href="/de/test/overview">
+    Testen verbessern, um Probleme früher zu erkennen
+  </Card>
+
+  <Card title="Support-Ressourcen" icon="life-ring" href="/de/resources/overview">
+    Hilfe von Community und Dokumentation erhalten
+  </Card>
+</CardGroup>

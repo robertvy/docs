@@ -1,0 +1,298 @@
+---
+title: "Depuração"
+description: "Ferramentas e técnicas para identificar e corrigir problemas do agente"
+icon: "bug"
+keywords: 'depuração, solução de problemas, logs de conversação, depuração de erros, problemas de transcritor, depuração LLM, depuração TTS, depuração de ações'
+og:description: 'Depure problemas de agentes de voz com logs de conversação e solução sistemática de problemas. Identifique e corrija problemas de transcritor, LLM, TTS e execução de ações.'
+---
+
+## Visão geral
+
+A depuração de agentes de voz requer uma investigação sistemática de múltiplos componentes trabalhando juntos—transcrição, raciocínio LLM, síntese de voz e execução de ações. O painel do itellicoAI fornece logs detalhados e ferramentas para ajudá-lo a identificar rapidamente a causa raiz dos problemas.
+
+---
+
+## Ferramentas de depuração do painel
+
+<CardGroup cols={2}>
+  <Card title="Logs de conversação" icon="list">
+    Histórico completo de cada conversação com transcrições, ações e metadados
+  </Card>
+
+  <Card title="Transcrição em tempo real" icon="closed-captioning">
+    Visualização ao vivo da transcrição e respostas do agente durante chamadas de teste
+  </Card>
+
+  <Card title="Payloads de ações" icon="code">
+    JSON detalhado de cada chamada de API, execução de ferramenta e webhook
+  </Card>
+
+  <Card title="Mensagens de erro" icon="triangle-exclamation">
+    Detalhes específicos de erro quando componentes falham
+  </Card>
+</CardGroup>
+
+---
+
+## Abordagem sistemática de depuração
+
+Quando algo der errado, siga este processo sistemático:
+
+<Steps>
+  <Step title="Reproduzir o problema">
+    Teste novamente para confirmar que o problema é consistente
+
+    Anote as condições exatas quando ocorre
+  </Step>
+
+  <Step title="Identificar o componente">
+    Determine qual parte do pipeline falhou:
+    - Transcritor (fala → texto)
+    - LLM (compreensão → resposta)
+    - TTS (texto → fala)
+    - Execução de ação/ferramenta
+    - Recuperação de conhecimento
+  </Step>
+
+  <Step title="Revisar logs">
+    Abra **Conversações** e encontre a chamada problemática
+
+    Examine transcrições, payloads de ações e erros
+  </Step>
+
+  <Step title="Testar componentes individualmente">
+    Isole o componente que está falhando:
+    - Tente um transcritor diferente
+    - Teste LLM com prompts mais simples
+    - Tente uma voz diferente
+    - Teste ações diretamente via API
+  </Step>
+
+  <Step title="Corrigir e verificar">
+    Faça alterações direcionadas com base nas descobertas
+
+    Teste novamente para confirmar a correção
+  </Step>
+</Steps>
+
+---
+
+## Depuração em nível de componente
+
+<AccordionGroup>
+  <Accordion title="Problemas do transcritor" icon="microphone">
+    **Como identificar:**
+    - Verifique a transcrição nos logs de conversação
+    - Compare o que foi dito com o que foi transcrito
+    - Procure palavras ausentes, palavras incorretas ou incompreensíveis
+
+    **Causas comuns:**
+    - Ruído de fundo
+    - Sotaque ou idioma incompatível
+    - Problemas de qualidade de áudio
+    - Modelo de transcritor errado selecionado
+
+    **Passos de depuração:**
+    1. Navegue até **Modelos → Transcritor**
+    2. Tente um provedor de transcritor diferente (Deepgram ↔ Azure)
+    3. Tente um modelo diferente (ex., Nova-2 ↔ Nova-3)
+    4. Verifique se a configuração de idioma corresponde ao locutor
+    5. Teste em ambiente mais silencioso
+    6. Verifique a qualidade da entrada de áudio
+
+    **O que verificar nos logs:**
+    - Precisão da transcrição
+    - Temporização da transcrição (atrasos?)
+    - Transcrições vazias ou parciais
+    - Problemas de detecção de idioma
+  </Accordion>
+
+  <Accordion title="Problemas de resposta LLM" icon="brain">
+    **Como identificar:**
+    - O agente dá respostas erradas
+    - O agente sai do assunto
+    - O agente se repete
+    - O agente se recusa a responder perguntas válidas
+    - O agente alucina informações
+
+    **Causas comuns:**
+    - Instruções muito vagas ou contraditórias
+    - Base de conhecimento faltando informações
+    - Estouro da janela de contexto
+    - Modelo não adequado para a tarefa
+    - Temperatura muito alta/baixa
+
+    **Passos de depuração:**
+    1. Revise as instruções do agente em **Habilidades → Instruções**
+    2. Simplifique as instruções para isolar o problema
+    3. Verifique a base de conhecimento para informações ausentes
+    4. Tente um modelo LLM diferente (Claude Haiku 4.5 ↔ GPT-4.1 mini)
+    5. Ajuste a temperatura nas configurações do modelo
+    6. Revise os logs de conversação para ver o contexto completo
+
+    **O que verificar nos logs:**
+    - Histórico completo da conversação levando a uma resposta ruim
+    - Itens de conhecimento recuperados (se usar RAG)
+    - Prompts do sistema e injeção de contexto
+
+    <Tip>
+    Teste prompts problemáticos no simulador web primeiro—é mais rápido que testes telefônicos.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="Problemas de voz/TTS" icon="volume">
+    **Como identificar:**
+    - Padrões de fala não naturais
+    - Pronúncias incorretas
+    - Ênfase ou entonação errada
+    - Som robótico
+    - Velocidade muito rápida/lenta
+
+    **Causas comuns:**
+    - Voz não adequada para o tipo de conteúdo
+    - Pontuação afetando o ritmo
+    - Números ou siglas não tratados adequadamente
+    - Limitações do provedor de voz
+
+    **Passos de depuração:**
+    1. Navegue até **Modelos → Voz**
+    2. Tente uma voz diferente do mesmo provedor
+    3. Tente um provedor de voz totalmente diferente
+    4. Adicione pronúncias personalizadas para palavras problemáticas
+    5. Ajuste configurações de estabilidade/clareza (ElevenLabs)
+    6. Ajuste a taxa de fala
+    7. Modifique a saída de texto para melhorar o TTS
+
+    **O que verificar nos logs:**
+    - Ouça a gravação de áudio
+    - Compare o texto com como foi falado
+    - Verifique tags SSML (se usadas)
+    - Verifique se as configurações de voz foram aplicadas
+  </Accordion>
+
+  <Accordion title="Problemas de execução de ação/ferramenta" icon="bolt">
+    **Como identificar:**
+    - A ação não dispara quando esperado
+    - A ação dispara mas falha
+    - Dados errados enviados para a ação
+    - A ação retorna um erro
+
+    **Causas comuns:**
+    - Ação não configurada corretamente
+    - Endpoint de API fora do ar ou lento
+    - Falha de autenticação
+    - Extração de parâmetros incorreta
+    - Timeout de rede
+
+    **Passos de depuração:**
+    1. Verifique se a ação foi disparada nos logs de conversação
+    2. Revise o payload da ação (JSON enviado para a API)
+    3. Verifique a resposta da API e código de status
+    4. Teste o endpoint da API diretamente (Postman, curl)
+    5. Verifique as credenciais de autenticação
+    6. Verifique a extração de parâmetros da conversação
+    7. Revise as instruções da ação no prompt do agente
+
+    **O que verificar nos logs:**
+    - Campos `custom_data.actions` ou similares
+    - Payload da requisição da API
+    - Corpo da resposta da API
+    - Mensagens de erro e rastreamentos de pilha
+    - Timestamp (houve timeout?)
+
+    <Note>
+    Os logs de conversação mostram payloads completos de ações incluindo dados de requisição/resposta.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Problemas de recuperação de conhecimento" icon="database">
+    **Como identificar:**
+    - O agente não consegue responder perguntas que deveria saber
+    - O agente recupera conhecimento errado
+    - O agente mistura informações irrelevantes nas respostas
+
+    **Causas comuns:**
+    - Conhecimento ainda não indexado
+    - Recuperação RAG não encontra itens relevantes
+    - Base de conhecimento não atribuída ao agente
+
+    **Passos de depuração:**
+    1. Verifique se a base de conhecimento está atribuída ao agente
+    2. Verifique se os itens de conhecimento estão **INDEXADOS** (não apenas COMPLETOS)
+    3. Revise os títulos dos itens de conhecimento—torne-os descritivos
+    4. Teste com uma base de conhecimento menor
+    5. Tente modo Contexto vs modo RAG
+    6. Verifique logs de conversação para conhecimento recuperado
+
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Usando logs de conversação para depuração
+
+Cada chamada de teste cria um log detalhado acessível em **Conversações**.
+
+### O que está nos logs:
+
+**Informações básicas:**
+- Data, hora, duração da chamada
+- Agente usado
+- Número de telefone (se teste telefônico)
+- Status da chamada (concluído, falhou, etc.)
+
+**Dados de conversação:**
+- Transcrição completa (usuário + agente)
+- Timestamps para cada mensagem
+- Gravação de áudio (se disponível)
+
+**Detalhes técnicos:**
+- Ações disparadas com payloads
+- Entradas DTMF capturadas
+- Resultados de análise de objetivos
+- Respostas de análise pós-chamada
+- Campos de dados personalizados
+- Mensagens de erro
+
+**Como depurar com logs:**
+1. Filtre por nome do agente para encontrar chamadas de teste
+2. Abra uma chamada específica para ver todos os detalhes
+3. Leia a transcrição para identificar onde deu errado
+4. Verifique payloads de ações se as ações falharam
+5. Ouça o áudio se a transcrição parece correta mas o áudio estava errado
+6. Revise timestamps para identificar problemas de latência
+
+---
+
+## Obtendo ajuda
+
+Quando você precisar de suporte adicional:
+
+<CardGroup cols={2}>
+  <Card title="Revisar a documentação" icon="book">
+    Verifique a documentação de recursos específicos para detalhes de configuração
+  </Card>
+
+  <Card title="Verificar status do provedor" icon="signal">
+    Visite páginas de status para OpenAI, Deepgram, ElevenLabs, Azure
+  </Card>
+
+  <Card title="Contatar suporte" icon="headset">
+    Envie e-mail para support@itellico.ai com logs de chamadas e detalhes de erro
+  </Card>
+</CardGroup>
+
+**Ao contatar o suporte, inclua:**
+- ID ou nome do agente
+- ID da conversação dos logs
+- Mensagens de erro específicas
+- Passos para reproduzir
+- Capturas de tela se aplicável
+
+---
+
+## Próximos passos
+
+<Card title="Checklist de lançamento" icon="rocket" href="/pt/launch/overview">
+  Depois de depurar seu agente, revise o checklist de lançamento para se preparar para produção
+</Card>

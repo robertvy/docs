@@ -1,0 +1,415 @@
+---
+title: "Contesto Dinamico"
+description: "Recupera dati personalizzati dai tuoi sistemi prima che inizino le conversazioni"
+icon: "database"
+"keywords": "contesto dinamico, contesto API, dati personalizzati, integrazione CRM, dati cliente, contesto tempo reale, personalizzazione AI"
+"og:description": "Recupera dati cliente personalizzati dal tuo CRM e sistemi prima che inizino le conversazioni per interazioni AI intelligenti."
+---
+
+## Panoramica
+
+Il Contesto Dinamico ti permette di recuperare dati cliente dalle tue API esterne **una volta, prima che inizi ogni conversazione**. Invece di fare affidamento solo sui record contatti, i tuoi agenti possono accedere a stato account, storico ordini, ticket supporto e contesto aziendale dal tuo CRM, database e sistemi backend.
+
+<Note>
+Il Contesto Dinamico è configurato in **Impostazioni Agente → Operations → Dynamic Context**. I dati JSON restituiti sono disponibili direttamente come variabili (es. `{{ field_name }}`) nel [saluto](/it/build/conversation/greeting-messages) e nelle [istruzioni](/it/build/conversation/instructions) del tuo agente.
+</Note>
+
+<Info>
+**L'API contesto viene chiamata una volta prima che inizi la conversazione.** I dati sono disponibili per il rendering del saluto e durante tutta la conversazione. Non si aggiorna durante la conversazione. Mantieni il tuo endpoint veloce (&lt;1s tempo risposta) e restituisci solo dati necessari per la conversazione.
+</Info>
+
+**Requisiti Rapidi:**
+- Endpoint HTTPS
+- Risposta JSON sotto 32 KB
+- Tempo risposta sotto 1 secondo (idealmente)
+- Autenticazione via Bearer token, API key o Basic auth
+
+---
+
+## Come Funziona
+
+**Flusso Richiesta:**
+
+<Steps>
+  <Step title="Chiamata iniziata">
+    Chiamata iniziata (inbound) o sta per iniziare (outbound)
+  </Step>
+
+  <Step title="API contesto chiamata">
+    **PRIMA che inizi conversazione:** Sistema invia richiesta POST al tuo endpoint
+  </Step>
+
+  <Step title="Query dei tuoi sistemi">
+    La tua API interroga CRM/database per dati cliente
+  </Step>
+
+  <Step title="Restituisci JSON">
+    La tua API restituisce JSON con dati contesto
+  </Step>
+
+  <Step title="Contesto disponibile">
+    Dati contesto resi disponibili come variabili template
+  </Step>
+
+  <Step title="Saluto renderizzato">
+    Saluto renderizzato (usa variabili contesto se referenziate nel saluto)
+  </Step>
+
+  <Step title="Conversazione inizia">
+    Conversazione inizia (variabili contesto disponibili se referenziate nelle istruzioni)
+
+    Contesto rimane statico durante tutta la conversazione (nessun aggiornamento)
+  </Step>
+</Steps>
+
+<Columns cols={3}>
+  <Card title="Chiamate inbound" icon="phone">
+    `direction: "inbound"` con contact_number del chiamante. Cerca dati cliente nel tuo CRM.
+  </Card>
+  <Card title="Chiamate outbound" icon="arrow-up-right-dots">
+    `direction: "outbound"` con contact_number che stai chiamando. Recupera contesto campagna.
+  </Card>
+  <Card title="Widget web" icon="window">
+    `medium: "web"` con external_id opzionale. Identifica utente nel tuo sistema.
+  </Card>
+</Columns>
+
+---
+
+## Configurazione
+
+<Steps>
+  <Step title="Naviga a Contesto Dinamico">
+    1. Apri impostazioni agente
+    2. Clicca gruppo navigazione **Operations** (sulla barra laterale sinistra)
+    3. Seleziona **Dynamic Context** dalle sezioni
+  </Step>
+
+  <Step title="Configura Endpoint">
+    **URL Endpoint:** `https://api.company.com/context`
+
+    **Autenticazione:** Scegli Bearer Token, Basic, API Key o Nessuna
+
+    La richiesta includerà: agent_uuid, direction, agent_number, contact_number (e external_id per widget web)
+  </Step>
+
+  <Step title="Test">
+    Usa **Test Request** per verificare che il tuo endpoint risponda correttamente
+  </Step>
+
+  <Step title="Salva">
+    Abilita e salva. Il contesto sarà recuperato prima di ogni conversazione.
+  </Step>
+</Steps>
+
+---
+
+## Formato Richiesta e Risposta
+
+### Cosa Inviamo (Richiesta POST)
+
+<RequestExample>
+```http
+POST https://api.company.com/context
+Authorization: Bearer your_api_token
+Content-Type: application/json
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36...
+X-Agent-UUID: 550e8400-e29b-41d4-a716-446655440000
+X-Agent-Number: +15551234000
+X-Contact-Number: +15551234567
+X-Direction: inbound
+X-Medium: phone
+X-Room-SID: RM_abc123
+
+{
+  "agent_uuid": "550e8400-e29b-41d4-a716-446655440000",
+  "direction": "inbound",
+  "agent_number": "+15551234000",
+  "contact_number": "+15551234567"
+}
+```
+</RequestExample>
+
+**Parametri body:**
+- `agent_uuid` (string, sempre incluso) - L'UUID dell'agente che gestisce la chiamata
+- `direction` (string, sempre incluso) - "inbound" o "outbound"
+- `agent_number` (string, opzionale) - Il numero telefono che l'agente sta usando
+- `contact_number` (string, opzionale) - Il numero telefono del cliente
+- `external_id` (string/int, opzionale) - Solo per chiamate widget web, se fornito dalla tua integrazione
+
+**Header aggiuntivi:**
+- `X-Agent-UUID`, `X-Agent-Number`, `X-Contact-Number`, `X-Direction`, `X-Medium` (phone/web)
+- `X-Room-SID` - Identificatore unico per questa sessione conversazione
+- `X-External-ID` - Solo per chiamate widget web
+
+<Note>
+**Uso tipico:** Il tuo endpoint usa `contact_number` o `external_id` per cercare il cliente nel tuo CRM/database, poi restituisce dati account rilevanti, storico ordini, ticket, ecc. L'`agent_uuid` può essere usato per personalizzare risposte per agente se necessario.
+</Note>
+
+### Cosa Restituisci (Risposta JSON)
+
+<ResponseExample>
+```json
+{
+  "account": {
+    "customer_id": "12345",
+    "tier": "VIP",
+    "status": "active",
+    "created_date": "2022-03-15"
+  },
+  "recent_orders": [
+    {
+      "order_id": "ORD-789",
+      "status": "shipped",
+      "tracking": "1Z999AA1234567890"
+    }
+  ],
+  "support_tickets": [
+    {
+      "ticket_id": "TKT-456",
+      "status": "open",
+      "subject": "Billing question"
+    }
+  ]
+}
+```
+</ResponseExample>
+
+**Requisiti:**
+- Formato JSON valido
+- Sotto 32 KB
+- Restituisci solo campi necessari (mantiene risposta veloce)
+- Gestisci dati mancanti con grazia (restituisci `null` o ometti campi)
+
+<Info>
+**Come si accede alle variabili:** Tutte le chiavi di livello superiore nella tua risposta JSON diventano variabili template. Se restituisci `{"account": {"tier": "VIP"}}`, vi accedi come `{{ account.tier }}`, non `{{ context.account.tier }}`.
+</Info>
+
+---
+
+## Usare Variabili Contesto
+
+Tutti i dati restituiti dalla tua API sono disponibili direttamente come variabili di livello superiore nel saluto e nelle istruzioni del tuo agente.
+
+**Accedere ai campi:**
+```jinja
+Livello Account: {{ account.tier }}
+→ "VIP"
+
+Stato Ordine: {{ recent_orders[0].status }}
+→ "shipped"
+
+Numero Ticket: {{ support_tickets|length }}
+→ 1
+```
+
+**Esempio saluto con contesto:**
+```jinja
+Grazie per aver chiamato! Vedo che sei un cliente {{ account.tier }} con noi.
+Come posso aiutarti oggi?
+```
+
+**Esempio istruzioni con contesto:**
+```jinja
+Stai aiutando un cliente {{ account.tier }} dal {{ account.created_date }}.
+
+{% if support_tickets|length > 0 %}
+IMPORTANTE: Cliente ha {{ support_tickets|length }} ticket aperto/i:
+{% for ticket in support_tickets %}
+- Ticket #{{ ticket.ticket_id }}: {{ ticket.subject }} ({{ ticket.status }})
+{% endfor %}
+
+Chiedi se stanno chiamando per il ticket #{{ support_tickets[0].ticket_id }}.
+{% endif %}
+
+{% if recent_orders|length > 0 %}
+Ordine recente #{{ recent_orders[0].order_id }} è {{ recent_orders[0].status }}.
+{% if recent_orders[0].tracking %}
+Tracking: {{ recent_orders[0].tracking }}
+{% endif %}
+{% endif %}
+
+Stato Account: {{ account.status | default("active") }}
+```
+
+<Tip>
+Usa il filtro `| default("value")` per fornire fallback quando i dati mancano. Vedi [Saluto](/it/build/conversation/greeting-messages) e [Istruzioni](/it/build/conversation/instructions) per più sintassi templating ed esempi d'uso.
+</Tip>
+
+---
+
+## Autenticazione
+
+### Bearer Token (Raccomandato)
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+Usa per JWT, token accesso OAuth 2.0 o chiavi API moderne.
+
+### API Key (Header)
+```
+X-API-Key: sk-abc123def456...
+```
+Nome header personalizzato con la tua API key.
+
+### Basic Auth
+```
+Authorization: Basic YXBpX3VzZXI6cGFzc3dvcmQ=
+```
+Username/password, codificato base64.
+
+### Nessuna
+Nessuna autenticazione (solo per reti interne/private).
+
+<Warning>
+Usa sempre HTTPS.
+</Warning>
+
+---
+
+## Esempio Caso d'Uso
+
+**Supporto Clienti con Contesto Completo**
+
+**Scenario:** Agente supporto ha bisogno di vista cliente completa prima che inizi conversazione.
+
+**La tua API restituisce:**
+```json
+{
+  "customer": {
+    "name": "John Smith",
+    "tier": "Premium",
+    "since": "2022-01-15"
+  },
+  "account": {
+    "status": "active",
+    "subscription": "Pro Plan",
+    "renewal_date": "2025-12-01"
+  },
+  "support": {
+    "open_tickets": [
+      {
+        "id": "TKT-789",
+        "subject": "Can't export reports",
+        "priority": "high"
+      }
+    ]
+  }
+}
+```
+
+**Istruzioni agente:**
+```jinja
+Stai aiutando {{ customer.name }}, un cliente {{ customer.tier }}
+dal {{ customer.since }}.
+
+{% if support.open_tickets|length > 0 %}
+Cliente ha un ticket priorità {{ support.open_tickets[0].priority }} aperto
+su "{{ support.open_tickets[0].subject }}".
+
+Inizia chiedendo: "Vedo che hai un ticket aperto su
+{{ support.open_tickets[0].subject }}. È per questo che chiami oggi?"
+{% endif %}
+
+Account: {{ account.subscription }}, rinnova {{ account.renewal_date }}
+```
+
+**Risultato:** Agente sa del ticket aperto prima che inizi la conversazione, permettendo un saluto personalizzato e conversazione informata durante tutto il processo.
+
+---
+
+## Best Practice
+
+<AccordionGroup>
+  <Accordion title="Mantieni risposte veloci" icon="gauge-high">
+    - Target sotto 1 secondo tempo risposta
+    - Cache dati acceduti frequentemente (TTL 5-10 minuti)
+    - Restituisci solo campi che userai nelle istruzioni
+    - Usa indici database su campi lookup (contact_number, external_id o ID cliente interni)
+  </Accordion>
+
+  <Accordion title="Gestisci dati mancanti con grazia" icon="shield-check">
+    - Usa filtri `| default("value")` nelle istruzioni
+    - Restituisci `null` per campi mancanti (non errore)
+    - Testa con contatti che hanno dati minimi
+
+    ```jinja
+    {# Sicuro - fornisce fallback #}
+    Livello: {{ account.tier | default("Standard") }}
+
+    {# Più sicuro - controlla esistenza #}
+    {% if support_tickets and support_tickets|length > 0 %}
+      Ha ticket aperti
+    {% endif %}
+    ```
+  </Accordion>
+
+  <Accordion title="Proteggi dati sensibili" icon="lock">
+    - Non restituire SSN, carte credito, password
+    - Usa solo HTTPS
+    - Implementa autenticazione (Bearer token raccomandato)
+    - Restituisci solo campi necessari (es. ultime 4 cifre numero conto, non completo)
+    - Registra accessi per audit trail
+  </Accordion>
+
+  <Accordion title="Testa prima di produzione" icon="vial">
+    1. Usa modal **Test Request** con dati cliente reali
+    2. Testa casi limite (nuovo cliente, VIP, account sospeso)
+    3. Verifica che istruzioni gestiscano campi mancanti con grazia
+    4. Pilota con piccola percentuale traffico prima di rollout completo
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Risoluzione dei Problemi
+
+<AccordionGroup>
+  <Accordion title="401 Unauthorized" icon="lock-open">
+    - Verifica che credenziali siano corrette
+    - Controlla che tipo autenticazione corrisponda alla tua API (Bearer vs. Basic vs. API Key)
+    - Testa con stesse credenziali in Postman
+    - Controlla se token è scaduto
+  </Accordion>
+
+  <Accordion title="Variabili contesto vuote" icon="brackets-curly">
+    - Usa **Test Request** per verificare che endpoint stia rispondendo
+    - Controlla che struttura JSON corrisponda a ciò che stai accedendo
+    - Verifica che toggle Dynamic Context sia ON
+    - Usa `| default("fallback")` per campi mancanti
+  </Accordion>
+
+  <Accordion title="Lento o timeout" icon="hourglass">
+    - Aggiungi indici database
+    - Implementa caching
+    - Restituisci solo campi necessari
+    - Ottimizza query database
+    - Controlla latenza rete alla tua API
+  </Accordion>
+
+  <Accordion title="Dati sbagliati restituiti" icon="triangle-exclamation">
+    - Controlla parametri in modal **Test Request**
+    - Verifica che variabili template si risolvano correttamente: `{{ account.tier }}`
+    - Assicura che chiavi cache includano identificatore cliente
+    - Testa con cliente noto per confermare corrispondenza dati
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Passi Successivi
+
+<CardGroup cols={2}>
+  <Card title="Saluto" icon="hand-wave" href="/it/build/conversation/greeting-messages">
+    Usa variabili contesto per personalizzare il saluto del tuo agente
+  </Card>
+  <Card title="Istruzioni" icon="pen" href="/it/build/conversation/instructions">
+    Impara come usare variabili contesto con templating Jinja
+  </Card>
+  <Card title="Variabili e Contenuto Dinamico" icon="brackets-curly" href="/it/build/conversation/variables-dynamic-content">
+    Padroneggia sintassi templating per prompt dinamici
+  </Card>
+  <Card title="Azioni API Personalizzate" icon="code" href="/it/build/actions/custom-api-actions">
+    Crea azioni che usano dati contesto durante conversazioni
+  </Card>
+</CardGroup>

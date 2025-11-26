@@ -1,0 +1,530 @@
+---
+title: "Prompt Engineering Leitfaden"
+description: "Meistern du die Kunst, effektive Agenten-Anweisungen zu schreiben"
+icon: "book"
+keywords: "Prompt Engineering, effektive Prompts, Prompt-Techniken, Prompt-Optimierung"
+og:description: "Meistern du Prompt Engineering für KI Voice Agents. Fortgeschrittene Techniken für effektive Prompts."
+---
+
+## Einführung
+
+Das Entwerfen eines starken Prompts (Anweisungen) ist der Weg, um aus einem generischen Sprachmodell einen zuverlässigen KI-Teamkollegen zu machen. Dieser umfassende Leitfaden erklärt, wie die itellicoAI-Agenten-Laufzeitumgebung deine Anweisungen interpretiert, die empfohlene Struktur und wiederverwendbare Muster, die du für verschiedene Anwendungsfälle nutzen können.
+
+<Tip>
+Dies ist ein fortgeschrittener Leitfaden. Wenn du gerade erst anfangen, lesen du zuerst [Anweisungen Grundlagen](/de/build/conversation/instructions).
+</Tip>
+
+---
+
+## Schnellstart: Die 5-Minuten-Prompt-Formel
+
+Neu beim Schreiben von Agenten-Prompts? Beginne hier. Diese Formel bringt du von der leeren Seite zu einem funktionierenden Agenten in wenigen Minuten.
+
+<Steps>
+  <Step title="Wer ist dein Agent? (30 Sekunden)">
+    Gib deinem Agenten eine klare Identität und Persönlichkeit.
+
+    ```
+    Sie sind [Name], ein [Rolle] bei [Unternehmen].
+    Ihre Persönlichkeit ist [Eigenschaft 1], [Eigenschaft 2] und [Eigenschaft 3].
+    ```
+
+    **Beispiel:**
+    ```
+    Sie sind Sarah, eine Customer Success Managerin bei TechCo.
+    Ihre Persönlichkeit ist hilfsbereit, geduldig und sachkundig.
+    ```
+  </Step>
+
+  <Step title="Was ist das Ziel? (30 Sekunden)">
+    Definiere das spezifische, messbare Ergebnis.
+
+    ```
+    Ihr Ziel ist es, [spezifisches messbares Ergebnis zu erreichen].
+    ```
+
+    **Beispiel:**
+    ```
+    Ihr Ziel ist es, Produktdemos mit qualifizierten Interessenten zu vereinbaren,
+    die über Budget und Zeitplan verfügen.
+    ```
+  </Step>
+
+  <Step title="Wie läuft das Gespräch ab? (3 Minuten)">
+    Ordnen du die wichtigsten Schritte der Reihe nach.
+
+    **Standard-Ablauf:**
+    1. **Begrüßung** - Identität bestätigen
+    2. **Erlaubnis** - Fragen, ob sie Zeit haben
+    3. **Bedarfsermittlung** - deine Bedürfnisse verstehen
+    4. **Nutzen** - Teilen, wie du helfen kannst
+    5. **Aktion** - Meeting buchen/Verkauf abschließen
+    6. **Abschluss** - Nächste Schritte bestätigen
+
+    **Schreibe es so in deinen Prompt:**
+    ```
+    Gesprächsablauf:
+    1. Begrüßung - Identität bestätigen und für Interesse danken
+    2. Erlaubnis - Fragen, ob sie 5 Minuten Zeit zum Sprechen haben
+    3. Bedarfsermittlung - Bedürfnisse mit offenen Fragen verstehen
+    4. Nutzen - Teilen, wie Sie basierend auf dem Gelernten helfen können
+    5. Aktion - Meeting buchen oder Verkauf mit der entsprechenden Aktion abschließen
+    6. Abschluss - Nächste Schritte bestätigen und für die Zeit danken
+    ```
+  </Step>
+
+  <Step title="Was sind die Leitplanken? (1 Minute)">
+    Definiere, was dein Agent NIEMALS tun sollte und wann eskaliert werden muss.
+
+    **Schreibe es so in deinen Prompt:**
+    ```
+    Leitplanken - Niemals:
+    • Preise besprechen (an Vertriebsteam weiterleiten)
+    • Versprechen über Funktionen oder Zeitpläne machen
+    • Kundendaten oder Kontodetails teilen
+    • Fortfahren, wenn Kunde feindselig ist (Anruf höflich beenden)
+
+    An einen Menschen weiterleiten, wenn:
+    • Kunde verlangt, mit einem Vorgesetzten zu sprechen
+    • Technisches Problem außerhalb Ihres Wissens
+    • Kunde ist frustriert nach 2 Hilfsversuchen
+    ```
+  </Step>
+
+  <Step title="Was, wenn sie Einwände haben? (1 Minute)">
+    Bereiten du sich auf häufige Einwände mit exakten Antworten vor.
+
+    ```
+    Einwandbehandlung:
+    • "Kein Interesse" → [Ihre Antwort]
+    • "Zu teuer" → [Ihre Antwort]
+    • "Muss darüber nachdenken" → [Ihre Antwort]
+    ```
+
+    **Beispiel:**
+    ```
+    Einwandbehandlung:
+    • "Kein Interesse" → "Ich verstehe. Darf ich fragen, was sich geändert hat, seit Sie Infos angefordert haben?"
+    • "Zu teuer" → "Das kann ich nachvollziehen. Lassen Sie uns besprechen, welche Funktionen für Ihr Budget am wichtigsten sind."
+    • "Muss darüber nachdenken" → "Natürlich. Welche konkreten Bedenken sollte ich ansprechen?"
+    ```
+  </Step>
+</Steps>
+
+---
+
+### Wichtige Schreibprinzipien
+
+Befolgen du diese drei Prinzipien, um deine Prompts effektiver zu machen:
+
+<AccordionGroup>
+  <Accordion title="Schreiben du, wie du sprichst" icon="comments">
+    Sprachagenten benötigen Umgangssprache, keine Konzernsprache.
+
+    **Vermeiden:**
+    ```
+    "Ich kontaktiere Sie bezüglich..."
+    "Gemäß unserer vorherigen Korrespondenz..."
+    ```
+
+    **Besser:**
+    ```
+    "Ich rufe an wegen..."
+    "Als Nachverfolgung zu..."
+    ```
+
+    Test: Lesen du es laut vor. Wenn es steif klingt, vereinfachen du es.
+  </Accordion>
+
+  <Accordion title="Gib exakte Worte" icon="quote-left">
+    Beschreiben du nicht, was zu sagen ist - schreiben du die tatsächlichen Worte.
+
+    **Vermeiden:**
+    ```
+    "Stellen Sie sich professionell vor"
+    "Erklären Sie die Vorteile"
+    ```
+
+    **Besser:**
+    ```
+    Sagen Sie: "Hallo, hier ist Alex von TechCo"
+    Sagen Sie: "Das spart Ihnen 10 Stunden pro Woche bei der Berichterstattung"
+    ```
+
+    Je spezifischer, desto konsistenter wird dein Agent sein.
+  </Accordion>
+
+  <Accordion title="Verwende Wenn/Dann-Verzweigungen" icon="code-branch">
+    Behandeln du verschiedene Szenarien mit bedingter Logik.
+
+    ```
+    Wenn Kunde ja sagt → Weiter zu Schritt 2
+
+    Wenn Kunde nein sagt → Fragen: "Wann wäre es besser?"
+
+    Wenn Kunde feindselig ist → Sagen: "Ich entschuldige mich für
+    die Unannehmlichkeiten. Lassen Sie mich Sie an einen Manager
+    weiterleiten, der helfen kann."
+    ```
+
+    Planen du für Erfolg, Einwände und Sonderfälle.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+### Schnelle Tipps für bessere Prompts
+
+<AccordionGroup>
+  <Accordion title="Leitplanken" icon="shield-halved">
+    Sei explizit darüber, was der Agent niemals tun sollte.
+
+    **Beispiele:**
+    ```
+    Leitplanken - Niemals:
+    - Versprechen über Funktionen in Entwicklung machen
+    - Konkurrenzprodukte besprechen
+    - Rechtliche oder medizinische Beratung geben
+    - Preise teilen, die nicht in der genehmigten Preisliste stehen
+    - Fortfahren, wenn Kunde von der Liste entfernt werden möchte
+    ```
+
+    Klare Leitplanken verhindern kostspielige Fehler.
+  </Accordion>
+
+  <Accordion title="Natürliche Übergänge" icon="arrow-right-arrow-left">
+    Helfen du dem Agenten, sanft zwischen Gesprächsphasen zu wechseln.
+
+    **Beispiele:**
+    ```
+    "Nachdem wir X behandelt haben, lassen Sie mich Y teilen..."
+    "Gute Frage. Bevor ich das beantworte, darf ich fragen..."
+    "Das macht Sinn. Basierend auf dem, was Sie mir erzählt haben..."
+    "Perfekt. Der nächste Schritt wäre also..."
+    ```
+
+    Übergänge lassen Gespräche natürlich wirken, nicht geskriptet.
+  </Accordion>
+
+  <Accordion title="Bestätigungsprotokolle" icon="circle-check">
+    Verifizieren du immer kritische Informationen, bevor du handeln.
+
+    **Beispiele:**
+    ```
+    Vor der Buchung:
+    "Lassen Sie mich bestätigen - das ist Dienstag, 15. März um 14 Uhr MEZ. Ist das korrekt?"
+
+    Vor der Weiterleitung:
+    "Nur um sicherzugehen, dass ich das richtig habe: Sie benötigen Hilfe bei [Problem]. Korrekt?"
+
+    Vor dem Ende:
+    "Bevor wir abschließen, gibt es noch etwas anderes, womit ich heute helfen kann?"
+    ```
+
+    Reduziert Fehler und schafft Vertrauen.
+  </Accordion>
+
+  <Accordion title="Würdevolle Ausstiege" icon="door-open">
+    Planen du für jede Art von "Nein" mit Würde.
+
+    **Beispiele:**
+    ```
+    Kein Interesse:
+    "Ich verstehe vollkommen. Vielen Dank für Ihre Zeit, und melden Sie sich gerne,
+    wenn sich etwas ändert."
+
+    Falsche Person:
+    "Kein Problem. Wissen Sie, mit wem ich über [Thema] sprechen sollte?"
+
+    Schlechtes Timing:
+    "Ich schätze, dass Sie mir das mitteilen. Wann wäre ein besserer Zeitpunkt für einen Rückruf?"
+    ```
+
+    Wie du enden, ist genauso wichtig wie wie du beginnen.
+  </Accordion>
+
+  <Accordion title="Schrittweise Offenlegung" icon="layer-group">
+    Fragen du nicht alles im Voraus - bauen du zuerst eine Beziehung auf.
+
+    **Schlecht:**
+    ```
+    "Kann ich Ihren Namen, E-Mail, Telefonnummer, Firma, Rolle und Budget haben?"
+    ```
+
+    **Besser:**
+    ```
+    1. Beginnen Sie mit dem Namen
+    2. Bauen Sie eine Beziehung auf und etablieren Sie Wert
+    3. Fragen Sie nach E-Mail (zur Bestätigung)
+    4. Entdecken Sie andere Details natürlich im Gespräch
+    ```
+
+    Menschen teilen mehr, wenn sie verstehen, warum du fragen.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+<Note>
+**Denken du daran:** Die besten Sprachagenten klingen nicht wie Roboter. Du klingen wie die beste Version deines besten Mitarbeiters an seinem besten Tag. Schreibe für Gespräche, nicht für Perfektion.
+</Note>
+
+---
+
+## Das Anweisungsfeld verstehen
+
+In **Agenten → Fähigkeiten → Anweisungen** stelle einen einzigen Textblock bereit. Die Plattform sendet diesen Block bei jeder Runde zusammen mit an das LLM:
+
+- **Strukturiertem Kontext** - Kontaktdaten, aktuelle Aktionsergebnisse
+- **Wissensbank-Snippets** - Für das Gespräch relevante abgerufene Inhalte
+- **Echtzeit-Transkript** - Der laufende Gesprächsverlauf
+
+### Was der Agent bereits weiß
+
+Die Plattform stellt automatisch bereit:
+- Vollständiger Gesprächsverlauf
+- Verfügbare Aktionen und ihre Parameter
+- Wissensbank-Inhalte (wenn abgerufen)
+- Aktuelles Datum, Uhrzeit und Zeitzone
+
+**Verfügbar über Variablen** (nur wenn du darauf verweisen und Kontakt in Kontakten existiert):
+- Kontaktinformationen: `{{ contact.first_name }}`, `{{ contact.last_name }}`, `{{ contact.email }}`, `{{ contact.phone }}`, `{{ contact.full_name }}`
+- Kontextdaten: Dynamische Werte aus API-Integrationen
+
+---
+
+## Bevor du irgendetwas schreiben
+
+Sammle diese Eingaben, damit der Prompt auf ein spezifisches Szenario statt auf eine generische Person eingeht:
+
+<Steps>
+  <Step title="Anrufziel definieren">
+    Was sollte der Anrufer am Ende des Gesprächs erreicht haben?
+
+    Beispiele:
+    - Antwort auf Produktfrage erhalten
+    - Termin buchen
+    - Als Verkaufs-Lead qualifizieren
+    - Technisches Problem lösen
+  </Step>
+
+  <Step title="Unverzichtbare Daten identifizieren">
+    Welche Felder werden für nachgelagerte Aktionen benötigt?
+
+    Beispiele:
+    - E-Mail-Adresse (für Bestätigungen)
+    - Policennummer (für Suchen)
+    - Schmerzpunkt (für Qualifizierung)
+    - Bevorzugtes Datum/Uhrzeit (für Buchung)
+  </Step>
+
+  <Step title="Verfügbare Aktionen auflisten">
+    Welche Aktionen kann der Agent auslösen?
+
+    Beispiele:
+    - An Support weiterleiten
+    - Termin buchen
+    - Follow-up-E-Mail senden
+    - CRM aktualisieren
+
+    Schließen du Ausfallpläne für jede ein.
+  </Step>
+
+  <Step title="Wissensquellen zuordnen">
+    Welche Wissenssammlungen sind angehängt?
+
+    Beispiele:
+    - Produkt-FAQ
+    - Rückgaberichtlinien
+    - Technische Fehlerbehebung
+    - Preisinformationen
+
+    Wann sollte auf jede verwiesen werden?
+  </Step>
+
+  <Step title="Leitplanken definieren">
+    Welche Themen müssen vermieden werden? Wann eskalieren?
+
+    Beispiele:
+    - Niemals Konkurrenzprodukte besprechen
+    - Niemals Rückerstattungen versprechen (stattdessen weiterleiten)
+    - Rechtliche Drohungen sofort eskalieren
+    - Keine Hardware diagnostizieren (Techniker einplanen)
+  </Step>
+</Steps>
+
+**Diese Eingaben zuerst zu dokumentieren** hält deinen Prompt kurz, spezifisch und einfacher zu pflegen.
+
+---
+
+## Empfohlene Prompt-Struktur
+
+Verwende diese Struktur als Vorlage:
+
+| Abschnitt | Zweck | Tipps |
+|---------|---------|------|
+| **Rolle & Tonfall** | Dem LLM mitteilen, wen es repräsentiert und wie es klingen soll | Marken-Tonfall, erlaubte Sprachen, Aussprachehinweise einschließen |
+| **Hauptziel** | Das gewünschte Ergebnis für den Anrufer erklären | Aufzählungen oder nummerierte Listen für Klarheit verwenden |
+| **Gesprächsablauf** | Die Kernschritte in der Reihenfolge darlegen | Voraussetzungen, Schleifen, Ausstiegskriterien referenzieren |
+| **Informationserfassung** | Erforderliche Felder und Bestätigungsschritte hervorheben | Hervorheben, wie Genauigkeit vor Fortfahren verifiziert wird |
+| **Aktions-Trigger** | Beschreiben, wann jede Aktion mit welchen Eingaben ausgeführt wird | Explizite Aktionsnamen verwenden, die mit der Konfigurations-UI übereinstimmen |
+| **Eskalationen & Leitplanken** | Verbotene Themen und wann übergeben oder Anrufe beenden definieren | Regeln mit der relevanten Weiterleitungs-/Beendigungsaktion koppeln |
+| **Abschluss & Follow-up** | Buchstabieren, wie der Anruf abgeschlossen und nächste Schritte bestätigt werden | Alle Follow-up-Nachrichten einschließen, die du dem Anrufer versprechen |
+
+<Tip>
+Diese Abschnitte in einer konsistenten Reihenfolge zu halten, hilft späteren Bearbeitern, den Prompt schnell zu verstehen.
+</Tip>
+
+---
+
+## Wiederverwendbare Muster
+
+<AccordionGroup>
+  <Accordion title="Muster: Sequenzierung" icon="list-ol">
+    ```
+    Befolgen Sie diese Schritte in der Reihenfolge:
+    1. [Erster Schritt]
+    2. [Zweiter Schritt]
+    3. [Dritter Schritt]
+
+    Bei Unterbrechung zum ersten unerledigten Schritt zurückkehren, bevor Sie fortfahren.
+    ```
+
+    **Verwenden, wenn:** du einen strengen Gesprächsablauf benötigen
+  </Accordion>
+
+  <Accordion title="Muster: Anerkennung & Empathie" icon="heart">
+    ```
+    Wenn Kunden Frustration äußern:
+    - Gefühle anerkennen: "Ich verstehe, wie frustrierend das sein muss"
+    - Bei Bedarf entschuldigen: "Es tut mir leid, dass Sie das erleben"
+    - Verantwortung übernehmen: "Lassen Sie mich sehen, was ich tun kann, um zu helfen"
+    - Defensive Sprache vermeiden
+    ```
+
+    **Verwenden, wenn:** Tonfall für Kundenzufriedenheit wichtig ist
+  </Accordion>
+
+  <Accordion title="Muster: Aktions-Sicherheitsnetze" icon="shield">
+    ```
+    Wenn die Aktion [Aktionsname] fehlschlägt:
+    1. Aufrichtig entschuldigen: "Entschuldigung, ich habe Probleme damit"
+    2. Kurz erklären, was schiefgegangen ist
+    3. Alternative anbieten: [Alternative beschreiben]
+    4. Wenn Alternative ebenfalls fehlschlägt, [Fallback-Aktion] auslösen
+    ```
+
+    **Verwenden, wenn:** Aktionen fehlschlagen können und du eine würdevolle Wiederherstellung benötigen
+  </Accordion>
+
+  <Accordion title="Muster: Mehrsprachiger Support" icon="globe">
+    ```
+    Erlaubte Sprachen: Deutsch, Englisch, Spanisch
+
+    Wenn der Anrufer Englisch spricht:
+    - Auf Englisch antworten
+
+    Wenn der Anrufer Spanisch spricht:
+    - Auf Spanisch antworten
+    - Formelle Anrede verwenden (usted)
+    ```
+
+    **Verwenden, wenn:** Mehrsprachige Kunden bedient werden
+  </Accordion>
+
+  <Accordion title="Muster: Compliance-Erklärungen" icon="scale-balanced">
+    ```
+    Wichtige Compliance-Regeln:
+    - NIEMALS Dienstverfügbarkeit außerhalb der Geschäftszeiten versprechen
+    - NIEMALS Preise besprechen, die nicht im aktuellen Preisblatt stehen
+    - NIEMALS Kundendaten ohne Verifizierung teilen
+    - IMMER offenlegen, dass Anrufe aufgezeichnet werden können (bereits in Begrüßung)
+
+    Bei regulierten Themen sagen: "Ich muss Sie für diese Informationen an [Abteilung] weiterleiten."
+    ```
+
+    **Verwenden, wenn:** Rechtliche/regulatorische Anforderungen bestehen
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Aktionen referenzieren
+
+<Warning>
+Verweise immer auf Aktionen mit dem **exakten Namen**, der in der UI konfiguriert ist. Die Agenten-Laufzeitumgebung stellt einen Funktionsaufruf mit diesem Namen bereit, sodass mehrdeutige Formulierungen die Ausführung unterbrechen können.
+</Warning>
+
+### Beispiel: Buchungsaktion
+
+```text wrap
+Wenn der Anrufer bestätigt, dass er planen möchte, rufen Sie die Buchungsaktion `Zahnärztliche Untersuchung planen` auf mit:
+- `datum` und `zeit`, die während des Gesprächs gesammelt wurden
+- Nach E-Mail fragen, wenn `contact.email` fehlt; andernfalls Kontakt-E-Mail verwenden
+
+Wenn die Aktion einen Fehler zurückgibt:
+1. Entschuldigen: "Es tut mir leid, ich habe Probleme, diesen Zeitslot zu buchen"
+2. Zwei alternative Slots vom selben Tag anbieten
+3. Einmal mit der Alternative wiederholen
+4. Wenn der zweite Versuch fehlschlägt, Aktion `An Empfang weiterleiten` auslösen
+```
+
+### Beispiel: Weiterleitungsaktion
+
+```text wrap
+Verwenden Sie die Aktion `An Tier-2-Support weiterleiten`, wenn:
+- Problem Eskalation über Ihre Fähigkeiten hinaus erfordert
+- Kunde explizit menschlichen Agenten anfordert
+- Technisches Problem nach Fehlerbehebung ungelöst
+- Rechtliche oder Abrechnungsfragen auftreten
+
+Vor Weiterleitung:
+1. Erklären warum: "Ich möchte Sie mit einem Spezialisten verbinden, der besser helfen kann"
+2. Um Erlaubnis bitten: "Darf ich Sie jetzt weiterleiten?"
+3. Wenn sie zustimmen, Weiterleitungsaktion auslösen
+```
+
+---
+
+## Variablen und bedingter Inhalt
+
+Verwende Jinja-Templating, um Anweisungen mit dynamischen Werten aus Kontakten und Kontext zu personalisieren.
+
+### Bedingte Logik
+
+```jinja wrap
+{% if contact.email %}
+Sie haben die E-Mail des Kunden in der Akte: {{ contact.email }}
+{% else %}
+Fragen Sie nach ihrer E-Mail-Adresse, bevor Sie mit der Buchung fortfahren.
+{% endif %}
+
+{% if contact.first_name %}
+Begrüßen Sie sie mit Namen: "Hallo {{ contact.first_name }}, danke für Ihren Anruf!"
+{% else %}
+Verwenden Sie eine allgemeine Begrüßung: "Hallo, danke für Ihren Anruf!"
+{% endif %}
+```
+
+---
+
+## Nächste Schritte
+
+<CardGroup>
+  <Card title="Begrüßungsnachrichten" icon="hand-wave" href="/de/build/conversation/greeting-messages">
+    Konfigurieren du, wie Gespräche beginnen
+  </Card>
+  <Card title="Variablen & Dynamischer Inhalt" icon="brackets-curly" href="/de/build/conversation/variables-dynamic-content">
+    Beherrschen du Jinja-Templating
+  </Card>
+  <Card title="Wissensbank hinzufügen" icon="book" href="/de/build/knowledge/architecture">
+    Füge deine Geschäftsinformationen zu Wissensbanken hinzu
+  </Card>
+  <Card title="Aktionen konfigurieren" icon="bolt" href="/de/build/actions/overview">
+    Ermöglichen du deinem Agenten, Aktionen auszuführen
+  </Card>
+</CardGroup>
+
+## Benötigen du Hilfe?
+
+Senden du eine E-Mail an [support@itellico.ai](mailto:support@itellico.ai) für Unterstützung bei Prompt-Engineering und Agentenoptimierung.

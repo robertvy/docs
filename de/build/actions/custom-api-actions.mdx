@@ -1,0 +1,583 @@
+---
+title: "Benutzerdefinierte API-Aktionen"
+description: "Verbinde deine Agenten über HTTP-Integrationen mit externen Systemen"
+icon: "code"
+keywords: "API-Aktionen, benutzerdefinierte Integration, Webhook, REST API, API-Integration, externe Systeme"
+og:description: "Verbinde deinen KI Voice Agent mit externen Systemen über benutzerdefinierte API-Aktionen und Webhooks."
+---
+
+## Übersicht
+
+Benutzerdefinierte API-Aktionen ermöglichen es deinen KI-Agenten, während Gesprächen mit externen Systemen zu integrieren. deine Agenten können Kundendaten abrufen, CRM-Datensätze aktualisieren, Lagerbestände prüfen, Tickets erstellen und Geschäftslogik ausführen - alles in Echtzeit während des Gesprächs mit Kunden.
+
+**Wie es funktioniert:**
+1. **API-Endpunkt konfigurieren** - HTTP-Methode, URL, Authentifizierung, Header und Request-Body einrichten
+2. **Variablen definieren** - Angeben, welche Informationen der Agent vor dem API-Aufruf sammeln muss
+3. **Agent verwendet es** - Während des Gesprächs sammelt der Agent die Variablen und ruft deine API auf
+4. **API antwortet** - dein System gibt Daten zurück, die der Agent verwendet, um das Gespräch fortzusetzen
+
+<Info>
+Benutzerdefinierte Aktionen werden **synchron** während Gesprächen ausgeführt. Für Operationen, die keine sofortigen Antworten benötigen (Protokollierung, Analytik, Nachbearbeitung), verwenden du stattdessen [Webhooks](/de/build/actions/custom-api-actions).
+</Info>
+
+---
+
+## Beispielablauf
+
+```
+Kunde: "Was ist der Status meiner Bestellung?"
+
+Agent: (sammelt Bestellnummer vom Kunden)
+
+[Agent ruft API auf]
+→ GET https://api.company.com/orders/12345
+← { "status": "shipped", "tracking": "1Z999AA10123456789" }
+
+Agent: "Ihre Bestellung wurde versandt! Ihre Sendungsverfolgungsnummer ist
+       1Z999AA10123456789 und sollte bis Freitag ankommen."
+```
+
+<Warning>
+**Sicherheit: Überprüfe die Kundenidentität, bevor du sensible Daten offenlegen.** Authentifizieren du Kunden immer, bevor du APIs aufrufen, die persönliche Informationen, Bestelldetails, Kontodaten oder andere sensible Informationen zurückgeben.
+</Warning>
+
+### Sicheres Beispiel mit Verifizierung
+
+Für sensible Datenabfragen überprüfen du zuerst die Kundenidentität:
+
+```
+Kunde: "Was ist der Status meiner Bestellung?"
+
+Agent: "Gerne prüfe ich das für Sie. Aus Sicherheitsgründen muss ich zuerst
+       Ihre Identität überprüfen. Was ist Ihre Kundennummer?"
+Kunde: "12345"
+
+Agent: "Und zur Verifizierung, was ist Ihre Telefon-PIN?"
+Kunde: "5678"
+
+[Agent ruft zuerst Verifizierungs-API auf]
+→ POST https://api.company.com/auth/verify
+  Body: {"customer_id": "12345", "phone_pin": "5678"}
+← { "verified": true, "customer_name": "Max Mustermann" }
+
+[Nur wenn verifiziert, dann Bestellabfrage aufrufen]
+→ GET https://api.company.com/customers/12345/orders
+← { "orders": [{"id": "ORD-789", "status": "shipped", ...}] }
+
+Agent: "Vielen Dank, Max. Ich habe Ihre Identität verifiziert. Ihre Bestellung
+       ORD-789 wurde versandt und sollte bis Freitag ankommen."
+```
+
+**Zwei-Aktionen-Muster:**
+1. **Erste Aktion:** "Kunde verifizieren" - authentifiziert mit Kunden-ID + PIN/Passwort
+2. **Zweite Aktion:** "Bestellung nachschlagen" - wird nur ausgeführt, wenn Verifizierung erfolgreich ist
+
+**In deinen Agentenanweisungen:**
+```
+Bevor Sie sensible Kundeninformationen nachschlagen:
+
+1. Kunden-ID und Telefon-PIN sammeln
+2. Aktion 'Kunde verifizieren' verwenden
+3. Wenn Verifizierung fehlschlägt:
+   - "Ich kann diese Informationen nicht verifizieren. Aus Sicherheitsgründen
+      muss ich Sie zu unserem Verifizierungsteam verbinden."
+   - Zu menschlichem Agent weiterleiten
+4. Wenn Verifizierung erfolgreich:
+   - Mit 'Bestellung nachschlagen' oder anderen sensiblen Aktionen fortfahren
+```
+
+---
+
+## Benutzerdefinierte Aktion erstellen
+
+<Steps>
+  <Step title="Zu Aktionen navigieren">
+    Gehe zu deinem Agenten → **Fähigkeiten → Aktionen** → **Aktion hinzufügen** → **Benutzerdefinierte API**
+  </Step>
+  <Step title="Grundinformationen konfigurieren">
+    - **Name**: Beschreibender Name (z.B. "Bestellstatus nachschlagen")
+    - **Beschreibung**: Wann zu verwenden (10-200 Zeichen)
+  </Step>
+  <Step title="Endpunkt konfigurieren">
+    Siehe Endpunkt-Konfiguration unten
+  </Step>
+  <Step title="Authentifizierung einrichten">
+    Siehe Authentifizierungsmethoden unten
+  </Step>
+  <Step title="Variablen hinzufügen">
+    Definiere, welche Informationen der Agent sammeln muss (siehe Variablen-Abschnitt)
+  </Step>
+  <Step title="Testen">
+    Speichern und mit deinem Agenten testen
+  </Step>
+</Steps>
+
+---
+
+## Konfiguration
+
+### Endpunkt-Tab
+
+**HTTP-Methode** (Erforderlich)
+- **GET** - Daten abrufen
+- **POST** - Datensätze erstellen
+- **PUT** - Gesamte Datensätze ersetzen
+- **PATCH** - Spezifische Felder aktualisieren
+- **DELETE** - Datensätze entfernen
+
+**Endpunkt-URL** (Erforderlich)
+- Vollständige API-URL: `https://api.company.com/customers`
+- Unterstützt Template-Variablen: `https://api.company.com/orders/{{order_id}}`
+- Fügt automatisch `https://` hinzu, wenn kein Protokoll angegeben
+
+### Authentifizierungs-Tab
+
+Authentifizierungstyp wählen:
+
+<AccordionGroup>
+  <Accordion title="Keine" icon="lock-open">
+    Keine Authentifizierung erforderlich
+
+    **Verwendung für:**
+    - Öffentliche APIs
+    - Interne Endpunkte in privatem Netzwerk
+  </Accordion>
+
+  <Accordion title="Bearer Token" icon="key">
+    Am häufigsten für moderne APIs
+
+    **Konfiguration:**
+    - Token: dein API-Token/JWT
+
+    **Sendet:**
+    ```
+    Authorization: Bearer {your_token}
+    ```
+
+    **Verwendung für:**
+    - OAuth 2.0 Access Tokens
+    - JWT-Authentifizierung
+    - Moderne REST-APIs
+  </Accordion>
+
+  <Accordion title="Basic Auth" icon="user-lock">
+    Benutzername/Passwort-Authentifizierung
+
+    **Konfiguration:**
+    - Benutzername: API-Benutzername
+    - Passwort: API-Passwort (beim Bearbeiten maskiert)
+
+    **Sendet:**
+    ```
+    Authorization: Basic {base64(username:password)}
+    ```
+
+    **Verwendung für:**
+    - Legacy-APIs
+    - Einfache Authentifizierung
+  </Accordion>
+
+  <Accordion title="Header" icon="list">
+    Benutzerdefinierte Header-basierte Authentifizierung
+
+    **Konfiguration:**
+    - Header-Name: z.B. `X-API-Key`
+    - Header-Wert: dein API-Schlüssel (beim Bearbeiten maskiert)
+
+    **Sendet:**
+    ```
+    X-API-Key: {your_api_key}
+    ```
+
+    **Verwendung für:**
+    - API-Key-Authentifizierung
+    - Benutzerdefinierte Authentifizierungsschemata
+  </Accordion>
+
+  <Accordion title="Body" icon="file-code">
+    Anmeldeinformationen im Request-Body
+
+    **Konfiguration:**
+    - Parametername: z.B. `api_key`
+    - Parameterwert: deine Anmeldeinformation (beim Bearbeiten maskiert)
+
+    **Sendet im Body:**
+    ```json
+    {
+      "api_key": "{your_key}",
+      ...andere Parameter
+    }
+    ```
+
+    **Verwendung für:**
+    - Nicht-standardisierte Authentifizierungsschemata
+    - Login-Endpunkte
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+Anmeldeinformationen werden in der Datenbank verschlüsselt und in der Benutzeroberfläche maskiert. Beim Bearbeiten vorhandener Aktionen werden unveränderte Anmeldeinformationen beibehalten - du müssen sie nur erneut eingeben, wenn du sie ändern.
+</Warning>
+
+### Parameter-Tab
+
+**Headers**
+- Benutzerdefinierte HTTP-Header hinzufügen (Schlüssel-Wert-Paare)
+- Beispiel: `Content-Type: application/json`
+
+**Query-Parameter** (GET-Anfragen)
+- URL-Query-Parameter hinzufügen (Schlüssel-Wert-Paare)
+- Beispiel: `include=orders&limit=100`
+
+**Request-Body** (POST/PUT/PATCH)
+- JSON-Textbereich mit Monaco-Stil-Schrift
+- Unterstützt Template-Variablen: `{{variable_name}}`
+- Validiert JSON-Struktur während Variable-Platzhalter erlaubt sind
+
+Beispiel:
+```json
+{
+  "customer_id": "{{customer_id}}",
+  "status": "contacted",
+  "timestamp": "{{current_datetime}}"
+}
+```
+
+### Variablen-Tab
+
+**Dies ist der wichtigste Teil.** Variablen definieren, welche Informationen dein Agent vor dem API-Aufruf sammeln muss.
+
+Jede Variable erstellt einen **Funktionsparameter**, den das LLM sieht und während des Gesprächs sammelt.
+
+**Variablenfelder:**
+- **Name**: Variablenname (z.B. `order_number`, `customer_email`)
+- **Typ**: string, integer, float, boolean, date, email, phone
+- **Beschreibung**: Wofür diese Variable ist (hilft dem LLM zu verstehen)
+- **Beispiel**: Beispielwert (leitet das LLM)
+- **Erforderlich**: Umschalten - wenn true, muss LLM vor API-Aufruf sammeln
+- **Standardwert**: Wird verwendet, wenn nicht erforderlich und nicht bereitgestellt
+
+**Beispielvariable:**
+```
+Name: order_number
+Typ: string
+Beschreibung: Bestellnummer des Kunden
+Beispiel: ORD-12345
+Erforderlich: Ja
+```
+
+Das LLM sieht dies als Funktionsparameter und weiß, den Kunden nach seiner Bestellnummer zu fragen, bevor die API aufgerufen wird.
+
+---
+
+## Verwendung in Anweisungen
+
+Referenzieren du die Aktion mit Namen und erklären du, wann sie verwendet werden soll:
+
+```
+Wenn ein Kunde nach seinem Bestellstatus fragt:
+
+1. Nach seiner Bestellnummer fragen
+2. Aktion 'Bestellstatus nachschlagen' verwenden
+3. Statusinformationen mit ihm teilen
+
+Wenn die Aktion einen Fehler zurückgibt:
+- 404: "Ich sehe keine Bestellung mit dieser Nummer"
+- 500: "Ich habe gerade Probleme, auf das System zuzugreifen"
+- Anbieten, dass jemand sie zurückruft
+```
+
+### Variablensammlung
+
+Der Agent sammelt automatisch erforderliche Variablen vor dem API-Aufruf:
+
+```
+# Ihre Aktion hat eine Variable: order_number (erforderlich, string)
+
+Kunde: "Was ist mein Bestellstatus?"
+Agent: "Gerne prüfe ich das für Sie. Was ist Ihre Bestellnummer?"
+Kunde: "ORD-12345"
+Agent: [Ruft API mit order_number="ORD-12345" auf]
+```
+
+### Verwendung optionaler Variablen
+
+```
+# Variable: email (nicht erforderlich, Standard: "not-provided@example.com")
+
+Agent sammelt E-Mail, wenn Kunde sie angibt, verwendet sonst Standard
+```
+
+---
+
+## Template-Variablen
+
+Verwende `{{variable_name}}`-Syntax in URLs, Headern, Query-Parametern und Request-Body.
+
+### Aktionsvariablen
+
+Variablen, die du im Variablen-Tab definiert haben:
+
+```
+URL: https://api.company.com/orders/{{order_number}}
+Body: {"email": "{{customer_email}}"}
+```
+
+### Kontext-Variablen
+
+Automatisch aus Kontaktdatensatz und Anrufkontext verfügbar:
+
+**Kontaktinformationen:**
+```
+{{contact.first_name}}
+{{contact.last_name}}
+{{contact.email}}
+{{contact.phone_number}}
+{{contact.id}}
+```
+
+**Agent & Anrufkontext:**
+```
+{{agent_number}}
+{{agent_name}}
+{{agent_id}}
+{{direction}}          # inbound/outbound
+{{medium}}            # phone/web
+{{current_datetime}}  # ISO 8601 Zeitstempel
+```
+
+### Typkonvertierung
+
+Variablen werden automatisch in ihre definierten Typen konvertiert:
+
+- `integer` → Zahl in JSON
+- `float` → Dezimalzahl in JSON
+- `boolean` → true/false in JSON
+- `string` → String in Anführungszeichen in JSON
+
+---
+
+## Testen
+
+<Steps>
+  <Step title="Endpunkt unabhängig testen">
+    Verwende Postman oder cURL, um zu überprüfen:
+    - Endpunkt ist erreichbar
+    - Authentifizierung funktioniert
+    - Request-Format ist korrekt
+    - Antwort ist wie erwartet
+  </Step>
+  <Step title="Mit statischen Werten beginnen">
+    Aktion zuerst mit fest kodierten Werten konfigurieren (keine Variablen)
+
+    Grundfunktionalität überprüfen, bevor Komplexität hinzugefügt wird
+  </Step>
+  <Step title="Variablen hinzufügen">
+    Fest kodierte Werte durch Variablen ersetzen
+
+    Mit Kontaktdatensatz testen, der erforderliche Felder hat
+  </Step>
+  <Step title="Im Agenten testen">
+    1. Web-Anruf starten
+    2. Aktion durch Gespräch auslösen
+    3. Überprüfen, dass Agent Variablen korrekt sammelt
+    4. Prüfen, dass API mit korrekten Daten aufgerufen wird
+    5. Bestätigen, dass Agent Antwort angemessen verwendet
+  </Step>
+  <Step title="Fehlerszenarien testen">
+    - API gibt 404 zurück (nicht gefunden)
+    - API gibt 500 zurück (Serverfehler)
+    - Authentifizierung schlägt fehl (401)
+    - Fehlende erforderliche Variablen
+  </Step>
+</Steps>
+
+---
+
+## Fehlerbehebung
+
+<AccordionGroup>
+  <Accordion title="401 Unauthorized" icon="lock-open">
+    **Ursache:** Ungültige Anmeldeinformationen oder falscher Authentifizierungstyp
+
+    **Lösung:**
+    - Überprüfen, ob Anmeldeinformationen korrekt sind
+    - Authentifizierungstyp prüfen, der API-Anforderungen entspricht
+    - Mit Postman unter Verwendung derselben Anmeldeinformationen testen
+    - Überprüfen, ob Token nicht abgelaufen ist
+  </Accordion>
+
+  <Accordion title="404 Not Found" icon="magnifying-glass">
+    **Ursache:** Falsche URL oder Ressource existiert nicht
+
+    **Lösung:**
+    - Endpunkt-URL überprüfen
+    - Template-Variablen prüfen, ob korrekt ausgefüllt
+    - Zuerst mit statischen Werten testen
+  </Accordion>
+
+  <Accordion title="Agent sammelt Variablen nicht" icon="robot">
+    **Ursache:** Variablen nicht konfiguriert oder unklare Beschreibungen
+
+    **Lösung:**
+    - Überprüfen, ob Variablen im Variablen-Tab definiert sind
+    - Klare Beschreibungen und Beispiele hinzufügen
+    - required=true für wesentliche Variablen setzen
+    - Aktion mit exaktem Namen in Anweisungen referenzieren
+  </Accordion>
+
+  <Accordion title="Variablen werden nicht ersetzt" icon="brackets-curly">
+    **Ursache:** Falsche Syntax oder Variable existiert nicht
+
+    **Lösung:**
+    - Exakte Syntax verwenden: `{{variable_name}}`
+    - Überprüfen, ob Variable im Variablen-Tab definiert ist
+    - Kontaktdatensatz prüfen, ob Feld ausgefüllt ist
+    - Standardwert im Variablen-Tab für optionale Variablen setzen
+  </Accordion>
+
+  <Accordion title="Timeout-Fehler" icon="clock">
+    **Ursache:** API antwortet langsam (>2 Minuten)
+
+    **Lösung:**
+    - API-Antwortzeit optimieren
+    - Erwägen du Webhooks für langsame Operationen
+    - Häufig aufgerufene Daten zwischenspeichern
+  </Accordion>
+
+  <Accordion title="Agent kann Antwortdaten nicht verwenden" icon="code">
+    **Ursache:** API gibt Nicht-JSON oder fehlerhaftes JSON zurück
+
+    **Lösung:**
+    - Überprüfen, ob API gültiges JSON zurückgibt
+    - Content-Type-Header in Antwort prüfen
+    - Antwort mit JSON-Validator testen
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Best Practices für Sicherheit
+
+<AccordionGroup>
+  <Accordion title="Nur HTTPS verwenden" icon="lock">
+    Verwende immer HTTPS-Endpunkte, um Daten während der Übertragung zu verschlüsseln
+
+    ✅ `https://api.company.com/endpoint`
+    ❌ `http://api.company.com/endpoint`
+  </Accordion>
+
+  <Accordion title="Anmeldeinformationen sichern" icon="key">
+    - Niemals Anmeldeinformationen in URLs fest kodieren
+    - Authentifizierungskonfiguration verwenden
+    - API-Schlüssel regelmäßig rotieren
+    - Separate Schlüssel für Test vs. Produktion verwenden
+    - Kompromittierte Anmeldeinformationen sofort widerrufen
+  </Accordion>
+
+  <Accordion title="Berechtigungen beschränken" icon="user-shield">
+    - Minimal notwendige API-Berechtigungen gewähren
+    - Nur-Lese-Schlüssel für Nachschlagen-Aktionen verwenden
+    - Schreibberechtigungen auf spezifische Endpunkte beschränken
+    - Auf ungewöhnliche Aktivität überwachen
+  </Accordion>
+
+  <Accordion title="Eingaben validieren" icon="filter">
+    deine API sollte alle Eingaben validieren:
+    - Auf Injection-Versuche prüfen
+    - Datentypen und Formate validieren
+    - String-Längen begrenzen
+    - Parametrisierte Queries verwenden
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Praxisbeispiele
+
+<AccordionGroup>
+  <Accordion title="CRM-Kundennachschlagen" icon="user-check">
+    **Szenario:** Kunde in Salesforce nachschlagen
+
+    **Konfiguration:**
+    - Methode: GET
+    - URL: `https://api.salesforce.com/customers/{{customer_id}}`
+    - Auth: Bearer Token
+    - Variable: `customer_id` (string, erforderlich)
+
+    **Agentenanweisungen:**
+    ```
+    Wenn nach Kontodetails gefragt:
+    1. Nach Kunden-ID fragen
+    2. Aktion 'Kunde nachschlagen' verwenden
+    3. Kontoinformationen aus Antwort teilen
+    ```
+  </Accordion>
+
+  <Accordion title="Support-Ticket erstellen" icon="ticket">
+    **Szenario:** Ticket in Zendesk erstellen
+
+    **Konfiguration:**
+    - Methode: POST
+    - URL: `https://company.zendesk.com/api/v2/tickets`
+    - Auth: Basic (E-Mail/Token)
+    - Variablen: `issue_description` (string), `priority_level` (string)
+    - Body:
+    ```json
+    {
+      "ticket": {
+        "subject": "Anruf mit {{contact.first_name}}",
+        "description": "{{issue_description}}",
+        "priority": "{{priority_level}}"
+      }
+    }
+    ```
+
+    **Agentenanweisungen:**
+    ```
+    Wenn Kunde ein Problem hat, das ich nicht lösen kann:
+    1. Detaillierte Problembeschreibung sammeln
+    2. Priorität bestimmen (normal, hoch, dringend)
+    3. Aktion 'Ticket erstellen' verwenden
+    4. Kunde Ticketnummer geben
+    ```
+  </Accordion>
+
+  <Accordion title="Produktlagerbestand prüfen" icon="boxes-stacked">
+    **Szenario:** Produktverfügbarkeit prüfen
+
+    **Konfiguration:**
+    - Methode: GET
+    - URL: `https://inventory.company.com/products/{{sku}}/availability`
+    - Auth: Header (`X-API-Key`)
+    - Variable: `sku` (string, erforderlich, Beispiel: "PROD-12345")
+
+    **Agentenanweisungen:**
+    ```
+    Wenn nach Produktverfügbarkeit gefragt:
+    1. Produkt-SKU vom Kunden erhalten
+    2. Aktion 'Lagerbestand prüfen' verwenden
+    3. Wenn auf Lager: Verfügbarkeit bestätigen
+    4. Wenn nicht auf Lager: Voraussichtliches Nachfülldatum angeben
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Aktionen Übersicht" icon="bolt" href="/de/build/actions/overview">
+    Erfahren du mehr über alle Aktionstypen
+  </Card>
+  <Card title="Buchungsaktionen" icon="calendar" href="/de/build/actions/booking-calendar">
+    Cal.com-Terminplanung
+  </Card>
+  <Card title="Variablen & Dynamischer Inhalt" icon="brackets-curly" href="/de/build/conversation/variables-dynamic-content">
+    Template-Variablen meistern
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/de/build/actions/custom-api-actions">
+    Asynchrone Integrationen
+  </Card>
+</CardGroup>
