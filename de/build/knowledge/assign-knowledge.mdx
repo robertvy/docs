@@ -53,19 +53,19 @@ Du kannst Wissen auf drei verschiedenen Granularitätsebenen Agenten zuweisen:
 
 <Steps>
   <Step title="Deinen Agent öffnen">
-    Gehe zu **Agents** in der linken Seitenleiste und wähle den Agent aus, den du konfigurieren möchtest.
+    Gehe zu **Agenten** in der linken Seitenleiste und wähle den Agent aus, den du konfigurieren möchtest.
   </Step>
 
-  <Step title="Zu Abilities → Knowledge gehen">
-    Klicke auf **Abilities** in der linken Navigation und wähle dann den Abschnitt **Knowledge** aus.
+  <Step title="Zu Fähigkeiten → Wissen gehen">
+    Klicke auf **Fähigkeiten** in der linken Navigation und wähle dann den Abschnitt **Wissen** aus.
   </Step>
 </Steps>
 
 ### Schritt 2: Wissen hinzufügen
 
 <Steps>
-  <Step title="Auf 'Add Knowledge' klicken">
-    Klicke auf die Schaltfläche **+ Add Knowledge**, um den Wissensauswahlbereich zu öffnen.
+  <Step title="Auf 'Wissen hinzufügen' klicken">
+    Klicke auf die Schaltfläche **Wissen hinzufügen**, um den Wissensauswahlbereich zu öffnen.
 
 <Frame>
   <div className="block dark:hidden">
@@ -79,9 +79,9 @@ Du kannst Wissen auf drei verschiedenen Granularitätsebenen Agenten zuweisen:
 
   <Step title="Zuweisungsebene wählen">
     Wähle, was du zuweisen möchtest:
-    - **Knowledge Base** - Gesamte Wissensdatenbank
-    - **Folder** - Spezifischer Ordner innerhalb einer Datenbank
-    - **Item** - Einzelnes Wissenselement
+    - **Wissensdatenbank** - Gesamte Wissensdatenbank
+    - **Ordner** - Spezifischer Ordner innerhalb einer Datenbank
+    - **Element** - Einzelnes Wissenselement
   </Step>
 
   <Step title="Das Wissen auswählen">
@@ -90,14 +90,14 @@ Du kannst Wissen auf drei verschiedenen Granularitätsebenen Agenten zuweisen:
 
   <Step title="Zugriffsmodus wählen">
     Wähle, wie der Agent auf dieses Wissen zugreifen soll:
-    - **Context Mode** - Alle Wissensinhalte in den System-Prompt einfügen (begrenzt auf 10k Token insgesamt)
-    - **RAG Mode** - Relevantes Wissen basierend auf der Konversation dynamisch abrufen
+    - **Kontext-Modus** - Alle Wissensinhalte in den System-Prompt einfügen (begrenzt auf 10k Token insgesamt)
+    - **RAG-Modus** - Relevantes Wissen basierend auf der Konversation dynamisch abrufen
 
-    Mehr erfahren: [Context vs RAG](/de/build/knowledge/context-vs-rag)
+    Mehr erfahren: [Kontext vs RAG](/de/build/knowledge/context-vs-rag)
   </Step>
 
   <Step title="Speichern">
-    Klicke auf **Add**, um das Wissen deinem Agent zuzuweisen.
+    Klicke auf **Hinzufügen**, um das Wissen deinem Agent zuzuweisen.
   </Step>
 </Steps>
 
@@ -111,9 +111,9 @@ Im Wissensbereich des Agenten siehst du alle zugewiesenen Wissensdatenbanken, Or
 
 ### Zuweisung ändern
 
-- **Zugriffsmodus ändern:** Entferne das Wissen und füge es mit dem gewünschten Modus (Context oder RAG) erneut hinzu
+- **Zugriffsmodus ändern:** Entferne das Wissen und füge es mit dem gewünschten Modus (Kontext oder RAG) erneut hinzu
 - **Wissen entfernen:** Klicke auf das Entfernen-Symbol, um die Verknüpfung des Wissens vom Agent zu trennen
-- **Mehr hinzufügen:** Klicke auf **+ Add Knowledge**, um zusätzliches Wissen zuzuweisen
+- **Mehr hinzufügen:** Klicke auf **Wissen hinzufügen**, um zusätzliches Wissen zuzuweisen
 
 ### Wissenszugriff testen
 
@@ -121,7 +121,7 @@ Nach dem Zuweisen von Wissen:
 
 <Steps>
   <Step title="Einen Testanruf durchführen">
-    Verwende die Funktion **Test**, um deinen Agent anzurufen.
+    Verwende die Funktion **Testanruf**, um deinen Agent anzurufen.
   </Step>
 
   <Step title="Wissensbasierte Fragen stellen">
@@ -195,8 +195,8 @@ Vermeiden du es, überlappendes Wissen auf verschiedenen Ebenen zuzuweisen. Weis
   <Accordion title="Agent verwendet zugewiesenes Wissen nicht" icon="triangle-exclamation">
     **Prüfen:**
     1. Ist das Wissen tatsächlich dem Agent zugewiesen?
-    2. Ist der Vektorindizierungsstatus "INDEXED"? (Prüfen in Knowledge Base > Items)
-    3. Ist der Zugriffsmodus angemessen? (Versuche Context/RAG zu wechseln)
+    2. Ist der Vektorindizierungsstatus "INDIZIERT"? (Prüfen in Wissensdatenbanken > Elemente)
+    3. Ist der Zugriffsmodus angemessen? (Versuche Kontext/RAG zu wechseln)
     4. Ist die Frage so formuliert, dass das Wissen sie beantworten kann?
 
     **Test:** Stelle eine sehr direkte Frage, die eindeutig im Wissen ist. Wenn der Agent es immer noch nicht verwendet, gibt es ein Konfigurationsproblem.
@@ -211,20 +211,20 @@ Vermeiden du es, überlappendes Wissen auf verschiedenen Ebenen zuzuweisen. Weis
     **Beheben:**
     - Überprüfe und aktualisiere den Wissensinhalt, entferne widersprüchliche/veraltete Elemente
     - **Senken du die Temperatur-Einstellung** (in KI-Modell-Einstellungen), damit der Agent näher am Wissen bleibt
-    - **Füge kritisches Wissen zum Context Mode hinzu** anstatt RAG für garantierte Einbeziehung in jedem Gespräch
+    - **Füge kritisches Wissen zum Kontext-Modus hinzu** anstatt RAG für garantierte Einbeziehung in jedem Gespräch
     - **Wechseln du zu einem leistungsfähigeren Modell** in KI-Modell-Einstellungen (z.B. GPT-4.1 statt GPT-4.1 Mini oder Claude Sonnet statt Haiku)
   </Accordion>
 
   <Accordion title="Agent sagt 'Ich weiß es nicht', aber Wissen existiert" icon="triangle-exclamation">
     **Mögliche Ursachen:**
     1. Wissen ist noch nicht indiziert (prüfen du Vektorstatus)
-    2. RAG-Modus kann keine relevanten Übereinstimmungen finden (versuchen du Context-Modus)
+    2. RAG-Modus kann keine relevanten Übereinstimmungen finden (versuchen du Kontext-Modus)
     3. Wissenstitel/-inhalt passt nicht zu den Frageschlüsselwörtern
 
     **Beheben:**
     - Warten du, bis die Indizierung abgeschlossen ist
     - Verbessern du Wissenselement-Titel und -Inhalte, um häufige Frageschlüsselwörter einzuschließen
-    - Erwägen du die Verwendung des Context-Modus für kritische Informationen
+    - Erwägen du die Verwendung des Kontext-Modus für kritische Informationen
   </Accordion>
 </AccordionGroup>
 
