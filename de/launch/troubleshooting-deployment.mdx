@@ -8,14 +8,14 @@ og:description: "Systematische Anleitung zur Diagnose und Behebung von Produktio
 
 ## Diagnoseverfahren
 
-Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fehlerbehebungsprozess:
+Wenn Probleme in der Produktion auftreten, verwende diesen systematischen Fehlerbehebungsprozess:
 
 1. **Symptome identifizieren** - Was ist kaputt? Anrufe schlagen fehl, Agent verhält sich falsch, Integrationen sind ausgefallen?
 2. **Umfang prüfen** - Betrifft alle Anrufe oder nur eine bestimmte Teilmenge? Seit wann?
-3. **Protokolle überprüfen** - Nach Fehlermeldungen, Mustern, Stack Traces suchen
+3. **Protokolle überprüfen** - Suche nach Fehlermeldungen, Mustern, Stack Traces
 4. **Ursache isolieren** - Ist es ein Konfigurations-, Integrations-, Plattform- oder Carrier-Problem?
-5. **Lösung anwenden** - Kleinste Änderung bereitstellen, die das Problem löst
-6. **Validieren** - Gründlich testen, bevor als gelöst markiert
+5. **Lösung anwenden** - Stelle die kleinste Änderung bereit, die das Problem löst
+6. **Validieren** - Teste gründlich, bevor du es als gelöst markierst
 
 ## Häufige Probleme & Lösungen
 
@@ -27,12 +27,12 @@ Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fe
   <Accordion title="Telefonnummerzuweisung überprüfen">
     **Diagnose**:
     1. Gehe zu **Telefonie → Telefonnummern**
-    2. Finden du deine Nummer, überprüfen du die Spalte "Zugewiesener Agent"
+    2. Finde deine Nummer, überprüfe die Spalte "Zugewiesener Agent"
     3. Überprüfe, ob sie dem richtigen Agenten zugewiesen ist (nicht "Nicht zugewiesen")
 
     **Lösung**:
     - Klicke auf die Nummer → Wähle den Agenten aus dem Dropdown → Speichern
-    - Warten du 30 Sekunden, bis die Routing-Aktualisierung propagiert ist
+    - Warte 30 Sekunden, bis die Routing-Aktualisierung propagiert ist
     - Teste durch erneutes Anrufen der Nummer
   </Accordion>
 
@@ -44,7 +44,7 @@ Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fe
          https://api.itellico.ai/v1/sip-trunks/trunk_123/status
     ```
 
-    Suchen du nach `"status": "registered"`. Wenn `"unregistered"` oder `"failed"`:
+    Suche nach `"status": "registered"`. Wenn `"unregistered"` oder `"failed"`:
 
     **Häufige Ursachen**:
     - Falsche SIP-Anmeldedaten (Benutzername/Passwort)
@@ -53,7 +53,7 @@ Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fe
     - Carrier-Endpunkt ist ausgefallen
 
     **Lösung**:
-    - Anmeldedaten beim Carrier überprüfen
+    - Überprüfe Anmeldedaten beim Carrier
     - Überprüfe das Carrier-Portal für IP-Allowlist-Einstellungen
     - Teste mit `curl -v sip:carrier.com:5060`, um die Konnektivität zu überprüfen
     - Kontaktiere den Carrier, wenn ihr Endpunkt nicht erreichbar ist
@@ -65,7 +65,7 @@ Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fe
     - Nummer wurde gerade vor weniger als 5 Minuten gekauft
 
     **Lösung**:
-    - Warten du bis zu 10 Minuten, bis die Bereitstellung abgeschlossen ist
+    - Warte bis zu 10 Minuten, bis die Bereitstellung abgeschlossen ist
     - Wenn länger als 30 Min. hängt, klicke auf "Bereitstellung wiederholen"
     - Wenn weiterhin fehlschlägt, kontaktiere den Support mit Nummerndetails
   </Accordion>
@@ -73,13 +73,13 @@ Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fe
   <Accordion title="Carrier-Routing-Probleme">
     **Diagnose**:
     - Anrufe funktionieren, wenn SIE anrufen, aber nicht von Kundentelefonen
-    - Bestimmte Vorwahlen oder Carrier können du nicht erreichen
+    - Bestimmte Vorwahlen oder Carrier können dich nicht erreichen
 
     **Lösung**:
     - Überprüfe, ob die Routing-Tabelle des Carriers deinen Nummernbereich enthält
-    - CNAM (Caller Name) Registrierung überprüfen
-    - Auf Spam-Kennzeichnung prüfen (verwenden du kostenlose Carrier-Lookup-Tools)
-    - Möglicherweise müssen du den Carrier kontaktieren, um das Routing zu korrigieren
+    - Überprüfe CNAM (Caller Name) Registrierung
+    - Prüfe auf Spam-Kennzeichnung (verwende kostenlose Carrier-Lookup-Tools)
+    - Möglicherweise musst du den Carrier kontaktieren, um das Routing zu korrigieren
   </Accordion>
 </AccordionGroup>
 
@@ -147,18 +147,18 @@ Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fe
        - Kontaktiere den Support zur Untersuchung
 
     **Schnelle Lösung**:
-    - Wechseln du zu schnellerem Modell (GPT-4 → GPT-3.5 Turbo)
-    - Reduzieren du die Anzahl der abgerufenen Wissensdatenbank-Chunks
-    - Erhöhen du API-Timeouts, um Wartezeiten zu vermeiden
+    - Wechsle zu schnellerem Modell (GPT-4 → GPT-3.5 Turbo)
+    - Reduziere die Anzahl der abgerufenen Wissensdatenbank-Chunks
+    - Erhöhe API-Timeouts, um Wartezeiten zu vermeiden
   </Accordion>
 
   <Accordion title="Transkriptionsfehler (falsche Wörter)">
     **Diagnose**:
-    - Transkript in **Gespräche** überprüfen
-    - Nach Mustern suchen:
-      - Fachbegriffe falsch verstanden → Zu benutzerdefiniertem Vokabular hinzufügen
-      - Akzente missverstanden → Anderen Transkribierer ausprobieren
-      - Hintergrundgeräusche → Rauschunterdrückung aktivieren
+    - Überprüfe Transkript in **Gespräche**
+    - Suche nach Mustern:
+      - Fachbegriffe falsch verstanden → Füge zu benutzerdefiniertem Vokabular hinzu
+      - Akzente missverstanden → Probiere anderen Transkribierer aus
+      - Hintergrundgeräusche → Aktiviere Rauschunterdrückung
 
     **Lösungen**:
 
@@ -194,8 +194,8 @@ Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fe
   <Accordion title="Agent folgt Anweisungen nicht">
     **Diagnose**:
     - Öffne Agenteneinstellungen → **Konversation → Anweisungen**
-    - Im Simulator mit genauem Szenario testen
-    - Prüfen du, ob das Problem:
+    - Teste im Simulator mit genauem Szenario
+    - Prüfe, ob das Problem:
       - Immer auftritt → Anweisungsproblem
       - Intermittierend → Kontext- oder Modellproblem
 
@@ -225,9 +225,9 @@ Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fe
     - Lösung: Ein Verhalten priorisieren, Konflikt entfernen
 
     **Testen**:
-    - 10 Testanrufe mit Grenzfällen durchführen
-    - Transkripte auf Compliance überprüfen
-    - Anweisungen basierend auf Fehlern iterieren
+    - Führe 10 Testanrufe mit Grenzfällen durch
+    - Überprüfe Transkripte auf Compliance
+    - Iteriere Anweisungen basierend auf Fehlern
   </Accordion>
 
   <Accordion title="Agent halluziniert oder erfindet Fakten">
@@ -255,9 +255,9 @@ Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fe
     ```
 
     **2. Wissensdatenbank erweitern**:
-    - "Ich weiß nicht"-Antworten in Protokollen überprüfen
-    - Fehlende Inhalte zu KB hinzufügen
-    - Abruf mit Beispielabfragen testen
+    - Überprüfe "Ich weiß nicht"-Antworten in Protokollen
+    - Füge fehlende Inhalte zu KB hinzu
+    - Teste Abruf mit Beispielabfragen
 
     **3. Modelltemperatur senken**:
     ```json
@@ -300,9 +300,9 @@ Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fe
     ```
 
     **2. Absichtserkennung verbessern**:
-    - Beispiele für Grenzfallantworten zu Anweisungen hinzufügen
-    - Strukturierte Antworten verwenden (DTMF für kritische Infos)
-    - "Ich bin mir nicht sicher"-Fallback zu Mensch aktivieren
+    - Füge Beispiele für Grenzfallantworten zu Anweisungen hinzu
+    - Verwende strukturierte Antworten (DTMF für kritische Infos)
+    - Aktiviere "Ich bin mir nicht sicher"-Fallback zu Mensch
 
     **3. Grenzfälle testen**:
     - Schweigender Anrufer
@@ -321,7 +321,7 @@ Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fe
     **Diagnose**:
     1. Öffne **Gespräche** → Wähle fehlgeschlagenen Anruf
     2. Navigiere zum Tab **Aktionen**
-    3. Suchen du nach Fehlermeldung (z. B. "API-Timeout", "401 Unauthorized")
+    3. Suche nach Fehlermeldung (z. B. "API-Timeout", "401 Unauthorized")
 
     **Häufige Fehler & Lösungen**:
 
@@ -343,7 +343,7 @@ Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fe
          -d '{"test": "data"}'
     ```
 
-    Wenn manueller Curl funktioniert, aber Agent fehlschlägt, überprüfen:
+    Wenn manueller Curl funktioniert, aber Agent fehlschlägt, überprüfe:
     - IP-Allowlisting (Agenten-IPs müssen möglicherweise auf Allowlist gesetzt werden)
     - Rate-Limiting (Agent kann Limits schneller erreichen als manuelles Testen)
   </Accordion>
@@ -356,17 +356,17 @@ Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fe
     **Häufige Probleme**:
 
     **1. Ungültige Weiterleitungsnummer**:
-    - Nummernformat überprüfen (muss E.164 sein: +1234567890)
-    - Überprüfe, ob Nummer erreichbar ist (manuell anrufen)
+    - Überprüfe Nummernformat (muss E.164 sein: +1234567890)
+    - Überprüfe, ob Nummer erreichbar ist (rufe manuell an)
 
     **2. SIP-Reinvite-Fehler**:
     - Einige Carrier unterstützen SIP REFER für Weiterleitungen nicht
-    - Lösung: "Betreute Weiterleitung" statt "Blindweiterleitung" verwenden
-    - Oder "Anruf-Bridging"-Modus aktivieren
+    - Lösung: Verwende "Betreute Weiterleitung" statt "Blindweiterleitung"
+    - Oder aktiviere "Anruf-Bridging"-Modus
 
     **3. Carrier unterstützt keine Weiterleitungen**:
-    - Bei Carrier prüfen, ob Weiterleitungen aktiviert sind
-    - Möglicherweise SIP-Trunk upgraden, um zu unterstützen
+    - Prüfe bei Carrier, ob Weiterleitungen aktiviert sind
+    - Möglicherweise musst du SIP-Trunk upgraden, um zu unterstützen
 
     **Konfiguration**:
     ```json
@@ -383,7 +383,7 @@ Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fe
   <Accordion title="Wissensdatenbank ruft nicht ab">
     **Diagnose**:
     - Agent sagt "Ich weiß nicht", wenn Antwort in KB ist
-    - Abruf manuell testen:
+    - Teste Abruf manuell:
 
     ```bash
     # KB-Suche testen
@@ -433,16 +433,16 @@ Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fe
     - Anrufvolumen-Diagramm für Spitzenzeiten überprüfen
 
     **Kurzfristige Lösungen**:
-    1. **Warteschlange aktivieren**: Anrufer warten lassen statt Besetztzeichen
-    2. **Überlauf-Agent hinzufügen**: Bei Kapazität an Backup-Agent weiterleiten
-    3. **Geschäftszeiten erweitern**: Volumen über mehr Stunden verteilen
-    4. **Rückruf anbieten**: "Wir rufen du in 10 Minuten zurück"
+    1. **Warteschlange aktivieren**: Lass Anrufer warten statt Besetztzeichen
+    2. **Überlauf-Agent hinzufügen**: Leite bei Kapazität an Backup-Agent weiter
+    3. **Geschäftszeiten erweitern**: Verteile Volumen über mehr Stunden
+    4. **Rückruf anbieten**: "Wir rufen dich in 10 Minuten zurück"
 
     **Langfristige Lösungen**:
-    1. **Plan upgraden**: Limit für gleichzeitige Anrufe erhöhen
-    2. **Lastverteilung**: Mehrere Agenten erstellen, Nummern verteilen
-    3. **Auto-Skalierung**: Dynamische Kapazitätsskalierung aktivieren (Enterprise)
-    4. **Außerhalb der Spitzenzeiten Anreize**: Anrufe während verkehrsschwacher Zeiten fördern
+    1. **Plan upgraden**: Erhöhe Limit für gleichzeitige Anrufe
+    2. **Lastverteilung**: Erstelle mehrere Agenten, verteile Nummern
+    3. **Auto-Skalierung**: Aktiviere dynamische Kapazitätsskalierung (Enterprise)
+    4. **Außerhalb der Spitzenzeiten Anreize**: Fördere Anrufe während verkehrsschwacher Zeiten
   </Accordion>
 
   <Accordion title="Hohes Anrufvolumen überlastet System">
@@ -456,15 +456,15 @@ Wenn Probleme in der Produktion auftreten, verwenden du diesen systematischen Fe
       - Systemausfall verursacht Wiederholungssturm?
 
     **Sofortmaßnahmen**:
-    1. **Rate-Limit**: Vorübergehend max. gleichzeitige Anrufe reduzieren, um zu stabilisieren
-    2. **Aggressiv in Warteschlange**: Anrufe halten statt fallen lassen
-    3. **Fallback-Nachricht**: "Ungewöhnlich hohes Volumen. Bitte versuchen du es in 15 Minuten erneut."
-    4. **Notfall-Skalierung**: Support für vorübergehende Kapazitätserhöhung kontaktieren
+    1. **Rate-Limit**: Reduziere vorübergehend max. gleichzeitige Anrufe, um zu stabilisieren
+    2. **Aggressiv in Warteschlange**: Halte Anrufe statt fallen lassen
+    3. **Fallback-Nachricht**: "Ungewöhnlich hohes Volumen. Bitte versuche es in 15 Minuten erneut."
+    4. **Notfall-Skalierung**: Kontaktiere Support für vorübergehende Kapazitätserhöhung
 
     **Prävention**:
-    - Verkehr für bekannte Ereignisse vorhersagen (Produkteinführungen, Verkäufe)
-    - Kapazität vor erwarteten Spitzen vorskalieren
-    - Auto-Skalierungs-Trigger einrichten
+    - Sage Verkehr für bekannte Ereignisse vorher (Produkteinführungen, Verkäufe)
+    - Skaliere Kapazität vor erwarteten Spitzen vor
+    - Richte Auto-Skalierungs-Trigger ein
   </Accordion>
 
   <Accordion title="Kosten höher als erwartet">
@@ -537,27 +537,27 @@ cat logs.json | jq '.error.type' | sort | uniq -c | sort -rn
 
 **Schritte**:
 1. Öffne **Gespräche → Live-Monitor**
-2. Finden du aktiven Anruf
+2. Finde aktiven Anruf
 3. Klicke auf **Flüstern**
-4. Sprechen du Anweisungen (Agent hört, Kunde nicht)
+4. Sprich Anweisungen (Agent hört, Kunde nicht)
 
 **Anwendungsfälle**:
-- Agent steckt fest → "An Abrechnungsabteilung weiterleiten"
-- Agent kurz davor, falsche Info zu geben → "Wissensdatenbank für Preise überprüfen"
-- Grenzfall → Agent durch ungewöhnliches Szenario führen
+- Agent steckt fest → "Leite an Abrechnungsabteilung weiter"
+- Agent kurz davor, falsche Info zu geben → "Überprüfe Wissensdatenbank für Preise"
+- Grenzfall → Führe Agent durch ungewöhnliches Szenario
 
 ### Testen in Produktion
 
 **Kanarienvogel-Anrufe**:
-- Testanrufe während Geschäftszeiten durchführen
-- Bekannte Szenarien verwenden
-- Mit erwartetem Verhalten vergleichen
-- Als Test markieren zum Filtern: `metadata: {test_call: true}`
+- Führe Testanrufe während Geschäftszeiten durch
+- Verwende bekannte Szenarien
+- Vergleiche mit erwartetem Verhalten
+- Markiere als Test zum Filtern: `metadata: {test_call: true}`
 
 **Synthetisches Monitoring**:
 - Automatisierte Testanrufe jede Stunde
-- Überprüfen, dass wichtige Abläufe noch funktionieren
-- Alarmieren, wenn Tests zu scheitern beginnen
+- Überprüfe, dass wichtige Abläufe noch funktionieren
+- Alarmiere, wenn Tests zu scheitern beginnen
 
 ```python
 # Automatisiertes Testskript
@@ -599,7 +599,7 @@ Kontaktiere support@itellico.ai wenn:
 - Agenten-ID und Anruf-IDs, die Problem zeigen
 - Fehlermeldungen aus Protokollen
 - Schritte zur Reproduktion
-- Was du bereits versucht haben
+- Was du bereits versucht hast
 - Geschäftliche Auswirkungen (wie viele Benutzer betroffen)
 
 **Antwortzeiten**:
