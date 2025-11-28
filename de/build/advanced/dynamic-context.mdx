@@ -3,7 +3,7 @@ title: "Dynamischer Kontext"
 description: "Rufen du personalisierte Daten aus deinen Systemen ab, bevor Gespräche beginnen"
 icon: "database"
 keywords: "dynamischer Kontext, Kontext-API, Echtzeit-Daten, Kontextanreicherung, API-Kontext"
-og:description: "Reichern du Agenten-Gespräche mit dynamischem Kontext und Echtzeit-Daten aus externen APIs an."
+og:description: "Reichere Agenten-Gespräche mit dynamischem Kontext und Echtzeit-Daten aus externen APIs an."
 ---
 
 ## Überblick
@@ -15,7 +15,7 @@ Dynamischer Kontext wird konfiguriert unter **Agenteneinstellungen → Operation
 </Note>
 
 <Info>
-**Die Kontext-API wird einmal vor Gesprächsbeginn aufgerufen.** Die Daten sind für das Rendern der Begrüßung und während des gesamten Gesprächs verfügbar. du werden während des Gesprächs nicht aktualisiert. Halte deinen Endpunkt schnell (&lt;1s Antwortzeit) und geben du nur für das Gespräch benötigte Daten zurück.
+**Die Kontext-API wird einmal vor Gesprächsbeginn aufgerufen.** Die Daten sind für das Rendern der Begrüßung und während des gesamten Gesprächs verfügbar. Sie werden während des Gesprächs nicht aktualisiert. Halte deinen Endpunkt schnell (&lt;1s Antwortzeit) und gib nur für das Gespräch benötigte Daten zurück.
 </Info>
 
 **Schnelle Anforderungen:**
@@ -67,7 +67,7 @@ Dynamischer Kontext wird konfiguriert unter **Agenteneinstellungen → Operation
     `direction: "inbound"` mit contact_number des Anrufers. Kundendaten im CRM nachschlagen.
   </Card>
   <Card title="Ausgehende Anrufe" icon="arrow-up-right-dots">
-    `direction: "outbound"` mit contact_number, die du anrufen. Kampagnenkontext abrufen.
+    `direction: "outbound"` mit contact_number, die du anrufst. Kampagnenkontext abrufen.
   </Card>
   <Card title="Web-Widget" icon="window">
     `medium: "web"` mit optionaler external_id. Benutzer in deinem System identifizieren.
@@ -143,7 +143,7 @@ X-Room-SID: RM_abc123
 - `X-External-ID` - Nur für Web-Widget-Anrufe
 
 <Note>
-**Typische Verwendung:** dein Endpunkt verwendet `contact_number` oder `external_id`, um den Kunden in deinem CRM/deiner Datenbank nachzuschlagen und gibt dann relevante Kontodaten, Bestellhistorie, Tickets usw. zurück. Die `agent_uuid` kann verwendet werden, um Antworten pro Agent anzupassen, falls erforderlich.
+**Typische Verwendung:** Dein Endpunkt verwendet `contact_number` oder `external_id`, um den Kunden in deinem CRM/deiner Datenbank nachzuschlagen und gibt dann relevante Kontodaten, Bestellhistorie, Tickets usw. zurück. Die `agent_uuid` kann verwendet werden, um Antworten pro Agent anzupassen, falls erforderlich.
 </Note>
 
 ### Was du zurückgeben (JSON-Antwort)
@@ -182,7 +182,7 @@ X-Room-SID: RM_abc123
 - Fehlende Daten elegant behandeln (null zurückgeben oder Felder weglassen)
 
 <Info>
-**Wie auf Variablen zugegriffen wird:** Alle Top-Level-Schlüssel in deiner JSON-Antwort werden zu Template-Variablen. Wenn du `{"account": {"tier": "VIP"}}` zurückgeben, greifen du darauf als `{{ account.tier }}` zu, nicht als `{{ context.account.tier }}`.
+**Wie auf Variablen zugegriffen wird:** Alle Top-Level-Schlüssel in deiner JSON-Antwort werden zu Template-Variablen. Wenn du `{"account": {"tier": "VIP"}}` zurückgibst, greifst du darauf als `{{ account.tier }}` zu, nicht als `{{ context.account.tier }}`.
 </Info>
 
 ---
@@ -219,7 +219,7 @@ WICHTIG: Kunde hat {{ support_tickets|length }} offene(s) Ticket(s):
 - Ticket #{{ ticket.ticket_id }}: {{ ticket.subject }} ({{ ticket.status }})
 {% endfor %}
 
-Fragen Sie, ob sie wegen Ticket #{{ support_tickets[0].ticket_id }} anrufen.
+Frage, ob sie wegen Ticket #{{ support_tickets[0].ticket_id }} anrufen.
 {% endif %}
 
 {% if recent_orders|length > 0 %}
@@ -307,7 +307,7 @@ seit {{ customer.since }}.
 Kunde hat ein offenes {{ support.open_tickets[0].priority }}-Priorität-Ticket
 über "{{ support.open_tickets[0].subject }}".
 
-Beginnen Sie mit der Frage: "Ich sehe, Sie haben ein offenes Ticket über
+Beginne mit der Frage: "Ich sehe, Sie haben ein offenes Ticket über
 {{ support.open_tickets[0].subject }}. Rufen Sie deswegen heute an?"
 {% endif %}
 
@@ -367,14 +367,14 @@ Konto: {{ account.subscription }}, erneuert {{ account.renewal_date }}
 <AccordionGroup>
   <Accordion title="401 Unauthorized" icon="lock-open">
     - Überprüfe, ob Anmeldedaten korrekt sind
-    - Prüfen du, ob Authentifizierungstyp mit deiner API übereinstimmt (Bearer vs. Basic vs. API-Schlüssel)
+    - Prüfe, ob Authentifizierungstyp mit deiner API übereinstimmt (Bearer vs. Basic vs. API-Schlüssel)
     - Teste mit denselben Anmeldedaten in Postman
-    - Prüfen du, ob Token abgelaufen ist
+    - Prüfe, ob Token abgelaufen ist
   </Accordion>
 
   <Accordion title="Kontextvariablen leer" icon="brackets-curly">
     - Verwende **Anfrage testen**, um zu überprüfen, ob Endpunkt antwortet
-    - Überprüfe, ob JSON-Struktur mit dem übereinstimmt, worauf du zugreifen
+    - Überprüfe, ob JSON-Struktur mit dem übereinstimmt, worauf du zugreifst
     - Überprüfe, ob Dynamischer Kontext-Schalter EIN ist
     - Verwende `| default("fallback")` für fehlende Felder
   </Accordion>
@@ -404,7 +404,7 @@ Konto: {{ account.subscription }}, erneuert {{ account.renewal_date }}
     Verwende Kontextvariablen, um die Begrüßung deines Agenten zu personalisieren
   </Card>
   <Card title="Anweisungen" icon="pen" href="/de/build/conversation/instructions">
-    Erfahren du, wie du Kontextvariablen mit Jinja-Templating verwenden
+    Erfahre, wie du Kontextvariablen mit Jinja-Templating verwendest
   </Card>
   <Card title="Variablen & Dynamischer Inhalt" icon="brackets-curly" href="/de/build/conversation/variables-dynamic-content">
     Templating-Syntax für dynamische Prompts meistern
