@@ -1,11 +1,255 @@
 ---
-title: "Revisar conversas"
-description: "Analise chamadas individuais"
+title: "Revisar Conversas"
+description: "Analise chamadas individuais para entender o que aconteceu e identificar oportunidades de melhoria"
 icon: "messages"
+keywords: "revisão de conversas, transcrições de chamadas, gravações de chamadas, QA de IA de voz, análise de conversas, rastreamento de objetivos, análise pós-chamada, exportações de conversas, relatórios de campanhas, monitoramento de agentes de IA"
+og:description: "Revise chamadas individuais de agentes de IA com transcrições detalhadas, gravações e análises. Identifique oportunidades de melhoria e otimize o desempenho do agente através da análise de conversas."
 ---
 
-## Em breve
+A visualização de **Conversas** dá acesso detalhado a cada chamada que seus agentes processam. É aqui que você faz análise qualitativa: ouvindo gravações, lendo transcrições, verificando quais ferramentas foram chamadas e revisando resultados de objetivos.
 
-Esta página está sendo traduzida para o português.
+## O Que Você Encontrará
 
-Enquanto isso, você pode consultar a [versão em inglês](/optimize/review-conversations).
+Cada conversa na aba **Conversas** inclui:
+
+<AccordionGroup>
+  <Accordion title="Transcrição" icon="align-left">
+    Transcrição de texto completa mostrando a troca entre seu agente e o chamador. Veja exatamente o que foi dito, incluindo:
+    - Respostas do agente
+    - Entrada do chamador
+    - Timestamps
+    - Fluxo turno a turno
+
+    Use transcrições para identificar padrões como esclarecimentos repetidos, confusão ou conhecimento faltando.
+  </Accordion>
+
+  <Accordion title="Reprodução da Gravação" icon="circle-play">
+    Revise a gravação de áudio real da chamada. Essencial para:
+    - Avaliar qualidade e tom de voz
+    - Entender contexto que o texto não captura
+    - Ouvir o sentimento do cliente
+    - Propósitos de QA e treinamento
+
+    Gravações ajudam a identificar problemas que não aparecem apenas nas transcrições.
+  </Accordion>
+
+  <Accordion title="Chamadas de Ferramentas e Ações" icon="wrench">
+    Veja cada ação que seu agente executou durante a chamada:
+    - Chamadas de API realizadas
+    - Parâmetros passados
+    - Respostas recebidas
+    - Timing de execução
+
+    Revise chamadas de ferramentas ao depurar integrações ou entender por que um agente tomou uma ação específica.
+  </Accordion>
+
+  <Accordion title="Recuperação de Conhecimento" icon="book">
+    Quando seu agente usa uma base de conhecimento, você pode ver exatamente quais fragmentos de conteúdo foram recuperados para cada resposta. Clique no ícone <Icon icon="book" /> ao lado de qualquer mensagem do agente que usou recuperação de conhecimento para abrir o modal de detalhes de recuperação.
+
+    **O que você verá:**
+    - **Contagem de fragmentos:** Quantos fragmentos de conhecimento foram recuperados
+    - **Prévia do conteúdo:** O texto real que foi recuperado e usado
+    - **Pontuação de similaridade:** Quão relevante cada fragmento foi para a consulta (exibido como porcentagem)
+    - **Informações de origem:** De qual base de conhecimento e item o fragmento veio
+
+    **Entendendo as pontuações de similaridade:**
+    - <Icon icon="circle" iconType="solid" color="green" /> **70%+:** Correspondência altamente relevante
+    - <Icon icon="circle" iconType="solid" color="yellow" /> **50-70%:** Moderadamente relevante
+    - <Icon icon="circle" iconType="solid" color="orange" /> **Abaixo de 50%:** Correspondência fraca, pode precisar de melhorias na base de conhecimento
+
+    **Problemas comuns a procurar:**
+    - **Nenhum fragmento recuperado:** A base de conhecimento pode estar sem conteúdo sobre este tópico
+    - **Pontuações de similaridade baixas:** O conteúdo existe mas pode precisar de melhor redação ou mais detalhes
+    - **Fragmentos errados recuperados:** Revise a organização e estrutura de conteúdo da sua base de conhecimento
+    - **O agente ainda deu resposta errada:** O conteúdo recuperado pode ser preciso mas o agente interpretou mal—considere ajustar as instruções
+
+    Use esta visualização para depurar problemas relacionados ao conhecimento e melhorar o conteúdo da sua base de conhecimento ao longo do tempo.
+  </Accordion>
+
+  <Accordion title="Resultados de Objetivos" icon="bullseye">
+    Após cada chamada, os objetivos configurados são automaticamente avaliados:
+    - **Objetivo primário:** Métrica de sucesso principal (Alcançado / Não Alcançado)
+    - **Objetivos secundários:** Resultados adicionais rastreados
+    - **Raciocínio:** Por que o objetivo foi marcado como alcançado ou não
+
+    Filtre conversas por alcance de objetivos para encontrar padrões de sucesso ou identificar onde seu agente está falhando.
+
+    Objetivos são configurados em **Configurações do Agente → Análise → Objetivos**. Veja o guia de [Objetivos de Conversa](/pt/build/analytics/conversation-goals) para configuração.
+  </Accordion>
+
+  <Accordion title="Análise Pós-Chamada" icon="clipboard-list">
+    Perguntas personalizadas que você configurou para executar após cada chamada:
+    - **Perguntas Sim/Não:** Resultados binários
+    - **Múltipla escolha:** Dados categóricos
+    - **Texto livre:** Análise aberta
+
+    Resultados aparecem no painel de detalhes da conversa para revisão rápida.
+
+    Configure análise pós-chamada em **Configurações do Agente → Análise → Análise Pós-Chamada**. Veja o guia de [Análise Pós-Chamada](/pt/build/analytics/post-call-analysis) para detalhes.
+  </Accordion>
+</AccordionGroup>
+
+## Como Usar
+
+### Filtrar e Pesquisar
+
+Encontre conversas específicas usando filtros:
+
+- **Agente:** Filtre por qual agente processou a chamada
+- **Intervalo de datas:** Restrinja a períodos de tempo específicos
+- **Status:** Filtre por resultado da chamada (concluído, falhou, transferido)
+- **Alcance de objetivos:** Mostre apenas chamadas onde objetivos foram alcançados ou perdidos
+- **Campanha:** Para chamadas de campanha, filtre por nome da campanha
+- **Número de telefone:** Encontre chamadas para/de números específicos
+
+### Rotina de Revisão Semanal
+
+Torne a revisão de conversas um hábito regular:
+
+<Steps>
+  <Step title="Escolha seu foco">
+    Decida o que investigar esta semana:
+    - Chamadas que falharam ou foram transferidas
+    - Chamadas com baixo alcance de objetivos
+    - Amostra aleatória para QA geral
+    - Campanha ou período específico
+  </Step>
+
+  <Step title="Revise conversas">
+    Para 5-10 conversas:
+    - Revise a chamada
+    - Leia a transcrição
+    - Verifique chamadas de ferramentas e recuperação de conhecimento
+    - Revise resultados de objetivos e análises
+  </Step>
+
+  <Step title="Identifique padrões">
+    Procure por problemas recorrentes:
+    - Agente não entende perguntas comuns
+    - Conhecimento faltando em tópicos específicos
+    - Ferramentas falhando ou retornando erros
+    - Certos cenários causando transferências
+  </Step>
+
+  <Step title="Tome ação">
+    Com base nos padrões:
+    - Atualize instruções do agente
+    - Adicione conhecimento faltando
+    - Corrija ou melhore ações
+    - Ajuste objetivos ou perguntas de análise
+  </Step>
+</Steps>
+
+## Exportações de Conversas
+
+Exporte dados de conversas para análises mais profundas em suas próprias ferramentas:
+
+<AccordionGroup>
+  <Accordion title="Opções de Exportação" icon="file-export">
+    Da aba **Conversas**, exporte dados com opções flexíveis:
+
+    **Escopo:**
+    - Apenas conversas selecionadas
+    - Todas as conversas correspondentes aos filtros atuais
+    - Intervalos de datas personalizados
+
+    **Formato:**
+    - **XLSX (recomendado):** Formato Excel com formatação completa
+    - **CSV separado por vírgula:** CSV padrão
+    - **CSV separado por ponto e vírgula:** Formato CSV europeu
+
+    **O Que Está Incluído:**
+    - Metadados da conversa (data, duração, agente, números de telefone)
+    - Status e resultado da chamada
+    - Resultados de alcance de objetivos
+    - Respostas de análise pós-chamada
+    - Resumos de chamadas de ferramentas
+    - Transcrição (opcional, pode ser grande)
+  </Accordion>
+
+  <Accordion title="Trabalhos de Exportação" icon="clock">
+    Exportações grandes executam em segundo plano:
+    - Continue trabalhando enquanto exportações processam
+    - Verifique status no histórico de exportações
+    - Baixe arquivos concluídos quando prontos
+
+    Cada exportação mostra formato e status para rastreamento fácil.
+  </Accordion>
+</AccordionGroup>
+
+## Resumos de Email Pós-Chamada
+
+Mantenha-se informado sem fazer login no painel. Configure emails pós-chamada para receber resumos automáticos após cada chamada:
+
+- **O que aconteceu:** Resultado e duração da chamada
+- **Resultados de objetivos:** Se os objetivos foram alcançados
+- **Resultados de análise:** Respostas às perguntas pós-chamada
+- **Ações rápidas:** Links para ver detalhes completos da conversa
+
+Configure emails pós-chamada em **Configurações do Agente → Análise → Automação Pós-Chamada**. Veja o guia de [Automação Pós-Chamada](/pt/build/analytics/post-call-automation).
+
+## Relatórios Específicos de Campanha
+
+Para campanhas de saída, a aba **Campanha → Relatórios** dá histórico de conversas por contato:
+
+<CardGroup cols={2}>
+  <Card title="Histórico de Contato" icon="user">
+    Veja todas as conversas para cada contato ao longo do ciclo de vida da campanha. Rastreie múltiplas tentativas, retornos de chamada e resultados.
+  </Card>
+
+  <Card title="Exportações de Campanha" icon="file-export">
+    Exporte contatos com dados completos de conversa:
+    - Todas as tentativas e resultados por contato
+    - Alcance de objetivos através das chamadas
+    - Resultados de análise agregados por contato
+    - Histórico completo de conversas
+
+    Escolha formato XLSX, CSV vírgula ou CSV ponto e vírgula.
+  </Card>
+</CardGroup>
+
+Exportações de campanha combinam dados de contato com análise de conversas para relatórios de campanha completos.
+
+## Melhores Práticas
+
+<AccordionGroup>
+  <Accordion title="Configure notificações de email pós-chamada" icon="envelope">
+    Configure resumos automáticos por email para se manter atualizado sem verificar manualmente o painel. Seja notificado sobre condições específicas como objetivos falhados, transferências ou erros. Isso é altamente recomendado para se manter informado sem esforço.
+  </Accordion>
+
+  <Accordion title="Revise frequentemente no início, depois regularmente" icon="calendar-check">
+    Ao lançar pela primeira vez, revise conversas diariamente ou após cada poucas chamadas para iterar rapidamente. Uma vez estável, mude para revisões semanais para manter qualidade sem se tornar exaustivo.
+  </Accordion>
+
+  <Accordion title="Foque em falhas primeiro" icon="triangle-exclamation">
+    Comece revisando chamadas falhadas, transferências ou objetivos perdidos. Estes revelam oportunidades de melhoria mais rápido do que revisar chamadas bem-sucedidas.
+  </Accordion>
+
+  <Accordion title="Use exportações para análise profunda" icon="file-export">
+    Para tendências através de centenas de chamadas, exporte para Excel ou sua ferramenta de BI. A visualização de conversas é melhor para entender chamadas individuais.
+  </Accordion>
+
+  <Accordion title="Atualize instruções com base em padrões" icon="pen-to-square">
+    Quando você ver o mesmo problema 3+ vezes, atualize suas instruções de agente ou base de conhecimento. Não espere pela perfeição.
+  </Accordion>
+
+  <Accordion title="Marque e rastreie problemas recorrentes" icon="tags">
+    Mantenha notas sobre problemas comuns. Isso ajuda a priorizar o que corrigir primeiro e rastrear melhorias ao longo do tempo.
+  </Accordion>
+</AccordionGroup>
+
+## Próximos Passos
+
+<CardGroup cols={2}>
+  <Card title="Painel" icon="chart-line" href="/pt/optimize/analytics-dashboard">
+    Mude de qualitativo para quantitativo: rastreie métricas e tendências
+  </Card>
+
+  <Card title="Objetivos de Conversa" icon="bullseye" href="/pt/build/analytics/conversation-goals">
+    Configure objetivos para medir automaticamente o sucesso da conversa
+  </Card>
+
+  <Card title="Análise Pós-Chamada" icon="clipboard-list" href="/pt/build/analytics/post-call-analysis">
+    Configure perguntas personalizadas para extrair insights de cada chamada
+  </Card>
+</CardGroup>
