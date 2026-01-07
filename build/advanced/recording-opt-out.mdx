@@ -1,0 +1,173 @@
+---
+title: "Recording Opt-Out"
+description: "Allow callers to request that their call not be recorded"
+icon: "shield-halved"
+keywords: "recording opt-out, privacy, GDPR compliance, call recording, data deletion, caller rights, consent management"
+og:description: "Allow callers to opt out of call recording during conversations for GDPR compliance and privacy protection."
+---
+
+## Overview
+
+Recording Opt-Out enables callers to request that their call recording be stopped and deleted during the conversation. This feature helps with GDPR compliance and demonstrates respect for caller privacy.
+
+<Note>
+When enabled, this feature adds a tool your AI agent can invoke when a caller expresses they don't want to be recorded.
+</Note>
+
+---
+
+## How It Works
+
+When a caller says something like "I don't want to be recorded" or "Please stop recording":
+
+1. **Agent recognizes the request:** The AI understands the opt-out request
+2. **Tool is invoked:** The recording opt-out action is triggered
+3. **Recording stops:** Live recording is halted immediately
+4. **Data deleted:** Any recorded audio for this call is deleted
+5. **Caller confirmed:** Agent confirms the action to the caller
+
+---
+
+## Configuration
+
+Navigate to your agent's **Privacy Settings** section.
+
+### Enable Recording Opt-Out
+
+Toggle the feature on or off:
+
+- **Enabled:** Callers can request to stop and delete recording
+- **Disabled:** Opt-out requests are not available (default)
+
+---
+
+## Caller Triggers
+
+The agent will recognize opt-out requests phrased in various ways:
+
+**English:**
+- "Stop recording this call"
+- "I don't want to be recorded"
+- "Please don't record me"
+- "Turn off the recording"
+- "Delete this recording"
+
+**German:**
+- "Bitte nicht aufnehmen"
+- "Aufnahme stoppen"
+- "Ich möchte nicht aufgenommen werden"
+
+The agent uses natural language understanding to recognize intent, not just exact phrases.
+
+---
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="GDPR Compliance" icon="shield-check">
+    Meet European data protection requirements for consent withdrawal
+  </Card>
+  <Card title="Sensitive Conversations" icon="lock">
+    Allow callers to discuss sensitive topics without recording
+  </Card>
+  <Card title="Customer Trust" icon="handshake">
+    Demonstrate commitment to caller privacy and data rights
+  </Card>
+  <Card title="Legal Requirements" icon="scale-balanced">
+    Comply with two-party consent laws in certain jurisdictions
+  </Card>
+</CardGroup>
+
+---
+
+## What Happens When Opt-Out is Triggered
+
+| Component | Action |
+|-----------|--------|
+| Live recording | Stopped immediately |
+| Recorded audio | Permanently deleted |
+| Transcript | Deleted (if recording-linked) |
+| Call metadata | Retained (call happened, duration, etc.) |
+| Analytics | Basic call stats retained |
+
+<Warning>
+Once recording is deleted, it cannot be recovered. Ensure your team understands this is a permanent action.
+</Warning>
+
+---
+
+## Best Practices
+
+**Combine with announcements:** If you record calls, inform callers at the start with a Privacy Announcement. Mention the opt-out option:
+
+```text
+This call may be recorded for quality purposes. If you prefer not to be
+recorded, please let me know at any time.
+```
+
+**Train your agent:** Add instructions to acknowledge opt-out requests professionally:
+
+```text
+When a caller requests to stop recording:
+- Acknowledge the request immediately
+- Confirm the recording has been stopped and deleted
+- Reassure them the conversation can continue
+- Do not pressure them to continue recording
+```
+
+**Document your policy:** Have a clear internal policy about what happens when callers opt out and how this affects quality assurance processes.
+
+---
+
+## GDPR Considerations
+
+Under GDPR, individuals have the right to:
+
+<Steps>
+  <Step title="Be informed">
+    Know that recording is taking place (use announcements)
+  </Step>
+  <Step title="Give consent">
+    Agree to being recorded before it happens
+  </Step>
+  <Step title="Withdraw consent">
+    Change their mind and request recording to stop
+  </Step>
+  <Step title="Request deletion">
+    Have recorded data removed (right to erasure)
+  </Step>
+</Steps>
+
+Recording Opt-Out addresses the last two rights—allowing callers to withdraw consent and request deletion during the call.
+
+<Warning>
+This is general guidance, not legal advice. Consult with a legal professional to ensure your recording practices meet your specific regulatory requirements.
+</Warning>
+
+---
+
+## Limitations
+
+- **Only affects current call:** Cannot delete recordings from previous calls
+- **Immediate effect:** Once triggered, cannot be undone during the same call
+- **Metadata retained:** Basic call information (that a call occurred) is retained
+- **Not retroactive:** Only applies from the point of request forward
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Privacy Announcements" icon="shield-check" href="/build/advanced/announcements">
+    Inform callers about recording at the start
+  </Card>
+  <Card title="Production Best Practices" icon="rocket" href="/launch/production-best-practices">
+    Deploy with proper compliance measures
+  </Card>
+  <Card title="Trust Center" icon="building-shield" href="/launch/web-widget-deployment#trust-center">
+    Show your privacy practices publicly
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/web-simulator">
+    Test opt-out in the simulator
+  </Card>
+</CardGroup>
