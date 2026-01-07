@@ -1,0 +1,194 @@
+---
+title: "Usage Pricing"
+description: "Per-minute rates and usage-based billing details"
+icon: "calculator"
+keywords: "usage, per-minute, pricing, overage, volume discounts, billing tiers, call costs"
+og:description: "Understand itellicoAI per-minute pricing, usage tiers, and volume discounts for voice AI calls."
+---
+
+## How Usage Billing Works
+
+After you've used your plan's included minutes, additional usage is billed per minute based on your **Usage Tier**.
+
+<Note>
+Your Usage Tier is determined by the AI providers you configure for your agent (transcription, voice, and language model).
+</Note>
+
+---
+
+## Usage Tiers
+
+| Tier | Included Providers | Rate |
+|------|-------------------|------|
+| **Essential** | Deepgram + Azure TTS + GPT-4.1 Mini | **€0.10/min** |
+| **Standard** | Deepgram + Cartesia + Claude Haiku | **€0.12/min** |
+| **Pro** | Deepgram + ElevenLabs + Claude Haiku | **€0.13/min** |
+| **Premium** | Deepgram + ElevenLabs + Claude Sonnet | **€0.15/min** |
+
+Your tier is automatically determined by the most premium provider in your agent configuration.
+
+---
+
+## Volume Discounts
+
+Higher usage earns automatic discounts:
+
+| Monthly Volume | Discount | Essential | Standard | Pro | Premium |
+|----------------|----------|-----------|----------|-----|---------|
+| Under 5,000 min | 0% | €0.10 | €0.12 | €0.13 | €0.15 |
+| 5,000 - 15,000 min | 10% | €0.09 | €0.108 | €0.117 | €0.135 |
+| 15,000+ min | 20% | €0.08 | €0.096 | €0.104 | €0.12 |
+
+<Tip>
+Volume discounts apply to your entire usage for the billing period, not just minutes above the threshold.
+</Tip>
+
+---
+
+## What's Included in Per-Minute Rate
+
+Your per-minute rate covers:
+
+| Component | Description |
+|-----------|-------------|
+| **Transcription (STT)** | Converting speech to text |
+| **Language Model (LLM)** | AI processing and responses |
+| **Voice Synthesis (TTS)** | Converting text to speech |
+| **Platform Fee** | LiveKit infrastructure, routing |
+| **Telephony** | Basic inbound/outbound routing |
+
+---
+
+## Billing Rules
+
+### Minimum Duration (Dynamic Opening)
+
+When your agent uses a dynamic opening message (AI speaks first with personalized content), a **minimum 10-second charge** applies. This accounts for the processing overhead of generating personalized greetings.
+
+**When it applies:**
+- AI speaks first is enabled
+- Dynamic opening message is enabled
+- Call duration < 10 seconds
+
+**Example:** A 6-second call with dynamic opening is billed as 10 seconds.
+
+### Token Scaling
+
+For conversations with large prompts (instructions, knowledge base context, tool descriptions), duration is scaled based on token usage.
+
+**Formula:**
+```
+If tokens > 3,500:
+Billed Duration = Actual Duration × (Tokens ÷ 3,500)
+```
+
+**Example:** A 60-second call using 4,200 tokens:
+- Scaling factor: 4,200 ÷ 3,500 = 1.2
+- Billed duration: 60 × 1.2 = 72 seconds
+
+<Note>
+Token scaling ensures fair pricing for conversations that require more AI processing, regardless of call length.
+</Note>
+
+---
+
+## Calculating Your Bill
+
+<Steps>
+  <Step title="Check included minutes">
+    Your plan includes a set amount of minutes per month
+  </Step>
+  <Step title="Subtract included minutes">
+    Overage = Total Usage - Included Minutes
+  </Step>
+  <Step title="Apply billing rules">
+    Adjust for minimum duration and token scaling
+  </Step>
+  <Step title="Determine tier rate">
+    Based on your agent's provider configuration
+  </Step>
+  <Step title="Apply volume discount">
+    If applicable based on total monthly usage
+  </Step>
+</Steps>
+
+### Example Calculation
+
+**Scenario:**
+- Plan: Pro (2,500 minutes included)
+- Total usage: 3,200 minutes
+- Usage tier: Standard (€0.12/min)
+- No volume discount (under 5,000 min)
+
+**Calculation:**
+```
+Overage: 3,200 - 2,500 = 700 minutes
+Cost: 700 × €0.12 = €84.00
+```
+
+---
+
+## Monitoring Usage
+
+Track your usage in real-time from **Settings > Billing > Usage**.
+
+| Metric | Description |
+|--------|-------------|
+| **Minutes Used** | Total minutes this billing period |
+| **Minutes Remaining** | Included minutes left |
+| **Projected Usage** | Estimated end-of-period total |
+| **Cost to Date** | Overage charges so far |
+
+### Usage Alerts
+
+Set up alerts to notify you when:
+- You've used 75% of included minutes
+- You've used 100% of included minutes
+- Projected usage exceeds a threshold
+
+Configure alerts in **Settings > Notifications > Billing Alerts**.
+
+---
+
+## Optimizing Costs
+
+<AccordionGroup>
+  <Accordion title="Use appropriate AI models" icon="microchip">
+    Don't use premium models when standard ones suffice. GPT-4.1 Mini and Claude Haiku handle most use cases well at lower cost.
+  </Accordion>
+
+  <Accordion title="Optimize prompts" icon="file-lines">
+    Keep instructions concise to reduce token usage. Remove unnecessary context from prompts.
+  </Accordion>
+
+  <Accordion title="Use knowledge base efficiently" icon="book">
+    Only attach relevant knowledge bases to agents. Large, unused knowledge bases increase token counts.
+  </Accordion>
+
+  <Accordion title="Consider annual billing" icon="calendar">
+    Save 17% on subscription costs with annual billing.
+  </Accordion>
+
+  <Accordion title="Right-size your plan" icon="chart-simple">
+    If consistently exceeding included minutes, upgrading may be cheaper than overage rates.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Premium Features" icon="star" href="/billing/premium-features">
+    Optional add-ons and surcharges
+  </Card>
+  <Card title="Phone Numbers" icon="phone" href="/billing/phone-numbers">
+    Number rental and telephony pricing
+  </Card>
+  <Card title="View Plans" icon="layer-group" href="/billing/plans">
+    Compare subscription tiers
+  </Card>
+  <Card title="Billing FAQ" icon="circle-question" href="/billing/faq">
+    Common questions
+  </Card>
+</CardGroup>

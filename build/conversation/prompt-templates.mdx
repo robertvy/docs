@@ -1,0 +1,315 @@
+---
+title: "Prompt Templates"
+description: "Reusable templates for agent instructions and prompts"
+icon: "file-code"
+keywords: "prompt templates, reusable prompts, agent templates, instructions, conversation templates"
+og:description: "Create and manage reusable prompt templates for consistent agent behavior across your organization."
+---
+
+## Overview
+
+Prompt Templates let you create reusable instruction sets that can be applied across multiple agents. Instead of writing prompts from scratch for each agent, use templates to ensure consistency and save time.
+
+<Note>
+Prompt Templates are organization-wide. Any team member can use templates created by others in the same organization.
+</Note>
+
+---
+
+## Why Use Templates
+
+<CardGroup cols={2}>
+  <Card title="Consistency" icon="equals">
+    Ensure all agents follow the same communication guidelines
+  </Card>
+  <Card title="Efficiency" icon="bolt">
+    Create once, use many times across different agents
+  </Card>
+  <Card title="Quality Control" icon="shield-check">
+    Centrally manage and update best practices
+  </Card>
+  <Card title="Onboarding" icon="user-plus">
+    Help new team members create effective agents quickly
+  </Card>
+</CardGroup>
+
+---
+
+## Creating a Template
+
+<Steps>
+  <Step title="Navigate to Templates">
+    Go to **Settings > Organization > Prompt Templates**
+  </Step>
+  <Step title="Click Create Template">
+    Enter a name and description for your template
+  </Step>
+  <Step title="Write your template">
+    Add the instructions, including any placeholders
+  </Step>
+  <Step title="Save and categorize">
+    Add tags and set visibility options
+  </Step>
+</Steps>
+
+---
+
+## Template Structure
+
+Templates can include:
+
+### Static Content
+
+Fixed instructions that apply to all agents using this template:
+
+```text
+You are a professional customer service agent. Always be polite,
+helpful, and solution-oriented. Never argue with customers.
+```
+
+### Placeholders
+
+Dynamic fields that are filled when the template is applied:
+
+```text
+You are {{agent_name}}, a customer service agent for {{company_name}}.
+Your main goal is to {{primary_goal}}.
+
+Working hours are {{business_hours}}.
+```
+
+### Available Placeholders
+
+| Placeholder | Description |
+|-------------|-------------|
+| `{{agent_name}}` | Name of the agent |
+| `{{company_name}}` | Organization name |
+| `{{agent_role}}` | Agent's configured role |
+| `{{business_hours}}` | From business hours config |
+| `{{custom_field_name}}` | Any custom field you define |
+
+---
+
+## Template Examples
+
+<AccordionGroup>
+  <Accordion title="Customer Support Template" icon="headset">
+    ```text
+    # Role
+    You are {{agent_name}}, a customer support specialist for {{company_name}}.
+
+    # Personality
+    - Professional but friendly
+    - Patient and understanding
+    - Solution-focused
+
+    # Guidelines
+    - Always greet customers warmly
+    - Ask clarifying questions before offering solutions
+    - If you can't help, offer to transfer to a human agent
+    - Never share internal information or pricing discussions
+
+    # Closing
+    - Summarize what was discussed
+    - Confirm the customer's issue is resolved
+    - Thank them for contacting {{company_name}}
+    ```
+  </Accordion>
+
+  <Accordion title="Sales Qualification Template" icon="chart-line">
+    ```text
+    # Role
+    You are {{agent_name}}, a sales development representative for {{company_name}}.
+
+    # Objective
+    Qualify leads by understanding their needs and determining if {{company_name}}'s
+    solutions are a good fit.
+
+    # Qualification Criteria
+    - Budget: {{budget_qualifier}}
+    - Authority: Are they a decision-maker?
+    - Need: What problem are they trying to solve?
+    - Timeline: When do they need a solution?
+
+    # Guidelines
+    - Be consultative, not pushy
+    - Listen more than you talk
+    - Take notes on their requirements
+    - If qualified, offer to schedule a demo
+
+    # Next Steps
+    For qualified leads: Schedule a demo with the sales team
+    For unqualified leads: Politely thank them and offer resources
+    ```
+  </Accordion>
+
+  <Accordion title="Appointment Booking Template" icon="calendar">
+    ```text
+    # Role
+    You are {{agent_name}}, scheduling appointments for {{company_name}}.
+
+    # Services Available
+    {{available_services}}
+
+    # Booking Guidelines
+    - Confirm the service they need
+    - Check availability in real-time using the calendar tool
+    - Collect required information:
+      - Full name
+      - Contact phone number
+      - Email address
+      - Any special requirements
+
+    # Confirmation
+    - Repeat the appointment details back to confirm
+    - Let them know they'll receive a confirmation email
+    - Provide cancellation/rescheduling policy
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Using Templates
+
+### Applying to a New Agent
+
+When creating an agent:
+
+1. In the **Instructions** section, click **Use Template**
+2. Select a template from the list
+3. Fill in any placeholder values
+4. Customize as needed
+5. Save the agent
+
+### Applying to Existing Agent
+
+1. Open the agent's configuration
+2. Go to **Instructions**
+3. Click **Apply Template**
+4. Choose to replace or merge with existing instructions
+5. Fill in placeholders
+6. Save changes
+
+<Note>
+Applying a template doesn't create a permanent link. Changes to the template won't automatically update agents that have already used it.
+</Note>
+
+---
+
+## Managing Templates
+
+### Template Library
+
+View all templates in **Settings > Organization > Prompt Templates**:
+
+| Column | Description |
+|--------|-------------|
+| Name | Template name |
+| Description | Brief summary |
+| Category | Grouping for organization |
+| Used By | Number of agents using this template |
+| Last Updated | When template was last modified |
+
+### Editing Templates
+
+Changes to templates affect:
+- **Future uses:** New agents will get the updated template
+- **Existing agents:** Not affected—they keep their current instructions
+
+To update existing agents with template changes:
+1. Edit the template
+2. Navigate to each agent
+3. Re-apply the template
+
+### Deleting Templates
+
+Deleting a template:
+- Does not affect agents already using it
+- Removes it from the template library
+- Cannot be undone
+
+---
+
+## Template Categories
+
+Organize templates with categories:
+
+| Category | Use For |
+|----------|---------|
+| **General** | Universal guidelines, brand voice |
+| **Sales** | Lead qualification, demos, follow-ups |
+| **Support** | Customer service, troubleshooting |
+| **Booking** | Appointment scheduling |
+| **Survey** | Feedback collection, research |
+| **Custom** | Industry-specific or unique use cases |
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Start with your brand voice" icon="bullhorn">
+    Create a base template that captures your brand's communication style. All other templates can build on this foundation.
+  </Accordion>
+
+  <Accordion title="Use descriptive placeholders" icon="tag">
+    Name placeholders clearly: `{{cancellation_policy}}` is better than `{{policy1}}`.
+  </Accordion>
+
+  <Accordion title="Keep templates focused" icon="crosshairs">
+    One template per use case. Don't try to create a single template for everything.
+  </Accordion>
+
+  <Accordion title="Document your templates" icon="book">
+    Add clear descriptions and usage notes. Help team members understand when and how to use each template.
+  </Accordion>
+
+  <Accordion title="Version control" icon="code-branch">
+    When making significant changes, consider creating a new template version rather than editing the original.
+  </Accordion>
+
+  <Accordion title="Test before sharing" icon="vial">
+    Apply templates to test agents and verify they work as expected before sharing with your team.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Template Sharing
+
+### Within Organization
+
+All templates are available to team members by default. To restrict:
+
+1. Edit the template
+2. Set **Visibility** to **Private** or **Admin Only**
+3. Save changes
+
+### Across Organizations (Enterprise)
+
+Enterprise customers with multiple organizations can share templates:
+
+1. Go to **Settings > Organization > Template Sharing**
+2. Select templates to share
+3. Choose target organizations
+4. Set permissions (use only or edit)
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Writing Instructions" icon="pen" href="/build/conversation/instructions">
+    Learn instruction best practices
+  </Card>
+  <Card title="Prompt Engineering" icon="wand-magic-sparkles" href="/build/conversation/prompt-engineering-guide">
+    Advanced prompting techniques
+  </Card>
+  <Card title="Dynamic Variables" icon="code" href="/build/conversation/variables-dynamic-content">
+    Use runtime variables in prompts
+  </Card>
+  <Card title="Create Your First Agent" icon="robot" href="/build/getting-started/create-first-agent">
+    Build an agent with templates
+  </Card>
+</CardGroup>
