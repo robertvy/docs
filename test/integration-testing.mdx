@@ -1,0 +1,243 @@
+---
+title: "Integration Testing"
+description: "Validate that tools, knowledge bases, and external services work correctly with your agent"
+icon: "plug"
+keywords: "integration testing, tool testing, knowledge base testing, API testing, webhook testing, transfer testing, booking testing, end-to-end testing"
+"og:description": "Verify that your agent's tools, knowledge bases, and external integrations work correctly before going live."
+"og:title": "Integration Testing"
+---
+
+Integration testing verifies that your agent's connections to external systems work correctly. This covers knowledge bases, call transfers, calendar bookings, custom actions, and webhooks.
+
+## Use This Page After Core Behavior Works
+
+Once the agent can hold a basic conversation, use this page to confirm the surrounding business systems also work end to end.
+
+Some parts of this page are best handled by the teammate who owns the connected system. You can still use the checklist to confirm the customer-facing experience and hand off the deeper technical checks when needed.
+
+---
+
+## Knowledge Base Integration
+
+After [creating](/build/knowledge/create-knowledge-bases) and [assigning](/build/knowledge/assign-knowledge) a knowledge base, verify it works in conversation.
+
+<Steps>
+  <Step title="Check processing status">
+    Open your knowledge base and confirm all items show green (ready to use). Items still processing or showing an error won't be available to your agent yet.
+  </Step>
+
+  <Step title="Test retrieval accuracy">
+    In **Chat** or **Web call** test mode, ask questions that should be answered by your knowledge base content.
+
+    After each response, open the conversation detail and click the knowledge retrieval icon next to the agent's message to verify:
+    - The correct knowledge snippet was retrieved
+    - The top result clearly matches the caller's question
+    - The agent used the retrieved content accurately in its response
+  </Step>
+
+  <Step title="Test retrieval gaps">
+    Ask questions that are close to but not exactly matching your knowledge base content. Verify:
+    - Knowledge search still finds relevant content for paraphrased questions
+    - Agent doesn't hallucinate answers for topics not in the knowledge base
+  </Step>
+
+  <Step title="Test after edits">
+Edit the knowledge item, wait for it to turn green, then re-test the same questions to confirm updated content is served.
+  </Step>
+</Steps>
+
+<Note>
+If retrieval accuracy is low, review [Context vs RAG](/build/knowledge/context-vs-rag) to understand the two retrieval modes and when to use each.
+</Note>
+
+---
+
+## Call Transfers
+
+Test every transfer destination configured in your agent.
+
+<Steps>
+  <Step title="Trigger each transfer">
+    For each transfer rule, say something that should activate it. Verify:
+    - Transfer initiates to the correct number or SIP destination
+    - Agent announces the transfer to the caller
+    - Call actually connects to the destination
+  </Step>
+
+  <Step title="Test transfer failure">
+    If possible, test what happens when the transfer destination is unavailable (busy, no answer). Verify:
+    - Agent handles the failure gracefully
+    - Caller receives a helpful message
+    - Agent offers alternatives (callback, voicemail, try again)
+  </Step>
+
+  <Step title="Check conversation log">
+    After the test, open the conversation detail and verify the transfer tool call appears in the timeline with the correct destination.
+  </Step>
+</Steps>
+
+See [Transfer Tools](/build/tools/transfer-tools) for configuration reference.
+
+---
+
+## Calendar Bookings
+
+If your agent uses the booking tool:
+
+<Steps>
+  <Step title="Book an appointment">
+    Walk through the full booking flow: provide a date, time, name, and contact info.
+
+    **Verify:**
+    - Booking appears in the connected calendar (Cal.com or other provider)
+    - All details are correct (date, time, attendee info)
+    - Agent confirms the booking to the caller
+  </Step>
+
+  <Step title="Test unavailable slots">
+    Try to book a time that's already taken or outside available hours.
+
+    **Verify:**
+    - Agent communicates the unavailability
+    - Agent suggests alternative times
+    - No duplicate or phantom bookings are created
+  </Step>
+
+  <Step title="Test booking with missing info">
+    Provide incomplete information (e.g., a date but no time, or no name).
+
+    **Verify:**
+    - Agent asks for the missing required fields
+    - Agent doesn't create incomplete bookings
+  </Step>
+</Steps>
+
+See [Booking Calendar](/build/tools/booking-calendar) for setup details.
+
+---
+
+## Custom API Actions
+
+For each [custom API action](/build/tools/custom-api-actions) configured:
+
+<Steps>
+  <Step title="Trigger the action">
+    Say something that should invoke the API call. Verify:
+    - The connected system receives the request
+    - Correct parameters are sent
+    - Agent communicates the response to the caller
+  </Step>
+
+  <Step title="Test with invalid input">
+    Provide input that would cause the API to return an error or unexpected response.
+
+    **Verify:**
+    - Agent handles errors without crashing
+    - Agent communicates a helpful message (not raw error data)
+    - Conversation continues normally
+  </Step>
+
+  <Step title="Test API timeout">
+    If the connected system is slow to respond, check:
+    - Agent waits appropriately (uses [thinking sounds](/build/voice-speech/thinking-sounds) or filler)
+    - Timeout is handled gracefully if the system doesn't respond
+  </Step>
+
+  <Step title="Verify in conversation detail">
+    Check the timeline view for tool call events. Verify:
+    - The correct API was called
+    - Parameters match what was collected in conversation
+    - Response data was used correctly
+  </Step>
+</Steps>
+
+---
+
+## Webhooks
+
+If your team has [webhooks](/accounts/webhooks) configured (from **Developers → Webhooks**) to receive event notifications:
+
+1. Complete a test call that should trigger webhook events
+2. Check the receiving system for the incoming events
+3. Verify the event contains the conversation data your workflow expects
+4. If your team owns the receiving endpoint, test failure handling and confirm events are retried
+
+### Testing a Local Webhook Endpoint
+
+If your webhook consumer runs on your own machine, expose it temporarily with an HTTPS tunnel before testing. This part is usually handled by a developer or technical owner.
+
+Recommended workflow:
+
+1. Start your local webhook server.
+2. Expose it with a tunnel such as ngrok, Cloudflare Tunnel, or an equivalent HTTPS-forwarding tool.
+3. Paste the temporary HTTPS URL into **Developers → Webhooks**.
+4. Complete a test conversation to generate events.
+5. Verify your local logs with the raw body and webhook headers intact so signature validation still works.
+
+<Note>
+Have the receiving endpoint acknowledge events quickly, then handle longer follow-up work after receipt. This matches the delivery behavior described in [Webhook Events](/reference/webhook-events).
+</Note>
+
+---
+
+## Post-Call Automation
+
+Test that [post-call automations](/build/analytics/post-call-automation) trigger correctly:
+
+1. Complete a test call
+2. Check that configured automations ran:
+   - Email summaries were sent
+   - Team alerts were created
+   - Follow-up tasks were created when enabled
+3. Verify the content is accurate (goal results, analysis, conversation summary)
+
+---
+
+## End-to-End Test Workflow
+
+For a comprehensive integration test, walk through this full sequence in a single call:
+
+<Steps>
+  <Step title="Start the call">
+    Start from **Test Agent** using Chat, Web call, or Phone call. Verify greeting and introduction.
+  </Step>
+
+  <Step title="Ask a knowledge base question">
+    Confirm accurate retrieval and response.
+  </Step>
+
+  <Step title="Trigger a tool action">
+    Book an appointment, check an order, or trigger a custom API action.
+  </Step>
+
+  <Step title="Request a transfer">
+    Verify the transfer connects correctly.
+  </Step>
+
+  <Step title="Review the conversation">
+    Open the conversation detail and verify:
+    - Timeline shows all events in order
+    - Goals were scored correctly
+    - Post-call analysis ran
+    - Webhooks fired (if configured)
+  </Step>
+</Steps>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Test Scenarios" icon="list-check" href="/test/test-scenarios">
+    Follow general test scripts for agent validation
+  </Card>
+  <Card title="Edge Cases" icon="triangle-exclamation" href="/test/edge-cases">
+    Test interruptions, silence, and failure handling
+  </Card>
+  <Card title="Custom API Actions" icon="code" href="/build/tools/custom-api-actions">
+    Configure and debug external API integrations
+  </Card>
+  <Card title="Debugging" icon="bug" href="/test/debugging">
+    Diagnose issues found during testing
+  </Card>
+</CardGroup>

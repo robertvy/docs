@@ -1,0 +1,119 @@
+---
+title: "Trust Center"
+description: "Manage data retention, data requests, and your public trust page"
+icon: "shield-check"
+keywords: "trust center, data privacy, GDPR, data retention, data requests, DSAR, public trust center, compliance, anonymization"
+"og:description": "Manage data privacy and compliance from a central hub. Configure retention policies, handle data requests, and publish a public trust page."
+"og:title": "Trust Center"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+
+The **Trust Center** is your hub for data privacy and compliance. Control how conversation data is retained, generate subject-request exports, and publish a public trust page for customers.
+
+**Access:** Navigate to **Trust Center** in the main menu.
+
+<Screenshot
+  lightSrc="/images/trust-center__data-retention-light.png"
+  darkSrc="/images/trust-center__data-retention-dark.png"
+  alt="Trust Center Data Retention tab showing data types, retention period dropdowns, expiry actions, and reset buttons"
+  caption="Start with Data Retention to set account-wide defaults. Agent-level overrides take priority when they exist."
+/>
+
+## Sections
+
+The Trust Center has three tabs:
+
+| Section | Use it for |
+| --- | --- |
+| **Data Retention** | Set account-level retention defaults for transcripts, recordings, analytics, prompts, IP metadata, and customer numbers |
+| **Data Requests** | Generate GDPR-style exports for your own account data or a specific contact |
+| **Public Trust Center** | Publish a customer-facing page with AI provider and retention information |
+
+## Data Retention
+
+Configure how long each data type is stored before automatic expiry. Retention policies can be set at the **account level** (applies to all agents) or overridden per agent.
+
+### Data Types
+
+| Data Type | Description | Expiry Actions |
+| --- | --- | --- |
+| **Transcripts** | Messages and conversation events | Delete or Anonymize |
+| **Call Recordings** | Audio recordings, when recording is enabled on the agent | Delete |
+| **[Goal Results](/build/analytics/conversation-goals)** | Goal achievement analysis | Delete or Anonymize |
+| **[Gathered Insights](/build/analytics/gather-insights)** | AI-generated call summaries and extracted insights | Delete or Anonymize |
+| **System Prompts** | AI agent prompt content | Delete |
+| **IP Addresses & Location** | Client IP, country, city (web calls) | Delete or Anonymize |
+| **Customer Numbers** | Phone numbers of callers and contacts | Delete or Anonymize |
+
+### Retention Period Options
+
+- **Keep forever** — no custom expiry for this data type
+- **Do not store** — the platform does not retain this data (not available for Customer Numbers and IP Addresses)
+- **30 days**
+- **90 days**
+- **6 months**
+- **1 year**
+- **2 years**
+
+<Warning>
+**Customer Numbers** and **IP Addresses** require a minimum retention of 90 days. Shortening a retention period may trigger deletion of data that now exceeds the new limit.
+</Warning>
+
+<Note>
+Retention enforcement runs daily at 03:00 UTC. Individual agents can override account-level defaults from their agent settings.
+</Note>
+
+---
+
+## Data Requests
+
+Use **Data Requests** for GDPR-style exports tied to a person.
+
+<Screenshot
+  lightSrc="/images/trust-center__dsar-workflow-light.png"
+  darkSrc="/images/trust-center__dsar-workflow-dark.png"
+  alt="Data Requests tab showing My Account Data, Contact Data Export, and Export History"
+/>
+
+| Export | Description |
+| --- | --- |
+| **My Account Data** | Generate an export for the signed-in user, including profile, activity, and preferences |
+| **Contact Data Export** | Generate an export for one contact by phone number or email address |
+
+Data Requests create background jobs. Pending jobs show in **In Progress**, and completed or failed jobs appear in **Export History**. The current dashboard workflow generates Excel (`.xlsx`) exports.
+
+## Public Trust Center
+
+<Screenshot
+  lightSrc="/images/trust-center__public-light.png"
+  darkSrc="/images/trust-center__public-dark.png"
+  alt="Public Trust Center tab showing enable switch, URL slug, public URL, visibility badge, and shared information"
+/>
+
+Publish a public page with your privacy policy links, subprocessor information, retention posture, and other transparency material. Once enabled, you get a link you can include in your privacy policy or share directly with customers.
+
+This is most relevant for web widgets, public demos, and externally shared agents — but the link works anywhere you need to demonstrate transparency.
+
+| Setting | Description |
+| --- | --- |
+| **Enable Public Trust Center** | Allow anyone with the link to view the public trust page |
+| **URL Slug** | Set a readable slug or generate a random one |
+| **Public URL** | Copy or open the public page when enabled |
+| **Visibility** | Shows whether the page is public or private |
+
+The public page shares effective retention settings, AI provider details, data categories, legal-basis explanations, data-subject rights, and controller/processor contact information.
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quality Studio" icon="chart-bar" href="/manage/quality-studio/overview">
+    Monitor agent quality with issue tracking and trend analysis
+  </Card>
+  <Card title="Recording Opt-Out" icon="microphone-slash" href="/build/advanced/recording-opt-out">
+    Let callers opt out of call recording during conversations
+  </Card>
+</CardGroup>

@@ -1,0 +1,27 @@
+name: Sync dev docs to mirror
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [development]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push to docsdev mirror
+        env:
+          MIRROR_PAT: ${{ secrets.MIRROR_PAT }}
+        run: |
+          git config --unset-all http.https://github.com/.extraheader || true
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b mirror-push
+          git rm -rf .github
+          git commit -m "Mirror sync (excludes CI files)"
+          git remote add mirror "https://x-access-token:${MIRROR_PAT}@github.com/itellicoAI/docsdev.git"
+          git push mirror mirror-push:main --force

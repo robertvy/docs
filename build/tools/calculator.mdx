@@ -1,0 +1,93 @@
+---
+title: "Calculator"
+description: "Use the built-in Calculator tool for math during live conversations"
+icon: "calculator"
+keywords: "calculator tool, math tool, arithmetic, math functions, sqrt, round, abs, expert mode"
+"og:description": "Enable the built-in Calculator tool so your agent can handle math during conversations."
+"og:title": "Calculator"
+---
+
+<Badge>Expert Mode</Badge>
+
+## Overview
+
+The **Calculator** tool lets your agent perform mathematical calculations during a conversation.
+
+Add it from **Tools** → **Add** → **Calculator**.
+
+## Availability
+
+- Built-in tool with no external integration required
+- Singleton tool per agent: if one Calculator already exists, the add-menu item is disabled
+
+---
+
+## Current Configuration
+
+Calculator has no advanced setup form.
+
+When you add it, the tool is created with:
+
+- **Name:** `Calculator`
+- **Description:** `Perform mathematical calculations`
+
+You can reopen the dialog to keep or delete the tool, but there are no extra fields to configure today.
+
+---
+
+## Supported Calculations
+
+The Calculator evaluates safe mathematical expressions. It supports:
+
+- arithmetic operators: `+`, `-`, `*`, `/`, `//`, `%`, `**`
+- parentheses for grouping
+- functions: `abs`, `round`, `min`, `max`, `sum`, `sqrt`, `ceil`, `floor`, `log`, `log10`, `sin`, `cos`, `tan`
+- constants: `pi`, `e`
+
+There is no special percent operator. Express percentages as arithmetic, such as `price * 0.2` for 20% of a price.
+
+<Note>
+Calculator expressions are capped at 200 characters and do not support symbolic math, derivatives, integrals, or arbitrary code execution.
+</Note>
+
+Use your prompt to tell the agent when it should rely on Calculator instead of answering from memory.
+
+---
+
+## Recommended Prompt Pattern
+
+```text
+When the caller asks for a total, discount, repayment amount, or percentage,
+use the Calculator tool before answering.
+
+Always state the result clearly and confirm the currency or units if relevant.
+```
+
+---
+
+## Good Use Cases
+
+- quoting totals after discounts or fees
+- calculating installment amounts
+- comparing percentage changes
+- converting simple pricing logic into a precise spoken answer
+
+Use **Custom Action** instead if the value must come from your backend, CRM, billing system, or another source of truth.
+
+---
+
+## Testing Checklist
+
+1. Add the tool in **Expert Mode**.
+2. Run a test conversation.
+3. Ask the agent to solve a few realistic calculations.
+4. Confirm the spoken answer matches the expected value.
+5. Check that the agent still explains the result in business language, not just raw numbers.
+
+---
+
+## Next Steps
+
+- [Tools Overview](/build/tools/overview)
+- [Custom Action](/build/tools/custom-api-actions)
+- [Prompt Engineering Guide](/build/conversation/prompt-engineering-guide)

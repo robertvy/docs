@@ -1,0 +1,110 @@
+---
+title: "Kontakte importieren"
+description: "Kontakte gesammelt aus CSV-Dateien mit Validierung, Vorschau und Importhistorie importieren"
+icon: "file-import"
+keywords: "CSV import, contact import, bulk import, import validation, import history, contact preview"
+"og:description": "Importiere Kontakte aus CSV-Dateien mit geführter Vorschau, Validierung und Importhistorie in itellicoAI."
+"og:title": "Kontakte importieren"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+Nutze den Kontaktimport, um viele Kontakte aus einer CSV-Datei zu laden.
+
+**Zugriff:** Öffne **Kontakte**, klicke auf **Kontakte hinzufügen** und wähle dann **CSV importieren**.
+
+## Wann du importierst
+
+- du hast bereits Kontaktlisten in einer Tabelle oder einem CRM-Export
+- du musst viele Kontakte schneller laden als per Hand
+- du willst kampagnenfähige Listen mit Namen, Telefonnummern und Tags
+
+Für wenige Datensätze ist die manuelle Eingabe meist schneller. Nutze den Import, wenn du eine Liste in die Plattform überführst.
+
+## Datei-Anforderungen
+
+| Anforderung | Wert |
+| --- | --- |
+| **Format** | CSV |
+| **Max. Größe** | 5 MB |
+| **Header-Zeile** | Erforderlich |
+| **Pflichtfeld** | `number` |
+| **Praktische Zeilengrenze** | 50.000 Zeilen |
+
+Häufige optionale Spalten:
+
+- `firstName`
+- `first_name`
+- `lastName`
+- `last_name`
+- `email`
+- `tags`
+
+Für Tags trenne mehrere Werte mit `|` (zum Beispiel `vip|sales|us`).
+
+Der Importer erkennt außerdem gängige Telefon-Header-Aliase wie `phone`, `phone_number` und `phoneNumber`. Es gibt keinen separaten Mapping-Schritt, also halte die Header möglichst nah an den unterstützten Namen, bevor du hochlädst.
+
+## Vor dem Hochladen
+
+Bereinige die CSV zuerst, damit der Import reibungslos läuft:
+
+- pro Zeile genau ein Kontakt
+- Telefonnummern in einheitlichem internationalem Format
+- nicht benötigte Spalten entfernen
+- einfache, stabile Tag-Werte verwenden
+- prüfen, dass die Header-Zeile vorhanden ist
+
+## Importablauf
+
+<Screenshot lightSrc="/images/manage__import-preview_DE-light.png" darkSrc="/images/manage__import-preview_DE-dark.png" alt="Dialog zum CSV-Import mit erforderlichen Spalten, Beispielzeilen, Upload-Zone und Link zur Importhistorie" />
+
+<Steps>
+  <Step title="Datei hochladen">
+    Wähle im Import-Dialog eine CSV aus.
+  </Step>
+  <Step title="Vorschau">
+    Prüfe erkannte Header, Zeilenanzahl und eine 10-Zeilen-Vorschau.
+  </Step>
+  <Step title="Validieren">
+    Bestätige Pflichtspalten und prüfe Validierungsmeldungen, bevor du weitermachst.
+  </Step>
+  <Step title="Import starten">
+    Import bestätigen und als Hintergrundjob ausführen lassen.
+  </Step>
+</Steps>
+
+## Importhistorie
+
+Die Importhistorie verfolgt jeden Job mit Status und Fortschritt:
+
+- Pending
+- In Progress
+- Completed
+- Failed
+
+Wenn Fehlerberichte verfügbar sind, kannst du eine Fehler-CSV pro Job herunterladen.
+
+## Hinweise
+
+- Sehr große Dateien werden in der Vorschau sichtbar, damit du sie vor dem Import aufteilen kannst.
+- Die Plattform gleicht bestehende Kontakte über die Telefonnummer ab, aktualisiert Vorname und E-Mail, wenn vorhanden, und übernimmt Tags aus dem Import.
+
+## Was du nach dem Import tun solltest
+
+Wenn der Job abgeschlossen ist:
+
+1. Öffne **Kontakte** und prüfe ein paar Datensätze stichprobenartig
+2. Verifiziere, dass Tags und Telefonnummern korrekt aussehen
+3. Füge die importierten Kontakte bei Bedarf einer Kampagne hinzu
+4. Lade die Fehler-CSV herunter, falls einige Zeilen die Validierung nicht bestanden haben
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Kontaktverwaltung" icon="address-book" href="/de/manage/contacts/overview">
+    Kontakte nach dem Import organisieren und bearbeiten
+  </Card>
+  <Card title="Kampagnenverwaltung" icon="bullhorn" href="/de/manage/campaigns/overview">
+    Importierte Kontakte zu Outbound-Kampagnen hinzufügen
+  </Card>
+</CardGroup>

@@ -1,0 +1,174 @@
+---
+title: "Lead-Qualifizierungs-Agent"
+description: "Einen KI-Agenten aufbauen, der eingehende Leads qualifiziert und vielversprechende Interessenten an den Vertrieb weiterleitet"
+icon: "filter"
+keywords: "Lead-Qualifizierung, Vertriebsqualifizierung, eingehende Leads, Lead-Bewertung, Vertriebsweiterleitung, BANT"
+"og:description": "Schritt-für-Schritt-Anleitung zum Aufbau eines KI-Lead-Qualifizierungs-Agenten, der eingehende Anfragen prüft und qualifizierte Leads an den Vertrieb weiterleitet."
+"og:title": "Beispiel: Lead-Qualifizierung"
+---
+
+Baue einen KI-Agenten, der eingehende Leads durch die richtigen Fragen qualifiziert, ihre Eignung bewertet und vielversprechende Interessenten an dein Vertriebsteam weiterleitet.
+
+## Was du aufbaust
+
+Ein Agent, der Folgendes übernimmt:
+- Eingehende Leads herzlich begrüßen
+- Qualifizierungsfragen stellen (Budget, Zeitrahmen, Bedarf)
+- Die Lead-Eignung anhand der Antworten einschätzen
+- Qualifizierte Leads per Live-Transfer an den Vertrieb weiterleiten
+- Lead-Details für die Nachverfolgung erfassen
+
+**Geschätzter Einrichtungsaufwand:** 20 Minuten
+
+---
+
+## Schritt 1: Agent erstellen
+
+1. **KI-Agenten → Agent erstellen**
+2. Agent benennen (z. B. „Lead-Qualifizierer – [Produkt/Dienstleistung]") und auf **Erstellen** klicken
+3. Den Agenten im Agent-Editor konfigurieren
+
+## Schritt 2: Prompt schreiben
+
+```
+# Rolle
+Du bist Alex, ein Business Development Representative bei [Firmenname]. Du bist beratend, freundlich und hast echtes Interesse daran, die Bedürfnisse der Kunden zu verstehen.
+
+# Ziel
+Potenzielle Kunden anhand von Eignung, Entscheidungsbefugnis, Bedarf und Zeitrahmen qualifizieren, dann qualifizierte Leads an den Vertrieb weiterleiten oder Details für die Nachverfolgung erfassen.
+
+# Antwortformat
+- Antworten auf ein bis drei Sätze beschränken
+- Jede Antwort mit einer Frage abschließen, wenn du die Entdeckungsphase leitest
+- Jeweils eine Qualifizierungsfrage stellen
+- Gesprächig sein, nicht geskriptet
+- Den Anrufer niemals unter Druck setzen
+
+# Gesprächsablauf
+
+## Phase 1: Eröffnung
+Den Anrufer herzlich begrüßen und fragen, was ihn zum Anruf bewogen hat.
+
+## Phase 2: Bedarfsermittlung
+Die Situation und das zu lösende Problem verstehen.
+Qualifizierungsfragen natürlich einbauen:
+- Wie ist die aktuelle Situation oder der aktuelle Prozess?
+- Wie viele Personen, Nutzer oder Standorte sind involviert?
+- Wie ist der Zeitrahmen für eine Veränderung?
+- Wurden bereits andere Lösungen geprüft?
+
+## Phase 3: Eignungsbeurteilung
+Basierend auf den Antworten bestimmen, ob sie qualifiziert, noch nicht qualifiziert oder kein Fit sind.
+
+# Qualifizierungskriterien
+**Qualifizierter Lead (an Vertrieb weiterleiten):**
+- Hat einen klar erkennbaren Bedarf, den unser Produkt löst
+- Hat Entscheidungsbefugnis oder Zugang zu ihr
+- Hat einen Zeitrahmen von weniger als 3 Monaten
+- Unternehmensgröße passt zu unserem Zielmarkt
+
+**Noch nicht qualifiziert (Kontaktdaten für Nachverfolgung erfassen):**
+- Interessiert, aber in früher Phase – kein Zeitrahmen
+- Muss andere Stakeholder einbeziehen
+- Budget noch nicht definiert
+
+**Kein Fit (höflich weiterleiten):**
+- Benötigt etwas, das wir nicht anbieten
+- Zu klein oder zu groß für unsere Lösung
+
+# Regeln für nächste Schritte
+- Bei Qualifikation: „Ich würde Sie gerne mit einem unserer Spezialisten verbinden, der Ihnen genau zeigen kann, wie das für Ihr Team funktionieren würde. Ich verbinde Sie jetzt."
+- Bei fehlender Qualifikation: E-Mail und Name erfassen, erklären, dass wir mit relevanten Informationen nachfassen werden
+- Bei fehlendem Fit: Ehrlich und hilfreich sein – wenn möglich Alternativen vorschlagen
+
+# Eskalationsauslöser
+Sofort an einen Menschen weiterleiten, wenn:
+- Der Anrufer ein qualifizierter Lead ist, der mit dem Vertrieb sprechen möchte
+- Der Anrufer nach konkreten Preisen, rechtlichen Verpflichtungen oder Vertragsbedingungen fragt
+- Der Anrufer technische Fragen hat, die dein Wissen übersteigen
+- Der Anrufer darum bittet, mit einem Menschen zu sprechen
+
+Eskalationsphrase: „Ich würde Sie gerne mit einem unserer Spezialisten verbinden, der Ihnen die Details erläutern kann."
+
+# Zu erfassende Informationen
+- Immer erfassen: Name, Unternehmen, E-Mail, Telefon (falls noch nicht vorhanden)
+- Wissensdatenbank für Produktfragen nutzen
+
+# Verbotene Themen
+Wenn der Anrufer nach einem der folgenden Themen fragt, mitteilen, dass du nicht ins Detail gehen kannst, und anbieten, einen Spezialisten nachfassen zu lassen:
+- Konkrete Vertragsbedingungen oder rechtliche Verpflichtungen
+- Konkurrenzvergleiche mit nicht verifizierbaren Aussagen
+- Individuelle Preisgestaltung oder Rabatte (dem Vertriebsteam überlassen)
+- Interne Unternehmensinformationen
+```
+
+## Schritt 3: Tools hinzufügen
+
+| Tool | Zweck |
+| --- | --- |
+| **Anruf weiterleiten** (Vertriebsteam) | Qualifizierte Leads an den Vertrieb weiterleiten – Ziel auf deine Vertriebsnummer setzen |
+| **Custom Action** (CRM) | Optional – Lead-Details per API in dein CRM übertragen |
+
+## Schritt 4: Wissensdatenbank hinzufügen
+
+Wissensdatenbank erstellen mit:
+- **Produkt-/Dienstleistungsübersicht** – was du anbietest, Hauptvorteile
+- **Preisstufen** – falls kommunizierbar, oder „Preisgestaltung hängt vom Bedarf ab"
+- **Fallstudien** – kurze Erfolgsgeschichten zur Glaubwürdigkeitsbildung
+- **Konkurrenzvergleiche** – wie du dich unterscheidest (sachlich behandeln)
+- **FAQ** – häufige Fragen von Interessenten
+
+## Schritt 5: Analytics konfigurieren
+
+| Typ | Name | Beschreibung |
+| --- | --- | --- |
+| **Primäres Ziel** | Lead qualifiziert | Der Anrufer hat die Qualifikationskriterien erfüllt und der Agent hat ihn weitergeleitet oder ein Follow-up geplant |
+| **Sekundäres Ziel** | Kontaktdaten erfasst | Der Agent hat Name, E-Mail und Unternehmen gesammelt |
+| **Insight** | Lead-Bewertung | Lead-Qualität von 1 bis 5 basierend auf Eignung und Bereitschaft bewerten (Bewertung) |
+| **Insight** | Unternehmensgröße | Wie viele Mitarbeiter oder Nutzer? (Offen) |
+| **Insight** | Zeitrahmen | Wann planen sie eine Entscheidung? (Offen) |
+| **Insight** | Hauptbedarf | Was ist das Hauptproblem, das gelöst werden soll? (Offen) |
+
+## Schritt 6: Benachrichtigungen einrichten
+
+Eine Post-Call-Benachrichtigung hinzufügen:
+- **Auslöser:** „Der Anrufer hat echtes Interesse gezeigt und Kontaktdaten hinterlassen"
+- **Empfänger:** E-Mail-Adresse deines Vertriebsteams
+- **Vorlage:** `{{customer_name}}`, `{{conversation_summary}}`, `{{conversation_url}}` einfügen
+- **Aufgabenerstellung:** Für qualifizierte Leads mit hoher Priorität aktivieren
+
+## Schritt 7: Deploy
+
+### Für eingehende Anrufe
+1. Nummer unter **Telefonie → Nummer kaufen** erwerben
+2. Diese Nummer in Anzeigen, Website und Landingpages verwenden
+3. Routing dem Qualifizierungs-Agenten zuweisen
+
+### Für ausgehende Anrufe (optional)
+1. Kampagne mit deiner Lead-Liste erstellen
+2. Prompt für ausgehenden Kontext anpassen („Hallo, hier ist [Name] von [Unternehmen], ich melde mich bezüglich deines Interesses an...")
+
+## Erfolgsmessung
+
+Nach der ersten Woche überprüfen:
+- **Qualifizierungsrate** – wie viel Prozent der Anrufe führen zu qualifizierten Leads?
+- **Transfer-Erfolg** – werden weitergeleitete Anrufe tatsächlich mit dem Vertrieb verbunden?
+- **Insight-Genauigkeit** – werden Lead-Bewertungen und Details korrekt erfasst?
+- **Gesprächsqualität** – Aufzeichnungen auf Ton und Gesprächsfluss abhören
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Transfer-Tool" icon="right-left" href="/build/tools/transfer-tools">
+    Routing für das Vertriebsteam konfigurieren
+  </Card>
+  <Card title="Custom Actions" icon="bolt" href="/build/tools/custom-api-actions">
+    Mit deinem CRM verbinden
+  </Card>
+  <Card title="Insights sammeln" icon="chart-line" href="/build/analytics/gather-insights">
+    Strukturierte Lead-Daten extrahieren
+  </Card>
+  <Card title="Kampagnenstart" icon="bullhorn" href="/launch/campaign-outbound-launch">
+    Ausgehende Qualifizierungskampagnen durchführen
+  </Card>
+</CardGroup>

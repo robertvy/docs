@@ -1,0 +1,125 @@
+---
+title: "Telefontests"
+description: "Führe echte Testanrufe durch, um Sprachqualität, Timing, Answering Machine Detection, Weiterleitungen und das komplette Kundenerlebnis zu prüfen."
+icon: "phone"
+keywords: 'phone testing, call testing, voice quality testing, AMD testing, telephony testing, real phone calls'
+"og:description": 'Teste Sprachagenten mit echten Telefonanrufen. Prüfe Sprachqualität, Answering Machine Detection, Weiterleitungen und das komplette Kundenerlebnis.'
+"og:title": "Telefontests"
+---
+
+## Warum mit Telefonanrufen testen
+
+Nutze Telefontests, wenn dein Agent auf einer Telefonnummer eingesetzt wird. Der Web-Simulator ist schneller für Iterationen, aber nur ein echter Telefonanruf zeigt Sprachqualität, Timing, Answering Machine Detection und Weiterleitungsflüsse über den echten Telefoniepfad.
+
+<Note>
+Telefontests ersetzen kein Verhalten in der echten Welt - sie validieren den technischen Pfad, nicht wie dein Agent mit realen Anrufenden umgeht. Prüfe live geführte Gespräche nach dem Launch immer nach und iteriere von dort aus weiter.
+</Note>
+
+## Diese Seite vor einem Live-Telefonie-Launch verwenden
+
+Wenn Kundinnen und Kunden eine echte Telefonnummer anrufen werden, führe vor dem Launch mindestens einen Telefontest aus, auch wenn Web-Simulator-Tests bereits erfolgreich waren.
+
+## So führst du einen Testanruf durch
+
+<Steps>
+  <Step title="Agent testen öffnen">
+    Gehe zu deinem Agenten und klicke oben rechts auf **Agent testen**.
+  </Step>
+  <Step title="Telefonanruf wählen">
+    Wähle unter **Testtyp** die Option **Telefonanruf**.
+  </Step>
+  <Step title="Absendernummer wählen">
+    Wähle die Telefonnummer, von der aus angerufen werden soll. Das ist die Caller-ID, die dein Kontakt sieht.
+  </Step>
+  <Step title="Zielnummer eingeben">
+    Gib die Telefonnummer ein, die du anrufen möchtest, im internationalen Format mit Landesvorwahl (z. B. +43 für Österreich).
+  </Step>
+  <Step title="AMD konfigurieren (optional)">
+    Wähle den Modus für [Answering Machine Detection (AMD)](/de/build/advanced/voicemail-handling).
+  </Step>
+  <Step title="Anruf starten">
+    Klicke auf **Telefonanruf starten**. Dein Agent ruft die Nummer an und du kannst ein echtes Gespräch führen.
+  </Step>
+</Steps>
+
+## Was du während des Anrufs prüfen solltest
+
+<CardGroup cols={2}>
+  <Card title="Antwortzeit" icon="clock">
+    Zähle die Sekunden zwischen deiner Aussage und der Antwort des Agents. Markiere alles über ca. 600 ms.
+  </Card>
+  <Card title="AMD" icon="robot">
+    Lass die Mailbox rangehen, um zu prüfen, ob der gewählte AMD-Modus korrekt funktioniert.
+  </Card>
+  <Card title="Tools und Weiterleitungen" icon="bolt">
+    Löse benutzerdefinierte Tools, Buchungen oder Weiterleitungen aus, um zu bestätigen, dass sie auch im echten Telefonanruf funktionieren.
+  </Card>
+  <Card title="Kontextgenauigkeit" icon="id-card">
+    Prüfe, ob anruferbezogene Prompts oder Wissensabfragen auch mit echten Metadaten korrekt funktionieren.
+  </Card>
+  <Card title="Abschlussverhalten" icon="flag-checkered">
+    Stelle sicher, dass Abschlussmeldungen, Automationen und Transkripte auch dann finalisiert werden, wenn die anrufende Person zuerst auflegt.
+  </Card>
+</CardGroup>
+
+## Testszenarien
+
+<AccordionGroup>
+  <Accordion title="Gesprächsfluss" icon="comments">
+    Teste den kompletten Gesprächspfad von der Begrüßung bis zum Erreichen des Ziels. Prüfe, ob der Agent deinem Prompt folgt und natürlich reagiert.
+  </Accordion>
+  <Accordion title="Unterbrechungen" icon="hand">
+    Unterbrich den Agenten, während er spricht. Prüfe, ob er sauber stoppt und angemessen auf deine Unterbrechung reagiert.
+  </Accordion>
+  <Accordion title="Verschiedene Umgebungen" icon="location-dot">
+    Teste aus ruhigen Räumen, lauten Umgebungen und verschiedenen Orten. Wenn möglich, rufe von Mobiltelefonen, Festnetzanschlüssen und verschiedenen Carriern an.
+  </Accordion>
+  <Accordion title="Edge Cases" icon="triangle-exclamation">
+    Teste unerwartete Eingaben, unklare Anfragen und Szenarien, in denen der Agent Rückfragen stellen oder Verwirrung sauber behandeln muss.
+  </Accordion>
+</AccordionGroup>
+
+## Nach dem Anruf
+
+1. Gehe im Dashboard zum Tab **Gespräche**
+2. Finde deinen Testanruf (achte auf das Telefonsymbol)
+3. Prüfe das Transkript auf Genauigkeit
+4. Kontrolliere, ob Ziele korrekt verfolgt wurden
+5. Prüfe, ob ausgelöste Tools oder Automationen wie erwartet funktioniert haben
+
+<Tip>
+Mach dir Notizen dazu, was bei jedem Testanruf gut funktioniert hat und was noch verbessert werden muss.
+</Tip>
+
+## Häufige Probleme
+
+<AccordionGroup>
+  <Accordion title="Anruf kommt nicht durch" icon="phone-xmark">
+    Prüfe, ob die ausgewählte Telefonnummer aktiv ist und unter **Telefonie → Telefonnummern** korrekt konfiguriert wurde.
+  </Accordion>
+  <Accordion title="Schlechte Audioqualität" icon="volume-xmark">
+    Versuche es mit einem anderen Ort oder Gerät.
+  </Accordion>
+  <Accordion title="Kein Transkript erscheint" icon="file-slash">
+    Warte nach dem Ende des Anrufs einige Augenblicke auf die Verarbeitung. Wenn es dann immer noch nicht erscheint, versuche einen weiteren Testanruf.
+  </Accordion>
+  <Accordion title="Agent klingt anders als im Webtest" icon="waveform">
+    Das ist normal - das Telefonnetz verarbeitet Audio anders als Webanrufe. Teste mehrmals, um die Konsistenz zu prüfen.
+  </Accordion>
+</AccordionGroup>
+
+Wenn deine Telefontests erfolgreich sind, bist du bereit, deinen Agenten für Kundinnen und Kunden live zu schalten.
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Web- & Chat-Tests" icon="browser" href="/de/test/web-simulator">
+    Teste deinen Agenten im Browser für schnelle Iteration
+  </Card>
+  <Card title="Telefonnummern" icon="phone" href="/de/launch/phone-numbers">
+    Stelle deinen Agenten auf Produktionsnummern bereit
+  </Card>
+  <Card title="Debugging" icon="bug" href="/de/test/debugging">
+    Behebe Probleme mit Gesprächsprotokollen und Diagnosen
+  </Card>
+</CardGroup>

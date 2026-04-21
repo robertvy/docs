@@ -1,0 +1,143 @@
+---
+title: "Tools & Integration Issues"
+description: "Diagnose and fix tool execution failures, API errors, and integration problems"
+icon: "plug-circle-exclamation"
+keywords: "tool errors, API failures, integration issues, transfer failed, booking failed, webhook errors, custom action"
+"og:description": "Troubleshoot tool execution failures, custom API errors, calendar booking issues, and webhook delivery problems."
+"og:title": "Tools & Integration Issues"
+---
+
+This guide covers diagnosing and resolving issues with tools, custom API actions, and third-party integrations.
+
+## Diagnosing Tool Failures
+
+Every tool execution is logged in the **conversation detail timeline**. To diagnose:
+
+1. Go to **Conversations** → open the relevant conversation
+2. Look for tool call events in the timeline (wrench icon)
+3. Expand the event to see the request payload and response
+4. Check for error messages, HTTP status codes, or timeout indicators
+
+---
+
+## Transfer Call Issues
+
+### Transfer Fails Completely
+
+1. **Check destination format** — Phone numbers must be in E.164 format (e.g., +43720123456)
+2. **Test the destination directly** — Call the number from your phone to verify it works
+3. **Check SIP destination** (Expert Mode) — Verify the SIP URI is correct and reachable
+4. **Review the timeline** — Look for the specific error message in the tool call event
+
+### Transfer Connects to Wrong Agent or Number
+
+1. Verify the [transfer tools](/build/tools/transfer-tools) configuration
+2. If using Agent transfer, confirm the target agent is active and configured
+3. Check for multiple transfer tools — the agent may be selecting the wrong one
+
+---
+
+## Calendar Booking Issues
+
+### Booking Tool Shows as Disabled
+
+- The Calendar Booking tool requires a [Cal.com integration](/accounts/integrations)
+- Go to **Developers → Integrations** and verify Cal.com shows **Connected**
+- If disconnected, re-enter your Cal.com API key
+
+### No Slots Offered to Caller
+
+1. Check Cal.com availability — log into Cal.com and verify event type has open slots
+2. Verify **Days to look ahead** is not set too low
+3. Check **Start date** isn't set in the future
+4. Verify the correct **Event type** is selected in the tool configuration
+5. Check **Active hours** if a schedule is assigned
+
+### Booking Created But Not Appearing in Cal.com
+
+1. Check the conversation timeline — verify the booking API call returned success
+2. Log into Cal.com and check for the booking (it may be in a different calendar)
+3. Verify the meeting platform matches your Cal.com event type settings
+
+---
+
+## Custom API Action Issues
+
+Custom API actions have their own troubleshooting flow because request variables, authentication, response formatting, and timeout behavior can all affect the result.
+
+Use [Custom Actions Troubleshooting](/troubleshooting/custom-actions) when:
+
+- the action does not trigger
+- authentication fails
+- variables are missing or not replaced
+- the API is slow or times out
+- the API succeeds but the agent responds poorly
+- the action works in Postman but not during a conversation
+
+---
+
+## Webhook Issues
+
+### Webhooks Not Received
+
+1. Check **Developers → Webhooks** — verify the webhook is **Active**
+2. Verify the target URL is publicly accessible (test with curl)
+3. Check event subscriptions — you may not be subscribed to the events you expect
+4. If using agent scope, verify the correct agent is selected
+5. Check your receiving system's logs for incoming requests
+
+### Webhook Signature Verification Fails
+
+1. Verify you are using the current signing secret from the webhook configuration
+2. Check that you are computing the HMAC over the raw request body (not parsed JSON)
+3. Ensure you are comparing signatures in a timing-safe manner
+
+### Webhook Delivery Delays
+
+Webhooks are delivered asynchronously. Slight delays (1-5 seconds) are normal. If delays are longer:
+1. Verify your receiving endpoint responds quickly (under 5 seconds)
+2. Check your server's load — slow acknowledgment can cause delivery issues
+
+---
+
+## MCP Server Issues
+
+### Tools Not Discovered
+
+1. Verify the MCP server URL is correct and accessible
+2. Click **Refresh** to re-discover tools
+3. Check that the MCP server implements the standard tool listing endpoint
+4. Verify authentication headers/query parameters if configured
+
+### MCP Tool Execution Fails
+
+1. Check the conversation timeline for the error response
+2. Verify the MCP server is running and responsive
+3. Check that the tool's input schema matches what the agent sends
+4. Test the MCP server directly outside of itellicoAI
+
+---
+
+## General Tips
+
+- **Name your tools clearly** — the agent selects tools based on name and description
+- **Match tool names in your prompt** — tool references must match exactly (case-sensitive)
+- **Test tools individually** — add one tool at a time and test before adding the next
+- **Check the timeline first** — the conversation detail timeline shows exactly what happened
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Custom Actions" icon="bolt" href="/build/tools/custom-api-actions">
+    Configure API integrations
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/accounts/webhooks">
+    Set up event delivery
+  </Card>
+  <Card title="Secrets" icon="key" href="/accounts/secrets">
+    Manage credentials
+  </Card>
+  <Card title="Common Issues" icon="wrench" href="/troubleshooting/common-issues">
+    Find quick fixes for all issue types
+  </Card>
+</CardGroup>

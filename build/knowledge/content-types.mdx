@@ -1,0 +1,559 @@
+---
+title: "Content Types & Processing"
+description: "Understand text, file, URL, and website crawl knowledge items and how they're processed"
+icon: "file-lines"
+keywords: "knowledge base file types, PDF processing, URL ingestion, text knowledge, document processing, content types, knowledge sources"
+"og:description": "Learn about text, file, URL, and website crawl knowledge items and how they're processed for AI agent knowledge bases."
+"og:title": "Content Types & Processing"
+---
+
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+## Supported Content Types
+
+itellicoAI supports four types of knowledge items, each designed for different content sources and use cases. Understanding how each type works will help you choose the right format for your information. For guidance on organizing these items, see [knowledge base architecture](/build/knowledge/architecture).
+
+<Screenshot
+  lightSrc="/images/knowledge__content-type-selection-light.png"
+  darkSrc="/images/knowledge__content-type-selection-dark.png"
+  alt="Content type selection showing Text Content, Upload File, Web Page, and Website Crawl options"
+/>
+
+<CardGroup cols={2}>
+  <Card title="Text Items" icon="text">
+    Enter content directly using the built-in editor
+  </Card>
+  <Card title="File Uploads" icon="file-pdf">
+    Upload PDF, Word, Excel, Text, Markdown, CSV, JSON, YAML, and XML files up to 10MB
+  </Card>
+  <Card title="URL Scraping" icon="link">
+    Pull content from one web page
+  </Card>
+  <Card title="Website Crawl" icon="globe">
+    Discover and import multiple pages from one public site
+  </Card>
+</CardGroup>
+
+---
+
+## Text Items
+
+### What Are Text Items?
+
+Text items are content you enter directly into the itellicoAI knowledge base editor. They are the most straightforward and reliable content type —immediately available with no processing delay.
+
+### How to Add a Text Item
+
+<Steps>
+  <Step title="Navigate to folder">
+    Open the folder where you want to add the item.
+  </Step>
+
+  <Step title="Click 'Add Item'">
+    Click **Add Item** to create a new item.
+  </Step>
+
+  <Step title="Select 'Text Content'">
+    Choose **Text Content** from the content type options.
+  </Step>
+
+  <Step title="Enter title">
+    Give your item a clear, descriptive title.
+  </Step>
+
+  <Step title="Write content">
+    Enter your content in the editor. Use formatting for clarity:
+    - Headings for sections
+    - Bullet points for lists
+    - Numbers for steps
+    - Bold for emphasis
+  </Step>
+
+  <Step title="Click 'Create'">
+    Save your text item. It turns green immediately.
+  </Step>
+</Steps>
+
+### Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Structure for retrieval" icon="sitemap">
+    Write content in clear, self-contained sections. Each section should answer a specific question so RAG (Retrieval-Augmented Generation) retrieval returns focused results.
+  </Card>
+  <Card title="Use descriptive titles" icon="heading">
+    Improve organization and retrieval accuracy with clear names like "Return Policy - Digital Products" instead of "Policy 4."
+  </Card>
+</CardGroup>
+
+### When to Use Text Items
+
+<AccordionGroup>
+  <Accordion title="Writing FAQs" icon="circle-question">
+    Create question-and-answer pairs directly in the system.
+
+    **Example:**
+    ```text wrap
+    Title: How do I reset my password?
+
+    Content:
+    To reset your password:
+
+    1. Go to the login page
+    2. Click "Forgot Password"
+    3. Enter your email address
+    4. Check your email for a reset link
+    5. Click the link and create a new password
+
+    Password requirements:
+    - Minimum 8 characters
+    - At least one uppercase letter
+    - At least one number
+    - At least one special character
+
+    If you don't receive the email within 5 minutes, check your spam
+    folder or contact support@company.com.
+    ```
+  </Accordion>
+
+  <Accordion title="Creating policy summaries" icon="book">
+    Write clear, concise policy statements.
+
+    **Example:**
+    ```text wrap
+    Title: Return Policy - Digital Products
+
+    Content:
+    Digital products can be refunded within 30 days of purchase if:
+
+    Eligible for refund:
+    - Product has a technical defect preventing usage
+    - Product description was materially inaccurate
+    - Customer has not accessed or downloaded the product
+
+    Not eligible for refund:
+    - Change of mind after accessing the product
+    - Compatibility issues disclosed in product description
+    - User error or misunderstanding of features
+
+    To request a refund:
+    Email support@company.com with your order number and reason
+    for the refund request.
+
+    Processing time: 5-7 business days
+    Refund method: Original payment method
+    ```
+  </Accordion>
+
+  <Accordion title="Documenting procedures" icon="list-check">
+    Step-by-step instructions for processes.
+
+    **Example:**
+    ```
+    Title: Order Modification Process
+
+    Content:
+    Customers can modify orders within 24 hours of placement.
+
+    What can be modified:
+    - Shipping address
+    - Delivery speed
+    - Item quantities (if inventory available)
+
+    What cannot be modified:
+    - Payment method (must cancel and reorder)
+    - Items after processing has begun
+    - Orders placed more than 24 hours ago
+
+    Modification process:
+    1. Customer contacts support via phone or email
+    2. Agent verifies order is within modification window
+    3. Agent checks inventory for requested changes
+    4. Agent updates order in system
+    5. Customer receives confirmation email
+
+    If order has already shipped, customer must use return process instead.
+    ```
+  </Accordion>
+
+  <Accordion title="Quick reference information" icon="clock">
+    Brief, frequently referenced information.
+
+    **Example:**
+    ```
+    Title: Business Hours & Contact Information
+
+    Content:
+    Customer Support:
+    - Phone: 1-800-555-0123
+    - Email: support@company.com
+    - Hours: Monday-Friday, 9 AM - 6 PM EST
+    - After-hours: emergency@company.com (urgent issues only)
+
+    Sales:
+    - Phone: 1-800-555-0124
+    - Email: sales@company.com
+    - Hours: Monday-Friday, 8 AM - 8 PM EST
+
+    Billing:
+    - Phone: 1-800-555-0125
+    - Email: billing@company.com
+    - Hours: Monday-Friday, 9 AM - 5 PM EST
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Limitations
+
+- No file attachment support —content must be typed or pasted
+- Large volumes of content are better managed as file uploads
+
+<Tip>
+Text items are the most reliable content type. When possible, enter content as text rather than uploading files.
+</Tip>
+
+---
+
+## File Upload Items
+
+### What Are File Upload Items?
+
+File upload items allow you to upload existing documents in various formats. The system extracts the text content and makes it available to your agents.
+
+### How to Add a File Item
+
+<Steps>
+  <Step title="Navigate to folder">
+    Open the folder where you want to add the file.
+  </Step>
+
+  <Step title="Click 'Add Item'">
+    Click **Add Item** to create a new item.
+  </Step>
+
+  <Step title="Select 'Upload File'">
+    Choose **Upload File** from the content type options.
+  </Step>
+
+  <Step title="Enter title">
+    Give your file a descriptive title (this is separate from the filename).
+  </Step>
+
+  <Step title="Upload file">
+    Click **Upload** and select your document from your computer.
+  </Step>
+
+  <Step title="Click 'Create'">
+    The system will upload and begin processing your file.
+
+    The item turns orange while processing and green when ready to use.
+  </Step>
+</Steps>
+
+### Processing Details
+
+The system uses advanced document parsing to extract text from uploaded files:
+
+- **Text extraction** —text-based PDFs and Word documents have their content extracted directly
+- **OCR (Optical Character Recognition) processing — technology that reads text from scanned images** —the platform processes scanned documents and images within PDFs with OCR
+- **Chunking** —extracted content is split into chunks for vector indexing (preparing content for semantic search), enabling retrieval
+
+**File specifications:**
+- **Formats:** PDF, Word (.doc, .docx), Excel (.xlsx), Text (.txt, .log), Markdown (.md), CSV/TSV (data formats), JSON (data formats), YAML (.yaml, .yml) (data formats), XML (data formats)
+- **Size limit:** 10MB maximum
+- **Content:** Text-based documents and scanned images (advanced parsing handles most scans)
+- **Protection:** No password protection
+
+Processing can take up to several minutes depending on file size and parsing difficulty.
+
+### Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Optimize before upload" icon="compress">
+    - Compress large files
+    - Remove unnecessary images
+    - Use text-based documents when possible
+    - Keep under 5MB for faster processing
+  </Card>
+  <Card title="Test extraction" icon="vial">
+    - Review extracted content after processing
+    - Check for formatting issues
+    - Verify critical information is accurate
+    - Re-upload if extraction is poor
+  </Card>
+</CardGroup>
+
+### Limitations
+
+- Maximum file size of 10MB
+- Password-protected files cannot be processed
+- Very poor quality scans may produce incomplete or inaccurate text
+- Complex layouts (multi-column, heavy tables) may not extract perfectly —review extracted content and consider converting to text items if needed
+
+### Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Processing failed" icon="circle-xmark">
+    **Causes:**
+    - File exceeds 10MB
+    - File is password-protected
+    - File is corrupted
+    - Very poor quality scanned images
+
+    **Solutions:**
+    - Compress file or split into smaller files
+    - Remove password protection
+    - Re-export file from source
+    - For very poor quality scans, copy content into a text item instead
+  </Accordion>
+
+  <Accordion title="Content extracted incorrectly" icon="text-slash">
+    **Causes:**
+    - Complex layouts (multi-column, tables)
+    - Very poor quality scanned images
+    - Special fonts or encoding
+    - Form fields and interactive elements
+
+    **Solutions:**
+    - Check extracted content in edit mode
+    - Re-create as text item with proper formatting
+    - Simplify document layout before uploading
+    - Export as plain text document
+  </Accordion>
+
+  <Accordion title="Processing takes too long" icon="clock">
+    **What to do:**
+    - Wait 5-10 minutes before assuming failure
+    - Check file size and page count
+    - For large files, consider splitting into multiple files
+    - Convert to text and upload as TEXT items instead
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## URL Items
+
+### What Are URL Items?
+
+URL items scrape content from a single web page and store it in your knowledge base. This is useful for referencing a specific online documentation page, help article, or blog post.
+
+### How to Add a URL Item
+
+<Steps>
+  <Step title="Navigate to folder">
+    Open the folder where you want to add the URL.
+  </Step>
+
+  <Step title="Click 'Add Item'">
+    Click **Add Item** to create a new item.
+  </Step>
+
+  <Step title="Select 'Web Page'">
+    Choose **Web Page** from the content type options.
+  </Step>
+
+  <Step title="Enter title">
+    Give the content a descriptive title.
+  </Step>
+
+  <Step title="Enter source URL">
+    Paste the complete URL including `https://`
+
+    **Example:**
+    ```
+    https://docs.company.com/api/authentication
+    ```
+  </Step>
+
+  <Step title="Click 'Create'">
+    The system will fetch and process the web page.
+
+    The item turns orange while processing and green when ready to use.
+  </Step>
+</Steps>
+
+### Processing Details
+
+When you add a URL item, the system:
+
+1. **Fetches** the page at the provided URL
+2. **Extracts** the main text content, stripping navigation, ads, and boilerplate
+3. **Stores** the extracted text as the knowledge item content
+4. **Indexes** the content for vector search, just like text and file items
+
+The system scrapes content once at creation time. To refresh, delete and re-create the URL item.
+
+### Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Test accessibility" icon="unlock">
+    - Open URL in incognito window first
+    - Verify no login is required
+    - Check content is visible without JavaScript
+    - Ensure page loads quickly
+  </Card>
+  <Card title="Review scraped content" icon="eye">
+    - Check content after scraping completes
+    - Verify correct content was captured
+    - Look for formatting issues
+    - Confirm no extra content (ads, sidebars) was included
+  </Card>
+</CardGroup>
+
+### Limitations
+
+- **Authentication** —pages requiring login cannot be scraped
+- **JavaScript-heavy pages** —single-page applications and dynamically loaded content may not be captured
+- **Paywalled content** —content behind paywalls is inaccessible
+- **No automatic refresh** —content is scraped once; you must re-create the item to update
+- **robots.txt (a file websites use to control automated access)** —sites that block scraping will fail
+
+<Note>
+URL scraping works best with simple, text-based web pages. If scraping fails or produces incomplete content, copy the content manually into a text item instead.
+</Note>
+
+### Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Scraping failed" icon="circle-xmark">
+    **Causes:**
+    - Page requires login/authentication
+    - URL is incorrect or broken
+    - Content loads via JavaScript
+    - Website blocks scraping (robots.txt)
+    - Page doesn't exist (404)
+
+    **Solutions:**
+    - Verify URL is publicly accessible
+    - Test URL in incognito browser window
+    - Check URL is complete and correct
+    - Copy content manually into text item
+    - Use PDF export of page instead
+  </Accordion>
+
+  <Accordion title="Content incomplete or wrong" icon="puzzle-piece">
+    **Causes:**
+    - JavaScript-rendered content not captured
+    - Dynamic content loading
+    - Multiple tabs/sections on page
+    - Comments or sidebar scraped instead of main content
+
+    **Solutions:**
+    - Inspect scraped content in edit mode
+    - Use direct URL to specific content section
+    - Copy desired content into text item
+    - Export page as PDF and upload instead
+  </Accordion>
+
+  <Accordion title="Content becomes outdated" icon="calendar">
+    **Solution:**
+    Single-page URL content is scraped once at creation time. To update:
+    - Delete and re-create the URL item
+    - Or copy current content into a text item for manual updates
+
+    For frequently changing content, consider:
+    - Manual text items you update regularly
+    - PDF exports you refresh periodically
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Website Crawl Items
+
+### What Are Website Crawl Items?
+
+Website crawl items discover multiple public pages from one website and import the pages you select. Use this when one knowledge source spans several URLs, such as a help center or documentation site.
+
+### How to Add a Website Crawl
+
+<Steps>
+  <Step title="Navigate to folder">
+    Open the folder where you want to add the crawl.
+  </Step>
+
+  <Step title="Click 'Add Item'">
+    Click **Add Item** to create a new item.
+  </Step>
+
+  <Step title="Select 'Website Crawl'">
+    Choose **Website Crawl** from the content type options.
+  </Step>
+
+  <Step title="Enter website URL">
+    Paste the website URL and click **Discover URLs**.
+  </Step>
+
+  <Step title="Choose pages">
+    Review discovered pages, select the pages you want, and click **Import Selected**.
+  </Step>
+</Steps>
+
+### Crawl Settings
+
+Open **Advanced options** before discovery to control the crawl scope and refresh behavior.
+
+| UI setting | Default | What it controls | When to change it |
+| --- | --- | --- | --- |
+| **Max pages to discover** | `100` | The maximum number of URLs to discover from the starting site. Available values are `25`, `50`, `100`, `250`, and `500`. This limits discovery only; you still choose which discovered pages to import. | Lower it for small sites or quick tests. Raise it for larger help centers or documentation sites. |
+| **Auto-refresh interval** | `Never` | How often the system resyncs already imported pages. Options are `Never`, `Every 24 hours`, `Every 7 days`, and `Every 30 days`. | Use `Every 7 days` or `Every 30 days` for public docs, pricing, policy, or help-center pages that change over time. |
+| **Include subdomains** | Off | Whether discovery may include pages under subdomains of the starting host. If you start from `docs.example.com`, this allows hosts such as `api.docs.example.com`; it does not include sibling domains such as `help.example.com`. | Turn it on only when the site you want to import is split across subdomains under the same host. |
+| **Discover new pages on refresh** | Off, hidden while auto-refresh is `Never` | When refresh is enabled, the system can re-run discovery and stage newly found pages for review. Newly discovered pages are not included automatically. | Turn it on when the site regularly adds new pages and you want to review them from **View pages**. |
+
+After import, the website root appears as a Website item. Use **View pages** to include or exclude individual pages, add URLs within the crawl domain, re-discover pages, or resync page content. In **View pages**, you can update the refresh interval and auto-discovery behavior; the original max-pages and subdomain scope are set during discovery.
+
+### Limitations
+
+- Public pages work best; authenticated pages are not supported
+- JavaScript-heavy pages may not extract cleanly
+- Crawls count toward the knowledge base URL/website item limit
+- Imported pages still need successful content processing and vector indexing before RAG can retrieve them
+
+---
+
+## Processing Status Flow
+
+Knowledge items go through two separate processing pipelines:
+
+1. **Content Processing** —extracting text from files, URLs, and website pages
+2. **Vector Indexing** —preparing content for RAG (semantic search)
+
+### Processing Status
+
+Orange means the item is still processing. Green means it is ready to use. If an item shows an error, click **Reindex** to retry.
+
+---
+
+## Choosing the Right Content Type
+
+| Your Situation | Best Content Type |
+|---------------|-------------------|
+| Writing FAQs from scratch | TEXT |
+| Have existing Word/PDF docs under 10MB | FILE |
+| Have documents over 10MB | Split into smaller files or extract to TEXT |
+| One public web page | URL (with TEXT as backup) |
+| Multi-page public documentation or help center | Website Crawl |
+| Private/authenticated content | Copy to TEXT |
+| Need immediate availability | TEXT (no processing delay) |
+| Complex formatting matters | FILE |
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Context vs RAG" icon="brain" href="/build/knowledge/context-vs-rag">
+    Learn how agents access your knowledge content
+  </Card>
+  <Card title="Create Knowledge Bases" icon="plus" href="/build/knowledge/create-knowledge-bases">
+    Follow the step-by-step creation guide
+  </Card>
+  <Card title="Architecture Overview" icon="sitemap" href="/build/knowledge/architecture">
+    Understand knowledge base structure
+  </Card>
+  <Card title="Template Syntax" icon="brackets-curly" href="/build/conversation/template-syntax">
+    Reference knowledge in your agent prompt
+  </Card>
+</CardGroup>

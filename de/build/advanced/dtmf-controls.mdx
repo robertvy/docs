@@ -1,0 +1,126 @@
+---
+title: "DTMF-Steuerungen"
+description: "Aktiviere Unterstützung für Tastentöne für IVR-Navigation und Tastatureingaben während Telefonanrufen"
+icon: "hashtag"
+keywords: "DTMF, keypad tones, IVR navigation, phone keypad, keypad input, IVR automation"
+"og:description": "Aktiviere Unterstützung für Tastentöne, damit Agenten IVRs navigieren und auf Tastenfeld-Eingaben von Anrufern reagieren können."
+"og:title": "DTMF Controls"
+---
+
+## Wie DTMF funktioniert
+
+DTMF (Dual-Tone Multi-Frequency) ist das Signal, das entsteht, wenn jemand Tasten auf einem Telefon-Tastenfeld drückt. Aktiviere DTMF, wenn ein Telefonanruf-Agent Folgendes können muss:
+
+- Tastentöne an externe IVR-Systeme senden
+- Tastatur-Eingaben von Anrufern erfassen, etwa Menüauswahlen oder kurze Konto-IDs
+
+<Note>
+DTMF ist nur für Telefonanrufe gedacht. Web-Anrufe und Chat-Sitzungen haben kein Telefon-Tastenfeld, daher gilt DTMF dort nicht.
+</Note>
+
+---
+
+## Wo du es aktivierst
+
+**Zugriff:** Öffne einen Agenten, gehe zu **Call Flow** und scrolle zu **Keypad Input**.
+
+Schalte **Enable DTMF during calls** ein.
+
+<Info>
+DTMF ist derzeit eine Alpha-Einstellung. Das Dashboard zeigt einen Schalter; Tastfeld-Timing, Capture-Modus, Clear-Digit, Termination Key und Buffering-Verhalten verwenden Standardwerte der Plattform.
+</Info>
+
+---
+
+## Was unterstützt wird
+
+Wenn DTMF aktiviert ist, registriert die Plattform Tastatur-Tools für die Gesprächssitzung. Sie kann Töne an den Telefon-Teil senden und Tastendrücke des Anrufers aus SIP-DTMF-Ereignissen empfangen.
+
+Für Eingaben mit fester Länge, etwa „4 Ziffern erfassen“, verwendet die Plattform native Sammlung fester Längen, wenn sie verfügbar ist. Für variable Eingaben oder Menü-Eingaben fällt sie auf den internen Collector der Plattform zurück.
+
+---
+
+## Prompt-Beispiele
+
+Nutze kurze, explizite Formulierungen:
+
+```text wrap
+"Drücke 1 für Abrechnung, 2 für Support oder 3 für Vertrieb."
+```
+
+Nachdem die Ziffer angekommen ist, bestätige die Bedeutung, nicht den Mechanismus:
+
+```text wrap
+"Verstanden - ich helfe dir mit dem Support."
+```
+
+Nutze DTMF für kurze numerische Eingaben, die einfacher per Tastatur als per Sprache eingegeben werden:
+
+```text wrap
+"Bitte gib die letzten 4 Ziffern deiner Kontonummer über das Tastenfeld ein."
+```
+
+Sicher bestätigen:
+
+```text wrap
+"Danke. Ich habe das Konto mit der Endung 2457 gefunden."
+```
+
+Wiederhole sensible Werte nicht vollständig gegenüber dem Anrufer, außer dein Flow verlangt das wirklich.
+
+### Immer eine Sprach-Alternative anbieten
+
+Nicht jede Person möchte ein Tastenfeld nutzen.
+
+```text wrap
+"Wenn du möchtest, kannst du die Zahl auch einfach aussprechen."
+```
+
+So bleibt der Flow zugänglich für Anrufer auf Speakerphone, Softphones oder Geräten mit umständlichem Tastenzugriff.
+
+---
+
+## DTMF testen
+
+<Steps>
+  <Step title="Einen Telefon-Test nutzen">
+    Öffne **Test** am Agenten und wähle **Phone**, damit du einen echten Telefon-Teil testest.
+  </Step>
+  <Step title="Tastenfeld-Eingabe des Anrufers testen">
+    Bitte den Agenten um eine einfache Tastenfeld-Antwort wie `1` oder eine kurze numerische Kennung.
+
+    Prüfe, ob der Agent korrekt reagiert und der Anruf nicht hängen bleibt, wenn sofort keine Taste gedrückt wird.
+  </Step>
+  <Step title="Externe IVR-Navigation testen">
+    Wenn dein Agent ein anderes Telefonsystem navigieren muss, führe einen Live-Test gegen die echte Nummer oder SIP-Zieladresse aus und prüfe, ob die nachgelagerte IVR die Töne zuverlässig akzeptiert.
+  </Step>
+  <Step title="Fallback-Pfad testen">
+    Vermeide absichtlich einmal das Drücken von Tasten, damit du prüfen kannst, ob der Agent sauber erneut versucht oder eine Sprachalternative anbietet.
+  </Step>
+</Steps>
+
+## Best Practices
+
+- Bitte immer nur eine Tastenfeld-Aktion auf einmal.
+- Biete eine Sprach-Alternative an, etwa „Du kannst die Zahl auch einfach aussprechen.“
+- Bestätige nur den sicheren Teil sensibler Werte, etwa die letzten 4 Ziffern.
+- Teste exakt den Carrier, die Telefonnummer oder die SIP-Route, die du in der Produktion verwenden wirst.
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Transfer Tools" icon="phone-arrow-right" href="/de/build/tools/transfer-tools">
+    Live-Transfer-Ziele und nachgelagerte Anrufbehandlung konfigurieren
+  </Card>
+  <Card title="Voicemail Handling" icon="voicemail" href="/de/build/advanced/voicemail-handling">
+    Telefon-Ergebnisse wie Mensch vs. Voicemail testen
+  </Card>
+  <Card title="Phone Numbers" icon="phone" href="/de/launch/phone-numbers">
+    Die Telefon-Infrastruktur für Live-Tastatur-Interaktionen einrichten
+  </Card>
+  <Card title="VAD & Turn Detection" icon="waveform-lines" href="/de/build/advanced/vad-turn-detection">
+    Unterbrechungs- und Pausenverhalten rund um Tastatur-Flows abstimmen
+  </Card>
+</CardGroup>

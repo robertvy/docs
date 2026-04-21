@@ -1,0 +1,525 @@
+---
+title: 'TypeScript-SDK'
+description: 'Typsichere TypeScript/Node.js-Bibliothek für die itellicoAI API'
+icon: 'js'
+keywords: 'TypeScript-SDK, itellicoai npm, Node.js-SDK, JavaScript-API-Client, TypeScript-Typen, Sprach-KI-TypeScript-Bibliothek, NPM-Paket'
+"og:description": 'Typsichere TypeScript/Node.js-Bibliothek für die itellicoAI API mit voller TypeScript-Unterstützung, Autovervollständigung und vereinfachter Fehlerbehandlung. Installation über NPM.'
+"og:title": "TypeScript-SDK"
+---
+
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+## Installation
+
+<CodeGroup>
+```bash npm
+npm install itellicoai
+```
+
+```bash yarn
+yarn add itellicoai
+```
+
+```bash pnpm
+pnpm add itellicoai
+```
+</CodeGroup>
+
+## Voraussetzungen
+
+- Node.js 18.10.0+
+- Vollständige TypeScript-Unterstützung
+
+---
+
+## Hol dir deinen API-Schlüssel
+
+Um das SDK zu nutzen, brauchst du einen API-Schlüssel aus deinem [itellicoAI-Dashboard](https://app.itellico.ai):
+
+<Steps>
+  <Step title="Zu API-Schlüsseln gehen">
+    Gehe zu **Entwickler → API-Schlüssel**
+  </Step>
+  <Step title="Schlüssel erstellen">
+    Klicke auf **API-Schlüssel erstellen**
+  </Step>
+  <Step title="Schlüssel kopieren">
+    Kopiere den generierten Schlüssel - er wird nur einmal angezeigt
+  </Step>
+</Steps>
+
+<Screenshot
+  lightSrc="/images/accounts__api-keys_DE-light.png"
+  darkSrc="/images/accounts__api-keys_DE-dark.png"
+  alt="Seite zur Verwaltung von API-Schlüsseln"
+/>
+
+<Warning>
+Speichere deinen API-Schlüssel sicher mit Umgebungsvariablen. Checke ihn niemals in die Versionsverwaltung ein.
+</Warning>
+
+---
+
+## Schnellstart
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+// Initialize client
+const client = new Itellicoai({
+  apiKey: 'your-api-key',
+});
+
+// Create an agent
+const agent = await client.agents.create('your-account-id', {
+  name: 'Customer Support Agent',
+  model: {
+    provider: 'openai',
+    model: 'gpt-4o-mini',
+  },
+  voice: {
+    provider: 'elevenlabs',
+    voice_id: 'EXAVITQu4vr4xnSDxMaL',
+  },
+  transcriber: {
+    provider: 'deepgram',
+    model: 'nova-2:general',
+    language: 'en-US',
+  },
+  initial_message: {
+    mode: 'fixed_message',
+    message: 'Hello! How can I assist you today?',
+    delay_ms: 1000,
+  },
+  max_duration_seconds: 1800,
+  tags: ['support', 'customer-service'],
+});
+
+console.log(`Created agent: ${agent.id}`);
+```
+
+---
+
+## SDK-Operationen
+
+<AccordionGroup>
+  <Accordion title="Agentenverwaltung" defaultOpen>
+
+### Agenten auflisten
+
+```typescript
+const agents = await client.agents.list('account_id');
+
+agents.items.forEach(agent => {
+  console.log(`${agent.name} - ${agent.id}`);
+});
+```
+
+### Agent abrufen
+
+```typescript
+const agent = await client.agents.retrieve('agent_123abc', {
+  account_id: 'account_id',
+});
+
+console.log(`Agent name: ${agent.name}`);
+console.log(`Model: ${agent.model.model}`);
+```
+
+### Agent aktualisieren
+
+```typescript
+const updatedAgent = await client.agents.update('agent_123abc', {
+  account_id: 'account_id',
+  name: 'Updated Support Agent',
+  note: 'Updated prompt notes for the support team',
+});
+```
+
+### Agent archivieren
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'your-api-key',
+});
+
+await client.agents.archive('agent_id', { account_id: 'me' });
+```
+
+  </Accordion>
+
+  <Accordion title="Gespräche">
+
+### Gespräche auflisten
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'your-api-key'
+});
+
+const conversations = await client.accounts.listConversations('account_id');
+
+console.log(`Total conversations: ${conversations.count}`);
+
+conversations.items.forEach((conv: any) => {
+  console.log(`Conversation ID: ${conv.conversation_id}`);
+  console.log(`Contact: ${conv.contact_number}`);
+  console.log(`Duration: ${conv.duration_seconds}s`);
+  console.log(`Status: ${conv.status}`);
+  console.log(`Agent ID: ${conv.agent_id}`);
+});
+```
+
+  </Accordion>
+
+  <Accordion title="Telefonnummern">
+
+### Telefonnummern auflisten
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'your-api-key',
+});
+
+const phoneNumbers = await client.accounts.phoneNumbers.list('account_id');
+
+console.log(phoneNumbers.count);
+```
+
+### Telefonnummer erstellen
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'your-api-key',
+});
+
+const phoneNumber = await client.accounts.phoneNumbers.create('account_id', {
+  sip_trunk_id: 'sip_trunk_id',
+});
+
+console.log(phoneNumber.id);
+```
+
+### Telefonnummer abrufen
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'your-api-key',
+});
+
+const phoneNumber = await client.accounts.phoneNumbers.retrieve(
+  'phone_number_id',
+  { account_id: 'account_id' }
+);
+
+console.log(phoneNumber.id);
+```
+
+### Telefonnummer aktualisieren
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'your-api-key',
+});
+
+const phoneNumber = await client.accounts.phoneNumbers.update(
+  'phone_number_id',
+  {
+    account_id: 'account_id',
+    name: 'Support line',
+  }
+);
+
+console.log(phoneNumber.id);
+```
+
+### Telefonnummer löschen
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'your-api-key',
+});
+
+await client.accounts.phoneNumbers.delete(
+  'phone_number_id',
+  { account_id: 'account_id' }
+);
+```
+
+  </Accordion>
+
+  <Accordion title="Anbieter">
+
+### Modelle auflisten
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'My API Key',
+});
+
+const response = await client.accounts.providers.listModels('account_id');
+
+console.log(response);
+```
+
+### Transkribierer auflisten
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'My API Key',
+});
+
+const response = await client.accounts.providers.listTranscribers('account_id');
+
+console.log(response);
+```
+
+### Stimmen auflisten
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'My API Key',
+});
+
+const response = await client.accounts.providers.listVoices('account_id', { provider: 'elevenlabs' });
+
+console.log(response);
+```
+
+  </Accordion>
+
+  <Accordion title="SIP-Trunks">
+
+### SIP-Trunks auflisten
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'My API Key',
+});
+
+const sipTrunks = await client.accounts.sipTrunks.list('account_id');
+
+console.log(sipTrunks.count);
+```
+
+### SIP-Trunk erstellen
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'My API Key',
+});
+
+const sipTrunk = await client.accounts.sipTrunks.create('account_id', {
+  name: 'Main SIP trunk',
+});
+
+console.log(sipTrunk.id);
+```
+
+### SIP-Trunk abrufen
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'My API Key',
+});
+
+const sipTrunk = await client.accounts.sipTrunks.retrieve('sip_trunk_id', { account_id: 'account_id' });
+
+console.log(sipTrunk.id);
+```
+
+### SIP-Trunk aktualisieren
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'My API Key',
+});
+
+const sipTrunk = await client.accounts.sipTrunks.update('sip_trunk_id', { account_id: 'account_id' });
+
+console.log(sipTrunk.id);
+```
+
+### SIP-Trunk löschen
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const client = new Itellicoai({
+  apiKey: 'My API Key',
+});
+
+await client.accounts.sipTrunks.delete('sip_trunk_id', { account_id: 'account_id' });
+```
+
+  </Accordion>
+
+  <Accordion title="Analytik">
+
+### Nutzungsanalytik abrufen
+
+```typescript
+const response = await client.accounts.analytics.getUsage('account_id');
+
+console.log(response.meta);
+```
+
+  </Accordion>
+
+  <Accordion title="Subaccounts">
+
+### Subaccounts auflisten
+
+```typescript
+const subaccounts = await client.accounts.subaccounts.list('account_id');
+
+console.log(subaccounts.count);
+```
+
+### Subaccount erstellen
+
+```typescript
+const account = await client.accounts.subaccounts.create('account_id', {
+  name: 'name',
+});
+
+console.log(account.id);
+```
+
+### Subaccount abrufen
+
+```typescript
+const account = await client.accounts.subaccounts.retrieve(
+  'subaccount_id',
+  { account_id: 'account_id' }
+);
+
+console.log(account.id);
+```
+
+### Subaccount aktualisieren
+
+```typescript
+const account = await client.accounts.subaccounts.update(
+  'subaccount_id',
+  {
+    account_id: 'account_id',
+    name: 'Updated subaccount name',
+  }
+);
+
+console.log(account.id);
+```
+
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Fehlerbehandlung
+
+```typescript
+import Itellicoai, {
+  AuthenticationError,
+  NotFoundError,
+  RateLimitError,
+  APIError,
+} from 'itellicoai';
+
+const client = new Itellicoai({ apiKey: 'your-api-key' });
+
+try {
+  const agent = await client.agents.retrieve('agent_123abc', {
+    account_id: 'account_id',
+  });
+} catch (error) {
+  if (error instanceof AuthenticationError) {
+    console.error('Invalid API key');
+  } else if (error instanceof NotFoundError) {
+    console.error('Agent not found');
+  } else if (error instanceof RateLimitError) {
+    console.error('Rate limit exceeded');
+  } else if (error instanceof APIError) {
+    console.error(`API error: ${error.message}`);
+  }
+}
+```
+
+---
+
+## Umgebungsvariablen
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+// API key automatically loaded from ITELLICOAI_API_KEY env var
+const client = new Itellicoai();
+
+// Or set explicitly
+const client = new Itellicoai({
+  apiKey: process.env.ITELLICOAI_API_KEY,
+});
+```
+
+---
+
+## TypeScript-Typen
+
+Vollständige TypeScript-Definitionen sind enthalten:
+
+```typescript
+import Itellicoai from 'itellicoai';
+
+const createAgent = async (
+  params: Itellicoai.AgentCreateParams
+): Promise<Itellicoai.AgentResponse> => {
+  const client = new Itellicoai();
+  return await client.agents.create('account_id', params);
+};
+```
+
+---
+
+## Ressourcen
+
+<CardGroup cols={2}>
+  <Card title="NPM-Paket" icon="npm" href="https://www.npmjs.com/package/itellicoai">
+    Von NPM installieren
+  </Card>
+  <Card title="GitHub-Repository" icon="github" href="https://github.com/itellicoAI/server-sdk-typescript">
+    Quellcode auf GitHub ansehen
+  </Card>
+  <Card title="API-Referenz" icon="book" href="/de/api-reference/introduction">
+    REST-API-Dokumentation durchsuchen
+  </Card>
+</CardGroup>

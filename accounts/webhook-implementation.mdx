@@ -1,0 +1,180 @@
+---
+title: "Webhook Implementation Guide"
+description: "Implement webhook receivers that are fast, safe, and easy to debug"
+icon: "plug-circle-check"
+keywords: "webhook implementation, webhook receiver, HMAC verification, idempotency, event lifecycle, webhook debugging"
+"og:description": "Build a reliable webhook receiver for itellicoAI events with signature verification, fast acknowledgements, and a clear event lifecycle."
+"og:title": "Webhook Implementation Guide"
+---
+
+This page is for the technical teammate who implements the receiving endpoint.
+
+If you only need to create subscriptions in the dashboard, start with [Webhooks](/accounts/webhooks).
+
+## What A Good Receiver Does
+
+A reliable webhook receiver should:
+
+- accept HTTPS `POST` requests
+- verify the signature before trusting the payload
+- acknowledge quickly
+- move slow work to your own background jobs
+- handle duplicate deliveries safely
+- log enough detail to debug failures later
+
+## The Recommended Flow
+
+<Steps>
+  <Step title="Receive the request">
+    Accept the raw request body exactly as delivered. Do not parse and reserialize before signature verification.
+  </Step>
+
+  <Step title="Verify the signature">
+    Compute the HMAC using your webhook secret and compare it to the signature header.
+  </Step>
+
+  <Step title="Validate the envelope">
+    Read the event type, event ID, created timestamp, and event payload.
+  </Step>
+
+  <Step title="Acknowledge quickly">
+    Return a successful response as soon as basic verification succeeds.
+  </Step>
+
+  <Step title="Process asynchronously">
+    Hand off slow work such as CRM sync, notifications, or analytics updates to your own queue or workers.
+  </Step>
+</Steps>
+
+## The Core Event Lifecycle
+
+For many conversation workflows, you will care about three events:
+
+1. `conversation.started`
+2. `conversation.ended`
+3. `conversation.analysis.completed`
+
+### How to think about them
+
+| Event | Best use |
+| --- | --- |
+| `conversation.started` | Start tracking, create live session state, or log that the conversation began |
+| `conversation.ended` | Final call outcome, duration, transcript-adjacent data, and end-of-call processing |
+| `conversation.analysis.completed` | Goal results, gathered insights, and post-call evaluation data |
+
+### Practical rule
+
+If your downstream system needs insight or scoring results, do not stop at `conversation.ended`. Wait for `conversation.analysis.completed`.
+
+## Minimal Receiver Example
+
+```python
+import hashlib
+import hmac
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+WEBHOOK_SECRET = "replace-me"
+
+
+def verify_signature(raw_body: bytes, timestamp: str, signature_header: str, secret: str) -> bool:
+    signed_payload = raw_body + b"." + timestamp.encode()
+    expected = hmac.new(secret.encode(), signed_payload, hashlib.sha256).hexdigest()
+    return hmac.compare_digest(expected, signature_header or "")
+
+
+@app.post("/webhooks/itellico")
+def itellico_webhook():
+    raw_body = request.get_data()
+    timestamp = request.headers.get("X-Webhook-Timestamp", "")
+    signature = request.headers.get("X-Webhook-Signature-256", "")
+
+    if not timestamp or not verify_signature(raw_body, timestamp, signature, WEBHOOK_SECRET):
+        return jsonify({"ok": False, "error": "invalid signature"}), 401
+
+    event = request.json
+    event_type = event.get("event_type")
+
+    # Queue this for background processing in your own system.
+    print("received", event_type)
+
+    return jsonify({"ok": True}), 200
+```
+
+## Idempotency And Duplicate Safety
+
+Design your receiver so the same event can be processed safely more than once.
+
+Good patterns:
+
+- store processed `event_id` values
+- make downstream writes idempotent where possible
+- avoid side effects before signature verification
+
+This matters especially for:
+
+- CRM updates
+- ticket creation
+- billing or usage updates
+- task creation
+
+## Logging Recommendations
+
+Log enough data to trace failures without leaking secrets.
+
+Good fields to log:
+
+- event ID
+- event type
+- account or organization identifier
+- delivery timestamp
+- verification result
+- your internal processing outcome
+
+Avoid logging:
+
+- raw signing secrets
+- full authorization headers
+- sensitive payload content unless your compliance rules allow it
+
+## Common Implementation Mistakes
+
+<AccordionGroup>
+  <Accordion title="Parsing the body before signature verification" icon="triangle-exclamation">
+    Always verify against the raw request body. Re-serializing JSON can change the byte representation and break signature checks.
+  </Accordion>
+
+  <Accordion title="Doing slow work in the request thread" icon="clock">
+    Do not block the webhook response while you call other systems or run heavy processing. Acknowledge first, then continue in your own queue.
+  </Accordion>
+
+  <Accordion title="Treating `conversation.ended` as the final analysis event" icon="chart-line">
+    `conversation.ended` tells you the call finished. `conversation.analysis.completed` is the better event for post-call scoring and insight-driven workflows.
+  </Accordion>
+</AccordionGroup>
+
+## Debugging Checklist
+
+1. Confirm the webhook subscription is active.
+2. Confirm the destination URL is reachable from the public internet.
+3. Confirm you are using the current signing secret.
+4. Confirm your receiver reads the raw body before parsing.
+5. Confirm the subscribed event type matches the workflow you are testing.
+6. Check your own application logs for event ID, verification result, and processing outcome.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Webhooks" icon="webhook" href="/accounts/webhooks">
+    Configure webhook subscriptions in the dashboard
+  </Card>
+  <Card title="Webhook Events" icon="book" href="/reference/webhook-events">
+    Review payload fields and event types
+  </Card>
+  <Card title="Integration Testing" icon="flask" href="/test/integration-testing">
+    Validate your end-to-end event handling
+  </Card>
+  <Card title="Secrets" icon="lock" href="/accounts/secrets">
+    Store reusable credentials safely
+  </Card>
+</CardGroup>

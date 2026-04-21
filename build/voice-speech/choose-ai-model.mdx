@@ -1,0 +1,118 @@
+---
+title: "Choose AI Model"
+description: "Select the language model that powers your agent's reasoning and responses"
+icon: "brain"
+keywords: "AI model selection, language models, voice agent AI model, model configuration, agent reasoning, model comparison, GPT, Claude, Groq"
+"og:description": "Select the language model that powers your AI agent's reasoning, balancing performance, latency, and cost."
+"og:title": "Choose AI Model"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+**Access:** Open an agent and go to **General** → **Thinking**.
+
+<Screenshot
+  lightSrc="/images/agent__ai-model-light.png"
+  darkSrc="/images/agent__ai-model-dark.png"
+  alt="AI model selection showing the preset options and provider catalog"
+/>
+
+## What the Model Does
+
+The AI model reads the conversation transcript and decides what to say next. It follows your prompt, retrieves from knowledge bases, and triggers tools like transfers and bookings. Choosing the right model means balancing response quality, latency, and cost.
+
+<Note>
+Some models incur additional per-minute charges on top of the base rate. Check the cost indicator next to each model in the catalog, or see [Premium Features](/billing/premium-features) for details.
+</Note>
+
+---
+
+<Tabs>
+  <Tab title="Simple Mode">
+    | Preset | What it does |
+    | --- | --- |
+    | **Intelligent** | Higher-quality responses with more latency. Use for complex reasoning, multi-step conversations, or brand-sensitive interactions. |
+    | **Balanced** | Good quality and speed for most use cases. Recommended for most agents. |
+    | **Fast** | Lowest latency. Use for high-volume or simple routing and qualification flows. |
+
+    Switch only if testing shows you need more quality or speed.
+  </Tab>
+
+  <Tab title="Expert Mode">
+    Expert mode opens the full provider catalog under **General → Thinking**. Use it when you need a specific model, EU-hosted processing, or want to compare providers directly.
+
+    ### Provider Comparison
+
+    | Provider | Best for | Notes |
+    | --- | --- | --- |
+    | **Azure OpenAI** | Most production agents | Recommended — same GPT models as OpenAI, EU-hosted, lower latency |
+    | **OpenAI** | When Azure is not available | Same models as Azure OpenAI without EU hosting |
+    | **Anthropic** | Conversational quality, complex reasoning | Claude models are more verbose and conversational than GPT |
+    | **Groq** | Maximum speed, simple tasks | Sub-500ms responses; less capable for complex reasoning |
+    | **Custom** | Bring-your-own model endpoint | OpenAI-compatible endpoint configured with a base URL, model name, and API key secret |
+
+    The catalog shows cost, speed, and intelligence ratings for each model. Click a provider to filter the list.
+
+    ### Custom LLM
+
+    <Badge>Expert Mode</Badge>
+
+    Choose **Custom** when you need to connect an OpenAI-compatible endpoint that is not part of the built-in catalog.
+
+    The custom model form asks for:
+
+    - **Base URL** — the API base URL for your model provider
+    - **Model Name** — the model identifier to send with requests
+    - **API Key Secret** — a saved team secret used to authenticate requests
+
+    Custom LLM configuration is only available in Expert mode. If an agent already uses a custom model and you switch back to Simple mode, the model stays configured but appears as an Expert-mode setting.
+
+    ### Recommended Models
+
+    | Model | Use when |
+    | --- | --- |
+    | Azure OpenAI — GPT-4.1 Mini | Best default — fast, reliable, good tool use, EU-hosted |
+    | Azure OpenAI — GPT-4.1 | Need stronger reasoning or multi-step logic, EU-hosted |
+    | Claude Haiku 4.5 | Speed-critical or high-volume deployments |
+    | Claude Sonnet 4.5 | Maximum conversational quality — expect higher latency |
+    | Groq models | Sub-500ms speed, simple flows only |
+  </Tab>
+</Tabs>
+
+---
+
+## Response Style
+
+The **Response Style** slider appears under **General → Thinking** when the selected model supports adjustable temperature.
+
+Temperature controls how consistent or varied the agent's responses are:
+
+| Range | Behavior | Use for |
+| --- | --- | --- |
+| **0.0** | Fully deterministic | Most agents — maximizes reliability for tool calling |
+| **0.1–0.3** | Slight variation | Agents that need natural phrasing variation |
+| **0.4–0.7** | More creative | Personality-driven agents where consistency matters less |
+| **0.8+** | Unpredictable | Avoid in production |
+
+<Tip>
+Use 0.0 for agents that transfer calls, book appointments, or call APIs. Higher temperature reduces tool execution reliability.
+</Tip>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Select Voice" icon="microphone" href="/build/voice-speech/select-voice">
+    Choose how your agent sounds to callers
+  </Card>
+  <Card title="Transcriber" icon="ear" href="/build/voice-speech/transcriber">
+    Configure the speech-to-text layer
+  </Card>
+  <Card title="Voice Settings" icon="sliders" href="/build/voice-speech/voice-settings">
+    Fine-tune speed, stability, and style
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/web-simulator">
+    Test model performance with web calls
+  </Card>
+</CardGroup>

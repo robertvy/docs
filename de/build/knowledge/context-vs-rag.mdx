@@ -1,0 +1,376 @@
+---
+title: "Kontext vs. RAG-Modus"
+description: "Wähle zwischen Context-Injection und RAG-Retrieval für deine Knowledge Bases"
+icon: "brain"
+keywords: "RAG, context vs RAG, knowledge retrieval, AI knowledge base, retrieval augmented generation, context injection, AI memory"
+"og:description": "Lerne, wann du Context-Injection vs. RAG-Retrieval nutzen solltest, um Knowledge-Zugriff und Performance deiner KI-Agenten zu optimieren."
+"og:title": "Kontext vs. RAG-Modus"
+---
+
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+## Zwei Zugriffsarten
+
+Wenn du Knowledge an deinen Agenten zuweist, musst du entscheiden, wie der Agent auf diese Informationen zugreift. Wenn du noch keine Knowledge Base erstellt hast, starte mit dem Leitfaden [create knowledge bases](/de/build/knowledge/create-knowledge-bases). itellicoAI bietet zwei Zugriffsarten: **Context Mode** (Prompt Injection) und **RAG Mode** (RAG: Retrieval-Augmented Generation - ein Suchsystem, das nur die relevantesten Informationen findet, die dein Agent braucht).
+
+## Schnelle Entscheidung
+
+| Verwende Context, wenn... | Verwende RAG, wenn... |
+| --- | --- |
+| Inhalte klein sind (unter ein paar Tausend Wörter) | Inhalte groß sind (FAQs, Kataloge, vollständige Doku) |
+| Der Agent sie bei jedem Anruf braucht | Der Agent sie nur für bestimmte Fragen braucht |
+| Du keine Retrieval-Latenz möchtest | Du breite Abdeckung über viele Themen brauchst |
+| Beispiele: Preistabelle, Öffnungszeiten, Rückgaberegelung | Beispiele: Produktkatalog, komplette FAQ-Bibliothek, Support-Doku |
+
+Unsicher? **Starte mit RAG.** Das ist für die meisten Use Cases sicherer. Wechsle zu Context nur für kleine Inhalte, die immer gebraucht werden.
+
+---
+
+## Die zwei Zugriffsarten
+
+<CardGroup cols={2}>
+  <Card title="Context Mode" icon="file-import">
+    **Prompt Injection**
+
+    Alle Knowledge wird direkt zu Beginn jeder Interaktion in den Conversation-Context des Agenten injiziert (neben deinem [Prompt](/de/build/conversation/prompt)).
+
+    **Am besten für:** Kleine Knowledge Bases mit kritischen Informationen, die der Agent für jedes Gespräch braucht.
+  </Card>
+  <Card title="RAG Mode" icon="magnifying-glass">
+    **RAG (Retrieval-Augmented Generation)**
+
+    Der Agent durchsucht und ruft relevante Knowledge dynamisch auf Basis des Gesprächsthemas ab.
+
+    **Am besten für:** Größere Knowledge Bases, bei denen pro Gespräch nur bestimmte Abschnitte benötigt werden.
+  </Card>
+</CardGroup>
+
+---
+
+## Context Mode (Prompt Injection)
+
+### Wie es funktioniert
+
+Im Context Mode lädt die Plattform deine Knowledge-Base-Inhalte zu Beginn jedes Gesprächs direkt in den System-Prompt des Agenten:
+
+```text wrap
+System Prompt:
+You are a helpful customer service agent.
+
+[Your agent instructions...]
+
+==== KNOWLEDGE BASE: Customer Support FAQ ====
+
+### Billing & Payments
+- Question: How do I update my payment method?
+  Answer: You can update your payment method by...
+
+- Question: When will I be billed?
+  Answer: Billing occurs on the same day each month...
+
+### Return Policy
+[Full return policy content]
+
+### Shipping Information
+[Full shipping information]
+
+==== END KNOWLEDGE BASE ====
+
+Now assist the customer with their question.
+```
+
+Der Agent sieht ALLE Knowledge-Inhalte von Anfang an und kann während des Gesprächs darauf verweisen.
+
+### Formatierte Ausgabe
+
+Standardmäßig injiziert das System Knowledge mit strukturierter Formatierung:
+
+```text wrap
+========================================
+# Knowledge Base Name
+Knowledge base description
+
+## Folder Name
+Folder description
+
+### Item Title
+----------------------------------------
+Item content here
+----------------------------------------
+========================================
+```
+
+Dieses Format hilft dem Agenten, Struktur und Organisation der Knowledge zu verstehen.
+
+### Wann Context Mode sinnvoll ist
+
+<AccordionGroup>
+  <Accordion title="Kleine, wichtige Knowledge" icon="file">
+    Wenn dein Inhalt kompakt ist und der Agent ihn bei jedem Anruf braucht, stellt Context Mode sicher, dass er immer verfügbar ist.
+
+    **Beispiel-Use-Case:**
+    Ein Support-Agent mit einer Knowledge Base, die enthält:
+    - 10 häufige FAQs
+    - Rückgaberegelung
+    - Kontaktinformationen
+    - Versandoptionen
+  </Accordion>
+
+  <Accordion title="Kritische Informationen, die immer gebraucht werden" icon="circle-exclamation">
+    Informationen, auf die der Agent bei den meisten oder allen Anrufen verweisen muss.
+
+    **Beispiel-Use-Case:**
+    Ein Booking-Agent, der braucht:
+    - Unternehmensrichtlinien (immer)
+    - Verfügbare Services (immer)
+    - Preisstruktur (immer)
+    - Buchungsprozesse (immer)
+  </Accordion>
+
+  <Accordion title="Hochstrukturierte Informationen" icon="table">
+    Wenn Knowledge-Items aufeinander verweisen oder ein in sich geschlossenes Ganzes bilden.
+
+    **Beispiel-Use-Case:**
+    Produktkonfigurations-Agent mit:
+    - Abhängigkeiten bei Optionen ("Wenn X gewählt wird, Y anbieten")
+    - Kompatibilitätsmatrix
+    - Paket-Bundles
+    - Preise, die von Kombinationen abhängen
+  </Accordion>
+
+</AccordionGroup>
+
+### Vorteile des Context Mode
+
+<CardGroup cols={2}>
+  <Card title="Immer verfügbar" icon="check">
+    Sofortiger Zugriff auf alle Knowledge ohne Suchverzögerung
+  </Card>
+  <Card title="Besser für kleine Mengen" icon="gauge-high">
+    Kleine Knowledge-Sets effizient im Kontextfenster verarbeiten
+  </Card>
+  <Card title="Deterministisch" icon="equals">
+    Liefert jedes Mal genau dieselbe Knowledge
+  </Card>
+  <Card title="Funktioniert mit Variablen" icon="brackets-curly">
+    Jinja-Variablen einbinden, die zur Laufzeit aufgelöst werden
+  </Card>
+</CardGroup>
+
+### Einschränkungen des Context Mode
+
+<Warning>
+Context Mode ist **insgesamt auf 10,000 Tokens (ungefähr 7,500 Wörter) begrenzt** über alle zugewiesenen Knowledge-Quellen.
+</Warning>
+
+**Trade-offs:**
+- Alle Context-Mode-Inhalte werden mit jeder Anfrage gesendet, also bedeuten mehr Inhalte höheren Kosten- und Latenzaufwand
+- Die gesamte Knowledge Base wird einbezogen, auch wenn nur ein kleiner Teil für diesen Anruf relevant ist
+- Am besten für Inhalte mit wenigen Tausend Wörtern oder weniger - nutze RAG für größere Mengen
+
+---
+
+## RAG Mode (Retrieval-Augmented Generation)
+
+### Wie es funktioniert
+
+Im RAG Mode speichert die Plattform deine Knowledge Base in einer Vektordatenbank. Wenn der Agent Informationen braucht:
+
+1. **Nutzer fragt:** "Wie lautet eure Rückgaberegelung?"
+2. **Agent erkennt den Bedarf:** Der Agent stellt fest, dass er Wissen zu Rückgaben braucht
+3. **System sucht:** Das RAG-System durchsucht die Knowledge Base nach relevanten Inhalten
+4. **Relevante Inhalte werden abgerufen:** Nur der Abschnitt zur Rückgabe wird geholt
+5. **Agent antwortet:** Der Agent nutzt das abgerufene Wissen für die Antwort
+
+Der Agent sieht nur die Knowledge, die er braucht, und zwar dann, wenn er sie braucht.
+
+### Intelligentes Retrieval
+
+RAG nutzt semantische Suche mit Vektor-Embeddings, um relevante Knowledge zu finden:
+
+```text wrap
+User: "I need to send back the shoes I bought last week"
+
+RAG System thinks:
+- Keywords: "send back", "shoes", "bought"
+- Semantic meaning: Returns, possibly exchange
+- Search knowledge for: return policy, shipping, exchanges
+
+Retrieved knowledge:
+- Return Policy Overview
+- Return Shipping Instructions
+- Exchange Procedures
+
+NOT retrieved:
+- Billing FAQ
+- Product Specifications
+- Account Management
+```
+
+### Vorteile des RAG Mode
+
+<CardGroup cols={2}>
+  <Card title="Skaliert über den Kontext hinaus" icon="up-right-and-down-left-from-center">
+    Unterstützt größere Knowledge Bases ohne die 10,000-Token-Context-Grenze
+  </Card>
+  <Card title="Schneller für große Knowledge" icon="clock-rotate-left">
+    Reduziert die System-Prompt-Tokens für große Knowledge Bases
+  </Card>
+  <Card title="Effizient" icon="gauge-high">
+    Holt nur das, was für das aktuelle Thema gebraucht wird
+  </Card>
+  <Card title="Besser für Vielfalt" icon="shapes">
+    Behandelt viele unterschiedliche Themen gut
+  </Card>
+</CardGroup>
+
+### Wichtige Punkte beim RAG Mode
+
+<Note>
+RAG hängt von der Suchgenauigkeit ab. Wenn deine Knowledge-Items nicht klar geschrieben sind, kann Retrieval relevante Informationen verpassen.
+</Note>
+
+**Die Retrieval-Qualität hängt ab von:**
+- klaren, beschreibenden Titeln für Knowledge-Items
+- gut strukturiertem Inhalt
+- sinnvoller Kategorisierung in Ordnern
+- dem Vermeiden doppelter oder widersprüchlicher Informationen
+
+---
+
+## Den richtigen Modus wählen
+
+Nutze diesen Entscheidungsleitfaden, um die beste Zugriffsart zu wählen:
+
+### Hybrid-Ansatz
+
+Du kannst beide Modi für verschiedene Knowledge Bases am selben Agenten nutzen:
+
+**Beispielkonfiguration:**
+- **Context Mode:** Kleine Knowledge Base "Core Policies" (immer benötigt)
+- **RAG Mode:** Große Knowledge Base "Product Catalog" (bei Bedarf abrufen)
+
+Das kombiniert die Stärken beider Methoden.
+
+---
+
+## Deine Konfiguration testen
+
+<Steps>
+  <Step title="Knowledge Base zuweisen">
+    Konfiguriere deinen Agenten mit einer Knowledge Base im Context- oder RAG-Mode.
+  </Step>
+
+  <Step title="Test starten">
+    Nutze das Test-Agent-Menü für einen Chat-, Web- oder Phone-Call.
+  </Step>
+
+  <Step title="Nach Knowledge-Inhalten fragen">
+    Stelle Fragen, die aus deiner Knowledge Base beantwortet werden sollten.
+
+    **Beispielfragen:**
+    - "Wie lautet eure Rückgaberegelung?"
+    - "Wie viel kostet der Pro-Plan?"
+    - "Wie sind eure Öffnungszeiten?"
+  </Step>
+
+  <Step title="Antworten prüfen">
+    Bestätige, dass der Agent Knowledge-Inhalte korrekt in den Antworten verwendet.
+  </Step>
+
+  <Step title="Edge Cases testen">
+    Frage nach Themen, die **nicht** in deiner Knowledge Base enthalten sind, um sicherzustellen, dass der Agent angemessen reagiert ("Ich habe diese Information nicht").
+  </Step>
+</Steps>
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Bei großen Bases mit RAG starten" icon="magnifying-glass">
+    Wenn du unsicher bist, nutze RAG Mode. Das ist für große Knowledge Bases sicherer, und du kannst später immer noch zu Context Mode wechseln.
+  </Accordion>
+
+  <Accordion title="Klare, vollständige Inhalte schreiben" icon="file-text">
+    RAG verwendet semantische Suche, um relevante Knowledge zu finden. Schreibe vollständige, gut formulierte Inhalte, die natürlich die Begriffe und Konzepte enthalten, nach denen Nutzer fragen werden.
+
+    **Gut:** "Our return policy allows returns within 30 days of purchase for physical products. Digital products cannot be returned once downloaded."
+
+    **Schlecht:** "See policy doc" oder unvollständige Satzfragmente
+  </Accordion>
+
+  <Accordion title="Beide Modi testen" icon="vial">
+    Probiere Context und RAG Mode mit deiner Knowledge Base aus und schau, welcher für deinen Use Case besser funktioniert.
+  </Accordion>
+
+  <Accordion title="Strategisch kombinieren" icon="layer-group">
+    Nutze Context Mode für kritische, häufig benötigte Infos und RAG Mode für umfangreiches Referenzmaterial.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Agent nutzt Knowledge nicht (Context Mode)">
+    **Prüfen:**
+    - Sind alle Knowledge-Items grün (ready to use)?
+    - Reicht der verbleibende Kontext (nicht abgeschnitten)?
+
+    **Lösung:**
+    - Fehlgeschlagene Items beheben
+    - Knowledge verkleinern oder zu RAG wechseln
+  </Accordion>
+
+  <Accordion title="Agent findet Knowledge nicht (RAG Mode)">
+    **Prüfen:**
+    - Ist der Inhalt gut organisiert?
+    - Fragst du nach Themen, die zur Knowledge passen?
+
+    **Lösung:**
+    - Detailliertere Inhalte hinzufügen
+    - Mit anderer Formulierung testen
+    - Keywords in den Inhalt aufnehmen
+  </Accordion>
+
+  <Accordion title="Agent liefert falsche oder veraltete Informationen">
+    **Prüfen:**
+    - Sind die Knowledge-Inhalte korrekt und aktuell?
+    - Gibt es widersprüchliche Informationen in mehreren Items?
+
+    **Lösung:**
+    - Knowledge-Inhalte aktualisieren
+    - Duplikate und Widersprüche entfernen
+  </Accordion>
+
+  <Accordion title="Context-Nutzung zu hoch">
+    **Lösungen:**
+    - Für große Knowledge Bases auf RAG Mode wechseln
+    - Knowledge in kleinere, fokussierte Bases aufteilen
+    - Prompt-Länge des Agenten reduzieren
+    - Ausführliche oder redundante Inhalte entfernen
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Create Knowledge Bases" icon="plus" href="/de/build/knowledge/create-knowledge-bases">
+    Wissensinhalte aufbauen und organisieren
+  </Card>
+  <Card title="Content Types" icon="file-lines" href="/de/build/knowledge/content-types">
+    Mehr über Text-, Datei-, URL- und Website-Crawl-Items erfahren
+  </Card>
+  <Card title="Template Syntax" icon="brackets-curly" href="/de/build/conversation/template-syntax">
+    Knowledge-Referenzen im Prompt verwenden
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/de/test/web-simulator">
+    Testen, wie dein Agent Knowledge nutzt
+  </Card>
+</CardGroup>

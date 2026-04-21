@@ -1,0 +1,105 @@
+---
+title: "Trust Center"
+description: "Datenaufbewahrung, Datenanfragen und deine öffentliche Trust-Seite verwalten"
+icon: "shield-check"
+keywords: "trust center, data privacy, GDPR, data retention, data requests, DSAR, public trust center, compliance, anonymization"
+"og:description": "Verwalte Datenschutz und Compliance über einen zentralen Hub. Konfiguriere Aufbewahrungsrichtlinien, bearbeite Datenanfragen und veröffentliche eine öffentliche Trust-Seite."
+"og:title": "Trust Center"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+Das **Trust Center** ist dein Hub für Datenschutz und Compliance. Steuere, wie Gesprächsdaten aufbewahrt werden, erstelle Exporte für Betroffenenanfragen und veröffentliche eine öffentliche Trust-Seite für Kundinnen und Kunden.
+
+**Zugriff:** Öffne **Trust Center** im Hauptmenü.
+
+<Screenshot lightSrc="/images/trust-center__data-retention_DE-light.png" darkSrc="/images/trust-center__data-retention_DE-dark.png" alt="Tab Datenaufbewahrung im Trust Center mit Datentypen, Dropdowns für Aufbewahrungsdauer, Ablaufaktionen und Reset-Buttons" caption="Starte mit Datenaufbewahrung, um kontoweite Standardwerte zu setzen. Agenten-Overrides haben Vorrang, wenn sie existieren." />
+
+## Bereiche
+
+Das Trust Center hat drei Tabs:
+
+| Bereich | Wofür du ihn nutzt |
+| --- | --- |
+| **Datenaufbewahrung** | Standardwerte für Transkripte, Aufnahmen, Analytik, Prompts, IP-Metadaten und Kundennummern auf Kontoebene festlegen |
+| **Datenanfragen** | GDPR-artige Exporte für Kontodaten oder einen bestimmten Kontakt erzeugen |
+| **Öffentlicher Trust Center** | Eine kundenorientierte Seite mit Informationen zu KI-Anbietern und Aufbewahrung veröffentlichen |
+
+## Datenaufbewahrung
+
+Konfiguriere, wie lange jeder Datentyp gespeichert wird, bevor er automatisch abläuft. Aufbewahrungsrichtlinien können auf **Kontoebene** gesetzt werden (gilt für alle Agenten) oder pro Agent überschrieben werden.
+
+### Datentypen
+
+| Datentyp | Beschreibung | Ablaufaktionen |
+| --- | --- | --- |
+| **Transkripte** | Nachrichten und Gesprächsereignisse | Löschen oder Anonymisieren |
+| **Anrufaufnahmen** | Audioaufnahmen, wenn Aufnahme beim Agenten aktiviert ist | Löschen |
+| **[Zielergebnisse](/de/build/analytics/conversation-goals)** | Analyse der Zielerreichung | Löschen oder Anonymisieren |
+| **[Gesammelte Insights](/de/build/analytics/gather-insights)** | KI-generierte Gesprächszusammenfassungen und extrahierte Insights | Löschen oder Anonymisieren |
+| **System-Prompts** | Prompt-Inhalt des KI-Agenten | Löschen |
+| **IP-Adressen & Standort** | Client-IP, Land, Stadt (Web-Anrufe) | Löschen oder Anonymisieren |
+| **Kundennummern** | Telefonnummern von Anrufenden und Kontakten | Löschen oder Anonymisieren |
+
+### Aufbewahrungsoptionen
+
+- **Für immer aufbewahren** - kein eigener Ablauf für diesen Datentyp
+- **Nicht speichern** - die Plattform behält diese Daten nicht auf (nicht verfügbar für Kundennummern und IP-Adressen)
+- **30 Tage**
+- **90 Tage**
+- **6 Monate**
+- **1 Jahr**
+- **2 Jahre**
+
+<Warning>
+**Kundennummern** und **IP-Adressen** erfordern eine Mindestaufbewahrung von 90 Tagen. Eine Verkürzung der Aufbewahrungsfrist kann das Löschen von Daten auslösen, die nun über dem neuen Limit liegen.
+</Warning>
+
+<Note>
+Die Durchsetzung der Aufbewahrung läuft täglich um 03:00 UTC. Einzelne Agenten können die kontoweiten Standardwerte in ihren Agenteneinstellungen überschreiben.
+</Note>
+
+---
+
+## Datenanfragen
+
+Nutze **Datenanfragen** für GDPR-artige Exporte zu einer Person.
+
+<Screenshot lightSrc="/images/trust-center__dsar-workflow_DE-light.png" darkSrc="/images/trust-center__dsar-workflow_DE-dark.png" alt="Tab Datenanfragen mit Meine Kontodaten, Kontaktdatenexport und Exporthistorie" />
+
+| Export | Beschreibung |
+| --- | --- |
+| **Meine Kontodaten** | Export für die angemeldete Person, einschließlich Profil, Aktivität und Einstellungen |
+| **Kontaktdatenexport** | Export für einen Kontakt über Telefonnummer oder E-Mail-Adresse |
+
+Datenanfragen erstellen Hintergrundjobs. Ausstehende Jobs erscheinen in **In Progress**, fertige oder fehlgeschlagene Jobs in der **Exporthistorie**. Der aktuelle Dashboard-Workflow erzeugt Excel-Exporte (`.xlsx`).
+
+## Öffentlicher Trust Center
+
+<Screenshot lightSrc="/images/trust-center__public_DE-light.png" darkSrc="/images/trust-center__public_DE-dark.png" alt="Tab Öffentlicher Trust Center mit Aktivierungsschalter, URL-Slug, öffentlicher URL, Sichtbarkeits-Badge und geteilten Informationen" />
+
+Veröffentliche eine öffentliche Seite mit Links zu deiner Datenschutzerklärung, Informationen zu Subprozessoren, deinem Aufbewahrungsmodell und weiterem Transparenzmaterial. Sobald sie aktiviert ist, erhältst du einen Link, den du in deine Datenschutzerklärung aufnehmen oder direkt mit Kundinnen und Kunden teilen kannst.
+
+Das ist besonders relevant für Web-Widgets, öffentliche Demos und extern geteilte Agenten - der Link funktioniert aber überall dort, wo du Transparenz zeigen musst.
+
+| Einstellung | Beschreibung |
+| --- | --- |
+| **Öffentliches Trust Center aktivieren** | Erlaubt allen mit dem Link den Zugriff auf die öffentliche Trust-Seite |
+| **URL-Slug** | Lege einen lesbaren Slug fest oder generiere einen zufälligen |
+| **Öffentliche URL** | Öffne oder kopiere die öffentliche Seite, wenn sie aktiviert ist |
+| **Sichtbarkeit** | Zeigt an, ob die Seite öffentlich oder privat ist |
+
+Die öffentliche Seite zeigt die effektiven Aufbewahrungseinstellungen, Details zu KI-Anbietern, Datenkategorien, Erläuterungen zur Rechtsgrundlage, Betroffenenrechte sowie Kontaktinformationen für Verantwortliche und Auftragsverarbeiter.
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Quality Studio" icon="chart-bar" href="/de/manage/quality-studio/overview">
+    Agentenqualität mit Issue-Tracking und Trendanalyse überwachen
+  </Card>
+  <Card title="Aufnahme-Opt-out" icon="microphone-slash" href="/de/build/advanced/recording-opt-out">
+    Anrufende während des Gesprächs von Aufnahmen abmelden lassen
+  </Card>
+</CardGroup>

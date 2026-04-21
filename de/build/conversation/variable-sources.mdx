@@ -1,0 +1,136 @@
+---
+title: "Variable Sources"
+description: "Verstehe, wo Variablen herkommen, wann sie verfügbar sind und wo du sie verwenden kannst"
+icon: "brackets-curly"
+keywords: "variables, dynamic content, contact variables, dynamic context, pre-call webhook, insights, action results, Jinja"
+"og:description": "Alle Variablenquellen an einem Ort - Kontaktdaten, Pre-Call-Kontext, Erfassung im Anruf und Post-Call-Insights."
+"og:title": "Variable Sources"
+---
+
+Variablen helfen dir dabei, die Begrüßung, den Prompt und Benachrichtigungen deines Agenten mit echten Daten zu personalisieren. Diese Seite erklärt, woher Variablen kommen, wann sie verfügbar werden und wo du sie einsetzen kannst.
+
+Wenn du den vollständigen Lifecycle sehen möchtest, inklusive des Unterschieds zwischen Live-Tool-Inputs und Werten nach dem Anruf, lies [Conversation Data Flow](/de/build/conversation/runtime-data-flow).
+
+## Die vier Quellen
+
+| Quelle | Wann verfügbar | Beispielvariablen |
+| --- | --- | --- |
+| **Kontaktdaten** | Bevor der Anruf startet (wenn der Anrufer einem Kontakt zugeordnet wird) | `{{contact.first_name}}`, `{{contact.email}}`, `{{contact.phone_number}}` |
+| **Pre-Call-Kontext** | Bevor der Anruf startet (über [Dynamic Context](/de/build/advanced/dynamic-context) aus deiner API geladen) | `{{account_tier}}`, `{{open_tickets}}`, `{{last_order_status}}` |
+| **Eingebaute Systemvariablen** | Immer verfügbar | `{{current_datetime}}`, `{{timezone}}`, `{{direction}}`, `{{agent_uuid}}` |
+| **Post-Call-Insights** | Nachdem der Anruf endet (KI extrahiert aus dem Transkript) | `{{dyn_appointment_date}}`, `{{dyn_issue_summary}}`, `{{dyn_caller_sentiment}}` |
+
+## Kontaktvariablen
+
+Diese stehen automatisch zur Verfügung, wenn die Telefonnummer des Anrufers mit einem Kontakt in deinem System übereinstimmt.
+
+```
+Hi {{contact.first_name | default("there")}}, thanks for calling.
+```
+
+Nutze `| default("fallback")`, damit die Begrüßung auch dann funktioniert, wenn kein Kontakt gefunden wird.
+
+**Verfügbare Felder:** `contact.first_name`, `contact.last_name`, `contact.full_name`, `contact.email`, `contact.phone_number`
+
+## Pre-Call-Kontext (Dynamic Context)
+
+<Badge>Profi</Badge>
+
+Die Plattform holt diese Daten vor dem Start des Gesprächs aus deiner API. Konfiguriere den Endpunkt unter **Call Flow → Before Call**.
+
+Deine API erhält die Nummer des Anrufers und die Agent-ID und liefert JSON zurück. Jedes Feld in der Antwort wird zu einer Variable.
+
+```
+{% if account_tier == "enterprise" %}
+This is a priority customer. Provide white-glove support.
+{% else %}
+Standard support flow.
+{% endif %}
+```
+
+[Dynamic Context einrichten →](/de/build/advanced/dynamic-context)
+
+## Eingebaute Systemvariablen
+
+Diese sind in jedem Gespräch verfügbar:
+
+| Variable | Inhalt |
+| --- | --- |
+| `{{current_datetime}}` | Aktuelles Datum und Uhrzeit |
+| `{{timezone}}` | Die konfigurierte Zeitzone des Agenten |
+| `{{direction}}` | `inbound` oder `outbound` |
+| `{{medium}}` | Kanal des Gesprächs, etwa `voice`, `web` oder `test` |
+| `{{agent_uuid}}` | Die eindeutige ID des Agenten |
+| `{{agent_number}}` | Die Telefonnummer des Agenten |
+| `{{contact_number}}` | Die Telefonnummer des Anrufers |
+
+## Post-Call-Insight-Variablen
+
+Nach dem Anruf in [Notifications](/de/build/analytics/post-call-automation) verfügbar. Die KI extrahiert sie aus dem Transkript.
+
+Tippe `{{dyn_` gefolgt von einem beschreibenden Namen:
+
+```
+{{dyn_appointment_date}}  → AI findet das genannte Datum
+{{dyn_issue_summary}}     → AI fasst das Problem zusammen
+{{dyn_next_steps}}        → AI erkennt vereinbarte nächste Schritte
+```
+
+Diese funktionieren nur in Benachrichtigungs-E-Mail-Vorlagen, nicht im Prompt des Agenten (der Anruf ist dann bereits vorbei).
+
+## Wo du Variablen verwenden kannst
+
+| Ort | Kontakt | Pre-Call | System | Post-Call |
+| --- | --- | --- | --- | --- |
+| **Greeting message** | Ja | Ja | Ja | Nein |
+| **Prompt** | Ja | Ja | Ja | Nein |
+| **Notification emails** | Nur Kundenfelder | Nein | Nur Gesprächsfelder | Ja |
+
+<Note>
+Benachrichtigungs-E-Mails verwenden einen eigenen Post-Call-Kontext. Sie erhalten keine Live-Call-Variablen wie `{{contact.first_name}}`, Dynamic-Context-Felder, `{{current_datetime}}` oder `{{timezone}}` direkt. Nutze Benachrichtigungsvariablen wie `{{customer_name}}`, `{{customer_email}}`, `{{customer_number}}`, `{{conversation_date}}`, `{{conversation_direction}}`, `{{conversation_summary}}` und `{{dyn_*}}`.
+</Note>
+
+## Syntax
+
+Variablen nutzen Jinja-Syntax: `{{ variable_name }}`
+
+**Filter:**
+- `{{ contact.first_name | default("there") }}` - Fallback-Wert
+- `{{ current_datetime | datetime("%H:%M") }}` - Datumsformatierung
+
+**Bedingungen:**
+```
+{% if direction == "outbound" %}
+You are making an outbound call to {{contact.first_name}}.
+{% else %}
+A customer is calling in.
+{% endif %}
+```
+
+## Variablen debuggen
+
+Wenn eine Variable nicht funktioniert:
+1. Prüfe die Quelle - wurde der Kontakt gematcht? Liefert Dynamic Context Daten?
+2. Prüfe die Schreibweise - Variablennamen sind case-sensitiv
+3. Prüfe den Fallback - nutze `| default("...")` für möglicherweise leere Variablen
+4. Teste mit verschiedenen Szenarien - inbound vs outbound, bekannte vs unbekannte Anrufer
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Conversation Data Flow" icon="arrows-turn-right" href="/de/build/conversation/runtime-data-flow">
+    Sieh, wie Werte durch den Gesprächs-Lifecycle wandern
+  </Card>
+  <Card title="Template Syntax" icon="brackets-curly" href="/de/build/conversation/template-syntax">
+    Die vollständige Jinja-Syntax und fortgeschrittene Muster nachschlagen
+  </Card>
+  <Card title="Dynamic Context" icon="database" href="/de/build/advanced/dynamic-context">
+    Pre-Call-Datenabruf einrichten
+  </Card>
+  <Card title="Notifications" icon="envelope" href="/de/build/analytics/post-call-automation">
+    Post-Call-Variablen in E-Mail-Vorlagen verwenden
+  </Card>
+  <Card title="Greeting Messages" icon="hand-wave" href="/de/build/conversation/greeting-messages">
+    Begrüßungen mit Variablen personalisieren
+  </Card>
+</CardGroup>

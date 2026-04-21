@@ -1,0 +1,131 @@
+---
+title: "Knowledge Base Issues"
+description: "Diagnose and fix knowledge base retrieval, indexing, and content quality problems"
+icon: "book-open"
+keywords: "knowledge base troubleshooting, RAG issues, retrieval problems, indexing failed, wrong content, relevance scores"
+"og:description": "Troubleshoot knowledge base issues: failed indexing, wrong content retrieval, low relevance scores, and content quality problems."
+"og:title": "Knowledge Base Issues"
+---
+
+This guide covers diagnosing and resolving issues with knowledge base indexing, retrieval, and content quality.
+
+## Indexing Problems
+
+### Item Stuck Processing
+
+**Wait time:** Most items complete within 1-2 minutes. Website crawls can take longer depending on page count.
+
+**If stuck longer than 5 minutes:**
+1. Check the item status in the knowledge base tree
+2. Try clicking **Reindex** from the item menu
+3. If reindexing fails, delete and re-add the item
+
+### Item Shows an Error
+
+| Content Type | Common Causes | Fix |
+| --- | --- | --- |
+| **File Upload** | File too large (>10 MB), password-protected, corrupted | Re-upload a clean copy under 10 MB |
+| **Web Page** | URL not accessible, JavaScript-only content, authentication required | Verify URL in incognito browser; copy content to a text item instead |
+| **Website Crawl** | Site blocks bots, too many pages, timeouts | Reduce max pages; add individual URLs instead |
+| **Text Content** | Rarely fails | Check for encoding issues; try re-creating the item |
+
+### Reindex Is Disabled
+
+The reindex button is disabled when the item is already green (ready to use). It only becomes available when content has changed or the vector index needs refreshing.
+
+---
+
+## Retrieval Problems
+
+### Agent Does Not Use Knowledge Base Content
+
+**Diagnostic steps:**
+1. Open a test conversation in **Conversations** → click the conversation
+2. Check the timeline for knowledge retrieval events (book icon)
+3. If no retrieval events appear:
+   - Verify the knowledge base is [assigned to the agent](/build/knowledge/assign-knowledge)
+   - Check that items show green (ready to use)
+   - Test with questions that directly match your content wording
+
+### Agent Retrieves Wrong Content
+
+**Check relevance scores** in the conversation detail timeline:
+- **70%+** (green) — good match, content is relevant
+- **50-70%** (yellow) — partial match, may return tangential content
+- **Below 50%** (orange) — poor match, content may not be useful
+
+**How to improve retrieval:**
+1. **Use clear, descriptive titles** — titles heavily influence matching
+2. **Break large documents into focused items** — one topic per item retrieves better than one massive document
+3. **Use specific language** — match the terminology your callers use
+4. **Remove duplicate or overlapping content** — competing items confuse retrieval
+5. **Convert file/URL items to text** — gives you direct control over content structure
+
+### Agent Makes Up Information Despite Having Knowledge
+
+Add explicit grounding instructions to your prompt:
+```
+Only answer questions using information from your knowledge base.
+If you don't have the information to answer a question, say:
+"I don't have that information available. Let me connect you with someone who can help."
+Never make up or guess at answers.
+```
+
+---
+
+## Context vs RAG Issues
+
+### Context Mode Not Available
+
+Context mode is only available in Expert Mode. Switch to Expert Mode in the top right to see the access mode selector on knowledge connections.
+
+### Context Budget Exceeded
+
+The 10,000 token context budget is shared across all context-mode connections. If you exceed it:
+1. Switch less critical connections to RAG mode
+2. Reduce the amount of content in context-mode items
+3. Use RAG for large knowledge bases and reserve Context for small, always-needed content (like pricing tables or key policies)
+
+### When to Use Context vs RAG
+
+Use [Context vs RAG](/build/knowledge/context-vs-rag) for the decision table. As a troubleshooting rule of thumb: move small, always-needed reference material to Context, and keep large searchable collections in RAG.
+
+---
+
+## Content Quality
+
+### Best Practices for Knowledge Content
+
+1. **Write for conversation** — structure content as Q&A or clear statements, not marketing copy
+2. **One topic per item** — "Returns Policy" is better than "All Store Policies"
+3. **Include keywords callers use** — if callers say "refund" but your content says "reimbursement," add both terms
+4. **Keep content current** — set up website crawl refresh intervals for dynamic content
+5. **Test after changes** — always run test conversations after adding or updating content
+
+### Content Limits
+
+| Limit | Value |
+| --- | --- |
+| URL items per knowledge base | 500 |
+| Text items per knowledge base | 50 |
+| File items per knowledge base | 25 |
+| Total items per knowledge base | 575 |
+| Folders per knowledge base | 50 |
+| Max file size | 10 MB |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Knowledge Architecture" icon="sitemap" href="/build/knowledge/architecture">
+    Understand how knowledge bases are structured
+  </Card>
+  <Card title="Context vs RAG" icon="scale-balanced" href="/build/knowledge/context-vs-rag">
+    Choose the right retrieval mode
+  </Card>
+  <Card title="Content Types" icon="file-lines" href="/build/knowledge/content-types">
+    File, URL, text, and website crawl details
+  </Card>
+  <Card title="Common Issues" icon="wrench" href="/troubleshooting/common-issues">
+    Find quick fixes for common problems
+  </Card>
+</CardGroup>

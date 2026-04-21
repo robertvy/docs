@@ -1,0 +1,260 @@
+---
+title: "Tools Overview"
+description: "Ermögliche deinen KI-Agenten, während Gesprächen reale Business-Aufgaben auszuführen"
+icon: "bolt"
+keywords: "AI agent tools, AI integrations, agent capabilities, custom tools, API integrations, agent functions"
+"og:description": "Ermögliche deinen KI-Agenten, mit Tools und Integrationen reale Business-Aufgaben zu automatisieren."
+"og:title": "Tools Overview"
+---
+
+## Übersicht
+
+Tools erlauben deinen KI-Agenten, mehr zu tun als nur Fragen zu beantworten. Mit konfigurierten Tools können Agenten Termine planen, Anrufe weiterleiten, Systeme aktualisieren und sich mit deinen bestehenden Workflows verbinden - alles während eines Live-Gesprächs.
+
+<Note>
+Tools werden automatisch basierend auf dem Gesprächskontext und dem Prompt ausgeführt, den du dem Agenten gibst. Du definierst über [Prompt Engineering](/de/build/conversation/prompt-engineering-guide), wann und wie Tools genutzt werden.
+</Note>
+
+## Was sind Tools?
+
+Tools sind vorkonfigurierte Fähigkeiten, die dein Agent während des Gesprächs aufrufen kann, um konkrete Aufgaben zu erledigen. Wenn ein Kunde etwas wie Terminbuchung oder ein Gespräch mit einem Spezialisten anfragt, führt dein Agent automatisch das passende Tool aus.
+
+### Wie Tools funktionieren
+
+Während eines Gesprächs entscheidet dein Agent, ob er direkt antwortet oder ein Tool ausführt:
+
+```mermaid
+graph TD
+    A[Customer Message] --> B[AI Agent<br/>Evaluates Context]
+    B --> C{Tool Needed?}
+    C -->|No| D[Respond Directly]
+    C -->|Yes| E[Execute Tool]
+    E --> F[Continue with Results]
+    D --> G[Continue Conversation]
+    F --> G
+```
+
+Der Agent nutzt **Tool-Namen und Beschreibungen**, um zu verstehen, was jedes Tool macht. Diese Details helfen dem Modell, im richtigen Moment das richtige Tool zu wählen.
+
+**Best Practices:**
+- Gib Tools klare, beschreibende Namen, etwa "book_appointment" statt "tool1"
+- Schreibe detaillierte Beschreibungen, die erklären, was das Tool tut
+- Füge im [Agent Prompt](/de/build/conversation/prompt-engineering-guide) explizite Hinweise dazu ein, **wann** jedes Tool verwendet werden soll
+
+<Note>
+Während Tool-Namen und Beschreibungen dem Agenten sagen, **was** ein Tool macht, sollte dein Agent-Prompt festlegen, **wann** es genutzt wird. Beispiel: "Wenn ein Kunde mit einem Menschen sprechen will, nutze das Tool transfer_to_support."
+</Note>
+
+---
+
+## Verfügbare Tool-Typen
+
+Im Add-Menü des **Tools**-Tabs findest du:
+
+- **Transfer Call**
+- **Calendar Booking**
+- **Custom Action**
+- **Web Search** *(Alpha)*
+- **Calculator** (Profi)
+- **MCP Server** (Profi)
+
+<Note>
+Call ending ist kein separat hinzufügbares Tool mehr. Konfiguriere es unter **Conversation** -> **Call End** mit **Allow AI to hang up**.
+</Note>
+
+Für die Einrichtung der einzelnen Tools siehe [Transfer Tools](/de/build/tools/transfer-tools), [Calendar Booking](/de/build/tools/booking-calendar), [Custom Action](/de/build/tools/custom-api-actions), [Web Search](/de/build/tools/web-search), [Calculator](/de/build/tools/calculator) und [MCP Servers](/de/build/advanced/mcp-servers).
+
+Für den Ablauf von Live-Variablen und Ergebnissen lies [Conversation Data Flow](/de/build/conversation/runtime-data-flow).
+
+---
+
+## Wann Tools ausgeführt werden
+
+Tools laufen **während des Gesprächs**, wenn dein Agent sie anhand des Prompts auslöst. Anders als klassische IVR-Systeme, die starren Skripten folgen, nutzen KI-Agenten kontextuelles Verständnis, um zu entscheiden, wann Tools angebracht sind.
+
+### Trigger-Mechanismen
+
+**Instruction-Based Triggers:**
+```text wrap
+When the customer asks to speak to a human, use the 'Transfer to Support' tool.
+
+When the customer wants to schedule, use the 'Book Consultation' tool after you have the required details.
+
+When the customer asks for up-to-date external information, use the 'Web Search' tool.
+```
+
+**Conditional Triggers:**
+```jinja
+If the customer reports a billing issue:
+1. Use the 'Lookup Account' tool to retrieve their information
+2. If balance is overdue, transfer to billing department
+3. If balance is current, troubleshoot the issue
+
+{% if contact.contact_status == "vip" %}
+Always offer to transfer VIP customers to dedicated support immediately.
+{% endif %}
+```
+
+**Multi-Step Workflows:**
+```text wrap
+Appointment Booking Flow:
+1. Gather required information (name, email, preferred date)
+2. Use 'Check Availability' tool to query Cal.com
+3. Present options to customer
+4. Use 'Book Appointment' tool to confirm
+5. Confirm the booked slot and next steps clearly
+6. End the conversation naturally or rely on **Allow AI to hang up** if you have enabled it in **Conversation** → **Call End**
+```
+
+<Warning>
+Tools laufen in Echtzeit während des Anrufs. Stelle sicher, dass verbundene Systeme zuverlässig sind und schnell reagieren, um unangenehme Pausen im Gespräch zu vermeiden.
+</Warning>
+
+---
+
+## Tools konfigurieren
+
+Die gesamte Tool-Konfiguration passiert im Agent Editor unter dem Tab **Tools**.
+
+<Steps>
+  <Step title="Zu Tools navigieren">
+    Öffne deinen Agenten im Editor und klicke auf den Tab **Tools**
+  </Step>
+  <Step title="Tool-Typ wählen">
+    Durchsuche die verfügbaren Tools und klicke auf **Add**, um ein Tool zu konfigurieren
+  </Step>
+  <Step title="Tool konfigurieren">
+    Fülle das tool-spezifische Formular aus:
+    - **Name**: Gib deinem Tool einen klaren, beschreibenden Namen
+    - **Description**: Erkläre, was dieses Tool tut
+    - **Tool-specific settings**: Konfiguriere Parameter je nach Tool-Typ
+  </Step>
+  <Step title="Speichern">
+    Speichere das Tool, damit es zur Werkzeugkiste deines Agenten hinzugefügt wird
+  </Step>
+</Steps>
+
+---
+
+## Tools-Tabelle
+
+Konfigurierte Tools erscheinen in einer einzigen Tabelle im **Tools**-Tab.
+
+Typische Spalten sind:
+
+- **Name** - Anzeigename des Tools
+- **Type** - Tool-Typ, zum Beispiel Transfer, Booking, Custom, Web Search, MCP Server
+- **Category** - Untertyp oder Anbieter-Detail
+- **Details** - Wichtige Konfigurationsdetails
+
+Nutze **Add**, um weitere Tools zu erstellen, klicke eine Zeile zum Bearbeiten und verwende die Entfernen-Aktion zum Löschen.
+
+---
+
+## Tools im Prompt referenzieren
+
+Um Tools zu nutzen, referenziere sie im Prompt **mit genauem Namen**:
+
+### Direkte Referenz
+```text wrap
+When a customer asks to speak to someone about billing,
+use the 'Transfer to Billing Department' tool.
+```
+
+### Mit Bedingungen
+```text wrap
+If the customer's issue cannot be resolved:
+1. Apologize for the inconvenience
+2. Explain you're connecting them to a specialist
+3. Use the 'Transfer to Support' tool
+```
+
+### Mit Parametern
+```text wrap
+After gathering the customer's email and preferred date,
+use the 'Book Consultation' tool to schedule the meeting.
+```
+
+<Note>
+Tool-Namen sind case-sensitiv und müssen exakt mit der Konfiguration übereinstimmen. Wenn du ein Tool umbenennst, aktualisiere alle Referenzen in deinem Prompt.
+</Note>
+
+---
+
+## Best Practices für die Konfiguration
+
+<AccordionGroup>
+  <Accordion title="Einfach starten" icon="seedling">
+    Beginne mit grundlegenden Tools, bevor du komplexe Integrationen hinzufügst. Füge jeweils nur ein Tool hinzu, teste es gründlich und nimm dann das nächste.
+
+    **Beispiel-Reihenfolge:**
+    1. Transfer to Support hinzufügen
+    2. Booking oder Web Search hinzufügen
+    3. Custom Action hinzufügen
+    4. MCP Server nur dann hinzufügen, wenn du externe Tool-Kataloge brauchst
+  </Accordion>
+
+  <Accordion title="Klare, beschreibende Namen verwenden" icon="tag">
+    Tool-Namen sind entscheidend, weil das Modell sie benutzt, um zu verstehen, was jedes Tool macht. Nutze beschreibende, handlungsorientierte Namen, die den Zweck klar vermitteln.
+
+    **Warum das wichtig ist:** Das Modell stützt sich auf Funktionsnamen und Beschreibungen, um zu erkennen, wann eine Funktion aufgerufen werden muss und welches Tool für die Aufgabe passt.
+
+    **Gute Namen:**
+    - "Get Customer Account" - klares Verb + konkretes Ziel
+    - "Transfer to Billing Department" - konkretes Ziel enthalten
+    - "Book 30-Minute Consultation" - relevante Details enthalten
+
+    **Schlechte Namen:**
+    - "Tool 1" - kein Kontext
+    - "Transfer" - zu allgemein
+    - "API Call" - beschreibt das Tool nicht
+  </Accordion>
+
+  <Accordion title="Detaillierte Beschreibungen schreiben" icon="file-lines">
+    Tool-Beschreibungen helfen dem Modell zu verstehen, **was** das Tool tut. Die Beschreibung sollte den Zweck, die Rückgabe und die verwendeten Parameter erklären.
+
+    **Best Practices aus [OpenAI function calling](https://platform.openai.com/docs/guides/function-calling):**
+    - Klar beschreiben, was das Tool tut und was es zurückgibt
+    - Erklären, welche Parameter oder Daten es verwendet
+    - Präzise Sprache verwenden, die dem Modell hilft
+    - Kurz, aber umfassend bleiben
+
+    **Beispiel:**
+    ```
+    Name: Get Customer Account
+    Description: Retrieves customer account data from Salesforce CRM using
+    their phone number. Returns account status, balance, and recent orders.
+    ```
+
+    **Hinweis:** Beschreibe in der Beschreibung **was** das Tool tut. Lege in deinem [Agent Prompt](/de/build/conversation/prompt-engineering-guide) fest, **wann** es verwendet werden soll.
+  </Accordion>
+
+  <Accordion title="Gründlich testen" icon="vial">
+    Teste jedes Tool in der Agent-Testoberfläche, bevor du live gehst:
+    - Prüfe, ob das Tool korrekt ausgeführt wird
+    - Teste Erfolgsfälle
+    - Teste Fehlerfälle
+    - Prüfe das Error-Handling
+    - Kontrolliere den Gesprächsfluss
+  </Accordion>
+
+  <Accordion title="Fehler elegant behandeln" icon="shield-check">
+    Konfiguriere Fallback-Verhalten für den Fall, dass Tools fehlschlagen. Sage deinem Agenten, was er tun soll, wenn Tools nicht funktionieren.
+
+    ```
+    If the 'Book Appointment' tool fails:
+    1. Apologize sincerely
+    2. Offer to have someone call back to schedule
+    3. Collect their preferred callback number
+    4. Summarize the fallback plan before ending the conversation
+    ```
+  </Accordion>
+
+  <Accordion title="Informationen zuerst sammeln" icon="clipboard-check">
+    Stelle sicher, dass Agenten die nötigen Daten einsammeln, bevor sie Tools ausführen. Versuche nicht, Termine ohne E-Mail-Adressen zu buchen oder Anrufe ohne Begründung weiterzuleiten.
+
+    ```
+    Before using the 'Book Consultation' tool:
+    1. Confirm the customer wants to schedule
+    2. Ask for their email address if not in contact record
+    3. Discuss their preferred dates and times

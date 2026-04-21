@@ -1,0 +1,205 @@
+---
+title: "Gesprächsdetails"
+description: "Detaillierte Ansicht einzelner Gespräche mit Zeitachse, Transkript, Aufnahme, Zielen und gesammelten Insights"
+icon: "message-lines"
+keywords: "conversation detail, call transcript, audio playback, conversation timeline, knowledge retrieval, call analysis, conversation goals, gathered insights, notifications, system prompt, flag conversation"
+"og:description": "Prüfe einzelne Gespräche im Detail. Greife auf das vollständige Transkript, die Audioaufnahme, Zielverfolgung, gesammelte Insights, Benachrichtigungs-Logs und Wissensabrufdaten zu."
+"og:title": "Gesprächsdetails"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+Die Gesprächsdetailansicht zeigt dir die vollständigen Details einer einzelnen Interaktion. Prüfe das Transkript, höre die Aufnahme an, inspiziere Ziele und Analyseergebnisse und markiere Probleme für die Qualitätsprüfung.
+
+**Zugriff:** Klicke auf eine Zeile in der [Gespräche-Liste](/de/manage/conversations/overview) oder navigiere direkt per ID zu einem Gespräch.
+
+<Screenshot lightSrc="/images/manage__conversation-detail_DE-light.png" darkSrc="/images/manage__conversation-detail_DE-dark.png" alt="Gesprächsdetailansicht mit Metadaten, Zusammenfassung und Aufnahme links sowie Transkript rechts" />
+
+## Layout
+
+Die Detailseite verwendet ein Zwei-Spalten-Layout:
+
+- **Linke Spalte** - Tabs für Übersicht, Analytik, Benachrichtigungen, wenn Logs vorhanden sind, und Konfiguration
+- **Rechte Spalte** - Vollständiges Transkript mit Agenten- und Anrufernachrichten sowie Systemereignissen
+
+<Screenshot lightSrc="/images/manage__conversation-detail_DE-light.png" darkSrc="/images/manage__conversation-detail_DE-dark.png" alt="Gesprächsdetailansicht mit Informationsbereich und Transkript" />
+
+### Navigation
+
+Wenn du ein Gespräch aus der Liste öffnest, kannst du mit **Vorheriges/Nächstes** durch Gespräche springen, ohne zur Liste zurückzukehren. Ein Positionsindikator zeigt dir, wo du dich befindest, zum Beispiel "3 von 47".
+
+### Aktionen im Header
+
+Das Aktionsmenü im Header bietet:
+
+- **ID kopieren** - Gesprächs-ID in die Zwischenablage kopieren
+- **Transkript kopieren** - vollständiges Transkript im Markdown-Format kopieren (`**Agent**: Nachricht`)
+- **Audio herunterladen** - Aufnahme herunterladen, wenn eine vorhanden ist
+- **System-Prompt anzeigen** - den für dieses Gespräch verwendeten Agenten-Prompt anzeigen (nur lesbar)
+- **Löschen** - dieses Gespräch aus der Kontoliste entfernen. Das Backend löscht es soft, damit die Abrechnungshistorie erhalten bleibt.
+
+Nutze **Problem markieren** im Header, um das gesamte Gespräch an [Quality Studio](/de/manage/quality-studio/overview) zu senden. Agentennachrichten zeigen außerdem eine Hover-Markierungsschaltfläche, wenn du eine bestimmte Antwort markieren willst.
+
+## Abschnitt Übersicht
+
+Das Übersichts-Panel zeigt die wichtigsten Metadaten auf einen Blick.
+
+| Feld | Beschreibung |
+| --- | --- |
+| **Agent** | Name und Avatar des Agenten, mit Telefonnummer bei Session Initiation Protocol (SIP)-Telefonanrufen |
+| **Kanal** | Telefon, Web oder Test - mit Richtungsindikator (eingehend/ausgehend) |
+| **Startzeit** | Wann das Gespräch begonnen hat |
+| **Dauer** | Gesamtlänge des Anrufs plus Dauer nach einer Weiterleitung, falls zutreffend |
+| **Kontakt** | Kontaktname mit bis zu 2 Tags sichtbar ("+X"-Badge bei mehr) |
+| **Status** | Farblich codiertes Status-Badge |
+| **Antwortstatus** | Nur Outbound-Anrufe - human, machine, user rejected, user unavailable, user busy oder waiting |
+| **Trennungsgrund** | Wird angezeigt, wenn das Backend den Beendigungsgrund des Gesprächs aufgezeichnet hat |
+
+## Zusammenfassung
+
+Wenn der Agent eine Gesprächszusammenfassung erzeugt hat, erscheint sie unterhalb der Übersicht. Rechts-nach-links-Text für mehrsprachige Gespräche wird unterstützt.
+
+## Aufnahme
+
+<Screenshot lightSrc="/images/manage__conversation-recording_DE-light.png" darkSrc="/images/manage__conversation-recording_DE-dark.png" alt="Audioplayer für die Gesprächsaufnahme" />
+
+Wenn eine Aufnahme vorhanden ist, erscheint links ein Audioplayer mit den üblichen Wiedergabesteuerungen. Aufnahme und Transkript sind unabhängig - der Audioplayer hebt Transkriptzeilen nicht automatisch hervor.
+
+<Note>
+  Audioaufnahmen unterliegen deiner [Aufbewahrungsrichtlinie](/de/manage/trust-center/overview). Wenn die Plattform die Aufnahme gemäß deiner Richtlinie gelöscht hat, ist nur das Transkript verfügbar.
+</Note>
+
+## Ziele
+
+<Screenshot lightSrc="/images/manage__conversation-analytics_DE-light.png" darkSrc="/images/manage__conversation-analytics_DE-dark.png" alt="Analytics-Tab mit Ziel-Fortschritt und Ergebnissen gesammelter Insights" />
+
+Wenn der Agent [Gesprächsziele](/de/build/analytics/conversation-goals) konfiguriert hat, zeigt der Zielbereich:
+
+- **Ring-Fortschritt** mit Erreichungswert, zum Beispiel "2/3"
+- **Zielliste** mit Statussymbolen für jedes Ziel
+- **Details-Schaltfläche**, die einen Dialog mit der vollständigen Zielaufteilung öffnet
+
+### Zielstatus
+
+| Status | Symbol | Farbe |
+| --- | --- | --- |
+| Erreicht | Häkchen | Grün |
+| Teilweise erreicht | Strich | Gelb |
+| Nicht erreicht | X | Rot |
+| Unbekannt | Fragezeichen | Grau |
+
+### Dialog "Zieldetails"
+
+Der Dialog zeigt Ziele in zwei Tabs: **Primäre Ziele** und **Sekundäre Ziele**. Jede Zielkarte enthält:
+
+- Zielname und Beschreibung
+- Ergebnisstatus mit Symbol
+- Vertrauenswert (0-100 %) mit Fortschrittsbalken
+- Erklärungs- oder Begründungstext
+
+## Gesammelte Insights
+
+Wenn [Insights erfassen](/de/build/analytics/gather-insights) konfiguriert ist, erscheinen die Ergebnisse in einem Zwei-Spalten-Raster. Jedes Insight-Element zeigt seinen Namen und sein Ergebnis.
+
+**Ergebnistypen:**
+- **Bewertung** - 1-5 Sterne (grün für hoch, rot für niedrig)
+- **Ja/Nein** - Häkchen oder X-Symbol
+- **Text** - Freitext-Ergebnis
+
+### Dialog "Analyse-Details"
+
+Klicke auf **Details**, um die vollständige Analyseaufteilung zu öffnen, organisiert nach Kategorie-Tabs:
+
+- Kommunikation
+- Interaktion
+- Wissen
+- Stimmung
+- Technisch
+- Benutzerdefiniert
+- Sonstiges
+
+Jede Karte zeigt den Analysenamen, das Ergebnis, den Vertrauenswert mit Fortschrittsbalken und die Erklärung.
+
+## Benachrichtigungen
+
+Wenn Post-Call-Benachrichtigungen ausgelöst wurden, zeigt der Tab **Benachrichtigungen** jeden Log mit Status. Klicke auf **Details** für die vollständige Aufschlüsselung.
+
+<Screenshot lightSrc="/images/manage__conversation-notifications_DE-light.png" darkSrc="/images/manage__conversation-notifications_DE-dark.png" alt="Tab Benachrichtigungen mit gesendeten Post-Call-Benachrichtigungs-Logs" />
+
+### Benachrichtigungsstatus
+
+| Status | Symbol | Beschreibung |
+| --- | --- | --- |
+| **Gesendet** | Grüner Pfeil | Benachrichtigung erfolgreich zugestellt |
+| **Fehlgeschlagen** | Rotes Symbol | Zustellung fehlgeschlagen (Fehlermeldung in den Details) |
+| **Übersprungen** | Graues Symbol | Bedingungen nicht erfüllt, Benachrichtigung wurde übersprungen |
+
+### Dialog "Benachrichtigungsdetails"
+
+Organisiert nach Status-Tabs (Gesendet, Fehlgeschlagen, Übersprungen). Jede Benachrichtigungskarte zeigt:
+
+- Benachrichtigungsname und Zeitstempel
+- Empfänger (E-Mail-Adressen)
+- Gerenderte Betreffzeile
+- Fehlermeldung (falls fehlgeschlagen)
+- Begründung der Bedingungsprüfung
+- Inhalt des E-Mail-Textelements
+
+## Konfiguration
+
+Der Tab **Konfiguration** zeigt die Agentenkonfiguration und den aufgezeichneten Nutzungskontext für das Gespräch, einschließlich Modell, Transcriber, Stimme, Anrufstart-Einstellungen, Limits, Abrechnung und Latenzdaten.
+
+<Screenshot lightSrc="/images/manage__conversation-config_DE-light.png" darkSrc="/images/manage__conversation-config_DE-dark.png" alt="Konfigurations-Tab mit Modell-, Transcriber-, Stimmen-, Limit-, Abrechnungs- und Latenzdetails" />
+
+## Transkript
+
+Die rechte Spalte zeigt alle Nachrichten und Ereignisse in chronologischer Reihenfolge.
+
+<Screenshot lightSrc="/images/manage__conversation-timeline_DE-light.png" darkSrc="/images/manage__conversation-timeline_DE-dark.png" alt="Gesprächszeitachse mit Nachrichten, Tool-Aufrufen und Ereignissen in Reihenfolge" />
+
+### Zeitachsen-Header
+
+- **Benutzerinfos** - Bei SIP-Anrufen: Telefonnummer mit Länderflagge. Bei Web/Test-Anrufen: Stadt, Land und IP-Adresse
+- **Kanal-Label** und Datum der ersten Nachricht
+
+### Nachrichtentypen
+
+**Agentennachrichten** - Was der Agent gesagt hat, mit Zeitstempel. Kann enthalten:
+- Unterbrechungsindikator, wenn der Anrufer unterbrochen hat
+- Ergebnisse der Wissensbasis (welche Inhalte der Agent verwendet hat, Relevanzbewertungen und Quellen)
+- Metriken zur Antwortzeit (erste Antwortzeit, gesamte Verarbeitungszeit)
+
+**Anrufernachrichten** - Was der Anrufer gesagt hat, mit Zeitstempel. Unterstützt Text- und Bildnachrichten (mit Dateiname, Typ und Größe).
+
+**Systemereignisse** - Ausgeführte Tools (Integrationen, Weiterleitungen, Buchungen) sowie Fehler, Transfers und andere Systemereignisse werden inline mit Beschreibungen und Metadaten angezeigt.
+
+### Nachrichten markieren
+
+Klicke auf das **Markieren**-Symbol bei einer einzelnen Nachricht, um sie für die Prüfung in [Quality Studio](/de/manage/quality-studio/overview) zu markieren. Das ist nützlich, wenn du bestimmte problematische Antworten markieren willst statt das ganze Gespräch.
+
+## Tracking des Wissensabrufs
+
+Wenn sichtbar in den Nachrichtenmetadaten, zeigt die Wissensabruf-Daten:
+
+- abgerufene Inhaltsblöcke
+- Ähnlichkeitswerte für jeden Block
+- Quellendokument-Referenzen
+
+So findest du fehlende Inhalte in deiner Wissensbasis und verbesserst die Suchgenauigkeit.
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Gespräche-Liste" icon="messages" href="/de/manage/conversations/overview">
+    Zur vollständigen Gesprächsliste mit Filtern und Suche zurückkehren
+  </Card>
+  <Card title="Quality Studio" icon="microscope" href="/de/manage/quality-studio/overview">
+    Markierte Gespräche prüfen und Qualitätsprobleme beheben
+  </Card>
+  <Card title="Gesprächsziele" icon="bullseye" href="/de/build/analytics/conversation-goals">
+    Ziele konfigurieren, um das zu messen, was für deinen Use Case wichtig ist
+  </Card>
+  <Card title="Insights erfassen" icon="clipboard-list" href="/de/build/analytics/gather-insights">
+    Eigene Insight-Fragen für strukturierte Ergebnisse einrichten
+  </Card>
+</CardGroup>

@@ -1,0 +1,167 @@
+---
+title: "Debugging"
+description: "Find and fix common agent issues using test calls, conversation history, and step-by-step checks"
+icon: "bug"
+keywords: 'debugging, troubleshooting, conversation logs, transcriber issues, response problems, voice quality, tool failures'
+"og:description": 'Debug voice agent issues with conversation history and step-by-step troubleshooting. Identify and fix speech, response, voice, and tool problems.'
+"og:title": "Debugging"
+---
+
+## Debugging Voice Agents
+
+Use this page when something is clearly broken in a way a caller would notice. Start by reproducing the issue in **Test Agent**, then use **Conversations** to see exactly what happened and where the interaction went off track.
+
+Use **Chat** or **Web call** in the **Test Agent** popover to reproduce quickly, then confirm behavior in **Phone call** mode before launch.
+
+## Where To Look First
+
+<CardGroup cols={2}>
+  <Card title="Conversation History" icon="list">
+    Access the full conversation history including transcripts, actions, and metadata
+  </Card>
+
+  <Card title="Real-Time Transcript" icon="closed-captioning">
+    Monitor live transcription and agent responses during test calls
+  </Card>
+
+  <Card title="Tool Activity" icon="code">
+    Review details about transfers, bookings, custom actions, and other connected steps
+  </Card>
+
+  <Card title="Error Details" icon="triangle-exclamation">
+    See messages that explain why a step failed or did not complete
+  </Card>
+</CardGroup>
+
+---
+
+## Systematic Debugging Approach
+
+When something goes wrong, follow this systematic process:
+
+<Steps>
+  <Step title="Reproduce the issue">
+    Test again to confirm the problem is consistent
+
+    Note exact conditions when it occurs
+  </Step>
+
+  <Step title="Identify the component">
+    Determine which part appears to be wrong:
+    - Speech recognition
+    - Response quality
+    - Voice output
+    - Tool or integration execution
+    - Knowledge retrieval
+  </Step>
+
+  <Step title="Review logs">
+    Open **[Conversations](/manage/conversations/overview)** and find the problematic call
+
+    Examine the transcript, tool activity, and any visible error messages
+  </Step>
+
+  <Step title="Test components individually">
+    Isolate the failing component:
+    - Try different transcriber
+    - Try a simpler prompt or questions
+    - Try different voice
+    - Trigger one tool at a time
+    - If needed, ask the owner of the connected system to confirm it is available
+  </Step>
+
+  <Step title="Fix and verify">
+    Make targeted changes based on findings
+
+    Test again to confirm the fix
+  </Step>
+</Steps>
+
+---
+
+## Component-Level Debugging
+
+Use the conversation log to identify the failing component, then switch to the specialist page that owns the fix.
+
+| If the log suggests... | Check in the log | Specialist guide |
+| --- | --- | --- |
+| Transcription is wrong | Transcript text vs. what the caller said, missing words, language mismatch | [Transcriber](/build/voice-speech/transcriber) and [Call Quality](/troubleshooting/call-quality) |
+| AI response is wrong | Full conversation context, retrieved knowledge, prompt behavior | [Prompt Engineering Guide](/build/conversation/prompt-engineering-guide) and [Knowledge Issues](/troubleshooting/knowledge-issues) |
+| Voice output sounds wrong | Recording, spoken text, pronunciation, voice settings | [Voice Settings](/build/voice-speech/voice-settings) and [Call Quality](/troubleshooting/call-quality) |
+| Tool execution failed | Tool call event, request summary, response summary, error message, duration | [Tools & Integrations](/troubleshooting/tools-integrations) and [Custom Actions](/troubleshooting/custom-actions) |
+| Knowledge retrieval failed | Retrieved chunks, assigned knowledge base, item status | [Knowledge Issues](/troubleshooting/knowledge-issues) |
+| Conversation timing feels wrong | Turn timing, interruptions, silence, response latency | [Call Quality](/troubleshooting/call-quality) |
+
+<Tip>
+Use this page to isolate the component. Use the linked specialist page for detailed fixes and configuration changes.
+</Tip>
+
+---
+
+## Using Conversation Logs for Debugging
+
+Every test call creates a detailed log accessible in **Conversations**.
+
+### What's in the logs:
+
+**Basic information:**
+- Call date, time, duration
+- Agent used
+- Phone number (if phone test)
+- Call status (completed, failed, etc.)
+
+**Conversation data:**
+- Full transcript (user + agent)
+- Timestamps for each message
+- Audio recording (if available)
+
+**Detailed activity:**
+- Tools triggered with details
+- Phone keypad inputs captured
+- [Goal](/build/analytics/conversation-goals) analysis results
+- [Gather Insights](/build/analytics/gather-insights) responses
+- Additional metadata
+- Error messages
+
+**How to debug with logs:**
+1. Filter by agent name to find test calls
+2. Open specific call to see full details
+3. Read transcript to identify where it went wrong
+4. Check tool details if tools failed
+5. Listen to audio if transcript looks correct but audio was wrong
+6. Review timestamps to identify response time issues
+
+---
+
+## Getting Help
+
+When you need additional support:
+
+<CardGroup cols={2}>
+  <Card title="Review Documentation" icon="book">
+    Check specific feature docs for configuration details
+  </Card>
+
+  <Card title="Check Provider Status" icon="signal">
+    Check the service status of any providers your agent depends on
+  </Card>
+
+  <Card title="Contact Support" icon="headset">
+    Email support@itellico.ai with call logs and error details
+  </Card>
+</CardGroup>
+
+**When contacting support, include:**
+- Agent ID or name
+- Conversation ID from logs
+- Specific error messages
+- Steps to reproduce
+- Screenshots if applicable
+
+---
+
+## Next Steps
+
+<Card title="Launch Checklist" icon="rocket" href="/launch/overview">
+  Review the launch checklist to prepare your agent for production
+</Card>

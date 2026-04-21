@@ -1,0 +1,245 @@
+---
+title: "Dynamischer Kontext (Pre-Call Webhook)"
+description: "Rufe personalisierte Daten aus deinen Systemen ab, bevor Gespräche beginnen"
+icon: "database"
+keywords: "dynamic context, pre-call webhook, inbound webhook, API context, personalized data, CRM integration, customer data, real-time context"
+"og:description": "Rufe personalisierte Kundendaten aus deinem CRM und deinen Systemen ab, bevor Gespräche beginnen, damit KI-Interaktionen intelligenter werden."
+"og:title": "Dynamic Context"
+---
+
+## Wie Dynamic Context funktioniert
+
+<Badge>Profi</Badge>
+
+Dynamic Context lässt dich Kundendaten aus deinen externen APIs **einmalig vor jedem Gesprächsstart** abrufen. Statt nur auf Kontaktdatensätze zu setzen, können deine Agenten auf Kontostatus, Bestellhistorie, Support-Tickets und Geschäftskontext aus deinem Customer-Relationship-Management-(CRM)-System, aus Datenbanken und aus Backend-Systemen zugreifen. Du kannst außerdem [custom API tools](/de/build/tools/custom-api-actions) verwenden, um Daten während des Gesprächs abzurufen.
+
+<Note>
+Konfiguriere Dynamic Context im **Call Flow** unter **Before Call** im Agent-Editor. Die zurückgegebenen JSON-Daten stehen direkt als Variablen (z. B. `{{ field_name }}`) in der [greeting](/de/build/conversation/greeting-messages) und im [prompt](/de/build/conversation/prompt) deines Agents zur Verfügung.
+</Note>
+
+<Info>
+**Die Plattform ruft die Context-API einmal auf, bevor das Gespräch beginnt.** Die Daten stehen für die Begrüßung und während des gesamten Gesprächs zur Verfügung. Sie werden während des Gesprächs nicht aktualisiert. Das harte Request-Timeout beträgt 30 Sekunden, aber du solltest den Endpunkt so auslegen, dass er in unter 1 Sekunde antwortet.
+</Info>
+
+**Kurze Anforderungen:**
+- HTTPS-Endpunkt
+- Gültiges JSON-Objekt oder ein Array von Objekten, das zusammengeführt werden kann
+- Kleine Antwort-Payload mit nur den Daten, die das Gespräch braucht
+- Schnelle Antwortzeit; Ziel: unter 1 Sekunde
+- Authentifizierung via Bearer Token, Basic Auth, Custom Header oder keine Authentifizierung
+
+## So funktioniert es
+
+**Request-Flow:**
+
+<Steps>
+  <Step title="Anruf gestartet">
+    Anruf gestartet (Inbound) oder steht kurz vor dem Start (Outbound)
+  </Step>
+
+  <Step title="Context-API aufgerufen">
+    **BEVOR das Gespräch beginnt:** Das System sendet eine POST-Anfrage an deinen Endpunkt
+  </Step>
+
+  <Step title="Deine Systeme abfragen">
+    Deine API fragt CRM/Datenbank nach Kundendaten ab
+  </Step>
+
+  <Step title="JSON zurückgeben">
+    Deine API gibt JSON mit Kontextdaten zurück
+  </Step>
+
+  <Step title="Kontext verfügbar">
+    Die Plattform stellt die Kontextdaten als Template-Variablen bereit
+  </Step>
+
+  <Step title="Begrüßung gerendert">
+    Die Plattform rendert die Begrüßung (unter Verwendung von Kontextvariablen, falls referenziert)
+  </Step>
+
+  <Step title="Gespräch beginnt">
+    Das Gespräch beginnt (Kontextvariablen sind verfügbar, wenn sie im Prompt referenziert werden)
+
+    Der Kontext bleibt während des gesamten Gesprächs statisch (keine Aktualisierung)
+  </Step>
+</Steps>
+
+<Columns cols={3}>
+  <Card title="Inbound calls" icon="phone">
+    `direction: "inbound"` mit der `contact_number` des Anrufers. Suche Kundendaten in deinem CRM.
+  </Card>
+  <Card title="Outbound calls" icon="arrow-up-right-dots">
+    `direction: "outbound"` mit der `contact_number`, die du anrufst. Hole Kampagnenkontext ab.
+  </Card>
+  <Card title="Web widget" icon="window">
+    `medium: "web"` mit optionaler `external_id`. Identifiziere Nutzer in deinem System über das [web widget](/de/manage/web-widgets/overview).
+  </Card>
+</Columns>
+
+---
+
+## Konfiguration
+
+<Steps>
+  <Step title="Zu Dynamic Context navigieren">
+    1. Öffne deinen Agenten im Editor
+    2. Klicke auf **Call Flow**
+    3. Öffne unter **Before Call** **Dynamic Context**
+  </Step>
+
+  <Step title="Endpunkt konfigurieren">
+    Dieser Schritt wird normalerweise von einer technischen Teamkollegin oder einem technischen Teamkollegen erledigt.
+
+    **Endpoint-URL:** `https://api.company.com/context`
+
+    **Authentifizierung:** Wähle Bearer Token, Basic Auth, Custom Header oder None
+
+    Die Anfrage enthält: `agent_uuid`, `direction`, `agent_number`, `contact_number` (und `external_id` für Web-Widget)
+  </Step>
+
+  <Step title="Testen">
+    Speichere die Dynamic-Context-Einstellungen und nutze dann **Test**, um zu prüfen, ob der gespeicherte Endpunkt und die Authentifizierung korrekt antworten.
+  </Step>
+
+  <Step title="Speichern">
+    Aktivieren und speichern. Die Plattform holt den Kontext vor jedem Gespräch.
+  </Step>
+</Steps>
+
+---
+
+## Request- und Response-Format
+
+### Request-Payload (POST-Request)
+
+<RequestExample>
+```http
+POST https://api.company.com/context
+Authorization: Bearer your_api_token
+Content-Type: application/json
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36...
+X-Agent-UUID: 550e8400-e29b-41d4-a716-446655440000
+X-Agent-Number: +15551234000
+X-Contact-Number: +15551234567
+X-Direction: inbound
+X-Medium: phone
+X-Room-SID: RM_abc123
+
+{
+  "agent_uuid": "550e8400-e29b-41d4-a716-446655440000",
+  "direction": "inbound",
+  "agent_number": "+15551234000",
+  "contact_number": "+15551234567"
+}
+```
+</RequestExample>
+
+**Body-Parameter:**
+- `agent_uuid` (string, immer enthalten) - Die UUID des Agents, der den Anruf bearbeitet
+- `direction` (string, immer enthalten) - `"inbound"` oder `"outbound"`
+- `agent_number` (string, optional) - Die Telefonnummer, die der Agent verwendet
+- `contact_number` (string, optional) - Die Telefonnummer des Kunden
+- `external_id` (string/int, optional) - Nur für Web-Widget-Anrufe, falls von deiner Integration bereitgestellt
+
+**Zusätzliche Header:**
+- `X-Agent-UUID`, `X-Agent-Number`, `X-Contact-Number`, `X-Direction`, `X-Medium` (phone/web)
+- `X-Room-SID` - Eindeutige Kennung für diese Gesprächssitzung
+- `X-External-ID` - Nur für Web-Widget-Anrufe
+
+<Note>
+**Typische Verwendung:** Dein Endpunkt nutzt `contact_number` oder `external_id`, um den Kunden in deinem CRM/Datenbank nachzuschlagen, und gibt dann relevante Kontodaten, Bestellhistorie, Tickets usw. zurück. `agent_uuid` kann verwendet werden, um Antworten bei Bedarf agentenspezifisch anzupassen.
+</Note>
+
+### Was du zurückgibst (JSON-Response)
+
+<ResponseExample>
+```json
+{
+  "account": {
+    "customer_id": "12345",
+    "tier": "VIP",
+    "status": "active",
+    "created_date": "2022-03-15"
+  },
+  "recent_orders": [
+    {
+      "order_id": "ORD-789",
+      "status": "shipped",
+      "tracking": "1Z999AA1234567890"
+    }
+  ],
+  "support_tickets": [
+    {
+      "ticket_id": "TKT-456",
+      "status": "open",
+      "subject": "Billing question"
+    }
+  ]
+}
+```
+</ResponseExample>
+
+**Anforderungen:**
+- Gültiges JSON-Objekt oder ein Array von Objekten, das zusammengeführt werden kann
+- Halte die Antwort klein und fokussiere auf Felder, die der Agent braucht
+- Gib nur notwendige Felder zurück (das hält die Antwort schnell)
+- Gehe mit fehlenden Daten sauber um (gib `null` zurück oder lasse Felder weg)
+
+<Info>
+**Wie Variablen abgerufen werden:** Alle Top-Level-Keys in deiner JSON-Response werden zu Template-Variablen. Wenn du `{"account": {"tier": "VIP"}}` zurückgibst, rufst du es als `{{ account.tier }}` ab, nicht als `{{ context.account.tier }}`.
+</Info>
+
+---
+
+## Kontextvariablen verwenden
+
+Alle von deiner API zurückgegebenen Daten stehen direkt als Top-Level-Variablen in der Begrüßung und im Prompt deines Agents zur Verfügung.
+
+**Felder abrufen:**
+```jinja
+Account Tier: {{ account.tier }}
+→ "VIP"
+
+Order Status: {{ recent_orders[0].status }}
+→ "shipped"
+
+Number of Tickets: {{ support_tickets|length }}
+→ 1
+```
+
+**Beispiel-Begrüßung mit Kontext:**
+```jinja
+Thanks for calling! I see you're a {{ account.tier }} customer with us.
+How can I help you today?
+```
+
+**Beispiel-Prompt mit Kontext:**
+```jinja
+You are helping a {{ account.tier }} customer since {{ account.created_date }}.
+
+{% if support_tickets|length > 0 %}
+```
+
+## Praktische Hinweise
+
+- Halte die Antwort klein und gezielt.
+- Gib nur Felder zurück, die du im Gespräch wirklich brauchst.
+- Nutze `null` oder lass Felder weg, wenn Daten fehlen.
+- Teste den Endpunkt mit realistischen Antworten aus dem CRM.
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Greeting Messages" icon="hand-wave" href="/de/build/conversation/greeting-messages">
+    Kontextvariablen in der Begrüßung verwenden
+  </Card>
+  <Card title="Prompt" icon="pen-to-square" href="/de/build/conversation/prompt">
+    Kontextvariablen im Prompt verwenden
+  </Card>
+  <Card title="Custom API Actions" icon="plug" href="/de/build/tools/custom-api-actions">
+    Daten während des Gesprächs abrufen
+  </Card>
+  <Card title="Web Widget" icon="window" href="/de/manage/web-widgets/overview">
+    Kontext für Web-Widget-Gespräche bereitstellen
+  </Card>
+</CardGroup>

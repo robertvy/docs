@@ -1,0 +1,91 @@
+---
+title: "Test-Übersicht"
+description: "Validiere deine Sprachagenten, bevor du live mit Kundinnen und Kunden gehst"
+icon: "vial"
+keywords: "testing, agent testing, voice agent validation, test workflow, QA testing, agent debugging, chat testing, web testing, phone testing"
+"og:description": "Validiere Sprachagenten vor dem Launch mit Tests für Chat, Webanruf und Telefonanruf."
+"og:title": "Test-Übersicht"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+**Zugriff:** Öffne einen beliebigen Agenten im Editor und klicke in der Toolbar auf **Agent testen**.
+
+<Screenshot
+  lightSrc="/images/wizard__test-call-dialog_DE-light.png"
+  darkSrc="/images/wizard__test-call-dialog_DE-dark.png"
+  alt="Popover 'Agent testen' im Agent-Editor mit den Optionen Chat, Webanruf und Telefonanruf"
+/>
+
+## Testablauf
+
+Teste zuerst günstig und schnell, dann gehe zu realen Bedingungen über.
+
+| Phase | Damit validierst du | Detaillierte Anleitung |
+| --- | --- | --- |
+| **Chat** | Prompt-Logik, Tool-Auswahl, Antworten aus dem Wissen | [Web- & Chat-Tests](/de/test/web-simulator) |
+| **Webanruf** | Stimme, Gesprächswechsel, Aussprache, Browser-Audio | [Web- & Chat-Tests](/de/test/web-simulator) |
+| **Telefonanruf** | Carrier-Verhalten, Latenz, [AMD](/de/glossary#voice-and-speech), echtes Anrufererlebnis | [Telefontests](/de/test/phone-testing) |
+| **Gesprächsprüfung** | Transkript, Aufzeichnung, Ziele, Insights, Benachrichtigungen | [Gespräche](/de/manage/conversations/overview) |
+
+Wiederhole die Testleiter nach größeren Änderungen an Prompt, Tools, Stimme, Timing, Privatsphäre-Einstellungen oder Post-Call-Automation.
+
+<Tip>
+Wenn eine Änderung beeinflusst, wie der Anrufer den Agenten hört, höre nicht bei Chat auf. Führe vor dem Launch immer mindestens einen Webanruf und einen Telefonanruf aus.
+</Tip>
+
+## QA-Checkliste
+
+Gehe diese Szenarien vor dem Go-live durch:
+
+| Was testen | So prüfst du es | Bestanden, wenn ... |
+| --- | --- | --- |
+| **Begrüßung** | Anrufen - stellt sich der Agent korrekt vor? | Die Begrüßung passt zu deiner Konfiguration und klingt natürlich |
+| **Häufige Fragen** | Stelle 3-5 Fragen, die deine Kundinnen und Kunden am häufigsten stellen | Der Agent antwortet korrekt aus der Wissensdatenbank |
+| **Fragen außerhalb des Umfangs** | Stelle etwas, das der Agent nicht beantworten sollte | Der Agent lehnt höflich ab und bietet Transfer oder Rückruf an |
+| **Tool-Ausführung** | Starte einen Transfer, eine Buchung oder einen API-Call | Das Tool wird erfolgreich ausgelöst (prüfe die Gesprächs-Timeline) |
+| **Unterbrechungen** | Sprich, während der Agent redet | Der Agent stoppt und hört zu |
+| **Stille** | Bleibe 15+ Sekunden still | Der Agent fordert dich auf oder behandelt Inaktivität sauber |
+| **Wütender Anrufer** | Sei genervt oder fordernd | Der Agent bleibt ruhig, empathisch und folgt den Eskalationsregeln |
+| **Falsche Eingabe** | Gib erst falsche Infos und korrigiere dich dann | Der Agent verarbeitet die Korrektur ohne Verwirrung |
+| **Zielverfolgung** | Schließe einen typischen Anruf ab | Das Primärziel wird in den Gesprächsdetails korrekt markiert |
+| **Benachrichtigungen** | Löse eine Bedingung aus, die eine E-Mail oder Aufgabe erzeugen soll | Die E-Mail kommt an und/oder die Aufgabe wird erstellt |
+
+## Wann du welchen Testmodus nutzt
+
+| Modus | Am besten für | Geschwindigkeit | Realismus |
+| --- | --- | --- | --- |
+| **Chat** | Prompt-Iteration, Logik-Checks, Tool-Tests | Am schnellsten | Niedrig (nur Text) |
+| **Webanruf** | Sprachqualität, Gesprächswechsel, Aussprache | Schnell | Mittel |
+| **Telefonanruf** | Vollständiges Kundenerlebnis, Latenz, AMD | Langsam | Hoch |
+
+<Tip>
+Mach 80 % deiner Tests in Chat und Webanruf. Wechsle erst für die finale Validierung und Sprachqualität zu Telefonanrufen.
+</Tip>
+
+## Launch-Bereitschaft
+
+Du bist in der Regel bereit für den Launch, wenn:
+
+- der Agent die 3 bis 5 wichtigsten echten Kundenanliegen sauber behandelt
+- Unterbrechungen und Stille natürlich wirken
+- Transfers und Tools mit realistischen Eingaben funktionieren
+- Ziele und Post-Call-Aktionen in den Gesprächsdetails korrekt erscheinen
+- mindestens ein echter Telefonanruf genau das Erlebnis zeigt, das du Kundinnen und Kunden bieten willst
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Web- & Chat-Tests" icon="browser" href="/de/test/web-simulator">
+    Führe browserbasierte Tests mit Chat- und Webanruf-Modus aus
+  </Card>
+  <Card title="Telefontests" icon="phone" href="/de/test/phone-testing">
+    Teste mit echten Telefonanrufen
+  </Card>
+  <Card title="Testszenarien" icon="list-check" href="/de/test/test-scenarios">
+    Folge vorgefertigten Testscripts für gängige Anwendungsfälle
+  </Card>
+  <Card title="Edge Cases" icon="triangle-exclamation" href="/de/test/edge-cases">
+    Teste Unterbrechungen, Stille und unerwartete Eingaben
+  </Card>
+</CardGroup>

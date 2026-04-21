@@ -1,0 +1,206 @@
+---
+title: "Web Search"
+description: "Enable your agent to search the web for real-time information"
+icon: "magnifying-glass"
+keywords: "web search, real-time search, live information, internet search, AI web search, search tool"
+"og:description": "Enable your AI agent to search the web for real-time information during conversations."
+"og:title": "Web Search"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+## How Web Search Works
+
+The Web Search tool enables your agent to search the internet for real-time information during conversations. It provides up-to-date answers for questions beyond your agent's training data or knowledge base.
+
+<Note>
+Web Search is currently in alpha. Each search incurs an additional charge of €0.01.
+</Note>
+
+---
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Current Events" icon="newspaper">
+    Answer questions about recent news, updates, or time-sensitive information
+  </Card>
+  <Card title="Competitor Research" icon="chart-bar">
+    Look up current pricing, features, or offerings during sales calls
+  </Card>
+  <Card title="Product Information" icon="box">
+    Find specifications, availability, or reviews not in your knowledge base
+  </Card>
+  <Card title="Location Data" icon="location-dot">
+    Search for addresses, hours, directions, or local information
+  </Card>
+</CardGroup>
+
+---
+
+## Configuration
+
+Navigate to **Tools** in your agent editor and add a new Web Search tool.
+
+<Screenshot
+  lightSrc="/images/tools__web-search-modal-light.png"
+  darkSrc="/images/tools__web-search-modal-dark.png"
+  alt="Web Search configuration modal showing filler phrase, allowed domains, search depth, max results, and AI answer settings"
+  caption="The Web Search modal controls what the agent says while searching, which domains it may search, and how many results it receives."
+/>
+
+### Basic Settings
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| **Filler Phrase** | What the agent says while searching | "Let me look that up for you..." |
+| **Max Results** | Maximum search results to return (1-10) | 3 |
+| **Search Depth** | Basic (faster) or Advanced (more comprehensive) | Basic |
+| **Include AI Answer** | Include an AI-generated summary of results | Enabled |
+
+### Filler Phrase
+
+Customize the phrase your agent says while performing the search. The search typically takes 2-5 seconds.
+
+**Examples:**
+- "Let me search for that..."
+- "One moment while I look this up..."
+- "I'll find the latest information on that..."
+
+### Search Depth
+
+<Tabs>
+  <Tab title="Basic">
+    **Faster results, less comprehensive**
+
+    - Response time: 1-2 seconds
+    - Best for: Simple factual queries
+    - Cost: Lower per search
+
+    **Use when:**
+    - Quick answers are more important than depth
+    - Simple factual questions
+    - High call volume where speed matters
+  </Tab>
+
+  <Tab title="Advanced">
+    **More comprehensive, slightly slower**
+
+    - Response time: 2-4 seconds
+    - Best for: Complex queries requiring thorough research
+    - Cost: Higher per search
+
+    **Use when:**
+    - Detailed information is required
+    - Complex multi-part questions
+    - Research-heavy conversations
+  </Tab>
+</Tabs>
+
+### Domain Restrictions
+
+Optionally restrict searches to specific domains:
+
+```json
+["example.com", "docs.example.com", "help.example.com"]
+```
+
+**Use cases for domain restrictions:**
+- Limit to your own documentation sites
+- Restrict to trusted sources only
+- Focus on specific industry publications
+
+Leave empty to search the entire web.
+
+At runtime, domains are normalized and capped at 25 entries.
+
+---
+
+## How It Works
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Agent
+    participant Search as Web Search
+
+    User->>Agent: "What's the current price of..."
+    Agent->>Agent: Decides to search
+    Agent->>User: "Let me look that up..."
+    Agent->>Search: Search query
+    Search-->>Agent: Search results + AI summary
+    Agent->>User: Provides answer with sources
+```
+
+1. You ask a question requiring current information
+2. Agent determines web search is needed
+3. Agent speaks the filler phrase
+4. The search runs
+5. Agent synthesizes results into a natural response
+
+---
+
+## Best Practices
+
+**Write clear triggers:** In your agent's prompt, specify when to use web search:
+
+```text
+Use web search when:
+- Asked about current events, news, or recent developments
+- Questions about competitor pricing or features
+- Information not in your knowledge base
+- Time-sensitive data (stocks, weather, schedules)
+
+Do NOT use web search when:
+- Information is in the knowledge base
+- General knowledge questions
+- Company-specific information you already have
+```
+
+**Keep filler phrases natural:** Match the phrase to your agent's personality and the situation.
+
+**Use domain restrictions wisely:** Only restrict if you have a specific reason. Open search provides more comprehensive results.
+
+**Consider search depth:** Start with Basic for speed, switch to Advanced if results are insufficient.
+
+---
+
+## Limitations
+
+- **Internet access required:** Requires network connectivity
+- **Search takes time:** 2-5 seconds per search
+- **Results vary:** Search quality depends on query clarity
+- **Query length:** Search queries are capped at 500 characters
+- **Cost per search:** Each successful search is tracked as a billable usage event
+
+---
+
+## Combining with Knowledge Base
+
+Web Search and Knowledge Base work together:
+
+| Source | Best for |
+|--------|----------|
+| Knowledge Base | Company-specific, curated, controlled information |
+| Web Search | Current events, external data, real-time information |
+
+**Recommendation:** Use your knowledge base for stable company information and web search for dynamic external data.
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Tools Overview" icon="bolt" href="/build/tools/overview">
+    Explore all available tools
+  </Card>
+  <Card title="Custom API Actions" icon="code" href="/build/tools/custom-api-actions">
+    Build custom integrations
+  </Card>
+  <Card title="Knowledge Base" icon="book" href="/build/knowledge/architecture">
+    Add curated information sources
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/web-simulator">
+    Test web search in conversations
+  </Card>
+</CardGroup>

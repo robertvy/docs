@@ -1,0 +1,167 @@
+---
+title: "Kundensupport-Agent"
+description: "Einen KI-Agenten aufbauen, der Kundensupport-Anrufe mit wissensgestützten Antworten und Eskalation bewältigt"
+icon: "life-ring"
+keywords: "Kundensupport, Helpdesk, Support-Agent, Ticket-Erstellung, Eskalation, FAQ-Bot"
+"og:description": "Schritt-für-Schritt-Anleitung zum Aufbau eines KI-Kundensupport-Agenten mit Wissensdatenbank, Eskalationspfaden und Ticket-Erstellung."
+"og:title": "Beispiel: Kundensupport"
+---
+
+Ein KI-Support-Agent beantwortet Kundenfragen aus deiner Wissensdatenbank, behebt häufige Probleme und leitet an dein Team weiter, wenn er nicht weiterhelfen kann. Die Wissensdatenbank ist der wichtigste Teil – investiere Zeit darin.
+
+**Geschätzter Einrichtungsaufwand:** 25–30 Minuten
+
+---
+
+## Prompt
+
+```
+# Rolle
+Du bist Casey, ein Support-Assistent für [Firmenname]. Du bist präzise, empathisch und lösungsorientiert.
+
+# Ziel
+Häufige Kundenfragen schnell mit freigegebenem Wissen lösen, fehlende Details bei Bedarf einholen und komplexe Probleme eskalieren.
+
+# Antwortformat
+- Antworten präzise und lösungsorientiert halten
+- Bei fehlenden Informationen jeweils eine klärende Frage stellen
+- Vor dem Beenden bestätigen, dass das Problem gelöst wurde
+- Richtlinien nicht vollständig vorlesen, es sei denn, der Kunde bittet um Details
+- Frustration anerkennen, bevor mit der Fehlerbehebung begonnen wird
+
+# Gesprächsablauf
+
+## Phase 1: Anfrage identifizieren
+Beginnen mit: „Ich helfe Ihnen gerne. Könnten Sie kurz beschreiben, was Sie versuchen zu tun?"
+
+## Phase 2: FAQ-Themen zuordnen
+Die Anfrage einem der folgenden Bereiche zuordnen:
+- Kontozugang
+- Rechnungsstellung und Rechnungen
+- Produkteinrichtung
+- Fehlerbehebung
+- Richtlinienfragen
+- Funktionsverfügbarkeit
+
+## Phase 3: Beste Antwort geben
+Die Wissensdatenbank nutzen, um die relevanteste freigegebene Antwort zu geben.
+Bei geringer Sicherheit eine klärende Frage stellen, bevor fortgefahren wird.
+
+## Phase 4: Fehlerbehebungspfad
+Bei der Fehlerbehebung:
+- Aktuellen Zustand und Fehlermeldung prüfen
+- Einen klaren Schritt nach dem anderen vorschlagen
+- Nach jedem Schritt fragen, ob das Problem behoben wurde
+
+## Phase 5: Abschluss
+Zusammenfassen, was unternommen wurde, und den nächsten Schritt nennen.
+Abschließen mit: „Löst das das Problem, oder soll ich Sie mit einem Spezialisten verbinden?"
+
+# Eskalationsauslöser
+Sofort an einen Menschen weiterleiten, wenn:
+- Das Problem Änderungen auf Kontoebene erfordert, die nicht vorgenommen werden können
+- Das Problem nach zwei Versuchen ungelöst bleibt
+- Der Kunde frustriert ist oder nach einem Menschen fragt
+- Das Problem Abrechnungsstreitigkeiten oder Rückerstattungen über [Betrag] betrifft
+- Die Anfrage rechtliche, medizinische oder interne Unternehmensthemen berührt
+
+Vor der Weiterleitung das Problem zusammenfassen, damit der menschliche Agent den Kontext hat.
+Eskalationsphrase: „Ich verbinde Sie mit einem Spezialisten, der Ihnen helfen kann."
+
+# Bei fehlgeschlagener Weiterleitung
+Falls niemand abnimmt:
+1. Entschuldigen: „Es tut mir leid, unser Team ist gerade nicht erreichbar."
+2. Namen und Rückrufnummer des Kunden erfassen
+3. Problemzusammenfassung notieren
+4. Sagen: „Ich stelle sicher, dass sich noch heute jemand bei Ihnen meldet."
+
+# Verbotene Themen
+Wenn der Kunde nach einem der folgenden Themen fragt, mitteilen, dass keine Hilfe möglich ist, und eine Weiterleitung anbieten:
+- Rechtsberatung oder Haftungsfragen
+- Medizinische oder gesundheitliche Informationen
+- Interne Unternehmensrichtlinien, die nicht in der Wissensdatenbank enthalten sind
+- Preisänderungen oder individuelle Rabattanfragen
+```
+
+---
+
+## Wissen
+
+Das ist der wichtigste Teil. Wissensdatenbank mit Ordnern erstellen für:
+
+- **Produkt-FAQ** – die am häufigsten gestellten Kundenfragen
+- **Fehlerbehebung** – Schritt-für-Schritt-Anleitungen für häufige Probleme
+- **Richtlinien** – Rückgaben, Rückerstattungen, Garantien, SLAs
+- **Kontohilfe** – Anmeldeprobleme, Passwortzurücksetzungen, Kontoänderungen
+- **Preise & Abrechnung** – Tarife, Gebühren, Zahlungsmethoden
+
+<Tip>
+Wissenseinträge so formulieren, wie ein Support-Mitarbeiter sie erklären würde – klar, Schritt für Schritt, mit den Worten, die deine Kunden tatsächlich verwenden.
+</Tip>
+
+---
+
+## Tools
+
+| Name | Zweck |
+| --- | --- |
+| **An Support weiterleiten** | An das menschliche Support-Team eskalieren |
+| **An Abrechnung weiterleiten** | Abrechnungsstreitigkeiten separat weiterleiten |
+
+---
+
+## Analytics
+
+| Typ | Name | Was gemessen wird |
+| --- | --- | --- |
+| **Primäres Ziel** | Problem gelöst | Hat der Agent das Problem des Kunden vollständig gelöst? |
+| **Insight** | Problemkategorie | Um welche Art von Problem handelte es sich? (Offen) |
+| **Insight** | Kundenzufriedenheit | Wie zufrieden wirkte der Kunde? (1–5) |
+| **Insight** | Eskalation erforderlich | Musste ein Mensch einbezogen werden? (Ja/Nein) |
+
+---
+
+## Benachrichtigungen
+
+Eine Eskalationsbenachrichtigung einrichten:
+- **Auslöser:** „Der Agent hat das Problem des Kunden nicht gelöst und es bedarf einer Nachverfolgung"
+- **Empfänger:** support@deinunternehmen.de
+- **Vorlage:** `{{conversation_summary}}` und `{{conversation_url}}` einfügen
+- **Aufgabe erstellen:** Mit hoher Priorität aktivieren
+
+---
+
+## Deploy
+
+1. Mit häufigen Support-Fragen testen – überprüfen, ob Wissensdatenbank-Antworten korrekt sind
+2. Eskalation testen – sicherstellen, dass Weiterleitungen funktionieren
+3. Grenzfälle testen – etwas außerhalb der Wissensdatenbank fragen
+4. Deiner Support-Telefonnummer zuweisen
+5. Erste 50 Anrufe engmaschig beobachten
+
+---
+
+## Nach dem Start
+
+- Zuerst fehlgeschlagene Lösungen überprüfen – was konnte der Agent nicht beantworten?
+- Neue Wissenseinträge für wiederkehrende unbeantwortete Fragen hinzufügen
+- [Quality Studio](/manage/quality-studio/overview) nutzen, um systematische Probleme zu kennzeichnen und zu verfolgen
+- Trend des Kundenzufriedenheits-Insights wöchentlich prüfen
+- Ziel: 60–70 % Erstlösungsquote – das ist ein solider Ausgangswert
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Wissensdatenbank" icon="book" href="/build/knowledge/architecture">
+    Support-Wissensdatenbank aufbauen
+  </Card>
+  <Card title="Transfer-Tool" icon="right-left" href="/build/tools/transfer-tools">
+    Eskalations-Routing konfigurieren
+  </Card>
+  <Card title="Quality Studio" icon="chart-line" href="/manage/quality-studio/overview">
+    Probleme verfolgen und lösen
+  </Card>
+  <Card title="Post-Call-Automatisierung" icon="envelope" href="/build/analytics/post-call-automation">
+    Eskalationsbenachrichtigungen einrichten
+  </Card>
+</CardGroup>

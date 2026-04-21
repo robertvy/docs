@@ -1,0 +1,166 @@
+---
+title: "Campaign Issues"
+description: "Diagnose and fix outbound campaign problems including low answer rates, failed calls, and AMD issues"
+icon: "bullhorn"
+keywords: "campaign troubleshooting, low answer rates, failed calls, AMD, answering machine detection, outbound issues, spam, caller ID"
+"og:description": "Troubleshoot outbound campaign issues: low answer rates, failed calls, AMD problems, spam flagging, and contact lifecycle issues."
+"og:title": "Campaign Issues"
+---
+
+This guide covers diagnosing and resolving issues with outbound calling campaigns.
+
+## Low Answer Rates
+
+### Check the Campaign Dashboard
+
+The **Dashboard** tab in your campaign shows answer rates, contact status breakdown, and the human-answer heatmap. Start here to understand patterns.
+
+### Common Causes and Fixes
+
+| Cause | Diagnostic | Fix |
+| --- | --- | --- |
+| **Bad calling hours** | Heatmap shows low answers at your scheduled times | Adjust [Schedules](/launch/schedules) to match peak answer windows — typically 10am-12pm and 2pm-5pm local time |
+| **Unknown caller ID** | High no-answer rate across all times | Use a local number matching the recipients' area code |
+| **Spam flagging** | Check Spam Status on your phone number (red = flagged) | Rotate numbers, reduce call volume, register with STIR/SHAKEN |
+| **Stale contact list** | High "No Conversation" rate | Clean contact list — remove disconnected numbers, validate phone formats |
+| **Voicemail detection too strict** | AMD is hanging up on real humans | Switch AMD mode from ML to text-based, or vice versa |
+
+### Optimizing Answer Rates
+
+1. **Start with a small pilot** — test with 10-20 contacts to establish a baseline
+2. **Use local numbers** — recipients are more likely to answer local area codes
+3. **Review the heatmap after 50-100 calls** — adjust schedules based on actual data
+4. **Segment by timezone** — create separate campaigns with appropriate schedules per region
+5. **Monitor spam scores** — check the Spam Status column in Phone Numbers regularly
+
+---
+
+## Failed Calls
+
+### Calls Not Dialing
+
+1. Verify the campaign status is **Active** (not Paused)
+2. Check that the assigned agent is active and configured
+3. Verify the phone number is active and not assigned to another active campaign
+4. Check [concurrent call limits](/reference/limits-quotas) for your plan
+5. Verify the **Start date** has passed
+
+### Calls Connect But Drop Immediately
+
+1. Check AMD settings — the AMD may be incorrectly classifying humans as voicemails
+2. Review the conversation timeline for error events
+3. Test the agent with a manual phone call to isolate the issue
+4. Check that the agent's greeting is configured for outbound calls
+
+### Calls Show "Failed" Status
+
+Review the conversation details for the specific error. Common causes:
+- **Network unreachable** — the destination number is invalid or disconnected
+- **Busy** — the recipient is on another call (retry will handle this)
+- **Rejected** — the carrier blocked the call (may indicate spam flagging)
+
+---
+
+## Answering Machine Detection (AMD)
+
+### AMD Hangs Up on Real People
+
+The AMD thinks humans are voicemails. Try:
+1. **Switch AMD mode** — if using ML-based, try text-based (or vice versa)
+2. **Text-based** is faster but less accurate — works well when human greetings are short
+3. **ML-based** is more accurate but adds latency — better when voicemail messages are common
+
+### AMD Does Not Detect Voicemails
+
+The agent is talking to answering machines. Try:
+1. Switch to **ML-based** AMD for better accuracy
+2. Check your agent's greeting — a long greeting may cause the AMD to misclassify
+
+### AMD Configuration
+
+AMD is configured per campaign in **Settings → Call Settings** (Expert Mode):
+- **Text-based**: Analyzes the initial transcript for voicemail patterns (fast, ~200ms)
+- **ML-based**: Uses audio classification to detect voicemails (accurate, ~500ms+)
+
+---
+
+## Contact Lifecycle Issues
+
+### Understanding Contact Statuses
+
+| Status | Category | Meaning |
+| --- | --- | --- |
+| **Pending** | Active | Queued, waiting to be dialed |
+| **Dialing** | Active | Call in progress |
+| **Called** | Active | Awaiting next retry or evaluation |
+| **Retry** | Active | Scheduled for retry after failed attempt |
+| **Completed** | Final | Achieved primary goal — no more calls |
+| **Failed** | Final | Max retries exhausted — will not be called again |
+| **No Conversation** | Final | Never reached a human (all attempts were voicemail/no-answer) |
+
+### Contacts Stuck in "Pending"
+
+1. Campaign may be **Paused** — check status in campaign list
+2. All calling slots may be in use — check **Max concurrent calls** in Settings
+3. Business hours may be closed — check the schedule indicator
+4. **Call interval** may be too long — check Settings → Call Settings
+
+### Contacts Not Retrying
+
+1. Check **Max retry attempts** — if set to 0, no retries occur
+2. Check **Retry interval** — contacts will not retry before this period
+3. Check if the contact was manually moved to a final state
+4. The contact may have reached **Contact completion timeout**
+
+### Inbound Callbacks Not Matching
+
+When a contact calls back, itellicoAI tries to match them to the campaign:
+1. **Primary match**: Phone number matches a campaign contact
+2. **Fallback match**: Agent-based matching within a 30-day window
+3. If no match found, the call is treated as a regular inbound call
+
+Check that the caller's number matches the phone number in the contact record.
+
+---
+
+## Phone Number Rotation
+
+### When to Use Multiple Numbers
+
+- You are making high volumes (500+ calls/day from a single number)
+- Your spam scores are rising
+- You are calling different regions and need local presence
+
+### Rotation Settings (Expert Mode)
+
+When a campaign has multiple phone numbers:
+- **Rotation Strategy** — how numbers are selected for each call
+- **Spam Threshold** — automatically pause a number if its spam score exceeds this value
+- **Max Calls Per Day** — limit per-number daily volume to protect reputation
+
+---
+
+## Performance Optimization
+
+1. **A/B test your approach** — create separate campaigns with different scripts, agents, or schedules to find what works
+2. **Clean your lists** — remove invalid numbers before launch
+3. **Monitor daily** for the first week — check answer rates, goal achievement, and spam scores
+4. **Reduce volume if flagged** — if spam scores rise, lower daily call limits and rotate numbers
+5. **Use analytics** — set up Goals and Insights to measure what matters
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Campaign Management" icon="chart-line" href="/manage/campaigns/overview">
+    View the full campaign management guide
+  </Card>
+  <Card title="Schedules" icon="clock" href="/launch/schedules">
+    Configure calling windows
+  </Card>
+  <Card title="Phone Numbers" icon="phone" href="/launch/phone-numbers">
+    Manage numbers and spam scores
+  </Card>
+  <Card title="Common Issues" icon="wrench" href="/troubleshooting/common-issues">
+    Find quick fixes for all issue types
+  </Card>
+</CardGroup>

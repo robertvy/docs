@@ -1,0 +1,37 @@
+---
+title: "Twilio SIP Setup"
+description: "Connect Twilio Elastic SIP Trunking to itellicoAI"
+icon: "phone-volume"
+keywords: "Twilio SIP trunk, Elastic SIP Trunking, Twilio number forwarding, BYOC"
+"og:title": "Twilio SIP Setup"
+"og:description": "Step-by-step guide for connecting Twilio Elastic SIP Trunking to itellicoAI."
+---
+
+Use this guide if your phone numbers already live in Twilio and you want inbound calls to route through itellicoAI.
+
+<Steps>
+  <Step title="Get your Twilio SIP credentials">
+    1. Log in to the [Twilio Console](https://console.twilio.com)
+    2. Go to **Elastic SIP Trunking → Trunks**
+    3. Create a new trunk or use an existing one
+    4. Under **Origination**, add the itellicoAI SIP endpoint as the origination URI
+    5. Under **Termination**, note the termination SIP URI
+    6. Under **Authentication**, create or note SIP credentials
+  </Step>
+  <Step title="Create SIP Trunk in itellicoAI">
+    Go to **Telephony → SIP Trunks → Create SIP Trunk**:
+    - **Name:** Twilio
+    - **Termination URI:** Your Twilio termination SIP URI
+    - **SIP Auth Username:** Your Twilio SIP credential username
+    - **SIP Auth Password:** Your Twilio SIP credential password
+  </Step>
+  <Step title="Import your Twilio numbers">
+    Go to **Telephony → Phone Numbers → Add Number → Connect Your Own**:
+    - Enter each phone number in E.164 format
+    - Select the Twilio SIP trunk
+    - Assign routing to your agent
+  </Step>
+  <Step title="Configure Twilio forwarding">
+    In the Twilio Console, configure your phone numbers to forward to the itellicoAI SIP endpoint.
+  </Step>
+</Steps>

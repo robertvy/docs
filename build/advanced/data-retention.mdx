@@ -1,0 +1,158 @@
+---
+title: "Data Retention Settings"
+description: "Configure agent-level retention rules, privacy defaults, and caller rights in the Privacy tab"
+icon: "database"
+keywords: "data retention, privacy tab, agent retention, delete data, anonymize data, recordings, transcripts, caller rights"
+"og:description": "Configure agent-level data retention rules in the Privacy tab and understand how they interact with account Trust Center defaults."
+"og:title": "Data Retention Settings"
+---
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+## Overview
+
+The **Privacy** tab lets you configure agent-level data retention behavior.
+
+Use it when one agent needs stricter or different retention than your account defaults in **Trust Center**.
+
+<Warning>
+These settings control how long **itellicoAI** stores your data. They do not affect third-party providers (such as OpenAI or ElevenLabs) who may retain data for their own purposes — for example, for abuse prevention or audit compliance. Review each provider's data retention policy separately.
+</Warning>
+
+## Where to Configure
+
+1. Open an agent in **AI Agents**
+2. Go to **Privacy**
+3. Review **Data Retention**
+
+<Screenshot
+  lightSrc="/images/agent-editor__privacy-tab-light.png"
+  darkSrc="/images/agent-editor__privacy-tab-dark.png"
+  alt="Privacy tab showing Data Retention table with data types, retention period, action, and reset controls"
+/>
+
+---
+
+## Current Data Types
+
+The current Privacy tab shows retention settings for:
+
+- **Transcripts**: messages and conversation events
+- **Call Recordings**: audio recordings of conversations
+- **Analytics - Goals**: goal achievement results and reasoning
+- **Analytics - Insights**: AI-generated summaries, ratings, and extracted information
+- **System Prompts**: AI agent prompt content (no PII)
+- **IP Addresses & Location**: client IP and derived location where available
+- **Customer Numbers**: phone numbers of callers and contacts
+
+---
+
+## Retention Choices
+
+The current dropdown options are:
+
+- **Do not store**
+- **24 hours**
+- **30 days**
+- **90 days**
+- **6 months**
+- **1 year**
+- **2 years**
+- **Keep forever**
+
+Not every option is available for every data type.
+
+For **Transcripts**, **Analytics - Goals**, and **Analytics - Insights**, the UI first asks what to store:
+
+- **Do not store**
+- **Store anonymized transcript only** or **Store minimized results only**
+- **Store original transcript** or **Store full results**
+
+If you store anonymized/minimized or full data, choose the retention duration in the second dropdown.
+
+### Zero-retention support
+
+`Do not store` is available for:
+
+- transcripts
+- recordings
+- analytics - goals
+- analytics - insights
+- system prompts
+
+### Minimum-retention guardrails
+
+The following data types currently require at least **90 days**:
+
+- **IP Addresses & Location**
+- **Customer Numbers**
+
+---
+
+## Expiry Actions
+
+Each row also lets you choose what happens when the retention period ends:
+
+- **Delete**
+- **Anonymize** where supported
+
+### Data types that support anonymization
+
+- transcripts
+- analytics - goals
+- analytics - insights
+- IP addresses & location
+- customer numbers
+
+### Data types that only support deletion
+
+- call recordings
+- system prompts
+
+---
+
+## Reset to Default
+
+If a row has custom agent-level settings, the UI shows a reset action.
+
+Use **Reset** when you want that data type to follow the account-level Trust Center policy again.
+
+---
+
+## Relationship to Other Privacy Controls
+
+The Privacy tab also includes:
+
+- **Pre-call Announcement** for playing a recorded notice before the agent listens
+- **Recording Opt-Out** for letting callers stop recording during a live call
+
+Recording Opt-Out is only shown when recording storage is enabled. If recordings are set to **Do not store**, the recording opt-out control does not appear.
+
+---
+
+## Recommended Operating Pattern
+
+1. Set broad account defaults in **Trust Center**
+2. Only set agent-level retention where a specific agent truly needs different rules
+3. Test recording behavior if you change recording retention
+4. Keep your public and contractual privacy statements aligned with the effective policy
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Trust Center" icon="shield-check" href="/manage/trust-center/overview">
+    Configure account-level defaults and data requests
+  </Card>
+  <Card title="Pre-call Announcement" icon="shield-check" href="/build/advanced/announcements">
+    Play a notice before the agent starts listening
+  </Card>
+  <Card title="Recording Opt-Out" icon="microphone" href="/build/advanced/recording-opt-out">
+    Let callers stop recording mid-call
+  </Card>
+  <Card title="Phone Testing" icon="phone" href="/test/phone-testing">
+    Validate retention-dependent call behavior before launch
+  </Card>
+</CardGroup>

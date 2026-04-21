@@ -1,0 +1,187 @@
+---
+title: "Recording Opt-Out"
+description: "Erlaube Anrufern, zu verlangen, dass ihr Anruf nicht aufgezeichnet wird"
+icon: "shield-halved"
+keywords: "recording opt-out, privacy, GDPR compliance, call recording, data deletion, caller rights, consent management"
+"og:description": "Erlaube Anrufern, sich während Gesprächen von der Anrufaufzeichnung abzumelden, für DSGVO-Konformität und Datenschutz."
+"og:title": "Recording Opt-Out"
+---
+
+## Wie Recording Opt-Out funktioniert
+
+Recording Opt-Out ermöglicht es Anrufern, während des Gesprächs zu verlangen, dass ihre Anrufaufzeichnung gestoppt und gelöscht wird. Diese Alpha-Funktion hilft bei der DSGVO-Konformität und zeigt Respekt für die Privatsphäre der Anrufer.
+
+<Note>
+Wenn aktiviert, fügt diese Funktion ein Tool hinzu, das dein KI-Agent aufrufen kann, wenn ein Anrufer ausdrückt, dass er nicht aufgenommen werden möchte.
+</Note>
+
+---
+
+## So funktioniert es
+
+Wenn ein Anrufer etwas sagt wie „Ich möchte nicht aufgenommen werden“ oder „Bitte stoppen Sie die Aufzeichnung“:
+
+```mermaid
+sequenceDiagram
+    participant Caller
+    participant Agent
+    participant Platform
+
+    Caller->>Agent: "Bitte stoppen Sie die Aufzeichnung"
+    Agent->>Platform: Recording-Opt-Out-Tool aufrufen
+    Platform->>Platform: Live-Aufzeichnung stoppen
+    Platform->>Platform: Audio zur Löschung markieren
+    Agent->>Caller: "Die Aufzeichnung wurde gestoppt und gelöscht."
+```
+
+1. **Agent erkennt die Anfrage:** Die KI versteht die Opt-out-Anfrage
+2. **Tool aufgerufen:** Der Agent löst die Recording-Opt-Out-Aktion aus
+3. **Aufzeichnung stoppt:** Die Live-Aufzeichnung endet sofort
+4. **Daten gelöscht:** Die Plattform löscht alle aufgezeichneten Audiodaten dieses Anrufs
+5. **Anrufer bestätigt:** Der Agent bestätigt die Aktion gegenüber dem Anrufer
+
+---
+
+## Konfiguration
+
+Gehe im Agent-Editor zu → **Privacy**-Tab → Bereich **Caller Rights**.
+
+### Recording Opt-Out aktivieren
+
+Schalte die Funktion ein oder aus:
+
+- **Enabled:** Anrufer können verlangen, dass die Aufzeichnung gestoppt und gelöscht wird
+- **Disabled:** Opt-out-Anfragen sind nicht verfügbar (Standard)
+
+---
+
+## Trigger für Anrufer
+
+Der Agent erkennt Opt-out-Anfragen in unterschiedlichen Formulierungen:
+
+**Englisch:**
+- "Stop recording this call"
+- "I don't want to be recorded"
+- "Please don't record me"
+- "Turn off the recording"
+- "Delete this recording"
+
+**Deutsch:**
+- "Bitte nicht aufnehmen"
+- "Aufnahme stoppen"
+- "Ich möchte nicht aufgenommen werden"
+
+Der Agent nutzt Natural Language Understanding, um die Absicht zu erkennen, nicht nur exakte Formulierungen.
+
+---
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="GDPR Compliance" icon="shield-check">
+    Europäische Datenschutzanforderungen für den Widerruf der Einwilligung erfüllen
+  </Card>
+  <Card title="Sensitive Conversations" icon="lock">
+    Anrufern ermöglichen, sensible Themen ohne Aufzeichnung zu besprechen
+  </Card>
+  <Card title="Customer Trust" icon="handshake">
+    Engagement für Privatsphäre und Datenrechte der Anrufer zeigen
+  </Card>
+  <Card title="Legal Requirements" icon="scale-balanced">
+    Zwei-Parteien-Zustimmungsgesetze in bestimmten Jurisdiktionen einhalten
+  </Card>
+</CardGroup>
+
+---
+
+## Was passiert, wenn Opt-out ausgelöst wird
+
+| Komponente | Aktion |
+|-----------|--------|
+| Live recording | Wird sofort gestoppt |
+| Recorded audio | Zur Löschung markiert und beim Abschluss des Uploads nicht gespeichert |
+| Transcript | Wird separat durch die Data-Retention-Einstellungen gesteuert |
+| Call metadata | Wird aufbewahrt (Anruf fand statt, Dauer usw.) |
+| Analytics | Grundlegende Anrufstatistiken bleiben erhalten |
+
+<Warning>
+Sobald die Plattform die Aufnahme löscht, kann sie nicht wiederhergestellt werden. Stelle sicher, dass dein Team versteht, dass dies eine dauerhafte Aktion ist.
+</Warning>
+
+---
+
+## Best Practices
+
+**Mit Announcements kombinieren:** Wenn du Anrufe aufzeichnest, informiere Anrufer zu Beginn mit einer Privacy Announcement. Nenne die Opt-out-Option:
+
+```text
+This call may be recorded for quality purposes. If you prefer not to be
+recorded, please let me know at any time.
+```
+
+**Agent trainieren:** Ergänze deinen Prompt um Anweisungen, damit der Agent Opt-out-Anfragen professionell beantwortet:
+
+```text
+When a caller requests to stop recording:
+- Acknowledge the request immediately
+- Confirm the recording has been stopped and deleted
+- Reassure them the conversation can continue
+- Do not pressure them to continue recording
+```
+
+**Richtlinie dokumentieren:** Lege eine klare interne Richtlinie fest, was passiert, wenn Anrufer opt-outen, und wie sich das auf Qualitätssicherungsprozesse auswirkt.
+
+---
+
+## DSGVO-Überlegungen
+
+Unter der DSGVO haben Personen das Recht:
+
+<Steps>
+  <Step title="Informiert zu werden">
+    Zu wissen, dass eine Aufzeichnung stattfindet (nutze Announcements)
+  </Step>
+  <Step title="Einwilligen zu können">
+    Vor der Aufzeichnung zuzustimmen
+  </Step>
+  <Step title="Einwilligung zu widerrufen">
+    Ihre Meinung zu ändern und das Stoppen der Aufzeichnung zu verlangen
+  </Step>
+  <Step title="Löschung zu verlangen">
+    Aufgezeichnete Daten entfernen zu lassen (Recht auf Löschung)
+  </Step>
+</Steps>
+
+Recording Opt-Out adressiert die letzten beiden Rechte - es erlaubt Anrufern, ihre Einwilligung zu widerrufen und während des Gesprächs die Löschung zu verlangen.
+
+<Warning>
+Dies ist allgemeine Orientierung, keine Rechtsberatung. Konsultiere eine Rechtsberatung, um sicherzustellen, dass deine Aufzeichnungspraktiken deine spezifischen regulatorischen Anforderungen erfüllen.
+</Warning>
+
+---
+
+## Einschränkungen
+
+- **Gilt nur für den aktuellen Anruf:** Kann Aufzeichnungen früherer Anrufe nicht löschen
+- **Sofortige Wirkung:** Nach Auslösung kann die Löschung innerhalb desselben Anrufs nicht rückgängig gemacht werden
+- **Metadaten bleiben erhalten:** Grundlegende Anrufinformationen (dass ein Anruf stattfand) bleiben erhalten
+- **Audio-fokussiert:** Transcript- und Analytik-Speicherung folgen deinen Data-Retention-Einstellungen
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Privacy Announcements" icon="shield-check" href="/de/build/advanced/announcements">
+    Anrufer zu Beginn über Aufzeichnungen informieren
+  </Card>
+  <Card title="Production Checklist" icon="rocket" href="/de/launch/production-checklist">
+    Mit passenden Compliance-Maßnahmen ausrollen
+  </Card>
+  <Card title="Trust Center" icon="building-shield" href="/de/manage/trust-center/overview">
+    Deine Datenschutzpraktiken öffentlich zeigen
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/de/test/web-simulator">
+    Opt-out im Simulator testen
+  </Card>
+</CardGroup>

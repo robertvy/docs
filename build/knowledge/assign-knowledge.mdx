@@ -1,0 +1,117 @@
+---
+title: "Assign Knowledge to Agents"
+description: "Connect knowledge bases, folders, or items to an agent from the Knowledge tab"
+icon: "link"
+keywords: "assign knowledge, connect knowledge, agent knowledge tab, RAG, context mode"
+"og:description": "Learn how to connect and manage knowledge sources for an agent."
+"og:title": "Assign Knowledge to Agents"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+## Overview
+
+In the Agent Editor, open **Knowledge** to connect sources from your knowledge bases.
+
+You can connect at three levels:
+
+- Entire knowledge base
+- Folder
+- Individual item(s)
+
+<Screenshot
+  lightSrc="/images/agent-editor__knowledge-tab-light.png"
+  darkSrc="/images/agent-editor__knowledge-tab-dark.png"
+  alt="Agent Knowledge tab showing connected knowledge sources in Simple mode"
+  caption="In Simple mode, connect knowledge sources without choosing a retrieval mode. Connections use RAG by default."
+/>
+
+## Connect Knowledge
+
+<Steps>
+  <Step title="Open an agent">
+    Go to **AI Agents**, open an agent, then open the **Knowledge** tab.
+  </Step>
+  <Step title="Click Connect Knowledge">
+    Use **Connect Knowledge** (or **Add Knowledge** from the empty state).
+  </Step>
+  <Step title="Pick from the knowledge browser">
+    In the **Connect Knowledge** panel, use the left tree to select a knowledge base or folder.
+  </Step>
+  <Step title="Connect at the level you need">
+    - Knowledge base level: **Connect Entire KB**
+    - Folder level: **Connect Folder**
+    - Item level: select items, then use **Connect {count} Items**
+  </Step>
+</Steps>
+
+---
+
+## What You See After Connecting
+
+The connections table includes:
+
+- **Name**
+- **Type** (`Entire KB`, `Folder`, `Item`)
+- **Path**
+- **Mode** (Expert Mode only)
+- **Items**
+- Remove action (trash icon)
+
+You can remove a connection at any time.
+
+---
+
+### Mode Controls
+
+<Badge>Expert Mode</Badge>
+
+<Screenshot
+  lightSrc="/images/agent-editor__knowledge-tab-expert-light.png"
+  darkSrc="/images/agent-editor__knowledge-tab-expert-dark.png"
+  alt="Agent Knowledge tab in Expert mode showing RAG and Context mode controls"
+  caption="Expert mode adds retrieval-mode controls so you can choose RAG or Context per connection."
+/>
+
+You can:
+
+- Choose **RAG** or **Context** when connecting a knowledge base, folder, or selected items
+- Change connection mode from the table **Mode** column
+- Toggle an existing connection mode from the browser panel
+
+In Simple mode, connections use **RAG** by default.
+
+---
+
+### Context Budget
+
+<Badge>Expert Mode</Badge>
+
+When using Context mode, the UI enforces a **10,000 token** budget across all context connections.
+
+If a source exceeds remaining context budget, the UI blocks the switch and shows a warning.
+
+---
+
+## Connection Behaviors to Know
+
+- If an entire knowledge base is connected, folder/item entries under it are effectively inherited.
+- If a folder is connected, items in that folder are inherited.
+- The folder browser shows inherited/connected state so you can avoid redundant connections.
+
+---
+
+## Test Your Setup
+
+After connecting knowledge:
+
+1. Open your agent test flow.
+2. Ask questions that should be answered from connected sources.
+3. Verify answers are grounded in your content.
+
+---
+
+## Next Steps
+
+- [Context vs RAG Mode](/build/knowledge/context-vs-rag)
+- [Content Types](/build/knowledge/content-types)

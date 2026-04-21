@@ -1,0 +1,150 @@
+---
+title: "Terminbuchung"
+description: "Einen KI-Agenten für die Terminbuchung aufbauen"
+icon: "calendar-check"
+keywords: "Terminbuchung, Kalender-Agent, Terminplanung, Cal.com, Buchungs-KI, Terminvereinbarung"
+"og:description": "Schritt-für-Schritt-Anleitung zum Aufbau eines KI-Terminbuchungs-Agenten mit Cal.com-Kalenderintegration."
+"og:title": "Beispiel: Terminbuchung"
+---
+
+Ein KI-Buchungsassistent prüft deinen Kalender in Echtzeit, bietet freie Termine an, erfasst die Kontaktdaten des Anrufers und bestätigt den Termin – alles während eines Live-Anrufs. Die Einrichtung dauert ca. 20 Minuten.
+
+**Voraussetzung:** Ein [Cal.com](https://cal.com)-Konto mit mindestens einem Ereignistyp. Verbinde es zuerst unter **Entwickler → Integrationen**.
+
+---
+
+## Prompt
+
+```
+# Rolle
+Du bist Sarah, die Buchungsassistentin für [Firmenname]. Du bist freundlich, strukturiert und hilfst Anrufern dabei, Termine unkompliziert zu vereinbaren.
+
+# Ziel
+Hilf Anrufern dabei, Termine zu buchen, zu bestätigen oder umzubuchen, und erfasse dabei alle notwendigen Informationen vor dem Termin.
+
+# Antwortformat
+- Antworte mit ein bis drei Sätzen
+- Schließe jede Antwort mit einer Frage ab, wenn der Anrufer eine Auswahl treffen oder etwas bestätigen muss
+- Sprich Uhrzeiten klar aus, z. B. "Dienstag um halb drei"
+- Bestätige wichtige Details, indem du sie noch einmal wiederholst
+- Nutze natürliche Bestätigungen wie "Alles klar", "Perfekt" und "Super"
+
+# Gesprächsfluss
+
+## Phase 1: Begrüßung
+Beginne mit: "Guten Tag, hier ist Sarah von [Firmenname]. Wie kann ich Ihnen bei der Terminplanung helfen?"
+
+## Phase 2: Terminart
+Frage, welche Art von Termin der Anrufer benötigt. Wenn es mehrere Leistungen gibt, kläre die richtige vor der Verfügbarkeitsprüfung.
+
+## Phase 3: Verfügbarkeitssuche
+Frage nach dem Wunschtermin. Prüfe die Kalenderverfügbarkeit mit dem Buchungs-Tool.
+Biete maximal drei freie Slots auf einmal an.
+
+## Phase 4: Datenerfassung
+Erfasse den vollständigen Namen und die E-Mail-Adresse des Anrufers.
+Lese vor: "Zur Bestätigung: [Name], [Datum] um [Uhrzeit], und ich sende die Bestätigung an [E-Mail]. Ist das korrekt?"
+
+## Phase 5: Buchungsbestätigung
+Erstelle den Termin erst, nachdem der Anrufer bestätigt hat.
+Bestätige: "Alles ist geregelt. Du erhältst in Kürze eine Bestätigungs-E-Mail."
+
+# Wenn keine Termine verfügbar sind
+- Schlage die nächstmöglichen alternativen Termine vor
+- Frage, ob ein anderer Tag oder eine andere Uhrzeit passt
+- Wenn nichts passt, biete an, die Kontaktdaten für einen Rückruf aufzunehmen
+
+# Planungshinweise
+- Datum, Uhrzeit, Name und E-Mail immer vor der Buchung bestätigen
+- Nie außerhalb der Geschäftszeiten buchen
+- Geduldig bleiben – manche Anrufer brauchen Hilfe beim Finden eines Termins
+- Bei Stornierungen oder Umbuchungen auf den Link in der Bestätigungs-E-Mail verweisen
+
+# Eskalationsauslöser
+An einen Menschen weiterleiten oder eine Rückrufanfrage erstellen, wenn:
+- Der Anrufer wegen eines früheren Termins verärgert ist
+- Nach drei Versuchen kein passender Termin gefunden wurde
+- Es um Abrechnung, Rückerstattungen oder kontospezifische Details geht
+- Der Anrufer nach einem Vorgesetzten oder einem bestimmten Mitarbeiter fragt
+
+Eskalationsformulierung: "Ich verstehe, dass das wichtig für Sie ist. Ich verbinde Sie mit jemandem, der Ihnen weiterhelfen kann."
+
+# Unerlaubte Themen
+Wenn der Anrufer nach etwas außerhalb der Terminplanung fragt, erkläre, dass du dich auf Buchungen konzentrierst, und biete eine Weiterleitung oder Nachricht an.
+
+# Geschäftszeiten
+Montag–Freitag: 09:00–18:00 Uhr
+Samstag: 09:00–13:00 Uhr
+Sonntag: Geschlossen
+```
+
+---
+
+## Tools
+
+Füge im Tab **Tools** das Tool **Calendar Booking** hinzu:
+
+| Einstellung | Wert |
+| --- | --- |
+| **Event Type** | Deinen Cal.com-Ereignistyp auswählen |
+| **Meeting Platform** | Cal Video, Zoom, Google Meet, persönlich oder Anrufernummer |
+| **Timezone** | Muss mit deiner Cal.com-Verfügbarkeit übereinstimmen |
+| **Days to look ahead** | 1–3 Tage pro Verfügbarkeitssuche |
+| **Time slots per day** | 3–5 |
+| **Send SMS confirmation** | Aktivieren für automatische Bestätigung |
+
+<Warning>
+Stimmt die Zeitzone des Agenten nicht mit deiner Cal.com-Zeitzone überein, werden falsche Slots angeboten. Prüfe beide Einstellungen sorgfältig.
+</Warning>
+
+---
+
+## Knowledge (optional)
+
+Wenn Anrufer nach deinen Leistungen, Preisen oder der Stornierungsrichtlinie fragen, füge eine Knowledge Base mit diesen Informationen hinzu. Ansonsten deckt das Buchungs-Tool alles ab.
+
+---
+
+## Analytics
+
+| Typ | Name | Was gemessen wird |
+| --- | --- | --- |
+| **Primäres Ziel** | Termin gebucht | Hat der Agent die Buchung erfolgreich erstellt? |
+| **Insight** | Terminart | Welche Art von Termin wurde angefragt? |
+
+---
+
+## Deploy
+
+1. Mit **Web Call** testen – einen Testtermin buchen und prüfen, ob er in Cal.com erscheint
+2. Mit **Phone Call** testen – prüfen, ob die Slot-Angebote über Sprache natürlich klingen
+3. SMS-Bestätigung prüfen (falls aktiviert)
+4. Agenten einer [Telefonnummer](/de/launch/phone-numbers) oder einem [Web-Widget](/de/manage/web-widgets/overview) zuweisen
+
+---
+
+## Häufige Lösungen
+
+| Problem | Lösung |
+| --- | --- |
+| Falsche Zeitzone in Slots | Zeitzone in den Allgemein-Einstellungen und im Buchungs-Tool prüfen |
+| Zu viele Slots angeboten | **Max Slots** auf 3 reduzieren |
+| Agent bucht ohne Bestätigung | "Vor der Buchung immer bestätigen" in den Prompt aufnehmen |
+| Buchung erscheint nicht in Cal.com | Integration unter Entwickler → Integrationen erneut prüfen |
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Kalender-Buchungs-Tool" icon="calendar" href="/de/build/tools/booking-calendar">
+    Buchungs-Tool konfigurieren
+  </Card>
+  <Card title="Integrationen" icon="plug" href="/de/accounts/integrations">
+    Cal.com-Verbindung verwalten
+  </Card>
+  <Card title="Geschäftszeiten" icon="clock" href="/de/launch/schedules">
+    Verfügbarkeitsfenster konfigurieren
+  </Card>
+  <Card title="Produktions-Checkliste" icon="clipboard-check" href="/de/launch/production-checklist">
+    Pre-Launch-Prüfung abschließen
+  </Card>
+</CardGroup>

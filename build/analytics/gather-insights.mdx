@@ -1,0 +1,423 @@
+---
+title: "Gather Insights"
+description: "Use LLM-as-a-judge to extract structured insights and quality metrics from conversations"
+icon: "magnifying-glass-chart"
+keywords: "gather insights, post-call analytics, LLM as a judge, conversation analytics, AI insights, quality metrics, sentiment analysis, call analysis, variable extraction"
+"og:description": "Use LLM-as-a-judge to extract structured insights and quality metrics from AI conversations after each call."
+"og:title": "Gather Insights"
+---
+
+## What Gather Insights Does
+
+Gather Insights uses AI after each call to evaluate the transcript, extract structured information, and answer the specific questions you care about. This is your **LLM-as-a-judge** layer for quality scoring, categorization, and field extraction.
+
+**Access:** In your agent editor → **Analytics** tab → **Post-Call Analytics** section
+
+## Analytics Language
+
+<Badge>Expert Mode</Badge>
+
+Set the language for AI evaluation:
+
+**Access:** In your agent editor → **Analytics** tab → **Settings** section → **Analytics Language**
+
+Select the language the AI uses to evaluate goals and insights when analyzing transcripts and answering insight questions.
+
+You can also set the **Analysis Model** in the same **Settings** section.
+
+<Tip>
+This setting applies to both goals and insights.
+</Tip>
+
+---
+
+## Default Insights vs Custom Insights
+
+**Default insights** — Pre-configured by itellicoAI:
+- Cannot be edited or archived
+- Toggle on or off with the Active switch
+- Optimized for common use cases
+
+**Custom insights** — Created by your team:
+- Full control over name, description, and type
+- Can be edited, archived, and restored
+- Tailored to your own workflows
+
+<Info>
+Default insights give you a starting point. Add custom insights for your own reporting, QA, or extraction needs.
+</Info>
+
+## How To Decide What To Add
+
+| Use this when you want... | Best fit |
+| --- | --- |
+| a ready-made common quality signal | **Default Insight** |
+| a custom question tied to your own workflow | **Insight** |
+| a yes/no business outcome | **Goal** |
+
+---
+
+## Setup
+
+<Steps>
+  <Step title="Access Post-Call Analytics">
+    In your agent editor → **Analytics** tab → **Post-Call Analytics** section → **Add** → **Add Insight**
+  </Step>
+
+  <Step title="Configure the insight">
+    **Name:** Internal label
+
+    ```text
+    Example: Customer Satisfaction Score
+    ```
+
+    **Description:** The exact question AI should answer
+
+    ```text
+    Example: On a scale of 1-5 stars, rate the customer's overall
+    satisfaction based on their tone, language, and whether their
+    issue was fully resolved during the call.
+    ```
+
+    <Tip>
+    More specific descriptions produce more reliable AI judgments.
+    </Tip>
+  </Step>
+
+  <Step title="Choose the answer type">
+    **Yes/No** — binary answer
+
+    ```text
+    Example: Was the customer's issue fully resolved?
+    ```
+
+    **Open** — free text answer
+
+    ```text
+    Example: What was the main topic discussed?
+    ```
+
+    **Data Point** — one extracted value
+
+    ```text
+    Example: What order number did the caller provide?
+    ```
+
+    **Single Choice** — one option from your list
+
+    ```text
+    Example: Which product line was discussed?
+    ```
+
+    **Multiple Choice** — one or more options from your list
+
+    ```text
+    Example: Which objections did the caller mention?
+    ```
+
+    **Rating** — 1-5 stars
+
+    ```text
+    Example: How professional was the agent?
+    ```
+  </Step>
+
+  <Step title="Save">
+    Click **Add Analysis** to save.
+  </Step>
+</Steps>
+
+---
+
+## Use Insights For Structured Extraction
+
+Use **Data Point** or **Open** insights when you want the AI to pull a specific field or summary out of the call. This is the clearest post-call equivalent of “variable extraction”.
+
+**Good extraction-style prompts:**
+
+- `What is the customer's order number? Return only the order number or "not provided".`
+- `What date and time did the customer request for the appointment?`
+- `What is the main cancellation reason? Return a short phrase only.`
+- `Summarize the exact next steps agreed on in 1-2 sentences.`
+
+<Tip>
+If you want clean operational data, tell the AI exactly how to answer: category only, short phrase only, specific date/time, or `"not provided"` when missing.
+</Tip>
+
+## Question Types
+
+<Tabs>
+  <Tab title="Yes/No">
+    **Binary answer questions** for clear metrics.
+
+    **Best for:**
+    - Compliance checks
+    - Quality verification
+    - Feature usage detection
+
+    **Examples:**
+    - `Was payment information collected?`
+    - `Did the agent follow the script?`
+    - `Was the caller transferred?`
+    - `Did the customer agree to the offer?`
+  </Tab>
+
+  <Tab title="Open">
+    **Text response questions** for detailed insights and field extraction.
+
+    **Best for:**
+    - Information extraction
+    - Issue categorization
+    - Root cause analysis
+    - Conversation summaries
+
+    **Examples:**
+    - `What was the primary topic discussed?`
+    - `What objections did the customer raise?`
+    - `Which product was discussed?`
+    - `Summarize the customer's technical issue`
+  </Tab>
+
+  <Tab title="Data Point">
+    **Single-value extraction** for operational fields that should stay short.
+
+    **Best for:**
+    - Order numbers
+    - Requested appointment dates
+    - Product names
+    - Short labels or IDs
+
+    **Examples:**
+    - `What order number did the caller provide? Return only the order number or N/A.`
+    - `What appointment date did the caller request? Return YYYY-MM-DD or N/A.`
+    - `Which account ID was mentioned?`
+  </Tab>
+
+  <Tab title="Single Choice">
+    **One option from a list** when you want consistent categories.
+
+    **Best for:**
+    - Primary call reason
+    - Lead source
+    - Complaint severity
+    - Product category
+
+    **Examples:**
+    - `Choose the main call reason: Billing, Support, Sales, Cancellation, Other.`
+    - `Choose the highest escalation level: None, Team Lead, Manager, Legal.`
+  </Tab>
+
+  <Tab title="Multiple Choice">
+    **One or more options from a list** when several categories can apply.
+
+    **Best for:**
+    - Objections mentioned
+    - Products discussed
+    - Compliance checks passed
+    - Follow-up channels requested
+
+    **Examples:**
+    - `Which objections did the caller mention: Price, Timing, Trust, Missing Feature, Other?`
+    - `Which follow-up channels were requested: Email, Phone, SMS, In-person?`
+  </Tab>
+
+  <Tab title="Rating">
+    **1-5 star scale** for qualitative assessment.
+
+    **Standard scale:**
+    - **5** = Exceptional performance
+    - **4** = Above average performance
+    - **3** = Average or satisfactory performance
+    - **2** = Below average performance
+    - **1** = Minimal or poor performance
+
+    **Best for:**
+    - Quality scoring
+    - Sentiment analysis
+    - Performance evaluation
+    - Satisfaction measurement
+
+    **Examples:**
+    - `Rate customer sentiment (1=very negative, 5=very positive)`
+    - `How well did the agent handle objections?`
+    - `Rate call quality (1=poor, 5=excellent)`
+    - `Customer satisfaction score`
+  </Tab>
+</Tabs>
+
+## Recommended Starting Set
+
+For most teams, a strong first insight set is:
+
+1. **Customer satisfaction** as a rating
+2. **Issue resolved** as yes or no
+3. **Primary call topic** as single choice or open text
+4. **Customer sentiment** as a rating
+
+Start small. Once those answers are operationally useful, add more.
+
+---
+
+## Examples
+
+<AccordionGroup>
+  <Accordion title="Customer Satisfaction" icon="face-smile">
+    **Name:** Customer Satisfaction Score
+
+    **Type:** Rating (1-5 stars)
+
+    **Description:**
+    ```text
+    Rate the customer's overall satisfaction based on their tone,
+    language, and responses (1-5 stars):
+
+    5 stars = Very satisfied, enthusiastic, all needs met
+    4 stars = Satisfied, positive interaction
+    3 stars = Neutral, basic needs met
+    2 stars = Somewhat dissatisfied, some frustration
+    1 star = Very dissatisfied, angry, unresolved issues
+    ```
+  </Accordion>
+
+  <Accordion title="Issue Resolution" icon="check-circle">
+    **Name:** Issue Fully Resolved
+
+    **Type:** Yes/No
+
+    **Description:**
+    ```text
+    Was the customer's issue, question, or request fully resolved
+    by the end of the call? Answer Yes only if the customer confirmed
+    satisfaction or explicitly agreed the issue was resolved.
+    ```
+  </Accordion>
+
+  <Accordion title="Structured Extraction" icon="brackets-curly">
+    **Name:** Requested Appointment Date
+
+    **Type:** Data Point
+
+    **Description:**
+    ```text
+    Extract the appointment date requested by the caller.
+    Return only the date in YYYY-MM-DD format.
+    If no date was requested, return "not provided".
+    ```
+  </Accordion>
+
+  <Accordion title="Call Topic Classification" icon="tag">
+    **Name:** Primary Call Topic
+
+    **Type:** Open
+
+    **Description:**
+    ```text
+    Identify the main topic or reason for this call. Choose from:
+    - Billing inquiry
+    - Technical support
+    - Product information
+    - Order status
+    - Complaint
+    - Cancellation request
+    - General question
+
+    Return only the category name. If multiple topics were discussed,
+    return the one that took the most conversation time.
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Insights vs Goals
+
+Use both together for complete conversation tracking:
+
+| Feature | Goals | Insights |
+| --- | --- | --- |
+| **Purpose** | Track conversions | Extract insights and judge quality |
+| **Example** | Appointment booked | How satisfied was the customer? |
+| **Answer Type** | Achieved / Partially achieved / Not achieved | Yes/No, text, data point, choice, or 1-5 rating |
+| **Use For** | Success metrics | Quality scoring, categorization, extraction |
+| **Best For** | Business outcomes | Detailed reporting |
+
+**Example combination:**
+- **Goal:** `Appointment booked` — was the conversion achieved?
+- **Insight:** `Customer Satisfaction` — how well was it handled?
+- **Insight:** `Primary Call Topic` — what did they want?
+
+---
+
+## Viewing Results
+
+### Individual Conversations
+
+1. Go to **Conversations**
+2. Click a conversation
+3. Open the **Gathered Insights** section
+4. Review each question and AI answer
+
+### Dashboard
+
+Go to **Dashboard** to see insight trends and metrics.
+
+[Learn more about Dashboard →](/manage/dashboard)
+
+## When To Review Insight Results
+
+Review them when you want to:
+
+- compare quality across agents or campaigns
+- understand why a goal is being missed
+- route quality issues into follow-up work
+- export structured call insights for reporting or downstream workflows
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Write Specific Questions" icon="pen">
+    The AI uses your description to answer. Be detailed.
+
+    ❌ `Was the call good?`
+
+    ✅ `Did the agent provide accurate information, address all customer questions, and maintain a professional tone throughout the call?`
+  </Accordion>
+
+  <Accordion title="Define Rating Scales" icon="star">
+    For rating questions, always define what each level means.
+  </Accordion>
+
+  <Accordion title="Keep Extraction Outputs Narrow" icon="filter">
+    If you want reusable data, constrain the output:
+
+    - category only
+    - one short sentence
+    - one date/time
+    - `not provided` if missing
+  </Accordion>
+
+  <Accordion title="Start with Key Questions" icon="list">
+    Start with 3-5 critical insight questions, not 20.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Conversation Goals" icon="bullseye" href="/build/analytics/conversation-goals">
+    Track conversions and outcomes
+  </Card>
+  <Card title="Post-Call Automation" icon="envelope-open-text" href="/build/analytics/post-call-automation">
+    Trigger emails and tasks from insights
+  </Card>
+  <Card title="Dashboard" icon="chart-line" href="/manage/dashboard">
+    View aggregate insights
+  </Card>
+  <Card title="Prompt Guide" icon="pen-to-square" href="/build/conversation/prompt">
+    Align live behavior with what you measure
+  </Card>
+</CardGroup>

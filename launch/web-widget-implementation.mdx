@@ -1,0 +1,143 @@
+---
+title: "Web Widget Implementation"
+description: "Deploy widgets cleanly across staging and production with clear runtime, domain, and privacy expectations"
+icon: "code"
+keywords: "widget implementation, embed script, widget staging, widget production, domain restrictions, trust center, widget runtime, website integration"
+"og:description": "Learn how to implement itellicoAI widgets across real websites with the right staging, domain, privacy, and testing practices."
+"og:title": "Web Widget Implementation"
+---
+
+This guide is for the developer, marketer, or operator who has to put the widget on a real site and keep it working across environments.
+
+If you need the product editor itself, use [Widget Configuration](/manage/web-widgets/configuration).
+
+If you need the high-level launch flow, use [Web Widget Deployment](/launch/web-widget-deployment).
+
+## The Recommended Implementation Pattern
+
+Use one widget per meaningful website experience.
+
+That usually means:
+
+- one widget for production
+- one widget for staging or preview
+- separate widgets when branding, agent behavior, or privacy copy differs by site
+
+Do not reuse one production widget everywhere if:
+
+- you need different allowed domains
+- different sites should route to different agents
+- the consent copy or public Trust Center differs
+
+## Deployment Checklist
+
+1. Create the widget and link it to the right agent.
+2. Configure setup, appearance, content, features, actions, and privacy.
+3. Restrict allowed domains to your intended sites.
+4. Enable public Trust Center and policy links if the widget is customer-facing.
+5. Test in preview and on the target site.
+6. Run a real voice or chat session on the live site.
+7. Check [Conversations](/manage/conversations/overview) to confirm traffic is recorded as expected.
+
+## Staging vs Production
+
+Treat staging and production as separate implementations.
+
+### Staging widget
+
+Use a staging widget when you want to:
+
+- test changes on a non-production domain
+- validate agent updates before public release
+- test content, actions, and privacy copy safely
+
+### Production widget
+
+Use a production widget when:
+
+- the domain restrictions are final
+- the consent and Trust Center links are final
+- the agent and content have already been validated
+
+<Warning>
+Do not point a public production site at a widget you still use for internal experimentation. Widget settings apply immediately after save.
+</Warning>
+
+## Domain Restrictions
+
+Domain restrictions are one of the most important implementation controls.
+
+Use them to ensure the widget only loads on sites you control.
+
+Good practice:
+
+- include your exact production domains
+- include the staging or preview domains you actually test on
+- remove old preview domains when no longer needed
+
+See [Widget Configuration](/manage/web-widgets/configuration) for the editor details.
+
+## Runtime Expectations
+
+The widget is a live frontend surface. Plan for real browser behavior.
+
+### What to expect
+
+- microphone access requires HTTPS except on localhost
+- browser privacy settings can block voice access
+- domain restrictions apply immediately after save
+- saved widget changes affect the live embedded experience without changing the script
+
+### What to validate
+
+- the widget loads on the intended domain
+- the right agent answers
+- voice or chat starts correctly
+- transcript and conversations appear in the dashboard
+- consent, terms, and Trust Center links are visible where expected
+
+## Privacy And Trust Center
+
+For public-facing widgets, the privacy posture should be visible before or during the interaction.
+
+At minimum, decide:
+
+- whether consent is required
+- what terms text the visitor sees
+- whether public Trust Center is enabled
+- whether the linked privacy policy and subprocessors pages are current
+
+Use [Conversation Privacy Controls](/build/advanced/conversation-privacy-controls) for the full privacy model.
+
+## Common Mistakes
+
+<AccordionGroup>
+  <Accordion title="Reusing the same widget in staging and production" icon="code-branch">
+    This makes it too easy to push unfinished copy, actions, or privacy settings to the public site.
+  </Accordion>
+
+  <Accordion title="Allowing all domains for convenience" icon="globe">
+    Leaving domain restrictions empty is useful during early setup, but it should not be the long-term production posture for public widgets.
+  </Accordion>
+
+  <Accordion title="Only testing in the dashboard preview" icon="desktop">
+    The preview is useful, but the final check must happen on the real site, with the real domain, browser, and consent flow.
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Web Widget Deployment" icon="browser" href="/launch/web-widget-deployment">
+    Follow the full launch flow from creation to live embed
+  </Card>
+  <Card title="Widget Configuration" icon="sliders" href="/manage/web-widgets/configuration">
+    Configure setup, appearance, content, features, actions, and privacy
+  </Card>
+  <Card title="Trust Center" icon="shield-check" href="/manage/trust-center/overview">
+    Publish your widget privacy posture for visitors
+  </Card>
+  <Card title="Conversations" icon="messages" href="/manage/conversations/overview">
+    Review live widget traffic after deployment
+  </Card>
+</CardGroup>

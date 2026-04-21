@@ -1,0 +1,34 @@
+---
+title: "Fritzbox SIP Setup"
+description: "Connect a Fritzbox PBX or router-based SIP setup to itellicoAI"
+icon: "router"
+keywords: "Fritzbox SIP, Fritzbox forwarding, AVM Fritzbox, DACH telephony"
+"og:title": "Fritzbox SIP Setup"
+"og:description": "Step-by-step guide for connecting Fritzbox to itellicoAI."
+---
+
+Use this guide when calls enter through a Fritzbox and you want to forward them into itellicoAI.
+
+<Steps>
+  <Step title="Enable SIP trunk on your Fritzbox">
+    1. Open your Fritzbox admin panel (typically `http://fritz.box`)
+    2. Go to **Telefonie → Eigene Rufnummern → Neue Rufnummer**
+    3. Select **Andere Anbieter** as the type
+    4. Enter the itellicoAI SIP endpoint as the registrar
+    5. Configure the SIP credentials
+  </Step>
+  <Step title="Create SIP Trunk in itellicoAI">
+    Go to **Telephony → SIP Trunks → Create SIP Trunk**:
+    - **Name:** Fritzbox
+    - **Termination URI:** Your Fritzbox public IP or DynDNS address
+    - **SIP Auth Username/Password:** Credentials configured in the Fritzbox
+    - **Allowed IPs:** Your Fritzbox public IP address
+  </Step>
+  <Step title="Configure call routing">
+    In your Fritzbox, set up call forwarding rules to route specific numbers to the itellicoAI SIP endpoint.
+  </Step>
+</Steps>
+
+<Note>
+Fritzbox connections require a static IP or DynDNS address. If your ISP assigns dynamic IPs, set up a DynDNS service first.
+</Note>

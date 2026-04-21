@@ -1,0 +1,201 @@
+---
+title: "Quality Issues"
+description: "Track, triage, and resolve quality issues with AI-assisted creation, resolution, and full conversation context"
+icon: "circle-exclamation"
+keywords: "quality issues, issue tracking, issue resolution, agent quality, severity, tags, assignee, bulk actions, AI resolution, AI issue creation, kanban, sub-issues, linked issues"
+"og:description": "Track and resolve quality issues across your AI agents. Use AI to create issues, get resolution suggestions, and manage the full lifecycle from flagging to fix."
+"og:title": "Quality Issues"
+---
+
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+The **Issues** page is where you manage every quality issue across your agents — from initial flagging through resolution. Create issues manually, from [flagged conversations](/manage/conversations/detail#flagging-messages), or with AI assistance. Each issue tracks the full lifecycle from flagging to resolution.
+
+**Access:** Navigate to **Quality Studio > Issues** in the main menu
+
+<Screenshot
+  lightSrc="/images/quality-studio__issues-list-light.png"
+  darkSrc="/images/quality-studio__issues-list-dark.png"
+  alt="Quality Studio issues board grouped by status with severity icons, agent avatars, tags, and assignees"
+/>
+
+## Views
+
+Switch between views from the view menu in the page header:
+
+<Tabs>
+  <Tab title="List View">
+    A table grouped by status with collapsible sections. Each row shows:
+
+    | Column | Description |
+    | --- | --- |
+    | **Severity** | Icon indicating the severity level |
+    | **ID** | Short identifier for the issue |
+    | **Status** | Current status icon |
+    | **Title** | Issue title |
+    | **Agent** | Agent avatar and name |
+    | **Tags** | First tag displayed as a badge |
+    | **Assignee** | Assigned team member, or unassigned |
+  </Tab>
+  <Tab title="Board View">
+    A board with columns for each status (**Todo**, **In Progress**, **Done**). Drag and drop issues between columns to update their status. Each card shows the issue title, severity, agent, and assignee.
+  </Tab>
+</Tabs>
+
+---
+
+## Filtering and Search
+
+Use the page header to search issue titles and descriptions. Use the assignee chips to switch between **All issues**, **My issues**, and **Unassigned**.
+
+---
+
+## Creating Issues
+
+You can create an issue in three ways:
+
+### Manual Creation
+
+Click **New Issue** and fill in the title, description, agent, severity, tags, and optional assignee.
+
+### From a Flagged Conversation
+
+When you [flag a conversation or message](/manage/conversations/detail#flagging-messages), you are prompted to create a quality issue linked to that specific interaction. The platform automatically attaches the conversation context.
+
+### AI Issue Creation
+
+When creating an issue from a flagged conversation, enable **AI Issue Creation** to let AI analyze the conversation and suggest:
+
+- **Title** — A concise summary of the problem
+- **Description** — What went wrong in the conversation
+- **Tags** — Suggested issue type (e.g., `wrong-information`, `missed-intent`, `tone-issue`, `knowledge-gap`)
+- **Severity** — Recommended severity level based on impact
+- **Assignee** — Suggested team member based on the issue type
+
+Review and adjust the AI suggestions before saving. The AI provides a starting point — you have full control over the final issue.
+
+---
+
+## Issue Statuses
+
+Every issue progresses through three statuses:
+
+| Status | Description |
+| --- | --- |
+| **Todo** | Created and awaiting triage or action. All new issues start here. |
+| **In Progress** | A team member is actively working on the issue. |
+| **Done** | Your team resolved the issue. |
+
+## Severity Levels
+
+| Severity | When to Use |
+| --- | --- |
+| **Critical** | Immediate attention needed — compliance violations, consistently wrong information, failed transfers |
+| **High** | Significant impact on customer experience or business outcomes |
+| **Medium** | Noticeable quality concern that should be addressed soon |
+| **Low** | Minor issue or improvement opportunity |
+
+## Issue Tags
+
+Tags categorize the type of problem. Common tags include:
+
+| Tag | Description |
+| --- | --- |
+| `wrong-information` | Agent provided incorrect facts or data |
+| `missed-intent` | Agent failed to understand what the caller wanted |
+| `tone-issue` | Agent's tone was inappropriate for the situation |
+| `goal-failure` | Agent failed to achieve its conversation goal |
+| `hallucination` | Agent made up information not in its knowledge base |
+| `handoff-failure` | Transfer to a human agent failed or the agent mishandled it |
+| `knowledge-gap` | Agent lacked information needed to answer the question |
+| `off-topic` | Agent's response was off-topic or irrelevant |
+| `formatting` | Response formatting or presentation issue |
+| `prompt-issue` | The agent's prompt caused undesired behavior |
+
+You can also create custom tags to match your needs.
+
+---
+
+## Issue Detail View
+
+Click any issue to open the full detail view.
+
+<Screenshot
+  lightSrc="/images/quality-studio__issue-detail-light.png"
+  darkSrc="/images/quality-studio__issue-detail-dark.png"
+  alt="Issue detail view showing editable title, description, expected behavior, activity timeline, and sidebar properties"
+/>
+
+### Main Content
+
+- **Title** — Issue summary
+- **Description** — Detailed explanation of what went wrong
+- **Expected Behavior** — What the agent should have done instead, when provided
+- **Conversation Link** — Direct link to the related conversation, when the issue was created from a conversation
+- **Parent Issue** — Link to a parent issue if this is a sub-issue
+- **Sub-issues** — Child issues broken down from this one
+- **Linked Issues** — Related issues connected for cross-referencing
+
+### Activity Timeline
+
+A chronological log of everything that has happened on the issue — status changes, comments, assignments, and edits. Add comments using the input at the bottom (submit with <kbd>Cmd</kbd>+<kbd>Enter</kbd>).
+
+### Sidebar Properties
+
+The sidebar displays and allows editing of issue properties:
+
+| Property | Description |
+| --- | --- |
+| **Status** | Todo, In Progress, or Done |
+| **Severity** | Critical, High, Medium, or Low |
+| **Assignee** | Team member responsible for the issue |
+| **Agent** | The agent associated with the issue |
+| **Tags** | Editable list of tags |
+| **Created** | When the issue was created |
+
+### Keyboard Shortcuts
+
+Use keyboard shortcuts in the detail view for fast triage:
+
+| Shortcut | Action |
+| --- | --- |
+| <kbd>S</kbd>, then <kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> | Set status to Todo / In Progress / Done |
+| <kbd>P</kbd>, then <kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd>/<kbd>4</kbd> | Set severity to Low / Medium / High / Critical |
+| <kbd>A</kbd>, then <kbd>0</kbd>–<kbd>9</kbd> | Clear assignee or assign to a team member |
+
+---
+
+## Resolution Types
+
+When marking an issue as done, select a resolution type to categorize what was fixed:
+
+| Resolution Type | Description |
+| --- | --- |
+| **Prompt Update** | You updated the agent prompt |
+| **Knowledge Update** | You added or corrected knowledge base content |
+| **Settings Change** | You adjusted the agent configuration |
+| **Guard Rail Added** | You added a guardrail to prevent the behavior |
+| **Test Case Created** | You added a test case to catch future regressions |
+| **Dismissed (Edge Case)** | You dismissed the issue as an edge case |
+| **Other** | Resolution does not fit other categories |
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quality Studio Dashboard" icon="chart-bar" href="/manage/quality-studio/overview">
+    Monitor trends, breakdowns, and agent health metrics
+  </Card>
+  <Card title="Conversation Detail" icon="message-lines" href="/manage/conversations/detail">
+    Review conversations and flag problematic responses
+  </Card>
+  <Card title="Agent Editor" icon="pen-to-square" href="/build/getting-started/agent-editor">
+    Update your agent's prompt, knowledge, and settings
+  </Card>
+  <Card title="Prompt Engineering" icon="wand-magic-sparkles" href="/build/conversation/prompt-engineering-guide">
+    Improve your agent's prompt with advanced techniques
+  </Card>
+</CardGroup>

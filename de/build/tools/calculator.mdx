@@ -1,0 +1,93 @@
+---
+title: "Calculator"
+description: "Nutze das eingebaute Calculator-Tool für Mathe während Live-Gesprächen"
+icon: "calculator"
+keywords: "calculator tool, math tool, arithmetic, math functions, sqrt, round, abs, expert mode"
+"og:description": "Aktiviere das eingebaute Calculator-Tool, damit dein Agent während Gesprächen rechnen kann."
+"og:title": "Calculator"
+---
+
+<Badge>Profi</Badge>
+
+## Übersicht
+
+Mit dem **Calculator**-Tool kann dein Agent mathematische Berechnungen während eines Gesprächs ausführen.
+
+Füge es unter **Tools** -> **Add** -> **Calculator** hinzu.
+
+## Verfügbarkeit
+
+- Eingebautes Tool ohne externe Integration
+- Singleton-Tool pro Agent: Wenn bereits ein Calculator existiert, ist der Add-Menüpunkt deaktiviert
+
+---
+
+## Aktuelle Konfiguration
+
+Calculator hat kein erweitertes Setup-Formular.
+
+Wenn du es hinzufügst, wird das Tool mit folgenden Werten erstellt:
+
+- **Name:** `Calculator`
+- **Description:** `Perform mathematical calculations`
+
+Du kannst den Dialog erneut öffnen, um das Tool zu behalten oder zu löschen, aber es gibt aktuell keine zusätzlichen Felder.
+
+---
+
+## Unterstützte Berechnungen
+
+Der Calculator wertet sichere mathematische Ausdrücke aus. Unterstützt werden:
+
+- arithmetische Operatoren: `+`, `-`, `*`, `/`, `//`, `%`, `**`
+- Klammern zur Gruppierung
+- Funktionen: `abs`, `round`, `min`, `max`, `sum`, `sqrt`, `ceil`, `floor`, `log`, `log10`, `sin`, `cos`, `tan`
+- Konstanten: `pi`, `e`
+
+Es gibt keinen speziellen Prozent-Operator. Drücke Prozente als Arithmetik aus, zum Beispiel `price * 0.2` für 20% eines Preises.
+
+<Note>
+Calculator-Ausdrücke sind auf 200 Zeichen begrenzt und unterstützen keine symbolische Mathematik, Ableitungen, Integrale oder beliebige Codeausführung.
+</Note>
+
+Nutze den Prompt, um dem Agenten zu sagen, wann er Calculator verwenden soll statt aus dem Gedächtnis zu antworten.
+
+---
+
+## Empfohlenes Prompt-Muster
+
+```text
+When the caller asks for a total, discount, repayment amount, or percentage,
+use the Calculator tool before answering.
+
+Always state the result clearly and confirm the currency or units if relevant.
+```
+
+---
+
+## Gute Use Cases
+
+- Summen nach Rabatten oder Gebühren berechnen
+- Ratenzahlungen berechnen
+- Prozentuale Veränderungen vergleichen
+- Einfache Preislogik in eine präzise gesprochene Antwort umwandeln
+
+Nutze stattdessen **Custom Action**, wenn der Wert aus deinem Backend, CRM, Billing-System oder einer anderen Source of Truth kommen muss.
+
+---
+
+## Test-Checkliste
+
+1. Füge das Tool im **Profi** hinzu.
+2. Starte einen Test-Dialog.
+3. Bitte den Agenten, einige realistische Berechnungen zu lösen.
+4. Prüfe, ob die gesprochene Antwort dem erwarteten Wert entspricht.
+5. Achte darauf, dass der Agent das Ergebnis in Business-Sprache erklärt und nicht nur rohe Zahlen ausgibt.
+
+---
+
+## Nächste Schritte
+
+- [Tools Overview](/de/build/tools/overview)
+- [Custom Action](/de/build/tools/custom-api-actions)
+- [Prompt Engineering Guide](/de/build/conversation/prompt-engineering-guide)

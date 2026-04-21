@@ -1,0 +1,235 @@
+---
+title: "Conversation Detail"
+description: "Detailed view of individual conversations with timeline, transcript, recording, goals, and gathered insights"
+icon: "message-lines"
+keywords: "conversation detail, call transcript, audio playback, conversation timeline, knowledge retrieval, call analysis, conversation goals, gathered insights, notifications, system prompt, flag conversation"
+"og:description": "Review individual conversations in detail. Access the full transcript, audio recording, goal tracking, gathered insights, notification logs, and knowledge retrieval data."
+"og:title": "Conversation Detail"
+---
+
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+The conversation detail view gives you full details of a single interaction. Review the transcript, listen to the recording, inspect goals and analysis results, and flag issues for quality review.
+
+**Access:** Click any row in the [Conversations list](/manage/conversations/overview), or navigate directly to a conversation by ID
+
+<Screenshot
+  lightSrc="/images/manage__conversation-detail-light.png"
+  darkSrc="/images/manage__conversation-detail-dark.png"
+  alt="Conversation detail view with metadata, summary, and recording on the left, transcript on the right"
+/>
+
+## Layout
+
+The detail page uses a two-column layout:
+
+- **Left column** — Tabs for Overview, Analytics, Notifications when logs exist, and Config
+- **Right column** — Full transcript with agent and caller messages plus system events
+
+<Screenshot
+  lightSrc="/images/manage__conversation-detail-light.png"
+  darkSrc="/images/manage__conversation-detail-dark.png"
+  alt="Conversation detail view showing information panel and transcript"
+/>
+
+### Navigation
+
+When opening a conversation from the list, **Prev/Next** buttons let you step through conversations without returning to the list. A position indicator shows where you are (e.g., "3 of 47").
+
+### Header Actions
+
+The action menu in the header provides:
+
+- **Copy ID** — Copy the conversation ID to your clipboard
+- **Copy transcript** — Copy the full transcript in markdown format (`**Agent**: message`)
+- **Download audio** — Download the recording when a recording exists
+- **View System Prompt** — View the agent prompt used for this conversation (read-only)
+- **Delete** — Remove this conversation from the account list. The backend soft-deletes it so billing history remains intact.
+
+Use **Flag Issue** in the header to send the whole conversation to [Quality Studio](/manage/quality-studio/overview). Agent messages also expose a hover flag button when you need to flag a specific response.
+
+## Overview Section
+
+The overview panel displays key metadata at a glance.
+
+| Field | Description |
+| --- | --- |
+| **Agent** | Agent name and avatar, with phone number for Session Initiation Protocol (SIP) phone calls |
+| **Channel** | Phone, Web, or Test — with direction indicator (inbound/outbound) |
+| **Start Time** | When the conversation began |
+| **Duration** | Total call length, plus post-transfer duration if applicable |
+| **Contact** | Contact name with up to 2 tags displayed ("+X" badge if more) |
+| **Status** | Color-coded status badge |
+| **Answer Status** | Outbound calls only — human, machine, user rejected, user unavailable, user busy, or waiting |
+| **Disconnect Reason** | Displayed when the backend recorded why the conversation ended |
+
+## Summary
+
+If the agent generated a conversation summary, it appears below the overview. Supports right-to-left text for multilingual conversations.
+
+## Recording
+
+<Screenshot
+  lightSrc="/images/manage__conversation-recording-light.png"
+  darkSrc="/images/manage__conversation-recording-dark.png"
+  alt="Audio player for conversation recording"
+/>
+
+When a recording is available, an audio player appears in the left column with standard playback controls. The recording and transcript are independent — the audio player does not automatically highlight transcript lines.
+
+<Note>
+  Audio recordings are subject to your [retention policy](/manage/trust-center/overview). If the platform deleted the recording under your retention policy, only the transcript is available.
+</Note>
+
+## Goals
+
+<Screenshot
+  lightSrc="/images/manage__conversation-analytics-light.png"
+  darkSrc="/images/manage__conversation-analytics-dark.png"
+  alt="Conversation Analytics tab showing goal progress and gathered insight results"
+/>
+
+If the agent has [conversation goals](/build/analytics/conversation-goals) configured, a goals section shows:
+
+- **Ring progress** with achievement score (e.g., "2/3")
+- **Goal list** with status icons for each goal
+- **Details button** opening a dialog with full goal breakdown
+
+### Goal Statuses
+
+| Status | Icon | Color |
+| --- | --- | --- |
+| Achieved | Checkmark | Green |
+| Partially Achieved | Dash | Yellow |
+| Not Achieved | X | Red |
+| Unknown | Question mark | Gray |
+
+### Goal Details Dialog
+
+The dialog shows goals in two tabs: **Primary Goals** and **Secondary Goals**. Each goal card includes:
+
+- Goal name and description
+- Result status with icon
+- Confidence score (0–100%) with progress bar
+- Explanation or reasoning text
+
+## Gathered Insights
+
+If [gather insights](/build/analytics/gather-insights) is configured, results appear in a two-column grid. Each insight item shows its name and result.
+
+**Result types:**
+- **Rating** — 1–5 stars (green for high, red for low)
+- **Yes/No** — Checkmark or X icon
+- **Text** — Free-form text result
+
+### Analysis Details Dialog
+
+Click **Details** to open the full analysis breakdown, organized by category tabs:
+
+- Communication
+- Interaction
+- Knowledge
+- Sentiment
+- Technical
+- Custom
+- Other
+
+Each card shows the analysis name, result, confidence score with progress bar, and explanation.
+
+## Notifications
+
+If post-call notifications were triggered, the Notifications tab shows each log with its status. Click **Details** for the full breakdown.
+
+<Screenshot
+  lightSrc="/images/manage__conversation-notifications-light.png"
+  darkSrc="/images/manage__conversation-notifications-dark.png"
+  alt="Conversation Notifications tab showing sent post-call notification logs"
+/>
+
+### Notification Statuses
+
+| Status | Icon | Description |
+| --- | --- | --- |
+| **Sent** | Green arrow | Notification delivered successfully |
+| **Failed** | Red icon | Delivery failed (error message shown in details) |
+| **Skipped** | Gray icon | Conditions not met, notification was skipped |
+
+### Notification Details Dialog
+
+Organized by status tabs (Sent, Failed, Skipped). Each notification card shows:
+
+- Notification name and timestamp
+- Recipients (email addresses)
+- Rendered subject line
+- Error message (if failed)
+- Condition evaluation reasoning
+- Email body content
+
+## Config
+
+The Config tab shows the agent configuration and recorded usage context for the conversation, including model, transcriber, voice, call-start settings, limits, billing, and latency data.
+
+<Screenshot
+  lightSrc="/images/manage__conversation-config-light.png"
+  darkSrc="/images/manage__conversation-config-dark.png"
+  alt="Conversation Config tab showing model, transcriber, voice, limits, billing, and latency details"
+/>
+
+## Transcript
+
+The right column shows all messages and events in chronological order.
+
+<Screenshot
+  lightSrc="/images/manage__conversation-timeline-light.png"
+  darkSrc="/images/manage__conversation-timeline-dark.png"
+  alt="Conversation timeline showing messages, tool calls, and events in sequence"
+/>
+
+### Timeline Header
+
+- **User info** — For SIP calls: phone number with country flag. For Web/Test calls: city, country, and IP address
+- **Channel label** and date of the first message
+
+### Message Types
+
+**Agent messages** — What the agent said, with timestamp. May include:
+- Interrupt indicator if the caller interrupted
+- Knowledge base results (which content the agent used, relevance ratings, and sources)
+- Response time metrics (initial response time, total processing time)
+
+**Caller messages** — What the caller said, with timestamp. Supports text and image messages (with filename, type, and size).
+
+**System events** — Tools executed (integrations, transfers, bookings) and any errors, transfers, and other system events displayed inline with descriptions and metadata.
+
+### Flagging Messages
+
+Click the **Flag** icon on any individual message to flag it for [Quality Studio](/manage/quality-studio/overview) review. This is useful for flagging specific problematic responses rather than the entire conversation.
+
+## Knowledge Retrieval Tracking
+
+When visible in message metadata, knowledge retrieval data shows:
+
+- Retrieved content chunks
+- Similarity scores for each chunk
+- Source document references
+
+This helps find missing content in your knowledge base and improve search accuracy.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Conversations List" icon="messages" href="/manage/conversations/overview">
+    Return to the full conversation list with filters and search
+  </Card>
+  <Card title="Quality Studio" icon="microscope" href="/manage/quality-studio/overview">
+    Review flagged conversations and resolve quality issues
+  </Card>
+  <Card title="Conversation Goals" icon="bullseye" href="/build/analytics/conversation-goals">
+    Configure goals to measure what matters for your use case
+  </Card>
+  <Card title="Gather Insights" icon="clipboard-list" href="/build/analytics/gather-insights">
+    Set up custom insight questions for structured insights
+  </Card>
+</CardGroup>

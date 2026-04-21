@@ -1,0 +1,180 @@
+---
+title: "Zeitpläne"
+description: "Wiederverwendbare Zeitpläne für Kampagnen, Telefonnummern-Routing, Agent-Tools und zeitbasierte Verfügbarkeitsregeln konfigurieren"
+icon: "clock"
+keywords: "schedules, business hours, calling schedule, campaign schedule, phone number routing, inbound routing, agent tools, tool scheduling, active hours, timezone management, outbound calling hours, holiday scheduling, date overrides"
+"og:description": "Wiederverwendbare Zeitpläne für Kampagnen, Telefonnummern-Routing, Agent-Tools und zeitbasierte Verfügbarkeit konfigurieren. Wöchentliche Fenster, Datumsüberschreibungen und zeitzonenbewusste Regeln festlegen."
+"og:title": "Zeitpläne"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+In der aktuellen Seitenleiste heißt dieser Bereich **Geschäftszeiten**. Geschäftszeiten sind wiederverwendbare Zeitfenster mit Wochenzeiten, Feiertags-Overrides und Zeitzoneneinstellungen.
+
+Nutze Geschäftszeiten, um zu steuern, wann Outbound-Kampagnen Anrufe platzieren dürfen, wann Telefonnummern-Routing-Regeln aktiv sind, wann Agent-Tools verfügbar sind und wann andere zeitbasierte Regeln gelten sollen.
+
+**Zugriff:** Öffne **Geschäftszeiten** in der Hauptseitenleiste.
+
+<Screenshot
+  lightSrc="/images/hours__business-hours-list_DE-light.png"
+  darkSrc="/images/hours__business-hours-list_DE-dark.png"
+  alt="Liste der Geschäftszeiten mit Namen, Status, aktiven Tagen und Zeitzone"
+/>
+
+## Geschäftszeiten erstellen
+
+Klicke auf **Zeitplan erstellen**, um den Erstellungsdialog zu öffnen. Gib einen Namen ein und klicke auf **Erstellen**.
+
+Neue Zeitpläne werden mit Standardwerten erstellt:
+- **Zeitzone:** Europe/Vienna
+- **Montag bis Freitag:** 09:00–17:00 (aktiv)
+- **Samstag bis Sonntag:** Geschlossen
+
+Nach dem Erstellen landest du im vollständigen Editor, um den Zeitplan anzupassen.
+
+---
+
+## Einen Zeitplan bearbeiten
+
+Der Editor hat drei Bereiche: Grundeinstellungen, wöchentlicher Zeitplan und Datumsüberschreibungen.
+
+<Screenshot
+  lightSrc="/images/hours__hours-settings_DE-light.png"
+  darkSrc="/images/hours__hours-settings_DE-dark.png"
+  alt="Zeitplan-Editor mit Name, Zeitzone, Wochenplan mit Zeitfenstern und Datumsüberschreibungen"
+/>
+
+### Grundeinstellungen
+
+| Einstellung | Beschreibung |
+| --- | --- |
+| **Name** | Beschreibender Name, z. B. "Standard DACH Hours" oder "Weekend Sales" |
+| **Zeitzone** | IANA-Zeitzone - alle Zeitfenster werden in dieser Zeitzone ausgewertet |
+| **Als Standard festlegen** | Als Standard-Zeitplan für neue Kampagnen markieren |
+
+### Wöchentlicher Zeitplan
+
+Konfiguriere aktive Zeiten für jeden Wochentag (Montag bis Sonntag):
+
+- **Umschalten** jedes Tages an oder aus - deaktivierte Tage werden als "Closed" angezeigt
+- **Startzeit / Endzeit** - Lege das Anruffenster im HH:MM-Format fest (24 Stunden)
+- **Mehrere Zeitfenster** - Füge zusätzliche Zeitfenster pro Tag hinzu, z. B. 09:00–12:00 und 14:00–18:00
+
+Die Plattform validiert Zeitfenster, damit Endzeiten nach Startzeiten liegen und sich Fenster nicht überlappen.
+
+**Gängige Konfigurationen:**
+
+| Zeitplan | Tage | Zeiten |
+| --- | --- | --- |
+| Standard-Bürozeiten | Mo–Fr | 09:00–17:00 |
+| Erweiterte Verfügbarkeit | Mo–Fr + Sa | 09:00–18:00, Sa 10:00–14:00 |
+| Maximale Erreichbarkeit (Deutschland) | Mo–Do, Fr | 08:00–20:00, Fr 08:00–18:00 |
+
+### Datumsüberschreibungen
+
+Füge Ausnahmen für Feiertage, Firmenevents oder Wartungsfenster hinzu.
+
+<Screenshot
+  lightSrc="/images/hours__date_DE-light.png"
+  darkSrc="/images/hours__date_DE-dark.png"
+  alt="Dialog 'Override hinzufügen' mit Datumswähler, Grund-Dropdown, Wiederholen-Schalter und Unavailable-Schalter"
+/>
+
+Klicke auf **Override hinzufügen**, um den Override-Dialog zu öffnen:
+
+| Einstellung | Beschreibung |
+| --- | --- |
+| **Datumstyp** | **Einzeldatum** oder **Datumsbereich** |
+| **Datum/Datumsangaben** | Das Datum oder Start-/Enddatum für den Override |
+| **Grund** | Optional - wähle aus: Public Holiday, Company Event, Maintenance, Other |
+| **Jedes Jahr wiederholen** | Für jährliche Feiertage aktivieren, z. B. Weihnachten, Neujahr |
+| **Für diesen Override geschlossen** | Wenn aktiv, werden an diesen Tagen keine Anrufe platziert. Wenn aus, gelten spezielle Öffnungszeiten. |
+
+Overrides erscheinen als farbcodierte Badges: rot für geschlossene Tage, grün für spezielle Öffnungszeiten. Klicke auf ein Badge zum Bearbeiten oder auf das X zum Entfernen.
+
+<Tip>
+Für wiederkehrende Feiertage aktiviere **Jedes Jahr wiederholen**, damit du sie nicht jedes Jahr neu eintragen musst. Der Override gilt dann jährlich am gleichen Monat und Tag.
+</Tip>
+
+---
+
+## Zeitpläne zuweisen
+
+Zeitpläne können an mehreren Stellen zugewiesen werden: in Outbound-Kampagnen, in Telefonnummern-Routing-Regeln und bei Agent-Tools im Profi. In manchen Kampagnenansichten heißt das Feld noch **Geschäftszeiten**.
+
+### Outbound-Kampagnen
+
+1. Öffne eine Kampagne im [Kampagneneditor](/de/manage/campaigns/overview)
+2. Öffne den Tab **Settings** und suche das Feld **Geschäftszeiten**
+3. Wähle einen Zeitplan aus dem Dropdown
+4. Leer lassen für 24/7-Betrieb ohne Zeitbeschränkung
+
+Die Kampagne platziert Anrufe nur während der im Zeitplan konfigurierten Zeiten in der Zeitzone des Zeitplans. Änderungen wirken sofort für alle Kampagnen, die diesen Zeitplan verwenden.
+
+### Telefonnummern-Routing
+
+Nutze Zeitpläne im [Telefonnummern-Routing](/de/launch/phone-numbers#routing-calls), wenn zu verschiedenen Zeitfenstern unterschiedliche Agenten Anrufe übernehmen sollen.
+
+1. Öffne **Telefonie → Telefonnummern**
+2. Öffne die Routing-Einstellungen einer Telefonnummer
+3. Füge eine Routing-Regel hinzu
+4. Wähle einen Zeitplan und einen Ziel-Agenten
+
+Routing-Regeln werden der Reihe nach geprüft. Wenn keine Regel passt, verwendet die Telefonnummer ihren Fallback-Agenten.
+
+### Agent-Tools
+
+Nutze Zeitpläne im Agent-Editor, wenn ein Tool nur während bestimmter Zeiten verfügbar sein soll.
+
+1. Öffne einen Agenten und gehe zu **Tools**
+2. Wechsle in den **Profi**
+3. Füge ein Tool hinzu oder bearbeite es
+4. Setze **Active hours** auf einen Zeitplan
+
+Wenn kein Zeitplan gewählt ist, ist das Tool **Always active**. Das ist nützlich für Transfers, Buchungen, benutzerdefinierte Aktionen und andere Tools, die nur während Support-, Sales- oder Rufbereitschaftsfenstern laufen sollen.
+
+---
+
+## Einen Zeitplan duplizieren
+
+Klicke im Aktionsmenü auf **Duplicate**, um einen Zeitplan zu klonen. Die Kopie enthält alle wöchentlichen Zeitfenster und Datumsüberschreibungen. Du kannst die Kopie optional umbenennen.
+
+Das ist praktisch, wenn du einen ähnlichen Zeitplan mit kleinen Anpassungen brauchst, zum Beispiel dieselben Wochenzeiten, aber andere Feiertags-Overrides für ein anderes Land.
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Auf Antwortraten optimieren">
+    Nach den ersten 50-100 Anrufen prüfst du die Tabs Kampagnen-**Dashboard** und **Analytics**, um zu sehen, welche Zeiten die meisten menschlichen Antworten bringen. Wenn deine Ansicht eine Heatmap enthält, nutze sie, um die stärksten Fenster schnell zu erkennen.
+  </Accordion>
+  <Accordion title="Hohe Mailbox-Zeiten vermeiden">
+    Wenn die Mailbox-Rate in bestimmten Zeitfenstern über 60 % liegt, sind die Leute dort wahrscheinlich beschäftigt oder nicht erreichbar. Begrenze dein Anruffenster, um diese Zeiten zu vermeiden.
+  </Accordion>
+  <Accordion title="Wiederverwendbare Zeitpläne erstellen">
+    Benenne Zeitpläne beschreibend, z. B. "DACH Standard", "US East Coast" oder "Weekend Support", damit dein Team sie leicht in Kampagnen, Routing-Regeln und Agent-Tools wiederverwenden kann.
+  </Accordion>
+  <Accordion title="Datumsüberschreibungen für Feiertage nutzen">
+    Richte wiederkehrende Overrides für relevante Feiertage deiner Zielregion ein. So vermeidest du Anrufe an Tagen mit schlechter Antwortrate und möglicher Verärgerung.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Kampagnen-Launch" icon="bullhorn" href="/de/launch/campaign-outbound-launch">
+    Deine erste Outbound-Kampagne erstellen
+  </Card>
+  <Card title="Telefonnummern" icon="phone-volume" href="/de/launch/phone-numbers">
+    Zeitpläne für Telefonnummern-Routing-Regeln nutzen
+  </Card>
+  <Card title="Tools-Übersicht" icon="bolt" href="/de/build/tools/overview">
+    Tools im Agent-Editor auf aktive Zeiten beschränken
+  </Card>
+  <Card title="Compliance-Leitfaden" icon="scale-balanced" href="/de/launch/outbound-compliance">
+    Anrufregeln für DACH, EU, USA und mehr prüfen
+  </Card>
+</CardGroup>

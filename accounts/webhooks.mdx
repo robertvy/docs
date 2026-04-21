@@ -1,0 +1,203 @@
+---
+title: "Webhooks"
+description: "Create webhook subscriptions, choose events, scope them to agents, and secure deliveries"
+icon: "webhook"
+keywords: "webhooks, webhook subscriptions, event delivery, webhook secret, signed payloads, agent-scoped webhooks"
+"og:description": "Configure account webhooks to send real-time events to your own systems with event filtering, agent scoping, and signed deliveries."
+"og:title": "Webhooks"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+Webhooks send real-time itellicoAI events to another system you manage.
+
+**Access:** Go to **Settings → Developers → Webhooks**.
+
+<Screenshot
+  lightSrc="/images/accounts__webhooks-list-light.png"
+  darkSrc="/images/accounts__webhooks-list-dark.png"
+  alt="Webhooks page showing active webhook subscriptions, target URLs, event counts, agent scope, and actions"
+/>
+
+<Info>
+This page is usually handled by a technical teammate, even when operations, sales, or support teams decide which events should trigger follow-up work.
+</Info>
+
+## What You Configure
+
+Each webhook subscription includes:
+
+- **Name**
+- **Target URL**
+- **Active/inactive state**
+- **Optional signing secret**
+- **Optional agent scope**
+- **Event subscriptions**
+
+If you do not select any agents, the webhook applies to all agents in the current account.
+
+## Create a Webhook
+
+<Steps>
+  <Step title="Open Webhooks">
+    Navigate to **Settings → Developers → Webhooks**.
+  </Step>
+
+  <Step title="Create a webhook">
+    Click **Create a Webhook**.
+  </Step>
+
+  <Step title="Review the create form">
+    The create dialog includes destination, signing secret, agent scope, and event selection controls.
+  </Step>
+
+  <Step title="Set the destination">
+    Add a descriptive name and the HTTPS address that should receive deliveries.
+  </Step>
+
+  <Step title="Generate the signing secret">
+    Use the **Regenerate** action to create a signing secret.
+  </Step>
+
+  <Step title="Choose agent scope">
+    Optionally restrict the webhook to one or more agents. Leave it empty to receive events for all agents.
+  </Step>
+
+  <Step title="Select events">
+    Pick the event groups and individual events you want to receive.
+  </Step>
+
+  <Step title="Save the subscription">
+    Create the webhook and confirm the receiving system can acknowledge events quickly.
+  </Step>
+</Steps>
+
+<Screenshot
+  lightSrc="/images/accounts__webhook-create-light.png"
+  darkSrc="/images/accounts__webhook-create-dark.png"
+  alt="Create webhook dialog with name, target URL, active toggle, signing secret, agent scope, and event selection"
+/>
+
+<Warning>
+If you generate or regenerate a secret, copy it immediately and store it securely before closing. The current UI does not let you paste a custom secret value directly.
+</Warning>
+
+## Fastest Way to Test
+
+If you are setting up webhooks for the first time, start with a temporary inspection endpoint before you connect your production system.
+
+<Steps>
+  <Step title="Create a temporary endpoint">
+    Use a request-inspection service such as Webhook.site or RequestBin to get a unique HTTPS URL.
+  </Step>
+
+  <Step title="Create a narrow subscription">
+    Subscribe to one or two events only, such as `conversation.ended` or `conversation.analysis.completed`.
+  </Step>
+
+  <Step title="Trigger a real event">
+    Place a test call or complete the workflow that should emit the selected event.
+  </Step>
+
+  <Step title="Inspect the payload">
+    Confirm the headers, signature fields, event type, and `data` payload shape before wiring your real endpoint.
+  </Step>
+
+  <Step title="Move to your production endpoint">
+    After you validate the shape and timing, swap the temporary URL for your real destination.
+  </Step>
+</Steps>
+
+## Implementation Model
+
+The best webhook receivers follow a simple pattern:
+
+1. verify the signature against the raw body
+2. acknowledge quickly
+3. move slow processing into your own background jobs
+
+If you are building the receiving endpoint itself, continue with the [Webhook Implementation Guide](/accounts/webhook-implementation).
+
+## Event Selection
+
+The event picker is grouped by entity so you can subscribe at different levels:
+
+- select or clear all events
+- select or clear an entire entity group
+- select individual events within a group
+
+Use a narrow event set for each destination so downstream systems receive only the data they need.
+
+## Webhook Inventory
+
+The table shows the current subscriptions with:
+
+- **Name**
+- **Target URL**
+- **Status**
+- **Subscribed event count**
+- **Agent scope**
+
+From the table, you can:
+
+- edit a subscription
+- delete a subscription
+- verify whether a signing secret is set
+
+If no agents are selected, the table shows the subscription as applying to **All Agents**.
+
+## Security Recommendations
+
+<AccordionGroup>
+  <Accordion title="Use secure HTTPS destinations" icon="shield-halved">
+    Deliveries should terminate on HTTPS so secrets and event data are protected in transit.
+  </Accordion>
+
+  <Accordion title="Verify signatures" icon="key">
+    Validate the webhook signature and timestamp on every request before you trust the payload.
+  </Accordion>
+
+  <Accordion title="Keep receiving systems fast" icon="bolt">
+    Acknowledge the event quickly and move long-running work to your own background jobs.
+  </Accordion>
+
+  <Accordion title="Separate destinations by purpose" icon="diagram-project">
+    Use different webhook subscriptions for CRM sync, analytics, or alerting so you can tune event scope and credentials independently.
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="My receiving system is not getting events" icon="triangle-exclamation">
+    Confirm the webhook is active, the target URL is reachable, and the selected event set matches the activity you are testing.
+  </Accordion>
+
+  <Accordion title="Signature verification fails" icon="lock">
+    Make sure your endpoint uses the raw request body and the current signing secret when calculating the HMAC signature.
+  </Accordion>
+
+  <Accordion title="I need only one agent's events" icon="robot">
+    Edit the webhook and set the **Agents** field instead of leaving it empty.
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Webhook Events Reference" icon="book" href="/reference/webhook-events">
+    Review event names, payload envelopes, headers, and retry behavior
+  </Card>
+  <Card title="Webhook Implementation Guide" icon="plug-circle-check" href="/accounts/webhook-implementation">
+    Build a receiver that is fast, safe, and easy to debug
+  </Card>
+  <Card title="Integration Testing" icon="flask" href="/test/integration-testing">
+    Validate your endpoint and end-to-end event handling
+  </Card>
+  <Card title="Integrations" icon="plug" href="/accounts/integrations">
+    Connect other account-level integrations in the same account
+  </Card>
+  <Card title="Secrets" icon="lock" href="/accounts/secrets">
+    Manage reusable credentials for supported configurations
+  </Card>
+</CardGroup>

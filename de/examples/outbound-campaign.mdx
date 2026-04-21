@@ -1,0 +1,192 @@
+---
+title: "Ausgehende Vertriebskampagne"
+description: "Eine automatisierte ausgehende Anrufkampagne für Vertriebsaktivitäten aufbauen und starten"
+icon: "phone-arrow-up-right"
+keywords: "Outbound-Kampagne, Vertriebsanrufe, automatisiertes Anrufen, Kaltakquise, Follow-up-Anrufe, Kampagneneinrichtung"
+"og:description": "Schritt-für-Schritt-Anleitung zum Starten einer ausgehenden Vertriebskampagne mit automatischer Anwahl, AMD und Leistungsverfolgung."
+"og:title": "Beispiel: Outbound-Kampagne"
+---
+
+Starte eine automatisierte Outbound-Kampagne, die Interessenten kontaktiert, dein Angebot präsentiert und Ergebnisse im großen Maßstab verfolgt.
+
+## Was du aufbaust
+
+Eine Kampagne, die:
+- Automatisch eine Kontaktliste abarbeitet
+- Ein konsistentes, professionelles Angebot übermittelt
+- Einwände mit wissensgestützten Antworten behandelt
+- Annahmequoten, Conversions und Stimmung verfolgt
+- Mailboxen mit intelligenter AMD-Erkennung überspringt
+
+**Geschätzter Einrichtungsaufwand:** 30 Minuten
+
+---
+
+## Schritt 1: Kontaktliste vorbereiten
+
+Vor dem Aufbau des Agenten die CSV vorbereiten mit:
+- **Vorname** und **Nachname**
+- **Telefonnummer** (E.164-Format: +43720123456)
+- **E-Mail** (optional, für Follow-up)
+- **Tags** (optional, für Segmentierung)
+
+Kontakte importieren: **Kampagnen → Kontakte → Kontakte hinzufügen → CSV importieren**
+
+## Schritt 2: Outbound-Agenten erstellen
+
+Einen Agenten speziell für ausgehende Anrufe aufbauen (oder einen bestehenden duplizieren):
+
+```
+# Rolle
+Du bist Jamie, ein Account Executive bei [Firmenname]. Du bist begeistert, aber nicht aufdringlich, kenntnisreich und darauf fokussiert, Mehrwert zu schaffen – unabhängig davon, ob es sofort passt oder nicht.
+
+# Ziel
+[Spezifisches Angebot, Produktaktualisierung oder Anrufgrund] vorstellen, Interesse einschätzen und den nächsten Schritt planen, wenn es passt.
+
+# Antwortformat
+- Gesprächig sein, nicht geskriptet
+- Das Wertangebot in zwei bis drei Sätzen halten
+- Die Zeit des Gesprächspartners respektieren und schnell auf den Punkt kommen
+- Energie und Tempo des Interessenten spiegeln
+- Mit einer klaren Frage nach dem nächsten Schritt abschließen
+
+# Gesprächsablauf
+
+## Phase 1: Eröffnung und Erlaubnis
+Beginnen mit: „Hallo, spreche ich mit {{contact.first_name}}? Hier ist [Agentenname] von [Firmenname]. Ich rufe an, weil [Grund]. Haben Sie kurz einen Moment?"
+
+Wenn sie Zeit haben, zu Phase 2 übergehen.
+Wenn sie beschäftigt sind, sagen:
+„Kein Problem. Wann wäre ein besserer Zeitpunkt für einen Rückruf?"
+- Bevorzugte Zeit notieren
+- Danken und Gespräch beenden
+
+## Phase 2: Wertangebot
+Das Wertangebot in dreißig Sekunden oder weniger kurz erläutern.
+Fragen: „Ist das gerade etwas, womit Sie sich befassen?"
+
+## Phase 3: Interessensbewertung
+Bei Interesse: nächste Schritte anbieten wie Demo, Meeting oder Test.
+Bei Unsicherheit: anbieten, Informationen zu senden und später nachzufassen.
+Bei fehlendem Interesse sagen: „Das verstehe ich vollkommen. Vielen Dank für Ihre Zeit. Ich wünsche Ihnen einen schönen Tag."
+
+## Phase 4: Terminplanung
+Beim Vereinbaren eines nächsten Schritts den bevorzugten Termin und die E-Mail erfassen.
+Den nächsten Schritt vor dem Ende bestätigen.
+
+# Kampagnenregeln
+- Wenn sie darum bitten, von der Liste gestrichen zu werden, sofort bestätigen und das Gespräch beenden
+- Niemals aufdringlich oder aggressiv sein
+- Vornamen natürlich verwenden
+- Produktfragen mit der Wissensdatenbank beantworten
+
+# Eskalationsauslöser
+An einen Menschen weiterleiten oder eine Follow-up-Aufgabe erstellen, wenn:
+- Der Interessent nach detaillierten Preisen oder Vertragsbedingungen fragt
+- Der Interessent technische Fragen hat, die dein Wissen übersteigen
+- Der Interessent ein bestehender Kunde mit einem Kontoproblem ist
+- Der Interessent darum bittet, dass sich eine bestimmte Person meldet
+
+Eskalationsphrase: „Das ist eine gute Frage, die eine fundierte Antwort verdient. Ich lasse die richtige Person nachfassen."
+
+# Verbotene Themen
+Wenn sie nach einem der folgenden Themen fragen, mitteilen, dass die richtige Person nachfassen wird:
+- Konkrete Vertragsbedingungen oder Preisdetails
+- Konkurrenzvergleiche
+- Alles außerhalb des Produkt-/Dienstleistungsbereichs
+```
+
+## Schritt 3: Agenten konfigurieren
+
+| Einstellung | Wert |
+| --- | --- |
+| **Modell** | Ausgewogen (Qualität zählt im Vertrieb) |
+| **Stimme** | Selbstsicher, freundlich, natürlich |
+| **Ausgehende Begrüßung** | Override für ausgehende spezifische Begrüßung verwenden |
+| **Max. Dauer** | 5–10 Minuten |
+
+## Schritt 4: Kampagne erstellen
+
+1. Zu **Kampagnen → Kampagne erstellen** gehen
+2. Konfigurieren:
+
+| Einstellung | Empfohlener Wert |
+| --- | --- |
+| **Kampagnenname** | Q2 Follow-up – [Segment] |
+| **Agent** | Dein Outbound-Agent |
+| **Telefonnummer** | Lokale Nummer passend zur Region der Empfänger |
+| **Geschäftszeiten** | 10:00–12:00 Uhr, 14:00–17:00 Uhr (optimale Erreichbarkeitszeiten) |
+
+## Schritt 5: Anrufeinstellungen konfigurieren
+
+Im Tab **Einstellungen** der Kampagne:
+
+| Einstellung | Empfohlener Wert |
+| --- | --- |
+| **Anrufbeantwortererkennung** | Textbasiert für allgemeine Nutzung, ML-basiert bei Bedarf nach strengerer Mailbox-Verarbeitung |
+| **Anrufintervall** | 30–60 Sekunden zwischen Anrufen |
+| **Max. gleichzeitige Anrufe** | Mit 2–3 beginnen, basierend auf Kapazität erhöhen |
+| **Max. Wiederholungsversuche** | 2–3 |
+| **Wiederholungsintervall** | 4–24 Stunden zwischen Versuchen |
+
+## Schritt 6: Kontakte hinzufügen
+
+1. Kampagne öffnen → Tab **Kontakte**
+2. **Kontakte hinzufügen** klicken
+3. Aus importierten Kontakten auswählen (bei Segmentierung nach Tags filtern)
+4. Mit einem **Pilot-Batch von 20–30 Kontakten** beginnen, bevor skaliert wird
+
+## Schritt 7: Analytics einrichten
+
+Im Tab **Analytics** der Kampagne:
+
+| Typ | Name | Beschreibung |
+| --- | --- | --- |
+| **Primäres Ziel** | Meeting vereinbart | Der Kontakt hat einer Demo, einem Meeting oder einem nächsten Schritt zugestimmt |
+| **Sekundäres Ziel** | Interesse bekundet | Der Kontakt hat Interesse gezeigt, sich aber nicht zu einem Meeting verpflichtet |
+| **Insight** | Stimmung | Wie aufgeschlossen war der Kontakt? (Bewertung 1–5) |
+| **Insight** | Einwand | Was war der Haupteinwand oder die Hauptsorge? (Offen) |
+| **Insight** | Rückruf gewünscht | Hat der Kontakt darum gebeten, zu einem anderen Zeitpunkt zurückgerufen zu werden? (Ja/Nein) |
+
+## Schritt 8: Starten
+
+1. Kampagnenstatus von **Pausiert** auf **Aktiv** ändern
+2. In der ersten Stunde den Tab **Dashboard** beobachten
+3. Annahmequoten prüfen und Zeitpläne bei Bedarf anpassen
+4. Einige Gespräche auf Qualität überprüfen
+
+## Laufende Optimierung
+
+### Woche 1: Baseline etablieren
+- Täglich beobachten: Annahmequoten, Zielerreichung, Stimmung
+- 5–10 Aufzeichnungen abhören – Ton, Einwandbehandlung, Timing prüfen
+- Prompt basierend auf häufigen Einwänden anpassen
+
+### Woche 2: Optimieren
+- Heatmap überprüfen – Zeitpläne auf optimale Erreichbarkeitszeiten verschieben
+- A/B-Test: zweite Kampagne mit einem anderen Skript erstellen
+- Kontaktliste bereinigen – ungültige Nummern entfernen
+- Spam-Scores prüfen – Nummern bei Anstieg rotieren
+
+### Laufend
+- Analytics wöchentlich für Berichte exportieren
+- Wissensdatenbank mit neuen Einwandbehandlungen aktualisieren
+- Telefonnummern alle 500–1.000 Anrufe rotieren
+- Kontakte für personalisierte Kampagnen segmentieren
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Kampagnenverwaltung" icon="chart-line" href="/manage/campaigns/overview">
+    Den vollständigen Leitfaden zur Kampagnenverwaltung ansehen
+  </Card>
+  <Card title="Zeitpläne" icon="clock" href="/launch/schedules">
+    Anruffenster optimieren
+  </Card>
+  <Card title="Telefonnummern" icon="phone" href="/launch/phone-numbers">
+    Nummern und Spam-Scores verwalten
+  </Card>
+  <Card title="Gesprächsziele" icon="bullseye" href="/build/analytics/conversation-goals">
+    Erfolgskennzahlen definieren
+  </Card>
+</CardGroup>

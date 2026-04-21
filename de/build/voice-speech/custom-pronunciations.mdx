@@ -1,0 +1,207 @@
+---
+title: "Benutzerdefinierte Aussprache"
+description: "Definiere Aussprache-Regeln für Markennamen, technische Begriffe und schwierige Wörter"
+icon: "spell-check"
+keywords: "custom pronunciations, TTS pronunciation, voice pronunciation, phonetic spelling, brand names, pronunciation rules"
+"og:description": "Definiere benutzerdefinierte Aussprache-Regeln für Markennamen, technische Begriffe und Akronyme, damit die KI-Stimme korrekt spricht."
+"og:title": "Benutzerdefinierte Aussprache"
+---
+
+**Zugriff:** Öffne einen Agenten und gehe zu **General** → **Speaking**.
+
+## Wie benutzerdefinierte Aussprachen funktionieren
+
+<Badge>Profi</Badge>
+
+Mit benutzerdefinierter Aussprache legst du fest, wie bestimmte Wörter klingen sollen, damit dein Agent Markennamen, technische Begriffe und Akronyme immer korrekt ausspricht. Diese Regeln wirken zusammen mit deiner [Voice-Auswahl](/de/build/voice-speech/select-voice) und den [Voice-Einstellungen](/de/build/voice-speech/voice-settings), um den Klang deines Agenten zu formen.
+
+## Aussprachen hinzufügen
+
+### Einzelersetzung
+
+1. Klicke auf **Add Replacement**
+2. Gib das **target word** ein (das zu ersetzende Wort)
+3. Gib die **pronunciation** ein (wie es klingen soll)
+4. Klicke auf **Add**
+
+**Beispiele:**
+- **Target:** Nike → **Pronunciation:** Nai-key
+- **Target:** API → **Pronunciation:** A-P-I
+- **Target:** 24/7 → **Pronunciation:** twenty-four seven
+- **Target:** EST → **Pronunciation:** Eastern Time
+
+<Warning>
+**Target words müssen einzelne Wörter sein** - Leerzeichen sind nicht erlaubt. Verwende vollständige Wörter wie `Nike` oder `API`, nicht Phrasen wie `customer service`.
+</Warning>
+
+### Massenimport per CSV
+
+Wenn du viele Aussprachen auf einmal importieren willst:
+
+1. Klicke auf **Import CSV**
+2. Lade bei Bedarf die Vorlage herunter
+3. Bereite deine CSV mit zwei Spalten vor: `target`, `replacement`
+4. Ziehe deine CSV-Datei per Drag-and-drop hinein oder klicke zum Auswählen
+5. Prüfe die Vorschau und klicke auf **Import**
+
+**CSV-Format:**
+```csv
+target,replacement
+Nike,Nai-key
+EST,Eastern Time
+24/7,twenty-four seven
+API,A-P-I
+```
+
+**Limits:**
+- Maximal 500 Aussprachen pro Agent
+- Maximale CSV-Dateigröße: 5MB
+
+---
+
+## Tipps für phonetische Schreibweise
+
+### Einfache phonetische Schreibweise
+
+Schreibe Ersetzungen als einfachen, lesbaren phonetischen Text:
+
+**Gute Beispiele:**
+- Nike → Nai-key
+- SQL → sequel (oder) S-Q-L
+- Wi-Fi → why-figh
+- iOS → eye-oh-ess
+
+**Tipps:**
+- Nutze Bindestriche, um Silben zu trennen: Nai-key, A-P-I
+- Schreib es so, wie du die Aussprache jemandem erklären würdest
+- Teste mit deiner Stimme, wie es klingt
+
+### Häufige Muster
+
+**Akronyme (jeden Buchstaben einzeln sprechen):**
+- API → A-P-I
+- URL → U-R-L
+- HTTP → H-T-T-P
+- AWS → A-W-S
+
+**Markennamen (phonetische Schreibweise):**
+- Nike → Nai-key
+- Adidas → ah-dee-dahs
+- Chipotle → chih-poht-lay
+
+**Zahlen und Uhrzeiten:**
+- 24/7 → twenty-four seven
+- 9am → nine A-M
+- EST → Eastern Time
+- 5pm → five P-M
+
+**Technische Begriffe:**
+- SQL → sequel (oder) S-Q-L
+- API → A-P-I
+- URL → you-are-ell
+- WiFi → why-figh
+
+---
+
+## Fortgeschritten: anbieterspezifisches Markup
+
+Ausspracheeinträge sind einfache Text-Ersetzungen, bevor Sprache synthetisiert wird. Einfache phonetische Schreibweise funktioniert anbieterübergreifend und ist die sicherste Standardwahl.
+
+Einige TTS-Anbieter unterstützen anbieterspezifisches Markup wie SSML-Phonem-Tags. Wenn du Markup verwendest, teste es mit genau dem Voice-Anbieter, den du für den Agenten ausgewählt hast.
+
+**Beispiel:**
+```
+espresso → ess-press-oh
+```
+
+<Note>
+Rohes IPA und SSML-Markup hängen vom Anbieter ab. Verwende zuerst lesbaren phonetischen Text und gehe nur dann zu anbieterspezifischem Markup über, wenn Tests zeigen, dass es mit deiner gewählten Stimme funktioniert.
+</Note>
+
+---
+
+## Aussprachen verwalten
+
+### Bestehende Ersetzungen bearbeiten
+
+1. Klicke auf einen beliebigen Replacement-Chip in der Liste
+2. Ändere Zielwort oder Aussprache
+3. Klicke auf **Save**
+
+### Ersetzungen löschen
+
+- Klicke auf das **Papierkorb-Symbol** bei einem Replacement-Chip, um ihn zu löschen
+- Oder klicke auf **Clear All**, um alle Aussprachen zu entfernen (Bestätigung erforderlich)
+
+### Aussprachen exportieren
+
+1. Klicke auf **Export CSV**
+2. Die CSV-Datei wird mit allen aktuellen Aussprachen heruntergeladen
+3. Dateinamen-Format: `{agent_name}_pronunciations.csv`
+
+Nutze exportierte CSV-Dateien, um deine Aussprachen zu sichern oder auf andere Agenten zu übertragen.
+
+---
+
+## Aussprachen testen
+
+Nachdem du Aussprachen hinzugefügt hast:
+
+1. Führe einen Test-Call mit deinem Agenten durch
+2. Löse Antworten aus, die die Zielwörter enthalten
+3. Höre zu, ob die Aussprache korrekt klingt
+4. Passe die phonetische Schreibweise bei Bedarf an
+
+**Test-Tipps:**
+- Teste im Kontext, nicht isoliert
+- Lass Teammitglieder mithören
+- Passe Silbentrennung oder Schreibweise an, wenn es nicht richtig klingt
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Mit häufigen Problemen beginnen" icon="bullseye">
+    Füge Aussprachen für Wörter hinzu, von denen du weißt, dass sie in echten Calls falsch ausgesprochen werden. Prüfe Call-Transkripte, um wiederkehrende Probleme zu finden.
+  </Accordion>
+
+  <Accordion title="Einfach bleiben" icon="sparkles">
+    Verwende phonetische Schreibweise (Nai-key) statt komplexem IPA, außer wenn es nötig ist. Einfache phonetische Texte sind leichter zu pflegen und funktionieren in den meisten Fällen gut.
+  </Accordion>
+
+  <Accordion title="Vor dem Deployment testen" icon="vial">
+    Teste Aussprachen immer mit echten Calls, bevor du live gehst. Mach einen Test-Call und löse Antworten mit den Zielwörtern aus, um zu prüfen, ob sie korrekt klingen.
+  </Accordion>
+
+  <Accordion title="Regeln dokumentieren" icon="file-arrow-down">
+    Exportiere dein CSV regelmäßig als Backup. Nutze den Button **Export CSV**, um deine Aussprachen zu sichern und versioniert neben deiner Agentenkonfiguration aufzubewahren.
+  </Accordion>
+
+  <Accordion title="Einheitliche Schreibweise verwenden" icon="check">
+    Wenn du "API" als "A-P-I" ausschreibst, verwende dieses Format konsequent in allen Aussprachen. Konsistenz verbessert die Wartbarkeit.
+  </Accordion>
+
+  <Accordion title="Nur einzelne Wörter" icon="letter-a">
+    Denk daran, dass Zielwörter keine Leerzeichen enthalten dürfen - nur vollständige Einzelwörter funktionieren. Nutze `Nike` oder `API`, nicht Phrasen wie `customer service`.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Voice Settings" icon="sliders" href="/de/build/voice-speech/voice-settings">
+    Voice-Parameter feinjustieren
+  </Card>
+  <Card title="Select Voice" icon="microphone" href="/de/build/voice-speech/select-voice">
+    Eine andere Stimme wählen
+  </Card>
+  <Card title="Ambient Sound" icon="volume" href="/de/build/voice-speech/ambient-sound">
+    Hintergrundatmosphäre hinzufügen
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/de/test/web-simulator">
+    Aussprachen mit Web-Calls testen
+  </Card>
+</CardGroup>

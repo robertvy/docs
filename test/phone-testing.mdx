@@ -1,0 +1,125 @@
+---
+title: "Phone Testing"
+description: "Place real test calls to verify voice quality, timing, answering machine detection, call transfers, and the full customer experience."
+icon: "phone"
+keywords: 'phone testing, call testing, voice quality testing, AMD testing, telephony testing, real phone calls'
+"og:description": 'Test voice agents with real phone calls. Verify voice quality, answering machine detection, call transfers, and the full customer experience.'
+"og:title": "Phone Testing"
+---
+
+## Why Test with Phone Calls
+
+Use phone testing if your agent will be deployed on a phone number. The web simulator is faster for iteration, but a real phone call is the only way to verify voice quality, timing, answering machine detection, and transfer flows over the actual telephony path.
+
+<Note>
+Phone testing is not a substitute for real-world experience — it validates the technical path, not how your agent handles real callers. Always review live conversations after launch and iterate from there.
+</Note>
+
+## Use This Page Before A Live Telephony Launch
+
+If customers will call a real phone number, run at least one phone test before launch even if web simulator tests already passed.
+
+## How to Make a Test Call
+
+<Steps>
+  <Step title="Open Test Agent">
+    Go to your agent and click **Test Agent** in the top right corner.
+  </Step>
+  <Step title="Choose Phone call">
+    In **Test type**, select **Phone call**.
+  </Step>
+  <Step title="Choose your caller ID">
+    Select which phone number to call from. This will be the caller ID your contact sees.
+  </Step>
+  <Step title="Enter destination number">
+    Type the phone number you want to call in international format with country code (e.g., +1 for US).
+  </Step>
+  <Step title="Configure AMD (optional)">
+    Choose [Answering Machine Detection (AMD)](/build/advanced/voicemail-handling) mode.
+  </Step>
+  <Step title="Start the call">
+    Click **Start phone call**. Your agent will call the number and you can have a real conversation.
+  </Step>
+</Steps>
+
+## What to verify during the call
+
+<CardGroup cols={2}>
+  <Card title="Response Time" icon="clock">
+    Count the beats between speaking and hearing the agent. Flag anything over ~600 ms.
+  </Card>
+  <Card title="AMD" icon="robot">
+    Let voicemail answer to check whether the selected AMD mode behaves correctly.
+  </Card>
+  <Card title="Tools & transfers" icon="bolt">
+    Trigger custom tools, bookings, or transfers to confirm they still fire during a real phone call.
+  </Card>
+  <Card title="Context accuracy" icon="id-card">
+    Confirm caller-specific prompts or knowledge lookups still work when the call is initiated with real metadata.
+  </Card>
+  <Card title="End-of-call handling" icon="flag-checkered">
+    Ensure wrap-up messaging, automations, and transcripts finalize even if the caller hangs up first.
+  </Card>
+</CardGroup>
+
+## Test Scenarios
+
+<AccordionGroup>
+  <Accordion title="Conversation flow" icon="comments">
+    Test the complete conversation path from greeting through goal completion. Verify the agent follows your prompt and handles the conversation naturally.
+  </Accordion>
+  <Accordion title="Interruptions" icon="hand">
+    Try interrupting the agent while it's speaking. Verify it stops gracefully and responds appropriately to your interruption.
+  </Accordion>
+  <Accordion title="Different environments" icon="location-dot">
+    Test from quiet rooms, noisy environments, and different locations. Call from mobile phones, landlines, and different carriers if possible.
+  </Accordion>
+  <Accordion title="Edge cases" icon="triangle-exclamation">
+    Test unexpected inputs, unclear requests, and scenarios where the agent needs to ask clarifying questions or gracefully handle confusion.
+  </Accordion>
+</AccordionGroup>
+
+## After the Call
+
+1. Go to the **Conversations** tab in your dashboard
+2. Find your test call (look for the phone icon)
+3. Review the transcript for accuracy
+4. Check that goals were tracked correctly
+5. Verify any tools or automations triggered as expected
+
+<Tip>
+Keep notes on what worked and what needs improvement for each test call.
+</Tip>
+
+## Common Issues
+
+<AccordionGroup>
+  <Accordion title="Call doesn't connect" icon="phone-xmark">
+    Check that your selected phone number is active and properly configured in **Telephony → Phone Numbers**.
+  </Accordion>
+  <Accordion title="Poor audio quality" icon="volume-xmark">
+    Try calling from a different location or device.
+  </Accordion>
+  <Accordion title="No transcript appears" icon="file-slash">
+    Wait a few moments after the call ends for processing. If it still doesn't appear, try another test call.
+  </Accordion>
+  <Accordion title="Agent sounds different than web test" icon="waveform">
+    This is normal — the phone network processes audio differently than web calls. Test multiple times to ensure consistency.
+  </Accordion>
+</AccordionGroup>
+
+Once your phone tests are successful, you're ready to launch your agent to customers!
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Web & Chat Testing" icon="browser" href="/test/web-simulator">
+    Test your agent in the browser for fast iteration
+  </Card>
+  <Card title="Phone Numbers" icon="phone" href="/launch/phone-numbers">
+    Deploy your agent to production phone numbers
+  </Card>
+  <Card title="Debugging" icon="bug" href="/test/debugging">
+    Troubleshoot issues with conversation logs and diagnostics
+  </Card>
+</CardGroup>

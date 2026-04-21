@@ -1,0 +1,225 @@
+---
+title: "Team Management"
+description: "Invite, manage, and control permissions for your team members"
+icon: "users"
+keywords: "team management, invite members, team invitations, user management, team access, member permissions, role-based access"
+"og:description": "Invite and manage team members in itellicoAI. Assign roles and manage collaboration across your account."
+"og:title": "Team Management"
+---
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+## Team Member Management
+
+The Team Management page lets you view members, invite users, change roles, and remove access.
+
+**Access:** Go to **Settings → Account → Members**.
+
+<Screenshot
+  lightSrc="/images/accounts__team-members-light.png"
+  darkSrc="/images/accounts__team-members-dark.png"
+  alt="Team members list showing name, email, role, last login, and actions columns"
+/>
+
+## Team Members List
+
+The table includes:
+
+| Column | Description |
+|--------|-------------|
+| **Member** | Name and avatar |
+| **Email** | Account email |
+| **Role** | Current role (editable when allowed) |
+| **Last login** | Most recent login activity |
+| **Actions** | Resend invite or remove member |
+
+Use the toolbar search to filter members.
+
+## Roles and Permissions
+
+### Role Overview
+
+| Role | Description |
+| --- | --- |
+| **Owner** | Highest level of control. Manages organization ownership and top-level administration. Cannot be modified by lower roles. |
+| **Admin** | Manages members, invitations, and account-level settings. Can assign lower or equivalent roles. |
+| **Member** | Standard day-to-day operational access. Cannot perform account-level admin actions. |
+| **Viewer** | Read-only access for visibility and monitoring use cases. |
+| **Agency Admin** | Elevated agency access inside accounts where an external agency user has been invited. |
+
+### Permission Matrix
+
+| Area | Owner | Admin | Agency Admin | Member | Viewer |
+| --- | --- | --- | --- | --- | --- |
+| **Agents** | | | | | |
+| View agents | Full | Full | Full | Full | Read |
+| Create/edit agents | Full | Full | Full | Full | None |
+| Delete agents | Full | Full | Full | None | None |
+| **Conversations** | | | | | |
+| View conversations | Full | Full | Full | Full | Read |
+| Delete conversations | Full | Full | Full | None | None |
+| Export conversations | Full | Full | Full | Full | Read |
+| **Campaigns** | | | | | |
+| View campaigns | Full | Full | Full | Full | Read |
+| Create/manage campaigns | Full | Full | Full | Full | None |
+| **Knowledge Bases** | | | | | |
+| View knowledge bases | Full | Full | Full | Full | Read |
+| Create/edit knowledge | Full | Full | Full | Full | None |
+| **Telephony** | | | | | |
+| View phone numbers | Full | Full | Full | Full | Read |
+| Buy/import numbers | Full | Full | Full | None | None |
+| Manage SIP trunks | Full | Full | Full | None | None |
+| **Account & Settings** | | | | | |
+| View account settings | Full | Full | Full | Read | Read |
+| Edit account settings | Full | Full | Full | None | None |
+| Manage members | Full | Full | Full | None | None |
+| Manage subaccounts | Full | Full | Full | None | None |
+| Manage billing | Full | Full | None | None | None |
+| **Developers** | | | | | |
+| View API keys | Full | Full | Full | Read | None |
+| Create/revoke API keys | Full | Full | Full | None | None |
+| Manage integrations | Full | Full | Full | None | None |
+| Manage webhooks | Full | Full | Full | None | None |
+
+<Note>
+Your account may show different role options based on your account setup. The permission matrix above reflects the standard configuration — subaccount-level permissions may further restrict access. See [Subaccounts](/accounts/subaccounts) for permission overrides.
+</Note>
+
+## Accounts With Agency Access
+
+Some independent accounts grant agency-level access to external agency users.
+
+In those accounts:
+
+- only agency admins can manage what non-agency members can access
+- the **Invite** action can be hidden or disabled for non-agency admins
+- [Agency Settings](/accounts/agency-settings) is where agency admins control what non-agency members — including the account owner — can see and do
+
+Use **Members** for invitations and role changes. Use **Agency Settings** to control access for everyone in the account who does not have agency-level access.
+
+## Inviting Team Members
+
+<Steps>
+  <Step title="Open Members page">
+    Go to **Settings → Account → Members**.
+  </Step>
+
+  <Step title="Click Invite">
+    Click the **Invite** action in the page toolbar.
+  </Step>
+
+  <Step title="Add one or more emails">
+    Enter email addresses in the invite form.
+  </Step>
+
+  <Step title="Select role">
+    Choose a role for invited users.
+  </Step>
+
+  <Step title="Send invitations">
+    Submit the invitation. Users receive an email with an acceptance link.
+  </Step>
+</Steps>
+
+<Note>
+Invitation validity is shown in the invite flow and pending invitation list. You can resend pending invites, and the member list screenshot above also shows the pending invitation section that appears after invites are sent.
+</Note>
+
+## Managing Pending Invitations
+
+Pending invitations appear below the member list.
+
+For each pending invite, you can:
+
+- **Resend**: Issue a fresh invitation email
+- **Cancel**: Revoke the invitation immediately
+
+## What Invitees See
+
+The invitation link does not behave the same for every recipient:
+
+- existing itellicoAI users are asked to sign in, then returned to the invitation acceptance page
+- new users are sent through sign-up with the invited email prefilled
+- invited signups may see one short welcome step to complete their profile before entering the account
+
+If an invitation expires or becomes invalid, the invitee cannot recover it themselves. You need to resend it from the pending invitation list.
+
+## Changing a Member's Role
+
+If you have permission to update roles:
+
+1. Open **Settings → Account → Members**
+2. Locate the user in the list
+3. Use the **Role** dropdown in the row
+4. Select the new role
+
+<Warning>
+You cannot change your own role from the same member row, and owner role changes are restricted.
+</Warning>
+
+## Removing Team Members
+
+1. Open **Settings → Account → Members**
+2. Open the row actions menu for that user
+3. Click **Remove**
+4. Confirm removal
+
+Removed users lose access immediately and the platform removes the account from their switcher.
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Use least privilege" icon="shield-halved">
+    Give admin-level roles only to people who need account-wide control.
+  </Accordion>
+
+  <Accordion title="Review roles regularly" icon="clipboard-list">
+    Audit role assignments on a schedule and adjust stale or over-privileged access.
+  </Accordion>
+
+  <Accordion title="Keep invites clean" icon="envelope">
+    Cancel stale invitations and resend only when the email address is confirmed.
+  </Accordion>
+
+  <Accordion title="Offboard immediately" icon="user-minus">
+    Remove access as soon as someone leaves and rotate any shared credentials they could access.
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Invitation not received" icon="envelope">
+    Verify the address, check spam, then resend the invitation.
+  </Accordion>
+
+  <Accordion title="Invitation expired" icon="clock">
+    Resend it from the pending invitation list to issue a new link.
+  </Accordion>
+
+  <Accordion title="User cannot see the account" icon="eye-slash">
+    Confirm they accepted with the same email that was invited.
+  </Accordion>
+
+  <Accordion title="Role change is disabled" icon="lock">
+    Your current role or permissions may not allow updating that member's role.
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Subaccounts" icon="sitemap" href="/accounts/subaccounts">
+    Manage nested account structures and access categories
+  </Card>
+  <Card title="Agency Settings" icon="building" href="/accounts/agency-settings">
+    Control default member access in accounts with agency access
+  </Card>
+  <Card title="Security" icon="shield-check" href="/accounts/security">
+    Configure authentication and session security
+  </Card>
+  <Card title="API Keys" icon="key" href="/accounts/api-keys">
+    Manage programmatic access credentials
+  </Card>
+</CardGroup>

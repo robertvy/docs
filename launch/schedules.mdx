@@ -1,0 +1,182 @@
+---
+title: "Schedules"
+description: "Configure reusable schedules for campaigns, phone-number routing, agent tools, and time-based availability rules"
+icon: "clock"
+keywords: "schedules, business hours, calling schedule, campaign schedule, phone number routing, inbound routing, agent tools, tool scheduling, active hours, timezone management, outbound calling hours, holiday scheduling, date overrides"
+"og:description": "Configure reusable schedules for campaigns, phone-number routing, agent tools, and time-based availability. Set weekly windows, date overrides, and timezone-aware rules."
+"og:title": "Schedules"
+---
+
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+In the current sidebar, this area is labeled **Schedules**. Schedules are reusable time windows with weekly hours, holiday overrides, and timezone settings.
+
+Use schedules to control when outbound campaigns can place calls, when phone-number routing rules are active, when agent tools are available, and when other time-based rules should apply.
+
+**Access:** Open **Schedules** from the main sidebar.
+
+<Screenshot
+  lightSrc="/images/hours__business-hours-list-light.png"
+  darkSrc="/images/hours__business-hours-list-dark.png"
+  alt="Schedules list showing schedule name, status, active days, and timezone"
+/>
+
+## Creating Schedules
+
+Click **Create Schedule** to open the creation dialog. Enter a name and click **Create**.
+
+New schedules are created with defaults:
+- **Timezone:** Europe/Vienna
+- **Monday–Friday:** 09:00–17:00 (active)
+- **Saturday–Sunday:** Closed
+
+After creation, you're taken to the full editor to customize the schedule.
+
+---
+
+## Editing a Schedule
+
+The editor has three sections: basic settings, weekly schedule, and date overrides.
+
+<Screenshot
+  lightSrc="/images/hours__hours-settings-light.png"
+  darkSrc="/images/hours__hours-settings-dark.png"
+  alt="Schedule editor showing name, timezone, weekly schedule with time slots, and date overrides"
+/>
+
+### Basic Settings
+
+| Setting | Description |
+| --- | --- |
+| **Name** | Descriptive name (e.g., "Standard DACH Hours", "Weekend Sales") |
+| **Timezone** | IANA timezone — all time windows are evaluated in this timezone |
+| **Set as Default** | Mark as the default schedule for new campaigns |
+
+### Weekly Schedule
+
+Configure active hours for each day of the week (Monday through Sunday):
+
+- **Toggle** each day on or off — disabled days show as "Closed"
+- **Start time / End time** — Set the calling window in HH:MM format (24-hour)
+- **Multiple time slots** — Add additional time windows per day (e.g., 09:00–12:00 and 14:00–18:00)
+
+The platform validates time slots to ensure end times are after start times and slots do not overlap.
+
+**Common configurations:**
+
+| Schedule | Days | Hours |
+| --- | --- | --- |
+| Standard office hours | Mon–Fri | 09:00–17:00 |
+| Extended availability | Mon–Fri + Sat | 09:00–18:00, Sat 10:00–14:00 |
+| Maximum reach (Germany) | Mon–Thu, Fri | 08:00–20:00, Fri 08:00–18:00 |
+
+### Date Overrides
+
+Add exceptions for holidays, company events, or maintenance windows.
+
+<Screenshot
+  lightSrc="/images/hours__date-light.png"
+  darkSrc="/images/hours__date-dark.png"
+  alt="Add override dialog with date picker, reason dropdown, recurring toggle, and unavailable toggle"
+/>
+
+Click **Add Override** to open the override dialog:
+
+| Setting | Description |
+| --- | --- |
+| **Date type** | **Single date** or **Date range** |
+| **Date(s)** | The date or start/end dates for the override |
+| **Reason** | Optional — select from: Public Holiday, Company Event, Maintenance, Other |
+| **Repeat every year** | Enable for annual holidays (e.g., Christmas, New Year's) |
+| **Closed for this override** | When on, no calls are placed on these dates. When off, special open hours apply. |
+
+Overrides appear as color-coded badges: red for closed dates, green for special open hours. Click any badge to edit, or click the X to remove it.
+
+<Tip>
+For recurring holidays, enable **Repeat every year** so you don't have to re-add them each year. The override will apply on the same month and day annually.
+</Tip>
+
+---
+
+## Assigning Schedules
+
+Schedules can be assigned in multiple places: outbound campaigns, phone-number routing rules, and agent tools in Expert mode. In some campaign screens, the field may still be labeled **Business Hours**.
+
+### Outbound Campaigns
+
+1. Open a campaign in the [campaign editor](/manage/campaigns/overview)
+2. Open the **Settings** tab and find the **Business Hours** field
+3. Select a schedule from the dropdown
+4. Leave empty for 24/7 operation (no time restrictions)
+
+The campaign will only place calls during the configured hours in the schedule's timezone. Changes take effect immediately for all campaigns using that schedule.
+
+### Phone-Number Routing
+
+Use schedules in [phone-number routing](/launch/phone-numbers#routing-calls) when different agents should handle calls during different time windows.
+
+1. Open **Telephony → Phone Numbers**
+2. Open the routing settings for a phone number
+3. Add a routing rule
+4. Choose a schedule and target agent
+
+Routing rules are checked in order. If no schedule rule matches, the phone number uses its fallback agent.
+
+### Agent Tools
+
+Use schedules in the agent editor when a tool should only be available during specific hours.
+
+1. Open an agent and go to **Tools**
+2. Switch to **Expert** mode
+3. Add or edit a tool
+4. Set **Active hours** to a schedule
+
+If no schedule is selected, the tool is **Always active**. This is useful for transfers, bookings, custom actions, and other tools that should only run during support, sales, or on-call windows.
+
+---
+
+## Duplicating a Schedule
+
+Click **Duplicate** from the actions menu to clone a schedule. The copy includes all weekly time windows and date overrides. You can optionally rename the copy.
+
+This is useful when you need a similar schedule with minor adjustments — for example, the same weekly hours but different holiday overrides for a different country.
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Optimize for answer rates">
+    After your first 50–100 calls, review the campaign **Dashboard** and **Analytics** tabs to see which hours produce the most human answers. If your view includes a heatmap, use it to spot the strongest windows quickly.
+  </Accordion>
+  <Accordion title="Avoid high voicemail hours">
+    If voicemail rates exceed 60% during certain hours, people in those windows are likely busy or unavailable. Narrow your calling window to avoid them.
+  </Accordion>
+  <Accordion title="Create reusable schedules">
+    Name schedules descriptively (e.g., "DACH Standard", "US East Coast", "Weekend Support") so your team can easily reuse the right schedule across campaigns, routing rules, and agent tools.
+  </Accordion>
+  <Accordion title="Use date overrides for holidays">
+    Configure recurring overrides for public holidays relevant to your target region. This prevents calls on days when answer rates will be poor and customers may be annoyed.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Campaign Launch" icon="bullhorn" href="/launch/campaign-outbound-launch">
+    Create your first outbound campaign
+  </Card>
+  <Card title="Phone Numbers" icon="phone-volume" href="/launch/phone-numbers">
+    Use schedules for phone-number routing rules
+  </Card>
+  <Card title="Tools Overview" icon="bolt" href="/build/tools/overview">
+    Restrict tools to active hours from the agent editor
+  </Card>
+  <Card title="Compliance Guide" icon="scale-balanced" href="/launch/outbound-compliance">
+    Review calling regulations for DACH, EU, US, and more
+  </Card>
+</CardGroup>

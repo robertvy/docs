@@ -1,0 +1,101 @@
+---
+title: "Supported Providers"
+description: "AI models, voice engines, and transcription providers available in itellicoAI"
+icon: "microchip"
+keywords: "AI models, LLM providers, voice providers, TTS, STT, transcription, OpenAI, Anthropic, Groq, ElevenLabs, Cartesia, Azure, Deepgram"
+"og:description": "Complete reference of AI models, voice engines, and transcription providers supported by itellicoAI."
+"og:title": "Supported Providers"
+---
+
+## Provider Catalogs Are Dynamic
+
+Provider/model/voice availability is generated from the platform catalogs and can change over time.
+
+Use this page as a capability reference, and use the Providers API to fetch the exact options available for your account at runtime.
+
+---
+
+## Current Provider Families
+
+### LLM Providers
+
+- OpenAI
+- Azure OpenAI
+- Anthropic
+- Groq
+- Custom (OpenAI-compatible)
+
+### STT (Transcriber) Providers
+
+- Deepgram
+- Azure Speech
+
+### TTS (Voice) Providers
+
+- Azure Speech
+- Cartesia
+- ElevenLabs
+
+<Note>
+Exact models and voices are account/runtime-dependent and can be added, removed, or reprioritized without a docs release.
+</Note>
+
+---
+
+## Providers API (Source of Truth)
+
+Use your API key and account ID to discover currently available options.
+
+### List LLM model catalog
+
+```bash
+curl -H "X-API-Key: <your-api-key>" \
+  "https://api.itellico.ai/v1/accounts/<account_id>/providers/models"
+```
+
+### List transcriber catalog
+
+```bash
+curl -H "X-API-Key: <your-api-key>" \
+  "https://api.itellico.ai/v1/accounts/<account_id>/providers/transcribers"
+```
+
+### List voices (live provider data)
+
+```bash
+curl -H "X-API-Key: <your-api-key>" \
+  "https://api.itellico.ai/v1/accounts/<account_id>/providers/voices?provider=elevenlabs"
+```
+
+- `provider` currently supports: `azure`, `cartesia`, `elevenlabs`
+- optional filters: `language`, `gender`, `search`, `limit`, `refresh`
+
+---
+
+## UI Configuration Paths
+
+Use these docs for setup workflows:
+
+- [Choose AI Model](/build/voice-speech/choose-ai-model)
+- [Transcriber](/build/voice-speech/transcriber)
+- [Select Voice](/build/voice-speech/select-voice)
+- [Voice Cloning](/build/voice-speech/voice-cloning)
+
+For pricing impact of provider/model choices, see [Usage & Pricing](/billing/overview).
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Choose AI Model" icon="brain" href="/build/voice-speech/choose-ai-model">
+    Configure model selection in the agent editor
+  </Card>
+  <Card title="Select Voice" icon="microphone" href="/build/voice-speech/select-voice">
+    Browse and preview voices
+  </Card>
+  <Card title="Transcriber" icon="closed-captioning" href="/build/voice-speech/transcriber">
+    Configure speech-to-text settings
+  </Card>
+  <Card title="API Reference" icon="brackets-curly" href="/api-reference/introduction">
+    Explore provider endpoints and schemas
+  </Card>
+</CardGroup>

@@ -1,0 +1,187 @@
+---
+title: "Quickstart"
+description: "Build your first AI voice agent in under 5 minutes"
+icon: "rocket"
+keywords: "AI voice agent tutorial, build voice bot, create AI agent, voice automation quickstart, setup AI assistant, voice agent guide"
+og:title: "Quickstart: Build Your First AI Voice Agent in 5 Minutes"
+"og:description": "Step-by-step guide to creating and deploying your first AI voice agent. No coding required - test and launch in minutes."
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+
+Build a voice AI agent that handles customer conversations over phone and web — no coding required.
+
+## Before You Start
+
+- itellicoAI account ([sign up here](https://app.itellico.ai/signup))
+- A use case in mind (support, booking, sales, etc.)
+- If you were invited into an existing account, make sure you are in the correct account before you create or test agents
+
+## Step 1: Create Your Agent
+
+<Steps>
+  <Step title="Open AI Agents">
+    Click **AI Agents** in the sidebar and then **Create Agent**.
+  </Step>
+  <Step title="Set up your agent">
+    Enter a name, pick a language preset, and optionally choose one of the starter templates. Then click **Create**.
+
+    <Screenshot
+      lightSrc="/images/agents__create-agent-modal-light.png"
+      darkSrc="/images/agents__create-agent-modal-dark.png"
+      alt="Create Agent form showing name, language, and template fields"
+      caption="Enter a name, pick a language, and optionally choose a template."
+      maxWidth="720px"
+    />
+  </Step>
+  <Step title="Configure in the Agent Editor">
+    The [Agent Editor](/build/getting-started/agent-editor) opens automatically. Start with the **General** tab (voice and model), then go to **Prompt** and paste a starter prompt like this:
+
+    ```text wrap
+    # Role
+    You are Jamie, a front desk receptionist for [Company Name], a [type of business] in [location]. You are calm, professional, and helpful.
+
+    # Objective
+    Answer inbound calls, identify what the caller needs, answer common questions, and route or capture details for follow-up.
+
+    # Response Format
+    - Keep responses to one to three sentences
+    - Ask one question at a time
+    - Repeat back critical details like name, callback number, and reason for calling
+
+    # Conversation Flow
+
+    ## Phase 1: Welcome
+    Start with: "Thank you for calling [Company Name], this is Jamie. How can I help you today?"
+
+    ## Phase 2: Handle or Route
+    Answer simple questions about hours, services, and location. For specialist topics, transfer to the right person or take a callback message.
+
+    # Escalation Triggers
+    Transfer to a human immediately if:
+    - The caller asks for a manager
+    - The caller is frustrated after two attempts to help
+    - The request involves legal, safety, billing, or account-specific issues
+
+    # Business Hours
+    Monday-Friday: 9:00 AM - 5:00 PM
+    Saturday-Sunday: Closed
+    ```
+
+    Adapt this to your use case, or browse more templates in the Prompt tab under **Templates**.
+
+    <Screenshot
+      lightSrc="/images/agent-editor__general-tab-light.png"
+      darkSrc="/images/agent-editor__general-tab-dark.png"
+      alt="Agent Editor showing the General tab"
+      caption="Start with General (voice and model), then write your prompt."
+      maxWidth="720px"
+    />
+  </Step>
+</Steps>
+
+<Tip>
+Think of the prompt like instructions for a new employee on their first day — tell them who they are, how to greet callers, what they can help with, and what to do when they're unsure.
+</Tip>
+
+## Step 2: Test Your Agent
+
+<Steps>
+  <Step title="Open Test Call">
+    In the Agent Editor, click **Test Agent** in the top-right.
+  </Step>
+  <Step title="Pick a mode">
+    - **Web Call** — fastest way to test with voice (requires microphone access)
+    - **Chat** — text-only, no microphone needed
+    - **Phone Call** — calls a real phone number. Requires a [phone number](/launch/phone-numbers) in your account first.
+
+    <Screenshot
+      lightSrc="/images/wizard__test-call-dialog-light.png"
+      darkSrc="/images/wizard__test-call-dialog-dark.png"
+      alt="Test Agent popover showing Chat, Web call, and Phone call options"
+      caption="Use Chat for fast text checks, Web call for the quickest voice test, or Phone call when you want to ring a real number."
+      maxWidth="560px"
+    />
+  </Step>
+  <Step title="Iterate">
+    If something's off, adjust your prompt, knowledge, voice, or tools in the editor, then test again.
+  </Step>
+</Steps>
+
+## Step 3: Deploy
+
+Pick how you want your agent to reach people:
+
+<Tabs>
+  <Tab title="Inbound Phone">
+    Your agent answers incoming calls on a phone number.
+
+    1. Go to **Telephony → [Buy Number](/launch/buy-numbers)** and purchase a number
+    2. Go to **Telephony → [Phone Numbers](/launch/phone-numbers)** and assign your agent
+
+    <Warning>
+    Some countries require a [compliance profile](/launch/phone-numbers) before you can buy a number — you may need to upload business documents first. We are happy to help you through this process. Contact [support@itellico.ai](mailto:support@itellico.ai) and we will guide you through it.
+    </Warning>
+
+    <Tip>
+    Already have numbers with a carrier? [Connect them via SIP](/launch/sip-trunks) instead.
+    </Tip>
+  </Tab>
+
+  <Tab title="Outbound Campaigns">
+    Your agent calls a list of contacts automatically.
+
+    1. Go to **[Campaigns](/launch/campaign-outbound-launch)** and click **Create Campaign**
+    2. Pick your agent, choose a phone number, and configure call settings
+    3. Add contacts from your [contact list](/manage/contacts/overview) or import a CSV
+    4. Set a [schedule](/launch/schedules) and launch
+
+    <Tip>
+    Start with a small pilot batch of 20-30 contacts before scaling up.
+    </Tip>
+  </Tab>
+
+  <Tab title="Web Widget">
+    Your agent talks to visitors on your website via voice or chat.
+
+    1. Go to **[Web Widgets](/manage/web-widgets/overview)** and click **Create Widget**
+    2. Select your agent and give the widget a name
+    3. Customize appearance in the [widget editor](/manage/web-widgets/configuration)
+    4. Copy the embed script from the **Export** tab and paste it into your site
+  </Tab>
+</Tabs>
+
+## Step 4: Monitor and Optimize
+
+<CardGroup cols={2}>
+  <Card title="Dashboard" icon="gauge-high" href="/manage/dashboard">
+    Monitor agent performance, call volume, and key metrics
+  </Card>
+  <Card title="Conversations" icon="messages" href="/manage/conversations/overview">
+    Review transcripts, flag issues, and track outcomes
+  </Card>
+  <Card title="Quality Studio" icon="chart-line" href="/manage/quality-studio/overview">
+    Track and resolve agent quality issues over time
+  </Card>
+  <Card title="Campaigns" icon="bullhorn" href="/manage/campaigns/overview">
+    Launch outbound calling campaigns to reach contacts at scale
+  </Card>
+</CardGroup>
+
+## What To Read Next
+
+<CardGroup cols={2}>
+  <Card title="Agent Editor" icon="pen-to-square" href="/build/getting-started/agent-editor">
+    Learn where prompts, tools, knowledge, analytics, and privacy settings live
+  </Card>
+  <Card title="Deploy" icon="phone-volume" href="/launch/overview">
+    Connect to phone numbers, campaigns, or your website
+  </Card>
+  <Card title="Manage" icon="gauge-high" href="/manage/overview">
+    Review conversations, tasks, contacts, and quality after launch
+  </Card>
+  <Card title="Client Service Models" icon="building" href="/accounts/agency-playbook">
+    Choose between parent-billed subaccounts, agency access, and hybrid setups
+  </Card>
+</CardGroup>

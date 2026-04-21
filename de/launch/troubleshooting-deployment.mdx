@@ -1,0 +1,190 @@
+---
+title: "Deployment-Troubleshooting"
+description: "Häufige Produktionsprobleme mit deinen KI-Sprachagenten diagnostizieren und beheben"
+icon: "wrench"
+keywords: "troubleshooting, debugging, production issues, call quality, deployment problems, voice agent debugging, agent not responding"
+"og:description": "Systematischer Leitfaden, um häufige Produktionsprobleme mit KI-Sprachagenten zu diagnostizieren und zu beheben - von Anruffehlern bis zu Agentenverhalten."
+"og:title": "Deployment-Troubleshooting"
+---
+
+## Diagnostischer Ansatz
+
+Wenn in der Produktion Probleme auftreten, gehe so vor:
+
+1. **Symptom identifizieren** - Fehlschlagende Anrufe? Falsche Antworten des Agents? Keine Anrufe?
+2. **Umfang prüfen** - Alle Anrufe oder nur ein bestimmter Teil? Wann hat es begonnen?
+3. **Letzte Änderungen prüfen** - Hast du Prompt, Wissen, Stimmeinstellungen oder Integrationen aktualisiert?
+4. **Gespräche prüfen** - Öffne die [Gespräche](/de/manage/conversations/overview), filtere nach fehlgeschlagenen oder problematischen Anrufen und prüfe die Timeline
+5. **Testen** - Nutze **Agent testen** im Agent-Editor, um das Problem zu reproduzieren
+6. **Beheben und verifizieren** - Nimm die kleinste Änderung vor, die das Problem löst, und teste dann erneut
+
+---
+
+## Häufige Probleme
+
+### Anrufe kommen nicht durch
+
+<AccordionGroup>
+  <Accordion title="Telefonnummer keinem Agenten zugewiesen">
+    Gehe zu **Telefonie → Telefonnummern** und prüfe, ob die Nummer dem richtigen Agenten zugewiesen ist. Prüfe bei direktem Routing die Einstellung **Routing** oder **Inbound Agent** an der Nummer. Bei zeitplanbasiertem Routing prüfe den richtigen Fallback-Agenten und die Routing-Regeln.
+  </Accordion>
+
+  <Accordion title="Nummer wird noch provisioniert">
+    Neu gekaufte Nummern können bis zu 10 Minuten brauchen, um aktiv zu werden. Prüfe den Status der Nummer in den Telefonie-Einstellungen - wenn dort noch "Pending" steht, warte auf den Abschluss der Provisionierung.
+  </Accordion>
+
+  <Accordion title="Agent ist inaktiv">
+    Prüfe die Liste der [KI-Agenten](/de/build/getting-started/agent-editor). Wenn dein Agent das Badge "Inactive" zeigt, übernimmt er keine Anrufe. Aktiviere ihn erneut, um weiterzumachen.
+  </Accordion>
+</AccordionGroup>
+
+### Agent antwortet langsam
+
+<AccordionGroup>
+  <Accordion title="Langsame Agentenantworten">
+    Manche Modelle sind langsamer als andere. Wenn dein Agent ein größeres Modell verwendet, z. B. GPT-4.1, probiere ein schnelleres Modell wie GPT-4.1 Mini in den [KI-Modell-Einstellungen](/de/build/voice-speech/choose-ai-model). Die Antwortzeit pro Nachricht kannst du in der Timeline der [Gesprächsdetails](/de/manage/conversations/detail) prüfen.
+  </Accordion>
+
+  <Accordion title="Große Wissensdatenbank im Context-Modus">
+    Wenn du eine große Wissensdatenbank im [Context-Modus](/de/build/knowledge/context-vs-rag) zugewiesen hast, wird dieser Inhalt in jedes Gespräch geladen. Reserviere den Context-Modus für kurze Inhalte, die immer bekannt sein müssen, und verschiebe größere Quellen in den RAG-Modus, um Antwortzeiten zu verbessern.
+  </Accordion>
+
+  <Accordion title="Langsame benutzerdefinierte Integrationen">
+    Wenn dein Agent [benutzerdefinierte Integrationen](/de/build/tools/custom-api-actions) aufruft und diese langsam antworten, wartet der Agent. Prüfe die Timeline auf Tool-Ereignisse und deren Dauer. Erwäge Timeout-Grenzen oder Fallback-Antworten in deiner Integrationskonfiguration.
+  </Accordion>
+</AccordionGroup>
+
+### Schlechte Call-Qualität
+
+<AccordionGroup>
+  <Accordion title="Audio ist abgehackt oder klingt robotisch">
+    Das ist meist ein Netzwerkproblem auf der Seite der anrufenden Person. Wenn es konsistent auftritt:
+    - Prüfe den [Voice-Provider](/de/build/voice-speech/select-voice) - teste einen anderen Provider, um Probleme bei der Sprachgenerierung auszuschließen
+    - Stelle bei Webanrufen sicher, dass die anrufende Person eine stabile Internetverbindung hat
+    - Prüfe bei **Connect Your Own**-Telefon-Setups die SIP/Trunk-Konfiguration und die Netzwerkqualität
+  </Accordion>
+
+  <Accordion title="Transkriptionsfehler (falsche Wörter)">
+    Wenn der Agent bestimmte Wörter häufig falsch versteht:
+    - Füge diese Begriffe dem [Keyword Boosting](/de/build/voice-speech/transcriber) (Deepgram) oder der Phrase List (Azure Speech) in den [Transcriber-Einstellungen](/de/build/voice-speech/transcriber) hinzu
+    - Nutze [Custom Pronunciations](/de/build/voice-speech/custom-pronunciations) für Markennamen oder technische Begriffe
+    - Teste einen anderen Transkriptionsanbieter - Deepgram ist gut bei Akzenten, Azure bei technischer Fachsprache
+  </Accordion>
+
+  <Accordion title="Agent unterbricht zu oft">
+    Passe die [Voice Activity Detection](/de/build/advanced/vad-turn-detection)-Einstellungen an:
+    - Wechsle **Response Timing** zu einem geduldigeren Preset
+    - Erhöhe im Profi **Silence before responding**
+    - Erhöhe im Profi **Speech duration to trigger interrupt**
+  </Accordion>
+</AccordionGroup>
+
+### Agent gibt falsche Antworten
+
+<AccordionGroup>
+  <Accordion title="Agent folgt dem Prompt nicht">
+    - Prüfe deinen [Agenten-Prompt](/de/build/conversation/prompt) - ist er spezifisch genug? Vage Prompts führen zu inkonsistentem Verhalten.
+    - Prüfe auf widersprüchliche Regeln, z. B. "sei knapp" vs. "erkläre ausführlich"
+    - Senke den Regler **Response Style** in den [KI-Modell-Einstellungen](/de/build/voice-speech/choose-ai-model) Richtung "Consistent", um kreative Antworten zu reduzieren
+    - Sieh dir den [Prompt Engineering Guide](/de/build/conversation/prompt-engineering-guide) für wirksame Prompting-Techniken an
+  </Accordion>
+
+  <Accordion title="Agent erfindet Informationen (Halluzination)">
+    - Ergänze klare Guardrails im Prompt: Der Agent soll "Ich habe dazu keine Information" sagen statt zu raten
+    - Füge fehlende Informationen deiner [Wissensdatenbank](/de/build/knowledge/create-knowledge-bases) hinzu
+    - Verschiebe kritisches Wissen in den [Context-Modus](/de/build/knowledge/context-vs-rag), damit es immer verfügbar ist
+    - Senke den Response-Style-Regler Richtung "Consistent"
+    - Erwäge ein leistungsfähigeres Modell, z. B. GPT-4.1 statt GPT-4.1 Mini
+  </Accordion>
+
+  <Accordion title="Agent nutzt Wissensdatenbank-Inhalte nicht">
+    - Prüfe, ob das Wissen im Tab [Knowledge](/de/build/getting-started/agent-editor#knowledge) zugewiesen ist
+    - Stelle sicher, dass alle Elemente grün sind
+    - Wenn Elemente als fehlgeschlagen angezeigt werden, klicke auf **Reindex**, um es erneut zu versuchen
+    - Achte darauf, dass die Wissensinhalte dieselbe Sprache und Terminologie nutzen wie deine Anrufenden
+    - Für kritische Informationen von RAG auf Context-Modus wechseln
+  </Accordion>
+
+  <Accordion title="Agent hängt in Schleifen fest">
+    Wenn der Agent dieselbe Frage immer wieder stellt:
+    - Ergänze den Prompt um Hinweise zum Umgang mit unklaren Antworten, z. B. "Wenn die Antwort nach zwei Versuchen unklar bleibt, biete einen Transfer an"
+    - Prüfe die [Inactivity Settings](/de/build/advanced/inactivity-timeout-settings) - setze ein Timeout, damit Anrufe nicht endlos laufen
+    - Lies das Gesprächs-Transkript, um die Schleife zu identifizieren
+  </Accordion>
+</AccordionGroup>
+
+### Integrations- und Tool-Fehler
+
+<AccordionGroup>
+  <Accordion title="Custom Action schlägt fehl">
+    Öffne die [Gesprächsdetails](/de/manage/conversations/detail) und suche in der Timeline nach Tool-Call-Ereignissen. Dort siehst du den Tool-Status und eventuelle Fehlermeldungen.
+
+    Häufige Ursachen:
+    - **Authentifizierungsfehler** - Prüfe, ob dein API-Schlüssel oder deine Zugangsdaten in der [Tool-Konfiguration](/de/build/tools/custom-api-actions) korrekt sind
+    - **Falsche Endpoint-URL** - Prüfe, ob die URL korrekt und erreichbar ist
+    - **Timeout** - Deine API hat zu lange für eine Antwort gebraucht. Erhöhe das Timeout oder optimiere die API
+    - **Request-Format** - Stelle sicher, dass der Request-Body dem entspricht, was deine API erwartet
+  </Accordion>
+
+  <Accordion title="Call Transfer schlägt fehl">
+    - Prüfe, ob die Transfer-Zielnummer korrekt und erreichbar ist, und rufe sie notfalls manuell an
+    - Prüfe, ob die Nummer im richtigen Format vorliegt
+    - Prüfe die [Transfer-Einstellungen](/de/build/tools/transfer-tools) - Ringdauer und Hold-Optionen sollten korrekt konfiguriert sein
+    - Prüfe die Timeline auf transferbezogene Ereignisse und Fehlerdetails
+  </Accordion>
+
+  <Accordion title="Kalenderbuchung schlägt fehl">
+    - Prüfe, ob deine [Cal.com-Integration](/de/build/tools/booking-calendar) verbunden ist und der API-Schlüssel gültig ist
+    - Prüfe, ob der Kalender freie Slots hat
+    - Prüfe die Buchungstool-Konfiguration auf korrekte Event-Type-Einstellungen
+  </Accordion>
+</AccordionGroup>
+
+### Kampagnenspezifische Probleme
+
+<AccordionGroup>
+  <Accordion title="Kampagne platziert keine Anrufe">
+    - Prüfe, ob die Kampagne den Status **Active** hat
+    - Prüfe die [Geschäftszeiten](/de/launch/schedules) - Anrufe werden nur während der konfigurierten Zeiten platziert
+    - Stelle sicher, dass noch Kontakte in der Kampagne vorhanden sind, die noch nicht angerufen wurden
+    - Prüfe, ob der Kampagne eine Telefonnummer zugewiesen ist
+  </Accordion>
+
+  <Accordion title="Hohe Mailbox-Rate">
+    Wenn die meisten Anrufe zur Mailbox gehen:
+    - Prüfe das Kampagnen-**Dashboard** und die **Analytics**, um Zeitfenster mit den meisten echten Antworten zu finden
+    - Passe die [Geschäftszeiten](/de/launch/schedules) an, um dich auf Fenster mit hoher Antwortrate zu konzentrieren
+    - Aktiviere [Voicemail-Handling](/de/build/advanced/voicemail-handling), damit dein Agent bei erkannter Mailbox angemessen reagiert
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Wann du Support kontaktieren solltest
+
+Kontaktiere **support@itellico.ai**, wenn:
+
+- plattformweite Probleme alle Agenten oder Anrufe betreffen
+- die Provisionierung einer Telefonnummer länger als 30 Minuten hängt
+- SIP-Trunk-Verbindungsprobleme trotz korrekter Konfiguration bestehen
+- Abrechnungsabweichungen oder unerwartete Gebühren auftreten
+- du ein Problem nach den obigen Schritten nicht lösen kannst
+
+**In deine Anfrage aufnehmen:**
+- Agentenname und betroffene Gesprächs-IDs, kopiert aus den [Gesprächsdetails](/de/manage/conversations/detail)
+- Was du bereits versucht hast
+- Wann das Problem begonnen hat
+- Wie viele Anrufe oder Nutzerinnen/Nutzer betroffen sind
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Produktions-Checkliste" icon="star" href="/de/launch/production-checklist">
+    Sorge dafür, dass deine Agenten stabil laufen
+  </Card>
+  <Card title="Agent testen" icon="vial" href="/de/test/overview">
+    Änderungen vor dem Produktions-Deployment testen
+  </Card>
+</CardGroup>

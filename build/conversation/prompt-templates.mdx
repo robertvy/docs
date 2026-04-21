@@ -1,0 +1,223 @@
+---
+title: "Prompt Templates"
+description: "Browse, preview, and apply pre-built prompt templates for common agent use cases"
+icon: "file-code"
+keywords: "prompt templates, template gallery, reusable prompts, agent templates, customer support template, sales template, booking template, prompt library"
+"og:description": "Browse the prompt template gallery with pre-built templates for customer support, sales, booking, surveys, and more. Preview and apply templates to any agent."
+"og:title": "Prompt Templates"
+---
+
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+## What Are Prompt Templates
+
+The Prompt Template Gallery provides pre-built prompts for common agent use cases. Instead of writing from scratch, browse the gallery, preview a template, and apply it to your agent in one click.
+
+<Screenshot
+  lightSrc="/images/templates__template-gallery-light.png"
+  darkSrc="/images/templates__template-gallery-dark.png"
+  alt="Prompt template gallery showing template language selector, search, category folders, and preview area"
+/>
+
+<Note>
+The gallery includes global templates plus any team-specific templates enabled for your account. In the dashboard, templates are read-only starting points: apply one to copy its content into the prompt editor, then customize the copied prompt for the agent.
+</Note>
+
+---
+
+## Why Use Templates
+
+<CardGroup cols={2}>
+  <Card title="Faster Setup" icon="bolt">
+    Go from zero to a working agent in minutes instead of writing prompts from scratch
+  </Card>
+  <Card title="Proven Structure" icon="shield-check">
+    Follow the same tested format as the built-in templates: Role, Objective, Response Format, Conversation Flow, and Escalation Triggers
+  </Card>
+  <Card title="Consistency" icon="equals">
+    Ensure all agents across your account follow the same communication standards
+  </Card>
+  <Card title="Easy Onboarding" icon="user-plus">
+    Create effective agents quickly without prompt engineering experience
+  </Card>
+</CardGroup>
+
+---
+
+## Browsing the Gallery
+
+### Access the Gallery
+
+You can open the template gallery from two places:
+
+1. **From the prompt editor** -- Click **Templates** while editing an agent's prompt
+2. **From new-agent setup** -- Choose a template when creating an agent, then refine it in the Prompt tab
+
+### Filter by Category
+
+Use the category filters to narrow down templates:
+
+| Category | Templates For |
+|----------|---------------|
+| **Core Templates** | Receptionist, after-hours routing, FAQ support, lead qualification, appointment booking, feedback, outreach, and information gathering |
+| **Industry** | Real estate, healthcare, home services, mortgage, solar, car dealership, insurance, education, and hospitality templates |
+| **Professional Services** | Legal and financial-advisory templates |
+| **Services** | Service-business templates |
+
+---
+
+## Previewing a Template
+
+Click any template card to open a full preview. The preview shows:
+
+- **Template name and description** -- What use case it is designed for
+- **Tags** -- Search and use-case labels for the template
+- **Editable prompt text** -- The complete prompt in the same prompt editor used by agents
+
+<Tip>
+Read through the full prompt before applying. Understanding the template's structure helps you customize it effectively for your specific needs.
+</Tip>
+
+---
+
+## Template Structure
+
+Built-in templates use the same core structure:
+
+| Section | Purpose |
+|---------|---------|
+| `# Role` | Defines who the agent is, who it represents, and the personality it should use |
+| `# Objective` | States the main outcome the agent should achieve |
+| `# Response Format` | Sets response length, question style, and voice-specific formatting rules |
+| `# Conversation Flow` | Breaks the call into phases with clear goals and branch behavior |
+| `# Escalation Triggers` | Lists situations where the agent should transfer, create follow-up, or stop handling the request |
+| Reference sections | Adds use-case-specific guidance, such as common questions, objection handling, routing, or policies |
+
+Use this structure when you customize a template or write one from scratch. It matches the format used by the prompt templates seeded in the product.
+
+---
+
+## Applying a Template
+
+### To a New Agent
+
+When creating a new agent, choose a template in the create-agent flow or open the **Prompt** tab in the [Agent Editor](/build/getting-started/agent-editor) and click **Templates**. Select a template and the editor inserts it automatically.
+
+### To an Existing Agent
+
+<Steps>
+  <Step title="Open the agent editor">
+    Navigate to your agent and open **Prompt**
+  </Step>
+  <Step title="Click Templates">
+    Opens the template gallery
+  </Step>
+  <Step title="Select a template">
+    Preview and click **Use Template**
+  </Step>
+  <Step title="Edit the preview if needed">
+    Adjust the template text before applying it
+  </Step>
+  <Step title="Fill in placeholders">
+    Replace placeholder values like `{{company_name}}` and `{{business_hours}}` with your details, or provide them through Dynamic Context
+  </Step>
+  <Step title="Customize and save">
+    Edit the template to match your specific requirements, then save
+  </Step>
+</Steps>
+
+<Note>
+Applying a template does not create a permanent link. Future template changes do not update agents that already used it.
+</Note>
+
+---
+
+## Built-in Template Examples
+
+<AccordionGroup>
+  <Accordion title="Customer Support" icon="headset">
+    Covers warm greeting, issue identification, troubleshooting flow, escalation rules, and closing. Includes placeholders for company name, support hours, and escalation contacts.
+  </Accordion>
+  <Accordion title="Sales Qualification (BANT)" icon="chart-line">
+    Structured around BANT (Budget, Authority, Need, Timeline) qualification. Includes consultative selling guidelines, objection handling notes, and next-step routing for qualified and unqualified leads.
+  </Accordion>
+  <Accordion title="Appointment Booking" icon="calendar">
+    Covers service selection, availability checking, information collection, confirmation, and cancellation/rescheduling policies. Designed to work with the Cal.com booking action.
+  </Accordion>
+  <Accordion title="Customer Feedback (NPS)" icon="comment">
+    NPS survey flow with score collection, follow-up questions based on score range, recovery workflow for detractors, and closing. Includes structured data extraction.
+  </Accordion>
+  <Accordion title="Cold Outreach" icon="phone-volume">
+    Value-first approach for outbound calls. Covers introduction, value proposition, interest gauging, objection handling, and next-step scheduling. Designed for non-pushy engagement.
+  </Accordion>
+  <Accordion title="Healthcare Intake" icon="stethoscope">
+    Patient information collection, symptom gathering, appointment scheduling, and insurance verification flow. Includes HIPAA (Health Insurance Portability and Accountability Act)-aware language guidelines.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Placeholder Syntax
+
+Templates use double curly braces for values that should be filled in when the template is applied. Replace placeholder values directly in the prompt, or provide matching variables through [Dynamic Context](/build/advanced/dynamic-context).
+
+```text wrap
+# Role
+You are {{agent_name}}, a {{agent_role}} for {{company_name}}. You are {{agent_tone}}.
+
+# Objective
+{{primary_goal}}
+
+# Conversation Flow
+Working hours are {{business_hours}}.
+```
+
+### Common Placeholders
+
+| Placeholder | Description |
+|-------------|-------------|
+| `{{company_name}}` | Organization or business name |
+| `{{agent_role}}` | Agent's role description |
+| `{{business_hours}}` | Operating hours |
+| `{{primary_goal}}` | Main objective for the agent |
+| `{{escalation_contact}}` | Who to transfer to for escalation |
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Start with a template, then customize" icon="pen">
+    Templates provide structure. Add your company-specific details, tone adjustments, and edge-case handling on top.
+  </Accordion>
+  <Accordion title="Use descriptive placeholders" icon="tag">
+    Name placeholders clearly: `{{cancellation_policy}}` is better than `{{policy1}}`.
+  </Accordion>
+  <Accordion title="One template per use case" icon="crosshairs">
+    Keep templates focused. A customer support template and a sales template should be separate.
+  </Accordion>
+  <Accordion title="Test before sharing" icon="vial">
+    Apply templates to a test agent and run conversations to verify they work as expected before sharing with your team.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Prompt Editor" icon="pen" href="/build/conversation/prompt">
+    Learn prompt writing best practices and editor features
+  </Card>
+  <Card title="Prompt Engineering Guide" icon="wand-magic-sparkles" href="/build/conversation/prompt-engineering-guide">
+    Apply advanced prompting techniques
+  </Card>
+  <Card title="Template Syntax" icon="brackets-curly" href="/build/conversation/template-syntax">
+    Use runtime variables in your prompts
+  </Card>
+  <Card title="Create Your First Agent" icon="robot" href="/build/getting-started/create-first-agent">
+    Build an agent step by step
+  </Card>
+</CardGroup>

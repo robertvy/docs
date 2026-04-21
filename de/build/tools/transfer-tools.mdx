@@ -1,0 +1,130 @@
+---
+title: "Transfer Tools"
+description: "Leite laufende Anrufe an Agenten, Telefonnummern oder SIP-Ziele weiter"
+icon: "phone-arrow-right"
+keywords: "call transfer, phone transfer, AI call routing, transfer configuration, SIP transfer, agent transfer, call control"
+"og:description": "Konfiguriere Anrufweiterleitungen an KI-Agenten, Telefonnummern und SIP-Ziele für intelligentes Routing."
+"og:title": "Transfer Tools"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+**Zugriff:** Öffne den Agent Editor und gehe zum Tab **Tools**.
+
+<Note>
+Weiterleitungen an Telefonnummern und SIP funktionieren nur während eines echten Telefonanrufs. Sie können im Web Simulator nicht getestet werden - nutze **Test Agent -> Phone call** dafür.
+</Note>
+
+---
+
+## Einen Transfer-Tool hinzufügen
+
+<Steps>
+  <Step title="Tools-Tab öffnen">
+    Gehe im Agent Editor zum Tab **Tools** und klicke auf **Add** -> **Transfer**.
+  </Step>
+  <Step title="Tool benennen">
+    Verwende einen klaren, beschreibenden Namen - dein Prompt referenziert ihn später genau so.
+
+    **Gut:** "Transfer to Billing", "Transfer to On-Call Manager"
+
+    **Schlecht:** "Transfer 1", "Escalate"
+  </Step>
+  <Step title="Zieltyp wählen">
+    Wähle **Agent**, **Phone** oder **SIP** (siehe [Transfer Destinations](#transfer-destinations)).
+  </Step>
+  <Step title="Ziel konfigurieren">
+    Fülle die Zieldetails für den gewählten Typ aus.
+  </Step>
+  <Step title="Speichern">
+    Klicke auf **Save**. Das Transfer-Tool erscheint in der Tools-Tabelle und kann im Prompt referenziert werden.
+  </Step>
+</Steps>
+
+### Im Prompt verwenden
+
+Referenziere das Transfer-Tool mit seinem exakten Namen:
+
+```text
+When a customer asks to speak with a human:
+1. Explain why you're transferring them
+2. Ask "Would you like me to transfer you now?"
+3. Wait for confirmation
+4. Use the 'Transfer to Support' tool
+```
+
+---
+
+## Transfer-Ziele
+
+<Screenshot lightSrc="/images/operations__transfer-dest_DE-light.png" darkSrc="/images/operations__transfer-dest_DE-dark.png" alt="Dialog für Transfer-Ziel mit Name, Beschreibung, Optionen für KI-Agent und Telefonnummer, Dropdown zur Agentenwahl, Transfer Message und Save-Button" />
+
+| Ziel | Sinnvoll wenn | Beispiel |
+| --- | --- | --- |
+| **Anderer KI-Agent** | Du innerhalb von itellicoAI bleiben und an einen spezialisierteren Agenten übergeben willst | Billing-Agent, sprachspezifischer Agent |
+| **Telefonnummer** | Du mit einem Menschen oder externen Ziel über das Telefonnetz verbinden musst | Live-Support-Queue, On-Call-Manager |
+| **SIP-Adresse** | Du in ein PBX-, Contact-Center- oder SIP-fähiges System routen musst | Contact-Center-Queue, interne Durchwahl |
+
+<AccordionGroup>
+  <Accordion title="Agent Transfer" icon="users" defaultOpen>
+    Weiterleitung an einen anderen KI-Agenten in deinem itellicoAI-Konto.
+
+    **Konfiguration:**
+
+    <Steps>
+      <Step title="Transfer-Typ wählen">Wähle **Agent**</Step>
+      <Step title="Zielagent wählen">Wähle den Zielagenten im Dropdown</Step>
+      <Step title="Optional: Hold Music und Klingelton">
+        Im Profi kannst du Audio konfigurieren, das während der Verbindung abgespielt wird (jeweils 0-300 Sekunden).
+      </Step>
+    </Steps>
+
+    **Vorteile:** Der empfangende Agent kann auf den vorherigen Gesprächsverlauf zugreifen. Keine Telefoniekosten. Funktioniert für alle Anruftypen inklusive Web Calls.
+
+    <Badge>Profi</Badge>
+
+    **Audio-Einstellungen:** Du kannst Hold Music und einen Klingelton für Agent-Transfers hinzufügen. Für direkte KI-zu-KI-Routing-Fälle deaktiviere beides für die sofortige Verbindung.
+  </Accordion>
+
+  <Accordion title="Telefonnummer-Transfer" icon="phone">
+    Weiterleitung an eine externe Telefonnummer - mobil, Festnetz oder Business-Nummer.
+
+    **Konfiguration:**
+
+    <Steps>
+      <Step title="Transfer-Typ wählen">Wähle **Phone**</Step>
+      <Step title="Telefonnummer eingeben">
+        Verwende E.164-Format: `+14155551234`
+        - Muss Ländercode enthalten (`+1` für USA/Kanada)
+        - Keine Leerzeichen, Bindestriche oder Klammern
+      </Step>
+    </Steps>
+
+    <Warning>
+    Telefon-Transfers verursachen ausgehende Kosten und funktionieren **nur während aktiver Telefonanrufe**. Sie funktionieren nicht in Web Calls oder Widget-Konversationen.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="SIP Address Transfer" icon="network-wired">
+    <Badge>Profi</Badge>
+
+    Weiterleitung an eine SIP-URI für die Integration mit PBX-Systemen und Contact Centern.
+
+    **Konfiguration:**
+
+    <Steps>
+      <Step title="Voraussetzungen">
+        Stelle sicher, dass ein SIP Trunk in itellicoAI konfiguriert ist und das Ziel erreichbar ist.
+      </Step>
+      <Step title="Transfer-Typ wählen">Wähle **SIP**</Step>
+      <Step title="SIP-Adresse eingeben">
+        Verwende eine gültige SIP-URI: `sip:support@pbx.company.com`
+      </Step>
+    </Steps>
+
+    <Warning>
+    SIP-Transfers funktionieren **nur während aktiver Telefonanrufe**. Sie können nicht in Web Calls oder Widget-Konversationen verwendet werden.
+    </Warning>
+  </Accordion>
+</AccordionGroup>
+

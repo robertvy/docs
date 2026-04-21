@@ -1,0 +1,171 @@
+---
+title: "Smart Filler"
+description: "Reduziere wahrgenommene Latenz mit intelligenten Filler-Antworten"
+icon: "bolt"
+keywords: "smart filler, latency reduction, filler phrases, conversation flow, AI response time, contextual fillers"
+"og:description": "Reduziere die wahrgenommene Latenz, indem während der Verarbeitung der vollständigen Antwort kontextbezogene Filler-Antworten generiert werden."
+"og:title": "Smart Filler"
+---
+
+## Wie Smart Filler funktioniert
+
+<Badge>Profi</Badge>
+
+Smart Filler reduziert die wahrgenommene Latenz, indem kontextbezogene Filler-Antworten generiert werden, während dein Haupt-KI-Modell die vollständige Antwort verarbeitet. Statt Stille während der Verarbeitung sagt dein Agent zum Beispiel "Ich prüfe das kurz für dich...", bevor die komplette Antwort folgt.
+
+<Note>
+Smart Filler nutzt ein schnelles sekundäres KI-Modell, um kontextbezogene Filler parallel zum Haupt-KI-Modell zu erzeugen. Es reduziert die wahrgenommene Latenz, macht die eigentliche Antwort aber nicht schneller fertig.
+</Note>
+
+## So funktioniert es
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Agent
+    participant FastLLM as Schnelles sekundäres großes Sprachmodell (LLM)
+    participant MainLLM as Haupt-KI-Modell
+
+    User->>Agent: Stellt eine Frage
+    Agent->>FastLLM: Filler generieren (parallel)
+    Agent->>MainLLM: Volle Antwort generieren (parallel)
+    FastLLM-->>Agent: "Ich prüfe das kurz..."
+    Agent->>User: Spricht den Filler
+    MainLLM-->>Agent: Volle Antwort ist fertig
+    Agent->>User: Spricht die volle Antwort
+```
+
+1. Die nutzende Person stellt eine Frage
+2. Smart Filler erzeugt sofort eine kontextbezogene Filler-Phrase mit einem schnellen sekundären KI-Modell
+3. Der Filler läuft, während dein Haupt-KI-Modell die vollständige Antwort verarbeitet
+4. Die komplette Antwort folgt ohne Unterbrechung
+
+---
+
+## Konfiguration
+
+Navigiere im **General**-Tab deines Agenten, wechsle in den **Profi** und öffne **Sounds**, um Smart Filler zu konfigurieren.
+
+### Smart Filler aktivieren
+
+Schalte Smart Filler an oder aus. Wenn er deaktiviert ist, wartet der Agent still, bis die vollständige Antwort bereit ist.
+
+### Verzögerungsschwelle
+
+Wähle, wie lange die Hauptantwort dauern darf, bevor der Filler abgespielt wird. Das Dashboard unterstützt **0-2000 ms** in 50-ms-Schritten. Ein Wert von `0 ms` lässt den Filler sofort spielen, sobald er verfügbar ist; höhere Werte vermeiden Filler bei schnellen Antworten.
+
+### Eigener Filler-Prompt
+
+Passe an, wie dein Agent Filler-Antworten generiert, mit einem eigenen Prompt.
+
+**Standardverhalten:** Der Agent erzeugt passende Bestätigungen wie:
+- "Ich prüfe das kurz für dich..."
+- "Einen Moment, ich schaue mir das an..."
+- "Gute Frage, ich finde das heraus..."
+
+**Beispiele für Custom Prompts:**
+
+<AccordionGroup>
+  <Accordion title="Austrian German style" icon="flag">
+    ```text
+    Use Austrian German expressions like "Passt" or "Jo eh"
+    for casual acknowledgments.
+    ```
+  </Accordion>
+
+  <Accordion title="Formal business style" icon="briefcase">
+    ```text
+    Use formal business language. Never use casual phrases.
+    Example: "I'll look into that right away" not "Let me check".
+    ```
+  </Accordion>
+
+  <Accordion title="Friendly customer service" icon="face-smile">
+    ```text
+    Be warm and friendly. Use phrases like "Great question!"
+    and "I'd be happy to help with that!"
+    ```
+  </Accordion>
+
+  <Accordion title="Multilingual" icon="language">
+    ```text
+    Match the language the customer is speaking. If they speak
+    German, respond in German. If Spanish, respond in Spanish.
+    ```
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+Eigene Filler-Prompts sind auf 2000 Zeichen begrenzt. Halte die Anweisungen knapp und fokussiert.
+</Warning>
+
+---
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Antworten mit hoher Latenz" icon="clock">
+    Wartezeit von fortgeschrittenen KI-Modellen mit längeren Antwortzeiten überbrücken
+  </Card>
+  <Card title="Komplexe Anfragen" icon="brain">
+    Pausen während Tool-Calls, Datenbankabfragen oder mehrstufigem Reasoning füllen
+  </Card>
+  <Card title="Knowledge-Base-Suchen" icon="magnifying-glass">
+    Anrufende Bestätigung geben, während die [Knowledge Base](/de/build/knowledge/architecture) zusätzliche Verarbeitungszeit benötigt
+  </Card>
+  <Card title="API-Integrationen" icon="plug">
+    Latenz aus [custom API tools](/de/build/tools/custom-api-actions) überbrücken
+  </Card>
+</CardGroup>
+
+---
+
+## Best Practices
+
+**Pass die Markenstimme an:** Nutze den Custom Prompt, damit Filler zur Persönlichkeit und zu den Markenrichtlinien deines Agenten passen. Im [Prompt Engineering Guide](/de/build/conversation/prompt-engineering-guide) findest du Hinweise für wirksame Prompts.
+
+**Natürlich bleiben:** Die besten Filler klingen wie natürliche menschliche Bestätigungen, nicht wie roboterhafte Platzhalter.
+
+**Kontext berücksichtigen:** Unterschiedliche Situationen brauchen unterschiedliche Filler-Stile. Sales-Calls können energiegeladene Filler nutzen, Support-Calls eher beruhigende.
+
+**Ausgiebig testen:** Mache Test-Calls, um sicherzustellen, dass Filler in echten Gesprächen natürlich wirken und keine merkwürdigen Pausen oder Wiederholungen erzeugen.
+
+---
+
+## Auswirkungen auf die Performance
+
+| Metrik | Ohne Smart Filler | Mit Smart Filler |
+|--------|---------------------|-------------------|
+| Wahrgenommene Latenz | Vollständige KI-Verarbeitungszeit | ~500ms |
+| Nutzererlebnis | Stille Wartezeit | Natürlicher Gesprächsfluss |
+| Tatsächliche Antwortzeit | Unverändert | Unverändert |
+
+<Tip>
+Smart Filler beschleunigt deine tatsächliche Antwortzeit nicht - es lässt die Wartezeit nur kürzer wirken, indem sofort eine Bestätigung ausgegeben wird.
+</Tip>
+
+---
+
+## Einschränkungen
+
+- **Nicht immer passend:** Manche Kontexte (rechtliche Hinweise, kritische Informationen) brauchen möglicherweise Stille statt Filler
+- **Sprachabgleich:** Funktioniert am besten, wenn der Filler-Prompt zur Gesprächssprache passt
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Thinking Sounds" icon="keyboard" href="/de/build/voice-speech/thinking-sounds">
+    Audio-Feedback während der Verarbeitung hinzufügen
+  </Card>
+  <Card title="Voice Settings" icon="sliders" href="/de/build/voice-speech/voice-settings">
+    Voice-Parameter feinjustieren
+  </Card>
+  <Card title="Choose AI Model" icon="microchip" href="/de/build/voice-speech/choose-ai-model">
+    Das Modell wählen, das deinen Agenten antreibt
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/de/test/web-simulator">
+    Smart Filler im Simulator testen
+  </Card>
+</CardGroup>

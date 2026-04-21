@@ -1,0 +1,216 @@
+---
+title: "Dashboard"
+description: "Customizable real-time overview of your voice AI operations with KPI tracking, trend analysis, and agent performance"
+icon: "chart-mixed"
+keywords: "dashboard, analytics, metrics, KPI, widgets, agent performance, drag reorder, date range filter, goal achievement, conversation trends, transfer rate, call duration, action success rate, cost per conversation"
+"og:description": "Monitor your itellicoAI deployment with a customizable dashboard. Track KPIs, conversation trends, channel breakdowns, and agent performance with drag-and-drop widgets."
+"og:title": "Dashboard"
+---
+
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+The Dashboard gives you an at-a-glance view of your entire itellicoAI deployment. Add, remove, reorder, and resize widgets to build the view that matters most to your team. Track key metrics over time, identify trends, and measure the impact of changes.
+
+**Access:** Navigate to **Dashboard** in the main menu.
+
+<Screenshot
+  lightSrc="/images/manage__dashboard-default-light.png"
+  darkSrc="/images/manage__dashboard-default-dark.png"
+  alt="Dashboard layout showing KPI cards, trend charts, recent conversations, and agent performance widgets"
+/>
+
+<Note>
+New accounts may show a getting-started panel until the first test conversation exists. After that, the dashboard opens directly to the live widget layout.
+</Note>
+
+## Date Range Filter
+
+All widgets respond to a shared date range selector in the toolbar. Choose from seven presets:
+
+| Preset | Description |
+| --- | --- |
+| **Today** | Current day only |
+| **Last 7 days** | Rolling seven-day window |
+| **Last 14 days** | Rolling fourteen-day window |
+| **Last 30 days** | Rolling thirty-day window (default) |
+| **Last 90 days** | Rolling ninety-day window |
+| **This month** | Calendar month to date |
+| **Last month** | Previous full calendar month |
+
+## Widget Templates
+
+The dashboard includes **12 widget templates** organized into three groups. Each template uses a specific chart type and data dimension.
+
+### Key Metric Widgets
+
+Single-value cards that surface your most important numbers at a glance.
+
+<CardGroup cols={2}>
+  <Card title="Today's Conversations" icon="message-lines">
+    Track total conversations handled today
+  </Card>
+  <Card title="This Week's Conversations" icon="calendar-week">
+    Track conversations started during the last seven days
+  </Card>
+  <Card title="All-Time Conversations" icon="chart-simple">
+    Track total conversations across the account
+  </Card>
+  <Card title="Goal Achievement Rate" icon="bullseye-arrow">
+    Track the percentage of conversations meeting their configured goals
+  </Card>
+  <Card title="Average Duration" icon="clock">
+    Show the average time per conversation across the selected date range
+  </Card>
+  <Card title="Voice Minutes" icon="waveform-lines">
+    Show total voice minutes used across conversations
+  </Card>
+</CardGroup>
+
+### Trend Widgets
+
+Time-series charts that reveal patterns over the selected date range.
+
+<CardGroup cols={3}>
+  <Card title="Conversation Trends" icon="chart-area">
+    Show daily conversation volume over time
+  </Card>
+  <Card title="Channel Breakdown" icon="chart-pie">
+    Break down conversations by communication channel
+  </Card>
+  <Card title="Agent Performance" icon="chart-bar">
+    Compare conversation counts by agent
+  </Card>
+  <Card title="Status Breakdown" icon="chart-pie-simple">
+    Break down conversations by completion status
+  </Card>
+</CardGroup>
+
+### Table Widgets
+
+Tabular views for drilling into agents and recent conversations.
+
+<CardGroup cols={2}>
+  <Card title="Agent Leaderboard" icon="table">
+    View detailed agent statistics in a sortable table
+  </Card>
+  <Card title="Recent Conversations" icon="messages">
+    Review the latest conversations with status, channel, duration, contact, and goal result
+  </Card>
+</CardGroup>
+
+## Customizing Your Layout
+
+Enter edit mode to add, remove, reorder, and resize widgets.
+
+<Screenshot
+  lightSrc="/images/manage__dashboard-customize-light.png"
+  darkSrc="/images/manage__dashboard-customize-dark.png"
+  alt="Dashboard in edit mode showing drag handles and resize controls"
+/>
+
+<Steps>
+  <Step title="Enter edit mode">
+    Click the **Customize** button in the toolbar. Widget controls become visible and the button label changes to **Done**.
+  </Step>
+  <Step title="Add widgets">
+    Click **Add Widget** to open the widget picker. Every template is listed with a **Switch** toggle &mdash; flip it on to add the widget to your dashboard.
+  </Step>
+  <Step title="Drag to reorder">
+    Grab a widget by its drag handle and move it to a new position. Other widgets reflow automatically.
+  </Step>
+  <Step title="Resize widgets">
+    Drag the handle in the bottom-right corner of any widget to resize it. Minimum dimensions vary by widget type.
+  </Step>
+  <Step title="Remove widgets">
+    Click the **X** button on a widget's edit overlay to remove it from the dashboard.
+  </Step>
+  <Step title="Exit edit mode">
+    Click **Done** to lock your layout. The dashboard saves your layout changes automatically.
+  </Step>
+</Steps>
+
+<Tip>
+  Click the **Reset** button (restore icon) in the toolbar at any time to return every widget to its default size and position. Use the **Refresh** button to reload all widget data — the dashboard also auto-refreshes every 30 seconds.
+</Tip>
+
+## Key Metrics
+
+Use these benchmarks to interpret your dashboard data and decide what to fix.
+
+<AccordionGroup>
+  <Accordion title="Goal Achievement Rate" icon="bullseye">
+    **What it measures:** Percentage of conversations where configured goals were achieved
+
+    **Target benchmarks:**
+    - Excellent: above 85%
+    - Good: 70–85%
+    - Needs improvement: below 70%
+
+    **How to improve:**
+    - Review failed conversations to spot patterns
+    - Add missing knowledge for common failure reasons
+    - Refine goal definitions for accuracy
+    - Update your prompt to handle edge cases
+
+    Configure goals in **Analytics** in your agent editor. See [Conversation Goals](/build/analytics/conversation-goals).
+  </Accordion>
+
+  <Accordion title="Answer Rate (Campaigns)" icon="phone">
+    **What it measures:** Percentage of campaign contacts who answered the phone
+
+    **Target:** Varies by industry (30-60% typical)
+
+    **How to improve:**
+    - Use the answer rate heat map widget to find best calling times
+    - Update business hours to focus on high-performing windows
+    - Avoid early mornings, late evenings, and weekends unless data supports it
+    - Test different days/times for your specific audience
+
+    Only available for campaigns. View in campaign **Dashboard** tab. See [Campaign Management](/manage/campaigns/overview).
+  </Accordion>
+
+  <Accordion title="Average Call Duration" icon="clock">
+    **What it measures:** Mean length of all conversations
+
+    **Target:** Varies by use case (2-4 min support, 3-8 min sales, 1-3 min booking)
+
+    **How to interpret:**
+    - Increasing: The agent may be too verbose, retrieving knowledge slowly, or handling more complex issues
+    - Decreasing: Agent more efficient OR dropping calls early
+    - Stable: Consistent performance
+
+    **How to improve:**
+    - Shorten agent responses (remove repetitive phrases)
+    - Reorganize your knowledge base for faster retrieval
+    - Streamline conversation flow (ask for info upfront)
+    - Create shortcuts for frequent scenarios
+  </Accordion>
+
+  <Accordion title="Voice Minutes" icon="waveform-lines">
+    **What it measures:** Total voice minutes used during the selected date range
+
+    Track trends over time to spot usage increases, capacity needs, and changes in caller behavior.
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Conversations" icon="messages" href="/manage/conversations/overview">
+    Go beyond metrics — review specific calls in detail
+  </Card>
+
+  <Card title="Conversation Goals" icon="bullseye" href="/build/analytics/conversation-goals">
+    Configure goals to track what matters for your use case
+  </Card>
+
+  <Card title="Gather Insights" icon="clipboard-list" href="/build/analytics/gather-insights">
+    Set up custom questions to extract structured insights
+  </Card>
+
+  <Card title="Campaign Management" icon="megaphone" href="/manage/campaigns/overview">
+    View campaign-specific dashboards and reporting
+  </Card>
+</CardGroup>

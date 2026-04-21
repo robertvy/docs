@@ -1,0 +1,101 @@
+---
+title: "Transcriber"
+description: "Choose the language and speech-to-text settings your agent uses to understand callers"
+icon: "ear"
+keywords: "speech to text, transcription, STT configuration, speech recognition, transcriber models, voice recognition, transcription accuracy"
+"og:description": "Configure the language and speech-to-text settings your AI voice agent uses to understand callers."
+"og:title": "Transcriber"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+**Access:** Open an agent and go to **General** → **Understanding**.
+
+<Screenshot
+  lightSrc="/images/agent__transcriber-light.png"
+  darkSrc="/images/agent__transcriber-dark.png"
+  alt="Transcriber settings showing the language picker and provider options"
+/>
+
+## Basics
+
+The transcriber converts caller speech into text before the AI model decides what to say or do next.
+
+This is the first step in the voice pipeline. If the transcriber hears the wrong words, the model, tools, goals, and post-call analysis all receive the wrong input.
+
+<Tabs>
+  <Tab title="Simple Mode">
+    Simple mode shows a single **Language** picker under **General → Understanding**. This setting controls what language the agent listens for — it determines which languages your callers can speak and be understood. If a caller speaks a language that is not configured, the agent will not understand them.
+
+    Choose one of two options:
+
+    - **Multilingual** — the agent understands callers speaking English, Spanish, French, German, Hindi, Russian, Portuguese, Japanese, Italian, or Dutch. Use this when your caller base speaks multiple languages.
+    - **Single language** — pick the specific language your callers speak. Use this when your agent serves one language only.
+
+    The platform picks the recommended model for your selection automatically. There is no provider or model to configure in Simple mode.
+
+    <Note>
+    If transcriber settings were previously configured in Expert mode, switch to Expert mode to edit them.
+    </Note>
+  </Tab>
+
+  <Tab title="Expert Mode">
+    Expert mode gives you direct control over the transcription provider and model. Use it when Simple mode does not cover your language, when you need medical transcription, or when you want to select a specific provider for enterprise or regional requirements.
+
+    ### Providers
+
+    | Provider | Best for |
+    | --- | --- |
+    | **Deepgram** | Most agents. Low-latency, optimized for real-time voice conversations. Multiple models available including medical and specialized variants. |
+    | **Azure Speech** | Broad language and locale coverage (150+ locales). Use when you need a language Deepgram does not cover, or when one agent needs to detect between multiple caller languages. |
+
+    ### Keywords
+
+    Keywords help the transcriber recognize words that are easy to mishear — company names, product names, acronyms, industry terms, and location names.
+
+    1. Open **General → Understanding**
+    2. Find **Keywords**
+    3. Add each term and press Enter
+
+    Add keywords after reviewing real or test transcripts. Do not add every possible word upfront — add terms the transcriber actually gets wrong or that are business-critical.
+
+  </Tab>
+</Tabs>
+
+---
+
+## Testing Transcription
+
+Test with the words callers will actually say:
+
+- Brand and product names
+- Names of people, locations, departments, or services
+- Numbers, dates, addresses, and phone numbers
+- Common accents from your caller base
+- Background noise if the real call environment is noisy
+
+If transcripts are inaccurate:
+
+1. Confirm the language or locale is correct
+2. Add missing business terms as keywords in Expert mode
+3. Try a more suitable model or provider in Expert mode
+4. Retest with the same scenarios before changing other voice settings
+
+---
+
+## Related Docs
+
+<CardGroup cols={2}>
+  <Card title="AI Pipeline Guide" icon="diagram-project" href="/build/voice-speech/ai-pipeline-guide">
+    Understand how transcription, the AI model, and voice output work together.
+  </Card>
+  <Card title="Choose AI Model" icon="brain" href="/build/voice-speech/choose-ai-model">
+    Select the model that processes transcribed caller text.
+  </Card>
+  <Card title="Custom Pronunciations" icon="spell-check" href="/build/voice-speech/custom-pronunciations">
+    Control how the agent's voice pronounces specific words.
+  </Card>
+  <Card title="Test Your Agent" icon="flask" href="/test/overview">
+    Run calls and review transcripts before going live.
+  </Card>
+</CardGroup>

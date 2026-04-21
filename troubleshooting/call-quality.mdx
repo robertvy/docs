@@ -1,0 +1,152 @@
+---
+title: "Call Quality & Latency"
+description: "Diagnose and fix audio quality, latency, and turn-taking issues in voice calls"
+icon: "waveform-lines"
+keywords: "call quality, latency, audio issues, VAD, turn detection, response time, voice quality, interruptions, pauses"
+"og:description": "Troubleshoot call quality issues including latency, audio problems, interruptions, and turn-taking in itellicoAI voice agents."
+"og:title": "Call Quality & Latency"
+---
+
+This guide covers diagnosing and resolving audio quality, latency, and conversational flow issues.
+
+## Diagnosing Latency
+
+Response latency is the time between when a caller finishes speaking and when the agent starts replying. The agent editor toolbar shows estimated latency for your configuration.
+
+### Latency Breakdown
+
+Total latency = Transcription + AI Model + Voice Synthesis + Network
+
+| Component | Typical Range | How to Optimize |
+| --- | --- | --- |
+| **Transcription** | 200-700ms | Use Deepgram Nova-3 (~300ms) over Azure Speech (~500-700ms) |
+| **AI Model** | 300-2000ms | Use faster models (Groq, GPT-4.1 Nano) for speed-critical agents |
+| **Voice Synthesis** | 100-500ms | Use low-latency providers (Cartesia is fastest) |
+| **Network** | 50-200ms | Phone calls add more network hops than web calls |
+
+### When Latency Is a Problem
+
+- **Under 1 second**: Excellent — feels like a natural conversation
+- **1-2 seconds**: Acceptable for most use cases
+- **2-3 seconds**: Noticeable — consider optimizing or adding thinking sounds
+- **Over 3 seconds**: Poor experience — take action now
+
+<Warning>
+If your response time consistently exceeds 3 seconds, follow the steps below immediately. Check [status.itellico.ai](https://status.itellico.ai) first for any ongoing platform issues.
+</Warning>
+
+### Quick Fixes for High Latency
+
+1. **Switch to a faster model** — Go to General → Thinking and try Balanced or Fast presets
+2. **Enable thinking sounds** — General → Sounds → Thinking Sounds (Expert Mode) fills processing time with keyboard audio
+3. **Enable smart filler** — General → Sounds → Smart Filler (Expert Mode) generates contextual filler phrases
+4. **Use a faster voice provider** — Check [Supported Providers](/reference/supported-providers) for latency benchmarks
+5. **Simplify your prompt** — Shorter prompts process faster
+6. **Adjust VAD turn detection** — [VAD settings](/build/advanced/vad-turn-detection) can have a significant impact on perceived response timing
+
+---
+
+## Turn-Taking Issues
+
+### Agent Talks Over the Caller
+
+**Symptoms:** Agent starts speaking while the caller is still talking, or responds too quickly after brief pauses.
+
+**Fix:**
+1. Open [VAD Turn Detection](/build/advanced/vad-turn-detection) settings
+2. Switch to a more **Patient** response timing preset
+3. In Expert Mode, increase **Silence before responding** (e.g., from 300ms to 500ms)
+4. Enable **AI Turn Detection** (Expert Mode) for smarter end-of-turn detection
+
+### Agent Waits Too Long to Respond
+
+**Symptoms:** Awkward silences after the caller finishes speaking.
+
+**Fix:**
+1. Switch to a more **Responsive** timing preset
+2. In Expert Mode, reduce **Silence before responding**
+3. Check if **AI Turn Detection** is causing delays — try toggling it off
+4. Switch to a faster AI model
+
+### Caller Can't Interrupt the Agent
+
+**Symptoms:** Caller speaks but the agent continues its response without stopping.
+
+**Fix:**
+1. In Expert Mode, enable **Allow Interruptions**
+2. Reduce **Speech duration to trigger interrupt** (how long the caller must speak to interrupt)
+3. Reduce **Minimum words to interrupt** threshold
+
+---
+
+## Audio Quality Issues
+
+### Robotic or Unnatural Voice
+
+1. Try a different [voice](/build/voice-speech/select-voice) — some voices sound better for conversational use
+2. Adjust [voice settings](/build/voice-speech/voice-settings) (Expert Mode) — tweak stability, similarity, and style parameters
+3. Lower the Response Style (temperature) setting — higher values can produce less consistent speech patterns
+
+### Echo or Feedback
+
+- This typically occurs on web calls. Check that the caller's browser has echo cancellation enabled
+- Reduce ambient sound volume if using background audio
+- Test with headphones to isolate the issue
+
+### Muffled or Unclear Speech
+
+1. Check your [transcriber](/build/voice-speech/transcriber) selection — Deepgram Nova-3 has the best general accuracy
+2. Add [custom pronunciations](/build/voice-speech/custom-pronunciations) for frequently misheard terms
+3. In Expert Mode, add [keywords](/build/voice-speech/transcriber) to boost recognition of specific terms
+
+### Phone vs Web Quality Differences
+
+Phone calls go through additional compression and network hops, which can affect quality:
+
+- Always test with real phone calls before launching — web simulator results may differ
+- Phone networks add 50-200ms of latency that web calls do not have
+- Codec compression can affect voice quality — some voice providers handle this better
+
+---
+
+## Silence Handling
+
+### Agent Does Not Respond When Caller Goes Silent
+
+Configure [Inactivity Timeout](/build/advanced/inactivity-timeout-settings):
+1. Enable **Silence Reminders** to prompt the caller after a period of silence
+2. Set **Max Call Duration** to end calls that run too long
+3. In Expert Mode, configure reminder timing (delay and max count)
+
+### Agent Hangs Up Too Quickly
+
+1. Increase **Max Call Duration** (default may be too short for your use case)
+2. Check that **Allow AI to Hang Up** is not ending calls prematurely
+3. Review your prompt — remove language that tells the agent to end calls aggressively
+
+---
+
+## Testing Methodology
+
+1. **Start with web calls** — fastest iteration cycle, no phone network variables
+2. **Move to phone calls** — test real network conditions, AMD behavior, and voice quality
+3. **Test from different environments** — quiet office, noisy space, mobile, landline
+4. **Compare models** — try the same conversation with different AI models to find the best speed/quality tradeoff
+5. **Review conversation timelines** — check tool execution times and knowledge retrieval latency
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="VAD Turn Detection" icon="waveform-lines" href="/build/advanced/vad-turn-detection">
+    Configure response timing and interruptions
+  </Card>
+  <Card title="Choose AI Model" icon="brain" href="/build/voice-speech/choose-ai-model">
+    Select the right model for speed vs quality
+  </Card>
+  <Card title="Thinking Sounds" icon="keyboard" href="/build/voice-speech/thinking-sounds">
+    Fill processing pauses with audio
+  </Card>
+  <Card title="Common Issues" icon="wrench" href="/troubleshooting/common-issues">
+    Find quick fixes for common problems
+  </Card>
+</CardGroup>

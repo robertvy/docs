@@ -1,0 +1,194 @@
+---
+title: "Error Codes"
+description: "API error codes, HTTP status codes, and troubleshooting guidance"
+icon: "circle-exclamation"
+keywords: "error codes, API errors, HTTP status codes, troubleshooting, 400, 401, 403, 404, 422, 429, 500, 503"
+"og:description": "Reference for itellicoAI API error codes with descriptions and resolution steps."
+"og:title": "Error Codes"
+---
+
+## HTTP Status Codes
+
+The itellicoAI API uses standard HTTP status codes.
+
+Error responses return JSON with:
+- `code` (machine-readable)
+- `message` (human-readable)
+- optional `detail`
+- optional `errors` (field-level validation issues)
+
+### Client Errors (4xx)
+
+| Status | Default `code` | Description | Common Causes |
+|------|------|-------------|---------------|
+| **400** | `bad_request` | The request is malformed or invalid | Invalid JSON, malformed parameters, unsupported combinations |
+| **401** | `unauthorized` | Authentication is missing or invalid | Missing `X-API-Key`, revoked key, expired key |
+| **402** | `payment_required` | Access requires billing/plan entitlement | Feature not available on current plan |
+| **403** | `forbidden` | Authenticated but not authorized | Missing permission, wrong account selected |
+| **404** | `not_found` | The requested resource does not exist | Wrong UUID, deleted resource, wrong path |
+| **405** | `method_not_allowed` | HTTP method not supported | Using POST instead of PATCH, etc. |
+| **409** | `conflict` | Request conflicts with current state | Duplicate create, concurrent update conflict |
+| **410** | `gone` | Resource no longer available | Removed/deprecated resource |
+| **422** | `validation_error` | Request data failed validation | Invalid field values, schema violations |
+| **429** | `rate_limit_exceeded` | You exceeded a [rate limit](/reference/limits-quotas#api-rate-limits) | Too many requests in the current window |
+
+### Server Errors (5xx)
+
+| Status | Default `code` | Description | What to do |
+|------|------|-------------|------------|
+| **500** | `internal_error` | Unexpected server error | Retry. If persistent, contact [support](https://support.itellico.ai) with request details |
+| **502** | `bad_gateway` | Upstream provider/service error | Retry with backoff |
+| **503** | `service_unavailable` | Service temporarily unavailable | Wait and retry |
+| **504** | `gateway_timeout` | Upstream service timed out | Retry with backoff |
+
+---
+
+## Error Response Format
+
+All API errors follow this structure:
+
+```json
+{
+  "code": "not_found",
+  "message": "Resource not found",
+  "detail": "Agent with UUID 123e4567-e89b-12d3-a456-426614174000 does not exist"
+}
+```
+
+Validation failures (`422`) can include field-level details:
+
+```json
+{
+  "code": "validation_error",
+  "message": "Validation failed",
+  "errors": [
+    {
+      "field": "body.email",
+      "message": "Invalid email format",
+      "type": "value_error"
+    },
+    {
+      "field": "body.name",
+      "message": "Field required",
+      "type": "missing"
+    }
+  ]
+}
+```
+
+---
+
+## Common Issues & Solutions
+
+<AccordionGroup>
+  <Accordion title="401: API key not working" icon="key">
+    - Verify the API key is copied correctly (no extra spaces)
+    - Check the key hasn't been revoked in **Developers → API Keys**
+    - Ensure you are using the correct header: `X-API-Key: <your-key>`
+    - Confirm the key format starts with `sk-`
+    - Confirm the key belongs to the right account
+  </Accordion>
+
+  <Accordion title="403: Access denied to resource" icon="lock">
+    - Verify you are accessing a resource within your own account
+    - Check your team role has sufficient permissions
+    - For subaccount resources, ensure you are using the correct account
+  </Accordion>
+
+  <Accordion title="422: Validation errors on create/update" icon="triangle-exclamation">
+    - Check required fields are included in the request body
+    - Verify field values match expected types (string, number, enum)
+    - Check enum fields use valid values (refer to the [API Reference](/api-reference/introduction))
+    - Ensure file uploads meet size and format requirements
+  </Accordion>
+
+  <Accordion title="429: Rate limited" icon="gauge">
+    - Implement exponential backoff in your integration
+    - Check your request volume against [rate limits](/reference/limits-quotas#api-rate-limits)
+    - Batch operations where possible to reduce request count
+    - Contact support if you need higher limits
+  </Accordion>
+
+  <Accordion title="500/503: Server errors" icon="server">
+    - Retry with exponential backoff (wait 1s, 2s, 4s, 8s...)
+    - Check [support](https://support.itellico.ai) for any ongoing incidents
+    - If the error persists after retries, contact support with the request details
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Call Disconnection Reasons
+
+When a call ends, the conversation detail shows the disconnection reason. Use this table to understand what happened.
+
+### Normal Endings
+
+| Reason | Description |
+| --- | --- |
+| `user_hangup` | The caller hung up — expected behavior |
+| `agent_hangup` | The AI agent ended the call (e.g., after a closing message) |
+| `call_transfer` | The call was transferred to another agent or phone number |
+| `max_duration` | The call hit the maximum duration limit you configured |
+| `inactivity` | The call was ended due to prolonged silence |
+| `voicemail` | Voicemail was detected (outbound campaigns with AMD enabled) |
+
+### Connection Failures (Never Connected)
+
+| Reason | Description |
+| --- | --- |
+| `dial_busy` | The number was busy |
+| `dial_no_answer` | Nobody picked up |
+| `dial_failed` | Dialing failed — check the number format and carrier status |
+| `dial_rejected` | The recipient rejected the call |
+| `invalid_number` | The number is invalid — check E.164 format (+43720123456) |
+
+### System Errors
+
+| Reason | Description |
+| --- | --- |
+| `network_error` | Network issue between itellicoAI and the carrier |
+| `provider_error` | The telephony or voice provider returned an error |
+| `agent_error` | The AI agent encountered an internal error |
+| `concurrency_limit` | Your plan's concurrent call limit was reached — retry with backoff or upgrade |
+| `unknown` | Unspecified error — contact [support@itellico.ai](mailto:support@itellico.ai) with the conversation ID |
+
+### Conversation Statuses
+
+| Status | Meaning |
+| --- | --- |
+| `active` | Call is currently in progress |
+| `completed` | Call ended normally |
+| `failed` | Call failed due to an error |
+| `transferred` | Call was transferred to another destination |
+
+### Answer Statuses (Outbound)
+
+| Status | Meaning |
+| --- | --- |
+| `waiting` | The system is still determining who answered |
+| `human` | A human answered the call |
+| `machine` | Answering machine detected |
+| `user_rejected` | Recipient rejected the call |
+| `user_unavailable` | No answer / timeout |
+| `user_busy` | Line was busy |
+| `unknown` | The answer outcome could not be determined |
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="API Reference" icon="brackets-curly" href="/api-reference/introduction">
+    View full API endpoint documentation
+  </Card>
+  <Card title="API Keys" icon="key" href="/accounts/api-keys">
+    Create and manage API keys
+  </Card>
+  <Card title="Limits & Quotas" icon="gauge" href="/reference/limits-quotas">
+    View rate limits and plan quotas
+  </Card>
+  <Card title="SDKs" icon="code" href="/api-reference/sdks">
+    Use official SDKs for built-in error handling
+  </Card>
+</CardGroup>

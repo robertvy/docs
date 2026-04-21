@@ -1,0 +1,91 @@
+---
+title: "Test Overview"
+description: "Validate your voice agents before going live with customers"
+icon: "vial"
+keywords: "testing, agent testing, voice agent validation, test workflow, QA testing, agent debugging, chat testing, web testing, phone testing"
+"og:description": "Validate voice agents before launch with Chat, Web call, and Phone call testing."
+"og:title": "Test Overview"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+**Access:** Open any agent in the editor and click **Test Agent** in the toolbar.
+
+<Screenshot
+  lightSrc="/images/wizard__test-call-dialog-light.png"
+  darkSrc="/images/wizard__test-call-dialog-dark.png"
+  alt="Test Agent popover in the agent editor showing Chat, Web call, and Phone call options"
+/>
+
+## Testing Ladder
+
+Test cheap and fast first, then move to real-world conditions.
+
+| Stage | Use it to validate | Detailed guide |
+| --- | --- | --- |
+| **Chat** | Prompt logic, tool selection, knowledge answers | [Web & Chat Testing](/test/web-simulator) |
+| **Web call** | Voice, turn-taking, pronunciation, browser audio | [Web & Chat Testing](/test/web-simulator) |
+| **Phone call** | Carrier behavior, latency, [AMD](/glossary#voice-and-speech), real caller experience | [Phone Testing](/test/phone-testing) |
+| **Conversation review** | Transcript, recording, goals, insights, notifications | [Conversations](/manage/conversations/overview) |
+
+Repeat the ladder after meaningful changes to the prompt, tools, voice stack, timing, privacy settings, or post-call automation.
+
+<Tip>
+If a change affects how the caller hears the agent, do not stop at Chat. Always run at least one Web call and one Phone call before launch.
+</Tip>
+
+## QA Checklist
+
+Run through these scenarios before going live:
+
+| What to test | How to check | Pass if... |
+| --- | --- | --- |
+| **Greeting** | Call in — does the agent introduce itself correctly? | Greeting matches your configuration and sounds natural |
+| **Common questions** | Ask 3-5 questions your customers ask most | Agent answers accurately from the knowledge base |
+| **Out-of-scope questions** | Ask something the agent shouldn't answer | Agent declines politely and offers to transfer or take a message |
+| **Tool execution** | Trigger a transfer, booking, or API call | Tool fires successfully (check the conversation timeline) |
+| **Interruptions** | Speak while the agent is talking | Agent stops and listens |
+| **Silence** | Stay quiet for 15+ seconds | Agent prompts you or handles inactivity gracefully |
+| **Angry caller** | Be frustrated or demanding | Agent stays calm, empathetic, and follows escalation rules |
+| **Wrong input** | Give incorrect info, then correct yourself | Agent handles the correction without confusion |
+| **Goal tracking** | Complete a typical call | Primary goal is marked correctly in the conversation detail |
+| **Notifications** | Trigger a condition that should send an email or create a task | Email arrives and/or task is created |
+
+## When to Use Each Test Mode
+
+| Mode | Best for | Speed | Realism |
+| --- | --- | --- | --- |
+| **Chat** | Prompt iteration, logic checks, tool testing | Fastest | Low (text only) |
+| **Web call** | Voice quality, turn-taking, pronunciation | Fast | Medium |
+| **Phone call** | Full customer experience, latency, AMD | Slow | High |
+
+<Tip>
+Do 80% of your testing in Chat and Web call. Only switch to Phone call for final validation and voice quality checks.
+</Tip>
+
+## Release Readiness
+
+You are usually ready to launch when:
+
+- the agent handles the top 3 to 5 real customer intents cleanly
+- interruptions and silence feel natural
+- transfers and tools succeed with realistic inputs
+- goals and post-call actions appear correctly in the conversation detail
+- at least one real phone call matches the experience you want customers to have
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Web & Chat Testing" icon="browser" href="/test/web-simulator">
+    Run browser-based tests with Chat and Web call modes
+  </Card>
+  <Card title="Phone Testing" icon="phone" href="/test/phone-testing">
+    Test with real phone calls
+  </Card>
+  <Card title="Test Scenarios" icon="list-check" href="/test/test-scenarios">
+    Follow pre-built test scripts for common use cases
+  </Card>
+  <Card title="Edge Cases" icon="triangle-exclamation" href="/test/edge-cases">
+    Test interruptions, silence, and unexpected input
+  </Card>
+</CardGroup>

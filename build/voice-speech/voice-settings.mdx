@@ -1,0 +1,199 @@
+---
+title: "Voice Settings"
+description: "Fine-tune supported voices with provider-specific parameters"
+icon: "sliders"
+keywords: "voice settings, TTS settings, speech speed, voice stability, voice parameters, AI voice tuning, speech configuration"
+"og:description": "Fine-tune supported AI voices with provider-specific parameters including speed, stability, and delivery settings."
+"og:title": "Voice Settings"
+---
+
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+## Voice Configuration Parameters
+
+After [selecting your voice](/build/voice-speech/select-voice), you can adjust provider-specific settings to fine-tune how it sounds. The current dashboard exposes adjustable voice parameters for **ElevenLabs** voices. Azure Speech and Cartesia voices use their provider defaults in the itellicoAI interface.
+
+<Note>
+Voice settings are displayed dynamically based on your selected voice. If your selected provider does not expose adjustable settings, choose a different voice or provider instead. Changes apply immediately to new conversations.
+</Note>
+
+---
+
+## ElevenLabs Settings
+
+ElevenLabs voices support the following adjustable parameters:
+
+<Screenshot
+  lightSrc="/images/voice-parameters__voice-params-light.png"
+  darkSrc="/images/voice-parameters__voice-params-dark.png"
+  alt="ElevenLabs Voice Parameters dialog showing Stability, Similarity Boost, Style, Use Speaker Boost, and Speed controls"
+/>
+
+### Stability
+
+Controls consistency and expressiveness (range: 0.0-1.0, itellicoAI default: 0.71)
+
+**How it works:**
+- **Lower values (0.3-0.5):** More expressive and varied, but less consistent between generations
+- **Medium values (0.5-0.7):** Balanced expressiveness and consistency (recommended)
+- **Higher values (0.7-1.0):** More consistent and predictable, but may sound monotone
+
+**Recommended starting point:** 0.5-0.7
+
+Use lower stability for creative applications where variety is desired, and higher stability (0.6-0.85) for consistent customer service responses.
+
+### Similarity Boost
+
+Controls how closely the voice matches the original speaker (range: 0.0-1.0, itellicoAI default: 0.75)
+
+**How it works:**
+- **Lower values (0.5-0.7):** More creative interpretation of the voice
+- **Medium values (0.75-0.8):** Balanced adherence to original voice (recommended)
+- **Higher values (0.8-1.0):** Strict matching to original voice character
+
+**Recommended starting point:** 0.75-0.8
+
+Higher values increase processing demands and can add latency. They're also more likely to reproduce artifacts if the source voice data is noisy.
+
+### Style
+
+Controls stylistic variation in pacing and intonation (range: 0.0-1.0, itellicoAI default: 0.0)
+
+**How it works:**
+- **0.0:** Neutral delivery (recommended)
+- **0.5-1.0:** Amplified style of the original speaker
+
+**Recommended starting point:** 0.0
+
+Higher style values can make voices less stable and add latency. Keep this at 0 for most use cases.
+
+### Speaker Boost
+
+Enhances clarity and presence (boolean, itellicoAI default: enabled)
+
+**How it works:**
+- **Enabled:** Boosts similarity to the original speaker, improving clarity
+- **Disabled:** Standard processing
+
+**Recommended starting point:** Enabled
+
+Increases latency slightly; subtle effect.
+
+### Speed
+
+Controls playback speed (range: 0.7-1.2, itellicoAI default: 1.0)
+
+**Speed values:**
+- **0.7-0.9:** Slower, clearer delivery
+- **1.0:** Normal speed (default)
+- **1.1-1.2:** Faster, more energetic delivery
+
+**Recommended starting point:** 1.0
+
+Adjust in small increments (0.05-0.1) and test with full conversations.
+
+---
+
+## Other Voice Providers
+
+Azure Speech and Cartesia voices do not currently expose adjustable voice-parameter controls in the itellicoAI dashboard. For these providers, focus on choosing the right voice, language, and provider during [voice selection](/build/voice-speech/select-voice).
+
+<Note>
+Provider defaults are still optimized for real-time conversations. If you need a different speaking style, compare multiple voices from the same provider before switching providers.
+</Note>
+
+---
+
+## Adjusting Settings
+
+### How to Change Voice Settings
+
+1. Navigate to **General** → **Speaking** in your agent editor
+2. Your currently selected voice is displayed in the "Current Voice" card at the top
+3. Click the **gear icon** next to your current voice (available for ElevenLabs voices)
+4. A settings panel opens with adjustable parameters for your voice
+5. Adjust sliders or toggles as needed
+6. Click **Save Changes** to apply
+
+---
+
+## Common Settings by Use Case
+
+<AccordionGroup>
+  <Accordion title="Customer Support" icon="headset">
+    **ElevenLabs:**
+    - Stability: 0.60-0.85
+    - Similarity: 0.75-0.85
+    - Style: 0.0
+    - Speed: 0.95-1.05
+
+    **Goal:** Clear, steady, professional
+  </Accordion>
+
+  <Accordion title="Sales" icon="chart-line">
+    **ElevenLabs:**
+    - Stability: 0.45-0.70
+    - Similarity: 0.70-0.80
+    - Style: 0.0
+    - Speed: 1.05-1.15
+
+    **Goal:** Energetic, confident, engaging
+  </Accordion>
+
+  <Accordion title="Technical Support" icon="wrench">
+    **ElevenLabs:**
+    - Stability: 0.60-0.85
+    - Similarity: 0.75-0.85
+    - Style: 0.0
+    - Speed: 0.95-1.0
+
+    **Goal:** Clear, patient, instructional
+  </Accordion>
+
+  <Accordion title="Healthcare" icon="heart-pulse">
+    **ElevenLabs:**
+    - Stability: 0.70-0.85
+    - Similarity: 0.80-0.90
+    - Style: 0.0
+    - Speed: 0.9-1.0
+
+    **Goal:** Calm, consistent, professional
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Best Practices
+
+**Start with recommended defaults:** Itellico defaults are optimized starting points. ElevenLabs recommends stability ≈0.5 and similarity ≈0.75-0.8 as common baselines.
+
+**Make small changes:** Voice settings are sensitive. Adjust in small increments and test after each change.
+
+**Test in context:** Use full conversation scenarios (3-5 minutes), not just single-sentence samples. You can also add [ambient sound](/build/voice-speech/ambient-sound) to create a more natural atmosphere.
+
+**Consider your audience:** Older customers often prefer slightly slower speeds. Younger audiences may prefer slightly faster.
+
+**Understand response time trade-offs:** Higher similarity boost and speaker boost increase latency. Style values >0 can also add latency and reduce stability.
+
+**Document your settings:** Keep track of what works for each use case and voice combination.
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Custom Pronunciations" icon="spell-check" href="/build/voice-speech/custom-pronunciations">
+    Correct pronunciation of brand names and technical terms
+  </Card>
+  <Card title="Ambient Sound" icon="volume" href="/build/voice-speech/ambient-sound">
+    Add background ambience to calls
+  </Card>
+  <Card title="Select Voice" icon="microphone" href="/build/voice-speech/select-voice">
+    Choose a different voice
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/web-simulator">
+    Test your voice settings with web calls
+  </Card>
+</CardGroup>

@@ -1,0 +1,260 @@
+---
+title: "Greeting Messages"
+description: "Wähle feste, KI-generierte oder vom Nutzer initiierte Begrüßungsmodi. Personalisiere Startnachrichten mit Variablen, setze Verzögerungen und konfiguriere Barge-In für Inbound- und Outbound-Anrufe."
+icon: "hand-wave"
+keywords: "AI greeting messages, conversational AI greetings, dynamic greetings, personalized agent messages, conversation starters, AI welcome messages"
+"og:description": "Konfiguriere dynamische, personalisierte Begrüßungsnachrichten, die für jedes Gespräch eines KI-Agenten den richtigen Ton setzen."
+"og:title": "Greeting Messages"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+
+**Zugriff:** Öffne einen Agenten und gehe zu **Call Flow**, dann scrolle zu **Call Start**.
+
+## Wie Begrüßungen funktionieren
+
+Die Begrüßung ist das Erste, was Kunden hören, wenn sie mit deinem Agenten verbunden werden. Eine gut geschriebene Begrüßung setzt den Ton, schafft Erwartung und lenkt das Gespräch in die richtige Richtung.
+
+## Begrüßungsmodi
+
+Wähle aus drei verschiedenen Begrüßungsmodi:
+
+<Note>
+Dieser Bereich wechselt zwischen Einfach und Profi. Einfach hält die Einrichtung der Begrüßung schlank; Profi fügt Timing- und Unterbrechungssteuerung hinzu.
+</Note>
+
+### Einfach
+
+<Screenshot
+  lightSrc="/images/operations__greeting_DE-light.png"
+  darkSrc="/images/operations__greeting_DE-dark.png"
+  alt="Begrüßungskonfiguration mit Call-Flow-Tab, Call-Start-Einstellungen und den Modi Fixed Message, AI Generated und Wait for Caller"
+  caption="Im Einfach sichtbar. Das gesamte Begrüßungsverhalten startet in Call Start, wo du den Begrüßungsmodus wählst und entscheidest, ob Inbound- und Outbound-Anrufe unterschiedlich behandelt werden sollen."
+  maxWidth="860px"
+/>
+
+### Profi
+
+<Screenshot
+  lightSrc="/images/operations__greeting-expert_DE-light.png"
+  darkSrc="/images/operations__greeting-expert_DE-dark.png"
+  alt="Begrüßungskonfiguration im Profi mit erweiterten Timing- und Unterbrechungssteuerungen"
+  caption="Profi fügt die erweiterten Timing- und Unterbrechungssteuerungen hinzu, mit denen du das Start-Erlebnis feinjustierst."
+  maxWidth="860px"
+/>
+
+<Tabs>
+  <Tab title="Fixed Message">
+    **Am besten für**: Einheitliche, gebrandete Begrüßungen
+
+    Dein Agent spricht jedes Mal exakt dieselbe Begrüßung.
+
+    ```text wrap
+    Hey! Thanks for calling Acme support. This is Alex. What can I help you with?
+    ```
+
+    **Vorteile:**
+    - Konsistente Markenbotschaft
+    - Vorhersehbare Kundenerfahrung
+    - Einfach zu testen und zu verfeinern
+    - Keine KI-Variabilität
+
+    **Einsatz wenn:**
+    - Markenstimme kritisch ist
+    - Die Begrüßung konkrete Disclaimers enthält
+    - Konsistenz über alle Anrufe hinweg benötigt wird
+  </Tab>
+
+  <Tab title="AI Generated">
+    **Am besten für**: Personalisierte, kontextbewusste Begrüßungen
+
+    Dein Agent erzeugt Begrüßungen dynamisch auf Basis des verfügbaren Kontexts.
+
+    **Beispielvarianten:**
+    ```text wrap
+    # With customer name:
+    "Hi Sarah! Thanks for calling. What can I help you with today?"
+
+    # VIP customer:
+    "Hi Mr. Johnson! Thanks for calling. What can I help you with today?"
+
+    # Time-based:
+    "Good morning! Thanks for calling Acme support. What brings you in?"
+
+    # Campaign-specific:
+    "Hey! I see you requested info about our Enterprise plan. Happy to help with that!"
+    ```
+
+    **Vorteile:**
+    - Personalisiert für jeden Anrufer
+    - Kontextbewusst (Zeit, Kampagne, Kundentyp)
+    - Natürliche Variabilität
+    - Kann verfügbare Daten referenzieren
+
+    **Einsatz wenn:**
+    - Du reiche Kontaktdaten hast
+    - Personalisierung das Erlebnis verbessert
+    - Verschiedene Kundensegmente unterschiedliche Ansätze brauchen
+  </Tab>
+
+  <Tab title="Wait for Caller">
+    **Am besten für**: Outbound-Anrufe, bei denen der Empfänger zuerst spricht
+
+    Der Agent wartet still, bis der Kunde spricht, bevor er antwortet.
+
+    **Kunde:** "Hello?" / "Yes?" / "Who is this?"
+    **Agent:** "Hi! This is Alex from Acme. I'm calling about your recent inquiry. Do you have a moment?"
+
+    **Vorteile:**
+    - Natürlich für Outbound-Szenarien
+    - Der Kunde spricht wie erwartet zuerst
+    - Der Agent antwortet, nachdem der Kunde abnimmt
+
+    **Einsatz wenn:**
+    - Outbound-Anrufe gemacht werden
+    - Der Empfänger beim Abheben natürlich etwas sagt
+    - Der Kunde das Gespräch initialisieren soll
+
+    <Note>
+    **Für die meisten Use Cases empfehlen wir stattdessen Fixed Message.** Wait for Caller ist nur in bestimmten Outbound-Szenarien nützlich.
+    </Note>
+  </Tab>
+</Tabs>
+
+---
+
+## Begrüßungskonfiguration
+
+### Delay
+
+<Badge>Profi</Badge>
+
+Steuert, wie lange der Agent wartet, bevor er spricht (0-10 Sekunden).
+
+Eine Verzögerung von **0.5 Sekunden** ist für die meisten Use Cases ein guter Startwert.
+
+### Interruptibility
+
+<Badge>Profi</Badge>
+
+Steuert, ob Kunden die Begrüßung unterbrechen können.
+
+**Nicht unterbrechbar (empfohlen):**
+- Begrüßung läuft ohne Unterbrechung komplett durch
+- Stellt sicher, dass Kunden die komplette Nachricht hören
+- Professionelle und klare Einführung
+- Für die meisten Use Cases am besten
+
+**Unterbrechbar:**
+- Der Kunde kann während der Begrüßung sprechen
+- Der Agent stoppt mitten in der Begrüßung und hört zu
+- Kann zu unvollständigen Einleitungen führen
+- Nur verwenden, wenn Kunden häufig unterbrechen und nicht unterbrechbare Begrüßungen zu schlechten Gesprächen oder Auflegen führen
+
+<Tip>
+Nicht unterbrechbare Begrüßungen stellen sicher, dass Marken-Einführung und Zweck immer klar kommuniziert werden. Halte Begrüßungen kurz (unter 10 Sekunden), um die besten Ergebnisse zu erzielen.
+</Tip>
+
+---
+
+## Inbound- und Outbound-Begrüßungen
+
+### Inbound-Begrüßungen
+
+Kunden rufen dich an. Sie haben den Kontakt initiiert.
+
+**Best Practices:**
+- Für den Anruf danken
+- Unternehmen/Service nennen
+- Agent vorstellen (optional Name)
+- Fragen, wie geholfen werden kann
+
+**Beispiele:**
+
+```text wrap
+# Standard support:
+"Thank you for calling Acme Software support. How can I help you today?"
+
+# With agent name:
+"Hi! This is Alex from Acme support. What can I help you with?"
+
+# Friendly:
+"Hey there! Thanks for calling. What brings you in today?"
+
+# Department-specific:
+"Acme Billing department, this is Sam. How can I assist you?"
+```
+
+---
+
+### Outbound-Begrüßungen
+
+Du rufst den Kunden an. Du musst Legitimität und Zweck schnell klar machen.
+
+**Best Practices:**
+- Dich und das Unternehmen nennen
+- Zweck des Anrufs nennen
+- Bestätigen, dass du mit der richtigen Person sprichst
+- Fragen, ob es gerade passt
+
+**Beispiele:**
+
+```text wrap
+# Appointment reminder:
+"Hi, this is Alex from Acme Dental. I'm calling to confirm your appointment tomorrow at 2 PM. Is this still a good time for you?"
+
+# Lead follow-up:
+"Hello, this is Sarah from Acme Software. You recently requested information about our Enterprise plan. Do you have a few minutes to discuss how we can help?"
+
+# Customer feedback:
+"Hi! This is Jordan from Acme. You recently purchased our product, and I wanted to get your quick feedback. Do you have two minutes?"
+
+# Payment reminder:
+"Hello, this is the billing team at Acme. I'm calling about your account. Can we take care of that payment today?"
+```
+
+### Outbound-Begrüßungs-Überschreibungen
+
+<Badge>Profi</Badge>
+
+Konfiguriere separate Begrüßungen für Outbound-Anrufe im Abschnitt **Greeting**.
+
+<Screenshot
+  lightSrc="/images/operations__outbound-greeting_DE-light.png"
+  darkSrc="/images/operations__outbound-greeting_DE-dark.png"
+  alt="Outbound-Begrüßungskonfiguration mit Bereich für separate Begrüßung für Outbound-Anrufe und den Optionen Fixed Message, AI Generated und Wait for Caller"
+  caption="Nutze Outbound-Überschreibungen nur dann, wenn proaktive Anrufe einen anderen Einstieg brauchen als Inbound-Support- oder Service-Anrufe."
+  maxWidth="860px"
+/>
+
+<Steps>
+  <Step title="Outbound override aktivieren">
+    Schalte **Use different greeting for outbound calls** ein
+  </Step>
+  <Step title="Outbound-Begrüßungsmodus wählen">
+    Fixed Message, AI Generated oder Wait for Caller
+  </Step>
+  <Step title="Outbound-spezifische Verzögerung setzen">
+    Meist 0-0.5 Sekunden für Outbound
+  </Step>
+  <Step title="Unterbrechbarkeit konfigurieren">
+    Meist unterbrechbar für ein natürliches Gefühl
+  </Step>
+</Steps>
+
+<Note>
+Standardmäßig spiegeln Outbound-Anrufe deine Inbound-Begrüßung. Nutze Überschreibungen, wenn du für proaktive Anrufe anderes Verhalten brauchst.
+</Note>
+
+---
+
+## Variablen in Begrüßungen verwenden
+
+<Screenshot
+  lightSrc="/images/operations__greeting-variables_DE-light.png"
+  darkSrc="/images/operations__greeting-variables_DE-dark.png"
+  alt="Begrüßungsvariablen-Konfiguration mit Outbound-(custom)-Tab, AI Agent Initiates with Fixed Message, Fixed-Message-Editor mit Variablensyntax, Detected Variables-Bereich, Verzögerungs-Slider und Barge-in-Schalter"
+  caption="Der Begrüßungseditor zeigt erkannte Variablen inline, damit du sie vor dem Einsatz in der Produktion prüfen kannst."
+  maxWidth="760px"
+/>

@@ -1,0 +1,167 @@
+---
+title: "Debugging"
+description: "Finde und behebe häufige Agentenprobleme mit Testanrufen, Gesprächshistorie und Schritt-für-Schritt-Prüfungen"
+icon: "bug"
+keywords: 'debugging, troubleshooting, conversation logs, transcriber issues, response problems, voice quality, tool failures'
+"og:description": 'Debugge Probleme von Sprachagenten mit Gesprächshistorie und systematischer Fehlersuche. Identifiziere und behebe Probleme bei Sprache, Antworten, Stimme und Tools.'
+"og:title": "Debugging"
+---
+
+## Sprachagenten debuggen
+
+Nutze diese Seite, wenn etwas eindeutig kaputt ist und Anrufende es bemerken würden. Starte damit, das Problem in **Agent testen** zu reproduzieren, und verwende dann **Gespräche**, um genau zu sehen, was passiert ist und an welcher Stelle der Ablauf abweicht.
+
+Nutze **Chat** oder **Webanruf** im **Agent testen**-Popover für schnelle Reproduktionen und bestätige das Verhalten vor dem Launch noch einmal im **Telefonanruf**-Modus.
+
+## Wo du zuerst schauen solltest
+
+<CardGroup cols={2}>
+  <Card title="Gesprächshistorie" icon="list">
+    Greife auf die vollständige Gesprächshistorie inklusive Transkripten, Aktionen und Metadaten zu
+  </Card>
+
+  <Card title="Live-Transkript" icon="closed-captioning">
+    Überwache die Live-Transkription und Agentenantworten während Testanrufen
+  </Card>
+
+  <Card title="Tool-Aktivität" icon="code">
+    Prüfe Details zu Weiterleitungen, Buchungen, benutzerdefinierten Aktionen und anderen verbundenen Schritten
+  </Card>
+
+  <Card title="Fehlerdetails" icon="triangle-exclamation">
+    Sieh dir Meldungen an, die erklären, warum ein Schritt fehlgeschlagen oder nicht abgeschlossen wurde
+  </Card>
+</CardGroup>
+
+---
+
+## Systematischer Debugging-Ansatz
+
+Wenn etwas schiefgeht, gehe systematisch vor:
+
+<Steps>
+  <Step title="Problem reproduzieren">
+    Teste erneut, um zu bestätigen, dass das Problem reproduzierbar ist
+
+    Notiere die genauen Bedingungen, unter denen es auftritt
+  </Step>
+
+  <Step title="Komponente identifizieren">
+    Bestimme, welcher Teil falsch wirkt:
+    - Spracherkennung
+    - Antwortqualität
+    - Sprachausgabe
+    - Tool- oder Integrationsausführung
+    - Wissensabruf
+  </Step>
+
+  <Step title="Logs prüfen">
+    Öffne **[Gespräche](/de/manage/conversations/overview)** und finde den problematischen Anruf
+
+    Prüfe Transkript, Tool-Aktivität und sichtbare Fehlermeldungen
+  </Step>
+
+  <Step title="Komponenten einzeln testen">
+    Isoliere die fehlerhafte Komponente:
+    - Anderen Transcriber testen
+    - Einen einfacheren Prompt oder einfachere Fragen testen
+    - Eine andere Stimme testen
+    - Nur ein Tool zur Zeit auslösen
+    - Falls nötig, die verantwortliche Person des verbundenen Systems bitten, die Verfügbarkeit zu bestätigen
+  </Step>
+
+  <Step title="Beheben und verifizieren">
+    Nimm gezielte Änderungen auf Basis der Ergebnisse vor
+
+    Teste erneut, um die Behebung zu bestätigen
+  </Step>
+</Steps>
+
+---
+
+## Debugging auf Komponentenebene
+
+Nutze das Gesprächsprotokoll, um die fehlerhafte Komponente zu identifizieren, und wechsle dann zu der Spezialseite, die die Behebung abdeckt.
+
+| Wenn das Protokoll auf ... hindeutet | Im Log prüfen | Spezialseite |
+| --- | --- | --- |
+| Transkription ist falsch | Transkriptionstext vs. das Gesagte, fehlende Wörter, Sprachmismatch | [Transcriber](/de/build/voice-speech/transcriber) und [Call Quality](/de/troubleshooting/call-quality) |
+| KI-Antwort ist falsch | Vollständiger Gesprächskontext, abgerufenes Wissen, Prompt-Verhalten | [Prompt Engineering Guide](/de/build/conversation/prompt-engineering-guide) und [Knowledge Issues](/de/troubleshooting/knowledge-issues) |
+| Sprachausgabe klingt falsch | Aufzeichnung, gesprochener Text, Aussprache, Stimmeinstellungen | [Voice Settings](/de/build/voice-speech/voice-settings) und [Call Quality](/de/troubleshooting/call-quality) |
+| Tool-Ausführung fehlgeschlagen | Tool-Call-Ereignis, Request-Zusammenfassung, Response-Zusammenfassung, Fehlermeldung, Dauer | [Tools & Integrations](/de/troubleshooting/tools-integrations) und [Custom Actions](/de/troubleshooting/custom-actions) |
+| Wissensabruf fehlgeschlagen | Abgerufene Chunks, zugewiesene Wissensdatenbank, Elementstatus | [Knowledge Issues](/de/troubleshooting/knowledge-issues) |
+| Gesprächstiming wirkt falsch | Gesprächswechsel, Unterbrechungen, Stille, Antwortlatenz | [Call Quality](/de/troubleshooting/call-quality) |
+
+<Tip>
+Nutze diese Seite, um die Komponente einzugrenzen. Nutze die verlinkte Spezialseite für detaillierte Fixes und Konfigurationsänderungen.
+</Tip>
+
+---
+
+## Gesprächslogs zum Debuggen nutzen
+
+Jeder Testanruf erzeugt ein detailliertes Log, das in **Gespräche** abrufbar ist.
+
+### Was in den Logs steht:
+
+**Basisinformationen:**
+- Datum, Uhrzeit und Dauer des Anrufs
+- Verwendeter Agent
+- Telefonnummer (bei Telefontests)
+- Anrufstatus (abgeschlossen, fehlgeschlagen usw.)
+
+**Gesprächsdaten:**
+- Vollständiges Transkript (Nutzer + Agent)
+- Zeitstempel für jede Nachricht
+- Audioaufzeichnung, falls verfügbar
+
+**Detaillierte Aktivität:**
+- Ausgelöste Tools mit Details
+- Erfasste Tasteneingaben
+- Ergebnisse der [Ziel](/de/build/analytics/conversation-goals)-Analyse
+- Antworten von [Gather Insights](/de/build/analytics/gather-insights)
+- Zusätzliche Metadaten
+- Fehlermeldungen
+
+**So debugst du mit Logs:**
+1. Filtere nach Agentenname, um Testanrufe zu finden
+2. Öffne einen bestimmten Anruf, um alle Details zu sehen
+3. Lies das Transkript, um die Problemstelle zu finden
+4. Prüfe Tool-Details, wenn Tools fehlgeschlagen sind
+5. Höre dir das Audio an, wenn das Transkript korrekt wirkt, das Audio aber nicht
+6. Prüfe Zeitstempel, um Antwortzeit-Probleme zu erkennen
+
+---
+
+## Hilfe erhalten
+
+Wenn du zusätzliche Unterstützung brauchst:
+
+<CardGroup cols={2}>
+  <Card title="Dokumentation prüfen" icon="book">
+    Prüfe die spezifischen Feature-Dokus für Konfigurationsdetails
+  </Card>
+
+  <Card title="Provider-Status prüfen" icon="signal">
+    Prüfe den Service-Status aller Provider, von denen dein Agent abhängt
+  </Card>
+
+  <Card title="Support kontaktieren" icon="headset">
+    Schreibe an support@itellico.ai mit Anruf-Logs und Fehlerdetails
+  </Card>
+</CardGroup>
+
+**Wenn du Support kontaktierst, gib Folgendes an:**
+- Agenten-ID oder -Name
+- Gesprächs-ID aus den Logs
+- Konkrete Fehlermeldungen
+- Schritte zur Reproduktion
+- Screenshots, falls sinnvoll
+
+---
+
+## Nächste Schritte
+
+<Card title="Launch-Checkliste" icon="rocket" href="/de/launch/overview">
+  Prüfe die Launch-Checkliste, um deinen Agenten für die Produktion vorzubereiten
+</Card>

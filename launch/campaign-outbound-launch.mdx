@@ -1,0 +1,263 @@
+---
+title: "Campaign & Outbound Launch"
+description: "Deploy automated outbound calling campaigns at scale"
+icon: "bullhorn"
+keywords: "outbound campaigns, automated calling, campaign launch, answering machine detection, AMD, contact lifecycle, campaign setup, progressive dialing, goal tracking"
+"og:description": "Launch automated outbound calling campaigns with progressive dialing, AMD, and analytics. Set up campaigns, add contacts, and start dialing at scale."
+"og:title": "Campaign & Outbound Launch"
+---
+
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+**In this guide, you'll learn to:**
+- Create an outbound campaign with an agent and phone number
+- Add contacts and choose calling windows
+- Set up goals and insights to track outcomes
+- Launch the campaign and know where to monitor it
+
+---
+
+Outbound campaigns automate high-volume calling for sales, reminders, surveys, and notifications. Each campaign connects your agent to a contact list, calling window, and outcome tracking.
+
+## Use Campaign Launch When You Need To
+
+- call a list of contacts at scale
+- run a repeatable outbound program instead of manual one-off calls
+- track answer rates, retries, and outcomes across many contacts
+- control when calls happen and which number is used
+
+Campaigns are usually owned by sales, operations, success, or marketing teams that care about both execution and measurable results.
+
+<Tip>
+For detailed campaign management and analytics after launch, see the [Campaign Management](/manage/campaigns/overview) guide.
+</Tip>
+
+## Key Features
+
+<CardGroup cols={3}>
+  <Card title="Automated Dialing" icon="phone-volume">
+    Dials contacts progressively with configurable retry logic
+  </Card>
+
+  <Card title="Schedules" icon="clock">
+    Enforce calling windows and timezone scheduling
+  </Card>
+
+  <Card title="Smart AMD" icon="voicemail">
+    Skip voicemails with text or [Answering Machine Detection](/glossary#voice-and-speech) using machine learning detection
+  </Card>
+
+  <Card title="Contact Lifecycle" icon="arrows-spin">
+    Moves contacts through dialing, retry, and completion states automatically
+  </Card>
+
+  <Card title="Outcome Tracking" icon="chart-line">
+    Configure campaign goals and analyses before launch
+  </Card>
+
+  <Card title="Management Handoff" icon="list-check">
+    Use Campaign Management after launch for dashboards, contacts, exports, and tuning
+  </Card>
+</CardGroup>
+
+## Creating Your First Campaign
+
+<Screenshot
+  lightSrc="/images/campaigns__create-campaign-light.png"
+  darkSrc="/images/campaigns__create-campaign-dark.png"
+  alt="Create Campaign dialog showing Campaign Name field with description, Agent dropdown to select agent for campaign calls, Phone Number dropdown to select outbound phone number, Business Hours section showing 24/7 availability with Open status, Cancel and Create Campaign buttons"
+/>
+
+<Steps>
+  <Step title="Navigate to Campaigns">
+    Go to **Campaigns** and click **Create Campaign** (or **Create First Campaign** if this is your first one).
+  </Step>
+
+  <Step title="Configure required settings">
+    **Campaign Name**: Descriptive name for internal use (e.g., "Q1 Sales Outreach")
+
+    **Agent**: Select which AI agent will handle the calls
+
+    **Phone Number**: Choose a phone number for this campaign. Numbers already assigned to active or paused campaigns won't appear in the list. If you haven't set up a phone number yet, see [Phone Numbers](/launch/phone-numbers).
+  </Step>
+
+  <Step title="Configure optional settings">
+    **Business Hours**: Limit calling to a specific schedule (default is 24/7). For schedule setup and timezone behavior, see [Schedules](/launch/schedules).
+
+    Click **Create Campaign** to continue.
+  </Step>
+
+  <Step title="Configure campaign settings">
+    After creation, go to the **Settings** tab to fine-tune:
+
+    **Scheduling:**
+    - **Start Date & Time**: When to begin calling
+    - **Call Interval**: Wait time between calls
+    - **Max Concurrent Calls**: Maximum simultaneous outbound calls for this campaign
+    - **Ring Timeout**: Expert-mode setting for how long to let the phone ring
+    - **Business Hours**: Schedule that controls when calls are allowed
+    - **Local legal compliance window**: Keeps the campaign inside recipient-region calling windows when enabled
+
+    For schedule creation, timezone behavior, and local calling windows, see [Schedules](/launch/schedules).
+
+    **Retry Logic:**
+    - **Max Retry Attempts**: How many times to retry (0-10, default: 2)
+    - **Retry Interval**: Calendar time between retries. Configure with unit selector (minutes, hours, or days)
+    - **Contact Completion Timeout**: Expert-mode setting. After a call completes, the platform waits this long before running analysis — giving the contact a window to call back or be called again before the outcome is finalized. Configure with unit selector (minutes, hours, or days).
+
+    **Answering Machine Detection (AMD):**
+    - **AMD Mode**: Expert-mode setting with **Text-based** and **ML-based** options. [Learn more about AMD](#answering-machine-detection).
+
+    For full settings documentation, see [Campaign Management](/manage/campaigns/overview).
+  </Step>
+
+  <Step title="Add contacts">
+    Go to the **Contacts** tab to manage your campaign contacts.
+
+    Click **Add Contacts** and choose one of the tabs:
+    - **Add from Existing**: Search and filter contacts already in your account
+    - **Import CSV**: Upload a new contact list for the campaign
+
+    **Adding contacts**:
+    - Select individual rows and click **Add Selected**
+    - Use **Add All Filtered** to add the current filtered result set
+    - Use search and tag filters to narrow down contacts before adding
+
+    Large batches run in the background.
+
+    <Screenshot
+      lightSrc="/images/manage__campaign-add-contacts-light.png"
+      darkSrc="/images/manage__campaign-add-contacts-dark.png"
+      alt="Add Contacts modal in a campaign showing Add from Existing and Import CSV tabs"
+    />
+  </Step>
+
+  <Step title="Configure analytics">
+    Open the **Analytics** tab to define the primary goal, any secondary goals, and the analysis questions you need after each call.
+
+    Keep the launch configuration focused on what you need to measure from day one. For detailed goal and analysis management after launch, see [Campaign Management](/manage/campaigns/overview).
+  </Step>
+
+  <Step title="Launch the campaign">
+    Campaigns are created in **Paused** status by default. Set the status to **Active** to start dialing. Once active, the campaign begins at the configured start time.
+
+    Use [Campaign Management](/manage/campaigns/overview) after launch to monitor the Dashboard, Contacts, Settings, and Analytics tabs.
+  </Step>
+</Steps>
+
+## After Launch
+
+Once a campaign is active, the contact lifecycle, dashboard metrics, exports, and per-contact actions are handled in [Campaign Management](/manage/campaigns/overview).
+
+| Need | Use |
+| --- | --- |
+| See whether calls are running | Campaign **Dashboard** |
+| Review individual contact state | Campaign **Contacts** |
+| Tune retry, phone numbers, or timing | Campaign **Settings** |
+| Review goals and analyses | Campaign **Analytics** |
+
+## Answering Machine Detection
+
+AMD prevents your agent from leaving voicemails or talking to answering machines:
+
+| Mode | Speed | Accuracy | Best For |
+|------|-------|----------|----------|
+| **Text-based** | Fast | Good | High-volume campaigns where speed matters |
+| **ML-based** | Slower | Higher | Campaigns where accuracy is critical |
+
+## Inbound Call Integration
+
+When contacts call back, the system automatically links the call to the campaign contact using two matching methods:
+
+**Primary Match (phone number matching)**:
+- Matches contact's phone number (calling number) with campaign's phone number (called number)
+- Works for active or paused campaigns
+
+**Fallback Match (Agent-based)**:
+- Activates if no Direct Inward Dialing (DID) match found and contact has a recent outbound call (within 30 days)
+- Matches contact's phone number with campaigns using the same agent
+
+**Status Updates**: When an inbound call is matched, contacts in Retry, Completed, or No Conversation status automatically move to **Called**, allowing callbacks to reopen contact opportunities.
+
+## Best Practices
+
+### Start Small
+
+<Warning>
+Always start with a pilot batch of 10-20 contacts before scaling to thousands. This validates configuration and prevents large-scale mistakes.
+</Warning>
+
+**Pilot workflow**:
+1. Create a test list with friendly contacts (colleagues, test numbers)
+2. Launch the campaign and monitor the campaign **Dashboard** and **Conversations** list
+3. Review outcomes:
+   - Answer rate
+   - AMD accuracy
+   - Goal achievement rate
+   - Average call duration
+4. Adjust your agent prompt, AMD settings, or schedules as needed
+5. Scale gradually: 50 > 200 > 1,000+ contacts
+
+### Contact List Quality
+
+Before uploading contacts:
+- Remove duplicate numbers
+- Validate phone number format (international format with country code, e.g., +1234567890)
+- Check against your internal Do Not Call list
+- Verify against national DNC registries if applicable
+
+### Timezone Optimization
+
+For contacts across multiple time zones, assign a schedule that matches the recipient region, then review the campaign **Dashboard** and **Analytics** tabs after your pilot batch. If your view includes a heatmap, use it to refine the best calling windows per region.
+
+For schedule setup, see [Schedules](/launch/schedules).
+
+### Segmentation
+
+Create separate campaigns for:
+- Different customer segments (trial vs. paid customers)
+- Different scripts or objectives
+- Different languages
+- A/B testing variations
+
+Track performance and optimize each segment independently.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Campaign Management" icon="list-check" href="/manage/campaigns/overview">
+    Manage campaign settings, contacts, and analytics
+  </Card>
+
+  <Card title="Schedules" icon="clock" href="/launch/schedules">
+    Configure calling schedules and timezone handling
+  </Card>
+
+  <Card title="Production Checklist" icon="star" href="/launch/production-checklist">
+    Optimize campaign performance and customer satisfaction
+  </Card>
+
+  <Card title="Outbound Compliance" icon="shield-check" href="/launch/outbound-compliance">
+    Review consent, calling-window, and compliance responsibilities
+  </Card>
+</CardGroup>
+
+---
+
+## Common Questions
+
+<AccordionGroup>
+  <Accordion title="How many contacts should I start with?">
+    Start with a pilot batch of 20-30 contacts to establish baseline answer rates and validate your agent's outbound greeting. Scale up after reviewing the first results.
+  </Accordion>
+
+  <Accordion title="What happens if someone calls back?">
+    itellicoAI matches inbound callbacks to the campaign contact by phone number. If matched, the contact's status updates automatically. If the agent is assigned to the phone number, it handles the call like a normal inbound conversation.
+  </Accordion>
+
+  <Accordion title="Can I use the same phone number for multiple campaigns?">
+    A phone number can only be assigned to one active or paused campaign at a time. Use multiple numbers with rotation if you need to run parallel campaigns.
+  </Accordion>
+</AccordionGroup>

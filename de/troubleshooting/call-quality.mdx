@@ -1,0 +1,152 @@
+---
+title: "Anrufqualität & Latenz"
+description: "Audio-Qualität, Latenz und Sprecherwechsel-Probleme bei Sprachanrufen diagnostizieren und beheben"
+icon: "waveform-lines"
+keywords: "Anrufqualität, Latenz, Audio-Probleme, VAD, Sprecherwechselerkennung, Antwortzeit, Sprachqualität, Unterbrechungen, Pausen"
+"og:description": "Fehlerbehebung bei Anrufqualitätsproblemen wie Latenz, Audio-Probleme, Unterbrechungen und Sprecherwechsel bei itellicoAI-Sprach-Agenten."
+"og:title": "Anrufqualität & Latenz"
+---
+
+Dieser Leitfaden behandelt die Diagnose und Behebung von Audio-Qualitäts-, Latenz- und Gesprächsfluss-Problemen.
+
+## Latenz Diagnostizieren
+
+Antwortlatenz ist die Zeit zwischen dem Ende des Sprechens eines Anrufers und dem Beginn der Antwort des Agenten. Die Symbolleiste des Agent-Editors zeigt die geschätzte Latenz für deine Konfiguration an.
+
+### Latenz-Aufschlüsselung
+
+Gesamtlatenz = Transkription + KI-Modell + Sprachsynthese + Netzwerk
+
+| Komponente | Typischer Bereich | Optimierungshinweise |
+| --- | --- | --- |
+| **Transkription** | 200-700ms | Deepgram Nova-3 (~300ms) statt Azure Speech (~500-700ms) verwenden |
+| **KI-Modell** | 300-2000ms | Schnellere Modelle (Groq, GPT-4.1 Nano) für geschwindigkeitskritische Agenten verwenden |
+| **Sprachsynthese** | 100-500ms | Niedriglatenz-Anbieter verwenden (Cartesia ist am schnellsten) |
+| **Netzwerk** | 50-200ms | Telefonanrufe haben mehr Netzwerk-Hops als Web-Anrufe |
+
+### Wann latenz ein problem ist
+
+- **Unter 1 Sekunde**: Ausgezeichnet – fühlt sich wie ein natürliches Gespräch an
+- **1–2 Sekunden**: Akzeptabel für die meisten Anwendungsfälle
+- **2–3 Sekunden**: Spürbar – Optimierung oder Denkgeräusche in Betracht ziehen
+- **Über 3 Sekunden**: Schlechte Erfahrung – sofort handeln
+
+<Warning>
+Wenn deine Antwortzeit dauerhaft 3 Sekunden überschreitet, führe die folgenden Schritte sofort durch. Überprüfe zuerst [status.itellico.ai](https://status.itellico.ai) auf laufende Plattformprobleme.
+</Warning>
+
+### Schnelle lösungen bei hoher latenz
+
+1. **Zu einem schnelleren Modell wechseln** – Gehe zu Allgemein → Denken und probiere die Voreinstellungen „Ausgeglichen" oder „Schnell"
+2. **Denkgeräusche aktivieren** – Allgemein → Töne → Denkgeräusche (Profi) füllt die Verarbeitungszeit mit Tastaturgeräuschen
+3. **Smart Filler aktivieren** – Allgemein → Töne → Smart Filler (Profi) erzeugt kontextbezogene Füllwörter
+4. **Schnelleren Sprachanbieter verwenden** – Sieh dir [Unterstützte Anbieter](/reference/supported-providers) für Latenz-Benchmarks an
+5. **Prompt vereinfachen** – Kürzere Prompts werden schneller verarbeitet
+6. **VAD-Sprecherwechselerkennung anpassen** – [VAD-Einstellungen](/build/advanced/vad-turn-detection) können die wahrgenommene Antwortzeit erheblich beeinflussen
+
+---
+
+## Sprecherwechsel-Probleme
+
+### Agent spricht über den anrufer hinweg
+
+**Symptome:** Der Agent beginnt zu sprechen, während der Anrufer noch redet, oder antwortet zu schnell nach kurzen Pausen.
+
+**Lösung:**
+1. [VAD-Sprecherwechselerkennung](/build/advanced/vad-turn-detection)-Einstellungen öffnen
+2. Zu einer **Geduldigen** Antwortzeit-Voreinstellung wechseln
+3. Im Profi **Stille vor Antwort** erhöhen (z. B. von 300ms auf 500ms)
+4. **KI-Sprecherwechselerkennung** aktivieren (Profi) für intelligentere Erkennung des Gesprächsendes
+
+### Agent wartet zu lange mit der antwort
+
+**Symptome:** Unangenehme Pausen, nachdem der Anrufer aufgehört hat zu sprechen.
+
+**Lösung:**
+1. Zu einer **Responsiveren** Timing-Voreinstellung wechseln
+2. Im Profi **Stille vor Antwort** reduzieren
+3. Prüfen, ob **KI-Sprecherwechselerkennung** Verzögerungen verursacht – versuche, sie auszuschalten
+4. Zu einem schnelleren KI-Modell wechseln
+
+### Anrufer kann den Agenten nicht unterbrechen
+
+**Symptome:** Der Anrufer spricht, aber der Agent setzt seine Antwort fort, ohne anzuhalten.
+
+**Lösung:**
+1. Im Profi **Unterbrechungen zulassen** aktivieren
+2. **Sprechdauer zum Auslösen einer Unterbrechung** reduzieren (wie lange der Anrufer sprechen muss, um zu unterbrechen)
+3. Schwellenwert **Mindestanzahl Wörter zum Unterbrechen** reduzieren
+
+---
+
+## Audio-Qualitätsprobleme
+
+### Roboterhafte oder unnatürliche stimme
+
+1. Eine andere [Stimme](/build/voice-speech/select-voice) ausprobieren – manche Stimmen klingen besser für Gesprächsnutzung
+2. [Stimmeinstellungen](/build/voice-speech/voice-settings) anpassen (Profi) – Stabilität, Ähnlichkeit und Stil-Parameter feinjustieren
+3. Die Einstellung „Antwortstil" (Temperatur) senken – höhere Werte können zu weniger konsistenten Sprachmustern führen
+
+### Echo oder rückkopplung
+
+- Dies tritt typischerweise bei Web-Anrufen auf. Prüfe, ob der Browser des Anrufers Echo-Unterdrückung aktiviert hat
+- Umgebungsgeräusche reduzieren, wenn Hintergrundaudio verwendet wird
+- Mit Kopfhörern testen, um das Problem zu isolieren
+
+### Dumpfe oder undeutliche sprache
+
+1. Die [Transkribierungs-](/build/voice-speech/transcriber)auswahl prüfen – Deepgram Nova-3 hat die beste allgemeine Genauigkeit
+2. [Benutzerdefinierte Aussprachen](/build/voice-speech/custom-pronunciations) für häufig falsch verstandene Begriffe hinzufügen
+3. Im Profi [Schlüsselwörter](/build/voice-speech/transcriber) hinzufügen, um die Erkennung bestimmter Begriffe zu verbessern
+
+### Qualitätsunterschiede zwischen telefon und web
+
+Telefonanrufe durchlaufen zusätzliche Komprimierung und Netzwerk-Hops, was die Qualität beeinflussen kann:
+
+- Immer mit echten Telefonanrufen vor dem Launch testen – Web-Simulator-Ergebnisse können abweichen
+- Telefonnetzwerke fügen 50–200ms Latenz hinzu, die Web-Anrufe nicht haben
+- Codec-Komprimierung kann die Sprachqualität beeinflussen – manche Sprachanbieter damit besser umgehen
+
+---
+
+## Stille-Behandlung
+
+### Agent antwortet nicht, wenn der anrufer schweigt
+
+[Inaktivitäts-Timeout](/build/advanced/inactivity-timeout-settings) konfigurieren:
+1. **Stille-Erinnerungen** aktivieren, um den Anrufer nach einer Schweige-Periode aufzufordern
+2. **Maximale Anrufdauer** festlegen, um zu lange laufende Anrufe zu beenden
+3. Im Profi Erinnerungs-Timing konfigurieren (Verzögerung und maximale Anzahl)
+
+### Agent legt zu schnell auf
+
+1. **Maximale Anrufdauer** erhöhen (Standard kann für deinen Anwendungsfall zu kurz sein)
+2. Prüfen, ob **KI darf auflegen** Anrufe vorzeitig beendet
+3. Prompt überprüfen – Formulierungen entfernen, die dem Agenten sagen, Anrufe aggressiv zu beenden
+
+---
+
+## Test-Methodik
+
+1. **Mit Web-Anrufen beginnen** – schnellster Iterationszyklus, keine Telefonnetzwerk-Variablen
+2. **Zu Telefonanrufen übergehen** – echte Netzwerkbedingungen, AMD-Verhalten und Sprachqualität testen
+3. **Aus verschiedenen Umgebungen testen** – ruhiges Büro, lauter Raum, Mobiltelefon, Festnetz
+4. **Modelle vergleichen** – dieselbe Konversation mit verschiedenen KI-Modellen ausprobieren, um das beste Geschwindigkeit-/Qualitätsverhältnis zu finden
+5. **Konversations-Zeitachsen überprüfen** – Tool-Ausführungszeiten und Wissensabruf-Latenz prüfen
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="VAD-Sprecherwechselerkennung" icon="waveform-lines" href="/build/advanced/vad-turn-detection">
+    Antwort-Timing und Unterbrechungen konfigurieren
+  </Card>
+  <Card title="KI-Modell wählen" icon="brain" href="/build/voice-speech/choose-ai-model">
+    Das richtige Modell für Geschwindigkeit vs. Qualität auswählen
+  </Card>
+  <Card title="Denkgeräusche" icon="keyboard" href="/build/voice-speech/thinking-sounds">
+    Verarbeitungspausen mit Audio füllen
+  </Card>
+  <Card title="Häufige Probleme" icon="wrench" href="/troubleshooting/common-issues">
+    Schnelle Lösungen für häufige Probleme finden
+  </Card>
+</CardGroup>

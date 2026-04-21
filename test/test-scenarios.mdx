@@ -1,0 +1,293 @@
+---
+title: "Test Scenarios"
+description: "Pre-built test scripts and checklists for validating your agent before launch"
+icon: "list-check"
+keywords: "test scenarios, test scripts, QA checklist, agent validation, pre-launch testing, voice agent testing, conversation testing, test cases"
+"og:description": "Use pre-built test scenarios and checklists to validate your AI voice agent before going live. Covers greetings, knowledge, tools, transfers, and more."
+"og:title": "Test Scenarios"
+---
+
+
+Before launching your agent, run through these test scenarios to catch issues early. Each scenario describes what to test, how to trigger it, and what to look for.
+
+## Use This Page As Your Repeatable QA Checklist
+
+This page is useful when you want a consistent pre-launch test routine that multiple people on the team can follow.
+
+<Tip>
+Use [Chat/Web testing](/test/web-simulator) for fast iteration, then confirm with a [phone test call](/test/phone-testing) for the full voice experience.
+</Tip>
+
+---
+
+## Pre-Launch Checklist
+
+Run through this checklist before every launch or major change:
+
+| Category | What to Verify |
+|----------|---------------|
+| Greeting | Agent introduces itself correctly, sets context |
+| Prompt | Agent follows your prompt and stays in scope |
+| Knowledge | Agent retrieves accurate information from the knowledge base |
+| Tools | Transfers, bookings, and custom actions execute correctly |
+| Goals | Conversation goals are tracked and scored |
+| Edge cases | Agent handles interruptions, silence, and off-topic input |
+| Voice quality | Natural pacing, pronunciation, no awkward pauses |
+
+---
+
+## Greeting & Introduction
+
+Test the first impression your callers receive.
+
+**Scenarios:**
+
+<AccordionGroup>
+  <Accordion title="Standard greeting" icon="hand-wave">
+    **Trigger:** Start a new call and stay silent.
+
+    **Verify:**
+    - Agent delivers the configured greeting message
+    - Greeting sounds natural and matches your brand tone
+    - Agent waits for a response after greeting
+  </Accordion>
+
+  <Accordion title="Caller speaks first" icon="comment">
+    **Trigger:** Start a call and immediately say something before the agent greets.
+
+    **Verify:**
+    - Agent handles the interruption gracefully
+    - Agent still establishes context (who they are, how they can help)
+    - Conversation flows naturally from the caller's opening
+  </Accordion>
+
+  <Accordion title="Caller asks 'Who is this?'" icon="circle-question">
+    **Trigger:** After the greeting, ask "Who am I speaking with?" or "What company is this?"
+
+    **Verify:**
+    - Agent identifies itself using the configured name and company
+    - Response matches your agent identity settings
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Knowledge Base Retrieval
+
+Test that your agent uses knowledge base content accurately.
+
+**Scenarios:**
+
+<AccordionGroup>
+  <Accordion title="Direct question match" icon="bullseye">
+    **Trigger:** Ask a question that directly matches content in your knowledge base (e.g., "What are your business hours?").
+
+    **Verify:**
+    - Agent retrieves the correct information
+    - Response is accurate and complete
+    - Check the knowledge retrieval markers in the conversation detail to confirm the right chunks were used
+  </Accordion>
+
+  <Accordion title="Paraphrased question" icon="rotate">
+    **Trigger:** Ask the same question in different ways (e.g., "When are you open?" vs "What time do you close?" vs "Can I come in on Sunday?").
+
+    **Verify:**
+    - Agent retrieves relevant content regardless of phrasing
+    - Responses are consistent across different phrasings
+  </Accordion>
+
+  <Accordion title="Question with no matching content" icon="circle-xmark">
+    **Trigger:** Ask about something not covered in your knowledge base.
+
+    **Verify:**
+    - Agent does not hallucinate an answer
+    - Agent acknowledges it doesn't have that information
+    - Agent offers alternatives (transfer, callback, email)
+  </Accordion>
+
+  <Accordion title="Multi-topic question" icon="layer-group">
+    **Trigger:** Ask a question that spans multiple knowledge items (e.g., "What's your return policy and do you offer exchanges?").
+
+    **Verify:**
+    - Agent addresses both parts of the question
+    - Information is pulled from the correct knowledge items
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Tool Execution
+
+Test every tool your agent is configured to use.
+
+**Scenarios:**
+
+<AccordionGroup>
+  <Accordion title="Call transfer" icon="phone-arrow-right">
+    **Trigger:** Ask to speak to a human, a specific department, or trigger a transfer condition.
+
+    **Verify:**
+    - Transfer initiates to the correct destination
+    - Agent communicates the transfer to the caller before executing
+    - Fallback behavior works if transfer fails
+  </Accordion>
+
+  <Accordion title="Calendar booking" icon="calendar">
+    **Trigger:** Request an appointment or booking.
+
+    **Verify:**
+    - Agent collects required information (date, time, name, contact)
+    - Booking is created in the connected calendar
+    - Confirmation is communicated to the caller
+  </Accordion>
+
+  <Accordion title="Custom API action" icon="code">
+    **Trigger:** Say something that should trigger a custom API action (e.g., "Check my order status").
+
+    **Verify:**
+    - API is called with correct parameters
+    - Agent handles the response and communicates results
+    - Error scenarios return a helpful message, not a raw error
+  </Accordion>
+
+  <Accordion title="Multiple tools in one call" icon="wrench">
+    **Trigger:** In a single conversation, trigger two or more different tools.
+
+    **Verify:**
+    - Each tool executes independently
+    - Agent context is maintained between tool calls
+    - No interference between tools
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Conversation Goals
+
+Test that goals are tracked correctly.
+
+**Scenarios:**
+
+<AccordionGroup>
+  <Accordion title="Goal achieved" icon="circle-check">
+    **Trigger:** Complete a conversation that should achieve the primary goal (e.g., schedule an appointment, resolve an inquiry).
+
+    **Verify:**
+    - Goal shows as "Achieved" in the conversation detail **Analytics** tab
+    - Reasoning makes sense
+  </Accordion>
+
+  <Accordion title="Goal not achieved" icon="circle-xmark">
+    **Trigger:** End a conversation without completing the goal (e.g., hang up early, refuse to provide information).
+
+    **Verify:**
+    - Goal shows as "Not Achieved"
+    - Reasoning correctly identifies why
+  </Accordion>
+
+  <Accordion title="Secondary goals" icon="list-ol">
+    **Trigger:** Complete a call where secondary goals should be tracked (e.g., collected email, identified product interest).
+
+    **Verify:**
+    - Secondary goals are scored independently from the primary goal
+    - Each shows accurate results in the **Analytics** tab
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Gather Insights
+
+If you have Gather Insights configured, verify it runs correctly.
+
+1. Complete a test call
+2. Open the conversation in the detail view
+3. Check the **Analytics** tab for gathered insight results
+4. Verify answers to your configured questions are accurate
+
+<Note>
+Gather Insights runs automatically after each call. Results appear in the conversation detail within a few seconds. See [Gather Insights](/build/analytics/gather-insights) for configuration.
+</Note>
+
+---
+
+## Voice & Conversation Quality
+
+These scenarios are best tested with [phone calls](/test/phone-testing) rather than browser tests.
+
+<AccordionGroup>
+  <Accordion title="Natural pacing" icon="clock">
+    **Test:** Have a normal conversation and listen for:
+    - Appropriate pauses between turns
+    - No cutting off the caller
+    - No unnaturally long silences
+    - Natural speech rhythm
+  </Accordion>
+
+  <Accordion title="Pronunciation" icon="volume-high">
+    **Test:** Trigger responses that include:
+    - Your company name
+    - Product names
+    - Technical terms
+    - Phone numbers, email addresses, URLs
+
+    **Verify:** Everything is pronounced correctly. Fix issues with [custom pronunciations](/build/voice-speech/custom-pronunciations).
+  </Accordion>
+
+  <Accordion title="Background noise handling" icon="waveform-lines">
+    **Test:** Call from a noisy environment (or play background noise).
+
+    **Verify:**
+    - Agent can still understand the caller
+    - Transcription remains accurate
+    - Agent asks for clarification if needed
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Multi-Language Testing
+
+If your agent supports multiple languages:
+
+1. Start a call in each configured language
+2. Verify the agent responds in the correct language
+3. Test language switching mid-conversation (if supported)
+4. Check that knowledge base content is retrieved in the right language
+
+---
+
+## Regression Testing
+
+After making changes to your agent, re-run the scenarios that the change could affect:
+
+| Change Made | Re-test |
+|------------|---------|
+| Updated prompt | Greeting, scope handling, edge cases |
+| Added/edited knowledge | Knowledge retrieval scenarios |
+| Changed tools | All tool execution scenarios |
+| Changed voice or model | Voice quality, pacing, pronunciation |
+| Updated goals | Goal tracking scenarios |
+
+<Tip>
+Keep a log of issues you've fixed and periodically re-test them to make sure they stay fixed.
+</Tip>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Edge Cases" icon="triangle-exclamation" href="/test/edge-cases">
+    Test interruptions, silence, off-topic input, and failure scenarios
+  </Card>
+  <Card title="Web & Chat Testing" icon="browser" href="/test/web-simulator">
+    Iterate quickly with text or microphone input
+  </Card>
+  <Card title="Phone Testing" icon="phone" href="/test/phone-testing">
+    Test the complete voice experience over a real call
+  </Card>
+  <Card title="Debugging" icon="bug" href="/test/debugging">
+    Diagnose and fix issues found during testing
+  </Card>
+</CardGroup>

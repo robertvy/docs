@@ -1,0 +1,166 @@
+---
+title: "Kampagnenprobleme"
+description: "Probleme bei Outbound-Kampagnen diagnostizieren und beheben – niedrige Annahmeraten, fehlgeschlagene Anrufe und AMD-Probleme"
+icon: "bullhorn"
+keywords: "Kampagnen-Fehlerbehebung, niedrige Annahmeraten, fehlgeschlagene Anrufe, AMD, Anrufbeantworter-Erkennung, Outbound-Probleme, Spam, Anrufer-ID"
+"og:description": "Outbound-Kampagnenprobleme beheben: niedrige Annahmeraten, fehlgeschlagene Anrufe, AMD-Probleme, Spam-Kennzeichnung und Kontakt-Lebenszyklus-Probleme."
+"og:title": "Kampagnenprobleme"
+---
+
+Dieser Leitfaden behandelt die Diagnose und Behebung von Problemen bei Outbound-Anrufkampagnen.
+
+## Niedrige Annahmeraten
+
+### Das Kampagnen-Dashboard prüfen
+
+Der **Dashboard**-Tab in deiner Kampagne zeigt Annahmeraten, Kontaktstatus-Aufschlüsselung und die Heatmap für menschliche Antworten. Hier beginnen, um Muster zu verstehen.
+
+### Häufige Ursachen und Lösungen
+
+| Ursache | Diagnose | Lösung |
+| --- | --- | --- |
+| **Schlechte Anrufzeiten** | Heatmap zeigt niedrige Annahmeraten zu deinen geplanten Zeiten | [Zeitpläne](/launch/schedules) anpassen, um die besten Anruf-Zeitfenster zu treffen – typischerweise 10–12 Uhr und 14–17 Uhr lokaler Zeit |
+| **Unbekannte Anrufer-ID** | Hohe Nichtannahmerate zu allen Zeiten | Eine lokale Nummer verwenden, die zur Vorwahl des Empfängers passt |
+| **Spam-Kennzeichnung** | Spam-Status auf deiner Telefonnummer prüfen (rot = gekennzeichnet) | Nummern rotieren, Anrufvolumen reduzieren, STIR/SHAKEN registrieren |
+| **Veraltete Kontaktliste** | Hohe „Keine Konversation"-Rate | Kontaktliste bereinigen – getrennte Nummern entfernen, Telefonformate validieren |
+| **Zu strenge Voicemail-Erkennung** | AMD legt bei echten Menschen auf | AMD-Modus von ML auf textbasiert wechseln oder umgekehrt |
+
+### Annahmeraten optimieren
+
+1. **Mit einem kleinen Piloten beginnen** – mit 10–20 Kontakten testen, um eine Baseline zu ermitteln
+2. **Lokale Nummern verwenden** – Empfänger nehmen lokale Vorwahlen eher an
+3. **Die Heatmap nach 50–100 Anrufen auswerten** – Zeitpläne auf Basis tatsächlicher Daten anpassen
+4. **Nach Zeitzone segmentieren** – separate Kampagnen mit passenden Zeitplänen pro Region erstellen
+5. **Spam-Werte überwachen** – die Spam-Status-Spalte in Telefonnummern regelmäßig prüfen
+
+---
+
+## Fehlgeschlagene Anrufe
+
+### Anrufe werden nicht gestartet
+
+1. Prüfen, ob der Kampagnenstatus **Aktiv** ist (nicht pausiert)
+2. Prüfen, ob der zugewiesene Agent aktiv und konfiguriert ist
+3. Prüfen, ob die Telefonnummer aktiv ist und keiner anderen aktiven Kampagne zugewiesen wurde
+4. [Gleichzeitige Anruflimits](/reference/limits-quotas) für deinen Tarif prüfen
+5. Prüfen, ob das **Startdatum** bereits vergangen ist
+
+### Anrufe verbinden, aber trennen sofort
+
+1. AMD-Einstellungen prüfen – die AMD klassifiziert möglicherweise Menschen fälschlicherweise als Voicemail
+2. Die Konversations-Zeitachse auf Fehlerereignisse prüfen
+3. Den Agenten mit einem manuellen Telefonanruf testen, um das Problem zu isolieren
+4. Prüfen, ob die Begrüßung des Agenten für Outbound-Anrufe konfiguriert ist
+
+### Anrufe zeigen Status „Fehlgeschlagen"
+
+Die Konversationsdetails auf den spezifischen Fehler prüfen. Häufige Ursachen:
+- **Netz nicht erreichbar** – die Zielnummer ist ungültig oder getrennt
+- **Besetzt** – der Empfänger führt gerade ein anderes Gespräch (Wiederholung kümmert sich darum)
+- **Abgelehnt** – der Carrier hat den Anruf blockiert (kann auf Spam-Kennzeichnung hinweisen)
+
+---
+
+## Anrufbeantworter-Erkennung (AMD)
+
+### AMD legt bei echten Menschen auf
+
+Die AMD hält Menschen für Voicemails. Versuche:
+1. **AMD-Modus wechseln** – bei ML-basiertem textbasierten ausprobieren (oder umgekehrt)
+2. **Textbasiert** ist schneller, aber weniger genau – funktioniert gut, wenn menschliche Begrüßungen kurz sind
+3. **ML-basiert** ist genauer, aber fügt Latenz hinzu – besser, wenn Voicemail-Nachrichten häufig sind
+
+### AMD erkennt Voicemails nicht
+
+Der Agent spricht mit Anrufbeantwortern. Versuche:
+1. Zu **ML-basiertem** AMD für bessere Genauigkeit wechseln
+2. Die Begrüßung des Agenten prüfen – eine lange Begrüßung kann dazu führen, dass die AMD falsch klassifiziert
+
+### AMD-Konfiguration
+
+AMD wird pro Kampagne unter **Einstellungen → Anrufeinstellungen** konfiguriert (Profi):
+- **Textbasiert**: Analysiert das anfängliche Transkript auf Voicemail-Muster (schnell, ~200ms)
+- **ML-basiert**: Verwendet Audio-Klassifizierung zur Voicemail-Erkennung (genau, ~500ms+)
+
+---
+
+## Kontakt-Lebenszyklus-Probleme
+
+### Kontaktstatus verstehen
+
+| Status | Kategorie | Bedeutung |
+| --- | --- | --- |
+| **Ausstehend** | Aktiv | In der Warteschlange, wartet auf Anruf |
+| **Wählt** | Aktiv | Anruf läuft |
+| **Angerufen** | Aktiv | Wartet auf nächste Wiederholung oder Auswertung |
+| **Wiederholung** | Aktiv | Nach fehlgeschlossenem Versuch zur Wiederholung geplant |
+| **Abgeschlossen** | Endgültig | Hauptziel erreicht – keine weiteren Anrufe |
+| **Fehlgeschlagen** | Endgültig | Maximale Wiederholungen erschöpft – wird nicht mehr angerufen |
+| **Keine Konversation** | Endgültig | Keinen Menschen erreicht (alle Versuche waren Voicemail/keine Antwort) |
+
+### Kontakte hängen bei „Ausstehend"
+
+1. Kampagne ist möglicherweise **Pausiert** – Status in der Kampagnenliste prüfen
+2. Alle Anruf-Slots sind möglicherweise belegt – **Maximale gleichzeitige Anrufe** in den Einstellungen prüfen
+3. Geschäftszeiten sind möglicherweise geschlossen – den Zeitplan-Indikator prüfen
+4. **Anrufintervall** ist möglicherweise zu lang – Einstellungen → Anrufeinstellungen prüfen
+
+### Kontakte werden nicht wiederholt
+
+1. **Maximale Wiederholungsversuche** prüfen – bei 0 finden keine Wiederholungen statt
+2. **Wiederholungsintervall** prüfen – Kontakte werden vor diesem Zeitraum nicht wiederholt
+3. Prüfen, ob der Kontakt manuell in einen Endzustand versetzt wurde
+4. Der Kontakt hat möglicherweise den **Kontakt-Abschluss-Timeout** erreicht
+
+### Eingehende Rückruf-Abgleiche schlagen fehl
+
+Wenn ein Kontakt zurückruft, versucht itellicoAI, ihn der Kampagne zuzuordnen:
+1. **Primärer Abgleich**: Telefonnummer stimmt mit einem Kampagnen-Kontakt überein
+2. **Fallback-Abgleich**: Agentenbasierter Abgleich innerhalb eines 30-Tage-Fensters
+3. Wenn kein Abgleich gefunden, wird der Anruf als regulärer eingehender Anruf behandelt
+
+Prüfen, ob die Nummer des Anrufers mit der Telefonnummer im Kontaktdatensatz übereinstimmt.
+
+---
+
+## Telefonnummern-Rotation
+
+### Wann mehrere Nummern verwenden
+
+- Bei hohem Volumen (500+ Anrufe/Tag von einer einzigen Nummer)
+- Wenn Spam-Werte steigen
+- Beim Anrufen verschiedener Regionen mit lokalem Präsenz-Bedarf
+
+### Rotationseinstellungen (Profi)
+
+Wenn eine Kampagne mehrere Telefonnummern hat:
+- **Rotationsstrategie** – wie Nummern für jeden Anruf ausgewählt werden
+- **Spam-Schwellenwert** – eine Nummer automatisch pausieren, wenn ihr Spam-Wert diesen Wert überschreitet
+- **Maximale Anrufe pro Tag** – das tägliche Volumen pro Nummer begrenzen, um den Ruf zu schützen
+
+---
+
+## Leistungsoptimierung
+
+1. **A/B-Test deines Ansatzes** – separate Kampagnen mit verschiedenen Skripten, Agenten oder Zeitplänen erstellen, um herauszufinden, was funktioniert
+2. **Listen bereinigen** – ungültige Nummern vor dem Start entfernen
+3. **In der ersten Woche täglich überwachen** – Annahmeraten, Zielerreichung und Spam-Werte prüfen
+4. **Volumen reduzieren bei Kennzeichnung** – wenn Spam-Werte steigen, tägliche Anruflimits senken und Nummern rotieren
+5. **Analytics nutzen** – Ziele und Insights einrichten, um zu messen, was wichtig ist
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Kampagnenverwaltung" icon="chart-line" href="/manage/campaigns/overview">
+    Den vollständigen Kampagnenverwaltungs-Leitfaden ansehen
+  </Card>
+  <Card title="Zeitpläne" icon="clock" href="/launch/schedules">
+    Anruf-Zeitfenster konfigurieren
+  </Card>
+  <Card title="Telefonnummern" icon="phone" href="/launch/phone-numbers">
+    Nummern und Spam-Werte verwalten
+  </Card>
+  <Card title="Häufige Probleme" icon="wrench" href="/troubleshooting/common-issues">
+    Schnelle Lösungen für alle Problemtypen finden
+  </Card>
+</CardGroup>

@@ -1,0 +1,194 @@
+---
+title: "Fehlercodes"
+description: "API-Fehlercodes, HTTP-Statuscodes und Hinweise zur Fehlerbehebung"
+icon: "circle-exclamation"
+keywords: "Fehlercodes, API-Fehler, HTTP-Statuscodes, Fehlerbehebung, 400, 401, 403, 404, 422, 429, 500, 503"
+"og:description": "Referenz für itellicoAI-API-Fehlercodes mit Beschreibungen und Lösungsschritten."
+"og:title": "Fehlercodes"
+---
+
+## HTTP-Statuscodes
+
+Die itellicoAI-API verwendet standardmäßige HTTP-Statuscodes.
+
+Fehlerantworten geben JSON zurück mit:
+- `code` (maschinenlesbar)
+- `message` (menschenlesbar)
+- optionalem `detail`
+- optionalem `errors` (feldebene Validierungsprobleme)
+
+### Client-Fehler (4xx)
+
+| Status | Standard-`code` | Beschreibung | Häufige Ursachen |
+|------|------|-------------|---------------|
+| **400** | `bad_request` | Die Anfrage ist fehlerhaft oder ungültig | Ungültiges JSON, fehlerhafte Parameter, nicht unterstützte Kombinationen |
+| **401** | `unauthorized` | Authentifizierung fehlt oder ist ungültig | Fehlender `X-API-Key`, widerrufener Schlüssel, abgelaufener Schlüssel |
+| **402** | `payment_required` | Zugang erfordert Abrechnung/Tarifberechtigung | Funktion im aktuellen Tarif nicht verfügbar |
+| **403** | `forbidden` | Authentifiziert, aber nicht berechtigt | Fehlende Berechtigung, falsches Konto ausgewählt |
+| **404** | `not_found` | Die angeforderte Ressource existiert nicht | Falsche UUID, gelöschte Ressource, falscher Pfad |
+| **405** | `method_not_allowed` | HTTP-Methode wird nicht unterstützt | POST statt PATCH verwendet usw. |
+| **409** | `conflict` | Anfrage steht im Widerspruch zum aktuellen Zustand | Doppeltes Erstellen, gleichzeitiger Aktualisierungskonflikt |
+| **410** | `gone` | Ressource nicht mehr verfügbar | Entfernte/veraltete Ressource |
+| **422** | `validation_error` | Anfragedaten haben Validierung nicht bestanden | Ungültige Feldwerte, Schema-Verletzungen |
+| **429** | `rate_limit_exceeded` | Ein [Ratenlimit](/reference/limits-quotas#api-rate-limits) wurde überschritten | Zu viele Anfragen im aktuellen Zeitfenster |
+
+### Server-Fehler (5xx)
+
+| Status | Standard-`code` | Beschreibung | Was tun |
+|------|------|-------------|------------|
+| **500** | `internal_error` | Unerwarteter Server-Fehler | Erneut versuchen. Bei anhaltenden Problemen [Support](https://support.itellico.ai) mit Anfragedetails kontaktieren |
+| **502** | `bad_gateway` | Fehler bei vorgelagerten Anbieter-/Diensten | Mit Backoff erneut versuchen |
+| **503** | `service_unavailable` | Dienst vorübergehend nicht verfügbar | Warten und erneut versuchen |
+| **504** | `gateway_timeout` | Zeitüberschreitung bei vorgelagertem Dienst | Mit Backoff erneut versuchen |
+
+---
+
+## Fehlerantwortformat
+
+Alle API-Fehler folgen dieser Struktur:
+
+```json
+{
+  "code": "not_found",
+  "message": "Resource not found",
+  "detail": "Agent with UUID 123e4567-e89b-12d3-a456-426614174000 does not exist"
+}
+```
+
+Validierungsfehler (`422`) können feldebene Details enthalten:
+
+```json
+{
+  "code": "validation_error",
+  "message": "Validation failed",
+  "errors": [
+    {
+      "field": "body.email",
+      "message": "Invalid email format",
+      "type": "value_error"
+    },
+    {
+      "field": "body.name",
+      "message": "Field required",
+      "type": "missing"
+    }
+  ]
+}
+```
+
+---
+
+## Häufige Probleme & Lösungen
+
+<AccordionGroup>
+  <Accordion title="401: API-Schlüssel funktioniert nicht" icon="key">
+    - Prüfen, ob der API-Schlüssel korrekt kopiert wurde (keine Leerzeichen)
+    - Prüfen, ob der Schlüssel unter **Entwickler → API-Schlüssel** widerrufen wurde
+    - Sicherstellen, dass der richtige Header verwendet wird: `X-API-Key: <dein-schlüssel>`
+    - Prüfen, ob das Schlüsselformat mit `sk-` beginnt
+    - Prüfen, ob der Schlüssel zum richtigen Konto gehört
+  </Accordion>
+
+  <Accordion title="403: Zugriff auf Ressource verweigert" icon="lock">
+    - Prüfen, ob auf eine Ressource innerhalb des eigenen Kontos zugegriffen wird
+    - Prüfen, ob die Team-Rolle ausreichende Berechtigungen hat
+    - Bei Unterkontoressourcen sicherstellen, dass das richtige Konto verwendet wird
+  </Accordion>
+
+  <Accordion title="422: Validierungsfehler beim Erstellen/Aktualisieren" icon="triangle-exclamation">
+    - Prüfen, ob alle Pflichtfelder im Anfrage-Body enthalten sind
+    - Prüfen, ob Feldwerte den erwarteten Typen entsprechen (String, Zahl, Enum)
+    - Prüfen, ob Enum-Felder gültige Werte verwenden (siehe [API-Referenz](/api-reference/introduction))
+    - Sicherstellen, dass Datei-Uploads Größen- und Formatanforderungen erfüllen
+  </Accordion>
+
+  <Accordion title="429: Ratenlimit überschritten" icon="gauge">
+    - Exponentiellen Backoff in die Integration implementieren
+    - Anfragevolumen gegen [Ratenlimits](/reference/limits-quotas#api-rate-limits) prüfen
+    - Operationen wo möglich bündeln, um die Anfragezahl zu reduzieren
+    - Support kontaktieren, wenn höhere Limits benötigt werden
+  </Accordion>
+
+  <Accordion title="500/503: Server-Fehler" icon="server">
+    - Mit exponentiellem Backoff erneut versuchen (1 s, 2 s, 4 s, 8 s warten...)
+    - [Support](https://support.itellico.ai) auf laufende Störungen prüfen
+    - Wenn der Fehler nach Wiederholungsversuchen anhält, Support mit den Anfragedetails kontaktieren
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Gründe für Gesprächstrennungen
+
+Wenn ein Anruf endet, zeigt die Gesprächsdetailansicht den Trennungsgrund. Diese Tabelle hilft zu verstehen, was passiert ist.
+
+### Normale Beendigungen
+
+| Grund | Beschreibung |
+| --- | --- |
+| `user_hangup` | Der Anrufer hat aufgelegt – erwartetes Verhalten |
+| `agent_hangup` | Der KI-Agent hat den Anruf beendet (z. B. nach einer Abschlussnachricht) |
+| `call_transfer` | Der Anruf wurde an einen anderen Agenten oder eine andere Telefonnummer weitergeleitet |
+| `max_duration` | Der Anruf hat das konfigurierte maximale Zeitlimit erreicht |
+| `inactivity` | Der Anruf wurde aufgrund längerer Stille beendet |
+| `voicemail` | Mailbox wurde erkannt (ausgehende Kampagnen mit aktiviertem AMD) |
+
+### Verbindungsfehler (nie verbunden)
+
+| Grund | Beschreibung |
+| --- | --- |
+| `dial_busy` | Die Nummer war besetzt |
+| `dial_no_answer` | Niemand hat abgenommen |
+| `dial_failed` | Wählen fehlgeschlagen – Nummernformat und Netzbetreiberstatus prüfen |
+| `dial_rejected` | Der Empfänger hat den Anruf abgelehnt |
+| `invalid_number` | Die Nummer ist ungültig – E.164-Format prüfen (+43720123456) |
+
+### Systemfehler
+
+| Grund | Beschreibung |
+| --- | --- |
+| `network_error` | Netzwerkproblem zwischen itellicoAI und dem Netzbetreiber |
+| `provider_error` | Der Telefonie- oder Sprachanbieter hat einen Fehler zurückgegeben |
+| `agent_error` | Der KI-Agent hat einen internen Fehler festgestellt |
+| `concurrency_limit` | Das gleichzeitige Anruflimit des Tarifs wurde erreicht – mit Backoff erneut versuchen oder upgraden |
+| `unknown` | Unbekannter Fehler – [support@itellico.ai](mailto:support@itellico.ai) mit der Gesprächs-ID kontaktieren |
+
+### Gesprächsstatus
+
+| Status | Bedeutung |
+| --- | --- |
+| `active` | Anruf läuft gerade |
+| `completed` | Anruf normal beendet |
+| `failed` | Anruf wegen eines Fehlers fehlgeschlagen |
+| `transferred` | Anruf an ein anderes Ziel weitergeleitet |
+
+### Antwortstatus (ausgehend)
+
+| Status | Bedeutung |
+| --- | --- |
+| `waiting` | Das System ermittelt noch, wer abgenommen hat |
+| `human` | Ein Mensch hat den Anruf entgegengenommen |
+| `machine` | Anrufbeantworter erkannt |
+| `user_rejected` | Empfänger hat den Anruf abgelehnt |
+| `user_unavailable` | Keine Antwort / Zeitüberschreitung |
+| `user_busy` | Leitung war besetzt |
+| `unknown` | Das Annahmeergebnis konnte nicht ermittelt werden |
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="API-Referenz" icon="brackets-curly" href="/api-reference/introduction">
+    Vollständige API-Endpunkt-Dokumentation ansehen
+  </Card>
+  <Card title="API-Schlüssel" icon="key" href="/accounts/api-keys">
+    API-Schlüssel erstellen und verwalten
+  </Card>
+  <Card title="Limits & Kontingente" icon="gauge" href="/reference/limits-quotas">
+    Ratenlimits und Tarifkontingente ansehen
+  </Card>
+  <Card title="SDKs" icon="code" href="/api-reference/sdks">
+    Offizielle SDKs mit integrierter Fehlerbehandlung verwenden
+  </Card>
+</CardGroup>

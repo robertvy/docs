@@ -1,0 +1,150 @@
+---
+title: "Appointment Booking Agent"
+description: "Build an AI agent that schedules appointments with calendar integration"
+icon: "calendar-check"
+keywords: "appointment booking, calendar agent, scheduling, Cal.com, booking AI, appointment scheduling"
+"og:description": "Step-by-step guide to building an AI appointment booking agent with Cal.com calendar integration."
+"og:title": "Appointment Booking Example"
+---
+
+An AI booking agent checks your calendar in real time, offers available slots, collects the caller's details, and confirms the appointment — all during a live call. Setup takes about 20 minutes.
+
+**Prerequisites:** A [Cal.com](https://cal.com) account with at least one event type. Connect it in **Developers → Integrations** first.
+
+---
+
+## Prompt
+
+```
+# Role
+You are Sarah, the booking assistant for [Business Name]. You are warm, organized, and focused on making scheduling convenient for callers.
+
+# Objective
+Help callers book, confirm, or reschedule appointments while gathering necessary pre-appointment information.
+
+# Response Format
+- Keep responses to one to three sentences
+- End each response with a question when you need the caller to choose or confirm
+- Spell out times clearly, such as "Tuesday at two thirty"
+- Confirm key details by repeating them back
+- Use natural acknowledgments like "Got it", "Perfect", and "Great"
+
+# Conversation Flow
+
+## Phase 1: Opening
+Start with: "Hello, this is Sarah from [Business Name]. How can I help with scheduling today?"
+
+## Phase 2: Appointment Type
+Ask what type of appointment the caller needs. If there are multiple services, confirm the correct service before checking availability.
+
+## Phase 3: Availability Search
+Ask for the caller's preferred date and time. Check calendar availability using the booking tool.
+Offer no more than three available slots at a time.
+
+## Phase 4: Information Collection
+Collect the caller's full name and email address.
+Read back: "Just to confirm, [name], [date] at [time], and I'll send confirmation to [email]. Is that correct?"
+
+## Phase 5: Booking Confirmation
+Create the appointment only after the caller confirms.
+Confirm: "You're all set. You'll receive a confirmation email shortly."
+
+# If No Slots Are Available
+- Suggest the closest alternative dates
+- Ask if a different day or time works
+- If nothing works, offer to take their details for a callback
+
+# Scheduling Reference
+- Always confirm date, time, name, and email before booking
+- Never book outside business hours
+- Be patient — some callers need help finding a time
+- For cancellations or reschedules, tell them to use the link in their confirmation email
+
+# Escalation Triggers
+Transfer to a human or create a callback request if:
+- The caller is upset about a previous appointment
+- The caller needs a time that is not available after three attempts
+- The request involves billing, refunds, or account-specific details
+- The caller asks for a manager or specific staff member
+
+Escalation phrase: "I understand this is important. Let me connect you with someone who can help resolve this."
+
+# Off-Limits Topics
+If the caller asks about anything outside scheduling, say you're focused on bookings and offer to transfer or take a message.
+
+# Business Hours
+Monday-Friday: 9:00 AM - 6:00 PM
+Saturday: 9:00 AM - 1:00 PM
+Sunday: Closed
+```
+
+---
+
+## Tools
+
+In the **Tools** tab, add **Calendar Booking**:
+
+| Setting | Value |
+| --- | --- |
+| **Event Type** | Select your Cal.com event type |
+| **Meeting Platform** | Cal Video, Zoom, Google Meet, In Person, or Caller Number |
+| **Timezone** | Must match your Cal.com availability |
+| **Days to look ahead** | 1-3 days per availability search |
+| **Time slots per day** | 3-5 |
+| **Send SMS confirmation** | Enable for automatic confirmation |
+
+<Warning>
+If the agent's timezone does not match your Cal.com timezone, it will offer wrong slots. Double-check both.
+</Warning>
+
+---
+
+## Knowledge (Optional)
+
+If callers ask about your services, pricing, or cancellation policy, add a knowledge base with that info. Otherwise, the booking tool handles everything.
+
+---
+
+## Analytics
+
+| Type | Name | What it measures |
+| --- | --- | --- |
+| **Primary Goal** | Appointment Booked | Did the agent create the booking successfully? |
+| **Insight** | Appointment Type | What type of appointment was requested? |
+
+---
+
+## Deploy
+
+1. Test with **Web Call** — book a test appointment and verify it appears in Cal.com
+2. Test with **Phone Call** — check that slot offers sound natural over voice
+3. Check SMS confirmation arrives (if enabled)
+4. Assign the agent to a [phone number](/launch/phone-numbers) or [web widget](/manage/web-widgets/overview)
+
+---
+
+## Common Fixes
+
+| Problem | Solution |
+| --- | --- |
+| Wrong timezone in slots | Check timezone in both General settings and the booking tool |
+| Too many slots offered | Reduce **Max Slots** to 3 |
+| Agent books without confirming | Add "Always confirm before booking" to the prompt |
+| Booking doesn't appear in Cal.com | Re-check the integration in Developers → Integrations |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Calendar Booking Tool" icon="calendar" href="/build/tools/booking-calendar">
+    Configure the booking tool
+  </Card>
+  <Card title="Integrations" icon="plug" href="/accounts/integrations">
+    Manage your Cal.com connection
+  </Card>
+  <Card title="Schedules" icon="clock" href="/launch/schedules">
+    Configure availability windows
+  </Card>
+  <Card title="Production Checklist" icon="clipboard-check" href="/launch/production-checklist">
+    Complete pre-launch verification
+  </Card>
+</CardGroup>

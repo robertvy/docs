@@ -1,0 +1,205 @@
+---
+title: "Prompt"
+description: "Write your agent's prompt using the editor with variables, templates, and the writing guide"
+icon: "pen"
+keywords: "AI agent prompt, system prompt, prompt editor, variable insertion, prompt templates, writing guide, agent behavior, instructions"
+"og:description": "Write and refine your agent's prompt to define personality, rules, and behavior using the built-in editor with variables, templates, and a writing guide."
+"og:title": "Prompt"
+---
+
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+**Access:** Open an agent and go to **Prompt**.
+
+## What the Prompt Does
+
+The prompt defines your agent's personality, conversational style, objectives, and behavioral rules. This is the most important configuration for your agent's success.
+
+Think of it like writing instructions for a new employee — tell them who they are, how to behave, what they can help with, and what to do when they're unsure.
+
+Your prompt is sent to the AI model with every conversation turn. It tells the model:
+
+- **Who it is** (role and identity)
+- **How to behave** (tone, style, guardrails)
+- **What to achieve** (objectives and goals)
+- **When to use tools** (tools, knowledge, transfers)
+
+---
+
+## The Prompt Editor
+
+The prompt editor is located in the **Prompt** tab of the agent editor. It includes several features to help you write better prompts faster.
+
+<Screenshot
+  lightSrc="/images/agent__prompt-editor-light.png"
+  darkSrc="/images/agent__prompt-editor-dark.png"
+  alt="Prompt editor showing the instructions editor, Templates and Writing Guide buttons, variable chips, token count, fullscreen control, and save button"
+/>
+
+### Editor Features
+
+<CardGroup cols={2}>
+  <Card title="Templates" icon="book">
+    Open the template library, preview a prompt, edit the preview if needed, and use it as your agent's instructions
+  </Card>
+  <Card title="Variable Insertion" icon="brackets-curly">
+    Insert dynamic variables from the toolbar or type `{{` to autocomplete available variables
+  </Card>
+  <Card title="Writing Guide" icon="lightbulb">
+    Open the in-product guide for structure, examples, and common prompt-writing mistakes
+  </Card>
+  <Card title="Token Count and Fullscreen" icon="expand">
+    Track prompt and knowledge-base tokens, expand the editor, and save or discard prompt changes inline
+  </Card>
+</CardGroup>
+
+---
+
+## Using the Writing Guide
+
+The **Writing Guide** opens inside the Prompt tab. Use it when you want examples for structure, role definition, tone, guardrails, and common mistakes.
+
+<Steps>
+  <Step title="Write your initial prompt">
+    Start with the role, goal, conversation flow, boundaries, and escalation rules.
+  </Step>
+  <Step title="Open Writing Guide">
+    Click **Writing Guide** above the editor.
+  </Step>
+  <Step title="Compare against the guide">
+    Check your prompt for clear sections, concrete if-then rules, sensitive-topic boundaries, and an escape hatch.
+  </Step>
+  <Step title="Save or discard">
+    Use the inline save controls after editing.
+  </Step>
+</Steps>
+
+---
+
+## Using Variables
+
+Variables let you insert dynamic data into your prompt. The platform replaces variables with real values at call start.
+
+### Inserting Variables
+
+1. Place your cursor where you want the variable
+2. Click **Variables** in the editor toolbar
+3. Select a variable from the list
+4. The variable is inserted using template syntax: `{{ variable_name }}`
+
+### Common Variables
+
+| Variable | Description | Example Value |
+|----------|-------------|---------------|
+| `{{ contact.first_name }}` | Caller's first name | "Sarah" |
+| `{{ contact.last_name }}` | Caller's last name | "Johnson" |
+| `{{ contact.email }}` | Caller's email address | "sarah@example.com" |
+| `{{ contact.phone_number }}` | Caller's phone number | "+1234567890" |
+| `{{ current_datetime }}` | Current date and time | "2026-01-30 14:30:00" |
+
+### Example with Variables
+
+```text wrap
+# Role
+You are Alex, a customer support agent for Acme Software.
+
+# Conversation Context
+{% if contact.first_name %}
+Address the customer as {{ contact.first_name }}.
+{% else %}
+Ask for the customer's name at the start of the conversation.
+{% endif %}
+
+Current date and time: {{ current_datetime }}
+```
+
+<Note>
+Variables use Jinja templating — conditionals (`{% if %}`), loops (`{% for %}`), and filters. See [Template Syntax](/build/conversation/template-syntax) for the full reference.
+</Note>
+
+---
+
+## Using Prompt Templates
+
+Click **Templates** above the editor to open the template gallery. Templates provide proven starting points for common agent types.
+
+**To apply a template:**
+
+1. Click **Templates** in the editor
+2. Preview templates to find one that matches your use case
+3. Click **Use Template** to insert it into the editor
+4. Replace placeholders with your specific details
+5. Customize the prompt to match your requirements
+
+<Tip>
+Templates follow the same structure used by the built-in template gallery: Role, Objective, Response Format, Conversation Flow, and Escalation Triggers. Start with a template and adapt it rather than writing from scratch.
+</Tip>
+
+[See all available templates -->](/build/conversation/prompt-templates)
+
+---
+
+## Writing Guidance
+
+This page documents the **Prompt** tab and editor controls. For full prompt-writing patterns, voice-specific examples, response-length guidance, guardrails, tool references, and testing techniques, use the [Prompt Engineering Guide](/build/conversation/prompt-engineering-guide).
+
+Use this page when you need to know where to edit prompts, insert variables, apply templates, or save changes. Use the guide when you need help deciding what the prompt should say.
+
+---
+
+## What the Agent Already Knows
+
+The platform automatically provides the following context. You do not need to include these in your prompt:
+
+<AccordionGroup>
+  <Accordion title="Conversation Transcript" icon="messages">
+    The complete conversation history between the agent and the contact, including all messages and tool calls.
+  </Accordion>
+  <Accordion title="Contact Information" icon="user">
+    Contact data like name, email, and phone number. Access via variables like `{{ contact.first_name }}`.
+  </Accordion>
+  <Accordion title="Knowledge Base Content" icon="book">
+    When relevant, the platform automatically retrieves and includes content from your knowledge bases.
+  </Accordion>
+  <Accordion title="Available Tools" icon="bolt">
+    The platform tells the agent what tools are available (transfer, book appointment, custom API tools). You just need to explain when to use them.
+  </Accordion>
+  <Accordion title="Current Date/Time" icon="clock">
+    The agent automatically knows the current date, time, and timezone.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Before You Save
+
+Use the editor controls to save only after you have checked the basics:
+
+- variables resolve to the data you expect
+- tool names match the names configured in the **Tools** tab
+- templates have been customized for your business
+- the prompt is short enough to maintain
+- the agent has been tested in [Chat or Web call](/test/web-simulator)
+
+For the full writing checklist, see [Prompt Engineering Guide](/build/conversation/prompt-engineering-guide).
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Prompt Engineering Guide" icon="book" href="/build/conversation/prompt-engineering-guide">
+    Discover advanced techniques for writing effective prompts
+  </Card>
+  <Card title="Prompt Templates" icon="file-code" href="/build/conversation/prompt-templates">
+    Browse pre-built templates for common use cases
+  </Card>
+  <Card title="Template Syntax" icon="brackets-curly" href="/build/conversation/template-syntax">
+    Learn how to personalize messages with dynamic content
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/web-simulator">
+    Learn how to test your agent effectively
+  </Card>
+</CardGroup>

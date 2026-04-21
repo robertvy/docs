@@ -1,0 +1,408 @@
+---
+title: "Post-Call-Automatisierung"
+description: "Automatisiere Follow-up-E-Mails und Task-Erstellung, ausgelöst durch Gesprächsergebnisse"
+icon: "envelope-open-text"
+keywords: "post-call automation, automated emails, follow-up emails, conversation outcomes, AI email automation, post-call actions, create task, task creation"
+"og:description": "Automatisiere Follow-up-E-Mails und Task-Erstellung, ausgelöst durch Gesprächsergebnisse, Stimmung und benutzerdefinierte Bedingungen."
+"og:title": "Post-Call Automation"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+## Wie Post-Call-Automatisierung funktioniert
+
+Post-Call-Automatisierung läuft automatisch nach Gesprächen. Nutze Benachrichtigungen, um dein Team zu informieren, Follow-up-Tasks anzulegen oder E-Mails basierend auf dem Anrufverlauf zu senden.
+
+**Zugriff:** In deinem Agent-Editor → Tab **Notifications** → **Post-Call Notifications**
+
+### Was du tun kannst
+
+| Fähigkeit | Wie |
+| --- | --- |
+| **E-Mails senden, wenn etwas passiert** | Lege eine Trigger-Bedingung fest (KI bewertet gegen das Transkript) |
+| **An unterschiedliche Personen basierend auf dem Gesprächsinhalt routen** | Nutze dynamische Empfänger - die KI entscheidet, wer die E-Mail bekommt |
+| **Anrufdaten in E-Mails einfügen** | Nutze Systemvariablen wie `{{conversation_summary}}` und `{{customer_name}}` |
+| **Benutzerdefinierte Daten aus Anrufen extrahieren** | Nutze `{{dyn_*}}`-Variablen - die KI zieht konkrete Infos aus dem Transkript |
+| **Dein Team in der App benachrichtigen** | Aktiviere Team Alert für alle Teammitglieder oder bestimmte Teamkollegen |
+| **Follow-up-Tasks erstellen** | Aktiviere "Create Task", um automatisch einen Task mit der Conversation zu verknüpfen |
+| **Nach jedem Anruf immer senden** | Schalte "Always send" ein, um die Bedingungsprüfung zu überspringen |
+
+<Screenshot
+  lightSrc="/images/postcalls__postcall_DE-light.png"
+  darkSrc="/images/postcalls__postcall_DE-dark.png"
+  alt="Liste der Post-Call-Benachrichtigungen mit konfigurierten Regeln und aktivierten Toggles"
+/>
+
+## So solltest du Benachrichtigungen denken
+
+Jede Benachrichtigung beantwortet drei Fragen:
+
+1. **Wann soll sie ausgelöst werden?**
+2. **Wer soll sie erhalten?**
+3. **Was soll als Nächstes passieren: E-Mail und/oder Team Alert, optional mit Task-Erstellung?**
+
+---
+
+## Setup
+
+<Steps>
+  <Step title="Post-Call Notifications öffnen">
+    In deinem Agent-Editor → Tab **Notifications** → **Post-Call Notifications** → **Add**
+
+    <Screenshot
+      lightSrc="/images/postcalls__postcall-add_DE-light.png"
+      darkSrc="/images/postcalls__postcall-add_DE-dark.png"
+      alt="Select-template-Modal, geöffnet über den Add-Button der Post-Call Notifications"
+      caption="Nutze Add, um eine Benachrichtigungsregel von Grund auf oder aus einer Vorlage zu erstellen."
+    />
+  </Step>
+
+  <Step title="Startpunkt wählen (optional)">
+    **Templates** bieten vorkonfigurierte Trigger und Inhalte für häufige Use-Cases:
+
+    - **Callback Requested** - Kunde wünscht ein Follow-up
+    - **Appointment Booked** - Meeting/Beratungstermin vereinbart
+    - **Customer Complaint** - Eskalierte Unzufriedenheit
+    - **Unanswered Question** - Agent konnte nicht antworten
+    - **Technical Issue** - Leitet Bugs/Fehler an Tech-Teams weiter
+    - **Billing Inquiry** - Fragen zu Zahlung/Rechnung
+    - **Escalation Needed** - Erfordert Aufmerksamkeit des Managements
+    - **Order Placed** - Kaufbestätigung
+    - **Demo Request** - Interesse an Produktdemo
+    - **Positive Feedback** - Lob mit dem Team teilen
+
+    <Info>
+    Vorlagen sind vollständig anpassbare Ausgangspunkte. Du kannst auch komplett neu beginnen.
+    </Info>
+  </Step>
+
+  <Step title="Benachrichtigungsname konfigurieren">
+    **Name:** Interne Kennung (z. B. "Callback Request Alert")
+  </Step>
+
+  <Step title="Trigger-Bedingung festlegen">
+    Beschreibe, wann gesendet werden soll (die KI analysiert das gegen das Gesprächstranskript):
+
+    ```
+    Example: "Did the customer request a callback, ask to be
+    contacted later, or want someone to follow up with them?"
+    ```
+
+    <Tip>
+    Sei spezifisch. Je detaillierter deine Trigger-Beschreibung, desto genauer ist das KI-Matching.
+    </Tip>
+
+    **Oder:** Schalte "Always send after every call" ein, um die Bedingungsprüfung zu umgehen
+  </Step>
+
+  <Step title="Empfänger konfigurieren">
+    **Fixed Recipients:** Gib konkrete E-Mail-Adressen ein (mehrere möglich)
+
+    ```
+    Example: support@company.com, manager@company.com
+    ```
+
+    **Dynamic Recipients (AI-powered):** Die KI routet an unterschiedliche Empfänger basierend auf dem Gesprächsinhalt
+
+    ```
+    Example: Route complaints by severity
+    - If legal threat → legal@company.com
+    - If angry/canceling → retention@company.com
+    - If product issue → quality@company.com
+    - Otherwise → support@company.com
+
+    Example: Route technical issues by type
+    - If website issue → dev@company.com
+    - If billing system → billing-tech@company.com
+    - Otherwise → tech-support@company.com
+
+    Example: Route orders by value
+    - If order over $1000 → sales-manager@company.com
+    - Otherwise → orders@company.com
+    ```
+  </Step>
+
+  <Step title="E-Mail-Template gestalten">
+    **Subject:** `Callback requested`
+
+    **Body:** Nutze den Rich-Text-Editor mit Variablen (siehe [Template Variables](#template-variables) unten)
+
+    - **System variables:** Klicke auf den Variablen-Picker zum Einfügen (z. B. `{{customer_name}}`, `{{conversation_summary}}`)
+    - **Dynamic variables:** Tippe `{{dyn_` + beschreibender Name (z. B. `{{dyn_appointment_date}}`)
+  </Step>
+
+  <Step title="Nicht-E-Mail-Aktionen wählen (optional)">
+    Aktiviere **Team Alert**, um In-App-Benachrichtigungen und Push-Alerts für alle Teammitglieder oder ausgewählte Teamkollegen zu erstellen.
+
+    Aktiviere **Create Task**, um einen Follow-up-Task zu erstellen, wenn die Benachrichtigung ausgelöst wird.
+  </Step>
+
+  <Step title="Speichern und aktivieren">
+    Benachrichtigung speichern → **Enabled**-Schalter umlegen
+  </Step>
+</Steps>
+
+---
+
+## Task erstellen
+
+Jede Benachrichtigung kann auch automatisch einen [Task](/de/manage/tasks/overview) erstellen, wenn sie auslöst. Aktiviere **Create Task** im Benachrichtigungsformular, um einen mit der Conversation verknüpften Task zu erzeugen.
+
+| Einstellung | Beschreibung |
+| --- | --- |
+| **Create Task** | Einschalten, um bei Auslösung dieser Benachrichtigung einen Task zu erstellen |
+| **Task Priority** | Priorität für erstellte Tasks festlegen: Low, Medium, High oder Urgent |
+
+Erstellte Tasks enthalten den Agentennamen und einen Link zur ursprünglichen Conversation für vollen Kontext. Verwalte erstellte Tasks auf der Seite [Tasks](/de/manage/tasks/overview).
+
+<Tip>
+Kombiniere E-Mail und Task-Erstellung in einer einzigen Benachrichtigung. Zum Beispiel: Sende eine Callback-Anfrage per E-Mail an das Support-Team und erstelle gleichzeitig einen Task mit hoher Priorität für das Follow-up.
+</Tip>
+
+## Häufige Business-Patterns
+
+| Situation | Gute Automatisierung |
+| --- | --- |
+| Callback angefragt | Task erstellen und die Support-Warteschlange per E-Mail informieren |
+| Beschwerde oder Eskalation | Das verantwortliche Team per E-Mail informieren und einen Task mit hoher Priorität erstellen |
+| Termin gebucht | Nur Bestätigungs-E-Mail senden |
+| Agent konnte nicht antworten | Support oder Sales benachrichtigen und eine Transkript-Zusammenfassung beifügen |
+
+---
+
+## Template-Variablen
+
+### Systemvariablen
+
+Nutze den **Variablen-Picker** im Editor, um diese einzufügen.
+
+<Info>
+**Verfügbarkeit:** Manche Variablen füllen sich nur unter bestimmten Bedingungen:
+- Telefonnummern (`customer_number`, `to_number`) - nur Telefonanrufe
+- Kundendaten (`customer_name`, `customer_email`) - nur wenn die Conversation mit einem Kontakt verknüpft ist
+- Conversation-Transkript - nur wenn Transkription aktiviert ist
+</Info>
+
+**Conversation Details:**
+- `{{conversation_date}}` - vollständiges Datum/Uhrzeit im 24-Stunden-Format
+- `{{conversation_time}}` - Uhrzeit im 12-Stunden-Format
+- `{{conversation_duration}}` - Dauer im MM:SS-Format
+- `{{conversation_status}}` - Status (Completed, Failed usw.)
+- `{{conversation_direction}}` - Inbound/Outbound
+- `{{conversation_summary}}` - KI-generierte Zusammenfassung
+- `{{conversation_transcript}}` - Vollständiges Transkript mit Fallback-Text
+- `{{conversation_url}}` - Link zum Anzeigen der Conversation
+- `{{conversation_uuid}}` - Eindeutige Kennung
+
+**Agent & Account:**
+- `{{agent_name}}` - Name des KI-Agents
+- `{{account_name}}` - Name deines Accounts
+
+**Customer Information** (nur wenn die Conversation mit einem Kontakt verknüpft ist):
+- `{{customer_number}}` - Telefonnummer des Kunden (nur Telefonanrufe)
+- `{{customer_name}}` - Name des Kunden
+- `{{customer_email}}` - E-Mail des Kunden
+- `{{to_number}}` - Angerufene Telefonnummer (nur Telefonanrufe)
+
+### Dynamische Variablen
+
+**So funktionieren sie:** Tippe `{{dyn_` gefolgt von einem beschreibenden Namen. Die KI analysiert das Gesprächstranskript und extrahiert die Information.
+
+**Beispiele:**
+```
+{{dyn_appointment_date}} → AI finds the date mentioned in call
+{{dyn_appointment_time}} → AI finds the time mentioned
+{{dyn_issue_summary}} → AI summarizes the problem discussed
+{{dyn_ticket_number}} → AI locates any ticket reference
+{{dyn_next_steps}} → AI identifies agreed action items
+{{dyn_shipping_address}} → AI extracts mentioned address
+{{dyn_order_number}} → AI finds order reference
+```
+
+<Tip>
+Der Variablenname führt die KI. Spezifischere Namen = bessere Extraktionsgenauigkeit.
+
+✅ `{{dyn_rescheduled_appointment_date}}`
+❌ `{{dyn_date}}`
+</Tip>
+
+---
+
+## Beispiele
+
+<AccordionGroup>
+  <Accordion title="Appointment Confirmation" icon="calendar-check">
+    **Trigger:**
+    ```
+    Did the caller schedule, book, or confirm an appointment or meeting?
+    ```
+
+    **Recipients:** Fixed - `team@company.com`
+
+    **Subject:** `Appointment confirmed - {{dyn_appointment_date}}`
+
+    **Body:**
+    ```
+    Hi {{customer_name}},
+
+    Your appointment is confirmed:
+
+    📅 {{dyn_appointment_date}} at {{dyn_appointment_time}}
+    📍 {{dyn_location}}
+    🔗 {{dyn_meeting_link}}
+
+    Need to reschedule? Call {{agent_name}}
+
+    Best,
+    {{agent_name}}
+    ```
+
+    **Variables used:**
+    - System: `{{customer_name}}`, `{{agent_name}}`
+    - Dynamic: `{{dyn_appointment_date}}`, `{{dyn_appointment_time}}`, `{{dyn_location}}`, `{{dyn_meeting_link}}`
+  </Accordion>
+
+  <Accordion title="Callback Request" icon="phone">
+    **Trigger:**
+    ```
+    Did the customer request a callback, follow-up call, or ask to be contacted later?
+    ```
+
+    **Recipients:** Fixed - `support@company.com`
+
+    **Subject:** `Callback requested`
+
+    **Body:**
+    ```
+    Customer requested callback:
+
+    Phone: {{customer_number}}
+    Date: {{conversation_date}}
+    Reason: {{conversation_summary}}
+
+    View call: {{conversation_url}}
+    ```
+
+    **Variables used:**
+    - System: `{{customer_number}}`, `{{conversation_date}}`, `{{conversation_summary}}`, `{{conversation_url}}`
+  </Accordion>
+
+  <Accordion title="Smart Routing by Severity" icon="route">
+    **Trigger:**
+    ```
+    Did the customer express dissatisfaction, file a complaint, or report a problem?
+    ```
+
+    **Recipients:** Dynamic
+    ```
+    Route by severity:
+    - If legal threat → legal@company.com
+    - If angry/canceling → retention@company.com
+    - If product issue → quality@company.com
+    - Otherwise → support@company.com
+    ```
+
+    **Subject:** `Customer issue - {{dyn_severity}}`
+
+    **Body:**
+    ```
+    Issue reported:
+
+    Customer: {{customer_number}}
+    Severity: {{dyn_severity}}
+    Issue: {{dyn_issue_summary}}
+
+    View full call: {{conversation_url}}
+    ```
+
+    **Variables used:**
+    - System: `{{customer_number}}`, `{{conversation_url}}`
+    - Dynamic: `{{dyn_severity}}`, `{{dyn_issue_summary}}`
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Tipps
+
+<AccordionGroup>
+  <Accordion title="Spezifische Trigger schreiben" icon="bullseye">
+    ❌ Schlecht: "Customer unhappy"
+
+    ✅ Gut: "Did the customer express dissatisfaction, frustration, mention being unhappy, or threaten to cancel/leave negative review?"
+  </Accordion>
+
+  <Accordion title="Mit echten Calls testen" icon="vial">
+    Aktiviere die Benachrichtigung und teste mit echten oder Test-Anrufen, um Triggerung und Inhalt zu verifizieren.
+  </Accordion>
+
+  <Accordion title="E-Mails kurz halten" icon="align-left">
+    - maximal 3-5 Absätze
+    - ein klarer Zweck
+    - ein einzelner Call-to-Action
+    - Bullet Points für mehrere Punkte
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="E-Mail wird nicht gesendet" icon="envelope-open-text">
+    **Mögliche Ursachen:**
+    - Benachrichtigung ist deaktiviert
+    - Trigger-Bedingung passt nicht zum Gesprächsinhalt
+    - Fixe Empfängerliste ist leer oder ungültig
+    - Dynamische Empfängerregeln haben keine gültige E-Mail-Adresse erzeugt
+
+    **Lösungen:**
+    - Prüfe, ob die Benachrichtigung aktiviert ist (Toggle On)
+    - Prüfe die Trigger-Beschreibung und teste mit passenden Anrufen
+    - Füge fixe Empfänger hinzu oder stelle sicher, dass dynamische Regeln eine klare Fallback-Adresse enthalten
+  </Accordion>
+
+  <Accordion title="Variablen füllen sich nicht" icon="brackets-curly">
+    **Mögliche Ursachen:**
+    - Tippfehler im Variablennamen
+    - Dynamischer Variablenname zu vage
+    - Daten nicht verfügbar (z. B. Kunde nicht im System)
+
+    **Lösungen:**
+    - Nutze exakte Variablennamen aus dem Variablen-Picker
+    - Mache dynamische Variablennamen spezifischer und beschreibender
+    - Teste mit echten Anrufen, um die Extraktion zu verifizieren
+    - Prüfe die [Verfügbarkeitsbedingungen](#template-variables) für Systemvariablen
+  </Accordion>
+
+  <Accordion title="Falsches Routing" icon="route">
+    **Mögliche Ursachen:**
+    - Routing-Regeln unklar beschrieben
+    - KI interpretiert Gesprächsinhalt falsch
+
+    **Lösungen:**
+    - Routing-Regeln prüfen und präzisieren
+    - Kriterien mit konkreten Keywords expliziter machen
+    - Mit Beispielanrufen testen und Regeln anpassen
+    - Eine "Otherwise"-Fallback-Route hinzufügen
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Tasks" icon="list-check" href="/de/manage/tasks/overview">
+    Von Benachrichtigungen erstellte Tasks verwalten
+  </Card>
+  <Card title="Conversation Goals" icon="bullseye" href="/de/build/analytics/conversation-goals">
+    Die Ergebnisse messen, auf die deine Benachrichtigungen reagieren
+  </Card>
+  <Card title="Conversations" icon="messages" href="/de/manage/conversations/overview">
+    Anrufe und Benachrichtigungsergebnisse prüfen
+  </Card>
+  <Card title="Dynamic Context" icon="brackets-curly" href="/de/build/advanced/dynamic-context">
+    Daten für Template-Variablen übergeben
+  </Card>
+</CardGroup>

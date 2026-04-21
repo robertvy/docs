@@ -1,0 +1,171 @@
+---
+title: "Smart Filler"
+description: "Reduce perceived latency with intelligent filler responses"
+icon: "bolt"
+keywords: "smart filler, latency reduction, filler phrases, conversation flow, AI response time, contextual fillers"
+"og:description": "Reduce perceived latency by generating contextual filler responses while your agent processes the full answer."
+"og:title": "Smart Filler"
+---
+
+## How Smart Filler Works
+
+<Badge>Expert Mode</Badge>
+
+Smart Filler reduces perceived latency by generating contextual filler responses while your main AI model processes the full answer. Instead of silence during processing, your agent says something like "Let me check that for you..." before delivering the complete response.
+
+<Note>
+Smart Filler uses a fast secondary AI model to generate contextual fillers in parallel with your main AI model. It reduces perceived latency but does not make the main response complete faster.
+</Note>
+
+## How It Works
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Agent
+    participant FastLLM as Fast Secondary large language model (LLM)
+    participant MainLLM as Main AI Model
+
+    User->>Agent: Asks question
+    Agent->>FastLLM: Generate filler (parallel)
+    Agent->>MainLLM: Generate full response (parallel)
+    FastLLM-->>Agent: "Let me check that..."
+    Agent->>User: Speaks filler
+    MainLLM-->>Agent: Full response ready
+    Agent->>User: Speaks full response
+```
+
+1. User asks a question
+2. Smart Filler immediately generates a contextual filler phrase using a fast secondary AI model
+3. The filler plays while your main AI model processes the full response
+4. The complete response follows without interruption
+
+---
+
+## Configuration
+
+Navigate to your agent's **General** tab, switch to **Expert** mode, and open **Sounds** to configure Smart Filler.
+
+### Enable Smart Filler
+
+Toggle Smart Filler on or off. When disabled, the agent waits silently until the full response is ready.
+
+### Delay Threshold
+
+Choose how long the main response can take before the filler plays. The dashboard supports **0-2000 ms** in 50 ms steps. A value of `0 ms` lets the filler play as soon as it is available; higher values avoid fillers for fast responses.
+
+### Custom Filler Prompt
+
+Customize how your agent generates filler responses with a custom prompt.
+
+**Default behavior:** The agent generates appropriate acknowledgments like:
+- "Let me check that for you..."
+- "One moment while I look into that..."
+- "Good question, let me find out..."
+
+**Custom prompt examples:**
+
+<AccordionGroup>
+  <Accordion title="Austrian German style" icon="flag">
+    ```text
+    Use Austrian German expressions like "Passt" or "Jo eh"
+    for casual acknowledgments.
+    ```
+  </Accordion>
+
+  <Accordion title="Formal business style" icon="briefcase">
+    ```text
+    Use formal business language. Never use casual phrases.
+    Example: "I'll look into that right away" not "Let me check".
+    ```
+  </Accordion>
+
+  <Accordion title="Friendly customer service" icon="face-smile">
+    ```text
+    Be warm and friendly. Use phrases like "Great question!"
+    and "I'd be happy to help with that!"
+    ```
+  </Accordion>
+
+  <Accordion title="Multilingual" icon="language">
+    ```text
+    Match the language the customer is speaking. If they speak
+    German, respond in German. If Spanish, respond in Spanish.
+    ```
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+Custom filler prompts are limited to 2000 characters. Keep instructions concise and focused.
+</Warning>
+
+---
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="High-latency responses" icon="clock">
+    Cover wait time from advanced AI models with longer response times
+  </Card>
+  <Card title="Complex queries" icon="brain">
+    Fill pauses during tool calls, database lookups, or multi-step reasoning
+  </Card>
+  <Card title="Knowledge base searches" icon="magnifying-glass">
+    Acknowledge the caller while [knowledge base](/build/knowledge/architecture) retrieval adds processing time
+  </Card>
+  <Card title="API integrations" icon="plug">
+    Bridge latency from [custom API tools](/build/tools/custom-api-actions)
+  </Card>
+</CardGroup>
+
+---
+
+## Best Practices
+
+**Match your brand voice:** Use the custom prompt to ensure fillers match your agent's personality and brand guidelines. See the [prompt engineering guide](/build/conversation/prompt-engineering-guide) for writing effective prompts.
+
+**Keep it natural:** The best fillers sound like natural human acknowledgments, not robotic placeholders.
+
+**Consider context:** Different situations call for different filler styles. Sales calls might use energetic fillers while support calls might use reassuring ones.
+
+**Test extensively:** Make test calls to ensure fillers feel natural in real conversations and don't create awkward pauses or repetition.
+
+---
+
+## Performance Impact
+
+| Metric | Without Smart Filler | With Smart Filler |
+|--------|---------------------|-------------------|
+| Perceived latency | Full AI processing time | ~500ms |
+| User experience | Silent waiting | Natural conversation flow |
+| Actual response time | Unchanged | Unchanged |
+
+<Tip>
+Smart Filler doesn't speed up your actual response time—it makes the wait feel shorter by providing immediate acknowledgment.
+</Tip>
+
+---
+
+## Limitations
+
+- **Not always appropriate:** Some contexts (legal disclaimers, critical information) may require silence rather than fillers
+- **Language matching:** Works best when filler prompt matches conversation language
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Thinking Sounds" icon="keyboard" href="/build/voice-speech/thinking-sounds">
+    Add audio feedback while processing
+  </Card>
+  <Card title="Voice Settings" icon="sliders" href="/build/voice-speech/voice-settings">
+    Fine-tune voice parameters
+  </Card>
+  <Card title="Choose AI Model" icon="microchip" href="/build/voice-speech/choose-ai-model">
+    Select the model that drives your agent
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/web-simulator">
+    Test Smart Filler in the simulator
+  </Card>
+</CardGroup>

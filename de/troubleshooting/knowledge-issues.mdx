@@ -1,0 +1,131 @@
+---
+title: "Wissensprobleme"
+description: "Fehler bei Wissensbasis-Indexierung, Abruf und Inhaltsqualität diagnostizieren und beheben"
+icon: "book-open"
+keywords: "Wissensbasis-Fehlerbehebung, RAG-Probleme, Abrufprobleme, Indexierung fehlgeschlagen, falscher Inhalt, Relevanzwerte"
+"og:description": "Wissensbasis-Probleme beheben: fehlgeschlagene Indexierung, falscher Inhaltsabruf, niedrige Relevanzwerte und Inhaltsqualitätsprobleme."
+"og:title": "Wissensprobleme"
+---
+
+Dieser Leitfaden behandelt die Diagnose und Behebung von Problemen mit Wissensbasis-Indexierung, Abruf und Inhaltsqualität.
+
+## Indexierungsprobleme
+
+### Element hängt bei verarbeitung
+
+**Wartezeit:** Die meisten Elemente werden innerhalb von 1–2 Minuten abgeschlossen. Website-Crawls können je nach Seitenanzahl länger dauern.
+
+**Wenn länger als 5 Minuten hängt:**
+1. Den Elementstatus im Wissensbasis-Baum prüfen
+2. Versuche, im Element-Menü auf **Neu indexieren** zu klicken
+3. Wenn die Neuindexierung fehlschlägt, das Element löschen und neu hinzufügen
+
+### Element zeigt einen fehler
+
+| Inhaltstyp | Häufige Ursachen | Lösung |
+| --- | --- | --- |
+| **Datei-Upload** | Datei zu groß (>10 MB), passwortgeschützt, beschädigt | Eine saubere Kopie unter 10 MB neu hochladen |
+| **Webseite** | URL nicht erreichbar, JavaScript-only-Inhalt, Authentifizierung erforderlich | URL im Inkognito-Browser prüfen; Inhalt stattdessen in ein Text-Element kopieren |
+| **Website-Crawl** | Website blockiert Bots, zu viele Seiten, Timeouts | Maximale Seitenanzahl reduzieren; stattdessen einzelne URLs hinzufügen |
+| **Textinhalt** | Schlägt selten fehl | Auf Codierungsprobleme prüfen; versuche, das Element neu zu erstellen |
+
+### Neu indexieren ist deaktiviert
+
+Die Schaltfläche „Neu indexieren" ist deaktiviert, wenn das Element bereits grün ist (einsatzbereit). Sie wird nur verfügbar, wenn sich der Inhalt geändert hat oder der Vektor-Index eine Aktualisierung benötigt.
+
+---
+
+## Abrufprobleme
+
+### Agent verwendet keine wissensbasis-inhalte
+
+**Diagnoseschritte:**
+1. Eine Testkonversation in **Konversationen** öffnen → auf die Konversation klicken
+2. In der Zeitachse nach Wissensabruf-Ereignissen suchen (Buch-Symbol)
+3. Wenn keine Abrufereignisse erscheinen:
+   - Prüfen, ob die Wissensbasis [dem Agenten zugewiesen](/build/knowledge/assign-knowledge) ist
+   - Prüfen, ob Elemente grün angezeigt werden (einsatzbereit)
+   - Mit Fragen testen, die direkt mit deinen Inhaltsformulierungen übereinstimmen
+
+### Agent ruft falschen inhalt ab
+
+**Relevanzwerte** in der Konversations-Detail-Zeitachse prüfen:
+- **70 %+** (grün) – gute Übereinstimmung, Inhalt ist relevant
+- **50–70 %** (gelb) – teilweise Übereinstimmung, kann tangentialen Inhalt zurückgeben
+- **Unter 50 %** (orange) – schlechte Übereinstimmung, Inhalt ist möglicherweise nicht nützlich
+
+**So verbesserst du den Abruf:**
+1. **Klare, beschreibende Titel verwenden** – Titel beeinflussen die Übereinstimmung stark
+2. **Große Dokumente in fokussierte Elemente aufteilen** – ein Thema pro Element erzielt bessere Abrufergebnisse als ein riesiges Dokument
+3. **Spezifische Sprache verwenden** – die Terminologie deiner Anrufer treffen
+4. **Doppelte oder überlappende Inhalte entfernen** – konkurrierende Elemente verwirren den Abruf
+5. **Datei-/URL-Elemente in Text umwandeln** – gibt dir direkte Kontrolle über die Inhaltsstruktur
+
+### Agent erfindet informationen, obwohl er wissen hat
+
+Füge explizite Verankerungsanweisungen zu deinem Prompt hinzu:
+```
+Beantworte Fragen nur mit Informationen aus deiner Wissensbasis.
+Wenn du die Informationen zur Beantwortung einer Frage nicht hast, sage:
+"Diese Information habe ich leider nicht. Ich verbinde dich mit jemandem, der helfen kann."
+Erfinde oder rate niemals Antworten.
+```
+
+---
+
+## Kontext- vs. rag-probleme
+
+### Kontext-Modus nicht verfügbar
+
+Der Kontext-Modus ist nur im Profi verfügbar. Wechsle oben rechts in den Profi, um den Zugriffsmodus-Selektor bei Wissensverbindungen zu sehen.
+
+### Kontext-Budget Überschritten
+
+Das 10.000-Token-Kontext-Budget wird über alle Kontext-Modus-Verbindungen geteilt. Wenn es überschritten wird:
+1. Weniger kritische Verbindungen in den RAG-Modus wechseln
+2. Den Inhaltsumfang in Kontext-Modus-Elementen reduzieren
+3. RAG für große Wissensbasen verwenden und Kontext für kleine, immer benötigte Inhalte reservieren (wie Preistabellen oder wichtige Richtlinien)
+
+### Wann kontext vs. RAG verwenden
+
+Verwende [Kontext vs. RAG](/build/knowledge/context-vs-rag) für die Entscheidungstabelle. Als Faustregel bei der Fehlerbehebung: Kleines, immer benötigtes Referenzmaterial in den Kontext verschieben und große durchsuchbare Sammlungen in RAG belassen.
+
+---
+
+## Inhaltsqualität
+
+### Best practices für wissensinhalte
+
+1. **Für Gespräche schreiben** – Inhalte als Q&A oder klare Aussagen strukturieren, nicht als Marketingtext
+2. **Ein Thema pro Element** – „Rückgaberichtlinie" ist besser als „Alle Filialrichtlinien"
+3. **Schlüsselwörter einschließen, die Anrufer verwenden** – wenn Anrufer „Erstattung" sagen, aber dein Inhalt „Rückvergütung" sagt, beide Begriffe einschließen
+4. **Inhalte aktuell halten** – Website-Crawl-Aktualisierungsintervalle für dynamische Inhalte einrichten
+5. **Nach Änderungen testen** – immer Testkonversationen durchführen, nachdem Inhalte hinzugefügt oder aktualisiert wurden
+
+### Inhaltsgrenzen
+
+| Limit | Wert |
+| --- | --- |
+| URL-Elemente pro Wissensbasis | 500 |
+| Text-Elemente pro Wissensbasis | 50 |
+| Datei-Elemente pro Wissensbasis | 25 |
+| Elemente insgesamt pro Wissensbasis | 575 |
+| Ordner pro Wissensbasis | 50 |
+| Maximale Dateigröße | 10 MB |
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Wissensarchitektur" icon="sitemap" href="/build/knowledge/architecture">
+    Verstehen, wie Wissensbasen aufgebaut sind
+  </Card>
+  <Card title="Kontext vs. RAG" icon="scale-balanced" href="/build/knowledge/context-vs-rag">
+    Den richtigen Abrufmodus wählen
+  </Card>
+  <Card title="Inhaltstypen" icon="file-lines" href="/build/knowledge/content-types">
+    Details zu Datei, URL, Text und Website-Crawl
+  </Card>
+  <Card title="Häufige Probleme" icon="wrench" href="/troubleshooting/common-issues">
+    Schnelle Lösungen für häufige Probleme finden
+  </Card>
+</CardGroup>

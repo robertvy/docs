@@ -1,0 +1,195 @@
+---
+title: 'API-Referenz'
+description: 'Vollständige API-Dokumentation für die itellicoAI-Plattform'
+icon: 'code'
+keywords: 'itellicoAI API, REST-API, Sprach-KI-API, API-Dokumentation, API-Referenz, OpenAPI, API-Authentifizierung, API-Endpunkte'
+"og:description": 'Vollständige REST-API-Dokumentation für die Sprach-KI-Plattform von itellicoAI. Verwalte Agenten, Telefonnummern, SIP-Trunks, Gespräche und Analytik programmgesteuert.'
+"og:title": "API-Referenz"
+---
+
+## Willkommen bei der itellicoAI API
+
+Die itellicoAI REST (Representational State Transfer) API ermöglicht es dir, Agenten, Telefonnummern, Session Initiation Protocol (SIP)-Trunks, Gespräche und Analytik programmgesteuert zu verwalten.
+
+## Nutze diesen Bereich, wenn
+
+Nutze die API-Dokumentation, wenn du Setups automatisieren, Geschäftssysteme synchronisieren, Agent-Workflows aus einer anderen App auslösen oder Daten außerhalb des Dashboards verwalten möchtest. Wenn du hauptsächlich im Produkt arbeitest, bleibst du meist in der Oberfläche; wenn du entwickelst oder technische Abläufe betreust, startest du hier.
+
+<CardGroup cols={2}>
+  <Card title="Offizielle SDKs" icon="code" href="/de/api-reference/sdks">
+    Nutze die Python- oder TypeScript-SDKs für ein besseres Entwicklererlebnis
+  </Card>
+  <Card title="OpenAPI-Spezifikation" icon="file-code" href="https://api.itellico.ai/v1/openapi.json">
+    Sieh dir die vollständige OpenAPI-Spezifikation an
+  </Card>
+</CardGroup>
+
+## Wähle deine Integrationsmethode
+
+<Tabs>
+  <Tab title="SDKs (Empfohlen)">
+    **Am besten für:** Die meisten Anwendungen
+
+    Unsere offiziellen Python- und TypeScript-SDKs bieten:
+    - Typsicherheit mit Autovervollständigung
+    - Automatische Authentifizierung
+    - Strukturierte Fehlerbehandlung
+    - Weniger Boilerplate-Code
+
+    [SDK-Dokumentation ansehen →](/de/api-reference/sdks)
+  </Tab>
+
+  <Tab title="REST-API">
+    **Am besten für:** Benutzerdefinierte Integrationen oder nicht unterstützte Sprachen
+
+    Direkte HTTP-Anfragen an die REST-API:
+    - Maximale Flexibilität
+    - Funktioniert mit jedem HTTP-Client
+    - Volle Kontrolle über Anfragen
+
+    Siehe die Endpunkt-Dokumentation unten
+  </Tab>
+</Tabs>
+
+## Basis-URL
+
+```
+https://api.itellico.ai
+```
+
+## Authentifizierung
+
+Alle API-Endpunkte erfordern eine Authentifizierung mit einem API-Schlüssel, der im `X-API-Key`-Header übergeben wird:
+
+```bash
+curl -H "X-API-Key: your-api-key" https://api.itellico.ai/v1/accounts/current
+```
+
+Die meisten Ressourcen-Endpunkte sind kontospezifisch. Rufe zuerst `/v1/accounts/current` auf und verwende dann die zurückgegebene `id` des Accounts in Pfaden wie `/v1/accounts/{account_id}/agents`. Endpunkte, die eine Account-ID akzeptieren, akzeptieren auch `me` für den aktuellen Account.
+
+<Info>
+Erfahre in der [API-Schlüssel-Dokumentation](/de/accounts/api-keys), wie du API-Schlüssel erstellst und verwaltest.
+</Info>
+
+## Wichtige Ressourcen
+
+Die API ist in diese wichtigsten Ressourcen gegliedert:
+
+- **Konten** - Verwalte deine Accounts und Subaccounts
+- **Agenten** - Erstelle und konfiguriere KI-Sprachagenten
+- **Anbieter** - Greife auf verfügbare Modelle, Transkribierer und Stimmen zu
+- **Telefonnummern** - Verwalte Telefonnummern für eingehende und ausgehende Anrufe
+- **SIP-Trunks** - Konfiguriere das SIP-Carrier-Routing für importierte Nummern, einschließlich **Connect Your Own**-Setups (manchmal als BYOC abgekürzt)
+- **Gespräche** - Greife auf den Gesprächsverlauf und die Details zu
+- **Analytik** - Verfolge Nutzungsmetriken und Leistungsdaten
+
+## Erste Schritte
+
+<Steps>
+  <Step title="API-Schlüssel erstellen">
+    [API-Schlüssel erstellen](/de/accounts/api-keys) in deinem Dashboard
+  </Step>
+  <Step title="Authentifizierung prüfen">
+    Sende deine erste Anfrage, um die Authentifizierung zu überprüfen:
+
+    <Tabs>
+      <Tab title="curl">
+        ```bash
+        curl -H "X-API-Key: sk-your-api-key" \
+          https://api.itellico.ai/v1/accounts/current
+        ```
+      </Tab>
+      <Tab title="Python">
+        ```python
+        from itellicoai import Itellicoai
+
+        client = Itellicoai(api_key="sk-your-api-key")
+        account = client.accounts.retrieve_current()
+        print(account.name)
+        ```
+      </Tab>
+      <Tab title="TypeScript">
+        ```typescript
+        import Itellicoai from 'itellicoai';
+
+        const client = new Itellicoai({ apiKey: 'sk-your-api-key' });
+        const account = await client.accounts.retrieveCurrent();
+        console.log(account.name);
+        ```
+      </Tab>
+    </Tabs>
+  </Step>
+  <Step title="Endpunkte erkunden">
+    Durchsuche die Endpunkt-Dokumentation in der Seitenleiste
+  </Step>
+</Steps>
+
+## Häufige Aktionen
+
+### Agenten auflisten
+
+<Tabs>
+  <Tab title="curl">
+    ```bash
+    curl -H "X-API-Key: sk-your-api-key" \
+      https://api.itellico.ai/v1/accounts/{account_id}/agents
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    agents = client.agents.list("account_id")
+    for agent in agents.items:
+        print(f"{agent.name} - {agent.id}")
+    ```
+  </Tab>
+  <Tab title="TypeScript">
+    ```typescript
+    const agents = await client.agents.list('account_id');
+    agents.items.forEach(agent => {
+      console.log(`${agent.name} - ${agent.id}`);
+    });
+    ```
+  </Tab>
+</Tabs>
+
+### Gespräche auflisten
+
+<Tabs>
+  <Tab title="curl">
+    ```bash
+    curl -H "X-API-Key: sk-your-api-key" \
+      https://api.itellico.ai/v1/accounts/{account_id}/conversations
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    conversations = client.accounts.list_conversations("account_id", limit=10)
+    for conversation in conversations.items:
+        print(f"Status: {conversation.status}")
+        print(f"Duration: {conversation.duration_seconds}s")
+    ```
+  </Tab>
+  <Tab title="TypeScript">
+    ```typescript
+    const conversations = await client.accounts.listConversations('account_id');
+    conversations.items.forEach(conversation => {
+      console.log(`Status: ${conversation.status}`);
+      console.log(`Duration: ${conversation.duration_seconds}s`);
+    });
+    ```
+  </Tab>
+</Tabs>
+
+### Einen ausgehenden Anruf auslösen
+
+```bash
+curl -X POST https://api.itellico.ai/v1/accounts/{account_id}/calls \
+  -H "X-API-Key: sk-your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "phone",
+    "agent_id": "agent-uuid",
+    "from_number": "+43720123456",
+    "to_number": "+4312345678"
+  }'
+```

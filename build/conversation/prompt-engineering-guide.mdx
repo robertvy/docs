@@ -1,0 +1,412 @@
+---
+title: "Prompt Engineering Guide"
+description: "Write effective prompts for voice AI agents"
+icon: "book"
+keywords: "prompt engineering, voice prompting, AI prompts, conversational AI, agent instructions, speech patterns, voice agent prompting"
+"og:description": "Write effective prompts for itellicoAI voice agents — structure, voice-specific techniques, patterns, and testing."
+"og:title": "Prompt Engineering Guide"
+---
+
+Your prompt is the primary way you configure how your agent behaves. This guide covers how to structure it, what to include, and what makes voice prompts different from text prompts.
+
+<Tip>
+Just getting started? See [Prompt Basics](/build/conversation/prompt) first.
+</Tip>
+
+---
+
+## How Voice Differs from Text
+
+Voice agents process language differently than chatbots. Keep this in mind when writing.
+
+| Text AI | Voice AI |
+| --- | --- |
+| User reads at their own pace | Listener processes in real-time |
+| Long responses are acceptable | Long responses lose the caller |
+| Formatting (bold, lists) aids readability | No formatting — only speech |
+| User can re-read | Caller can't "re-listen" easily |
+| Typos are minor | Mispronunciations break trust |
+
+**Key principle:** Write instructions that produce short, spoken responses — not written ones.
+
+---
+
+## Quick Start: The 5-Minute Prompt Formula
+
+Start here if you're writing a prompt from scratch.
+
+<Steps>
+  <Step title="Who is your agent?">
+    Give your agent a clear identity and personality.
+
+    ```
+    You are [Name], a [role] at [Company].
+    Your personality is [trait 1], [trait 2], and [trait 3].
+    ```
+  </Step>
+
+  <Step title="What is the goal?">
+    Define the specific, measurable outcome.
+
+    ```
+    Your objective is to [specific measurable outcome].
+    ```
+  </Step>
+
+  <Step title="How does the conversation flow?">
+    Map out the key steps in order.
+
+    ```
+    Conversation Flow:
+    1. Greeting — confirm identity and thank them for calling
+    2. Permission — ask if they have a few minutes
+    3. Discovery — understand their needs with open-ended questions
+    4. Action — book, answer, or transfer using the appropriate tool
+    5. Closing — confirm next steps and say goodbye
+    ```
+  </Step>
+
+  <Step title="What are the guardrails?">
+    Define what your agent should never do and when to escalate.
+
+    ```
+    Never:
+    - Discuss pricing (transfer to sales team)
+    - Make promises about features or timelines
+    - Continue if the caller is hostile (end call politely)
+
+    Transfer to a human when:
+    - Caller requests a manager
+    - Technical issue is beyond your knowledge
+    - Caller is frustrated after two attempts to help
+    ```
+  </Step>
+
+  <Step title="How should it handle objections?">
+    Prepare for common responses with exact wording.
+
+    ```
+    Objection Handling:
+    - "Not interested" → "I understand. Can I ask what changed since you requested info?"
+    - "Too expensive" → "I hear you. Let's discuss what features matter most."
+    - "Need to think about it" → "Of course. What specific concerns should I address?"
+    ```
+  </Step>
+</Steps>
+
+---
+
+## Recommended Prompt Structure
+
+Use this as a template when building out the full prompt.
+
+| Section | Purpose | Tips |
+|---------|---------|------|
+| **Role & Tone** | Who the agent is and how it sounds | Include brand tone, languages, pronunciation notes |
+| **Primary Goal** | The desired outcome | Use bullets or numbered lists for clarity |
+| **Conversation Flow** | Core steps in order | Include prerequisites, loops, and exit criteria |
+| **Information Capture** | Required fields and confirmation steps | Highlight how to verify before proceeding |
+| **Tool Triggers** | When and how to use each tool | Use exact tool names matching the UI |
+| **Escalations & Guardrails** | Forbidden topics and hand-off rules | Pair each rule with the relevant transfer or end tool |
+| **Closure** | How to wrap up and confirm next steps | Include any follow-up you promise the caller |
+
+<Tip>
+Keeping these sections in a consistent order makes prompts easier to maintain and review.
+</Tip>
+
+---
+
+## Response Length
+
+The most common voice AI mistake is responses that are too long. A response that reads fine as text can take 15+ seconds to speak — callers lose attention, interrupt, or hang up.
+
+### What to write
+
+```
+Keep responses to 1-3 sentences for most answers.
+Only give detail when the caller explicitly asks for more.
+When listing options, offer a maximum of 3 at a time, then ask if they'd like to hear more.
+```
+
+### What to avoid
+
+```
+❌ "Provide comprehensive, detailed responses to all questions."
+❌ "List all available options when asked."
+❌ "Include disclaimers and legal language in your responses."
+```
+
+### Pacing for important information
+
+```
+When giving dates, numbers, or addresses:
+- Slow down and speak clearly
+- Repeat key details once
+- Ask the caller to confirm: "Did I get that right?"
+```
+
+---
+
+## Natural Speech Patterns
+
+### Conversational flow
+
+Guide the agent to use natural acknowledgment phrases that match how a person would speak:
+
+```
+- "Let me check that for you" (before tool calls)
+- "Got it" or "Understood" (acknowledging input)
+- "Just to make sure I have this right..." (before confirming details)
+- "One moment while I look that up" (during knowledge retrieval)
+```
+
+### Avoid written language
+
+Some phrases read fine but sound robotic when spoken:
+
+| Written (Avoid) | Spoken (Prefer) |
+| --- | --- |
+| "As per our policy..." | "Our policy is..." |
+| "I would like to inform you that..." | "Just so you know..." |
+| "Please be advised that..." | "I should mention..." |
+| "In reference to your inquiry..." | "About your question..." |
+| "Affirmative" | "Yes, that's right" |
+
+### Numbers and dates
+
+```
+Phone numbers: group in pairs — "forty-three, seven-twenty, one-two-three"
+Dates: use natural format — "Tuesday, March fifth" not "2026-03-05"
+Prices: say the currency — "forty-five euros" not "45.00"
+Email addresses: spell clearly — "john at example dot com"
+```
+
+---
+
+## Conversation Structure
+
+### Opening
+
+Keep it short. The caller wants to get to their reason for calling.
+
+```
+Good: "Hi, this is [Name] at [Company]. How can I help you?"
+Bad:  "Hello and welcome to [Company]. My name is [Name] and I'm here to assist you
+       with any questions, concerns, or requests you may have today."
+```
+
+### Turn-taking
+
+```
+After giving information, ask a follow-up question to keep the conversation moving.
+Don't give a monologue — pause after each key point and check if the caller has questions.
+If the caller interrupts, stop and listen — their input takes priority.
+```
+
+### Closing
+
+```
+1. Confirm the caller's needs are met: "Is there anything else I can help with?"
+2. If not: "Great, thanks for calling [Company]. Have a good day!"
+3. Don't recap everything — just the key action items.
+```
+
+---
+
+## Handling Difficult Moments
+
+### When the agent doesn't know
+
+```
+If you don't have the information to answer:
+- Say: "I don't have that, but let me connect you with someone who does."
+- Never guess or make up answers.
+- Never say "As an AI, I cannot..."
+```
+
+### When the caller is frustrated
+
+```
+If the caller seems upset:
+- Acknowledge: "I understand this is frustrating."
+- Don't be defensive or overly apologetic.
+- Focus on solving their problem.
+- Offer to transfer to a human if needed.
+```
+
+### When the caller goes off-topic
+
+```
+If the conversation goes off-topic:
+- Redirect: "I'd love to help with that, but I'm set up to help with [scope].
+  Can I help you with anything related to [scope]?"
+```
+
+### When collecting sensitive information
+
+```
+When collecting phone numbers, email addresses, or account numbers:
+- Ask for each piece of information separately.
+- Repeat back what you heard and ask for confirmation.
+- If the caller provides a number too quickly, ask them to repeat it slowly.
+```
+
+---
+
+## Writing Principles
+
+<AccordionGroup>
+  <Accordion title="Write like you talk" icon="comments">
+    Voice agents need conversational language, not corporate speak.
+
+    **Avoid:**
+    ```
+    "I am contacting you regarding..."
+    "Per our previous correspondence..."
+    ```
+
+    **Better:**
+    ```
+    "I'm calling about..."
+    "Following up on..."
+    ```
+
+    Test: read it aloud. If it sounds stiff, simplify it.
+  </Accordion>
+
+  <Accordion title="Be specific, not vague" icon="quote-left">
+    Vague instructions leave too much room for inconsistency. Give enough detail that the agent knows what you mean — without scripting every word verbatim.
+
+    **Avoid:**
+    ```
+    "Introduce yourself professionally"
+    "Explain the benefits"
+    ```
+
+    **Better:**
+    ```
+    "Greet the caller by name, introduce yourself as [Agent Name], and state the purpose of the call"
+    "Mention that the product reduces manual reporting time"
+    ```
+
+    Scripting exact sentences can help for critical moments like greetings or legal disclosures. For the rest, describe the intent and let the agent find natural phrasing.
+  </Accordion>
+
+  <Accordion title="Use if/then branching" icon="code-branch">
+    Handle different scenarios with conditional logic.
+
+    ```
+    If customer says yes → continue to step 2
+    If customer says no → ask: "When would be better?"
+    If customer is hostile → say: "Let me transfer you to someone who can help."
+    ```
+
+    Plan for success, objections, and edge cases.
+  </Accordion>
+
+  <Accordion title="Natural transitions" icon="arrow-right-arrow-left">
+    Help the agent move smoothly between conversation stages.
+
+    ```
+    "Now that we've covered X, let me share Y..."
+    "Great question. Before I answer that, can I ask..."
+    "That makes sense. Based on what you've told me..."
+    ```
+  </Accordion>
+
+  <Accordion title="Confirmation protocols" icon="circle-check">
+    Always verify critical information before taking action.
+
+    ```
+    Before booking:
+    "Let me confirm — that's Tuesday, March 15th at 2 PM. Is that correct?"
+
+    Before transferring:
+    "Just to make sure, you need help with [issue]. Correct?"
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Referencing Tools
+
+<Warning>
+Always reference tools by the **exact name** configured in the UI. The agent uses that name to trigger the tool — ambiguous wording can break execution.
+</Warning>
+
+### Example: Booking tool
+
+```text wrap
+When the caller confirms they want to schedule, call the `Schedule Dental Checkup` booking tool with:
+- `date` and `time` gathered during the conversation
+- Ask for email if `contact.email` is missing; otherwise use contact email
+
+If the tool returns an error:
+1. Apologize: "I'm sorry, I'm having trouble booking that time slot"
+2. Offer two alternative slots from the same day
+3. Retry once with the alternative
+4. If the second attempt fails, trigger the `Transfer to Front Desk` tool
+```
+
+### Example: Transfer tool
+
+```text wrap
+Use the `Transfer to Tier 2 Support` tool when:
+- Issue requires escalation beyond your capabilities
+- Caller explicitly requests a human agent
+- Legal or billing questions arise
+
+Before transferring:
+1. Explain why: "I'd like to connect you with a specialist who can help with this"
+2. Ask permission: "May I transfer you now?"
+3. If they agree, trigger the transfer tool
+```
+
+---
+
+## Variables and Conditional Content
+
+Use Jinja templating to personalize your prompt with dynamic values from contacts and context.
+
+```jinja wrap
+{% if contact.first_name %}
+Greet them by name: "Hi {{ contact.first_name }}, thanks for calling!"
+{% else %}
+Use a general greeting: "Hi there, thanks for calling!"
+{% endif %}
+
+{% if contact.email %}
+You have the customer's email on file: {{ contact.email }}
+{% else %}
+Ask for their email address before proceeding with the booking.
+{% endif %}
+```
+
+See [Variable Sources](/build/conversation/variable-sources) and [Template Syntax](/build/conversation/template-syntax) for the full reference.
+
+---
+
+## Testing Your Prompts
+
+1. **Read it aloud** — if it sounds unnatural spoken, it will sound worse from the agent
+2. **Time test responses** — responses over 15 seconds need shortening
+3. **Test interruptions** — speak while the agent is talking to check handling
+4. **Test edge cases** — ask questions outside scope, give wrong information, stay silent
+5. **Review recordings** — listen to actual calls, not just transcripts
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Template Syntax" icon="brackets-curly" href="/build/conversation/template-syntax">
+    Personalize prompts with dynamic values
+  </Card>
+  <Card title="Custom Pronunciations" icon="spell-check" href="/build/voice-speech/custom-pronunciations">
+    Fix mispronounced words
+  </Card>
+  <Card title="VAD Turn Detection" icon="waveform-lines" href="/build/advanced/vad-turn-detection">
+    Control conversation timing
+  </Card>
+</CardGroup>

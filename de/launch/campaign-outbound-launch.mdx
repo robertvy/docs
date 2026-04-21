@@ -1,0 +1,261 @@
+---
+title: "Kampagnen- & Outbound-Launch"
+description: "Automatisierte Outbound-Calling-Kampagnen in großem Umfang bereitstellen"
+icon: "bullhorn"
+keywords: "outbound campaigns, automated calling, campaign launch, answering machine detection, AMD, contact lifecycle, campaign setup, progressive dialing, goal tracking"
+"og:description": "Starte automatisierte Outbound-Calling-Kampagnen mit progressivem Dialing, AMD und Analytik. Richte Kampagnen ein, füge Kontakte hinzu und beginne mit dem Wählen im großen Stil."
+"og:title": "Kampagnen- & Outbound-Launch"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+**In diesem Leitfaden lernst du:**
+- eine Outbound-Kampagne mit Agent und Telefonnummer zu erstellen
+- Kontakte hinzuzufügen und Anruffenster auszuwählen
+- Ziele und Insights einzurichten, um Ergebnisse zu verfolgen
+- die Kampagne zu starten und zu wissen, wo du sie überwachst
+
+---
+
+Outbound-Kampagnen automatisieren Volumenanrufe für Vertrieb, Erinnerungen, Umfragen und Benachrichtigungen. Jede Kampagne verbindet deinen Agenten mit einer Kontaktliste, einem Anruffenster und Ergebnis-Tracking.
+
+## Nutze den Kampagnen-Launch, wenn du Folgendes brauchst
+
+- eine Kontaktliste in großem Umfang anrufen
+- ein wiederholbares Outbound-Programm statt manueller Einzelanrufe ausführen
+- Antwortraten, Wiederholungen und Ergebnisse über viele Kontakte hinweg verfolgen
+- steuern, wann Anrufe stattfinden und welche Nummer verwendet wird
+
+Kampagnen gehören meist Sales-, Operations-, Success- oder Marketing-Teams, die sowohl auf Ausführung als auch auf messbare Ergebnisse achten.
+
+<Tip>
+Für detailliertes Kampagnenmanagement und Analytik nach dem Launch siehe den [Leitfaden für Kampagnenmanagement](/de/manage/campaigns/overview).
+</Tip>
+
+## Wichtige Funktionen
+
+<CardGroup cols={3}>
+  <Card title="Automatisiertes Wählen" icon="phone-volume">
+    Wählt Kontakte progressiv mit konfigurierbarer Wiederholungslogik
+  </Card>
+
+  <Card title="Geschäftszeiten" icon="clock">
+    Anruffenster und Zeitzonen-Planung erzwingen
+  </Card>
+
+  <Card title="Smart AMD" icon="voicemail">
+    Mailboxen mit Text oder [Answering Machine Detection](/de/glossary#voice-and-speech) per Machine Learning überspringen
+  </Card>
+
+  <Card title="Kontaktlebenszyklus" icon="arrows-spin">
+    Verschiebt Kontakte automatisch durch Dialing-, Retry- und Abschlusszustände
+  </Card>
+
+  <Card title="Ergebnisverfolgung" icon="chart-line">
+    Kampagnenziele und Analysen vor dem Launch konfigurieren
+  </Card>
+
+  <Card title="Übergabe an Management" icon="list-check">
+    Nach dem Launch für Dashboards, Kontakte, Exporte und Tuning das Kampagnenmanagement verwenden
+  </Card>
+</CardGroup>
+
+## Deine erste Kampagne erstellen
+
+<Screenshot
+  lightSrc="/images/campaigns__create-campaign_DE-light.png"
+  darkSrc="/images/campaigns__create-campaign_DE-dark.png"
+  alt="Dialog 'Kampagne erstellen' mit Feld für Kampagnenname, Dropdown für Agent, Dropdown für Telefonnummer, Bereich für Geschäftszeiten mit 24/7-Verfügbarkeit sowie Cancel- und Create-Buttons"
+/>
+
+<Steps>
+  <Step title="Zu Kampagnen wechseln">
+    Gehe zu **Kampagnen** und klicke auf **Kampagne erstellen** oder **Erste Kampagne erstellen**, wenn es deine erste ist.
+  </Step>
+
+  <Step title="Pflichtfelder konfigurieren">
+    **Kampagnenname**: Beschreibender Name für den internen Gebrauch, z. B. "Q1 Sales Outreach"
+
+    **Agent**: Wähle aus, welcher KI-Agent die Anrufe übernimmt
+
+    **Telefonnummer**: Wähle eine Telefonnummer für diese Kampagne. Nummern, die bereits aktiven oder pausierten Kampagnen zugewiesen sind, erscheinen nicht in der Liste. Wenn du noch keine Nummer eingerichtet hast, siehe [Telefonnummern](/de/launch/phone-numbers).
+  </Step>
+
+  <Step title="Optionale Einstellungen konfigurieren">
+    **Geschäftszeiten**: Begrenze Anrufe auf einen bestimmten Zeitplan (Standard ist 24/7). Für Einrichtung und Zeitzonenverhalten siehe [Geschäftszeiten](/de/launch/schedules).
+
+    Klicke auf **Kampagne erstellen**, um fortzufahren.
+  </Step>
+
+  <Step title="Kampagneneinstellungen konfigurieren">
+    Nach der Erstellung gehst du zum Tab **Settings**, um Feineinstellungen vorzunehmen:
+
+    **Zeitplanung:**
+    - **Startdatum & -zeit**: Wann das Wählen beginnen soll
+    - **Anrufintervall**: Wartezeit zwischen Anrufen
+    - **Maximale gleichzeitige Anrufe**: Maximale parallele Outbound-Anrufe für diese Kampagne
+    - **Ring-Timeout**: Profi-Einstellung, wie lange es klingeln soll
+    - **Geschäftszeiten**: Zeitplan, der steuert, wann Anrufe erlaubt sind
+    - **Lokales rechtliches Compliance-Fenster**: Hält die Kampagne innerhalb der Anrufzeiten der Empfängerregion, wenn aktiviert
+
+    Für Zeitplan-Erstellung, Zeitzonenverhalten und lokale Anruffenster siehe [Geschäftszeiten](/de/launch/schedules).
+
+    **Wiederholungslogik:**
+    - **Maximale Wiederholungsversuche**: Wie oft erneut gewählt wird (0-10, Standard: 2)
+    - **Retry-Intervall**: Kalenderzeit zwischen Wiederholungen. Mit Einheitenschalter konfigurieren (Minuten, Stunden oder Tage)
+    - **Timeout für Kontaktabschluss**: Profi-Einstellung. Nachdem ein Anruf beendet ist, wartet die Plattform so lange, bevor sie die Analyse startet - so bleibt ein Zeitfenster, in dem der Kontakt zurückrufen oder erneut angerufen werden kann, bevor das Ergebnis finalisiert wird. Mit Einheitenschalter konfigurieren (Minuten, Stunden oder Tage).
+
+    **Answering Machine Detection (AMD):**
+    - **AMD-Modus**: Profi-Einstellung mit **Text-based** und **ML-based** Optionen. [Mehr über AMD erfahren](#answering-machine-detection).
+
+    Für die vollständige Dokumentation der Einstellungen siehe [Kampagnenmanagement](/de/manage/campaigns/overview).
+  </Step>
+
+  <Step title="Kontakte hinzufügen">
+    Gehe zum Tab **Contacts**, um deine Kampagnenkontakte zu verwalten.
+
+    Klicke auf **Add Contacts** und wähle einen der Tabs:
+    - **Add from Existing**: Suche und filtere Kontakte, die bereits in deinem Konto sind
+    - **Import CSV**: Lade eine neue Kontaktliste für die Kampagne hoch
+
+    **Kontakte hinzufügen:**
+    - Wähle einzelne Zeilen aus und klicke auf **Add Selected**
+    - Nutze **Add All Filtered**, um den aktuell gefilterten Satz hinzuzufügen
+    - Nutze Such- und Tag-Filter, um Kontakte vor dem Hinzufügen einzugrenzen
+
+    Große Mengen werden im Hintergrund verarbeitet.
+
+    <Screenshot
+      lightSrc="/images/manage__campaign-add-contacts_DE-light.png"
+      darkSrc="/images/manage__campaign-add-contacts_DE-dark.png"
+      alt="Modal 'Add Contacts' in einer Kampagne mit Tabs für Add from Existing und Import CSV"
+    />
+  </Step>
+
+  <Step title="Analytik konfigurieren">
+    Öffne den Tab **Analytics**, um das Primärziel, eventuelle Sekundärziele und die Analysefragen zu definieren, die du nach jedem Anruf brauchst.
+
+    Halte die Launch-Konfiguration auf das fokussiert, was du ab Tag 1 messen musst. Für die detaillierte Verwaltung von Zielen und Analysen nach dem Launch siehe [Kampagnenmanagement](/de/manage/campaigns/overview).
+  </Step>
+
+  <Step title="Kampagne starten">
+    Kampagnen werden standardmäßig im Status **Paused** erstellt. Setze den Status auf **Active**, um mit dem Wählen zu beginnen. Sobald sie aktiv ist, startet die Kampagne zur konfigurierten Startzeit.
+
+    Nutze nach dem Launch [Kampagnenmanagement](/de/manage/campaigns/overview), um die Tabs Dashboard, Contacts, Settings und Analytics zu überwachen.
+  </Step>
+</Steps>
+
+## Nach dem Launch
+
+Sobald eine Kampagne aktiv ist, werden Kontaktlebenszyklus, Dashboard-Kennzahlen, Exporte und Aktionen pro Kontakt im [Kampagnenmanagement](/de/manage/campaigns/overview) verwaltet.
+
+| Bedarf | Verwende |
+| --- | --- |
+| Sehen, ob Anrufe laufen | Kampagnen-**Dashboard** |
+| Einzelnen Kontaktstatus prüfen | Kampagnen-**Contacts** |
+| Retry, Telefonnummern oder Timing anpassen | Kampagnen-**Settings** |
+| Ziele und Analysen prüfen | Kampagnen-**Analytics** |
+
+## Answering Machine Detection
+
+AMD verhindert, dass dein Agent Mailboxen bespricht oder mit Anrufbeantwortern spricht:
+
+| Modus | Geschwindigkeit | Genauigkeit | Am besten für |
+|------|-------|----------|----------|
+| **Text-based** | Schnell | Gut | Hochvolumen-Kampagnen, bei denen Geschwindigkeit wichtig ist |
+| **ML-based** | Langsamer | Höher | Kampagnen, bei denen Genauigkeit entscheidend ist |
+
+## Integration eingehender Anrufe
+
+Wenn Kontakte zurückrufen, verknüpft das System den Anruf automatisch mit dem Kampagnenkontakt über zwei Matching-Methoden:
+
+**Primäres Match (Nummernabgleich):**
+- Gleicht die Telefonnummer des Kontakts (anrufende Nummer) mit der Telefonnummer der Kampagne (angerufene Nummer) ab
+- Funktioniert für aktive oder pausierte Kampagnen
+
+**Fallback-Match (agentenbasiert):**
+- Aktiviert sich, wenn kein DID-Match gefunden wird und der Kontakt einen kürzlichen Outbound-Anruf hatte (innerhalb von 30 Tagen)
+- Gleicht die Telefonnummer des Kontakts mit Kampagnen ab, die denselben Agenten verwenden
+
+**Status-Updates**: Wenn ein eingehender Anruf gematcht wird, wechseln Kontakte in den Status Retry, Completed oder No Conversation automatisch zu **Called**, sodass Rückrufe wieder neue Chancen eröffnen.
+
+## Best Practices
+
+### Klein anfangen
+
+<Warning>
+Starte immer mit einem Pilot-Batch von 10-20 Kontakten, bevor du auf Tausende skalierst. Das validiert die Konfiguration und verhindert großflächige Fehler.
+</Warning>
+
+**Pilot-Workflow**:
+1. Erstelle eine Testliste mit freundlichen Kontakten, z. B. Kolleginnen/Kollegen oder Testnummern
+2. Starte die Kampagne und beobachte das Kampagnen-**Dashboard** und die **Gespräche**
+3. Werte Ergebnisse aus:
+   - Antwortrate
+   - AMD-Genauigkeit
+   - Zielerreichungsrate
+   - Durchschnittliche Anrufdauer
+4. Passe Agenten-Prompt, AMD-Einstellungen oder Zeitpläne nach Bedarf an
+5. Skaliere schrittweise: 50 > 200 > 1.000+ Kontakte
+
+### Qualität der Kontaktliste
+
+Vor dem Hochladen von Kontakten:
+- Doppelte Nummern entfernen
+- Telefonnummernformat validieren (international mit Ländervorwahl, z. B. +1234567890)
+- Mit deiner internen Do-Not-Call-Liste abgleichen
+- Falls relevant gegen nationale DNC-Register prüfen
+
+### Zeitzonen-Optimierung
+
+Für Kontakte über mehrere Zeitzonen hinweg ordnest du einen Zeitplan zu, der zur Empfängerregion passt, und prüfst danach die Tabs Kampagnen-**Dashboard** und **Analytics** nach deinem Pilot-Batch. Wenn deine Ansicht eine Heatmap enthält, nutze sie, um die besten Anruffenster je Region zu verfeinern.
+
+Für die Zeitplan-Einrichtung siehe [Geschäftszeiten](/de/launch/schedules).
+
+### Segmentierung
+
+Erstelle separate Kampagnen für:
+- verschiedene Kundensegmente (Trial vs. Paid)
+- verschiedene Skripte oder Ziele
+- verschiedene Sprachen
+- A/B-Test-Varianten
+
+Verfolge die Leistung und optimiere jedes Segment separat.
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Kampagnenmanagement" icon="list-check" href="/de/manage/campaigns/overview">
+    Kampagneneinstellungen, Kontakte und Analytik verwalten
+  </Card>
+
+  <Card title="Geschäftszeiten" icon="clock" href="/de/launch/schedules">
+    Anrufpläne und Zeitzonenhandling konfigurieren
+  </Card>
+
+  <Card title="Produktions-Checkliste" icon="star" href="/de/launch/production-checklist">
+    Kampagnenleistung und Kundenzufriedenheit optimieren
+  </Card>
+
+  <Card title="Outbound Compliance" icon="shield-check" href="/de/launch/outbound-compliance">
+    Einwilligung, Anruffenster und Compliance-Verantwortung prüfen
+  </Card>
+</CardGroup>
+
+---
+
+## Häufige Fragen
+
+<AccordionGroup>
+  <Accordion title="Mit wie vielen Kontakten sollte ich starten?">
+    Starte mit einem Pilot-Batch von 20-30 Kontakten, um Basis-Antwortraten zu erfassen und die Outbound-Begrüßung deines Agents zu validieren. Skaliere nach den ersten Ergebnissen hoch.
+  </Accordion>
+
+  <Accordion title="Was passiert, wenn jemand zurückruft?">
+    itellicoAI gleicht eingehende Rückrufe anhand der Telefonnummer mit dem Kampagnenkontakt ab. Wenn ein Match vorliegt, wird der Status des Kontakts automatisch aktualisiert. Wenn der Agent der Telefonnummer zugewiesen ist, behandelt er den Anruf wie ein normales Inbound-Gespräch.
+  </Accordion>
+
+  <Accordion title="Kann ich dieselbe Telefonnummer für mehrere Kampagnen verwenden?">
+    Eine Telefonnummer kann jeweils nur einer aktiven oder pausierten Kampagne zugeordnet sein. Nutze mehrere Nummern mit Rotation, wenn du parallele Kampagnen fahren willst.
+  </Accordion>
+</AccordionGroup>

@@ -1,0 +1,191 @@
+---
+title: "Qualitätsprobleme"
+description: "Qualitätsprobleme mit KI-gestützter Erstellung, Lösung und vollem Gesprächskontext nachverfolgen, triagieren und beheben"
+icon: "circle-exclamation"
+keywords: "quality issues, issue tracking, issue resolution, agent quality, severity, tags, assignee, bulk actions, AI resolution, AI issue creation, kanban, sub-issues, linked issues"
+"og:description": "Verfolge und behebe Qualitätsprobleme über deine KI-Agenten hinweg. Nutze KI zum Erstellen von Issues, erhalte Lösungsvorschläge und verwalte den gesamten Lebenszyklus von der Markierung bis zur Behebung."
+"og:title": "Qualitätsprobleme"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+Die Seite **Issues** ist der Ort, an dem du jedes Qualitätsproblem über deine Agenten hinweg verwaltest - von der ersten Markierung bis zur Lösung. Erstelle Issues manuell, aus [markierten Gesprächen](/de/manage/conversations/detail#nachrichten-markieren) oder mit KI-Unterstützung. Jedes Issue verfolgt den vollständigen Lebenszyklus von der Markierung bis zur Behebung.
+
+**Zugriff:** Öffne **Quality Studio > Issues** im Hauptmenü.
+
+<Screenshot lightSrc="/images/quality-studio__issues-list_DE-light.png" darkSrc="/images/quality-studio__issues-list_DE-dark.png" alt="Quality-Studio-Issues-Board nach Status gruppiert mit Severity-Icons, Agenten-Avataren, Tags und Zuweisungen" />
+
+## Ansichten
+
+Wechsle über das Ansichtsmenü im Seiten-Header zwischen den Ansichten:
+
+<Tabs>
+  <Tab title="Listenansicht">
+    Eine Tabelle, gruppiert nach Status mit einklappbaren Bereichen. Jede Zeile zeigt:
+
+    | Spalte | Beschreibung |
+    | --- | --- |
+    | **Severity** | Symbol für den Schweregrad |
+    | **ID** | Kurze Kennung des Issues |
+    | **Status** | Aktuelles Statussymbol |
+    | **Titel** | Issue-Titel |
+    | **Agent** | Avatar und Name des Agenten |
+    | **Tags** | Erster Tag als Badge |
+    | **Zuweisung** | Zugewiesenes Teammitglied oder nicht zugewiesen |
+  </Tab>
+  <Tab title="Board-Ansicht">
+    Ein Board mit Spalten für jeden Status (**Todo**, **In Progress**, **Done**). Ziehe Issues zwischen den Spalten, um ihren Status zu aktualisieren. Jede Karte zeigt Titel, Severity, Agent und Zuweisung.
+  </Tab>
+</Tabs>
+
+---
+
+## Filtern und Suchen
+
+Nutze den Seiten-Header, um nach Issue-Titeln und -Beschreibungen zu suchen. Nutze die Zuweisungs-Chips, um zwischen **Alle Issues**, **Meine Issues** und **Nicht zugewiesen** zu wechseln.
+
+---
+
+## Issues erstellen
+
+Du kannst ein Issue auf drei Arten erstellen:
+
+### Manuell erstellen
+
+Klicke auf **Neues Issue** und fülle Titel, Beschreibung, Agent, Severity, Tags und optional die Zuweisung aus.
+
+### Aus einem markierten Gespräch
+
+Wenn du ein [Gespräch oder eine Nachricht markierst](/de/manage/conversations/detail#nachrichten-markieren), wirst du aufgefordert, ein Qualitäts-Issue zu erstellen, das mit dieser konkreten Interaktion verknüpft ist. Die Plattform hängt den Gesprächskontext automatisch an.
+
+### KI-Issue-Erstellung
+
+Wenn du ein Issue aus einem markierten Gespräch erstellst, aktiviere **KI-Issue-Erstellung**, damit die KI das Gespräch analysiert und Folgendes vorschlägt:
+
+- **Titel** - eine kurze Zusammenfassung des Problems
+- **Beschreibung** - was im Gespräch schiefgelaufen ist
+- **Tags** - vorgeschlagener Issue-Typ, zum Beispiel `wrong-information`, `missed-intent`, `tone-issue`, `knowledge-gap`
+- **Severity** - empfohlene Schweregradstufe basierend auf der Auswirkung
+- **Zuweisung** - vorgeschlagenes Teammitglied basierend auf dem Issue-Typ
+
+Prüfe und passe die KI-Vorschläge vor dem Speichern an. Die KI liefert einen Startpunkt - du behältst die volle Kontrolle über das finale Issue.
+
+---
+
+## Issue-Status
+
+Jedes Issue durchläuft drei Status:
+
+| Status | Beschreibung |
+| --- | --- |
+| **Todo** | Erstellt und wartet auf Triage oder Aktion. Alle neuen Issues starten hier. |
+| **In Progress** | Ein Teammitglied arbeitet aktiv am Issue. |
+| **Done** | Dein Team hat das Issue gelöst. |
+
+## Severity-Stufen
+
+| Severity | Wann verwenden |
+| --- | --- |
+| **Critical** | Sofortige Aufmerksamkeit nötig - Compliance-Verstöße, konsequent falsche Informationen, fehlgeschlagene Übergaben |
+| **High** | Erheblicher Einfluss auf Kundenerlebnis oder Geschäftsergebnisse |
+| **Medium** | Auffälliges Qualitätsproblem, das bald behoben werden sollte |
+| **Low** | Kleines Problem oder Verbesserungspotenzial |
+
+## Issue-Tags
+
+Tags kategorisieren die Art des Problems. Häufige Tags sind:
+
+| Tag | Beschreibung |
+| --- | --- |
+| `wrong-information` | Agent hat falsche Fakten oder Daten geliefert |
+| `missed-intent` | Agent hat nicht verstanden, was der Anrufer wollte |
+| `tone-issue` | Ton des Agenten war für die Situation unpassend |
+| `goal-failure` | Agent hat sein Gesprächsziel nicht erreicht |
+| `hallucination` | Agent hat Informationen erfunden, die nicht in der Wissensbasis vorhanden sind |
+| `handoff-failure` | Übergabe an einen menschlichen Agenten ist fehlgeschlagen oder schlecht umgesetzt |
+| `knowledge-gap` | Dem Agenten fehlten Informationen zur Beantwortung der Frage |
+| `off-topic` | Antwort war thematisch daneben oder irrelevant |
+| `formatting` | Problem mit Formatierung oder Darstellung der Antwort |
+| `prompt-issue` | Der Prompt des Agenten hat unerwünschtes Verhalten verursacht |
+
+Du kannst auch eigene Tags erstellen, die zu deinem Bedarf passen.
+
+---
+
+## Issue-Detailansicht
+
+Klicke auf ein beliebiges Issue, um die vollständige Detailansicht zu öffnen.
+
+<Screenshot lightSrc="/images/quality-studio__issue-detail_DE-light.png" darkSrc="/images/quality-studio__issue-detail_DE-dark.png" alt="Issue-Detailansicht mit editierbarem Titel, Beschreibung, erwartetem Verhalten, Aktivitätszeitachse und Sidebar-Eigenschaften" />
+
+### Hauptinhalt
+
+- **Titel** - Issue-Zusammenfassung
+- **Beschreibung** - Detaillierte Erklärung des Fehlers
+- **Erwartetes Verhalten** - Was der Agent stattdessen hätte tun sollen, wenn vorhanden
+- **Gesprächslink** - Direkter Link zum zugehörigen Gespräch, wenn das Issue aus einem Gespräch entstanden ist
+- **Parent Issue** - Link zu einem übergeordneten Issue, wenn es sich um ein Sub-Issue handelt
+- **Sub-Issues** - Untergeordnete Issues, die daraus abgeleitet wurden
+- **Verknüpfte Issues** - Verwandte Issues für Querreferenzen
+
+### Aktivitätszeitachse
+
+Ein chronologisches Protokoll aller Ereignisse rund um das Issue - Statusänderungen, Kommentare, Zuweisungen und Bearbeitungen. Füge Kommentare über das Eingabefeld unten hinzu (absenden mit <kbd>Cmd</kbd>+<kbd>Enter</kbd>).
+
+### Sidebar-Eigenschaften
+
+Die Sidebar zeigt die Issue-Eigenschaften und erlaubt deren Bearbeitung:
+
+| Eigenschaft | Beschreibung |
+| --- | --- |
+| **Status** | Todo, In Progress oder Done |
+| **Severity** | Critical, High, Medium oder Low |
+| **Zuweisung** | Verantwortliches Teammitglied |
+| **Agent** | Der mit dem Issue verknüpfte Agent |
+| **Tags** | Editierbare Tag-Liste |
+| **Erstellt** | Zeitpunkt der Erstellung des Issues |
+
+### Tastenkürzel
+
+Nutze Tastenkürzel in der Detailansicht für schnelles Triage:
+
+| Tastenkürzel | Aktion |
+| --- | --- |
+| <kbd>S</kbd>, dann <kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> | Status auf Todo / In Progress / Done setzen |
+| <kbd>P</kbd>, dann <kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd>/<kbd>4</kbd> | Severity auf Low / Medium / High / Critical setzen |
+| <kbd>A</kbd>, dann <kbd>0</kbd>–<kbd>9</kbd> | Zuweisung entfernen oder einem Teammitglied zuweisen |
+
+---
+
+## Lösungsarten
+
+Wenn du ein Issue als erledigt markierst, wähle eine Lösungsart, um die Behebung zu kategorisieren:
+
+| Lösungsart | Beschreibung |
+| --- | --- |
+| **Prompt Update** | Du hast den Agenten-Prompt aktualisiert |
+| **Knowledge Update** | Du hast Wissensinhalte ergänzt oder korrigiert |
+| **Settings Change** | Du hast die Agentenkonfiguration angepasst |
+| **Guard Rail Added** | Du hast eine Schutzmaßnahme gegen das Verhalten hinzugefügt |
+| **Test Case Created** | Du hast einen Testfall hinzugefügt, um Regressionen zu erkennen |
+| **Dismissed (Edge Case)** | Du hast das Issue als Edge Case verworfen |
+| **Other** | Die Lösung passt in keine andere Kategorie |
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Quality-Studio-Dashboard" icon="chart-bar" href="/de/manage/quality-studio/overview">
+    Trends, Aufschlüsselungen und Metriken zur Agentengesundheit überwachen
+  </Card>
+  <Card title="Gesprächsdetails" icon="message-lines" href="/de/manage/conversations/detail">
+    Gespräche prüfen und problematische Antworten markieren
+  </Card>
+  <Card title="Agenteneditor" icon="pen-to-square" href="/de/build/getting-started/agent-editor">
+    Prompt, Wissen und Einstellungen deines Agenten aktualisieren
+  </Card>
+  <Card title="Prompt Engineering" icon="wand-magic-sparkles" href="/de/build/conversation/prompt-engineering-guide">
+    Den Prompt deines Agenten mit fortgeschrittenen Techniken verbessern
+  </Card>
+</CardGroup>

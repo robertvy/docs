@@ -1,0 +1,174 @@
+---
+title: "Lead Qualification Agent"
+description: "Build an AI agent that qualifies inbound leads and routes hot prospects to sales"
+icon: "filter"
+keywords: "lead qualification, sales qualification, inbound leads, lead scoring, sales routing, BANT"
+"og:description": "Step-by-step guide to building an AI lead qualification agent that screens inbound inquiries and routes qualified leads to sales."
+"og:title": "Lead Qualification Example"
+---
+
+Build an AI agent that qualifies inbound leads by asking the right questions, scoring their fit, and routing hot prospects to your sales team.
+
+## What You Will Build
+
+An agent that handles:
+- Greeting inbound leads warmly
+- Asking qualifying questions (budget, timeline, needs)
+- Assessing lead fit based on responses
+- Routing qualified leads to sales via live transfer
+- Capturing lead details for follow-up
+
+**Estimated setup time:** 20 minutes
+
+---
+
+## Step 1: Create the Agent
+
+1. **AI Agents → Create Agent**
+2. Name your agent (e.g., "Lead Qualifier - [Product/Service]") and click **Create**
+3. Configure the agent in the Agent Editor
+
+## Step 2: Write the Prompt
+
+```
+# Role
+You are Alex, a Business Development Representative at [Company Name]. You are consultative, friendly, and genuinely interested in understanding customer needs.
+
+# Objective
+Qualify potential customers using fit, authority, need, and timeline criteria, then route qualified leads to sales or capture details for follow-up.
+
+# Response Format
+- Keep responses to one to three sentences
+- End each response with a question when guiding discovery
+- Ask one qualification question at a time
+- Be conversational, not scripted
+- Never pressure the caller
+
+# Conversation Flow
+
+## Phase 1: Opening
+Greet the caller warmly and ask what brought them to call.
+
+## Phase 2: Discovery
+Understand their situation and what problem they are trying to solve.
+Ask qualifying questions naturally:
+- What is their current setup or process?
+- How many people, users, or locations are involved?
+- What is their timeline for making a change?
+- Have they looked at other solutions?
+
+## Phase 3: Fit Assessment
+Based on their answers, determine whether they are qualified, not yet qualified, or not a fit.
+
+# Qualification Criteria
+**Qualified Lead (transfer to sales):**
+- Has a clear need that our product solves
+- Has decision-making authority or access to it
+- Has a timeline within the next 3 months
+- Company size fits our target market
+
+**Not Yet Qualified (capture info for follow-up):**
+- Interested but early stage — no timeline
+- Needs to involve other stakeholders
+- Budget not yet defined
+
+**Not a Fit (politely redirect):**
+- Needs something we don't offer
+- Too small or too large for our solution
+
+# Next-Step Rules
+- If qualified: "I'd love to connect you with one of our specialists who can walk you through exactly how this would work for your team. Let me transfer you now."
+- If not yet qualified: Collect their email and name, explain we'll follow up with relevant information
+- If not a fit: Be honest and helpful — suggest alternatives if possible
+
+# Escalation Triggers
+Transfer to a human immediately if:
+- The caller is a qualified lead ready to speak with sales
+- The caller asks for specific pricing, legal commitments, or contract terms
+- The caller has technical questions beyond your knowledge
+- The caller asks to speak with a human
+
+Escalation phrase: "I'd love to connect you with one of our specialists who can walk you through the details."
+
+# Information to Capture
+- Always collect: name, company, email, phone (if not already captured)
+- Use your knowledge base for product questions
+
+# Off-Limits Topics
+If the caller asks about any of the following, say you're not able to go into detail and offer to have a specialist follow up:
+- Specific contract terms or legal commitments
+- Competitor comparisons with claims you can't verify
+- Custom pricing or discounts (let the sales team handle this)
+- Internal company information
+```
+
+## Step 3: Add Tools
+
+| Tool | Purpose |
+| --- | --- |
+| **Transfer Call** (Sales Team) | Route qualified leads to sales — set destination to your sales line |
+| **Custom Action** (CRM) | Optional — log lead details to your CRM via API |
+
+## Step 4: Add Knowledge Base
+
+Create a knowledge base with:
+- **Product/service overview** — what you offer, key benefits
+- **Pricing tiers** — if shareable, or "pricing depends on needs"
+- **Case studies** — brief success stories to build credibility
+- **Competitor comparisons** — how you differ (handle objectively)
+- **FAQ** — common prospect questions
+
+## Step 5: Configure Analytics
+
+| Type | Name | Description |
+| --- | --- | --- |
+| **Primary Goal** | Lead Qualified | The caller met qualification criteria and the agent transferred them or scheduled a follow-up |
+| **Secondary Goal** | Contact Info Captured | The agent collected name, email, and company |
+| **Insight** | Lead Score | Rate the lead quality from 1-5 based on fit and readiness (Rating) |
+| **Insight** | Company Size | How many employees or users? (Open) |
+| **Insight** | Timeline | When are they looking to make a decision? (Open) |
+| **Insight** | Primary Need | What's the main problem they're trying to solve? (Open) |
+
+## Step 6: Set Up Notifications
+
+Add a post-call notification:
+- **Trigger:** "The caller showed genuine interest and provided contact information"
+- **Recipients:** Your sales team email
+- **Template:** Include `{{customer_name}}`, `{{conversation_summary}}`, `{{conversation_url}}`
+- **Task creation:** Enable with High priority for qualified leads
+
+## Step 7: Deploy
+
+### For Inbound
+1. Buy a number in **Telephony → Buy Number**
+2. Use this number in your ads, website, and landing pages
+3. Assign routing to your qualification agent
+
+### For Outbound (Optional)
+1. Create a campaign with your lead list
+2. Adjust the prompt for outbound context ("Hi, this is [name] from [company], following up on your interest in...")
+
+## Measuring Success
+
+After the first week, review:
+- **Qualification rate** — what percentage of calls result in qualified leads?
+- **Transfer success** — are transferred calls connecting to sales?
+- **Insight accuracy** — are lead scores and details captured correctly?
+- **Conversation quality** — listen to recordings for tone and flow
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Transfer Tool" icon="right-left" href="/build/tools/transfer-tools">
+    Configure sales team routing
+  </Card>
+  <Card title="Custom Actions" icon="bolt" href="/build/tools/custom-api-actions">
+    Connect to your CRM
+  </Card>
+  <Card title="Gather Insights" icon="chart-line" href="/build/analytics/gather-insights">
+    Extract structured lead data
+  </Card>
+  <Card title="Campaign Launch" icon="bullhorn" href="/launch/campaign-outbound-launch">
+    Run outbound qualification campaigns
+  </Card>
+</CardGroup>

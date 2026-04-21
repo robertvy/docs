@@ -1,0 +1,260 @@
+---
+title: "Testszenarien"
+description: "Vorgefertigte Testscripts und Checklisten zur Validierung deines Agents vor dem Launch"
+icon: "list-check"
+keywords: "test scenarios, test scripts, QA checklist, agent validation, pre-launch testing, voice agent testing, conversation testing, test cases"
+"og:description": "Nutze vorgefertigte Testszenarien und Checklisten, um deinen KI-Sprachagenten vor dem Go-live zu validieren. Deckt Begrüßungen, Wissen, Tools, Transfers und mehr ab."
+"og:title": "Testszenarien"
+---
+
+Bevor du deinen Agenten launchst, arbeite diese Testszenarien durch, um Probleme früh zu erkennen. Jedes Szenario beschreibt, was du testen sollst, wie du es auslöst und worauf du achten solltest.
+
+## Diese Seite als wiederverwendbare QA-Checkliste nutzen
+
+Diese Seite ist hilfreich, wenn du eine konsistente Testroutine vor dem Launch willst, die mehrere Personen im Team befolgen können.
+
+<Tip>
+Nutze [Chat-/Webtests](/de/test/web-simulator) für schnelle Iterationen und bestätige das Ergebnis danach mit einem [Telefontest](/de/test/phone-testing), um das vollständige Spracherlebnis zu prüfen.
+</Tip>
+
+---
+
+## Pre-Launch-Checkliste
+
+Gehe diese Checkliste vor jedem Launch oder jeder größeren Änderung durch:
+
+| Kategorie | Was du prüfen solltest |
+|----------|---------------|
+| Begrüßung | Der Agent stellt sich korrekt vor und schafft Kontext |
+| Prompt | Der Agent folgt deinem Prompt und bleibt im Rahmen |
+| Wissen | Der Agent ruft genaue Informationen aus der Wissensdatenbank ab |
+| Tools | Transfers, Buchungen und benutzerdefinierte Aktionen funktionieren korrekt |
+| Ziele | Gesprächsziele werden verfolgt und bewertet |
+| Edge Cases | Der Agent behandelt Unterbrechungen, Stille und Off-Topic-Eingaben |
+| Sprachqualität | Natürliches Tempo, korrekte Aussprache, keine seltsamen Pausen |
+
+---
+
+## Begrüßung & Vorstellung
+
+Teste den ersten Eindruck, den Anrufende erhalten.
+
+**Szenarien:**
+
+<AccordionGroup>
+  <Accordion title="Standardbegrüßung" icon="hand-wave">
+    **Auslöser:** Starte einen neuen Anruf und bleibe still.
+
+    **Prüfen:**
+    - Der Agent spricht die konfigurierte Begrüßung
+    - Die Begrüßung klingt natürlich und passt zu deinem Markenstil
+    - Der Agent wartet nach der Begrüßung auf eine Antwort
+  </Accordion>
+
+  <Accordion title="Anrufer spricht zuerst" icon="comment">
+    **Auslöser:** Starte einen Anruf und sage sofort etwas, bevor der Agent begrüßt.
+
+    **Prüfen:**
+    - Der Agent behandelt die Unterbrechung sauber
+    - Der Agent stellt trotzdem Kontext her (wer er ist, wie er helfen kann)
+    - Das Gespräch geht natürlich von der Eröffnung der anrufenden Person aus weiter
+  </Accordion>
+
+  <Accordion title="Anrufer fragt 'Wer ist das?'" icon="circle-question">
+    **Auslöser:** Frage nach der Begrüßung: "Mit wem spreche ich?" oder "Welche Firma ist das?"
+
+    **Prüfen:**
+    - Der Agent stellt sich mit dem konfigurierten Namen und Unternehmen vor
+    - Die Antwort passt zu deinen Identitätseinstellungen
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Wissensdatenbank-Abfrage
+
+Teste, ob dein Agent Inhalte aus der Wissensdatenbank korrekt nutzt.
+
+**Szenarien:**
+
+<AccordionGroup>
+  <Accordion title="Direkte Übereinstimmung" icon="bullseye">
+    **Auslöser:** Stelle eine Frage, die direkt zu Inhalten in deiner Wissensdatenbank passt, z. B. "Wie sind eure Öffnungszeiten?"
+
+    **Prüfen:**
+    - Der Agent ruft die richtigen Informationen ab
+    - Die Antwort ist korrekt und vollständig
+    - Prüfe die Markierungen zur Wissensabfrage in den Gesprächsdetails, um zu bestätigen, dass die richtigen Chunks verwendet wurden
+  </Accordion>
+
+  <Accordion title="Paraphrasierte Frage" icon="rotate">
+    **Auslöser:** Stelle dieselbe Frage auf verschiedene Arten, z. B. "Wann habt ihr offen?", "Wann schließt ihr?" oder "Kann ich sonntags vorbeikommen?"
+
+    **Prüfen:**
+    - Der Agent findet relevante Inhalte unabhängig von der Formulierung
+    - Die Antworten bleiben über verschiedene Formulierungen hinweg konsistent
+  </Accordion>
+
+  <Accordion title="Frage ohne passende Inhalte" icon="circle-xmark">
+    **Auslöser:** Frage nach etwas, das in deiner Wissensdatenbank nicht abgedeckt ist.
+
+    **Prüfen:**
+    - Der Agent halluziniert keine Antwort
+    - Der Agent sagt ehrlich, dass ihm diese Information fehlt
+    - Der Agent bietet Alternativen an (Transfer, Rückruf, E-Mail)
+  </Accordion>
+
+  <Accordion title="Mehrthemenfrage" icon="layer-group">
+    **Auslöser:** Stelle eine Frage, die mehrere Wissensobjekte betrifft, z. B. "Wie ist eure Rückgaberichtlinie und bietet ihr Umtausch an?"
+
+    **Prüfen:**
+    - Der Agent beantwortet beide Teile der Frage
+    - Die Informationen stammen aus den richtigen Wissenseinträgen
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Tool-Ausführung
+
+Teste jedes Tool, das dein Agent verwenden soll.
+
+**Szenarien:**
+
+<AccordionGroup>
+  <Accordion title="Anrufweiterleitung" icon="phone-arrow-right">
+    **Auslöser:** Bitte darum, mit einem Menschen oder einer bestimmten Abteilung zu sprechen, oder löse eine Transfer-Bedingung aus.
+
+    **Prüfen:**
+    - Der Transfer startet zur richtigen Nummer oder SIP-Zieladresse
+    - Der Agent kündigt den Transfer vor der Ausführung an
+    - Das Gespräch verbindet tatsächlich zum Ziel
+  </Accordion>
+
+  <Accordion title="Kalenderbuchung" icon="calendar">
+    **Auslöser:** Bitte um einen Termin oder eine Buchung.
+
+    **Prüfen:**
+    - Der Agent sammelt die nötigen Informationen (Datum, Uhrzeit, Name, Kontakt)
+    - Die Buchung wird im verbundenen Kalender erstellt
+    - Der Anrufer erhält eine Bestätigung
+  </Accordion>
+
+  <Accordion title="Benutzerdefinierte API-Aktion" icon="code">
+    **Auslöser:** Sage etwas, das eine benutzerdefinierte API-Aktion auslösen sollte, z. B. "Prüfe meinen Bestellstatus".
+
+    **Prüfen:**
+    - Die API wird mit den richtigen Parametern aufgerufen
+    - Der Agent verarbeitet die Antwort und kommuniziert das Ergebnis
+    - Fehlerfälle liefern eine hilfreiche Nachricht und keinen rohen Fehler
+  </Accordion>
+
+  <Accordion title="Mehrere Tools in einem Anruf" icon="wrench">
+    **Auslöser:** Löse in einem einzigen Gespräch zwei oder mehr verschiedene Tools aus.
+
+    **Prüfen:**
+    - Jedes Tool läuft unabhängig
+    - Der Kontext des Agents bleibt zwischen den Tool-Calls erhalten
+    - Es gibt keine gegenseitige Beeinflussung zwischen den Tools
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Gesprächsziele
+
+Teste, ob Ziele korrekt verfolgt werden.
+
+**Szenarien:**
+
+<AccordionGroup>
+  <Accordion title="Ziel erreicht" icon="circle-check">
+    **Auslöser:** Schließe ein Gespräch ab, das das Primärziel erreichen sollte, z. B. einen Termin planen oder eine Anfrage lösen.
+
+    **Prüfen:**
+    - Das Ziel erscheint im Tab **Analytics** der Gesprächsdetails als "Erreicht"
+    - Die Begründung ist plausibel
+  </Accordion>
+
+  <Accordion title="Ziel nicht erreicht" icon="circle-xmark">
+    **Auslöser:** Beende ein Gespräch, ohne das Ziel zu erreichen, z. B. früh auflegen oder Informationen verweigern.
+
+    **Prüfen:**
+    - Das Ziel erscheint als "Nicht erreicht"
+    - Die Begründung erklärt korrekt warum
+  </Accordion>
+
+  <Accordion title="Sekundäre Ziele" icon="list-ol">
+    **Auslöser:** Schließe einen Anruf ab, bei dem sekundäre Ziele verfolgt werden sollen, z. B. E-Mail erfasst oder Produktinteresse identifiziert.
+
+    **Prüfen:**
+    - Sekundäre Ziele werden unabhängig vom Primärziel bewertet
+    - Jedes Ziel zeigt im Tab **Analytics** korrekte Ergebnisse
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Insights sammeln
+
+Wenn du Gather Insights konfiguriert hast, prüfe, ob es korrekt läuft.
+
+1. Schließe einen Testanruf ab
+2. Öffne das Gespräch in der Detailansicht
+3. Prüfe im Tab **Analytics** die Ergebnisse der gesammelten Insights
+4. Verifiziere, dass die Antworten auf deine konfigurierten Fragen korrekt sind
+
+<Note>
+Gather Insights läuft nach jedem Anruf automatisch. Die Ergebnisse erscheinen nach wenigen Sekunden in den Gesprächsdetails. Siehe [Gather Insights](/de/build/analytics/gather-insights) für die Konfiguration.
+</Note>
+
+---
+
+## Sprach- & Gesprächsqualität
+
+Diese Szenarien testest du am besten mit [Telefonanrufen](/de/test/phone-testing) statt mit Browser-Tests.
+
+<AccordionGroup>
+  <Accordion title="Natürliches Tempo" icon="clock">
+    **Test:** Führe ein normales Gespräch und achte auf:
+    - angemessene Pausen zwischen den Gesprächszügen
+    - kein Unterbrechen der anrufenden Person
+    - keine unnatürlich langen Stillephasen
+    - natürlichen Sprachrhythmus
+  </Accordion>
+
+  <Accordion title="Aussprache" icon="volume-high">
+    **Test:** Löse Antworten aus, die enthalten:
+    - deinen Firmennamen
+    - Produktnamen
+    - technische Begriffe
+    - Telefonnummern, E-Mail-Adressen, URLs
+
+    **Prüfen:** Alles wird korrekt ausgesprochen. Behebe Probleme mit [benutzerdefinierten Aussprachen](/de/build/voice-speech/custom-pronunciations).
+  </Accordion>
+
+  <Accordion title="Umgang mit Hintergrundgeräuschen" icon="waveform-lines">
+    **Test:** Rufe aus einer lauten Umgebung an oder spiele Hintergrundgeräusche ab.
+
+    **Prüfen:**
+    - Der Agent versteht den Anrufer weiterhin
+    - Die Transkription bleibt korrekt
+    - Der Agent bittet bei Bedarf um Klarstellung
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Mehrsprachige Tests
+
+Wenn dein Agent mehrere Sprachen unterstützt:
+
+1. Starte einen Anruf in jeder konfigurierten Sprache
+2. Prüfe, ob der Agent in der richtigen Sprache antwortet
+3. Teste einen Sprachwechsel mitten im Gespräch, falls unterstützt
+4. Prüfe, ob Wissensdatenbank-Inhalte in der richtigen Sprache abgerufen werden
+
+---
+
+## Regressionstests
+

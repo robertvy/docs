@@ -1,0 +1,114 @@
+---
+title: "Import Contacts"
+description: "Bulk import contacts from CSV files with validation, preview, and import history"
+icon: "file-import"
+keywords: "CSV import, contact import, bulk import, import validation, import history, contact preview"
+"og:description": "Import contacts from CSV files with guided preview, validation, and import history in itellicoAI."
+"og:title": "Import Contacts"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+Use contact import to load many contacts from a CSV file.
+
+**Access:** Open **Contacts**, click **Add Contacts**, then choose **Import CSV**.
+
+## Use Import When
+
+- you already have contact lists in a spreadsheet or CRM export
+- you need to load many contacts faster than manual entry
+- you want campaign-ready lists with names, phone numbers, and tags
+
+For a small number of records, manual entry is usually faster. Use import when you are moving a list into the platform.
+
+## File Requirements
+
+| Requirement | Value |
+| --- | --- |
+| **Format** | CSV |
+| **Max size** | 5 MB |
+| **Header row** | Required |
+| **Required field** | `number` |
+| **Practical row cap** | 50,000 rows |
+
+Common optional columns:
+
+- `firstName`
+- `first_name`
+- `lastName`
+- `last_name`
+- `email`
+- `tags`
+
+For tags, separate multiple values with `|` (for example `vip|sales|us`).
+
+The importer also recognizes common phone header aliases such as `phone`, `phone_number`, and `phoneNumber`. There is no separate mapping step, so keep headers close to the supported names before uploading.
+
+## Before You Upload
+
+Clean the CSV first so the import goes smoothly:
+
+- keep one contact per row
+- make sure phone numbers are in a consistent international format
+- remove columns you do not need
+- use simple, stable tag values
+- check that the header row is present
+
+## Import Flow
+
+<Screenshot
+  lightSrc="/images/manage__import-preview-light.png"
+  darkSrc="/images/manage__import-preview-dark.png"
+  alt="Import from CSV dialog showing required columns, example rows, file upload dropzone, and import history link"
+/>
+
+<Steps>
+  <Step title="Upload file">
+    Select a CSV in the import dialog.
+  </Step>
+  <Step title="Preview">
+    Review parsed headers, row count, and a 10-row preview.
+  </Step>
+  <Step title="Validate">
+    Confirm required columns and check validation messages before continuing.
+  </Step>
+  <Step title="Start import">
+    Confirm import and let it run as a background job.
+  </Step>
+</Steps>
+
+## Import History
+
+Import history tracks each job with status and progress:
+
+- Pending
+- In Progress
+- Completed
+- Failed
+
+When error reports are available, you can download per-job error CSV output.
+
+## Notes
+
+- Very large files are surfaced during preview so you can split before importing.
+- The platform matches existing contacts by phone number, updates name and email fields when present, and applies tags from the import.
+
+## What To Do After Import
+
+After the job completes:
+
+1. Open **Contacts** and spot-check a few records
+2. Verify tags and phone numbers look correct
+3. Add the imported contacts to a campaign if needed
+4. Download the error CSV if some rows failed validation
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Contact Management" icon="address-book" href="/manage/contacts/overview">
+    Organize and edit contacts after import
+  </Card>
+  <Card title="Campaign Management" icon="bullhorn" href="/manage/campaigns/overview">
+    Add imported contacts to outbound campaigns
+  </Card>
+</CardGroup>

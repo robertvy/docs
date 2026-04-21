@@ -1,0 +1,126 @@
+---
+title: "DTMF Controls"
+description: "Enable keypad tone support for IVR navigation and caller keypad input during phone calls"
+icon: "hashtag"
+keywords: "DTMF, keypad tones, IVR navigation, phone keypad, keypad input, IVR automation"
+"og:description": "Enable keypad tone support so agents can navigate IVRs and react to caller keypad input during phone calls."
+"og:title": "DTMF Controls"
+---
+
+## How DTMF Works
+
+DTMF (Dual-Tone Multi-Frequency) is the signal produced when someone presses keys on a phone keypad. Enable DTMF when a phone-call agent needs to:
+
+- send keypad tones to external IVR systems
+- collect caller keypad input, such as menu choices or short account identifiers
+
+<Note>
+DTMF is for phone calls only. Web calls and chat sessions do not have a phone keypad, so DTMF does not apply there.
+</Note>
+
+---
+
+## Where To Enable It
+
+**Access:** Open an agent, go to **Call Flow**, and scroll to **Keypad Input**.
+
+Turn on **Enable DTMF during calls**.
+
+<Info>
+DTMF is currently an Alpha setting. The dashboard exposes one toggle; keypad timing, capture mode, clear digit, termination key, and buffering behavior use platform defaults.
+</Info>
+
+---
+
+## What Is Supported
+
+When DTMF is enabled, the platform registers keypad tools for the call session. It can send tones to the phone leg and receive caller keypad presses from SIP DTMF events.
+
+For exact-length input, such as "collect 4 digits", the platform uses native fixed-length keypad collection when available. For variable-length or menu-style input, it falls back to the platform's internal collector.
+
+---
+
+## Prompt Examples
+
+Use short, explicit phrasing:
+
+```text wrap
+"Press 1 for billing, 2 for support, or 3 for sales."
+```
+
+After the digit arrives, confirm the meaning, not the mechanism:
+
+```text wrap
+"Got it — I'll help with support."
+```
+
+Use DTMF for short numeric input that is easier to enter than to say:
+
+```text wrap
+"Please enter the last 4 digits of your account number using your keypad."
+```
+
+Confirm safely:
+
+```text wrap
+"Thanks. I found the account ending in 2457."
+```
+
+Do not repeat full sensitive values back to the caller unless your workflow truly requires it.
+
+### Always offer a voice fallback
+
+Not every caller will want to use a keypad.
+
+```text wrap
+"If you prefer, you can also say the number out loud."
+```
+
+That keeps the flow accessible for callers on speakerphone, softphones, or devices with awkward keypad access.
+
+---
+
+## Testing DTMF
+
+<Steps>
+  <Step title="Use a phone test">
+    Open **Test** on the agent and choose **Phone** so you are testing a real phone leg.
+  </Step>
+  <Step title="Test caller keypad input">
+    Ask the agent for a simple keypad response such as `1` or a short numeric identifier.
+
+    Confirm the agent reacts correctly and the call does not stall if no key is pressed immediately.
+  </Step>
+  <Step title="Test external IVR navigation">
+    If your agent must navigate another phone tree, run a live test against that real number or SIP destination and verify the downstream IVR accepts the tones reliably.
+  </Step>
+  <Step title="Test the fallback path">
+    Intentionally avoid pressing keys once so you can confirm the agent retries cleanly or offers a voice alternative.
+  </Step>
+</Steps>
+
+## Best Practices
+
+- Ask for one keypad action at a time.
+- Offer a voice fallback, such as "You can also say the number out loud."
+- Confirm only the safe part of sensitive values, such as the last 4 digits.
+- Test the exact carrier, phone number, or SIP route you will use in production.
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Transfer Tools" icon="phone-arrow-right" href="/build/tools/transfer-tools">
+    Configure live transfer destinations and downstream call handling
+  </Card>
+  <Card title="Voicemail Handling" icon="voicemail" href="/build/advanced/voicemail-handling">
+    Test phone outcomes such as human answer vs voicemail
+  </Card>
+  <Card title="Phone Numbers" icon="phone" href="/launch/phone-numbers">
+    Set up the phone infrastructure required for live keypad interactions
+  </Card>
+  <Card title="VAD & Turn Detection" icon="waveform-lines" href="/build/advanced/vad-turn-detection">
+    Tune interruption and pause behavior around keypad-driven flows
+  </Card>
+</CardGroup>

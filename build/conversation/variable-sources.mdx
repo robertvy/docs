@@ -1,0 +1,136 @@
+---
+title: "Variable Sources"
+description: "Understand where variables come from, when they're available, and where you can use them"
+icon: "brackets-curly"
+keywords: "variables, dynamic content, contact variables, dynamic context, pre-call webhook, insights, action results, Jinja"
+"og:description": "All the variable sources in one place — contact data, pre-call context, in-call collection, and post-call insights."
+"og:title": "Variable Sources"
+---
+
+Variables let you personalize your agent's greeting, prompt, and notifications with real data. This page explains where variables come from, when they become available, and where you can use them.
+
+If you want the full lifecycle view, including how live tool inputs differ from post-call values, read [Conversation Data Flow](/build/conversation/runtime-data-flow).
+
+## The Four Sources
+
+| Source | When it's available | Example variables |
+| --- | --- | --- |
+| **Contact data** | Before the call starts (if the caller matches a contact) | `{{contact.first_name}}`, `{{contact.email}}`, `{{contact.phone_number}}` |
+| **Pre-call context** | Before the call starts (fetched from your API via [Dynamic Context](/build/advanced/dynamic-context)) | `{{account_tier}}`, `{{open_tickets}}`, `{{last_order_status}}` |
+| **Built-in system** | Always available | `{{current_datetime}}`, `{{timezone}}`, `{{direction}}`, `{{agent_uuid}}` |
+| **Post-call insights** | After the call ends (AI extracts from transcript) | `{{dyn_appointment_date}}`, `{{dyn_issue_summary}}`, `{{dyn_caller_sentiment}}` |
+
+## Contact Variables
+
+Available automatically when the caller's phone number matches a contact in your system.
+
+```
+Hi {{contact.first_name | default("there")}}, thanks for calling.
+```
+
+Use `| default("fallback")` so the greeting still works when no contact is matched.
+
+**Available fields:** `contact.first_name`, `contact.last_name`, `contact.full_name`, `contact.email`, `contact.phone_number`
+
+## Pre-Call Context (Dynamic Context)
+
+<Badge>Expert Mode</Badge>
+
+The platform fetches this from your API before the conversation starts. Configure the endpoint in **Call Flow → Before Call**.
+
+Your API receives the caller's number and agent ID, and returns JSON. Every field in the response becomes a variable.
+
+```
+{% if account_tier == "enterprise" %}
+This is a priority customer. Provide white-glove support.
+{% else %}
+Standard support flow.
+{% endif %}
+```
+
+[Set up Dynamic Context →](/build/advanced/dynamic-context)
+
+## Built-In System Variables
+
+Always available in every conversation:
+
+| Variable | What it contains |
+| --- | --- |
+| `{{current_datetime}}` | Current date and time |
+| `{{timezone}}` | Agent's configured timezone |
+| `{{direction}}` | `inbound` or `outbound` |
+| `{{medium}}` | Conversation channel, such as `voice`, `web`, or `test` |
+| `{{agent_uuid}}` | The agent's unique ID |
+| `{{agent_number}}` | The phone number the agent is using |
+| `{{contact_number}}` | The caller's phone number |
+
+## Post-Call Insight Variables
+
+Available in [Notifications](/build/analytics/post-call-automation) after the call ends. AI extracts these from the transcript.
+
+Type `{{dyn_` followed by a descriptive name:
+
+```
+{{dyn_appointment_date}}  → AI finds the date mentioned
+{{dyn_issue_summary}}     → AI summarizes the problem
+{{dyn_next_steps}}        → AI identifies agreed action items
+```
+
+These only work in notification email templates, not in the agent's prompt (the call is already over).
+
+## Where You Can Use Variables
+
+| Location | Contact | Pre-call | System | Post-call |
+| --- | --- | --- | --- | --- |
+| **Greeting message** | Yes | Yes | Yes | No |
+| **Prompt** | Yes | Yes | Yes | No |
+| **Notification emails** | Customer fields only | No | Conversation fields only | Yes |
+
+<Note>
+Notification emails use a separate post-call context. They do not receive live-call variables like `{{contact.first_name}}`, Dynamic Context fields, `{{current_datetime}}`, or `{{timezone}}` directly. Use notification variables such as `{{customer_name}}`, `{{customer_email}}`, `{{customer_number}}`, `{{conversation_date}}`, `{{conversation_direction}}`, `{{conversation_summary}}`, and `{{dyn_*}}`.
+</Note>
+
+## Syntax
+
+Variables use Jinja syntax: `{{ variable_name }}`
+
+**Filters:**
+- `{{ contact.first_name | default("there") }}` — fallback value
+- `{{ current_datetime | datetime("%H:%M") }}` — format dates
+
+**Conditionals:**
+```
+{% if direction == "outbound" %}
+You are making an outbound call to {{contact.first_name}}.
+{% else %}
+A customer is calling in.
+{% endif %}
+```
+
+## Debugging Variables
+
+If a variable isn't working:
+1. Check the source — is the contact matched? Is Dynamic Context returning data?
+2. Check spelling — variable names are case-sensitive
+3. Check the fallback — use `| default("...")` for variables that might be empty
+4. Test with different scenarios — inbound vs outbound, known vs unknown caller
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Conversation Data Flow" icon="arrows-turn-right" href="/build/conversation/runtime-data-flow">
+    See how values move through the conversation lifecycle
+  </Card>
+  <Card title="Template Syntax" icon="brackets-curly" href="/build/conversation/template-syntax">
+    Reference the full Jinja syntax and advanced patterns
+  </Card>
+  <Card title="Dynamic Context" icon="database" href="/build/advanced/dynamic-context">
+    Set up pre-call data fetching
+  </Card>
+  <Card title="Notifications" icon="envelope" href="/build/analytics/post-call-automation">
+    Use post-call variables in email templates
+  </Card>
+  <Card title="Greeting Messages" icon="hand-wave" href="/build/conversation/greeting-messages">
+    Personalize greetings with variables
+  </Card>
+</CardGroup>

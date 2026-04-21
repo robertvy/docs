@@ -1,0 +1,73 @@
+---
+title: "Limits & Quotas"
+description: "Plan limits, API rate limits, and platform quotas"
+icon: "gauge"
+keywords: "rate limits, API limits, plan limits, quotas, concurrent calls, voice minutes, throttling, agents limit, team members limit"
+"og:description": "Reference for itellicoAI plan limits, API rate limits, and platform quotas across all pricing tiers."
+"og:title": "Limits & Quotas"
+---
+
+## Platform
+
+- **Availability terms:** Plan- and contract-dependent
+- **Response latency:** Depends on model, voice provider, transcriber, network path, and enabled tools
+- **Voices:** Hundreds across 50+ languages
+- **Agents:** Unlimited — no cap on the number of agents
+
+## Plan Limits
+
+Some limits are commercial and plan-dependent (for example: included minutes, concurrent calls, and knowledge bases).
+
+Use these as source of truth for your account's current values:
+- [Plans](/billing/plans)
+- [Usage & Pricing](/billing/overview)
+
+<Note>
+Plan packaging and pricing can change over time. This page focuses on technical limits enforced by the API/runtime.
+</Note>
+
+---
+
+## API Rate Limits
+
+API requests are rate-limited to protect platform stability. Contact [support@itellico.ai](mailto:support@itellico.ai) if you need specific rate limit details for your integration.
+
+When you exceed a limit, the API returns HTTP `429 Too Many Requests` with error code `rate_limit_exceeded`.
+
+Recommended client behavior:
+1. Retry with exponential backoff.
+2. Add jitter to avoid synchronized retries.
+3. Reduce burst traffic (batch where possible).
+
+---
+
+## Selected File Limits
+
+Several upload flows enforce hard file-size caps. Common limits include:
+
+| Resource type | Limit |
+|----------|-------|
+| Knowledge base file upload | 10 MB per file |
+| Conversation attachments | 10 MB per file |
+| Many audio/media uploads | 10 MB per file (endpoint-specific) |
+
+For commercial pricing/overage details, see [Usage & Pricing](/billing/overview).
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Plans" icon="credit-card" href="/billing/plans">
+    Compare plans and features
+  </Card>
+  <Card title="Usage & Pricing" icon="calculator" href="/billing/overview">
+    Understand per-minute costs and billing
+  </Card>
+  <Card title="API Reference" icon="brackets-curly" href="/api-reference/introduction">
+    View full API documentation
+  </Card>
+  <Card title="Supported Providers" icon="microchip" href="/reference/supported-providers">
+    Browse AI models, voices, and transcription engines
+  </Card>
+</CardGroup>

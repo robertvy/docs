@@ -1,0 +1,104 @@
+---
+title: "SIP Trunks"
+description: "Import existing phone numbers and connect your carrier via SIP trunks"
+icon: "server"
+keywords: "SIP trunk, Connect Your Own, BYOC, bring your own carrier, import numbers, SIP authentication"
+"og:description": "Connect your existing carrier and import phone numbers to itellicoAI using SIP trunks."
+"og:title": "SIP Trunks"
+---
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+If you already have phone numbers with a carrier, use **Connect Your Own** to import them and connect via [SIP](/glossary#telephony-and-networking) trunks instead of buying numbers through the marketplace.
+
+**Access:** Navigate to **Telephony → SIP Trunks**
+
+Common providers for this setup include Twilio, Telnyx, Vonage, and other SIP-capable carriers.
+
+<Screenshot
+  lightSrc="/images/sip__create-sip-light.png"
+  darkSrc="/images/sip__create-sip-dark.png"
+  alt="SIP trunk creation dialog showing name, termination URI, authentication, and IP restriction fields"
+/>
+
+## SIP Trunk List
+
+| Column | Description |
+| --- | --- |
+| **Name & Numbers** | Trunk name with count of linked phone numbers |
+| **Termination URI** | SIP endpoint for outbound calls |
+| **Authentication** | SIP auth username (if configured) |
+| **IP Restrictions** | Allowed IP addresses for inbound calls |
+| **Actions** | Copy ID, Edit, Delete |
+
+## Creating a SIP Trunk
+
+Click **Create SIP Trunk**. The dialog is split into **Inbound** and **Outbound** tabs.
+
+### Inbound
+
+Use the inbound tab to copy your itellicoAI inbound URI and restrict which source IPs are allowed to send calls into the trunk.
+
+Your itellicoAI inbound SIP URI is:
+
+```
+sip:50ebbp4vhpr.sip.livekit.cloud
+```
+
+Configure your carrier to forward calls to this URI.
+
+### Outbound
+
+Use the outbound tab to configure:
+
+| Setting | Description |
+| --- | --- |
+| **Name** | Descriptive name for this trunk (e.g., "Main Carrier") |
+| **Provider Domain / Termination URI** | Your carrier's SIP endpoint for outbound calls |
+| **SIP Auth Username** | Authentication username provided by your carrier |
+| **Password** | Stored through the shared **Secrets** credential flow instead of being shown as plain text in the dialog |
+
+You can delete a SIP trunk only after unlinking any phone numbers that still use it.
+
+<Note>
+By default, itellicoAI does not provide static IP addresses for outbound SIP — so IP whitelisting on your carrier side is not possible out of the box. Static IPs can be arranged on demand. Contact [support@itellico.ai](mailto:support@itellico.ai) if you need this.
+</Note>
+
+<Tip>
+Use a saved secret for SIP authentication so you can rotate credentials centrally later.
+</Tip>
+
+## Importing Phone Numbers
+
+Once you have a SIP trunk, import your existing numbers:
+
+<Steps>
+  <Step title="Go to Telephony → Phone Numbers">
+    Click **Add Number → Connect Your Own** to open the import dialog.
+  </Step>
+  <Step title="Enter number details">
+    - **Phone Number** — International [E.164](/glossary#telephony-and-networking) format (e.g., +43 720 123456)
+    - **Label** — Optional name
+    - **Forwarded From** — If you use number forwarding, the customer-facing number that forwards to this AI number. Shown on your public [Trust Center](/manage/trust-center/overview). Leave blank if not using forwarding.
+    - **SIP Trunk** — Select the trunk you created
+    - **Routing** — Choose a fallback inbound agent now, then manage detailed routing from [Phone Numbers](/launch/phone-numbers)
+  </Step>
+  <Step title="Save">
+    The platform imports and links the number to your SIP trunk. Configure your carrier to forward calls to itellicoAI's SIP endpoint. For fallback agents, routing rules, and schedules, use [Phone Numbers](/launch/phone-numbers).
+  </Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Phone Numbers" icon="phone" href="/launch/phone-numbers">
+    Manage all your numbers in one place
+  </Card>
+  <Card title="Schedules" icon="clock" href="/launch/schedules">
+    Configure routing schedules for your numbers
+  </Card>
+  <Card title="Agent Editor" icon="pen-to-square" href="/build/getting-started/agent-editor">
+    Configure the agent that answers calls
+  </Card>
+</CardGroup>

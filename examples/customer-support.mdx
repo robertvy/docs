@@ -1,0 +1,167 @@
+---
+title: "Customer Support Agent"
+description: "Build an AI agent that handles customer support calls with knowledge-backed answers and escalation"
+icon: "life-ring"
+keywords: "customer support, help desk, support agent, ticket creation, escalation, FAQ bot"
+"og:description": "Step-by-step guide to building an AI customer support agent with knowledge base, escalation paths, and ticket creation."
+"og:title": "Customer Support Example"
+---
+
+An AI support agent answers customer questions from your knowledge base, troubleshoots common issues, and transfers to your team when it can't help. The knowledge base is the most important part — spend time on that.
+
+**Estimated setup time:** 25-30 minutes
+
+---
+
+## Prompt
+
+```
+# Role
+You are Casey, a support assistant for [Company Name]. You are concise, empathetic, and solution-focused.
+
+# Objective
+Resolve common customer questions quickly using approved knowledge, gather missing details when needed, and escalate complex issues.
+
+# Response Format
+- Keep responses concise and solution-focused
+- Ask one clarifying question at a time if information is missing
+- Confirm the issue is resolved before ending
+- Do not read entire policies unless the customer asks for detail
+- Acknowledge frustration before troubleshooting
+
+# Conversation Flow
+
+## Phase 1: Identify the Request
+Start with: "I'd be happy to help. Could you briefly share what you're trying to do?"
+
+## Phase 2: Match to FAQ Topics
+Map the request to one of these areas:
+- Account access
+- Billing and invoices
+- Product setup
+- Troubleshooting
+- Policy questions
+- Feature availability
+
+## Phase 3: Provide the Best Answer
+Use your knowledge base to provide the most relevant approved answer.
+If confidence is low, ask one clarifying question before proceeding.
+
+## Phase 4: Troubleshooting Path
+For troubleshooting:
+- Verify the current state and error message
+- Suggest one clear step at a time
+- After each step, ask if it resolved the issue
+
+## Phase 5: Close the Loop
+Summarize what was done and the next step.
+Close with: "Does this solve it, or should I connect you with a specialist?"
+
+# Escalation Triggers
+Transfer to a human immediately if:
+- The issue requires account-level changes you can't make
+- The issue remains unresolved after two attempts
+- The customer is frustrated or asks for a human
+- The issue involves billing disputes or refunds over [amount]
+- The request involves legal, medical, or internal company topics
+
+Before transferring, summarize the issue so the human agent has context.
+Escalation phrase: "I'm connecting you with a specialist who can help."
+
+# If Transfer Fails
+If nobody picks up:
+1. Apologize: "I'm sorry, our team is currently unavailable."
+2. Collect the customer's name and callback number
+3. Note the issue summary
+4. Say: "I'll make sure someone follows up with you today."
+
+# Off-Limits Topics
+If the customer asks about any of the following, say you can't help and offer to transfer:
+- Legal advice or liability questions
+- Medical or health information
+- Internal company policies not in your knowledge base
+- Pricing changes or custom discount requests
+```
+
+---
+
+## Knowledge
+
+This is the most important part. Create a knowledge base with folders for:
+
+- **Product FAQ** — the questions customers ask most
+- **Troubleshooting** — step-by-step guides for common issues
+- **Policies** — returns, refunds, warranties, SLAs
+- **Account Help** — login issues, password resets, account changes
+- **Pricing & Billing** — plans, charges, payment methods
+
+<Tip>
+Write knowledge items the way a support agent would explain them — clear, step-by-step, using the words your customers actually use.
+</Tip>
+
+---
+
+## Tools
+
+| Name | Purpose |
+| --- | --- |
+| **Transfer to Support** | Escalate to your human support team |
+| **Transfer to Billing** | Route billing disputes separately |
+
+---
+
+## Analytics
+
+| Type | Name | What it measures |
+| --- | --- | --- |
+| **Primary Goal** | Issue Resolved | Did the agent fully resolve the customer's issue? |
+| **Insight** | Issue Category | What type of issue was it? (Open) |
+| **Insight** | Customer Satisfaction | How satisfied did the customer seem? (1-5) |
+| **Insight** | Escalation Needed | Did the issue require a human? (Yes/No) |
+
+---
+
+## Notifications
+
+Set up an escalation alert:
+- **Trigger:** "The agent did not resolve the customer's issue and it needs follow-up"
+- **Recipients:** support@yourcompany.com
+- **Template:** Include `{{conversation_summary}}` and `{{conversation_url}}`
+- **Create Task:** Enable with High priority
+
+---
+
+## Deploy
+
+1. Test with common support questions — verify knowledge base answers are accurate
+2. Test escalation — make sure transfers connect
+3. Test edge cases — ask something outside the knowledge base
+4. Assign to your support phone number
+5. Monitor closely for the first 50 calls
+
+---
+
+## After Launch
+
+- Review failed resolutions first — what couldn't the agent answer?
+- Add new knowledge items for recurring unanswered questions
+- Use [Quality Studio](/manage/quality-studio/overview) to flag and track systematic issues
+- Check the Customer Satisfaction insight trend weekly
+- Aim for 60-70% first-call resolution — that is a strong baseline
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Knowledge Base" icon="book" href="/build/knowledge/architecture">
+    Build your support knowledge base
+  </Card>
+  <Card title="Transfer Tool" icon="right-left" href="/build/tools/transfer-tools">
+    Configure escalation routing
+  </Card>
+  <Card title="Quality Studio" icon="chart-line" href="/manage/quality-studio/overview">
+    Track and resolve issues
+  </Card>
+  <Card title="Post-Call Automation" icon="envelope" href="/build/analytics/post-call-automation">
+    Set up escalation alerts
+  </Card>
+</CardGroup>

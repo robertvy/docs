@@ -1,0 +1,246 @@
+---
+title: "Voice Cloning"
+description: "Create custom cloned voices from audio samples or recordings for your AI agents"
+icon: "clone"
+keywords: "voice cloning, custom voice, audio samples, cloned voice, voice upload, voice recording, brand voice, AI voice clone, voice library, ElevenLabs, Cartesia"
+"og:description": "Create custom cloned voices from audio samples or live recordings and use them with your AI agents."
+"og:title": "Voice Cloning"
+---
+
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+<Badge>Expert Mode</Badge>
+
+Voice cloning lets you create a custom synthetic voice from audio and use it with your AI agents. You can either **upload** a recording or **record** directly in the browser. The platform generates a voice model through your chosen provider, stores it in your account library, and makes it available for any agent in your account.
+
+<Note>
+Cloned voices appear alongside standard voices in the [voice selection](/build/voice-speech/select-voice) panel and can be selected from the **My Cloned Voices** sidebar.
+</Note>
+
+<Warning>
+Only clone voices you have explicit written consent to use. You are responsible for ensuring you have the legal right to clone and deploy any voice.
+</Warning>
+
+---
+
+## Creating a Cloned Voice
+
+<Screenshot
+  lightSrc="/images/voice-speech__voice-cloning-upload-light.png"
+  darkSrc="/images/voice-speech__voice-cloning-upload-dark.png"
+  alt="Voice cloning form showing provider selection, upload and record tabs, voice name, language, and description fields"
+/>
+
+<Steps>
+  <Step title="Open the clone form">
+    In your agent editor, go to **General** → **Speaking** and click **Clone Voice**. You can also open it from the **My Cloned Voices** sidebar in the voice selection panel.
+  </Step>
+
+  <Step title="Choose a provider">
+    Select a cloning provider based on your audio sample:
+
+    | Provider | Best for | Duration | File size |
+    | --- | --- | --- | --- |
+    | **ElevenLabs** | Longer samples, more natural variation | Min **5s**, recommended **1-2 min**, max **180s** | Up to **10 MB** |
+    | **Cartesia** | Short clean clips, fast cloning | Min **3s**, recommended **5-10s**, max **10s** | Up to **5 MB** |
+
+    Choose ElevenLabs when you have a longer clean recording and want the model to learn more tone variation. Choose Cartesia when you want a fast clone from a short clean clip. If unsure, create both and compare them.
+
+    **Supported formats:** MP3, WAV, OGG, WebM — ElevenLabs also accepts M4A.
+  </Step>
+
+  <Step title="Provide audio">
+    Switch between two input modes using the **Upload** and **Record** tabs:
+
+    **Upload** — Drag and drop an audio file or click to browse. The accepted formats and size limit are shown based on the selected provider.
+
+    **Record** — Click the record button to capture audio directly from your microphone. A live waveform visualization and duration counter are displayed while recording. Recording automatically stops when the provider's maximum duration is reached.
+
+    The form tracks the total duration of your audio and shows whether it meets the provider's requirements.
+  </Step>
+
+  <Step title="Fill in voice details">
+    - **Voice name** (required) — A descriptive name shown in the voice selection panel
+    - **Language** (required) — The language of the audio sample (English, Spanish, French, German, Italian, Portuguese, Dutch, Japanese, Korean, or Chinese)
+    - **Description** (optional) — Internal notes about this voice
+    - **Remove background noise** (optional) — Available for ElevenLabs only — cleans up noise in the sample before cloning
+  </Step>
+
+  <Step title="Create the clone">
+    Click **Clone Voice** to start processing. The voice status progresses through these states:
+
+    - **Processing** — Provider is generating the voice model
+    - **Ready** — Voice is available to assign to agents
+    - **Failed** — Something went wrong — check the error message and try again
+  </Step>
+</Steps>
+
+---
+
+## Managing Cloned Voices
+
+Cloned voices are shared across your account. All team members with appropriate permissions can view and assign cloned voices to their agents.
+
+### Viewing Cloned Voices
+
+Your cloned voices appear in the **My Cloned Voices** sidebar within the voice selection panel. Each voice shows its name, provider, language, and current status badge.
+
+You can also view all cloned voices in a table that shows:
+- **Name** and **Provider**
+- **Language**
+- **Status** (with color-coded badges)
+- **Actions** such as selecting or deleting the voice
+
+### Deleting a Cloned Voice
+
+1. Find the cloned voice in the sidebar or table
+2. Click the delete button or select **Delete** from the actions menu
+3. Confirm the deletion
+
+<Warning>
+Deleting a cloned voice is permanent and cannot be undone. Any agents currently using that voice will need a new voice assigned.
+</Warning>
+
+---
+
+## Using Cloned Voices with Agents
+
+Once a cloned voice shows a **Ready** status, assign it to any agent:
+
+<Steps>
+  <Step title="Open voice selection">
+    In your agent editor, go to **General** → **Speaking**.
+  </Step>
+  <Step title="Find your cloned voice">
+    Look in the **My Cloned Voices** sidebar on the right side of the voice selection panel. Only voices with **Ready** status can be selected.
+  </Step>
+  <Step title="Select the voice">
+    Click the cloned voice to assign it. The agent uses this voice for all subsequent conversations. You can further customize the output with [voice settings](/build/voice-speech/voice-settings).
+  </Step>
+</Steps>
+
+---
+
+## Audio Sample Best Practices
+
+<AccordionGroup>
+  <Accordion title="Recording quality" icon="microphone">
+    - Use a good quality microphone (USB condenser or better)
+    - Record in a quiet environment with sound dampening
+    - Maintain a consistent distance from the microphone (6-12 inches)
+    - Avoid rooms with echo or reverb
+    - Use 44.1 kHz sample rate or higher
+  </Accordion>
+
+  <Accordion title="Content variety" icon="list">
+    - Include both short and long sentences
+    - Cover different tones: questions, statements, explanations
+    - Read naturally at a conversational pace
+    - Avoid reading too fast or too slow
+    - Include pauses between sentences
+  </Accordion>
+
+  <Accordion title="What to avoid" icon="xmark">
+    - Background music or ambient noise
+    - Multiple speakers in one sample
+    - Heavy audio processing, compression, or filters
+    - Whispering or shouting
+    - Samples shorter than the provider's minimum duration
+    - Low-quality phone recordings
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Sample Strategy
+
+Use the provider you selected to decide how much audio to collect.
+
+### For ElevenLabs
+
+- Aim for **1-2 minutes** when possible
+- Include varied phrasing, not one repeated sentence
+- Use the **Remove background noise** option if the recording is otherwise good
+- Prefer one speaker, one microphone, one room
+
+### For Cartesia
+
+- Aim for a **short, clean 5-10 second clip**
+- Do not over-record just to add more material
+- Remove room noise before recording because the clone will reflect it closely
+- Choose a clip with stable volume and no interruptions
+
+### Good sample script
+
+Read 4-6 natural sentences in the way you want the agent to sound:
+
+- a greeting
+- one short factual sentence
+- one question
+- one longer explanatory sentence
+- one closing sentence
+
+This gives the model enough shape to learn pacing and tone without sounding scripted.
+
+---
+
+## Legal Considerations
+
+<Warning>
+You must have explicit written consent from any person whose voice you clone. Unauthorized voice cloning may violate privacy laws and intellectual property rights.
+</Warning>
+
+**Before cloning, ensure you have:**
+
+- Written consent from the voice owner
+- Rights to use the voice commercially
+- Clear agreement on how the voice will be used
+- Documentation of the consent for your records
+
+**Never clone:**
+- Voices without consent
+- Voices of public figures without licensing
+- Voices for deceptive or impersonation purposes
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="My sample is rejected" icon="triangle-exclamation">
+    Check the selected provider's duration, file size, and file format limits. Most failed uploads are caused by clips that are too short, too long, or too noisy.
+  </Accordion>
+
+  <Accordion title="The cloned voice sounds noisy" icon="wave-square">
+    Re-record with less background noise. For ElevenLabs, try enabling **Remove background noise**. For Cartesia, start with a cleaner clip rather than a longer one.
+  </Accordion>
+
+  <Accordion title="The voice does not sound expressive enough" icon="sliders">
+    Use a better source sample, not just a different speed or pitch setting. Add clearer phrasing variety and natural intonation, then create a new clone.
+  </Accordion>
+
+  <Accordion title="I am not sure which provider to use" icon="circle-question">
+    Start by cloning the same sample with both providers. Then compare them in the voice picker using the same test script.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Select Voice" icon="microphone" href="/build/voice-speech/select-voice">
+    Browse and compare all available voices
+  </Card>
+  <Card title="Voice Settings" icon="sliders" href="/build/voice-speech/voice-settings">
+    Fine-tune speed, pitch, and stability
+  </Card>
+  <Card title="Custom Pronunciations" icon="spell-check" href="/build/voice-speech/custom-pronunciations">
+    Correct pronunciation for your cloned voice
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/web-simulator">
+    Test your cloned voice in conversations
+  </Card>
+</CardGroup>

@@ -1,0 +1,204 @@
+---
+title: "Booking & Calendar Integration"
+description: "Plane Termine automatisch mit Cal.com-Integration"
+icon: "calendar"
+keywords: "AI appointment booking, Cal.com integration, calendar integration, schedule appointments, AI booking automation, appointment scheduling"
+"og:description": "Ermögliche automatische Terminplanung mit Cal.com-Integration für KI-gestützte Buchungsautomatisierung."
+"og:title": "Booking & Calendar Integration"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+## Wie Calendar Booking funktioniert
+
+Mit dem Booking-Tool können deine KI-Agenten während Live-Gesprächen Termine planen. In Verbindung mit Cal.com können Agenten Verfügbarkeiten prüfen, Zeitfenster anbieten, Buchungen bestätigen und automatische Bestätigungen senden.
+
+<Note>
+Erfordert ein Cal.com-Konto und eine aktive Integration. Funktioniert auch mit dem kostenlosen Cal.com-Tarif.
+</Note>
+
+<Info>
+**So funktioniert es:** Das Booking-Tool stellt deinem Agenten zwei Funktionen bereit:
+1. **Verfügbare Slots abrufen** - Ruft verfügbare Zeitfenster von Cal.com ab
+2. **Termin buchen** - Erstellt die Buchung mit Kundendaten
+
+Das deckt den Kern des Buchungsflusses ab. Für fortgeschrittene Workflows wie Terminbestätigung, Umbuchung oder Stornierung musst du mit [Custom API Actions](/de/build/tools/custom-api-actions) eigene Logik bauen, die direkt mit der Cal.com-API oder der API eines anderen Kalenderanbieters wie Calendly integriert.
+</Info>
+
+---
+
+## Setup
+
+<Steps>
+  <Step title="Cal.com Event Types erstellen">
+    Richte in Cal.com für jeden Termintyp Event Types ein:
+    - Dauer (15, 30, 60 Minuten usw.)
+    - Meeting-Ort (Zoom, Google Meet, Telefon, vor Ort)
+    - Verfügbarkeitsfenster
+
+    [Cal.com event types documentation](https://cal.com/docs/core-features/event-types)
+  </Step>
+  <Step title="Event Types testen">
+    Buche einen Testtermin in Cal.com, um Verfügbarkeit, Meeting-Links und Benachrichtigungen zu prüfen.
+  </Step>
+  <Step title="Cal.com verbinden">
+    Hole deinen Cal.com API-Schlüssel und verbinde ihn mit itellicoAI:
+
+    1. Gehe zu [Cal.com Settings -> Developer -> API Keys](https://app.cal.com/settings/developer/api-keys)
+    2. Klicke auf **+ Add**, vergib einen Namen (z. B. "itellicoAI") und speichere
+    3. Gehe in itellicoAI zu **Settings -> Developers -> Integrations**
+    4. Öffne die **Cal.com**-Karte und wähle oder erstelle ein Secret, das den API-Schlüssel speichert
+    5. Klicke auf **Test Connection**
+    6. Klicke nach erfolgreichem Test auf **Connect**
+  </Step>
+</Steps>
+
+<Screenshot lightSrc="/images/cal__test-cal_DE-light.png" darkSrc="/images/cal__test-cal_DE-dark.png" alt="Cal.com-Integrations-Einstellungen mit Secret-Auswahl, Verbindungs-Test und Connect-Steuerung" caption="Wähle das Secret mit deinem Cal.com API-Schlüssel, teste die Verbindung und speichere sie." />
+
+---
+
+## Dein bestehendes Kalendersystem nutzen
+
+Eine häufige Frage: **"Wir nutzen Google Calendar / Microsoft Outlook / Microsoft 365. Können wir Cal.com trotzdem nutzen?"**
+
+**Ja!** Cal.com integriert sich in dein bestehendes Kalendersystem, verhindert Doppelbuchungen und prüft die Verfügbarkeit über alle Kalender hinweg.
+
+### Wie es funktioniert
+
+Cal.com verbindet sich mit dem Kalendersystem deines Unternehmens (Google Calendar, Microsoft Outlook, Microsoft 365, Exchange) und:
+
+1. **Prüft Verfügbarkeit** - Liest den bestehenden Kalender, um freie Zeiten zu bestimmen
+2. **Verhindert Konflikte** - Prüft alle verbundenen Kalender, bevor freie Slots angezeigt werden
+3. **Synchronisiert Buchungen** - Tragt bestätigte Termine automatisch in deinen bestehenden Kalender ein
+4. **Aktualisiert in Echtzeit** - Wenn Kunden über itellicoAI buchen, erscheint der Termin sofort in deinem Firmenkalender
+
+<Note>
+Cal.com ist eine Scheduling-Schicht über deinem bestehenden Kalendersystem. Du nutzt weiterhin Google Calendar, Outlook oder Microsoft 365 wie gewohnt - Cal.com liest nur die Verfügbarkeit und schreibt Buchungen dorthin.
+</Note>
+
+### Unterstützte Kalendersysteme
+
+Cal.com integriert sich mit:
+- **Google Calendar** - Persönliche und Google-Account-Konten
+- **Microsoft Outlook** - Outlook.com und Outlook Desktop
+- **Microsoft 365** - Business- und Enterprise-Konten
+- **Microsoft Exchange** - Exchange 2013, 2016 und neuer
+- **Apple Calendar** - iCloud-Kalender
+
+### Kalenderintegration einrichten
+
+<Steps>
+  <Step title="Deinen Kalender mit Cal.com verbinden">
+    Gehe in Cal.com zu **Settings -> Calendars** und verbinde deinen Kalender:
+
+    - **Google Calendar**: Klicke auf "Connect" und autorisiere Cal.com
+    - **Microsoft Outlook/365**: Klicke auf "Connect" und melde dich mit Microsoft an
+    - **Exchange**: Klicke auf "Connect" und gib die Details deines Exchange-Servers ein
+
+    [Cal.com calendar connection guide](https://cal.com/docs)
+  </Step>
+  <Step title="Konfliktprüfung konfigurieren">
+    Nach dem Verbinden prüft Cal.com diesen Kalender automatisch auf Konflikte. Wenn jemand bei dir buchen möchte:
+
+    1. Cal.com prüft alle verbundenen Kalender
+    2. Zeigt nur Zeiten an, in denen du wirklich verfügbar bist
+    3. Verhindert Doppelbuchungen über alle Systeme hinweg
+  </Step>
+  <Step title="Buchungsziel wählen">
+    Wähle aus, welcher Kalender neue Buchungen erhalten soll:
+
+    - In den Cal.com-Event-Type-Einstellungen
+    - Wähle den Kalender, in dem Termine erstellt werden sollen
+    - Dieser kann von den Kalendern abweichen, die Cal.com auf Konflikte prüft
+  </Step>
+</Steps>
+
+<Info>
+**Mehrere Kalender:** Du kannst mehrere Kalender verbinden, etwa persönlichen Google Calendar plus Arbeits-Outlook. Cal.com prüft alle auf Konflikte und du wählst aus, welcher neue Buchungen bekommt.
+</Info>
+
+### Häufige Szenarien
+
+<AccordionGroup>
+  <Accordion title="Unternehmen nutzt Microsoft 365" icon="microsoft">
+    **Setup:**
+    1. Verbinde dein Microsoft-365-Konto mit Cal.com
+    2. Cal.com liest deine Verfügbarkeit aus Microsoft 365
+    3. Neue Buchungen erscheinen in deinem Microsoft-365-Kalender
+    4. Dein KI-Agent bucht Termine über itellicoAI -> Cal.com -> Microsoft 365
+
+    **Vorteil:** Du und dein Team nutzt Microsoft 365 weiterhin normal. Der KI-Agent respektiert automatisch die bestehenden Kalenderverpflichtungen.
+  </Accordion>
+
+  <Accordion title="Unternehmen nutzt Google Account" icon="google">
+    **Setup:**
+    1. Verbinde dein Google-Account-Konto mit Cal.com
+    2. Cal.com liest deine Verfügbarkeit aus Google Calendar
+    3. Neue Buchungen erscheinen in deinem Google Calendar
+    4. Dein KI-Agent bucht Termine über itellicoAI -> Cal.com -> Google Calendar
+
+    **Vorteil:** Direkte Integration in dein bestehendes Google-Setup. Alle Buchungen synchronisieren automatisch.
+  </Accordion>
+
+  <Accordion title="Teammitglieder nutzen unterschiedliche Kalendersysteme" icon="users">
+    **Setup:**
+    Jedes Teammitglied verbindet seinen eigenen Kalender mit seinem Cal.com-Konto:
+    - Alice verbindet ihren Google Calendar
+    - Bob verbindet seinen Microsoft-365-Kalender
+    - Carol verbindet ihren Outlook-Kalender
+
+    **Vorteil:** Cal.com übernimmt die Komplexität. Die Verfügbarkeit jeder Person wird im nativen Kalendersystem geprüft.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Booking-Tool hinzufügen
+
+<Screenshot lightSrc="/images/cal__booking-action_DE-light.png" darkSrc="/images/cal__booking-action_DE-dark.png" alt="Tools-Seite mit Calendar Booking als verfügbarem Tool" caption="Sobald Cal.com verbunden ist, erscheint Calendar Booking als Tool, das du im Tools-Tab deines Agenten hinzufügen kannst." />
+
+<Steps>
+  <Step title="Tool erstellen">
+    1. Gehe zu deinem Agenten -> Tab **Tools**
+    2. Klicke auf **Add** und wähle **Calendar Booking**
+    3. Wähle deinen Cal.com-Event-Type
+  </Step>
+  <Step title="Einstellungen konfigurieren">
+    Das Tool wird automatisch nach deinem Cal.com-Event benannt, zum Beispiel "Book [Event Type]". Siehe die Konfigurationsoptionen unten.
+  </Step>
+</Steps>
+
+---
+
+## Konfiguration
+
+<Screenshot lightSrc="/images/cal__event-config_DE-light.png" darkSrc="/images/cal__event-config_DE-dark.png" alt="Konfigurationsdialog für Booking-Tool mit Event-Einstellungen, Plattformoptionen und Scheduling-Präferenzen" caption="Nach dem Hinzufügen des Tools konfigurierst du Event-Type, Plattform, Zeitzone und wie aggressiv der Agent Zeiten vorschlägt." />
+
+### Event & Platform
+
+**Cal.com Event Type** (erforderlich)
+- Aus Dropdown wählen oder Event-ID manuell eingeben
+- Jedes Tool ist genau einem Cal.com-Event-Type zugeordnet
+
+**Meeting Platform** (erforderlich)
+- Wähle, wie Meetings stattfinden:
+  - **Cal Video** - Integriertes Cal.com-Video
+  - **Zoom** - Erfordert verbundenes Zoom in Cal.com
+  - **Google Meet** - Erfordert verbundenes Google Meet
+  - **Microsoft Teams** - Erfordert verbundenes Teams
+  - **Phone** - Telefontermin
+  - **In Person** - Physisches Treffen (Adresse erforderlich)
+
+**Timezone** (erforderlich)
+- Standardmäßig Browser-Zeitzone (kann geändert werden)
+- Alle vorgeschlagenen Zeiten werden in dieser Zeitzone angezeigt
+- Durchsuchbares Dropdown mit allen verfügbaren Zeitzonen
+
+### Scheduling Preferences
+
+**Days to Look Ahead** (1-3 Tage, Standard: 2)
+- Wie viele zukünftige Tage der Agent für Slots betrachtet
+
+**Time Slots Per Day** (2-5 Slots, Standard: 3)
+- Wie viele Zeitfenster pro Tag der Agent anbietet
+

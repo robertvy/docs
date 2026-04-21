@@ -1,0 +1,409 @@
+---
+title: "Post-Call Automation"
+description: "Automate follow-up emails and task creation triggered by conversation outcomes"
+icon: "envelope-open-text"
+keywords: "post-call automation, automated emails, follow-up emails, conversation outcomes, AI email automation, post-call actions, create task, task creation"
+"og:description": "Automate follow-up emails and task creation triggered by conversation outcomes, sentiment, and custom conditions."
+"og:title": "Post-Call Automation"
+---
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+## How Post-Call Automation Works
+
+Post-call automation runs automatically after conversations. Use notifications to alert your team, create follow-up tasks, or send emails based on what happened in the call.
+
+**Access:** In your agent editor → **Notifications** tab → **Post-Call Notifications**
+
+### What You Can Do
+
+| Capability | How |
+| --- | --- |
+| **Send emails when something happens** | Set a trigger condition (AI evaluates against the transcript) |
+| **Route to different people based on call content** | Use dynamic recipients — AI decides who gets the email |
+| **Include call data in emails** | Use system variables like `{{conversation_summary}}` and `{{customer_name}}` |
+| **Extract custom data from calls** | Use `{{dyn_*}}` variables — AI pulls specific info from the transcript |
+| **Notify your team in-app** | Enable Team Alert for all team members or specific teammates |
+| **Create follow-up tasks** | Enable "Create Task" to auto-generate a task linked to the conversation |
+| **Always send after every call** | Toggle "Always send" to skip condition checking |
+
+<Screenshot
+  lightSrc="/images/postcalls__postcall-light.png"
+  darkSrc="/images/postcalls__postcall-dark.png"
+  alt="Post-call notifications list showing configured notification rules with enabled toggles"
+/>
+
+## How To Think About Notifications
+
+Each notification answers three questions:
+
+1. **When should it fire?**
+2. **Who should receive it?**
+3. **What should happen next: email and/or team alert, with optional task creation?**
+
+---
+
+## Setup
+
+<Steps>
+  <Step title="Open Post-Call Notifications">
+    In your agent editor → **Notifications** tab → **Post-Call Notifications** → **Add**
+
+    <Screenshot
+      lightSrc="/images/postcalls__postcall-add-light.png"
+      darkSrc="/images/postcalls__postcall-add-dark.png"
+      alt="Select template modal opened from the Post-Call Notifications Add button"
+      caption="Use Add to create a notification rule from scratch or from a template."
+    />
+  </Step>
+
+  <Step title="Choose starting point (optional)">
+    **Templates** provide pre-configured triggers and content for common use cases:
+
+    - **Callback Requested** - Customer asks for follow-up
+    - **Appointment Booked** - Meeting/consultation scheduled
+    - **Customer Complaint** - Escalates dissatisfaction
+    - **Unanswered Question** - Agent couldn't answer
+    - **Technical Issue** - Routes bugs/errors to tech teams
+    - **Billing Inquiry** - Payment/invoice questions
+    - **Escalation Needed** - Requires management attention
+    - **Order Placed** - Purchase confirmation
+    - **Demo Request** - Product demonstration interest
+    - **Positive Feedback** - Share compliments with team
+
+    <Info>
+    Templates are fully customizable starting points. You can also start from scratch.
+    </Info>
+  </Step>
+
+  <Step title="Configure notification name">
+    **Name:** Internal identifier (e.g., "Callback Request Alert")
+  </Step>
+
+  <Step title="Set trigger condition">
+    Describe when to send (AI analyzes this against call transcript):
+
+    ```
+    Example: "Did the customer request a callback, ask to be
+    contacted later, or want someone to follow up with them?"
+    ```
+
+    <Tip>
+    Be specific. The more detailed your trigger description, the more accurate the AI matching.
+    </Tip>
+
+    **Or:** Toggle "Always send after every call" to bypass condition checking
+  </Step>
+
+  <Step title="Configure recipients">
+    **Fixed Recipients:** Enter specific email addresses (supports multiple)
+
+    ```
+    Example: support@company.com, manager@company.com
+    ```
+
+    **Dynamic Recipients (AI-powered):** AI routes to different recipients based on call content
+
+    ```
+    Example: Route complaints by severity
+    - If legal threat → legal@company.com
+    - If angry/canceling → retention@company.com
+    - If product issue → quality@company.com
+    - Otherwise → support@company.com
+
+    Example: Route technical issues by type
+    - If website issue → dev@company.com
+    - If billing system → billing-tech@company.com
+    - Otherwise → tech-support@company.com
+
+    Example: Route orders by value
+    - If order over $1000 → sales-manager@company.com
+    - Otherwise → orders@company.com
+    ```
+  </Step>
+
+  <Step title="Design email template">
+    **Subject:** `Callback requested`
+
+    **Body:** Use rich text editor with variables (see [Template Variables](#template-variables) below)
+
+    - **System variables:** Click variable picker to insert (e.g., `{{customer_name}}`, `{{conversation_summary}}`)
+    - **Dynamic variables:** Type `{{dyn_` + descriptive name (e.g., `{{dyn_appointment_date}}`)
+  </Step>
+
+  <Step title="Choose non-email actions (optional)">
+    Enable **Team Alert** to create in-app notifications and push alerts for all team members or selected teammates.
+
+    Enable **Create Task** to create a follow-up task when the notification fires.
+  </Step>
+
+  <Step title="Save and enable">
+    Save notification → Toggle **Enabled** switch
+  </Step>
+</Steps>
+
+---
+
+## Create Task
+
+Each notification can also create a [task](/manage/tasks/overview) automatically when it fires. Enable **Create Task** in the notification form to generate a task linked to the conversation.
+
+| Setting | Description |
+| --- | --- |
+| **Create Task** | Toggle on to create a task when this notification fires |
+| **Task Priority** | Set the priority for created tasks: Low, Medium, High, or Urgent |
+
+Created tasks include the agent name and a link to the originating conversation for full context. Manage created tasks from the [Tasks](/manage/tasks/overview) page.
+
+<Tip>
+Combine email and task creation in a single notification. For example, send a callback request email to the support team and simultaneously create a high-priority task to track follow-up.
+</Tip>
+
+## Common Business Patterns
+
+| Situation | Good automation pattern |
+| --- | --- |
+| Callback requested | Create a task and email the support queue |
+| Complaint or escalation | Email the responsible team and create a high-priority task |
+| Appointment booked | Send confirmation email only |
+| Agent could not answer | Notify support or sales and include transcript summary |
+
+---
+
+## Template Variables
+
+### System Variables
+
+Use the **variable picker** in the editor to insert these.
+
+<Info>
+**Availability:** Some variables only populate under certain conditions:
+- Phone numbers (`customer_number`, `to_number`) - Phone calls only
+- Customer data (`customer_name`, `customer_email`) - Only if the conversation is linked to a contact
+- Conversation transcript - Only if transcription is enabled
+</Info>
+
+**Conversation Details:**
+- `{{conversation_date}}` - Full date/time in 24-hour format
+- `{{conversation_time}}` - Time in 12-hour format
+- `{{conversation_duration}}` - Duration in MM:SS format
+- `{{conversation_status}}` - Status (Completed, Failed, etc.)
+- `{{conversation_direction}}` - Inbound/Outbound
+- `{{conversation_summary}}` - AI-generated summary
+- `{{conversation_transcript}}` - Full transcript with fallback text
+- `{{conversation_url}}` - Link to view conversation
+- `{{conversation_uuid}}` - Unique identifier
+
+**Agent & Account:**
+- `{{agent_name}}` - Name of AI agent
+- `{{account_name}}` - Your account name
+
+**Customer Information** (only if the conversation is linked to a contact):
+- `{{customer_number}}` - Customer phone number (phone calls only)
+- `{{customer_name}}` - Customer name
+- `{{customer_email}}` - Customer email
+- `{{to_number}}` - Called phone number (phone calls only)
+
+### Dynamic Variables
+
+**How they work:** Type `{{dyn_` followed by a descriptive name. AI analyzes the call transcript and extracts the information.
+
+**Examples:**
+```
+{{dyn_appointment_date}} → AI finds the date mentioned in call
+{{dyn_appointment_time}} → AI finds the time mentioned
+{{dyn_issue_summary}} → AI summarizes the problem discussed
+{{dyn_ticket_number}} → AI locates any ticket reference
+{{dyn_next_steps}} → AI identifies agreed action items
+{{dyn_shipping_address}} → AI extracts mentioned address
+{{dyn_order_number}} → AI finds order reference
+```
+
+<Tip>
+The variable name guides the AI. More specific names = better extraction accuracy.
+
+✅ `{{dyn_rescheduled_appointment_date}}`
+❌ `{{dyn_date}}`
+</Tip>
+
+---
+
+## Examples
+
+<AccordionGroup>
+  <Accordion title="Appointment Confirmation" icon="calendar-check">
+    **Trigger:**
+    ```
+    Did the caller schedule, book, or confirm an appointment or meeting?
+    ```
+
+    **Recipients:** Fixed - `team@company.com`
+
+    **Subject:** `Appointment confirmed - {{dyn_appointment_date}}`
+
+    **Body:**
+    ```
+    Hi {{customer_name}},
+
+    Your appointment is confirmed:
+
+    📅 {{dyn_appointment_date}} at {{dyn_appointment_time}}
+    📍 {{dyn_location}}
+    🔗 {{dyn_meeting_link}}
+
+    Need to reschedule? Call {{agent_name}}
+
+    Best,
+    {{agent_name}}
+    ```
+
+    **Variables used:**
+    - System: `{{customer_name}}`, `{{agent_name}}`
+    - Dynamic: `{{dyn_appointment_date}}`, `{{dyn_appointment_time}}`, `{{dyn_location}}`, `{{dyn_meeting_link}}`
+  </Accordion>
+
+  <Accordion title="Callback Request" icon="phone">
+    **Trigger:**
+    ```
+    Did the customer request a callback, follow-up call, or ask to be contacted later?
+    ```
+
+    **Recipients:** Fixed - `support@company.com`
+
+    **Subject:** `Callback requested`
+
+    **Body:**
+    ```
+    Customer requested callback:
+
+    Phone: {{customer_number}}
+    Date: {{conversation_date}}
+    Reason: {{conversation_summary}}
+
+    View call: {{conversation_url}}
+    ```
+
+    **Variables used:**
+    - System: `{{customer_number}}`, `{{conversation_date}}`, `{{conversation_summary}}`, `{{conversation_url}}`
+  </Accordion>
+
+  <Accordion title="Smart Routing by Severity" icon="route">
+    **Trigger:**
+    ```
+    Did the customer express dissatisfaction, file a complaint, or report a problem?
+    ```
+
+    **Recipients:** Dynamic
+    ```
+    Route by severity:
+    - If legal threat → legal@company.com
+    - If angry/canceling → retention@company.com
+    - If product issue → quality@company.com
+    - Otherwise → support@company.com
+    ```
+
+    **Subject:** `Customer issue - {{dyn_severity}}`
+
+    **Body:**
+    ```
+    Issue reported:
+
+    Customer: {{customer_number}}
+    Severity: {{dyn_severity}}
+    Issue: {{dyn_issue_summary}}
+
+    View full call: {{conversation_url}}
+    ```
+
+    **Variables used:**
+    - System: `{{customer_number}}`, `{{conversation_url}}`
+    - Dynamic: `{{dyn_severity}}`, `{{dyn_issue_summary}}`
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Tips
+
+<AccordionGroup>
+  <Accordion title="Write Specific Triggers" icon="bullseye">
+    ❌ Bad: "Customer unhappy"
+
+    ✅ Good: "Did the customer express dissatisfaction, frustration, mention being unhappy, or threaten to cancel/leave negative review?"
+  </Accordion>
+
+  <Accordion title="Test with Real Calls" icon="vial">
+    Enable the notification and test with real or test calls to verify triggering and content.
+  </Accordion>
+
+  <Accordion title="Keep Emails Short" icon="align-left">
+    - 3-5 paragraphs max
+    - One clear purpose
+    - Single call-to-action
+    - Bullet points for multiple items
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Email not sending" icon="envelope-open-text">
+    **Possible causes:**
+    - Notification is disabled
+    - Trigger condition doesn't match call content
+    - Fixed recipient list is empty or invalid
+    - Dynamic recipient rules did not produce a valid email address
+
+    **Solutions:**
+    - Verify notification is enabled (toggle On)
+    - Review trigger description and test with matching calls
+    - Add fixed recipients or make dynamic recipient rules include a clear fallback address
+  </Accordion>
+
+  <Accordion title="Variables not populating" icon="brackets-curly">
+    **Possible causes:**
+    - Typo in variable name
+    - Dynamic variable name too vague
+    - Data not available (e.g., customer not in system)
+
+    **Solutions:**
+    - Use exact variable names from variable picker
+    - Make dynamic variable names more specific and descriptive
+    - Test with real calls to verify extraction
+    - Check [availability conditions](#template-variables) for system variables
+  </Accordion>
+
+  <Accordion title="Wrong routing" icon="route">
+    **Possible causes:**
+    - Routing rules description unclear
+    - AI misinterpreting call content
+
+    **Solutions:**
+    - Review and clarify routing rules description
+    - Make criteria more explicit with specific keywords
+    - Test with sample calls and adjust rules
+    - Add "Otherwise" fallback route
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Tasks" icon="list-check" href="/manage/tasks/overview">
+    Manage tasks created by notifications
+  </Card>
+  <Card title="Conversation Goals" icon="bullseye" href="/build/analytics/conversation-goals">
+    Measure the outcomes your notifications react to
+  </Card>
+  <Card title="Conversations" icon="messages" href="/manage/conversations/overview">
+    Inspect calls and notification results
+  </Card>
+  <Card title="Dynamic Context" icon="brackets-curly" href="/build/advanced/dynamic-context">
+    Pass data for template variables
+  </Card>
+</CardGroup>

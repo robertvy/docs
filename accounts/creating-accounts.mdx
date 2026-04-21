@@ -1,0 +1,267 @@
+---
+title: "Creating Accounts"
+description: "Step-by-step guide to creating main accounts and parent-billed subaccounts for isolated customer or team accounts."
+icon: "plus"
+keywords: 'create account, create subaccount, new account, account setup, agency client setup, account hierarchy, reseller accounts'
+"og:description": 'Create main accounts and subaccounts. Set up customer accounts, regional structures, parent billing, and hierarchical account management.'
+"og:title": "Creating Accounts"
+---
+
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+## Creating a Main Account
+
+Main accounts are independent accounts with their own billing and subscriptions.
+
+<Steps>
+  <Step title="Open Account Switcher">
+    Click your account name in the top-left account switcher.
+  </Step>
+
+  <Step title="Click Create Account">
+    At the bottom of the account switcher menu, click **Create Account**.
+  </Step>
+
+  <Step title="Choose Account Type">
+    Choose between two options:
+    - **New Account** - Create a completely separate account with its own billing and settings
+    - **Subaccount** - Create a subaccount under your current account
+
+    Select **New Account**.
+
+<Screenshot
+  lightSrc="/images/accounts__create-account-light.png"
+  darkSrc="/images/accounts__create-account-dark.png"
+  alt="Create Account dialog showing New Account and Subaccount options with descriptions and Cancel button"
+/>
+  </Step>
+
+  <Step title="Enter Account Name">
+    In the **Create New Account** form:
+    - Enter an account name (minimum 2 characters)
+    - Click **Create Account**
+
+    You automatically become the **Owner** of the new account.
+  </Step>
+
+  <Step title="Account Created">
+    The new account is created immediately and you are automatically switched to it.
+
+    The account starts with a **free subscription**. You can upgrade later by navigating to **Settings → Billing**.
+  </Step>
+</Steps>
+
+<Note>
+New accounts start with a free subscription. Upgrade your plan to unlock additional features and higher limits.
+</Note>
+
+## Creating a Subaccount
+
+Subaccounts are nested under parent accounts. New subaccounts start with parent billing by default, which means itellicoAI bills the parent account and the parent can manage any downstream customer billing separately. A customer can later become an independent direct-billed account through the billing transfer flow.
+
+### Requirements
+
+Before creating a subaccount:
+- You must have permission to create subaccounts in the parent account, typically as an **Owner**, **Admin**, or **Agency Admin**
+- Your subscription must include subaccount management
+
+<Warning>
+If you do not see the option to create subaccounts, your current subscription plan may not include this feature. Contact [support@itellico.ai](mailto:support@itellico.ai) to upgrade.
+</Warning>
+
+### Steps to Create
+
+<Steps>
+  <Step title="Navigate to Subaccounts">
+    Go to **Settings → Account → Subaccounts** in your parent account.
+  </Step>
+
+  <Step title="Create Subaccount">
+    Click **Create Subaccount** and enter the name.
+
+<Screenshot
+  lightSrc="/images/accounts__create-sub-acc-light.png"
+  darkSrc="/images/accounts__create-sub-acc-dark.png"
+  alt="Create Subaccount dialog with subaccount name input field, Cancel and Create Subaccount buttons"
+/>
+  </Step>
+
+  <Step title="Configure Team">
+    You automatically become the **Owner** of the subaccount.
+
+    Invite [team members](/accounts/team-management) as needed from **Settings → Account → Members**.
+  </Step>
+</Steps>
+
+<Tip>
+Subaccounts inherit billing from the parent account. Usage is tracked separately but billed to the parent.
+</Tip>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Naming Conventions" icon="tag">
+    Use clear, descriptive names for accounts:
+
+    **Good:**
+    - "Acme Corp - Sales Team"
+    - "Client: XYZ Industries"
+    - "North America Region"
+
+    **Avoid:**
+    - "Account 1"
+    - "Test"
+    - Ambiguous abbreviations
+  </Accordion>
+
+  <Accordion title="Account Structure Planning" icon="sitemap">
+    Plan your hierarchy before creating accounts:
+
+    1. Map out your organizational structure
+    2. Identify isolation boundaries (customers, clients, departments, regions)
+    3. Determine who needs access to what
+    4. Create accounts top-down (parent first, then children)
+  </Accordion>
+
+  <Accordion title="Billing Considerations" icon="credit-card">
+    Understand billing before creating subaccounts:
+
+    - New subaccounts start on parent billing by default
+    - Usage is tracked separately for reporting
+    - Subscription limits apply across all subaccounts
+    - Direct billing is available through the billing transfer flow when the customer should pay itellicoAI independently
+    - Consider usage limits when creating many subaccounts
+  </Accordion>
+
+  <Accordion title="Ownership Assignment" icon="crown">
+    Think carefully about who should own each account:
+
+    - Main account owner: Usually company leadership
+    - Subaccount owner: Customer point of contact, client point of contact, or department head
+    - Cannot easily change owners (requires support)
+    - Owner has full account control, but account deletion and complex ownership changes require support confirmation
+  </Accordion>
+</AccordionGroup>
+
+## Common Scenarios
+
+### Scenario 1: Reseller or API Integrator With Centralized Billing
+
+<Steps>
+  <Step title="Create customer subaccount">
+    Navigate to **Settings → Account → Subaccounts** and create a new subaccount named for the customer.
+  </Step>
+
+  <Step title="Customize account identity">
+    Go to the customer's subaccount and update **Settings → Account → Settings** with the customer-facing name and logo.
+  </Step>
+
+  <Step title="Keep parent billing">
+    Leave the account on parent billing when your company should receive the itellicoAI invoice and handle customer billing separately.
+  </Step>
+
+  <Step title="Connect integrations">
+    Create account-scoped API keys, webhooks, secrets, and integrations for the customer account as needed.
+  </Step>
+
+  <Step title="Invite customer users if needed">
+    Invite customer users only if they should access their own subaccount directly.
+  </Step>
+</Steps>
+
+### Scenario 2: Enterprise Separating Regions Or Departments
+
+<Steps>
+  <Step title="Choose one primary boundary">
+    Decide whether the first account layer should represent regions, brands, departments, or business units. Avoid nesting unless governance truly requires it.
+  </Step>
+
+  <Step title="Create subaccounts">
+    Create one subaccount per boundary, such as North America, Europe, Sales, Support, or Operations.
+  </Step>
+
+  <Step title="Assign managers">
+    Make the responsible manager or department lead the owner of each subaccount.
+  </Step>
+
+  <Step title="Configure permissions">
+    Parent account admins keep oversight through the parent account while each subaccount manages its own team members and resources.
+  </Step>
+</Steps>
+
+### Scenario 3: Agency Managing a Client-Owned Account
+
+For agency access setups where the client owns the account and manages billing directly, see [Client Service Models](/accounts/agency-playbook).
+
+## Managing Account Lifecycle
+
+### Pausing or Reactivating an Account
+
+Account activation is not a self-service setting in the account UI. To pause or restore access for an account, contact [support@itellico.ai](mailto:support@itellico.ai) with the account name and account ID.
+
+### Transferring Subaccounts
+
+To move a subaccount to a different parent or make it a main account:
+
+Contact support with:
+- Current parent account name and ID
+- Subaccount to transfer
+- Desired new parent (or "convert to main account")
+- Business reason for transfer
+
+<Warning>
+Transferring subaccounts affects billing. Ensure you understand the billing implications before requesting a transfer.
+</Warning>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Can't create subaccount" icon="circle-exclamation">
+    **Possible causes:**
+    - Not an Admin or Owner of parent account
+    - Subscription doesn't include subaccounts
+    - Reached subscription limit on subaccounts
+
+    **Solution:** Check your subscription plan. Contact [support@itellico.ai](mailto:support@itellico.ai) if you need to upgrade.
+  </Accordion>
+
+  <Accordion title="Do not see an account in switcher" icon="eye-slash">
+    **Possible causes:**
+    - Not a member of that account
+    - Account was deactivated
+    - Account was deleted
+
+    **Solution:** Ask an admin of that account to check if it's active and if you're still a member.
+  </Accordion>
+
+  <Accordion title="Lost access after account switch" icon="lock">
+    **This is normal behavior:** When you switch accounts, you only see data for that account.
+
+    **Solution:** Switch back to the original account using the account switcher.
+  </Accordion>
+
+  <Accordion title="Can't delete an account" icon="trash">
+    **Possible causes:**
+    - Not the Owner of the account
+    - Account has active subaccounts
+    - Account deletion requires support confirmation
+
+    **Solution:** Contact [support@itellico.ai](mailto:support@itellico.ai). Include the account name, account ID, and any subaccounts that need to be transferred or archived first.
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Team Management" icon="users" href="/accounts/team-management">
+    Learn how to invite and manage team members
+  </Card>
+  <Card title="Account Settings" icon="gear" href="/accounts/account-settings">
+    Customize branding and manage account details
+  </Card>
+  <Card title="API Keys" icon="key" href="/accounts/api-keys">
+    Create programmatic access for your account
+  </Card>
+</CardGroup>

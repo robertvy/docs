@@ -1,0 +1,393 @@
+---
+title: "Custom API Actions"
+description: "Connect your agents to external systems via HTTP integrations"
+icon: "code"
+keywords: "custom API actions, API integration, webhook integration, external APIs, HTTP requests, custom integrations, agent API calls, parameter mapping"
+"og:description": "Connect your AI agents to external systems with custom HTTP integrations and real-time API calls."
+"og:title": "Custom API Actions"
+---
+
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+**In this guide, you'll learn to:**
+- Connect your agent to any external API
+- Configure authentication (Bearer, Basic, API Key)
+- Define parameters the agent collects from callers
+- Test and debug tool execution
+
+---
+
+## How Custom Actions Work
+
+Custom Actions let your AI agents integrate with external systems during conversations. Your agents can retrieve customer data, update CRM records, check inventory, create tickets, and execute business logic -- all in real time while talking to customers.
+
+<Screenshot
+  lightSrc="/images/operations__api-action-builder-light.png"
+  darkSrc="/images/operations__api-action-builder-dark.png"
+  alt="Custom Action builder showing endpoint configuration with HTTP method selector, URL field, authentication tab, Parameters tab, and Variables tab"
+/>
+
+**How it works:**
+1. **Configure the API endpoint** - Set up HTTP method, URL, authentication, headers, and request body
+2. **Define variables** - Specify what information the agent needs to collect before calling the API
+3. **Agent uses it** - During conversation, agent collects the variables and calls your API
+4. **API responds** - Your system returns data that the agent uses to continue the conversation
+
+<Info>
+Custom Actions execute **synchronously** during conversations. For operations that do not need immediate responses, such as logging, analytics, or post-call processing, use [Webhooks](/accounts/integrations#webhooks) instead.
+</Info>
+
+---
+
+## Example Flow
+
+```
+Customer: "What's the status of my order?"
+
+Agent: (collects order number from customer)
+
+[Agent calls API]
+-> GET https://api.company.com/orders/12345
+<- { "status": "shipped", "tracking": "1Z999AA10123456789" }
+
+Agent: "Your order has shipped! Your tracking number is
+       1Z999AA10123456789 and it should arrive by Friday."
+```
+
+<Warning>
+**Security: Verify customer identity before exposing sensitive data.** Always authenticate customers before calling APIs that return personal information, order details, or account data.
+</Warning>
+
+---
+
+## Create a Custom API Action
+
+<Steps>
+  <Step title="Navigate to Tools">
+    Go to your agent editor, then **Tools** tab > **Add** > **Custom Action**.
+  </Step>
+  <Step title="Configure basic info">
+    - **Name**: Descriptive name (e.g., "Lookup Order Status")
+    - **Description**: When to use this tool (10-200 characters). This helps the AI decide when to invoke it.
+  </Step>
+  <Step title="Configure the endpoint">
+    Select the HTTP method and enter the endpoint URL. See Endpoint Configuration below.
+  </Step>
+  <Step title="Set up authentication">
+    Choose an authentication method. See Authentication Methods below.
+  </Step>
+  <Step title="Add headers and body">
+    Configure custom headers, query parameters, and the request body on the Parameters tab.
+  </Step>
+  <Step title="Define variables">
+    Add variables the agent should collect from the conversation. See Variables below.
+  </Step>
+  <Step title="Test the tool">
+    Save and test the action through **Test Agent** using a Web call, Phone call, or Chat session.
+  </Step>
+</Steps>
+
+---
+
+## Endpoint Configuration
+
+### HTTP Method
+
+| Method | Use Case |
+|--------|----------|
+| **GET** | Retrieve data (order status, customer info) |
+| **POST** | Create records (tickets, leads, orders) |
+| **PUT** | Replace entire records |
+| **PATCH** | Update specific fields |
+| **DELETE** | Remove records |
+
+### Endpoint URL
+
+Enter the full API URL. The platform auto-prepends `https://` if you omit the protocol.
+
+```text
+https://api.company.com/customers
+```
+
+<Note>
+The endpoint URL itself is static. Use query parameters or the JSON request body for `{{variable_name}}` substitutions.
+</Note>
+
+---
+
+## Authentication Methods
+
+<AccordionGroup>
+  <Accordion title="None" icon="lock-open">
+    No authentication required. Use for public APIs or internal endpoints on private networks.
+  </Accordion>
+
+  <Accordion title="Bearer Token" icon="key">
+    Most common for modern APIs. Sends `Authorization: Bearer {your_token}` header.
+
+    **Use for:** OAuth 2.0 access tokens, JWT authentication, modern REST APIs.
+  </Accordion>
+
+  <Accordion title="Basic Auth" icon="user-lock">
+    Username/password authentication. Sends `Authorization: Basic {base64(username:password)}` header.
+
+    **Use for:** Legacy APIs, simple authentication schemes.
+  </Accordion>
+
+  <Accordion title="Header" icon="list">
+    Custom header-based auth (e.g., `X-API-Key: {your_api_key}`).
+
+    **Use for:** API key authentication, custom auth schemes.
+  </Accordion>
+
+  <Accordion title="Body" icon="file-code">
+    Credentials sent in the request body (e.g., `{"api_key": "{your_key}"}`).
+
+    **Use for:** Non-standard auth schemes, login endpoints.
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+For Bearer, Basic password, Header value, and Body value authentication, select or create a saved credential from **Secrets**. Existing credentials are preserved when editing; select a new credential only when you want to replace them.
+</Warning>
+
+---
+
+## Parameters Configuration
+
+<Badge>Expert Mode</Badge>
+
+### Headers
+
+Add custom HTTP headers as key-value pairs. Example: `Content-Type: application/json`
+
+### Query Parameters (GET requests)
+
+Add URL query parameters as key-value pairs. Template variables are supported in query parameter values.
+
+Example:
+
+```text
+order_id={{order_id}}
+include=tracking
+```
+
+### Request Body (POST/PUT/PATCH)
+
+Write your JSON request body in the editor. Use `{{variable_name}}` syntax to insert values collected from the conversation.
+
+```json
+{
+  "customer_id": "{{customer_id}}",
+  "status": "contacted",
+  "timestamp": "{{current_datetime}}"
+}
+```
+
+---
+
+## Variables - Parameter Mapping from Conversation Context
+
+<Badge>Expert Mode</Badge>
+
+Variables define what information your agent needs to collect from the conversation before calling the API. Each variable tells the AI what information to collect from the caller before making the request.
+
+### Variable Fields
+
+| Field | Description |
+|-------|-------------|
+| **Name** | Variable name (e.g., `order_number`, `customer_email`) |
+| **Type** | Data type: string, integer, float, boolean, date, email, phone |
+| **Description** | What this variable is for (helps the AI understand when to collect it) |
+| **Example** | Example value (guides the AI on expected format) |
+| **Required** | If true, the AI must collect this before calling the API |
+| **Default Value** | Used if not required and not provided by the customer |
+
+### Example Variable
+
+```
+Name: order_number
+Type: string
+Description: Customer's order number, usually starts with ORD-
+Example: ORD-12345
+Required: Yes
+```
+
+The AI knows to ask the customer for their order number before making the request.
+
+### Runtime Variables
+
+Custom Action templates use flat `{{variable_name}}` placeholders in headers, query parameters, and the request body. These runtime values are available when present:
+
+```text
+{{agent_number}}
+{{agent_uuid}}
+{{contact_number}}
+{{direction}}
+{{medium}}
+{{current_datetime}}
+{{timezone}}
+```
+
+Values returned by [Dynamic Context](/build/advanced/dynamic-context) are also available by their top-level key, such as `{{account_id}}` or `{{cal_email}}`.
+
+<Warning>
+Dotted prompt variables such as `{{contact.email}}` are for prompt rendering, not Custom Action payload substitution. If the action needs a caller name or email, define a variable for the agent to collect or return a flat key from Dynamic Context.
+</Warning>
+
+---
+
+## Testing Tools
+
+<Steps>
+  <Step title="Test endpoint independently">
+    Use Postman or cURL to verify the endpoint is reachable, authentication works, and the request format is correct.
+  </Step>
+  <Step title="Start with static values">
+    Configure the action with hardcoded values first (no variables) to verify basic functionality.
+  </Step>
+  <Step title="Add variables">
+    Replace hardcoded values with flat template variables such as `{{order_id}}`.
+  </Step>
+  <Step title="Test in agent">
+    Start **Test Agent** and run a Web call, Phone call, or Chat session. Trigger the action through conversation and verify:
+    - Agent collects variables correctly
+    - API is called with correct data
+    - Agent uses the response appropriately
+  </Step>
+  <Step title="Test error scenarios">
+    Verify agent behavior when the API returns errors:
+    - 404 (not found)
+    - 401 (authentication failed)
+    - 500 (server error)
+    - Timeout
+  </Step>
+</Steps>
+
+---
+
+## Error Handling
+
+Configure your agent prompt to handle API errors gracefully:
+
+```
+When using the 'Lookup Order Status' tool:
+
+If the tool returns an error:
+- 404: "I don't see an order with that number. Could you double-check?"
+- 500: "I'm having trouble accessing the system right now."
+- Timeout: "The system is taking longer than expected."
+- For any error, offer to have someone call them back.
+```
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="401 Unauthorized" icon="lock-open">
+    **Cause:** Invalid credentials or wrong auth type.
+
+    **Solution:** Verify credentials are correct, check auth type matches API requirements, test with Postman using the same credentials, verify token has not expired.
+  </Accordion>
+
+  <Accordion title="404 Not Found" icon="magnifying-glass">
+    **Cause:** Incorrect URL or resource does not exist.
+
+    **Solution:** Verify the static endpoint URL, check that query parameters or body variables populate correctly, and test with static values first.
+  </Accordion>
+
+  <Accordion title="Agent does not collect variables" icon="robot">
+    **Cause:** Variables not configured or descriptions are unclear.
+
+    **Solution:** Verify variables are defined in the Variables tab, add clear descriptions and examples, set required=true for essential variables, reference the tool by exact name in your prompt.
+  </Accordion>
+
+  <Accordion title="Variables not replacing in request" icon="brackets-curly">
+    **Cause:** Incorrect syntax or variable does not exist.
+
+    **Solution:** Use exact syntax `{{variable_name}}`, verify the variable is defined, and avoid dotted placeholders such as `{{contact.email}}` in Custom Action request templates.
+  </Accordion>
+
+  <Accordion title="Timeout errors" icon="clock">
+    **Cause:** API responding too slowly.
+
+    **Solution:** Optimize API response time, consider using webhooks for slow operations, cache frequently accessed data.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Security Best Practices
+
+- **Use HTTPS only** for all API endpoints
+- **Secure credentials** - never hardcode in URLs, rotate keys regularly
+- **Limit permissions** - use read-only keys for lookup actions
+- **Validate inputs** - your API should check for injection attempts and validate data types
+- **Verify identity** - authenticate customers before exposing sensitive data
+
+---
+
+## Real-World Examples
+
+<AccordionGroup>
+  <Accordion title="CRM Customer Lookup" icon="user-check">
+    - **Method:** GET
+    - **URL:** `https://api.salesforce.com/customers`
+    - **Auth:** Bearer token
+    - **Variable:** `customer_id` (string, required)
+    - **Query parameter:** `customer_id={{customer_id}}`
+  </Accordion>
+
+  <Accordion title="Create Support Ticket" icon="ticket">
+    - **Method:** POST
+    - **URL:** `https://company.zendesk.com/api/v2/tickets`
+    - **Auth:** Basic (email/token)
+    - **Variables:** `issue_description` (string), `priority_level` (string)
+    - **Body:**
+    ```json
+    {
+      "ticket": {
+        "subject": "Call with {{caller_name}}",
+        "description": "{{issue_description}}",
+        "priority": "{{priority_level}}"
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Check Product Inventory" icon="boxes-stacked">
+    - **Method:** GET
+    - **URL:** `https://inventory.company.com/products/availability`
+    - **Auth:** Header (`X-API-Key`)
+    - **Variable:** `sku` (string, required, example: "PROD-12345")
+    - **Query parameter:** `sku={{sku}}`
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Tools Overview" icon="bolt" href="/build/tools/overview">
+    Learn about all tool types
+  </Card>
+  <Card title="Custom Action Troubleshooting" icon="wrench" href="/troubleshooting/custom-actions">
+    Diagnose auth, payload, timeout, and response issues
+  </Card>
+  <Card title="Booking Tools" icon="calendar" href="/build/tools/booking-calendar">
+    Set up Cal.com appointment scheduling
+  </Card>
+  <Card title="Conversation Data Flow" icon="arrows-turn-right" href="/build/conversation/runtime-data-flow">
+    Understand where variables come from and what happens after tool execution
+  </Card>
+  <Card title="Template Syntax" icon="brackets-curly" href="/build/conversation/template-syntax">
+    Master template variables
+  </Card>
+  <Card title="MCP Servers" icon="server" href="/build/advanced/mcp-servers">
+    Connect MCP servers for advanced integrations
+  </Card>
+</CardGroup>

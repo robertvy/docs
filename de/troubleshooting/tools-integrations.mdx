@@ -1,0 +1,143 @@
+---
+title: "Tool- & Integrationsprobleme"
+description: "Tool-Ausführungsfehler, API-Fehler und Integrationsprobleme diagnostizieren und beheben"
+icon: "plug-circle-exclamation"
+keywords: "Tool-Fehler, API-Ausfälle, Integrationsprobleme, Übergabe fehlgeschlagen, Buchung fehlgeschlagen, Webhook-Fehler, benutzerdefinierte Aktion"
+"og:description": "Tool-Ausführungsfehler, benutzerdefinierte API-Fehler, Kalender-Buchungsprobleme und Webhook-Zustellungsprobleme beheben."
+"og:title": "Tool- & Integrationsprobleme"
+---
+
+Dieser Leitfaden behandelt die Diagnose und Behebung von Problemen mit Tools, benutzerdefinierten API-Aktionen und Drittanbieter-Integrationen.
+
+## Tool-Fehler diagnostizieren
+
+Jede Tool-Ausführung wird in der **Konversations-Detail-Zeitachse** protokolliert. Zur Diagnose:
+
+1. Zu **Konversationen** gehen → die relevante Konversation öffnen
+2. In der Zeitachse nach Tool-Aufruf-Ereignissen suchen (Schraubenschlüssel-Symbol)
+3. Das Ereignis erweitern, um die Anfrage-Payload und Antwort zu sehen
+4. Auf Fehlermeldungen, HTTP-Statuscodes oder Timeout-Indikatoren prüfen
+
+---
+
+## Probleme bei Anruf-Übergaben
+
+### Übergabe schlägt vollständig fehl
+
+1. **Zielformat prüfen** – Telefonnummern müssen im E.164-Format vorliegen (z. B. +43720123456)
+2. **Ziel direkt testen** – die Nummer vom eigenen Telefon aus anrufen, um zu prüfen, ob sie funktioniert
+3. **SIP-Ziel prüfen** (Profi) – sicherstellen, dass der SIP-URI korrekt und erreichbar ist
+4. **Zeitachse überprüfen** – nach der spezifischen Fehlermeldung im Tool-Aufruf-Ereignis suchen
+
+### Übergabe verbindet mit falschem Agenten oder Nummer
+
+1. Die Konfiguration der [Übergabe-Tools](/build/tools/transfer-tools) prüfen
+2. Bei Verwendung von Agent-Übergabe sicherstellen, dass der Ziel-Agent aktiv und konfiguriert ist
+3. Auf mehrere Übergabe-Tools prüfen – der Agent wählt möglicherweise das falsche aus
+
+---
+
+## Kalender-Buchungsprobleme
+
+### Buchungs-Tool wird als deaktiviert angezeigt
+
+- Das Kalender-Buchungs-Tool erfordert eine [Cal.com-Integration](/accounts/integrations)
+- Zu **Entwickler → Integrationen** gehen und prüfen, ob Cal.com als **Verbunden** angezeigt wird
+- Bei Trennung den Cal.com-API-Schlüssel erneut eingeben
+
+### Keine Zeitslots für den Anrufer
+
+1. Cal.com-Verfügbarkeit prüfen – bei Cal.com einloggen und prüfen, ob der Ereignistyp offene Slots hat
+2. Prüfen, ob **Vorausschautage** nicht zu niedrig eingestellt ist
+3. Prüfen, ob **Startdatum** nicht in der Zukunft liegt
+4. Prüfen, ob der richtige **Ereignistyp** in der Tool-Konfiguration ausgewählt ist
+5. **Aktive Stunden** prüfen, wenn ein Zeitplan zugewiesen ist
+
+### Buchung erstellt, aber nicht in Cal.com sichtbar
+
+1. Die Konversations-Zeitachse prüfen – sicherstellen, dass der Buchungs-API-Aufruf Erfolg zurückgegeben hat
+2. Bei Cal.com einloggen und nach der Buchung suchen (sie könnte in einem anderen Kalender sein)
+3. Prüfen, ob die Meeting-Plattform den Cal.com-Ereignistyp-Einstellungen entspricht
+
+---
+
+## Probleme mit benutzerdefinierten API-Aktionen
+
+Benutzerdefinierte API-Aktionen haben ihren eigenen Fehlerbehebungsablauf, da Anfrage-Variablen, Authentifizierung, Antwort-Formatierung und Timeout-Verhalten das Ergebnis beeinflussen können.
+
+Verwende [Fehlerbehebung benutzerdefinierter Aktionen](/troubleshooting/custom-actions), wenn:
+
+- die Aktion nicht ausgelöst wird
+- die Authentifizierung fehlschlägt
+- Variablen fehlen oder nicht ersetzt werden
+- die API langsam ist oder abläuft
+- die API erfolgreich ist, aber der Agent schlecht antwortet
+- die Aktion in Postman funktioniert, aber nicht während einer Konversation
+
+---
+
+## Webhook-Probleme
+
+### Webhooks werden nicht empfangen
+
+1. **Entwickler → Webhooks** prüfen – sicherstellen, dass der Webhook **Aktiv** ist
+2. Prüfen, ob die Ziel-URL öffentlich zugänglich ist (mit curl testen)
+3. Ereignis-Abonnements prüfen – möglicherweise sind nicht die erwarteten Ereignisse abonniert
+4. Bei Verwendung von Agent-Scope sicherstellen, dass der richtige Agent ausgewählt ist
+5. Die Protokolle des empfangenden Systems auf eingehende Anfragen prüfen
+
+### Webhook-Signaturprüfung schlägt fehl
+
+1. Prüfen, ob das aktuelle Signing-Secret aus der Webhook-Konfiguration verwendet wird
+2. Prüfen, ob der HMAC über den rohen Anfrage-Body berechnet wird (nicht geparste JSON)
+3. Sicherstellen, dass Signaturen auf zeitlich sichere Weise verglichen werden
+
+### Webhook-Zustellungsverzögerungen
+
+Webhooks werden asynchron zugestellt. Leichte Verzögerungen (1–5 Sekunden) sind normal. Bei längeren Verzögerungen:
+1. Prüfen, ob der empfangende Endpunkt schnell antwortet (unter 5 Sekunden)
+2. Die Server-Auslastung prüfen – langsame Bestätigung kann zu Zustellungsproblemen führen
+
+---
+
+## MCP-Server-Probleme
+
+### Tools nicht erkannt
+
+1. Prüfen, ob die MCP-Server-URL korrekt und zugänglich ist
+2. Auf **Aktualisieren** klicken, um Tools erneut zu erkennen
+3. Prüfen, ob der MCP-Server den Standard-Tool-Listing-Endpunkt implementiert
+4. Auth-Header/Query-Parameter prüfen, wenn konfiguriert
+
+### MCP-Tool-Ausführung schlägt fehl
+
+1. Die Konversations-Zeitachse auf die Fehlerantwort prüfen
+2. Prüfen, ob der MCP-Server läuft und reagiert
+3. Prüfen, ob das Input-Schema des Tools mit dem übereinstimmt, was der Agent sendet
+4. Den MCP-Server direkt außerhalb von itellicoAI testen
+
+---
+
+## Allgemeine Tipps
+
+- **Tools klar benennen** – der Agent wählt Tools basierend auf Name und Beschreibung aus
+- **Tool-Namen im Prompt abgleichen** – Tool-Referenzen müssen genau übereinstimmen (Groß-/Kleinschreibung beachten)
+- **Tools einzeln testen** – ein Tool nach dem anderen hinzufügen und testen, bevor das nächste hinzugefügt wird
+- **Zuerst die Zeitachse prüfen** – die Konversations-Detail-Zeitachse zeigt genau, was passiert ist
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Benutzerdefinierte Aktionen" icon="bolt" href="/build/tools/custom-api-actions">
+    API-Integrationen konfigurieren
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/accounts/webhooks">
+    Ereigniszustellung einrichten
+  </Card>
+  <Card title="Secrets" icon="key" href="/accounts/secrets">
+    Anmeldedaten verwalten
+  </Card>
+  <Card title="Häufige Probleme" icon="wrench" href="/troubleshooting/common-issues">
+    Schnelle Lösungen für alle Problemtypen finden
+  </Card>
+</CardGroup>

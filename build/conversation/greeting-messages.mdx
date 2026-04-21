@@ -1,0 +1,417 @@
+---
+title: "Greeting Messages"
+description: "Choose fixed, AI-generated, or user-initiated greeting modes. Personalize opening messages with variables, set message delays, and configure barge-in for inbound and outbound calls."
+icon: "hand-wave"
+keywords: "AI greeting messages, conversational AI greetings, dynamic greetings, personalized agent messages, conversation starters, AI welcome messages"
+"og:description": "Configure dynamic, personalized greeting messages that set the right tone for every AI agent conversation."
+"og:title": "Greeting Messages"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+
+**Access:** Open an agent and go to **Call Flow**, then scroll to **Call Start**.
+
+## How Greetings Work
+
+The greeting is the first thing customers hear when connecting with your agent. A well-crafted greeting sets the tone, establishes expectations, and guides the conversation in the right direction.
+
+## Greeting Modes
+
+Choose from three different greeting modes:
+
+<Note>
+This area changes between Simple and Expert mode. Simple mode keeps greeting setup concise; Expert mode adds timing and interruption controls.
+</Note>
+
+### Simple mode
+
+<Screenshot
+  lightSrc="/images/operations__greeting-light.png"
+  darkSrc="/images/operations__greeting-dark.png"
+  alt="Greeting configuration showing the Call Flow tab with Call Start settings and the Fixed Message, AI Generated, and Wait for Caller modes"
+  caption="Shown in Simple mode. All greeting behavior starts in Call Start, where you choose the greeting mode and decide whether inbound and outbound calls should behave differently."
+  maxWidth="860px"
+/>
+
+### Expert mode
+
+<Screenshot
+  lightSrc="/images/operations__greeting-expert-light.png"
+  darkSrc="/images/operations__greeting-expert-dark.png"
+  alt="Greeting configuration in Expert mode showing advanced timing and interruption controls"
+  caption="Expert mode adds the advanced timing and interruption controls used for fine-tuning the opening experience."
+  maxWidth="860px"
+/>
+
+<Tabs>
+  <Tab title="Fixed Message">
+    **Best for**: Consistent, branded greetings
+
+    Your agent says the exact same greeting every time.
+
+    ```text wrap
+    Hey! Thanks for calling Acme support. This is Alex. What can I help you with?
+    ```
+
+    **Advantages:**
+    - Consistent brand messaging
+    - Predictable customer experience
+    - Easy to test and refine
+    - No AI variability
+
+    **Use when:**
+    - Brand voice is critical
+    - Greeting includes specific disclaimers
+    - Consistency across all calls needed
+  </Tab>
+
+  <Tab title="AI Generated">
+    **Best for**: Personalized, context-aware greetings
+
+    Your agent generates greetings dynamically based on available context.
+
+    **Example variations:**
+    ```text wrap
+    # With customer name:
+    "Hi Sarah! Thanks for calling. What can I help you with today?"
+
+    # VIP customer:
+    "Hi Mr. Johnson! Thanks for calling. What can I help you with today?"
+
+    # Time-based:
+    "Good morning! Thanks for calling Acme support. What brings you in?"
+
+    # Campaign-specific:
+    "Hey! I see you requested info about our Enterprise plan. Happy to help with that!"
+    ```
+
+    **Advantages:**
+    - Personalized to each caller
+    - Context-aware (time, campaign, customer type)
+    - Natural variability
+    - Can reference available data
+
+    **Use when:**
+    - You have rich contact data
+    - Personalization improves experience
+    - Different customer segments need different approaches
+  </Tab>
+
+  <Tab title="Wait for Caller">
+    **Best for**: Outbound calls where recipient speaks first
+
+    The agent waits silently for the customer to speak before responding.
+
+    **Customer:** "Hello?" / "Yes?" / "Who is this?"
+    **Agent:** "Hi! This is Alex from Acme. I'm calling about your recent inquiry. Do you have a moment?"
+
+    **Advantages:**
+    - Natural for outbound scenarios
+    - Customer speaks first as expected
+    - Agent responds after customer picks up
+
+    **Use when:**
+    - Making outbound calls
+    - Recipient will naturally say something when answering
+    - You want the customer to initiate the conversation
+
+    <Note>
+    **For most use cases, we recommend Fixed Message instead.** Wait for Caller is only useful in certain outbound calling scenarios.
+    </Note>
+  </Tab>
+</Tabs>
+
+---
+
+## Greeting Configuration
+
+### Delay
+
+<Badge>Expert Mode</Badge>
+
+Control how long the agent waits before speaking (0-10 seconds).
+
+A delay of **0.5 seconds** is a good starting point for most use cases.
+
+### Interruptibility
+
+<Badge>Expert Mode</Badge>
+
+Control whether customers can interrupt the greeting.
+
+**Non-Interruptible (Recommended):**
+- Greeting plays in full without interruption
+- Ensures customers hear complete message
+- Professional and clear introduction
+- Best for most use cases
+
+**Interruptible:**
+- Customer can speak during greeting
+- Agent stops mid-greeting and listens
+- Can lead to incomplete introductions
+- Use only if customers frequently interrupt and non-interruptible greetings lead to suboptimal conversations or hangups
+
+<Tip>
+Non-interruptible greetings ensure your brand introduction and purpose are always communicated clearly. Keep greetings concise (under 10 seconds) for best results.
+</Tip>
+
+---
+
+## Inbound vs Outbound Greetings
+
+### Inbound Greetings
+
+Customers are calling you. They initiated contact.
+
+**Best practices:**
+- Thank them for calling
+- Identify your company/service
+- Introduce the agent (optional name)
+- Ask how you can help
+
+**Examples:**
+
+```text wrap
+# Standard support:
+"Thank you for calling Acme Software support. How can I help you today?"
+
+# With agent name:
+"Hi! This is Alex from Acme support. What can I help you with?"
+
+# Friendly:
+"Hey there! Thanks for calling. What brings you in today?"
+
+# Department-specific:
+"Acme Billing department, this is Sam. How can I assist you?"
+```
+
+---
+
+### Outbound Greetings
+
+You're calling the customer. You need to establish legitimacy and purpose quickly.
+
+**Best practices:**
+- Identify yourself and company
+- State purpose of call
+- Confirm you're speaking with right person
+- Ask if it's a good time
+
+**Examples:**
+
+```text wrap
+# Appointment reminder:
+"Hi, this is Alex from Acme Dental. I'm calling to confirm your appointment tomorrow at 2 PM. Is this still a good time for you?"
+
+# Lead follow-up:
+"Hello, this is Sarah from Acme Software. You recently requested information about our Enterprise plan. Do you have a few minutes to discuss how we can help?"
+
+# Customer feedback:
+"Hi! This is Jordan from Acme. You recently purchased our product, and I wanted to get your quick feedback. Do you have two minutes?"
+
+# Payment reminder:
+"Hello, this is the billing team at Acme. I'm calling about your account. Can we take care of that payment today?"
+```
+
+### Outbound Greeting Overrides
+
+<Badge>Expert Mode</Badge>
+
+Configure separate greetings for outbound calls in the **Greeting** section.
+
+<Screenshot
+  lightSrc="/images/operations__outbound-greeting-light.png"
+  darkSrc="/images/operations__outbound-greeting-dark.png"
+  alt="Outbound greeting configuration showing the Outbound override section with Use different greeting for outbound calls enabled and the Fixed Message, AI Generated, and Wait for Caller options"
+  caption="Use outbound overrides only when proactive calls need a different opener than inbound support or service calls."
+  maxWidth="860px"
+/>
+
+<Steps>
+  <Step title="Enable outbound override">
+    Turn on **Use different greeting for outbound calls**
+  </Step>
+  <Step title="Choose outbound greeting mode">
+    Fixed Message, AI Generated, or Wait for Caller
+  </Step>
+  <Step title="Set outbound-specific delay">
+    Usually 0-0.5 seconds for outbound
+  </Step>
+  <Step title="Configure interruptibility">
+    Usually interruptible for natural feel
+  </Step>
+</Steps>
+
+<Note>
+By default, outbound calls mirror your inbound greeting. Use overrides when you need different behavior for proactive calls.
+</Note>
+
+---
+
+## Using Variables in Greetings
+
+<Screenshot
+  lightSrc="/images/operations__greeting-variables-light.png"
+  darkSrc="/images/operations__greeting-variables-dark.png"
+  alt="Greeting variables configuration showing Outbound (custom) tab with AI Agent Initiates with Fixed Message selected, outbound fixed message editor containing variable syntax, Detected Variables section showing test variable, message delay slider, and barge-in toggle"
+  caption="The greeting editor shows detected variables inline, so you can confirm which fields are available before you rely on them in production."
+  maxWidth="760px"
+/>
+
+### Contact Variables
+
+Personalize fixed greetings with customer information:
+
+<Screenshot
+  lightSrc="/images/operations__contact-variables-light.png"
+  darkSrc="/images/operations__contact-variables-dark.png"
+  alt="Contact variables in greeting showing Inbound tab with AI Agent Initiates with Fixed Message selected, fixed message editor with time-based and contact variable syntax using current_datetime and contact.full_name, Detected Variables section displaying the parsed variables, message delay slider, and barge-in toggle"
+  caption="Contact variables are best when you want a fixed greeting template to feel personal without handing the full opening line over to AI generation."
+  maxWidth="760px"
+/>
+
+| Need | Common source |
+| --- | --- |
+| Caller name | `contact.first_name` or `contact.full_name` |
+| Caller email or phone | `contact.email` or `contact.phone` |
+| Current date or time | `current_datetime` |
+| Account-specific data | Dynamic Context variables from your own API |
+
+<Tip>
+The `current_datetime` variable is automatically available in greetings and prompts. For exact syntax, conditionals, filters, and fallback values, see [Template Syntax](/build/conversation/template-syntax).
+</Tip>
+
+### Conditional Greetings
+
+Use conditional greetings only when the opening line must adapt to caller context, such as known contacts, premium tiers, or campaign paths:
+
+<Screenshot
+  lightSrc="/images/operations__condition-greeting-light.png"
+  darkSrc="/images/operations__condition-greeting-dark.png"
+  alt="Conditional greeting configuration showing Inbound tab with AI Agent Initiates with Fixed Message selected, fixed message editor with if-else conditional logic using contact.email variable, Detected Variables section showing contact.first_name and contact.email, message delay slider, and barge-in toggle"
+  caption="Conditional greetings are useful when one template must adapt to different caller contexts such as known contacts, premium tiers, or campaign paths."
+  maxWidth="760px"
+/>
+
+<Note>
+Variables like `account_tier`, `company_name`, or custom fields must be provided through Dynamic Context. See [Dynamic Context API](/build/advanced/dynamic-context) for setup and [Template Syntax](/build/conversation/template-syntax) for writing the conditional template.
+</Note>
+
+---
+
+## Writing Great Greetings
+
+<AccordionGroup>
+  <Accordion title="Keep it brief" icon="clock">
+    Aim for under 10 seconds.
+
+    **Good:** "Hi! Thanks for calling Acme support. How can I help?"
+
+    **Too long:** "Hello and thank you for calling Acme Software technical support center. My name is Alex, and I'll be assisting you today..."
+  </Accordion>
+
+  <Accordion title="Sound natural" icon="comments">
+    Use conversational language.
+
+    **Good:** "Hey! Thanks for calling. What can I help with?"
+
+    **Avoid:** "Greetings, valued customer. Please state the nature of your inquiry."
+  </Accordion>
+
+  <Accordion title="Set expectations" icon="bullseye">
+    Make your purpose clear.
+
+    **Good:** "Hi! This is Alex from Acme Billing. I'm calling about your recent invoice."
+
+    **Avoid:** "Hello, this is Acme. I wanted to reach out to you today."
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Testing Greetings
+
+### What to Test
+
+<AccordionGroup>
+  <Accordion title="Timing" icon="clock">
+    - Is delay appropriate?
+    - Does agent start speaking too soon/late?
+    - Can customer interrupt if needed?
+  </Accordion>
+
+  <Accordion title="Content" icon="message">
+    - Is greeting clear and understandable?
+    - Does it establish purpose?
+    - Is tone appropriate?
+    - Any awkward phrasing?
+  </Accordion>
+
+  <Accordion title="Variables" icon="brackets-curly">
+    - Do variables render correctly?
+    - Are defaults working?
+    - Does conditional logic trigger properly?
+  </Accordion>
+
+  <Accordion title="Length" icon="ruler">
+    - Under 10 seconds?
+    - Customer stays engaged?
+    - No unnecessary words?
+  </Accordion>
+</AccordionGroup>
+
+### Testing Process
+
+1. Click **Test Agent** in the agent editor
+2. Choose **Web call**
+3. Listen to greeting multiple times
+4. Test with different contexts (VIP customer, different campaigns, etc.)
+5. Ask colleagues for feedback
+6. Refine based on actual call results
+
+---
+
+## Common Mistakes
+
+<AccordionGroup>
+  <Accordion title="Too formal" icon="user-tie">
+    **Avoid:** "Greetings. You have reached the Acme Corporation technical support division."
+
+    **Better:** "Hey! Thanks for calling Acme support. What can I help you with?"
+  </Accordion>
+
+  <Accordion title="Too casual" icon="face-smile">
+    **Avoid:** "Yo! What's up? What do you need?"
+
+    **Better:** "Hey there! Thanks for calling. What can I help with today?"
+  </Accordion>
+
+  <Accordion title="Missing company name" icon="building">
+    **Avoid:** "Hi, this is Alex. How can I help?"
+
+    **Better:** "Hey! This is Alex from Acme support. What brings you in today?"
+  </Accordion>
+
+  <Accordion title="No purpose for outbound calls" icon="phone-arrow-up-right">
+    **Avoid:** "Hi, is this Sarah? How are you today?"
+
+    **Better:** "Hi Sarah! This is Alex from Acme. You requested some info about our product - do you have a quick minute to chat?"
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Template Syntax" icon="brackets-curly" href="/build/conversation/template-syntax">
+    Learn how to use variables in greetings and prompts
+  </Card>
+  <Card title="Prompt Engineering Guide" icon="book" href="/build/conversation/prompt-engineering-guide">
+    Master advanced prompting techniques
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/web-simulator">
+    Test your greetings and refine
+  </Card>
+</CardGroup>

@@ -1,0 +1,28 @@
+export const Screenshot = ({
+  lightSrc,
+  darkSrc,
+  alt,
+  caption,
+  maxWidth = "880px",
+}) => {
+  return (
+    <div style={{ margin: "1rem auto", maxWidth, width: "100%" }}>
+      <Frame>
+        <img className="block dark:hidden" src={lightSrc} alt={alt} />
+        <img className="hidden dark:block" src={darkSrc} alt={alt} />
+      </Frame>
+      {caption ? (
+        <p
+          style={{
+            marginTop: "0.5rem",
+            fontSize: "0.875rem",
+            color: "inherit",
+            opacity: 0.8,
+          }}
+        >
+          {caption}
+        </p>
+      ) : null}
+    </div>
+  );
+};

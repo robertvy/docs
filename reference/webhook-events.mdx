@@ -1,0 +1,330 @@
+---
+title: "Webhook Events"
+description: "Reference for all webhook event types, payloads, and delivery behavior"
+icon: "webhook"
+keywords: "webhooks, webhook events, conversation started, conversation ended, analysis completed, webhook payload, event types, webhook delivery"
+"og:description": "Complete reference for itellicoAI webhook events including event types, payload format, and delivery behavior."
+"og:title": "Webhook Events"
+---
+
+Webhooks notify your systems in real time when events occur in itellicoAI.
+
+Configure subscriptions in **Developers → Webhooks**. See [Webhooks](/accounts/webhooks) for the UI setup flow.
+
+If you are implementing the receiver itself, use the [Webhook Implementation Guide](/accounts/webhook-implementation) alongside this reference.
+
+---
+
+## Event Types
+
+### `conversation.started`
+
+Triggered when a new conversation begins (inbound or outbound).
+
+**When it fires:**
+- An inbound call is answered by an agent
+- An outbound campaign call connects
+- A web or test conversation starts
+
+---
+
+### `conversation.ended`
+
+Triggered when a conversation concludes.
+
+**When it fires:**
+- Call ends normally (caller or agent hangs up)
+- Call fails (connection error, timeout)
+- Call is transferred to another destination
+
+**Status values in payload:**
+- `completed`
+- `failed`
+- `transferred`
+
+---
+
+### `conversation.analysis.completed`
+
+Triggered when a conversation's gathered insights finish processing.
+
+**When it fires:**
+- After `conversation.ended`, once goal scoring and insight processing are complete
+
+**Includes:**
+- Goal analysis results
+- Post-call analysis results
+- Serialized conversation messages and events used for analysis context
+
+<Note>
+This event fires separately from `conversation.ended` because analysis runs asynchronously after the call concludes. If you need both the call outcome and analysis data, listen for this event.
+</Note>
+
+---
+
+## Payload Format
+
+All webhook payloads use a common envelope. `data` contains the event-specific fields.
+
+```json
+{
+  "event_id": "3a8d4e3f-2f36-4cf7-9d4f-2df8e7f6f1c8",
+  "event_type": "conversation.ended",
+  "created": "2026-04-19T14:30:00.000000+00:00",
+  "organization_uuid": "8702eb05-d00c-420d-bbbf-fed4b17b8b64",
+  "organization_name": "Acme Support",
+  "data": {
+    "conversation_uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  }
+}
+```
+
+### Example: `conversation.started`
+
+```json
+{
+  "event_id": "3a8d4e3f-2f36-4cf7-9d4f-2df8e7f6f1c8",
+  "event_type": "conversation.started",
+  "created": "2026-04-19T14:30:00.000000+00:00",
+  "organization_uuid": "8702eb05-d00c-420d-bbbf-fed4b17b8b64",
+  "organization_name": "Acme Support",
+  "data": {
+    "conversation_uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "agent_uuid": "7b0a1a3d-59c6-46d4-8016-c5ccd5df6864",
+    "agent_name": "Concierge",
+    "direction": "inbound",
+    "channel": "sip",
+    "from_number": "+4312345678",
+    "to_number": "+43720123456",
+    "started_at": "2026-04-19T14:30:00.000Z"
+  }
+}
+```
+
+### Example: `conversation.ended`
+
+```json
+{
+  "event_id": "4c1c44a1-37b8-4d35-b0bc-4d03ad08e601",
+  "event_type": "conversation.ended",
+  "created": "2026-04-19T14:35:42.000000+00:00",
+  "organization_uuid": "8702eb05-d00c-420d-bbbf-fed4b17b8b64",
+  "organization_name": "Acme Support",
+  "data": {
+    "conversation_uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "agent_uuid": "7b0a1a3d-59c6-46d4-8016-c5ccd5df6864",
+    "agent_name": "Concierge",
+    "direction": "inbound",
+    "channel": "sip",
+    "status": "completed",
+    "from_number": "+4312345678",
+    "to_number": "+43720123456",
+    "started_at": "2026-04-19T14:30:00.000Z",
+    "ended_at": "2026-04-19T14:35:42.000Z",
+    "duration_seconds": 342,
+    "answer_status": "human",
+    "messages": [],
+    "events": []
+  }
+}
+```
+
+### Example: `conversation.analysis.completed`
+
+```json
+{
+  "event_id": "bb164f3d-c4c7-41a1-8b4e-1abdb7f2d0b2",
+  "event_type": "conversation.analysis.completed",
+  "created": "2026-04-19T14:36:15.000000+00:00",
+  "organization_uuid": "8702eb05-d00c-420d-bbbf-fed4b17b8b64",
+  "organization_name": "Acme Support",
+  "data": {
+    "conversation_uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "agent_uuid": "7b0a1a3d-59c6-46d4-8016-c5ccd5df6864",
+    "agent_name": "Concierge",
+    "analysis_job_uuid": "d86eab3a-142e-43b5-9b0b-c968e30f472d",
+    "analyzed_at": "2026-04-19T14:36:15.000Z",
+    "model_used": "gpt-4.1-mini",
+    "results": {
+      "goals": [],
+      "post_call": [
+        {
+          "name": "Customer Satisfaction",
+          "type": "rating",
+          "value": 4,
+          "reasoning": "Caller thanked the agent and expressed appreciation."
+        }
+      ]
+    },
+    "messages": [],
+    "events": []
+  }
+}
+```
+
+---
+
+## Signature Verification
+
+If you configured a signing secret, verify webhook authenticity by computing an HMAC-SHA256 signature over `<rawBody>.<timestamp>`.
+
+```python
+import hmac
+import hashlib
+
+def verify_signature(payload_body, timestamp, signature_header, secret):
+    signature_base = payload_body + b"." + timestamp.encode()
+    expected = hmac.new(
+        secret.encode(),
+        signature_base,
+        hashlib.sha256
+    ).hexdigest()
+    return hmac.compare_digest(expected, signature_header)
+```
+
+```ts
+import crypto from "node:crypto";
+
+function verifySignature(
+  payloadBody: string,
+  timestamp: string,
+  signatureHeader: string,
+  secret: string,
+) {
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(`${payloadBody}.${timestamp}`)
+    .digest("hex");
+
+  return crypto.timingSafeEqual(
+    Buffer.from(expected, "utf8"),
+    Buffer.from(signatureHeader, "utf8"),
+  );
+}
+```
+
+<Warning>
+Always compare signatures using a timing-safe comparison function to prevent timing attacks.
+</Warning>
+
+---
+
+## Event Data Fields
+
+### `conversation.started` data
+
+Common fields:
+- `conversation_uuid`
+- `agent_uuid`, `agent_name`
+- `channel`
+- `started_at`
+- `from_number`, `to_number`
+- `ip_address`
+- `campaign_uuid`, `campaign_contact_uuid`
+- `direction`
+- `room_sid`
+- `metadata`
+
+### `conversation.ended` data
+
+Includes everything needed for outcome processing:
+- `conversation_uuid`
+- `agent_uuid`, `agent_name`
+- `channel`
+- `status`
+- `started_at`, `ended_at`, `duration_seconds`
+- `from_number`, `to_number`, `ip_address`
+- `campaign_uuid`, `campaign_contact_uuid`
+- `direction`, `room_sid`
+- `metadata`
+- `answer_status`
+- `messages` (serialized transcript messages)
+- `events` (serialized timeline events)
+
+### `conversation.analysis.completed` data
+
+Includes analysis output plus conversation context:
+- `conversation_uuid`
+- `agent_uuid`, `agent_name`
+- `analysis_job_uuid`
+- `analyzed_at`
+- `model_used`
+- `results.goals`
+- `results.post_call`
+- `messages`
+- `events`
+
+---
+
+## Delivery Headers
+
+### Signature Verification
+
+Each delivery includes base headers:
+- `Content-Type: application/json`
+- `User-Agent: itellicoAI-Webhook/1.0`
+- `X-Webhook-Event-Type`
+- `X-Webhook-Version: 1.0`
+- `X-Webhook-Event-Id`
+
+If a webhook secret is configured, deliveries also include:
+- `X-Webhook-Timestamp`
+- `X-Webhook-Signature-256`
+
+The signature is HMAC-SHA256 over:
+
+```text
+<json_payload>.<timestamp>
+```
+
+Where `<json_payload>` is the exact JSON string sent in the body.
+
+### Verification Pseudocode
+
+```js
+const expected = hmacSha256Hex(secret, `${rawBody}.${timestamp}`);
+const isValid = timingSafeEqual(expected, signatureHeader);
+```
+
+Reject if:
+- signature does not match
+- timestamp is outside your replay window
+- required headers are missing
+
+### Retry Logic
+
+If your endpoint returns non-2xx or times out, deliveries retry automatically.
+
+Current behavior:
+- max retries: `5`
+- base retry delay: `30s`
+- backoff: exponential (capped)
+- request timeout: `10s`
+
+Inactive subscriptions are skipped. Delivery attempts are logged per webhook subscription.
+
+### Custom Headers
+
+You can configure custom headers per subscription for auth/routing (for example, your own bearer token header).
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Webhooks Setup" icon="webhook" href="/accounts/webhooks">
+    Configure webhook subscriptions in the account UI
+  </Card>
+  <Card title="Webhook Implementation Guide" icon="plug-circle-check" href="/accounts/webhook-implementation">
+    Build the receiving endpoint and process events safely
+  </Card>
+  <Card title="Gather Insights" icon="clipboard-list" href="/build/analytics/gather-insights">
+    Configure the insights that trigger conversation.analysis.completed
+  </Card>
+  <Card title="API Reference" icon="brackets-curly" href="/api-reference/introduction">
+    View full API documentation
+  </Card>
+  <Card title="Conversation Goals" icon="bullseye" href="/build/analytics/conversation-goals">
+    Configure goals included in analysis events
+  </Card>
+</CardGroup>

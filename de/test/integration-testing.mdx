@@ -1,0 +1,243 @@
+---
+title: "Integrationstests"
+description: "Validiere, dass Tools, Wissensdatenbanken und externe Dienste mit deinem Agenten korrekt funktionieren"
+icon: "plug"
+keywords: "integration testing, tool testing, knowledge base testing, API testing, webhook testing, transfer testing, booking testing, end-to-end testing"
+"og:description": "Prüfe vor dem Go-live, ob Tools, Wissensdatenbanken und externe Integrationen deines Agents korrekt funktionieren."
+"og:title": "Integrationstests"
+---
+
+Integrationstests prüfen, ob die Verbindungen deines Agents zu externen Systemen korrekt funktionieren. Dazu gehören Wissensdatenbanken, Anrufweiterleitungen, Kalenderbuchungen, benutzerdefinierte Aktionen und Webhooks.
+
+## Diese Seite nutzen, nachdem die Kernfunktionalität funktioniert
+
+Sobald der Agent ein einfaches Gespräch führen kann, prüfe mit dieser Seite, ob auch die umgebenden Geschäftssysteme Ende-zu-Ende funktionieren.
+
+Einige Abschnitte dieser Seite solltest du am besten der Person übergeben, die das verbundene System verantwortet. Du kannst die Checkliste trotzdem nutzen, um das kundenseitige Erlebnis zu bestätigen und technische Checks bei Bedarf weiterzugeben.
+
+---
+
+## Wissensdatenbank-Integration
+
+Nachdem du eine Wissensdatenbank [erzeugt](/de/build/knowledge/create-knowledge-bases) und [zugewiesen](/de/build/knowledge/assign-knowledge) hast, prüfe, ob sie im Gespräch funktioniert.
+
+<Steps>
+  <Step title="Verarbeitungsstatus prüfen">
+    Öffne deine Wissensdatenbank und bestätige, dass alle Einträge grün sind und als einsatzbereit gelten. Einträge, die noch verarbeitet werden oder Fehler zeigen, stehen deinem Agenten noch nicht zur Verfügung.
+  </Step>
+
+  <Step title="Abrufgenauigkeit testen">
+    Stelle im Testmodus **Chat** oder **Webanruf** Fragen, die durch deine Wissensdatenbank beantwortet werden sollten.
+
+    Öffne nach jeder Antwort die Gesprächsdetails und klicke auf das Symbol für die Wissensabfrage neben der Nachricht des Agents, um zu prüfen:
+    - Dass der richtige Wissensauszug abgerufen wurde
+    - Dass das Top-Ergebnis klar zur Frage der anrufenden Person passt
+    - Dass der Agent die abgerufenen Inhalte korrekt in seiner Antwort verwendet hat
+  </Step>
+
+  <Step title="Abruflücken testen">
+    Stelle Fragen, die deiner Wissensdatenbank nahe kommen, aber nicht exakt darin stehen. Prüfe:
+    - Die Wissenssuche findet trotzdem relevante Inhalte bei paraphrasierten Fragen
+    - Der Agent halluziniert keine Antworten für Themen, die nicht in der Wissensdatenbank stehen
+  </Step>
+
+  <Step title="Nach Änderungen erneut testen">
+Bearbeite den Wissenseintrag, warte bis er wieder grün ist, und teste dieselben Fragen erneut, um zu bestätigen, dass die aktualisierten Inhalte ausgeliefert werden.
+  </Step>
+</Steps>
+
+<Note>
+Wenn die Abrufgenauigkeit niedrig ist, sieh dir [Kontext vs. RAG](/de/build/knowledge/context-vs-rag) an, um die beiden Abrufmodi und ihre Einsatzbereiche zu verstehen.
+</Note>
+
+---
+
+## Anrufweiterleitungen
+
+Teste jedes Weiterleitungsziel, das in deinem Agenten konfiguriert ist.
+
+<Steps>
+  <Step title="Jede Weiterleitung auslösen">
+    Sage für jede Regel etwas, das sie aktivieren sollte. Prüfe:
+    - Der Transfer startet zur richtigen Nummer oder zum richtigen SIP-Ziel
+    - Der Agent kündigt die Weiterleitung dem Anrufer an
+    - Das Gespräch verbindet sich tatsächlich mit dem Ziel
+  </Step>
+
+  <Step title="Weiterleitungsfehler testen">
+    Wenn möglich, teste, was passiert, wenn das Weiterleitungsziel nicht erreichbar ist (besetzt, keine Antwort). Prüfe:
+    - Der Agent behandelt den Fehler sauber
+    - Der Anrufer erhält eine hilfreiche Nachricht
+    - Der Agent bietet Alternativen an (Rückruf, Mailbox, erneut versuchen)
+  </Step>
+
+  <Step title="Gesprächsprotokoll prüfen">
+    Öffne nach dem Test die Gesprächsdetails und prüfe, ob der Tool-Call für die Weiterleitung in der Timeline mit dem richtigen Ziel erscheint.
+  </Step>
+</Steps>
+
+Siehe [Transfer-Tools](/de/build/tools/transfer-tools) als Referenz für die Konfiguration.
+
+---
+
+## Kalenderbuchungen
+
+Wenn dein Agent das Buchungstool nutzt:
+
+<Steps>
+  <Step title="Termin buchen">
+    Gehe den kompletten Buchungsfluss durch: gib Datum, Uhrzeit, Name und Kontaktdaten an.
+
+    **Prüfen:**
+    - Die Buchung erscheint im verbundenen Kalender (Cal.com oder ein anderer Anbieter)
+    - Alle Details sind korrekt (Datum, Uhrzeit, Teilnehmende)
+    - Der Agent bestätigt die Buchung dem Anrufer
+  </Step>
+
+  <Step title="Nicht verfügbare Slots testen">
+    Versuche, eine Zeit zu buchen, die bereits belegt ist oder außerhalb der verfügbaren Zeiten liegt.
+
+    **Prüfen:**
+    - Der Agent kommuniziert die Nichtverfügbarkeit
+    - Der Agent schlägt Alternativzeiten vor
+    - Es werden keine doppelten oder Phantom-Buchungen erstellt
+  </Step>
+
+  <Step title="Buchung mit fehlenden Angaben testen">
+    Gib unvollständige Informationen an, z. B. ein Datum, aber keine Uhrzeit oder keinen Namen.
+
+    **Prüfen:**
+    - Der Agent fragt nach den fehlenden Pflichtfeldern
+    - Der Agent erstellt keine unvollständigen Buchungen
+  </Step>
+</Steps>
+
+Siehe [Booking Calendar](/de/build/tools/booking-calendar) für die Einrichtung.
+
+---
+
+## Benutzerdefinierte API-Aktionen
+
+Für jede konfigurierte [benutzerdefinierte API-Aktion](/de/build/tools/custom-api-actions):
+
+<Steps>
+  <Step title="Aktion auslösen">
+    Sage etwas, das den API-Call auslösen sollte. Prüfe:
+    - Das verbundene System erhält die Anfrage
+    - Die richtigen Parameter werden gesendet
+    - Der Agent kommuniziert die Antwort an den Anrufer
+  </Step>
+
+  <Step title="Mit ungültigen Eingaben testen">
+    Gib Eingaben an, die die API zu einem Fehler oder einer unerwarteten Antwort führen.
+
+    **Prüfen:**
+    - Der Agent behandelt Fehler ohne Absturz
+    - Der Agent kommuniziert eine hilfreiche Nachricht statt roher Fehlerinformationen
+    - Das Gespräch läuft normal weiter
+  </Step>
+
+  <Step title="API-Timeout testen">
+    Wenn das verbundene System langsam antwortet, prüfe:
+    - Der Agent wartet angemessen (nutzt [Thinking Sounds](/de/build/voice-speech/thinking-sounds) oder Füllphrasen)
+    - Ein Timeout wird sauber behandelt, wenn das System nicht antwortet
+  </Step>
+
+  <Step title="In den Gesprächsdetails prüfen">
+    Kontrolliere in der Timeline die Tool-Call-Ereignisse. Prüfe:
+    - Die richtige API wurde aufgerufen
+    - Die Parameter stimmen mit den im Gespräch gesammelten Daten überein
+    - Die Antwortdaten wurden korrekt verwendet
+  </Step>
+</Steps>
+
+---
+
+## Webhooks
+
+Wenn dein Team [Webhooks](/de/accounts/webhooks) konfiguriert hat (unter **Developers → Webhooks**), um Ereignisbenachrichtigungen zu erhalten:
+
+1. Schließe einen Testanruf ab, der Webhook-Ereignisse auslösen sollte
+2. Prüfe das empfangende System auf eingehende Ereignisse
+3. Verifiziere, dass das Ereignis die Gesprächsdaten enthält, die dein Workflow erwartet
+4. Wenn dein Team den Empfangs-Endpunkt verantwortet, teste die Fehlerbehandlung und bestätige, dass Ereignisse erneut versucht werden
+
+### Einen lokalen Webhook-Endpunkt testen
+
+Wenn dein Webhook-Consumer auf deinem eigenen Rechner läuft, mache ihn vor dem Testen vorübergehend mit einem HTTPS-Tunnel erreichbar. Das übernimmt in der Regel eine Entwicklerin, ein Entwickler oder eine technische zuständige Person.
+
+Empfohlener Ablauf:
+
+1. Starte deinen lokalen Webhook-Server.
+2. Mache ihn über einen Tunnel wie ngrok, Cloudflare Tunnel oder ein vergleichbares HTTPS-Forwarding-Tool erreichbar.
+3. Füge die temporäre HTTPS-URL in **Developers → Webhooks** ein.
+4. Führe ein Testgespräch durch, um Ereignisse zu erzeugen.
+5. Prüfe deine lokalen Logs mit unverändertem Raw-Body und Webhook-Headern, damit die Signaturprüfung funktioniert.
+
+<Note>
+Lass den Empfangs-Endpunkt Ereignisse schnell bestätigen und erledige längere Nacharbeiten erst danach. Das entspricht dem Lieferverhalten, das in [Webhook Events](/de/reference/webhook-events) beschrieben ist.
+</Note>
+
+---
+
+## Post-Call-Automation
+
+Teste, ob [Post-Call-Automationen](/de/build/analytics/post-call-automation) korrekt ausgelöst werden:
+
+1. Schließe einen Testanruf ab
+2. Prüfe, ob die konfigurierten Automationen gelaufen sind:
+   - E-Mail-Zusammenfassungen wurden versendet
+   - Team-Benachrichtigungen wurden erstellt
+   - Follow-up-Tasks wurden erstellt, wenn aktiviert
+3. Verifiziere, dass der Inhalt korrekt ist (Zielergebnisse, Analyse, Gesprächszusammenfassung)
+
+---
+
+## Ende-zu-Ende-Testablauf
+
+Für einen umfassenden Integrationstest gehe in einem einzigen Anruf diese komplette Abfolge durch:
+
+<Steps>
+  <Step title="Anruf starten">
+    Starte über **Agent testen** mit Chat, Webanruf oder Telefonanruf. Prüfe Begrüßung und Vorstellung.
+  </Step>
+
+  <Step title="Frage zur Wissensdatenbank stellen">
+    Bestätige, dass Abruf und Antwort korrekt sind.
+  </Step>
+
+  <Step title="Tool-Aktion auslösen">
+    Buche einen Termin, prüfe eine Bestellung oder löse eine benutzerdefinierte API-Aktion aus.
+  </Step>
+
+  <Step title="Transfer anfordern">
+    Prüfe, ob der Transfer korrekt verbunden wird.
+  </Step>
+
+  <Step title="Gespräch prüfen">
+    Öffne die Gesprächsdetails und prüfe:
+    - Die Timeline zeigt alle Ereignisse in Reihenfolge
+    - Ziele wurden korrekt bewertet
+    - Die Post-Call-Analyse lief
+    - Webhooks wurden ausgelöst, falls konfiguriert
+  </Step>
+</Steps>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Testszenarien" icon="list-check" href="/de/test/test-scenarios">
+    Folge allgemeinen Testskripten zur Agentenvalidierung
+  </Card>
+  <Card title="Edge Cases" icon="triangle-exclamation" href="/de/test/edge-cases">
+    Teste Unterbrechungen, Stille und Fehlerbehandlung
+  </Card>
+  <Card title="Benutzerdefinierte API-Aktionen" icon="code" href="/de/build/tools/custom-api-actions">
+    Konfiguriere und debugge externe API-Integrationen
+  </Card>
+  <Card title="Debugging" icon="bug" href="/de/test/debugging">
+    Analysiere Probleme, die beim Testen gefunden wurden
+  </Card>
+</CardGroup>

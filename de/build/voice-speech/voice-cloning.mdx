@@ -1,0 +1,246 @@
+---
+title: "Stimmen klonen"
+description: "Erstelle eigene geklonte Stimmen aus Audio-Samples oder Aufnahmen für deine KI-Agenten"
+icon: "clone"
+keywords: "voice cloning, custom voice, audio samples, cloned voice, voice upload, voice recording, brand voice, AI voice clone, voice library, ElevenLabs, Cartesia"
+"og:description": "Erstelle eigene geklonte Stimmen aus Audio-Samples oder Live-Aufnahmen und nutze sie mit deinen KI-Agenten."
+"og:title": "Stimmen klonen"
+---
+
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+<Badge>Profi</Badge>
+
+Voice Cloning erlaubt dir, aus Audio eine eigene synthetische Stimme zu erzeugen und sie mit deinen KI-Agenten zu nutzen. Du kannst entweder eine Aufnahme **hochladen** oder direkt im Browser **aufnehmen**. Die Plattform generiert über den gewählten Anbieter ein Voice-Modell, speichert es in deiner Kontobibliothek und macht es für jeden Agenten in deinem Konto verfügbar.
+
+<Note>
+Geklonte Stimmen erscheinen neben Standardstimmen im [Voice-Selection](/de/build/voice-speech/select-voice)-Panel und können aus der Seitenleiste **My Cloned Voices** ausgewählt werden.
+</Note>
+
+<Warning>
+Klon nur Stimmen, für deren Verwendung du eine ausdrückliche schriftliche Einwilligung hast. Du bist dafür verantwortlich sicherzustellen, dass du das rechtliche Recht hast, eine Stimme zu klonen und einzusetzen.
+</Warning>
+
+---
+
+## Eine geklonte Stimme erstellen
+
+<Screenshot
+  lightSrc="/images/voice-speech__voice-cloning-upload_DE-light.png"
+  darkSrc="/images/voice-speech__voice-cloning-upload_DE-dark.png"
+  alt="Voice-Cloning-Formular mit Anbieterwahl, Upload- und Aufnahme-Tabs, Voice-Name, Sprache und Beschreibungsfeldern"
+/>
+
+<Steps>
+  <Step title="Clone-Formular öffnen">
+    Gehe im Agent-Editor zu **General** → **Speaking** und klicke auf **Clone Voice**. Du kannst es auch über die Seitenleiste **My Cloned Voices** im Voice-Selection-Panel öffnen.
+  </Step>
+
+  <Step title="Anbieter wählen">
+    Wähle einen Cloning-Anbieter basierend auf deinem Audio-Sample:
+
+    | Anbieter | Am besten für | Dauer | Dateigröße |
+    | --- | --- | --- | --- |
+    | **ElevenLabs** | Längere Samples, natürlichere Variation | Min. **5s**, empfohlen **1-2 min**, max. **180s** | Bis zu **10 MB** |
+    | **Cartesia** | Kurze, saubere Clips, schnelles Cloning | Min. **3s**, empfohlen **5-10s**, max. **10s** | Bis zu **5 MB** |
+
+    Wähle ElevenLabs, wenn du eine längere saubere Aufnahme hast und willst, dass das Modell mehr Tonvariation lernt. Wähle Cartesia, wenn du einen schnellen Clone aus einem kurzen sauberen Clip erstellen willst. Wenn du unsicher bist, erstelle beide und vergleiche sie.
+
+    **Unterstützte Formate:** MP3, WAV, OGG, WebM - ElevenLabs akzeptiert auch M4A.
+  </Step>
+
+  <Step title="Audio bereitstellen">
+    Wechsle zwischen zwei Eingabemodi mit den Tabs **Upload** und **Record**:
+
+    **Upload** - Ziehe eine Audiodatei per Drag-and-drop hinein oder klicke, um sie auszuwählen. Akzeptierte Formate und Größenlimits werden abhängig vom gewählten Anbieter angezeigt.
+
+    **Record** - Klicke auf den Aufnahme-Button, um Audio direkt über dein Mikrofon aufzunehmen. Während der Aufnahme werden eine Live-Wellenform und ein Dauerzähler angezeigt. Die Aufnahme stoppt automatisch, wenn die maximale Dauer des Anbieters erreicht ist.
+
+    Das Formular verfolgt die Gesamtdauer deines Audios und zeigt an, ob die Anforderungen des Anbieters erfüllt sind.
+  </Step>
+
+  <Step title="Voice-Details ausfüllen">
+    - **Voice name** (erforderlich) - Ein beschreibender Name, der im Voice-Selection-Panel angezeigt wird
+    - **Language** (erforderlich) - Die Sprache des Audio-Samples (Englisch, Spanisch, Französisch, Deutsch, Italienisch, Portugiesisch, Niederländisch, Japanisch, Koreanisch oder Chinesisch)
+    - **Description** (optional) - Interne Notizen zu dieser Stimme
+    - **Remove background noise** (optional) - Nur für ElevenLabs verfügbar - bereinigt Rauschen im Sample vor dem Cloning
+  </Step>
+
+  <Step title="Clone erstellen">
+    Klicke auf **Clone Voice**, um die Verarbeitung zu starten. Der Status der Stimme durchläuft diese Zustände:
+
+    - **Processing** - Der Anbieter generiert das Voice-Modell
+    - **Ready** - Die Stimme ist verfügbar und kann Agenten zugewiesen werden
+    - **Failed** - Etwas ist schiefgelaufen - prüfe die Fehlermeldung und versuche es erneut
+  </Step>
+</Steps>
+
+---
+
+## Geklonte Stimmen verwalten
+
+Geklonte Stimmen werden kontoweit geteilt. Alle Teammitglieder mit den passenden Berechtigungen können geklonte Stimmen ansehen und ihren Agenten zuweisen.
+
+### Geklonte Stimmen ansehen
+
+Deine geklonten Stimmen erscheinen in der Seitenleiste **My Cloned Voices** im Voice-Selection-Panel. Jede Stimme zeigt Name, Anbieter, Sprache und aktuellen Status-Badge.
+
+Du kannst außerdem alle geklonten Stimmen in einer Tabelle ansehen, die zeigt:
+- **Name** und **Provider**
+- **Language**
+- **Status** (mit farbcodierten Badges)
+- **Actions** wie Auswählen oder Löschen der Stimme
+
+### Eine geklonte Stimme löschen
+
+1. Finde die geklonte Stimme in der Seitenleiste oder Tabelle
+2. Klicke auf den Delete-Button oder wähle **Delete** aus dem Aktionsmenü
+3. Bestätige das Löschen
+
+<Warning>
+Das Löschen einer geklonten Stimme ist dauerhaft und kann nicht rückgängig gemacht werden. Alle Agenten, die diese Stimme derzeit verwenden, brauchen eine neue Stimme.
+</Warning>
+
+---
+
+## Geklonte Stimmen mit Agenten verwenden
+
+Sobald eine geklonte Stimme den Status **Ready** hat, kannst du sie einem beliebigen Agenten zuweisen:
+
+<Steps>
+  <Step title="Stimmauswahl öffnen">
+    Gehe im Agent-Editor zu **General** → **Speaking**.
+  </Step>
+  <Step title="Geklonte Stimme finden">
+    Schau in der Seitenleiste **My Cloned Voices** auf der rechten Seite des Voice-Selection-Panels nach. Nur Stimmen mit dem Status **Ready** können ausgewählt werden.
+  </Step>
+  <Step title="Stimme auswählen">
+    Klicke auf die geklonte Stimme, um sie zuzuweisen. Der Agent verwendet diese Stimme für alle folgenden Gespräche. Du kannst die Ausgabe zusätzlich mit [voice settings](/de/build/voice-speech/voice-settings) anpassen.
+  </Step>
+</Steps>
+
+---
+
+## Best Practices für Audio-Samples
+
+<AccordionGroup>
+  <Accordion title="Aufnahmequalität" icon="microphone">
+    - Nutze ein Mikrofon guter Qualität (USB-Kondensator oder besser)
+    - Nimm in einer ruhigen Umgebung mit Schallschutz auf
+    - Halte einen konstanten Abstand zum Mikrofon ein (6-12 Zoll)
+    - Vermeide Räume mit Echo oder Hall
+    - Verwende eine Abtastrate von 44.1 kHz oder höher
+  </Accordion>
+
+  <Accordion title="Inhaltliche Vielfalt" icon="list">
+    - Enthält kurze und lange Sätze
+    - Deckt unterschiedliche Tonlagen ab: Fragen, Aussagen, Erklärungen
+    - Lies natürlich und in Gesprächstempo
+    - Vermeide zu schnelles oder zu langsames Lesen
+    - Füge Pausen zwischen Sätzen ein
+  </Accordion>
+
+  <Accordion title="Was du vermeiden solltest" icon="xmark">
+    - Hintergrundmusik oder Umgebungsgeräusche
+    - Mehrere Sprecher in einem Sample
+    - Starke Audiobearbeitung, Kompression oder Filter
+    - Flüstern oder Schreien
+    - Samples, die kürzer sind als die Mindestdauer des Anbieters
+    - Minderwertige Telefonaufnahmen
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Sample-Strategie
+
+Nutze den gewählten Anbieter, um zu entscheiden, wie viel Audio du sammelst.
+
+### Für ElevenLabs
+
+- Ziel sind möglichst **1-2 Minuten**
+- Enthält variierende Formulierungen statt denselben Satz zu wiederholen
+- Nutze **Remove background noise**, wenn die Aufnahme sonst gut ist
+- Bevorzuge eine Sprecherin oder einen Sprecher, ein Mikrofon, einen Raum
+
+### Für Cartesia
+
+- Ziel ist ein **kurzer, sauberer 5-10-Sekunden-Clip**
+- Nicht künstlich verlängern, nur um mehr Material zu haben
+- Entferne Raumgeräusche vor der Aufnahme, weil der Clone sie stark übernimmt
+- Wähle einen Clip mit stabiler Lautstärke und ohne Unterbrechungen
+
+### Gutes Sample-Skript
+
+Lies 4-6 natürliche Sätze so vor, wie der Agent klingen soll:
+
+- eine Begrüßung
+- ein kurzer Faktensatz
+- eine Frage
+- ein längerer Erklärungssatz
+- ein Abschlusssatz
+
+Das gibt dem Modell genug Form, um Tempo und Tonfall zu lernen, ohne gekünstelt zu klingen.
+
+---
+
+## Rechtliche Hinweise
+
+<Warning>
+Du brauchst die ausdrückliche schriftliche Einwilligung jeder Person, deren Stimme du klonst. Unautorisierte Voice-Clones können gegen Datenschutz- und geistige Eigentumsrechte verstoßen.
+</Warning>
+
+**Bevor du clonst, stelle sicher, dass du hast:**
+
+- schriftliche Einwilligung der Person, deren Stimme geklont wird
+- das Recht, die Stimme kommerziell zu nutzen
+- eine klare Vereinbarung darüber, wie die Stimme verwendet wird
+- eine Dokumentation der Einwilligung für deine Unterlagen
+
+**Niemals klonen:**
+- Stimmen ohne Einwilligung
+- Stimmen von öffentlichen Personen ohne Lizenz
+- Stimmen für täuschende oder impersonierende Zwecke
+
+---
+
+## Fehlerbehebung
+
+<AccordionGroup>
+  <Accordion title="Mein Sample wird abgelehnt" icon="triangle-exclamation">
+    Prüfe die vom gewählten Anbieter vorgegebenen Limits für Dauer, Dateigröße und Dateiformat. Die meisten fehlgeschlagenen Uploads entstehen durch Clips, die zu kurz, zu lang oder zu verrauscht sind.
+  </Accordion>
+
+  <Accordion title="Die geklonte Stimme klingt verrauscht" icon="wave-square">
+    Nimm mit weniger Hintergrundgeräuschen neu auf. Bei ElevenLabs kannst du **Remove background noise** aktivieren. Bei Cartesia solltest du mit einem saubereren Clip starten statt mit einem längeren.
+  </Accordion>
+
+  <Accordion title="Die Stimme klingt nicht ausdrucksstark genug" icon="sliders">
+    Nutze ein besseres Quellsample, nicht nur eine andere Geschwindigkeits- oder Tonhöhen-Einstellung. Füge klarere Variationen und natürlichere Intonation hinzu und erstelle dann einen neuen Clone.
+  </Accordion>
+
+  <Accordion title="Ich bin unsicher, welchen Anbieter ich wählen soll" icon="circle-question">
+    Klone zuerst dasselbe Sample mit beiden Anbietern. Vergleiche sie dann im Voice-Picker mit demselben Testskript.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Select Voice" icon="microphone" href="/de/build/voice-speech/select-voice">
+    Alle verfügbaren Stimmen durchsuchen und vergleichen
+  </Card>
+  <Card title="Voice Settings" icon="sliders" href="/de/build/voice-speech/voice-settings">
+    Geschwindigkeit, Tonhöhe und Stabilität feinjustieren
+  </Card>
+  <Card title="Custom Pronunciations" icon="spell-check" href="/de/build/voice-speech/custom-pronunciations">
+    Die Aussprache für deine geklonte Stimme korrigieren
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/de/test/web-simulator">
+    Deine geklonte Stimme in Gesprächen testen
+  </Card>
+</CardGroup>

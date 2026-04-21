@@ -1,0 +1,434 @@
+---
+title: "Knowledge Base Architecture"
+description: "Understand how knowledge bases, folders, and items work together"
+icon: "sitemap"
+keywords: "knowledge base architecture, knowledge organization, RAG structure, knowledge hierarchy, AI knowledge system, folder structure"
+"og:description": "Understand how knowledge bases, folders, and items work together to create a structured knowledge system for AI agents."
+"og:title": "Knowledge Base Architecture"
+---
+
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+**In this guide, you'll learn:**
+- How knowledge bases, folders, and items are structured
+- How to organize content for best retrieval quality
+- Where Context and RAG mode decisions fit into the hierarchy
+- Limits on items, files, and folders
+
+---
+
+## Overview
+
+Knowledge bases give your AI agent access to your company's actual information — policies, procedures, product details, and anything else your business relies on. Organize this information into a structured hierarchy, and your agent can retrieve and reference it instantly during conversations.
+
+This page explains the structure of knowledge content. For the access-mode decision table, use [Context vs RAG](/build/knowledge/context-vs-rag).
+
+## Knowledge Architecture
+
+### The Three-Level Hierarchy
+
+Knowledge in itellicoAI follows a three-level structure:
+
+**Knowledge Base → Folders → Items**
+
+Items can be **text**, **files** (PDF, Word, Excel, Markdown, CSV, JSON, YAML, XML), **URLs** (one web page), or **website crawls** (multiple pages from one site). See [content types](/build/knowledge/content-types) for details on each format.
+
+```mermaid
+graph TB
+    KB[Customer Support FAQ<br/>Knowledge Base]
+
+    KB --> F1[Billing & Payments<br/>Folder]
+    KB --> F2[Technical Issues<br/>Folder]
+
+    F1 --> I1[payment-methods.pdf<br/>FILE]
+    F1 --> I2[help.example.com/invoices<br/>URL]
+
+    F2 --> I3[Login troubleshooting<br/>TEXT]
+    F2 --> I4[docs.example.com<br/>WEBSITE]
+
+    style KB fill:#E10489,stroke:#333,stroke-width:2px,color:#fff
+    style F1 fill:#f0f0f0,stroke:#333,stroke-width:1px,color:#000
+    style F2 fill:#f0f0f0,stroke:#333,stroke-width:1px,color:#000
+    style I1 fill:#fff,stroke:#333,stroke-width:1px,color:#000
+    style I2 fill:#fff,stroke:#333,stroke-width:1px,color:#000
+    style I3 fill:#fff,stroke:#333,stroke-width:1px,color:#000
+    style I4 fill:#fff,stroke:#333,stroke-width:1px,color:#000
+```
+
+This hierarchy makes it easy to organize large amounts of information while keeping it accessible and manageable.
+
+---
+
+## Knowledge Base List
+
+Navigate to **Knowledge Bases** in the left sidebar to see all your knowledge bases in a table.
+
+**Access:** Click **Knowledge Bases** in the main menu.
+
+<Screenshot
+  lightSrc="/images/knowledgebase__kb-list-light.png"
+  darkSrc="/images/knowledgebase__kb-list-dark.png"
+  alt="Knowledge base list showing name, items, tokens, status, and last updated columns"
+/>
+
+The list shows each knowledge base's name, item count, token usage, processing status, and last updated time. You can search, sort, and select multiple knowledge bases for bulk actions.
+
+### Copied Knowledge Bases
+
+When a knowledge base is copied through supported import flows, the copy includes its folders and items. The system handles indexing automatically using the platform defaults.
+
+---
+
+## Understanding Each Level
+
+### Knowledge Bases
+
+<Card title="What is a Knowledge Base?" icon="database">
+  A knowledge base is the top-level container that groups related information together. It represents a major category or domain of your business knowledge.
+</Card>
+
+**Example knowledge bases:**
+- **Customer Support FAQ** - All customer-facing support information
+- **Product Documentation** - Technical docs, user guides, feature descriptions
+- **Company Policies** - HR policies, compliance docs, internal procedures
+- **Sales Resources** - Pricing sheets, competitor comparisons, pitch decks
+
+### Folders
+
+<Card title="What is a Folder?" icon="folder">
+  Folders are organizational units within a knowledge base. They group related items together by topic, category, or purpose.
+</Card>
+
+Folders group related items by topic, making content easier to find and manage.
+
+**Example folders within a Customer Support knowledge base:**
+- **Billing & Payments** - Invoice questions, payment methods, refunds
+- **Technical Issues** - Troubleshooting guides, error messages, bug workarounds
+- **Product Information** - Features, specifications, compatibility
+- **Return Policies** - Return windows, conditions, process steps
+
+<Tip>
+Use clear, descriptive folder names. Your team and your AI will both benefit from intuitive organization.
+</Tip>
+
+### Knowledge Items
+
+<Card title="What is a Knowledge Item?" icon="file">
+  Knowledge items are the actual pieces of information - documents, FAQs, policies, procedures, or any content you want your agent to know.
+</Card>
+
+**Knowledge items can be:**
+- **Text entries** - Directly written content
+- **File uploads** - PDF, Word (.doc, .docx), Excel (.xlsx), Text (.txt, .log), Markdown (.md), CSV/TSV, JSON, YAML, XML (up to 10MB)
+- **URL scrapes** - Content from a single web page
+- **Website crawls** - Multiple discovered pages from one site, with optional refresh settings
+
+**Example knowledge items:**
+- "Refund Policy for Digital Products"
+- "How to Reset Password - Step by Step"
+- "Product Specifications - Model X200"
+- "Shipping Times by Region"
+
+Orange means the item is still processing. Green means it is ready to use.
+
+---
+
+## When to Use Knowledge Bases
+
+<AccordionGroup>
+  <Accordion title="Your agent needs to answer specific questions" icon="circle-question">
+    If customers regularly ask about policies, procedures, or product details, add that information to a knowledge base. Your agent will reference it accurately every time.
+
+    **Example:** Customer asks "What's your return policy?" Agent retrieves the exact policy from your knowledge base and explains it naturally.
+  </Accordion>
+
+  <Accordion title="You have detailed documentation" icon="book">
+    If you have existing documentation - user manuals, FAQs, policy documents - you can upload them directly in various formats (PDF, DOC, DOCX, TXT). Your agent will be able to search and reference them in conversations.
+
+    **Example:** Upload your 50-page product manual. When customers have technical questions, your agent finds and explains the relevant sections.
+  </Accordion>
+
+  <Accordion title="Information changes frequently" icon="arrows-rotate">
+    Knowledge bases make it easy to update information without changing your agent's core instructions. Update a price sheet or policy document, and your agent instantly has the new information.
+
+    **Example:** You update your pricing document once, and all agents using that knowledge base immediately reference the new prices.
+  </Accordion>
+
+  <Accordion title="Multiple agents need the same information" icon="users">
+    Create one knowledge base and share it across multiple agents. Maintain information in one place, use it everywhere.
+
+    **Example:** Your "Product Specifications" knowledge base can be used by your sales agent, support agent, and pre-sales qualification agent.
+  </Accordion>
+
+  <Accordion title="You want to separate concerns" icon="layer-group">
+    Keep your agent's [prompt](/build/conversation/prompt) separate from factual information. The prompt defines personality and behavior; knowledge bases provide facts and details.
+
+    **Example:** Your agent prompt says "be friendly and professional." Your knowledge base contains the actual product specs, pricing, and policies.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Organization Best Practices
+
+### Start with Clear Categories
+
+<CardGroup cols={2}>
+  <Card title="By Department" icon="building">
+    - Sales Knowledge
+    - Support Knowledge
+    - Billing Knowledge
+    - Technical Documentation
+  </Card>
+  <Card title="By Topic" icon="tags">
+    - Product Information
+    - Policies & Procedures
+    - Troubleshooting
+    - FAQs
+  </Card>
+  <Card title="By Customer Journey" icon="map">
+    - Pre-Sales Information
+    - Onboarding Guides
+    - Usage & Features
+    - Support & Troubleshooting
+  </Card>
+  <Card title="By Audience" icon="user-group">
+    - Customer-Facing Info
+    - Internal Procedures
+    - Partner Resources
+    - Technical Specs
+  </Card>
+</CardGroup>
+
+### Naming Conventions
+
+Use clear, consistent names that make sense to your entire team:
+
+**Good naming examples:**
+- Knowledge Base: "Customer Support Resources"
+- Folder: "Billing & Payments"
+- Item: "Refund Policy - Digital Products"
+
+**Poor naming examples:**
+- Knowledge Base: "KB_001"
+- Folder: "Misc Docs"
+- Item: "Policy_v2_final_UPDATED"
+
+<Tip>
+Include version dates or numbers in item titles if you maintain multiple versions: "Pricing Sheet - 2025 Q1"
+</Tip>
+
+### Well-Structured Knowledge Base Example
+
+Here's an example of a well-organized e-commerce knowledge base:
+
+```mermaid
+graph TB
+    KB[E-Commerce Support<br/>Knowledge Base]
+
+    KB --> F1[Orders & Shipping<br/>4 items]
+    KB --> F2[Returns & Refunds<br/>4 items]
+    KB --> F3[Products & Inventory<br/>3 items]
+    KB --> F4[Payment & Billing<br/>3 items]
+
+    style KB fill:#E10489,stroke:#333,stroke-width:2px,color:#fff
+    style F1 fill:#f0f0f0,stroke:#333,stroke-width:1px,color:#000
+    style F2 fill:#f0f0f0,stroke:#333,stroke-width:1px,color:#000
+    style F3 fill:#f0f0f0,stroke:#333,stroke-width:1px,color:#000
+    style F4 fill:#f0f0f0,stroke:#333,stroke-width:1px,color:#000
+```
+
+**Folder contents:**
+- **Orders & Shipping:** Tracking, shipping times, international info, modifications
+- **Returns & Refunds:** Policy, shipping process, processing times, exchanges
+- **Products & Inventory:** Categories, stock availability, specifications
+- **Payment & Billing:** Payment methods, invoices, payment plans
+
+**What makes this structure good:**
+- Clear, descriptive folder names that group related content
+- Balanced distribution (3-4 items per folder)
+- Easy to navigate and find information
+- Scales well as you add more content
+
+### Extract Only Relevant Content
+
+<Warning>
+**More knowledge ≠ Better performance**
+
+Adding too much knowledge increases the chance your agent retrieves irrelevant information alongside what's actually needed.
+</Warning>
+
+**Best practice for large documents:**
+
+Instead of uploading entire manuals or policy documents, extract only the pages/sections your agent needs.
+
+<AccordionGroup>
+  <Accordion title="❌ Avoid: Upload entire 200-page employee handbook" icon="xmark">
+    **Problem:**
+    - Agent finds and mixes in irrelevant sections with the right answer
+    - More difficult for agent to determine what's actually relevant
+    - Wastes conversation space on unrelated content
+
+    **Example:**
+    Customer asks: "What's your return policy?"
+
+    Agent might pull in: HR vacation policies, internal procedures, employee benefits — and struggle to separate what the customer actually needs.
+  </Accordion>
+
+  <Accordion title="✅ Better: Extract specific sections" icon="check">
+    **Approach:**
+    - "Return Policy - Pages 45-48"
+    - "Shipping Policy - Pages 52-55"
+    - "Warranty Terms - Pages 89-92"
+
+    **Benefit:**
+    - Agent finds only customer-relevant content
+    - Clearer, more accurate responses
+    - More efficient use of conversation space
+
+    **Example:**
+    Customer asks: "What's your return policy?"
+
+    Agent retrieves: Only the 4-page return policy section — exactly what's needed, nothing else.
+  </Accordion>
+</AccordionGroup>
+
+**How to extract relevant sections:**
+- Export specific pages from PDF as separate files
+- Copy relevant sections into TEXT items
+- Use website crawls only when you need multiple pages from the same public site
+
+### Regular Maintenance
+
+<Steps>
+  <Step title="Review quarterly">
+    Schedule regular reviews of your knowledge bases to ensure information stays current.
+  </Step>
+  <Step title="Remove outdated content">
+    Delete items that are no longer relevant or unlink them from agents. Outdated information can confuse your agent and provide incorrect answers.
+  </Step>
+  <Step title="Update based on feedback">
+    If customers report incorrect information, check your knowledge base immediately.
+  </Step>
+</Steps>
+
+---
+
+## Real-World Examples
+
+<AccordionGroup>
+  <Accordion title="SaaS Support Agent" icon="headset">
+    **Knowledge Base:** "SaaS Product Support"
+
+    **Folders:**
+    - **Account Management** (15 items)
+      - Password reset process
+      - Account upgrade instructions
+      - Billing cycle information
+      - Plan comparison chart
+    - **Feature Documentation** (47 items)
+      - Individual feature guides
+      - Integration tutorials
+      - API documentation
+      - Best practices
+    - **Troubleshooting** (23 items)
+      - Common error messages
+      - Connection issues
+      - Browser compatibility
+      - Performance optimization
+
+    **Result:** Support agent can answer 80% of technical questions without human intervention.
+  </Accordion>
+
+  <Accordion title="Healthcare Appointment Agent" icon="calendar">
+    **Knowledge Base:** "Patient Services"
+
+    **Folders:**
+    - **Appointment Policies** (8 items)
+      - Scheduling guidelines
+      - Cancellation policy
+      - Insurance requirements
+      - New patient process
+    - **Office Information** (5 items)
+      - Office locations and hours
+      - Parking instructions
+      - Accessibility information
+      - Contact directory
+    - **Insurance & Billing** (12 items)
+      - Accepted insurance providers
+      - Payment options
+      - Billing questions
+      - Financial assistance
+
+    **Result:** Agent handles appointment booking and policy questions 24/7 with complete accuracy.
+  </Accordion>
+
+  <Accordion title="E-Commerce Sales Agent" icon="shopping-cart">
+    **Knowledge Base:** "Product Catalog & Sales"
+
+    **Folders:**
+    - **Product Specifications** (89 items)
+      - Detailed product descriptions
+      - Technical specifications
+      - Compatibility information
+      - Size guides
+    - **Pricing & Promotions** (15 items)
+      - Current pricing
+      - Active promotions
+      - Volume discounts
+      - Seasonal sales
+    - **Shipping & Delivery** (7 items)
+      - Shipping options
+      - Delivery timeframes
+      - International shipping
+      - Tracking information
+
+    **Result:** Sales agent provides accurate product information and pricing instantly during customer conversations.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Create Knowledge Bases" icon="plus" href="/build/knowledge/create-knowledge-bases">
+    Create and organize your knowledge step by step
+  </Card>
+  <Card title="Content Types" icon="file-lines" href="/build/knowledge/content-types">
+    Learn about text, file, URL, and website crawl knowledge items
+  </Card>
+  <Card title="Assign to Agents" icon="link" href="/build/knowledge/assign-knowledge">
+    Connect knowledge bases to your agents
+  </Card>
+  <Card title="Context vs RAG" icon="brain" href="/build/knowledge/context-vs-rag">
+    Choose the right access method for your use case
+  </Card>
+  <Card title="Support Agent Example" icon="life-ring" href="/examples/customer-support">
+    See a full worked example with knowledge-backed support
+  </Card>
+</CardGroup>
+
+---
+
+## Common Questions
+
+<AccordionGroup>
+  <Accordion title="Do I need to change my prompt when I add a knowledge base?">
+    No. The agent automatically retrieves relevant content during conversations. You don't need to reference the knowledge base in your prompt — though you can add instructions like "Only answer using your knowledge base" if you want to restrict responses.
+  </Accordion>
+
+  <Accordion title="Will adding knowledge slow down my agent?">
+    RAG retrieval typically adds under 100ms. For most use cases this is not noticeable. Context mode adds no retrieval latency at all since content is pre-loaded, but uses more of your token budget.
+  </Accordion>
+
+  <Accordion title="How much content can I add?">
+    Each knowledge base supports up to 500 URL or website items, 50 text items, and 25 file uploads (10 MB max per file). For context mode, the total budget is 10,000 tokens (~7,500 words). RAG mode is not bound by the context budget, but item and file limits still apply.
+  </Accordion>
+
+  <Accordion title="Does using knowledge cost extra?">
+    Knowledge bases are included in your plan. However, context mode increases prompt size which affects per-minute cost, and some premium analysis features may incur additional charges. See [Premium Features](/billing/premium-features) for details.
+  </Accordion>
+</AccordionGroup>

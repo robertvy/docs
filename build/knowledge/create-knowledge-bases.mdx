@@ -1,0 +1,348 @@
+---
+title: "Create Knowledge Bases"
+description: "Step-by-step guide to creating, populating, and managing knowledge bases for your AI agents"
+icon: "plus"
+keywords: "AI knowledge base, create knowledge base, knowledge management, document upload, PDF upload, URL scraping, agent knowledge, RAG setup"
+"og:description": "Step-by-step guide to creating and managing knowledge bases with document uploads, URLs, and text content for your AI agents."
+"og:title": "Create Knowledge Bases"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+
+## Creating Your First Knowledge Base
+
+A [knowledge base](/build/knowledge/architecture) gives your AI agent access to your business information. You can upload documents, paste text, scrape one web page, or crawl a public website to build a repository of information that your agent retrieves during conversations. This guide covers creating a knowledge base, uploading content, monitoring processing status, and assigning knowledge to agents.
+
+<Tip>
+Plan your knowledge structure before you start. A well-organized knowledge base is easier to maintain and produces better agent responses.
+</Tip>
+
+---
+
+## Step 1: Create a Knowledge Base
+
+### Navigate to Knowledge Bases
+
+<Steps>
+  <Step title="Open Knowledge Bases">
+    Log into your [itellicoAI dashboard](https://app.itellico.ai) and click **Knowledge Bases** in the left navigation menu.
+  </Step>
+  <Step title="Create a new knowledge base">
+    Click the **+ Create Knowledge Base** button.
+  </Step>
+</Steps>
+
+<Screenshot
+  lightSrc="/images/knowledge__knowledge-list-light.png"
+  darkSrc="/images/knowledge__knowledge-list-dark.png"
+  alt="Knowledge Bases list page showing existing knowledge bases with name, status, and document count"
+  caption="Open the knowledge base list first. This is where you create new bases and return later to manage them."
+/>
+
+### Fill in Basic Information
+
+<Screenshot
+  lightSrc="/images/knowledgebase__create-kb-form-light.png"
+  darkSrc="/images/knowledgebase__create-kb-form-dark.png"
+  alt="Create Knowledge Base form with name and description fields"
+  caption="The create form only asks for a name and an optional description, so it should be quick to complete."
+  maxWidth="720px"
+/>
+
+<Steps>
+  <Step title="Enter Knowledge Base Name">
+    Choose a clear, descriptive name that reflects the content category.
+
+    **Naming rules:**
+    - Letters, numbers, spaces, hyphens, and underscores only
+    - No special characters (@, #, $, etc.)
+    - Maximum 100 characters
+
+    **Good examples:**
+    - "Customer Support FAQ"
+    - "Product Documentation"
+    - "Company Policies"
+
+    **Avoid:**
+    - "KB_001" (not descriptive)
+    - "Misc Docs" (too vague)
+  </Step>
+
+  <Step title="Add Description (Optional)">
+    Provide context about what this knowledge base contains and when to use it.
+
+    **Example descriptions:**
+    - "Customer-facing support documentation including FAQs, policies, and troubleshooting guides"
+    - "Internal product specifications, feature documentation, and technical details"
+  </Step>
+
+  <Step title="Click Create">
+    Your knowledge base is created and ready for content.
+  </Step>
+</Steps>
+
+---
+
+## The Knowledge Base Editor
+
+After creating a knowledge base, you're taken to the editor — a two-column layout:
+
+- **Left panel** — Your folders (collections). Search, create, and select folders.
+- **Right panel** — Items in the selected folder. Search, add, edit, and manage items.
+
+<Screenshot
+  lightSrc="/images/knowledgebase__kb-editor-light.png"
+  darkSrc="/images/knowledgebase__kb-editor-dark.png"
+  alt="Knowledge base editor showing folders panel on the left and items table on the right"
+  caption="Think of the editor as folders on the left and knowledge items on the right."
+/>
+
+### Items Table
+
+When you select a folder, the right panel shows all items in a table:
+
+| Column | Description |
+| --- | --- |
+| **Title** | Item title with type-specific icon |
+| **Type** | Text, File, URL, or Website badge |
+| **Status** | Processing dot with Ready, Processing, Pending, or Error tooltip |
+| **Actions** | Copy reference, Edit, Reindex, Delete |
+
+---
+
+## Step 2: Upload Documents and Content
+
+Once your knowledge base has at least one folder, add content using any of the four supported methods.
+
+<Screenshot
+  lightSrc="/images/knowledgebase__document-upload-light.png"
+  darkSrc="/images/knowledgebase__document-upload-dark.png"
+  alt="Document upload interface showing Text Content, Upload File, Web Page, and Website Crawl options"
+  caption="Text, file upload, single-page URL, and website crawl ingestion all start from the same add-item flow."
+/>
+
+<AccordionGroup>
+  <Accordion title="Upload Files (PDF, text, and more)" icon="file-arrow-up" defaultOpen>
+    **Best for:** User manuals, product specs, legal documents, training materials
+
+    **Supported formats:** PDF, Word (.doc, .docx), Excel (.xlsx), Text (.txt, .log), Markdown (.md), CSV/TSV, JSON, YAML (.yaml, .yml), XML
+
+    **Maximum file size:** 10MB per file
+
+    <Steps>
+      <Step title="Click 'Add Item'">
+        In your knowledge base, click **Add Item**.
+      </Step>
+      <Step title="Select 'Upload File'">
+        Choose **Upload File** for document uploads.
+      </Step>
+      <Step title="Enter a descriptive title">
+        Give your file a clear title (e.g., "Return Policy for Digital Products").
+      </Step>
+      <Step title="Upload your file">
+        Drag and drop or click to browse. The system accepts PDF, Word (.doc, .docx), Excel (.xlsx), Text (.txt, .log), Markdown (.md), CSV/TSV, JSON, YAML (.yaml, .yml), and XML files up to 10MB.
+      </Step>
+      <Step title="Click 'Create'">
+        The system uploads and begins processing. The status light turns green when it is ready to use.
+      </Step>
+    </Steps>
+  </Accordion>
+
+  <Accordion title="Text Entry - Write content directly" icon="text">
+    **Best for:** FAQs, policies, procedures, quick reference information
+
+    <Steps>
+      <Step title="Click 'Add Item'">
+        In your knowledge base, click **Add Item**.
+      </Step>
+      <Step title="Select 'Text Content'">
+        Choose **Text Content** to enter content directly.
+      </Step>
+      <Step title="Enter a descriptive title">
+        Use a clear title like "Password Reset Instructions" or "Pricing Tiers Explained".
+      </Step>
+      <Step title="Write or paste your content">
+        Enter the information you want your agent to know. Be clear, specific, and comprehensive.
+      </Step>
+      <Step title="Click 'Create'">
+        The system saves and processes text items immediately.
+      </Step>
+    </Steps>
+  </Accordion>
+
+  <Accordion title="URL Scraping - Pull content from web pages" icon="link">
+    **Best for:** Documentation pages, blog posts, help articles, external resources
+
+    <Steps>
+      <Step title="Click 'Add Item'">
+        In your knowledge base, click **Add Item**.
+      </Step>
+      <Step title="Select 'Web Page'">
+        Choose **Web Page** to scrape one page.
+      </Step>
+      <Step title="Enter a descriptive title">
+        Give the content a clear title.
+      </Step>
+      <Step title="Enter the source URL">
+        Paste the complete URL including `https://`
+      </Step>
+      <Step title="Click 'Create'">
+        The system fetches and processes the web page content.
+      </Step>
+    </Steps>
+
+    <Note>
+    URL scraping works best with simple, text-based web pages. Pages requiring authentication or heavy JavaScript may not scrape successfully.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Website Crawl - Import multiple pages from a site" icon="globe">
+    **Best for:** Public help centers, docs sites, pricing pages, and other multi-page sources
+
+    <Steps>
+      <Step title="Click 'Add Item'">
+        In your knowledge base, click **Add Item**.
+      </Step>
+      <Step title="Select 'Website Crawl'">
+        Choose **Website Crawl** to discover pages from one site.
+      </Step>
+      <Step title="Enter the website URL">
+        Paste the website URL, then use **Discover URLs**.
+      </Step>
+      <Step title="Choose pages and settings">
+        Select the pages to import. Open **Advanced options** if you need to change discovery scope or refresh behavior.
+      </Step>
+      <Step title="Import selected pages">
+        Click **Import Selected**. The crawl root appears as a Website item, and imported pages are processed as child pages.
+      </Step>
+    </Steps>
+
+    **Advanced options**
+
+    | UI setting | Default | Use when |
+    | --- | --- | --- |
+    | **Max pages to discover** | `100` | You want to cap discovery at `25`, `50`, `100`, `250`, or `500` pages before choosing what to import. |
+    | **Auto-refresh interval** | `Never` | You want imported pages to resync every 24 hours, 7 days, or 30 days. |
+    | **Include subdomains** | Off | The pages you need live under subdomains of the starting host. |
+    | **Discover new pages on refresh** | Off, hidden while auto-refresh is `Never` | Refresh is enabled and you want new pages staged for review later. |
+
+    <Note>
+    **Discover new pages on refresh** does not automatically add new pages to your agent knowledge. It stages newly found pages in **View pages** so you can review and include them.
+    </Note>
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Step 3: Managing Knowledge Base Items
+
+### Viewing Items
+
+Open your knowledge base to see all items listed with their title, type (Text, File, URL, Website), processing status, and last updated time.
+
+### Editing Items
+
+Click on any non-website item to view or edit its content. Website crawl roots open the crawl pages view instead.
+
+### Deleting Items
+
+Click the delete icon on any item to remove it. This removes the item from both the knowledge base and the vector index.
+
+---
+
+## Understanding Status Indicators
+
+Orange means the item is still processing. Green means it is ready to use.
+
+### Troubleshooting Errors
+
+<AccordionGroup>
+  <Accordion title="Content processing error" icon="xmark">
+    **Common causes:**
+    - File is corrupted or password-protected
+    - URL or website page requires authentication or uses complex JavaScript
+    - File exceeds 10MB limit
+
+    **Solutions:**
+    - Try uploading the content as TEXT instead
+    - Remove password protection from the file
+    - Split large files into smaller documents
+  </Accordion>
+
+  <Accordion title="Vector indexing error" icon="xmark">
+    **Solutions:**
+    - Click the **Reindex** button to retry
+    - If reindexing fails, delete and re-create the item
+    - Ensure the content is not too short (needs at least a few sentences)
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+If issues persist, contact support at **support@itellico.ai** with the knowledge item title, file type or URL, and any error messages shown.
+</Warning>
+
+---
+
+## Step 4: Assign Knowledge Base to Agents
+
+Once your knowledge base has content showing green (ready to use), link it to your agents.
+
+<Steps>
+  <Step title="Open agent editor">
+    Navigate to the agent you want to configure.
+  </Step>
+  <Step title="Go to Knowledge tab">
+    Open **Knowledge** tab in the agent editor.
+  </Step>
+  <Step title="Click Connect Knowledge">
+    Use **Connect Knowledge** to open the knowledge browser.
+  </Step>
+  <Step title="Choose access method">
+    Connect an entire knowledge base, a folder, or selected items. Expert Mode lets you choose **Context** (full content injected into prompt) or **RAG** (semantic search retrieval); Simple mode uses RAG by default. See [context vs RAG](/build/knowledge/context-vs-rag) to decide which is right for you.
+  </Step>
+</Steps>
+
+<Card title="Context vs RAG" icon="brain" href="/build/knowledge/context-vs-rag">
+  Learn when to use full context injection versus RAG-based retrieval for your knowledge bases.
+</Card>
+
+---
+
+## Content Quality Guidelines
+
+<AccordionGroup>
+  <Accordion title="Be specific and detailed" icon="magnifying-glass">
+    **Instead of:** "Customers can return items within our standard window."
+
+    **Write:** "Customers can return items within 30 days of purchase. Items must be unused and in original packaging with all tags attached."
+  </Accordion>
+
+  <Accordion title="Use plain language" icon="comment">
+    Avoid jargon unless it is industry-standard and your audience knows it. Write as if explaining to a knowledgeable colleague.
+  </Accordion>
+
+  <Accordion title="Keep content focused" icon="bullseye">
+    Each item should cover one topic thoroughly. Split large topics into multiple items rather than creating one massive document.
+  </Accordion>
+
+  <Accordion title="Include examples" icon="list-check">
+    Examples make abstract concepts concrete and help the agent give better answers.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Assign to Agents" icon="link" href="/build/knowledge/assign-knowledge">
+    Connect your knowledge base to agents
+  </Card>
+  <Card title="Context vs RAG" icon="brain" href="/build/knowledge/context-vs-rag">
+    Choose how agents access knowledge
+  </Card>
+  <Card title="Architecture" icon="sitemap" href="/build/knowledge/architecture">
+    Learn how to structure knowledge bases effectively
+  </Card>
+</CardGroup>

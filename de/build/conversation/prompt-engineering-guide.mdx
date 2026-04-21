@@ -1,0 +1,344 @@
+---
+title: "Prompt Engineering Guide"
+description: "Wirksame Prompts für Voice-AI-Agenten schreiben"
+icon: "book"
+keywords: "prompt engineering, voice prompting, AI prompts, conversational AI, agent instructions, speech patterns, voice agent prompting"
+"og:description": "Wirksame Prompts für itellicoAI-Voice-Agenten schreiben - Struktur, voice-spezifische Techniken, Muster und Tests."
+"og:title": "Prompt Engineering Guide"
+---
+
+Dein Prompt ist der wichtigste Weg, um das Verhalten deines Agenten zu konfigurieren. Dieser Leitfaden zeigt dir, wie du ihn strukturierst, was du aufnehmen solltest und was Voice-Prompts von Text-Prompts unterscheidet.
+
+<Tip>
+Gerade erst gestartet? Sieh dir zuerst [Prompt Basics](/de/build/conversation/prompt) an.
+</Tip>
+
+---
+
+## Wie sich Voice von Text unterscheidet
+
+Voice-Agenten verarbeiten Sprache anders als Chatbots. Behalte das beim Schreiben im Hinterkopf.
+
+| Text-KI | Voice-KI |
+| --- | --- |
+| Der Nutzer liest in seinem eigenen Tempo | Der Hörer verarbeitet in Echtzeit |
+| Lange Antworten sind okay | Lange Antworten verlieren den Anrufer |
+| Formatierung (fett, Listen) hilft beim Lesen | Keine Formatierung - nur Sprache |
+| Der Nutzer kann erneut lesen | Der Anrufer kann nicht einfach "noch einmal hören" |
+| Tippfehler sind meist harmlos | Falsche Aussprache schädigt das Vertrauen |
+
+**Kernprinzip:** Schreibe Anweisungen, die kurze gesprochene Antworten erzeugen - nicht geschriebene.
+
+---
+
+## Schnellstart: Die 5-Minuten-Prompt-Formel
+
+Beginne hier, wenn du einen Prompt von Grund auf schreibst.
+
+<Steps>
+  <Step title="Wer ist dein Agent?">
+    Gib deinem Agenten eine klare Identität und Persönlichkeit.
+
+    ```
+    Du bist [Name], ein/e [Rolle] bei [Unternehmen].
+    Deine Personlichkeit ist [Eigenschaft 1], [Eigenschaft 2] und [Eigenschaft 3].
+    ```
+  </Step>
+
+  <Step title="Was ist das Ziel?">
+    Definiere das konkrete, messbare Ergebnis.
+
+    ```
+    Dein Ziel ist es, [konkretes messbares Ergebnis] zu erreichen.
+    ```
+  </Step>
+
+  <Step title="Wie läuft das Gespräch ab?">
+    Plane die wichtigsten Schritte in der richtigen Reihenfolge.
+
+    ```
+    Gesprächsfluss:
+    1. Begrüßung - Identität bestätigen und für den Anruf danken
+    2. Erlaubnis - fragen, ob ein paar Minuten Zeit sind
+    3. Bedarfsermittlung - Bedarf mit offenen Fragen verstehen
+    4. Aktion - buchen, beantworten oder weiterleiten mit dem passenden Tool
+    5. Abschluss - nächste Schritte bestätigen und verabschieden
+    ```
+  </Step>
+
+  <Step title="Was sind die Leitplanken?">
+    Definiere, was dein Agent niemals tun soll und wann eskaliert wird.
+
+    ```
+    Niemals:
+    - Preise besprechen (an das Sales-Team weiterleiten)
+    - Versprechen zu Features oder Zeitplänen machen
+    - Weitermachen, wenn der Anrufer feindselig ist (freundlich beenden)
+
+    An einen Menschen weiterleiten, wenn:
+    - Der Anrufer einen Manager möchte
+    - Ein technisches Problem außerhalb des Wissens liegt
+    - Der Anrufer nach zwei Hilfeversuchen frustriert ist
+    ```
+  </Step>
+
+  <Step title="Wie geht der Agent mit Einwänden um?">
+    Bereite dich auf häufige Antworten mit exakter Formulierung vor.
+
+    ```
+    Einwandbehandlung:
+    - "Nicht interessiert" -> "Verstehe. Darf ich fragen, was sich seit Ihrer Anfrage geändert hat?"
+    - "Zu teuer" -> "Verstehe. Sprechen wir darüber, welche Funktionen am wichtigsten sind."
+    - "Ich muss darüber nachdenken" -> "Selbstverständlich. Welche konkreten Bedenken soll ich ansprechen?"
+    ```
+  </Step>
+</Steps>
+
+---
+
+## Empfohlene Prompt-Struktur
+
+Nutze das als Vorlage, wenn du den vollen Prompt ausarbeitest.
+
+| Abschnitt | Zweck | Tipps |
+|---------|---------|------|
+| **Rolle & Ton** | Wer der Agent ist und wie er klingt | Marke, Sprachen, Aussprachehinweise aufnehmen |
+| **Primäres Ziel** | Das gewünschte Ergebnis | Für Klarheit Bulletpoints oder nummerierte Listen nutzen |
+| **Gesprächsfluss** | Zentrale Schritte in Reihenfolge | Voraussetzungen, Schleifen und Abbruchkriterien aufnehmen |
+| **Informationsaufnahme** | Erforderliche Felder und Bestätigungen | Vor dem Fortfahren verifizieren |
+| **Tool-Trigger** | Wann und wie jedes Tool verwendet wird | Exakte Tool-Namen aus der UI verwenden |
+| **Eskalationen & Leitplanken** | Verbotene Themen und Übergaberegeln | Jede Regel mit dem passenden Transfer- oder End-Tool verbinden |
+| **Abschluss** | Wie der Agent sauber abschließt und Nächstes bestätigt | Alle Folgeschritte aufnehmen, die du versprichst |
+
+<Tip>
+Wenn diese Abschnitte immer in derselben Reihenfolge stehen, bleiben Prompts leichter wartbar und reviewbar.
+</Tip>
+
+---
+
+## Antwortlänge
+
+Der häufigste Fehler bei Voice-KI sind zu lange Antworten. Eine Antwort, die als Text gut aussieht, kann 15+ Sekunden zum Sprechen brauchen - Anrufer verlieren Aufmerksamkeit, unterbrechen oder legen auf.
+
+### Was du schreiben solltest
+
+```
+Halte Antworten bei den meisten Fragen auf 1-3 Sätze.
+Gehe nur dann ins Detail, wenn der Anrufer explizit danach fragt.
+Wenn du Optionen auflistest, biete maximal 3 gleichzeitig an und frage dann, ob mehr gewünscht ist.
+```
+
+### Was du vermeiden solltest
+
+```
+❌ "Gib auf alle Fragen umfassende, detaillierte Antworten."
+❌ "Liste alle verfügbaren Optionen auf, wenn gefragt wird."
+❌ "Füge Disclaimers und Rechtstexte in deine Antworten ein."
+```
+
+### Taktung für wichtige Informationen
+
+```
+Wenn du Daten, Zahlen oder Adressen nennst:
+- Sprich langsamer und klar
+- Wiederhole Schlüsseldetails einmal
+- Bitte den Anrufer um Bestätigung: "Habe ich das richtig verstanden?"
+```
+
+---
+
+## Natürliche Sprachmuster
+
+### Gesprächsfluss
+
+Führe den Agenten zu natürlichen Bestätigungsphrasen, die wie ein echter Mensch klingen:
+
+```
+- "Ich schaue das kurz für Sie nach" (vor Tool-Aufrufen)
+- "Alles klar" oder "Verstanden" (als Bestätigung)
+- "Nur damit ich sicher bin, dass ich das richtig habe..." (vor einer Zusammenfassung)
+- "Einen Moment, ich schaue das nach" (während Knowledge-Retrieval)
+```
+
+### Geschriebene Sprache vermeiden
+
+Manche Formulierungen lesen sich gut, klingen aber gesprochen roboterhaft:
+
+| Geschrieben (vermeiden) | Gesprochen (bevorzugen) |
+| --- | --- |
+| "Gemäß unserer Richtlinie..." | "Unsere Richtlinie ist..." |
+| "Ich möchte Sie darüber informieren, dass..." | "Nur damit Sie es wissen..." |
+| "Bitte beachten Sie, dass..." | "Ich sollte erwähnen..." |
+| "In Bezug auf Ihre Anfrage..." | "Zu Ihrer Frage..." |
+| "Affirmativ" | "Ja, genau" |
+
+### Zahlen und Daten
+
+```
+Telefonnummern: in Paaren gruppieren - "vier-drei, sieben-zwo, eins-zwei-drei"
+Daten: natürliches Format verwenden - "Dienstag, fünfter März" statt "2026-03-05"
+Preise: die Währung nennen - "fünfundvierzig Euro" statt "45.00"
+E-Mail-Adressen: klar buchstabieren - "john at example dot com"
+```
+
+---
+
+## Gesprächsstruktur
+
+### Einstieg
+
+Halte es kurz. Der Anrufer möchte schnell zu seinem Anliegen kommen.
+
+```
+Gut: "Hallo, hier ist [Name] von [Unternehmen]. Wie kann ich helfen?"
+Schlecht: "Hallo und willkommen bei [Unternehmen]. Mein Name ist [Name] und ich bin hier, um Ihnen heute bei allen Fragen, Anliegen oder Wünschen zu helfen."
+```
+
+### Turn-Taking
+
+```
+Nachdem du Informationen gegeben hast, stelle eine Anschlussfrage, um das Gespräch in Bewegung zu halten.
+Nicht monologisieren - nach jedem wichtigen Punkt pausieren und nachfragen, ob noch etwas offen ist.
+Wenn der Anrufer unterbricht, stoppen und zuhören - seine Eingabe hat Vorrang.
+```
+
+### Abschluss
+
+```
+1. Bestätigen, dass der Bedarf des Anrufers erledigt ist: "Gibt es noch etwas, wobei ich helfen kann?"
+2. Falls nein: "Prima, danke für Ihren Anruf bei [Unternehmen]. Einen schönen Tag!"
+3. Nicht alles noch einmal zusammenfassen - nur die wichtigsten Aktionspunkte.
+```
+
+---
+
+## Schwierige Momente handhaben
+
+### Wenn der Agent etwas nicht weiß
+
+```
+Wenn dir die Information fehlt:
+- Sage: "Das habe ich nicht, aber ich verbinde Sie mit jemandem, der das weiss."
+- Nie raten oder Antworten erfinden.
+- Nie sagen "Als KI kann ich nicht..."
+```
+
+### Wenn der Anrufer frustriert ist
+
+```
+Wenn der Anrufer verärgert wirkt:
+- Bestätigen: "Ich verstehe, dass das frustrierend ist."
+- Nicht defensiv oder übertrieben entschuldigend sein.
+- Dich auf die Lösung des Problems konzentrieren.
+- Bei Bedarf an einen Menschen weiterleiten.
+```
+
+### Wenn der Anrufer abschweift
+
+```
+Wenn das Gespräch vom Thema abweicht:
+```
+
+### Wenn sensible Informationen gesammelt werden
+
+```
+Wenn du sensible Informationen erfassen musst:
+- Erkläre, warum du die Informationen brauchst
+- Halte die Abfrage kurz und direkt
+- Wiederhole die Angaben zur Bestätigung
+- Wechsle auf ein anderes Tool oder einen Menschen, wenn dies angemessen ist
+```
+
+---
+
+## Schreibleitlinien
+
+<AccordionGroup>
+  <Accordion title="Schreibe für das Ohr, nicht für das Auge" icon="ear">
+    Eine gute Voice-Anweisung klingt gesprochen natürlich. Lies deinen Prompt laut vor und streiche alles, was auf dem Papier gut aussieht, aber beim Sprechen komisch wirkt.
+  </Accordion>
+
+  <Accordion title="Gib klare Prioritäten" icon="list-ol">
+    Wenn mehrere Regeln kollidieren können, lege eine Reihenfolge fest: Sicherheit zuerst, dann Genauigkeit, dann Tempo, dann Höflichkeit.
+  </Accordion>
+
+  <Accordion title="Mache Ausnahmen explizit" icon="circle-exclamation">
+    Wenn es Fälle gibt, in denen der Agent von Standardverhalten abweichen soll, schreibe sie klar hin. Unklare Ausnahmen führen zu inkonsistentem Verhalten.
+  </Accordion>
+
+  <Accordion title="Nutze kleine, testbare Abschnitte" icon="flask">
+    Schreibe den Prompt so, dass du einzelne Teile testen kannst - Begrüßung, Abschlusstext, Einwandbehandlung und Eskalation sollten separat prüfbar sein.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Tools referenzieren
+
+<Warning>
+Nenne Tools nur dann, wenn sie wirklich gebraucht werden. Zu viele Tool-Referenzen im Prompt können den Agenten verwirren und zu unnötigen Aufrufen führen.
+</Warning>
+
+### Beispiel: Booking Tool
+
+```text wrap
+When the caller wants to schedule an appointment:
+1. Ask for the key details you need
+2. Check availability
+3. Offer the best option
+4. Use the booking tool only after the caller confirms
+```
+
+### Beispiel: Transfer Tool
+
+```text wrap
+When the caller asks for a human or a specialist:
+1. Explain who you are transferring them to
+2. Ask for confirmation
+3. Transfer only after they agree
+```
+
+---
+
+## Variablen und bedingte Inhalte
+
+Nutze Variablen, um den Prompt an Kontakt-, Kontext- und Zeitdaten anzupassen. Halte bedingte Logik einfach und robust.
+
+```jinja wrap
+{% if contact.first_name %}
+Hello {{ contact.first_name }}.
+{% else %}
+Hello there.
+{% endif %}
+```
+
+```jinja wrap
+{% if current_datetime.hour < 12 %}
+Use a morning greeting.
+{% endif %}
+```
+
+---
+
+## Prompts testen
+
+Teste deinen Prompt mit echten Beispielen:
+
+1. Bekannte und unbekannte Kontakte
+2. Verschiedene Tageszeiten
+3. Erfolgs- und Fehlerfälle für Tools
+4. Frustrierte und kooperative Anrufer
+5. Anrufe mit und ohne benötigte Variablen
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Prompt" icon="pen" href="/de/build/conversation/prompt">
+    Prompts direkt im Editor schreiben
+  </Card>
+  <Card title="Prompt Templates" icon="file-code" href="/de/build/conversation/prompt-templates">
+    Fertige Vorlagen nutzen und anpassen
+  </Card>
+</CardGroup>

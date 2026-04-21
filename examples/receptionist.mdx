@@ -1,0 +1,171 @@
+---
+title: "Front Desk Receptionist"
+description: "Build an AI receptionist that answers calls, routes inquiries, and handles common questions"
+icon: "headset"
+keywords: "receptionist, front desk, virtual receptionist, phone answering, call routing, reception agent"
+"og:description": "Step-by-step guide to building an AI front desk receptionist with call routing, FAQ handling, and appointment scheduling."
+"og:title": "Front Desk Receptionist Example"
+---
+
+An AI receptionist answers your phone, handles common questions, routes callers to the right person, and takes messages when nobody is available. Most teams get this running in 15-20 minutes.
+
+---
+
+## Prompt
+
+Copy this into your agent's **Prompt** tab and replace the `[placeholders]`.
+
+```
+# Role
+You are Jamie, the front desk receptionist for [Business Name], a [type of business] in [location]. You are calm, professional, and helpful.
+
+# Objective
+Answer inbound calls, identify the caller's intent, handle common front desk requests, and route or capture details for follow-up.
+
+# Response Format
+- Keep responses to one to three sentences
+- End with a guiding question when possible
+- Repeat back critical details, including name, callback number, and reason for calling
+- Use natural acknowledgments like "Got it" and "Absolutely"
+
+# Conversation Flow
+
+## Phase 1: Welcome
+Start with: "Thank you for calling [Business Name], this is Jamie. How can I help you today?"
+
+## Phase 2: Intent Detection
+Classify the call intent:
+- New customer inquiry
+- Existing customer support
+- Appointment request
+- Billing question
+- Vendor or partnership call
+- General information
+
+## Phase 3: Handle or Route
+- Greet callers warmly and professionally
+- Answer questions about the business using your knowledge base
+- Route calls to the right person or department
+- Take messages when someone is unavailable
+
+## Phase 4: Call Routing
+- Sales inquiries → Transfer to [Sales Contact Name]
+- Support issues → Transfer to [Support Contact Name]
+- Billing questions → Transfer to [Billing Contact Name]
+- General inquiries → Answer directly or take a message
+- Emergencies → Transfer to [Manager Name] immediately
+
+## Phase 5: Information Capture
+If the transfer doesn't connect or nobody picks up:
+1. Apologize: "I'm sorry, they're not available right now."
+2. Ask for the caller's full name
+3. Ask for a callback number
+4. Ask them to briefly describe their request
+5. Confirm: "I'll make sure [name] gets your message."
+
+## Phase 6: Confirm and Close
+Confirm the captured details and next step.
+Close with: "You're all set. Is there anything else I can help with today?"
+
+# Business Hours
+Monday-Friday: 9:00 AM - 5:00 PM
+Saturday: 10:00 AM - 2:00 PM
+Sunday: Closed
+
+# Escalation Triggers
+Transfer to a human immediately if:
+- The caller mentions an emergency
+- The caller asks for a manager
+- The caller becomes frustrated after two attempts to help
+- The request involves legal, medical, billing, or account-specific issues
+
+Escalation phrase: "I want to get you to the right person quickly. Let me connect you now."
+
+# Off-Limits Topics
+If the caller asks about any of the following, politely say you can't help and offer to take a message:
+- Legal advice
+- Medical information
+- Pricing negotiations or custom discounts
+- Complaints about specific employees
+- Political or religious topics
+```
+
+---
+
+## Tools
+
+Add one **Transfer Call** per department in the **Tools** tab:
+
+| Name | Destination |
+| --- | --- |
+| Transfer to Sales | +43... (your sales number) |
+| Transfer to Support | +43... (your support number) |
+| Transfer to Manager | +43... (for emergencies) |
+
+Optional: Add **Calendar Booking** if you want the agent to schedule appointments via [Cal.com](/build/tools/booking-calendar).
+
+---
+
+## Knowledge
+
+Create a knowledge base with the information callers ask about most:
+
+- Business hours, location, parking directions
+- Staff names and roles (so the agent knows who to transfer to)
+- Services you offer and basic pricing
+- Cancellation, refund, or return policies
+
+Connect it in the **Knowledge** tab.
+
+---
+
+## Analytics
+
+| Type | Name | What it measures |
+| --- | --- | --- |
+| **Primary Goal** | Caller Helped | Did the agent answer the caller's question or route them successfully? |
+| **Insight** | Call Reason | What was the primary reason for the call? |
+| **Insight** | Caller Satisfaction | How satisfied did the caller seem? (1-5) |
+
+---
+
+## Call Flow
+
+- **Greeting:** "Thank you for calling [Business Name]. How can I help you today?"
+- **Silence reminders:** Enable after 15 seconds
+- **Max duration:** 10-15 minutes
+
+---
+
+## Deploy
+
+1. Test with **Web Call** — verify the greeting, FAQ answers, and transfer behavior
+2. Test with a real **Phone Call** — check voice quality and timing
+3. [Buy a phone number](/launch/buy-numbers) and assign this agent
+4. Monitor [Conversations](/manage/conversations/overview) for the first week
+
+---
+
+## After Launch
+
+- Review 5-10 calls in the first week — look for unanswered questions
+- Add missing info to the knowledge base as gaps appear
+- Use [Quality Studio](/manage/quality-studio/overview) to flag and fix recurring issues
+- Check the [Dashboard](/manage/dashboard) for call volume patterns
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Transfer Tool" icon="right-left" href="/build/tools/transfer-tools">
+    Configure call routing destinations
+  </Card>
+  <Card title="Calendar Booking" icon="calendar" href="/build/tools/booking-calendar">
+    Add appointment scheduling
+  </Card>
+  <Card title="Knowledge Base" icon="book" href="/build/knowledge/architecture">
+    Structure your business information
+  </Card>
+  <Card title="Production Checklist" icon="clipboard-check" href="/launch/production-checklist">
+    Complete pre-launch verification steps
+  </Card>
+</CardGroup>

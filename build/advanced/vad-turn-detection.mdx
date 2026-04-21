@@ -1,0 +1,148 @@
+---
+title: "Voice Activity Detection & Turn Detection"
+description: "Configure response timing, AI turn detection, and interrupt handling for natural conversation flow"
+icon: "microphone-lines"
+keywords: "VAD, voice activity detection, turn detection, interrupt handling, speech detection, response timing, endpointing"
+"og:description": "Configure response timing and turn detection for natural, responsive AI voice conversations."
+"og:title": "Voice Activity Detection & Turn Detection"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+**Access:** Open an agent and go to **Call Flow**, then scroll to **Conversation Flow**.
+
+## How Turn Detection Works
+
+Voice Activity Detection (VAD) and turn detection decide when the caller has finished speaking and when the agent should respond. These controls affect perceived responsiveness, interruptions, and whether the agent waits through natural pauses.
+
+<Screenshot
+  lightSrc="/images/operations__vad-light.png"
+  darkSrc="/images/operations__vad-dark.png"
+  alt="Call Flow Expert mode showing Allow Interruptions, Response Timing, AI Turn Detection, and Advanced timing controls"
+/>
+
+<Note>
+These settings apply to voice conversations, including phone calls and web calls. Simple mode exposes response timing presets. Expert mode adds interruption controls, AI turn detection, and advanced timing sliders.
+</Note>
+
+## Simple Mode
+
+Simple mode exposes **Response Timing** presets:
+
+<AccordionGroup>
+  <Accordion title="Patient" icon="turtle">
+    Longer pauses before responding. Use this for thoughtful conversations, number collection, or flows where callers often pause mid-sentence.
+  </Accordion>
+
+  <Accordion title="Balanced" icon="gauge">
+    A middle ground for general-purpose conversations.
+  </Accordion>
+
+  <Accordion title="Responsive" icon="rabbit">
+    Faster responses. Use this for quick exchanges, but test for accidental interruptions.
+  </Accordion>
+</AccordionGroup>
+
+## Expert Mode Controls
+
+<AccordionGroup>
+  <Accordion title="Allow Interruptions" icon="circle-pause">
+    Controls whether callers can speak over the agent while it is talking.
+
+    Turn this off for legal disclosures, required announcements, or scripted sections where the caller should hear the full message.
+  </Accordion>
+
+  <Accordion title="Response Timing" icon="gauge-high">
+    Choose **Patient**, **Balanced**, **Responsive**, or **Custom**.
+
+    The presets update the underlying timing values together. Choose **Custom** when you need to tune the sliders directly.
+  </Accordion>
+
+  <Accordion title="AI Turn Detection" icon="brain-circuit">
+    Enables AI-based end-of-turn detection. When disabled, the runtime uses VAD-only detection.
+
+    AI Turn Detection can reduce mid-sentence cutoffs, but it may add a small amount of latency.
+  </Accordion>
+
+  <Accordion title="Advanced timing controls" icon="sliders">
+    Expert mode exposes three sliders:
+
+    - **Silence before responding:** `0.10s-1.00s`
+    - **Speech duration to trigger interrupt:** `0.10s-3.00s`
+    - **Minimum words to interrupt:** `0-5`
+
+    These settings are the dashboard-supported controls for tuning responsiveness and interruption stability.
+  </Accordion>
+</AccordionGroup>
+
+## AI Turn Detection
+
+AI Turn Detection is the dashboard control for smart endpointing. It uses an AI model to detect when a caller has finished their turn, rather than relying only on a raw silence threshold.
+
+**Benefits:**
+
+- Reduces false cutoffs during natural pauses
+- Improves handling for multi-clause sentences
+- Keeps barge-in behavior more stable
+- Falls back to VAD-only behavior if the AI turn detector is unavailable
+
+<Note>
+Enable it to test if it produces better results for your use case.
+</Note>
+
+## Configuration Best Practices
+
+<Steps>
+  <Step title="Start with a preset">
+    Use **Balanced** for general support or booking agents. Use **Patient** if callers often pause to think. Use **Responsive** only after testing for interruptions.
+  </Step>
+
+  <Step title="Test with realistic speech">
+    Test callers who speak at different speeds, use pauses, read numbers, and interrupt the agent.
+  </Step>
+
+  <Step title="Change one setting at a time">
+    If you switch presets and change interruption sliders together, it becomes hard to identify which change improved or broke the conversation.
+  </Step>
+
+  <Step title="Validate on phone calls">
+    Browser tests are useful, but phone audio exposes turn-taking problems more clearly.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Agent cuts callers off mid-sentence" icon="scissors">
+    Switch to **Patient**, increase **Silence before responding**, increase **Minimum words to interrupt**, or enable **AI Turn Detection**.
+  </Accordion>
+
+  <Accordion title="Agent responds too slowly" icon="hourglass">
+    Switch to **Responsive**, reduce **Silence before responding**, or disable **AI Turn Detection** if the added patience is not needed.
+  </Accordion>
+
+  <Accordion title="Callers cannot interrupt the agent" icon="ban">
+    Make sure **Allow Interruptions** is enabled, reduce **Speech duration to trigger interrupt**, and reduce **Minimum words to interrupt**.
+  </Accordion>
+
+  <Accordion title="Background noise triggers interruptions" icon="volume-high">
+    Use **Patient** or **Balanced**, increase **Speech duration to trigger interrupt**, and require at least one or two words before interrupting.
+  </Accordion>
+</AccordionGroup>
+
+## Related Features
+
+<CardGroup cols={2}>
+  <Card title="Voice Settings" icon="sliders" href="/build/voice-speech/voice-settings">
+    Configure voice speed and provider-specific voice controls
+  </Card>
+  <Card title="Inactivity Settings" icon="hourglass-half" href="/build/advanced/inactivity-timeout-settings">
+    Decide what happens during silence
+  </Card>
+  <Card title="Announcements" icon="bullhorn" href="/build/advanced/announcements">
+    Configure required messages that should usually not be interrupted
+  </Card>
+  <Card title="DTMF Controls" icon="hashtag" href="/build/advanced/dtmf-controls">
+    Configure phone keypad interaction
+  </Card>
+</CardGroup>

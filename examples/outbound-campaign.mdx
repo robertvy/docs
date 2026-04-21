@@ -1,0 +1,192 @@
+---
+title: "Outbound Sales Campaign"
+description: "Build and launch an automated outbound calling campaign for sales outreach"
+icon: "phone-arrow-up-right"
+keywords: "outbound campaign, sales calls, automated calling, cold outreach, follow-up calls, campaign setup"
+"og:description": "Step-by-step guide to launching an outbound sales campaign with automated dialing, AMD, and performance tracking."
+"og:title": "Outbound Campaign Example"
+---
+
+Launch an automated outbound campaign that contacts prospects, delivers your pitch, and tracks outcomes at scale.
+
+## What You Will Build
+
+A campaign that:
+- Calls a contact list automatically
+- Delivers a consistent, professional pitch
+- Handles objections with knowledge-backed responses
+- Tracks answer rates, conversions, and sentiment
+- Skips voicemails with smart AMD detection
+
+**Estimated setup time:** 30 minutes
+
+---
+
+## Step 1: Prepare Your Contact List
+
+Before building the agent, prepare your CSV with:
+- **First Name** and **Last Name**
+- **Phone Number** (E.164 format: +43720123456)
+- **Email** (optional, for follow-up)
+- **Tags** (optional, for segmentation)
+
+Import contacts: **Campaigns → Contacts → Add Contacts → Import CSV**
+
+## Step 2: Create the Outbound Agent
+
+Build an agent specifically for outbound (or duplicate an existing one):
+
+```
+# Role
+You are Jamie, an Account Executive at [Company Name]. You are enthusiastic but not pushy, knowledgeable, and focused on providing value whether or not there is an immediate fit.
+
+# Objective
+Introduce [specific offer, product update, or reason for calling], gauge interest, and schedule the next step when there is a fit.
+
+# Response Format
+- Be conversational, not scripted
+- Keep the value proposition to two or three sentences
+- Be respectful of their time and get to the point quickly
+- Mirror the prospect's energy and pace
+- End with a clear next-step question
+
+# Conversation Flow
+
+## Phase 1: Opening and Permission
+Start with: "Hi, is this {{contact.first_name}}? This is [Agent Name] from [Company Name]. I'm calling because [reason]. Do you have a quick moment?"
+
+If they have time, continue to Phase 2.
+If they are busy, say:
+"No problem at all. When would be a better time to call back?"
+- Note their preferred time
+- Thank them and end the call
+
+## Phase 2: Value Proposition
+Briefly explain the value proposition in thirty seconds or less.
+Ask: "Is this something you are dealing with right now?"
+
+## Phase 3: Interest Assessment
+If interested, offer next steps such as a demo, meeting, or trial.
+If unsure, offer to send information and follow up later.
+If not interested, say: "I completely understand. Thank you for your time. Have a great day."
+
+## Phase 4: Scheduling
+If booking a next step, collect their preferred time and email.
+Confirm the next step before ending.
+
+# Campaign Rules
+- If they ask to be removed from the list, acknowledge immediately and end the call
+- Never be pushy or aggressive
+- Use their first name naturally
+- Answer product questions using your knowledge base
+
+# Escalation Triggers
+Transfer to a human or create a follow-up task if:
+- The prospect asks for detailed pricing or contract terms
+- The prospect has technical questions beyond your knowledge
+- The prospect is an existing customer with an account issue
+- The prospect asks for a specific person to call back
+
+Escalation phrase: "That's a great question that deserves a proper answer. Let me have the right person follow up."
+
+# Off-Limits Topics
+If they ask about any of the following, say you'll have the right person follow up:
+- Specific contract terms or pricing details
+- Competitor comparisons
+- Anything outside your product/service scope
+```
+
+## Step 3: Configure the Agent
+
+| Setting | Value |
+| --- | --- |
+| **Model** | Balanced (quality matters for sales) |
+| **Voice** | Confident, friendly, natural |
+| **Outbound Greeting** | Use override for outbound-specific greeting |
+| **Max Duration** | 5-10 minutes |
+
+## Step 4: Create the Campaign
+
+1. Go to **Campaigns → Create Campaign**
+2. Configure:
+
+| Setting | Recommended Value |
+| --- | --- |
+| **Campaign Name** | Q2 Follow-Up - [Segment] |
+| **Agent** | Your outbound agent |
+| **Phone Number** | Local number matching recipients' region |
+| **Business Hours** | 10:00 AM - 12:00 PM, 2:00 PM - 5:00 PM (peak answer times) |
+
+## Step 5: Configure Call Settings
+
+In the campaign's **Settings** tab:
+
+| Setting | Recommended Value |
+| --- | --- |
+| **Answering machine detection** | Text-based for general use, ML-based when you need stricter voicemail handling |
+| **Call Interval** | 30-60 seconds between calls |
+| **Max Concurrent Calls** | Start with 2-3, increase based on capacity |
+| **Max Retry Attempts** | 2-3 |
+| **Retry Interval** | 4-24 hours between retries |
+
+## Step 6: Add Contacts
+
+1. Open campaign → **Contacts** tab
+2. Click **Add Contacts**
+3. Select from your imported contacts (filter by tags if segmented)
+4. Start with a **pilot batch of 20-30 contacts** before scaling
+
+## Step 7: Set Up Analytics
+
+In the campaign's **Analytics** tab:
+
+| Type | Name | Description |
+| --- | --- | --- |
+| **Primary Goal** | Meeting Scheduled | The contact agreed to a demo, meeting, or next step |
+| **Secondary Goal** | Interest Expressed | The contact showed interest but did not commit to a meeting |
+| **Insight** | Sentiment | How receptive was the contact? (Rating 1-5) |
+| **Insight** | Objection | What was their main objection or concern? (Open) |
+| **Insight** | Call Back Requested | Did they ask to be called back at a different time? (Yes/No) |
+
+## Step 8: Launch
+
+1. Change campaign status from **Paused** to **Active**
+2. Monitor the **Dashboard** tab for the first hour
+3. Check answer rates and adjust schedules if needed
+4. Review a few conversations for quality
+
+## Optimizing Over Time
+
+### Week 1: Establish Baseline
+- Monitor daily: answer rates, goal achievement, sentiment
+- Listen to 5-10 recordings — check tone, objection handling, timing
+- Adjust your prompt based on common objections
+
+### Week 2: Optimize
+- Review the heatmap — shift schedules to peak answer times
+- A/B test: create a second campaign with a different script
+- Clean the contact list — remove invalid numbers
+- Check spam scores — rotate numbers if rising
+
+### Ongoing
+- Export analytics weekly for reporting
+- Update knowledge base with new objection handlers
+- Rotate phone numbers every 500-1000 calls
+- Segment contacts for personalized campaigns
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Campaign Management" icon="chart-line" href="/manage/campaigns/overview">
+    View the full campaign management guide
+  </Card>
+  <Card title="Schedules" icon="clock" href="/launch/schedules">
+    Optimize calling windows
+  </Card>
+  <Card title="Phone Numbers" icon="phone" href="/launch/phone-numbers">
+    Manage numbers and spam scores
+  </Card>
+  <Card title="Conversation Goals" icon="bullseye" href="/build/analytics/conversation-goals">
+    Define success metrics
+  </Card>
+</CardGroup>

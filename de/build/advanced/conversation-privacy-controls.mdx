@@ -1,0 +1,170 @@
+---
+title: "Conversation Privacy Controls"
+description: "Kombiniere Announcements, Aufbewahrung, Aufzeichnungssteuerungen und Trust-Center-Einstellungen zu einem klaren Datenschutzmodell"
+icon: "shield-halved"
+keywords: "conversation privacy, recording controls, retention, trust center, webhook privacy, caller consent, data minimization"
+"og:description": "Erfahre, wie Announcements, Aufbewahrung, Recording Opt-Out und Trust-Center-Einstellungen zusammenarbeiten, um die Privatsphäre von Sprachgesprächen zu schützen."
+"og:title": "Conversation Privacy Controls"
+---
+
+Datenschutz in Voice AI ist nicht nur ein Schalter.
+
+Du formst ihn über mehrere Steuerungen, die beeinflussen, was Anrufer hören, was du speicherst, was du veröffentlichst und was dein Team später prüfen oder exportieren kann.
+
+Diese Anleitung zeigt, wie diese Steuerungen zusammenspielen.
+
+## Die vier wichtigsten Datenschutzebenen
+
+| Ebene | Was sie steuert | Hauptdokument |
+| --- | --- | --- |
+| **Hinweis** | Was der Anrufer vor oder während des Gesprächs hört | [Announcements](/de/build/advanced/announcements) |
+| **Speicherung** | Was die Plattform speichert und wie lange | [Data Retention Settings](/de/build/advanced/data-retention) |
+| **Anruferwahl** | Ob der Anrufer die Aufzeichnung mitten im Gespräch stoppen kann | [Recording Opt-Out](/de/build/advanced/recording-opt-out) |
+| **Öffentliche Transparenz** | Was Anrufer und Besucher darüber lesen können, wie deine Agenten mit ihren Daten umgehen | [Trust Center](/de/manage/trust-center/overview) |
+
+## Warum das wichtig ist
+
+Die meisten Datenschutzprobleme entstehen an den Grenzen:
+
+- ein Anruf wird aufgezeichnet, aber die Anrufer waren nicht darauf vorbereitet
+- die Aufbewahrungseinstellungen passen nicht zur öffentlichen Richtlinie
+- ein Widget ist live, aber die Datenschutzlinks fehlen oder sind unklar
+- ein Team exportiert oder leitet Daten weiter, ohne zu prüfen, was tatsächlich gespeichert ist
+
+Das sicherste Muster ist, Hinweis, Speicherung und öffentliche Offenlegung aufeinander abzustimmen.
+
+## Beginne mit der Richtlinie, die du wirklich willst
+
+Bevor du die UI änderst, entscheide:
+
+- willst du Aufzeichnungen, Transkripte, beides oder nichts speichern?
+- brauchen manche Agenten strengere Regeln als der Account-Standard?
+- brauchen Anrufer eine explizite Möglichkeit, die Aufzeichnung abzulehnen?
+- brauchen öffentliche Web-Besucher ein sichtbares Trust Center, bevor sie interagieren?
+
+Sobald diese Richtlinie klar ist, konfiguriere das Produkt entsprechend.
+
+## Häufige Datenschutzmuster
+
+<AccordionGroup>
+  <Accordion title="Standard-Kundendienst-Workflow" defaultOpen>
+    Typisches Setup:
+
+    - Pre-Call-Hinweis aktiviert
+    - Transkripte und Aufzeichnungen mit definierter Aufbewahrung gespeichert
+    - Öffentliches Trust Center für Widget-Traffic aktiviert
+    - Recording Opt-Out aktiviert, wenn Richtlinie oder Rechtsraum es verlangen
+  </Accordion>
+
+  <Accordion title="Data-Minimization-Workflow">
+    Typisches Setup:
+
+    - kurzer Hinweis mit klarer Offenlegung
+    - reduzierte Aufbewahrungsfenster
+    - einige Datentypen auf **Do not store** gesetzt
+    - öffentliches Trust Center auf die strengere Richtlinie abgestimmt
+  </Accordion>
+
+  <Accordion title="Hochsensibler oder regulierter Workflow">
+    Typisches Setup:
+
+    - explizite Ankündigung, bevor der Agent zuhört
+    - strenge Aufbewahrungsregeln oder keine Speicherung von Aufzeichnungen
+    - Recording Opt-Out aktiviert, wenn Aufzeichnungen existieren
+    - klarer interner Review-Prozess für Exporte und Webhook-Nutzer
+  </Accordion>
+</AccordionGroup>
+
+## Wie die Steuerungen zusammenpassen
+
+### 1. Announcements setzen die Erwartung der Anrufer
+
+Nutze [Announcements](/de/build/advanced/announcements), wenn Anrufer einen Hinweis hören sollen, bevor der Agent zuhört.
+
+Hier ist der richtige Ort, um zu erklären:
+
+- dass das Gespräch aufgezeichnet werden kann
+- warum es aufgezeichnet wird
+- was der Anrufer tun kann, wenn er keine Aufzeichnung möchte
+
+### 2. Aufbewahrung entscheidet, was im System bleibt
+
+Nutze [Data Retention Settings](/de/build/advanced/data-retention), um zu steuern:
+
+- ob Transkripte gespeichert werden
+- ob Aufzeichnungen gespeichert werden
+- wie lange Analytik-Artefakte verfügbar bleiben
+- ob Ablauf zu Löschung oder Anonymisierung führt
+
+Die wichtige Regel: Deine Aufbewahrungseinstellungen sollten zu dem passen, was dein Team öffentlich verspricht.
+
+### 3. Recording Opt-Out behandelt Einwände live
+
+Nutze [Recording Opt-Out](/de/build/advanced/recording-opt-out), wenn Aufzeichnungen aktiviert sind und Anrufer vernünftigerweise verlangen könnten, dass die Aufzeichnung stoppt.
+
+Wenn Aufzeichnungen bereits auf **Do not store** gesetzt sind, wird diese Steuerung weniger relevant, weil die Aufzeichnung ohnehin nicht behalten wird.
+
+### 4. Das Trust Center erklärt deine öffentliche Position
+
+Nutze das [Trust Center](/de/manage/trust-center/overview), um zu veröffentlichen:
+
+- Links zur Datenschutzrichtlinie
+- Informationen zu Unterauftragsverarbeitern
+- Aufbewahrungsstatus
+- Transparenzmaterial für Website-Besucher
+
+Das ist vor allem wichtig für Web-Widgets, öffentliche Demos und extern geteilte Assistenten.
+
+## Widgets brauchen besondere Sorgfalt
+
+Bei widget-basierten Gesprächen sollten diese drei Dinge zusammenpassen:
+
+1. der Consent- und Privacy-Text des Widgets
+2. die öffentliche Trust-Center-Seite
+3. das tatsächliche Aufbewahrungs- und Aufnahmeverhalten hinter dem Widget
+
+Wenn diese drei Punkte nicht konsistent sind, verlieren Besucher schnell das Vertrauen.
+
+Siehe [Web Widget Deployment](/de/launch/web-widget-deployment) und [Web Widget Implementation](/de/launch/web-widget-implementation) für die Deployment-Seite.
+
+## Datenschutz-Checkliste vor dem Launch
+
+1. Prüfe, ob Transkripte und Aufzeichnungen gespeichert werden.
+2. Prüfe, ob die agentenbezogenen Aufbewahrungsüberschreibungen zu deinem gewünschten Account-Standard passen.
+3. Wenn Aufzeichnungen aktiviert sind, entscheide, ob Anrufer einen Hinweis hören sollen und ob sie opt-outen können.
+4. Wenn ein Widget öffentlich ist, prüfe, ob Trust Center und Richtlinienlinks live sind.
+5. Prüfe, welche Downstream-Systeme Gesprächsdaten über Exporte oder Webhooks erhalten.
+6. Führe einen echten Testanruf durch und prüfe, ob das Verhalten der Richtlinie entspricht, die du veröffentlichen willst.
+
+## Häufige Fehler
+
+<AccordionGroup>
+  <Accordion title="Strenge Richtlinie veröffentlichen, aber großzügige Aufbewahrung live lassen" icon="triangle-exclamation">
+    Der beste öffentliche Datenschutztext hilft nicht, wenn die tatsächlichen Einstellungen immer noch mehr speichern, als deine Richtlinie erlaubt.
+  </Accordion>
+
+  <Accordion title="Downstream-Nutzer vergessen" icon="share-nodes">
+    Webhooks, Exporte und interne Review-Workflows können die Datenschutzfläche über das Sprachgespräch hinaus erweitern. Prüfe den gesamten Flow, nicht nur den Agent-Tab.
+  </Accordion>
+
+  <Accordion title="Nur Happy-Path-Consent testen" icon="clipboard-check">
+    Teste auch, was passiert, wenn ein Anrufer nicht aufgenommen werden möchte, während des Hinweises still bleibt oder die Interaktion früh abbricht.
+  </Accordion>
+</AccordionGroup>
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Announcements" icon="bullhorn" href="/de/build/advanced/announcements">
+    Den Hinweis konfigurieren, den Anrufer vor Gesprächsbeginn hören
+  </Card>
+  <Card title="Data Retention Settings" icon="database" href="/de/build/advanced/data-retention">
+    Agentenbezogene Speicher- und Ablaufregeln festlegen
+  </Card>
+  <Card title="Recording Opt-Out" icon="microphone-slash" href="/de/build/advanced/recording-opt-out">
+    Anrufern erlauben, die Aufzeichnung während eines Live-Gesprächs zu stoppen
+  </Card>
+  <Card title="Trust Center" icon="shield-check" href="/de/manage/trust-center/overview">
+    Deine öffentliche Datenschutzposition mit dem tatsächlichen Systemverhalten abstimmen
+  </Card>
+</CardGroup>

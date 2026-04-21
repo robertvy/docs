@@ -1,0 +1,247 @@
+---
+title: "Kampagnenverwaltung"
+description: "Live-Outbound-Kampagnen mit Dashboards, Kontakten, Einstellungen, Zielen, Analysen und Exporten überwachen und verwalten"
+icon: "bullhorn"
+keywords: "outbound campaigns, campaign creation, agent assignment, phone rotation, AMD detection, retry logic, campaign goals, campaign analyses, spam threshold, business hours"
+"og:description": "Überwache und verwalte Outbound-Kampagnen nach dem Launch. Prüfe Dashboards, Kontakte, Einstellungen, Nummernrotation, Ziele, Analysen und Exporte."
+"og:title": "Kampagnenverwaltung"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+Nutze diese Seite, nachdem eine Kampagne existiert. Sie erklärt, wie du die Leistung überwachst, Kontakte verwaltest, Einstellungen anpasst und Ziele und Analysen prüfst.
+
+**Zugriff:** Navigiere in der Hauptnavigation zu **Kampagnen**.
+
+<Tip>
+Für die erstmalige Kampagneneinrichtung und die Launch-Schritte siehe [Kampagnen- und Outbound-Launch](/de/launch/campaign-outbound-launch).
+</Tip>
+
+<Screenshot lightSrc="/images/manage__campaign-list_DE-light.png" darkSrc="/images/manage__campaign-list_DE-dark.png" alt="Kampagnenliste mit Status-Badges, Agent, Telefonnummern, Geschäftszeiten und Kontaktanzahl" />
+
+---
+
+## Kampagnenliste
+
+Die Kampagnen-Seite zeigt alle deine Kampagnen in einer Tabelle.
+
+| Spalte | Beschreibung |
+| --- | --- |
+| **Name** | Name der Kampagne - anklicken, um die Detailansicht zu öffnen |
+| **Status** | Farblich codiertes Badge (siehe [Status](#kampagnen-status)) mit Dropdown zum Ändern |
+| **Agent** | Zugewiesener Agent mit Avatar |
+| **Telefonnummern** | Zugewiesene Outbound-Nummern, mit Anzahl bei mehreren |
+| **Zeitplan** | Verknüpfter Geschäftszeiten-Zeitplan mit Live-Offen/Geschlossen-Indikator |
+| **Kontakte** | Gesamtzahl der Kontakte in der Kampagne |
+| **Startdatum** | Wann die Kampagne starten soll |
+| **Aktionen** | Bearbeiten, Löschen |
+
+Nutze die Suche, um Kampagnen nach Namen zu finden, und sortiere nach Name, Status oder Datum. Du kannst mehrere Kampagnen für Sammelaktionen auswählen.
+
+---
+
+## Kampagnen-Status
+
+| Status | Farbe | Beschreibung |
+| --- | --- | --- |
+| **Active** | Teal | Kampagne läuft und tätigt Anrufe |
+| **Paused** | Gelb | Vorübergehend gestoppt - kann fortgesetzt werden |
+| **Completed** | Blau | Alle Kontakte bearbeitet oder manuell beendet |
+| **Cancelled** | Rot | Abgebrochen; es werden keine weiteren Anrufe getätigt |
+
+Ändere den Status einer Kampagne direkt in der Liste über das Status-Dropdown oder in der Kampagnen-Detailansicht.
+
+---
+
+## Kampagnen-Detail
+
+Sobald eine Kampagne erstellt ist, enthält die Detailansicht vier Tabs:
+
+| Tab | Nutze ihn, wenn du wissen willst... |
+| --- | --- |
+| **Dashboard** | Ist die Kampagne insgesamt gesund? |
+| **Kontakte** | Welche Personen wurden erreicht, erneut versucht, abgeschlossen oder verpasst? |
+| **Einstellungen** | Wie ist die Kampagne konfiguriert? |
+| **Analytik** | Messen wir die richtigen Ergebnisse und extrahieren wir die richtigen Gesprächs-Insights? |
+
+---
+
+## Dashboard-Tab
+
+Das Dashboard zeigt die aggregierte Kampagnenleistung:
+
+- Schnellstatistiken: Gespräche, Dauer, Antwortquoten, Zielerreichung
+- Aufteilung nach Kontaktstatus (ausstehend, wählend, angerufen, Retry, abgeschlossen, fehlgeschlagen, kein Gespräch)
+- Zielanalyse-Aufschlüsselung
+- Antwortstatus-Raten (human, machine, no answer, rejection)
+- Heatmap für menschliche Antworten nach Tag und Stunde - nützlich, um bessere Anrufzeiten zu finden
+
+Nutze die Aktualisierung in der Toolbar, um aktuelle Daten zu laden.
+
+---
+
+## Einstellungen-Tab
+
+Im Einstellungen-Tab steuerst du das gesamte Kampagnenverhalten. Alle Felder aus der Erstellung sind editierbar, plus zusätzliche Optionen.
+
+### Allgemein
+
+| Einstellung | Beschreibung |
+| --- | --- |
+| **Kampagnenname** | Beschreibender Name für interne Nutzung |
+| **Agent** | Zugewiesener Voice-Agent |
+| **Startdatum und Uhrzeit** | Wann das Wählen beginnt (leer lassen, um sofort zu starten) |
+| **Geschäftszeiten** | Verknüpfter Zeitplan mit Live-Offen/Geschlossen-Indikator |
+| **Notizen** | Freitext-Notizen zur Kampagne |
+
+### Telefonnummern
+
+Der Einstellungen-Tab zeigt eine Verwaltungstabelle für Telefonnummern. Füge hier weitere Nummern hinzu, wenn du über mehrere Outbound-Nummern rotieren willst.
+
+| Spalte | Beschreibung |
+| --- | --- |
+| **Nummer** | Telefonnummer mit freundlichem Namen |
+| **Status** | Aktiv, Deaktiviert oder Ausgeschlossen |
+| **Heutige Anrufe** | Anzahl der heute getätigten Anrufe |
+| **Gesamtanrufe** | Anzahl aller Anrufe seit Kampagnenstart |
+| **Spam-Score** | Aktueller Spam-Risiko-Score (grün 0-4, gelb 5-6, rot 7+) |
+| **Aktionen** | Nummer aktivieren/deaktivieren |
+
+Das System schließt Nummern automatisch aus, wenn ihr Spam-Score den konfigurierten Schwellenwert erreicht.
+
+### Rotations-Einstellungen
+
+Nur sichtbar, wenn zwei oder mehr Telefonnummern zugewiesen sind.
+
+| Einstellung | Beschreibung |
+| --- | --- |
+| **Rotationsstrategie** | Round Robin, Niedrigster Spam, Heute am wenigsten genutzt oder Gewichtet |
+| **Spam-Schwelle** | Maximaler Spam-Score vor automatischem Ausschluss (1-9, Standard: 7) |
+| **Max. Anrufe pro Nummer pro Tag** | Tägliches Anruflimit pro Telefonnummer (1-1.000, Standard: 100) |
+
+### Anrufeinstellungen
+
+| Einstellung | Beschreibung |
+| --- | --- |
+| **Anrufintervall** | Zeit zwischen Anrufen (5 s, 10 s, 20 s, 30 s, 1 Min., 2 Min., 5 Min., 10 Min., 20 Min., 30 Min.) |
+| **Klingel-Timeout** | Wie lange es klingelt, bevor aufgegeben wird (10 s, 15 s, 20 s, 25 s, 30 s, 45 s, 60 s) |
+| **AMD-Modus** | Textbasierte oder ML-basierte Anrufbeantworter-Erkennung |
+| **Max. Wiederholungsversuche** | Wie oft ein Kontakt erneut versucht werden soll (0-10, Standard: 2) |
+| **Wiederholungsintervall** | Zeit zwischen Wiederholungsversuchen (konfigurierbar in Minuten, Stunden oder Tagen) |
+| **Timeout für Kontaktabschluss** | Wie lange nach einem Anruf gewartet wird, bevor die Analyse läuft - gibt dem Kontakt ein Fenster, um zurückzurufen, bevor das Ergebnis final wird (konfigurierbar in Minuten, Stunden oder Tagen) |
+
+---
+
+## Kontakte-Tab
+
+Der Kontakte-Tab verwaltet, wer in der Kampagne angerufen wird.
+
+<Screenshot lightSrc="/images/manage__campaign-contacts_DE-light.png" darkSrc="/images/manage__campaign-contacts_DE-dark.png" alt="Kampagnen-Kontakte-Tab mit Kontaktliste, Status-Badges, Priorität, Zielerreichung und Sammelaktionen" />
+
+### Kontakttabelle
+
+| Spalte | Beschreibung |
+| --- | --- |
+| **Name** | Kontaktname mit Tags (zeigt bis zu 2, +N für weitere) |
+| **Telefonnummer** | Mit Länderflagge |
+| **Priorität** | High (rot), Normal (grau), Low (blau) |
+| **Status** | Farblich codiertes Badge (siehe [Kontaktstatus](#kontaktstatus)) |
+| **Primäres Ziel** | Erreichungsindikator (Häkchen oder X) |
+| **Zielscore** | Ring-Fortschritt mit 0-100 % Zielerreichung |
+| **Gespräche** | Anzahl und Gesamtdauer |
+| **Zuletzt angerufen** | Datum und Uhrzeit des letzten Anrufs |
+| **Aktionen** | Analytik ansehen, Kontakt erneut versuchen |
+
+### Kontaktstatus
+
+| Status | Farbe | Beschreibung |
+| --- | --- | --- |
+| **Pending** | Grau | In der Warteschlange und wartet auf den Anruf |
+| **Dialing** | Gelb | Wird gerade angerufen |
+| **Called** | Violett | Anruf wurde getätigt, wartet auf den nächsten Schritt |
+| **Retry** | Cyan | Für einen weiteren Versuch geplant |
+| **Completed** | Grün | Erfolgreich abgeschlossen |
+| **Failed** | Rot | Alle Versuche fehlgeschlagen |
+| **No Conversation** | Grau | Anruf verbunden, aber kein Gespräch zustande gekommen |
+
+### Kontakte hinzufügen
+
+Klicke auf **Kontakte hinzufügen**, um ein Panel mit zwei Tabs zu öffnen:
+
+- **Aus bestehenden hinzufügen** - verfügbare Kontakte suchen und filtern, Kontakte einzeln hinzufügen, ausgewählte Kontakte hinzufügen oder alle gefilterten Kontakte hinzufügen.
+- **CSV importieren** - Kampagnenkontakte direkt aus einer CSV-Datei hochladen.
+
+### Import und Export
+
+- **CSV-Import** - Eine CSV-Datei per Drag-and-drop hochladen (max. 5 MB), um Kontakte zu importieren. Der Import läuft im Hintergrund und zeigt den Fortschritt.
+- **Export** - Kampagnenkontakte mit allen Metriken exportieren. Verfügbare Formate: CSV (Komma), CSV (Semikolon), Excel (`.xlsx`), JSON (`.json`). Die Exporthistorie ist über das Export-Panel erreichbar.
+
+---
+
+## Ziele-Tab
+
+Definiere, was die Kampagne pro Kontakt erreichen soll.
+
+- **Primäres Ziel** - Eines pro Kampagne. Das wichtigste Erfolgskriterium, zum Beispiel einen Termin buchen oder die Teilnahme bestätigen.
+- **Sekundäre Ziele** - Unbegrenzt. Zusätzliche Ziele, die parallel zum primären Ziel verfolgt werden.
+
+### Zielergebnisse
+
+Jedes Ziel wird pro Kontakt auf Basis aller Gespräche bewertet:
+
+| Ergebnis | Beschreibung |
+| --- | --- |
+| **Erreicht** | Ziel vollständig erfüllt |
+| **Teilweise erreicht** | Ziel teilweise erfüllt |
+| **Nicht erreicht** | Ziel nicht erfüllt |
+| **Unbekannt** | Das System konnte das Ergebnis nicht bestimmen |
+
+### Ziele verwalten
+
+- Klicke auf **Ziel hinzufügen**, um ein neues Ziel mit Name, Beschreibung und Kennzeichnung als primär/sekundär zu erstellen
+- **Bearbeite** Name, Beschreibung oder Typ eines beliebigen Ziels
+- **Archivieren** Ziele, die du nicht mehr brauchst - archivierte Ziele sind verborgen, können aber aus der Archivansicht wiederhergestellt werden
+
+---
+
+## Analytik-Tab
+
+Definiere Fragen, die pro Gespräch in der Kampagne ausgewertet werden. Jede Analyse kann aktiv oder inaktiv geschaltet werden.
+
+<Screenshot lightSrc="/images/manage__campaign-analytics_DE-light.png" darkSrc="/images/manage__campaign-analytics_DE-dark.png" alt="Kampagnen-Analytics-Tab mit Zielen und aktiven Insight-Fragen" />
+
+### Fragetypen
+
+| Typ | Beschreibung |
+| --- | --- |
+| **Ja/Nein** | Binäre Ja/Nein-Frage |
+| **Einzelauswahl** | Eine Antwort aus vordefinierten Optionen |
+| **Mehrfachauswahl** | Eine oder mehrere Antworten aus vordefinierten Optionen |
+| **Offen** | Freitext-Antwort |
+| **Bewertung** | Numerische Bewertungsskala |
+| **Datenpunkt** | Einen bestimmten Datenpunkt aus dem Gespräch extrahieren |
+
+### Analysen verwalten
+
+- Klicke auf **Analyse hinzufügen**, um eine neue Frage mit Name, Beschreibung und Typ zu erstellen
+- **Schalte** Analysen aktiv oder inaktiv
+- **Archiviere** Analysen, die du nicht mehr brauchst - stelle sie bei Bedarf aus der Archivansicht wieder her
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Kontaktverwaltung" icon="address-book" href="/de/manage/contacts/overview">
+    Die Kontakte verwalten, die in deine Kampagnen einfließen
+  </Card>
+  <Card title="Geschäftszeiten" icon="clock" href="/de/launch/schedules">
+    Anrufpläne für deine Kampagnen konfigurieren
+  </Card>
+  <Card title="Outbound-Compliance" icon="scale-balanced" href="/de/launch/outbound-compliance">
+    Hinweise zu Einwilligung und Anrufzeitfenstern prüfen
+  </Card>
+  <Card title="Gespräche" icon="messages" href="/de/manage/conversations/overview">
+    Die von Kampagnen erzeugten Anrufe prüfen
+  </Card>
+</CardGroup>

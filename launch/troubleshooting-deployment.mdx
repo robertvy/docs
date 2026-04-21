@@ -1,0 +1,190 @@
+---
+title: "Troubleshooting Deployment"
+description: "Diagnose and fix common production issues with your AI voice agents"
+icon: "wrench"
+keywords: "troubleshooting, debugging, production issues, call quality, deployment problems, voice agent debugging, agent not responding"
+"og:description": "Systematic guide to diagnose and fix common production issues with AI voice agents — from call failures to agent behavior problems."
+"og:title": "Troubleshooting Deployment"
+---
+
+## Diagnostic Approach
+
+When issues arise in production, work through this process:
+
+1. **Identify the symptom** — Calls failing? Agent giving wrong answers? No calls at all?
+2. **Check scope** — All calls or a specific subset? When did it start?
+3. **Review recent changes** — Did you update your prompt, knowledge, voice settings, or integrations?
+4. **Check conversations** — Open the [Conversations](/manage/conversations/overview) list, filter for failed or problematic calls, and review the timeline
+5. **Test** — Use **Test Agent** in the agent editor to reproduce the issue
+6. **Fix and verify** — Make the smallest change that resolves the issue, then test again
+
+---
+
+## Common Issues
+
+### Calls Not Coming Through
+
+<AccordionGroup>
+  <Accordion title="Phone number not assigned to an agent">
+    Go to **Telephony → Phone Numbers** and confirm the number is routed to the correct agent. For direct routing, check the **Routing** or **Inbound Agent** setting on the number. For scheduled routing, confirm the right fallback agent and routing rules are in place.
+  </Accordion>
+
+  <Accordion title="Number still provisioning">
+    Newly purchased numbers can take up to 10 minutes to become active. Check the number status in your telephony settings — if it's still showing as "Pending", wait for provisioning to complete.
+  </Accordion>
+
+  <Accordion title="Agent is inactive">
+    Check the [AI Agents](/build/getting-started/agent-editor) list. If your agent shows an "Inactive" badge, it will not handle calls. Activate it to resume.
+  </Accordion>
+</AccordionGroup>
+
+### Agent Responds Slowly
+
+<AccordionGroup>
+  <Accordion title="Slow agent responses">
+    Some models are slower than others. If your agent is using a larger model (e.g., GPT-4.1), try switching to a faster model like GPT-4.1 Mini in [AI Model settings](/build/voice-speech/choose-ai-model). You can check per-message response time in the [conversation detail](/manage/conversations/detail) timeline.
+  </Accordion>
+
+  <Accordion title="Large knowledge base in Context mode">
+    If you have assigned a large knowledge base using [Context mode](/build/knowledge/context-vs-rag), that content is loaded into every conversation. Reserve Context mode for short, must-always-know content and move larger sources to RAG mode to improve response times.
+  </Accordion>
+
+  <Accordion title="Slow custom integrations">
+    If your agent calls [custom integrations](/build/tools/custom-api-actions) and those integrations are slow to respond, the agent will wait. Check the conversation timeline for tool events and their duration. Consider adding timeout limits or fallback responses in your integration configuration.
+  </Accordion>
+</AccordionGroup>
+
+### Poor Call Quality
+
+<AccordionGroup>
+  <Accordion title="Audio is choppy or robotic">
+    This is usually a network issue on the caller's side. If it happens consistently:
+    - Check the [voice provider](/build/voice-speech/select-voice) — try a different provider to rule out voice-generation issues
+    - For web calls, ensure the caller has a stable internet connection
+    - For **Connect Your Own** phone setups, verify your SIP/trunk configuration and network quality
+  </Accordion>
+
+  <Accordion title="Transcription errors (wrong words)">
+    If the agent frequently misunderstands specific words:
+    - Add those terms to [Keyword Boosting](/build/voice-speech/transcriber) (Deepgram) or Phrase List (Azure Speech) in [Transcriber settings](/build/voice-speech/transcriber)
+    - Use [Custom Pronunciations](/build/voice-speech/custom-pronunciations) for brand names or technical terms
+    - Try a different transcription provider — Deepgram works well for accents, Azure for technical vocabulary
+  </Accordion>
+
+  <Accordion title="Agent interrupts too often">
+    Adjust [Voice Activity Detection](/build/advanced/vad-turn-detection) settings:
+    - Switch **Response Timing** to a more patient preset
+    - In Expert Mode, increase **Silence before responding**
+    - In Expert Mode, increase **Speech duration to trigger interrupt**
+  </Accordion>
+</AccordionGroup>
+
+### Agent Gives Wrong Answers
+
+<AccordionGroup>
+  <Accordion title="Agent does not follow prompt">
+    - Review your [agent prompt](/build/conversation/prompt) — is it specific enough? Vague prompts lead to inconsistent behavior.
+    - Check for conflicting rules (e.g., "be concise" vs. "explain in detail")
+    - Lower the **Response Style** slider toward "Consistent" in [AI Model settings](/build/voice-speech/choose-ai-model) to reduce creative responses
+    - See the [Prompt Engineering Guide](/build/conversation/prompt-engineering-guide) for effective prompting techniques
+  </Accordion>
+
+  <Accordion title="Agent makes up information (hallucination)">
+    - Add explicit guardrails to your agent prompt: tell the agent to say "I don't have that information" rather than guessing
+    - Add missing information to your [knowledge base](/build/knowledge/create-knowledge-bases)
+    - Move critical knowledge to [Context mode](/build/knowledge/context-vs-rag) so it's always available
+    - Lower the Response Style slider toward "Consistent"
+    - Consider using a more capable model (e.g., GPT-4.1 instead of GPT-4.1 Mini)
+  </Accordion>
+
+  <Accordion title="Agent does not use knowledge base content">
+    - Verify knowledge is assigned in the [Knowledge tab](/build/getting-started/agent-editor#knowledge)
+    - Check that all items show green (ready to use)
+    - If items show as failed, click **Reindex** to retry
+    - Make sure the knowledge content uses the same language and terminology your callers use
+    - For critical information, switch from RAG to Context mode
+  </Accordion>
+
+  <Accordion title="Agent gets stuck in loops">
+    If the agent keeps repeating the same question:
+    - Add guidance to your agent prompt for handling unclear responses (e.g., "If the caller's answer is unclear after two attempts, offer to transfer them")
+    - Check [inactivity settings](/build/advanced/inactivity-timeout-settings) — set a conversation timeout to prevent indefinitely long calls
+    - Review the conversation transcript to identify what's causing the loop
+  </Accordion>
+</AccordionGroup>
+
+### Integration and Tool Failures
+
+<AccordionGroup>
+  <Accordion title="Custom action fails">
+    Open the [conversation detail](/manage/conversations/detail) and look for tool call events in the timeline. These show the tool status and any error messages.
+
+    Common causes:
+    - **Authentication error** — Check that your API key or credentials are correct in the [tool configuration](/build/tools/custom-api-actions)
+    - **Wrong endpoint URL** — Verify the URL is correct and accessible
+    - **Timeout** — Your API took too long to respond. Increase the timeout or optimize the API
+    - **Request format** — Ensure the request body matches what your API expects
+  </Accordion>
+
+  <Accordion title="Call transfer fails">
+    - Verify the transfer destination number is correct and reachable (try calling it manually)
+    - Check that the number is in the correct format
+    - Review [transfer settings](/build/tools/transfer-tools) — ensure ring duration and hold options are configured
+    - Check the conversation timeline for transfer-related events and error details
+  </Accordion>
+
+  <Accordion title="Calendar booking fails">
+    - Verify your [Cal.com integration](/build/tools/booking-calendar) is connected and the API key is valid
+    - Check that the calendar has available slots
+    - Review the booking tool configuration for correct event type settings
+  </Accordion>
+</AccordionGroup>
+
+### Campaign-Specific Issues
+
+<AccordionGroup>
+  <Accordion title="Campaign not placing calls">
+    - Check that the campaign is in **Active** status
+    - Verify [business hours](/launch/schedules) — calls are only placed during configured hours
+    - Ensure there are contacts remaining in the campaign that haven't been called
+    - Check that a phone number is assigned to the campaign's agent
+  </Accordion>
+
+  <Accordion title="High voicemail rate">
+    If most calls go to voicemail:
+    - Review the campaign **Dashboard** and **Analytics** tabs to find times when people actually pick up
+    - Adjust [business hours](/launch/schedules) to focus on high-answer-rate windows
+    - Enable [voicemail handling](/build/advanced/voicemail-handling) so your agent responds appropriately when it detects a voicemail
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## When to Contact Support
+
+Contact **support@itellico.ai** when:
+
+- Platform-wide issues affecting all agents or calls
+- Phone number provisioning stuck for more than 30 minutes
+- SIP trunk connectivity problems after verifying your configuration
+- Billing discrepancies or unexpected charges
+- Issues you can't resolve after following the troubleshooting steps above
+
+**Include in your request:**
+- Agent name and affected conversation IDs (copy from [conversation detail](/manage/conversations/detail))
+- What you've already tried
+- When the issue started
+- How many calls or users are affected
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Production Checklist" icon="star" href="/launch/production-checklist">
+    Keep your agents running smoothly
+  </Card>
+  <Card title="Test Your Agent" icon="vial" href="/test/overview">
+    Test changes before deploying to production
+  </Card>
+</CardGroup>

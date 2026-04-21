@@ -1,0 +1,103 @@
+---
+title: "SIP Trunks"
+description: "Bestehende Telefonnummern importieren und deinen Carrier per SIP Trunks verbinden"
+icon: "server"
+keywords: "SIP trunk, Connect Your Own, BYOC, bring your own carrier, import numbers, SIP authentication"
+"og:description": "Verbinde deinen bestehenden Carrier und importiere Telefonnummern mit SIP Trunks in itellicoAI."
+"og:title": "SIP Trunks"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+Wenn du bereits Telefonnummern bei einem Carrier hast, nutze **Connect Your Own**, um sie zu importieren und über [SIP](/de/glossary#telephony-and-networking)-Trunks zu verbinden, statt Nummern über den Marktplatz zu kaufen.
+
+**Zugriff:** Gehe zu **Telefonie → SIP Trunks**
+
+Zu den gängigen Providern für dieses Setup gehören Twilio, Telnyx, Vonage und andere SIP-fähige Carrier.
+
+<Screenshot
+  lightSrc="/images/sip__create-sip_DE-light.png"
+  darkSrc="/images/sip__create-sip_DE-dark.png"
+  alt="Dialog zum Erstellen eines SIP Trunks mit Name, Termination URI, Authentifizierung und IP-Restriktionen"
+/>
+
+## SIP-Trunk-Liste
+
+| Spalte | Beschreibung |
+| --- | --- |
+| **Name & Nummern** | Trunk-Name mit Anzahl der verknüpften Telefonnummern |
+| **Termination URI** | SIP-Endpunkt für ausgehende Anrufe |
+| **Authentifizierung** | SIP-Auth-Benutzername, falls konfiguriert |
+| **IP-Restriktionen** | Erlaubte IP-Adressen für eingehende Anrufe |
+| **Aktionen** | ID kopieren, Bearbeiten, Löschen |
+
+## Einen SIP Trunk erstellen
+
+Klicke auf **SIP Trunk erstellen**. Der Dialog ist in die Tabs **Inbound** und **Outbound** unterteilt.
+
+### Inbound
+
+Nutze den Inbound-Tab, um deine itellicoAI-Inbound-URI zu kopieren und festzulegen, welche Quell-IPs Anrufe in den Trunk senden dürfen.
+
+Deine itellicoAI-Inbound-SIP-URI lautet:
+
+```
+sip:50ebbp4vhpr.sip.livekit.cloud
+```
+
+Konfiguriere deinen Carrier so, dass Anrufe an diese URI weitergeleitet werden.
+
+### Outbound
+
+Nutze den Outbound-Tab, um Folgendes zu konfigurieren:
+
+| Einstellung | Beschreibung |
+| --- | --- |
+| **Name** | Beschreibender Name für diesen Trunk, z. B. "Hauptcarrier" |
+| **Provider Domain / Termination URI** | Der SIP-Endpunkt deines Carriers für ausgehende Anrufe |
+| **SIP Auth Username** | Authentifizierungsname, den dein Carrier bereitstellt |
+| **Password** | Wird über den gemeinsamen **Secrets**-Credential-Flow gespeichert, statt im Dialog im Klartext angezeigt zu werden |
+
+Du kannst einen SIP Trunk erst löschen, wenn alle Telefonnummern, die ihn noch verwenden, entkoppelt wurden.
+
+<Note>
+Standardmäßig stellt itellicoAI keine statischen IP-Adressen für ausgehendes SIP bereit - Whitelisting auf Carrier-Seite ist also nicht out of the box möglich. Statische IPs können auf Anfrage arrangiert werden. Kontaktiere [support@itellico.ai](mailto:support@itellico.ai), wenn du das brauchst.
+</Note>
+
+<Tip>
+Nutze für SIP-Authentifizierung ein gespeichertes Secret, damit du Zugangsdaten später zentral rotieren kannst.
+</Tip>
+
+## Telefonnummern importieren
+
+Sobald du einen SIP Trunk hast, importiere deine bestehenden Nummern:
+
+<Steps>
+  <Step title="Zu Telefonie → Telefonnummern wechseln">
+    Klicke auf **Nummer hinzufügen → Connect Your Own**, um den Import-Dialog zu öffnen.
+  </Step>
+  <Step title="Nummerndetails eingeben">
+    - **Telefonnummer** - Internationales [E.164](/de/glossary#telephony-and-networking)-Format, z. B. +43 720 123456
+    - **Label** - Optionaler Name
+    - **Weitergeleitet von** - Wenn du Nummernweiterleitung nutzt, die kundenseitige Nummer, die an diese KI-Nummer weiterleitet. Wird im öffentlichen [Trust Center](/de/manage/trust-center/overview) angezeigt. Leer lassen, wenn keine Weiterleitung genutzt wird.
+    - **SIP Trunk** - Den von dir erstellten Trunk auswählen
+    - **Routing** - Einen Fallback-Inbound-Agenten auswählen und später detailliertes Routing über [Telefonnummern](/de/launch/phone-numbers) verwalten
+  </Step>
+  <Step title="Speichern">
+    Die Plattform importiert die Nummer und verknüpft sie mit deinem SIP Trunk. Konfiguriere deinen Carrier so, dass Anrufe an den SIP-Endpunkt von itellicoAI weitergeleitet werden. Für Fallback-Agenten, Routing-Regeln und Zeitpläne nutze [Telefonnummern](/de/launch/phone-numbers).
+  </Step>
+</Steps>
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Telefonnummern" icon="phone" href="/de/launch/phone-numbers">
+    Alle Nummern an einem Ort verwalten
+  </Card>
+  <Card title="Geschäftszeiten" icon="clock" href="/de/launch/schedules">
+    Routing-Zeitpläne für deine Nummern konfigurieren
+  </Card>
+  <Card title="Agent Editor" icon="pen-to-square" href="/de/build/getting-started/agent-editor">
+    Den Agenten konfigurieren, der Anrufe annimmt
+  </Card>
+</CardGroup>

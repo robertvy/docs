@@ -1,0 +1,73 @@
+---
+title: "Limits & Kontingente"
+description: "Plan-Limits, API-Ratenlimits und Plattform-Kontingente"
+icon: "gauge"
+keywords: "Ratenlimits, API-Limits, Plan-Limits, Kontingente, gleichzeitige Anrufe, Sprachminuten, Drosselung, Agenten-Limit, Team-Mitglieder-Limit"
+"og:description": "Referenz für itellicoAI Plan-Limits, API-Ratenlimits und Plattform-Kontingente über alle Preisstufen hinweg."
+"og:title": "Limits & Kontingente"
+---
+
+## Plattform
+
+- **Verfügbarkeitsbedingungen:** Plan- und vertragsabhängig
+- **Antwortlatenz:** Abhängig von Modell, Stimmanbieter, Transkription, Netzwerkpfad und aktivierten Tools
+- **Stimmen:** Hunderte in über 50 Sprachen
+- **Agenten:** Unbegrenzt — keine Obergrenze für die Anzahl der Agenten
+
+## Plan-Limits
+
+Einige Limits sind kommerziell und planabhängig (zum Beispiel: enthaltene Minuten, gleichzeitige Anrufe und Wissensdatenbanken).
+
+Verwende diese als Quelle der Wahrheit für die aktuellen Werte deines Kontos:
+- [Pläne](/billing/plans)
+- [Nutzung & Preise](/billing/overview)
+
+<Note>
+Plan-Pakete und Preise können sich im Laufe der Zeit ändern. Diese Seite konzentriert sich auf technische Limits, die von der API/Laufzeit durchgesetzt werden.
+</Note>
+
+---
+
+## API-Ratenlimits
+
+API-Anfragen sind ratenlimitiert, um die Plattformstabilität zu schützen. Wende dich an [support@itellico.ai](mailto:support@itellico.ai), wenn du spezifische Ratenlimit-Details für deine Integration benötigst.
+
+Wenn du ein Limit überschreitest, gibt die API HTTP `429 Too Many Requests` mit dem Fehlercode `rate_limit_exceeded` zurück.
+
+Empfohlenes Client-Verhalten:
+1. Wiederholung mit exponentiellem Backoff.
+2. Jitter hinzufügen, um synchronisierte Wiederholungen zu vermeiden.
+3. Burst-Traffic reduzieren (wenn möglich bündeln).
+
+---
+
+## Ausgewählte Datei-Limits
+
+Mehrere Upload-Abläufe erzwingen harte Dateigrößen-Obergrenzen. Häufige Limits umfassen:
+
+| Ressourcentyp | Limit |
+|----------|-------|
+| Datei-Upload zur Wissensdatenbank | 10 MB pro Datei |
+| Gesprächsanhänge | 10 MB pro Datei |
+| Viele Audio-/Medien-Uploads | 10 MB pro Datei (endpunktspezifisch) |
+
+Für kommerzielle Preis-/Überschreitungsdetails siehe [Nutzung & Preise](/billing/overview).
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Pläne" icon="credit-card" href="/billing/plans">
+    Pläne und Funktionen vergleichen
+  </Card>
+  <Card title="Nutzung & Preise" icon="calculator" href="/billing/overview">
+    Kosten pro Minute und Abrechnung verstehen
+  </Card>
+  <Card title="API-Referenz" icon="brackets-curly" href="/api-reference/introduction">
+    Vollständige API-Dokumentation anzeigen
+  </Card>
+  <Card title="Unterstützte Anbieter" icon="microchip" href="/reference/supported-providers">
+    KI-Modelle, Stimmen und Transkriptions-Engines durchsuchen
+  </Card>
+</CardGroup>

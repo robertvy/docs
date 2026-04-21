@@ -1,0 +1,170 @@
+---
+title: "Conversation Privacy Controls"
+description: "Combine announcements, retention, recording controls, and Trust Center settings into one clear privacy model"
+icon: "shield-halved"
+keywords: "conversation privacy, recording controls, retention, trust center, webhook privacy, caller consent, data minimization"
+"og:description": "Learn how announcements, retention, recording opt-out, and Trust Center settings work together for voice-conversation privacy."
+"og:title": "Conversation Privacy Controls"
+---
+
+Privacy in voice AI is not one toggle.
+
+You shape it through several controls that affect what callers hear, what you store, what you publish, and what your team can later review or export.
+
+This guide shows how those controls work together.
+
+## The Four Main Privacy Layers
+
+| Layer | What it controls | Main doc |
+| --- | --- | --- |
+| **Notice** | What the caller hears before or during the conversation | [Announcements](/build/advanced/announcements) |
+| **Storage** | What the platform stores and for how long | [Data Retention Settings](/build/advanced/data-retention) |
+| **Caller choice** | Whether the caller can stop recording mid-call | [Recording Opt-Out](/build/advanced/recording-opt-out) |
+| **Public transparency** | What callers and visitors can read about how your agents handle their data | [Trust Center](/manage/trust-center/overview) |
+
+## Why This Matters
+
+Most privacy failures happen at the boundaries:
+
+- a call is recorded but callers were not prepared for it
+- retention settings do not match the public policy
+- a widget is live, but the privacy links are missing or unclear
+- a team exports or forwards data without checking what is actually stored
+
+The safest pattern is to make notice, storage, and public disclosure align.
+
+## Start With The Policy You Actually Want
+
+Before changing the UI, decide:
+
+- do you want to store recordings, transcripts, both, or neither?
+- do some agents need stricter rules than the account default?
+- do callers need an explicit way to opt out of recording?
+- do public web visitors need a visible Trust Center before they interact?
+
+Once that policy is clear, configure the product around it.
+
+## Common Privacy Patterns
+
+<AccordionGroup>
+  <Accordion title="Standard customer-service workflow" defaultOpen>
+    Typical setup:
+
+    - pre-call notice enabled
+    - transcripts and recordings stored with defined retention
+    - public Trust Center enabled for widget traffic
+    - recording opt-out enabled when required by policy or jurisdiction
+  </Accordion>
+
+  <Accordion title="Data-minimization workflow">
+    Typical setup:
+
+    - short notice with clear disclosure
+    - reduced retention windows
+    - some data types set to **Do not store**
+    - public Trust Center aligned to the stricter policy
+  </Accordion>
+
+  <Accordion title="High-sensitivity or regulated workflow">
+    Typical setup:
+
+    - explicit announcement before the agent starts listening
+    - tight retention rules or no recording storage
+    - recording opt-out enabled when recordings exist
+    - clear internal review process for exports and webhook consumers
+  </Accordion>
+</AccordionGroup>
+
+## How The Controls Fit Together
+
+### 1. Announcements set the caller expectation
+
+Use [Announcements](/build/advanced/announcements) when callers should hear a notice before the agent begins listening.
+
+This is the right place to explain:
+
+- that the conversation may be recorded
+- why it is being recorded
+- what the caller can do if they do not want recording
+
+### 2. Retention decides what stays in the system
+
+Use [Data Retention Settings](/build/advanced/data-retention) to control:
+
+- whether transcripts are stored
+- whether recordings are stored
+- how long analytics artifacts remain available
+- whether expiry leads to deletion or anonymization
+
+The important rule: your retention settings should match what your team promises publicly.
+
+### 3. Recording Opt-Out handles live caller objections
+
+Use [Recording Opt-Out](/build/advanced/recording-opt-out) when recordings are enabled and callers may reasonably ask for recording to stop.
+
+If recordings are already set to **Do not store**, this control becomes less relevant because the recording is not kept in the first place.
+
+### 4. Trust Center explains your public-facing posture
+
+Use the [Trust Center](/manage/trust-center/overview) to publish:
+
+- privacy policy links
+- subprocessors information
+- retention posture
+- transparency material for website visitors
+
+This matters most for web widgets, public demos, and externally shared assistants.
+
+## Widgets Need Extra Care
+
+For widget-based conversations, align these three things:
+
+1. the widget consent and privacy copy
+2. the public Trust Center page
+3. the actual retention and recording behavior behind the widget
+
+If those three are inconsistent, visitors lose trust quickly.
+
+See [Web Widget Deployment](/launch/web-widget-deployment) and [Web Widget Implementation](/launch/web-widget-implementation) for the deployment side.
+
+## Privacy Review Checklist Before Launch
+
+1. Confirm whether transcripts and recordings are stored.
+2. Confirm whether the agent-level retention overrides match the account default you intended.
+3. If recordings are enabled, decide whether callers should hear a notice and whether they can opt out.
+4. If a widget is public, confirm the Trust Center and policy links are live.
+5. Check which downstream systems receive conversation data through exports or webhooks.
+6. Run a real test conversation and confirm the behavior matches the policy you plan to publish.
+
+## Common Mistakes
+
+<AccordionGroup>
+  <Accordion title="Publishing a strict policy but leaving permissive retention settings live" icon="triangle-exclamation">
+    The strongest public privacy copy does not help if the actual settings still store more than your policy says.
+  </Accordion>
+
+  <Accordion title="Forgetting about downstream consumers" icon="share-nodes">
+    Webhooks, exports, and internal review workflows can extend the privacy footprint beyond the voice call itself. Review the full flow, not only the agent tab.
+  </Accordion>
+
+  <Accordion title="Only testing happy-path consent" icon="clipboard-check">
+    Also test what happens when a caller asks not to be recorded, stays silent during the notice, or abandons the interaction early.
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Announcements" icon="bullhorn" href="/build/advanced/announcements">
+    Configure the notice callers hear before the conversation begins
+  </Card>
+  <Card title="Data Retention Settings" icon="database" href="/build/advanced/data-retention">
+    Set agent-level storage and expiry rules
+  </Card>
+  <Card title="Recording Opt-Out" icon="microphone-slash" href="/build/advanced/recording-opt-out">
+    Let callers stop recording during a live conversation
+  </Card>
+  <Card title="Trust Center" icon="shield-check" href="/manage/trust-center/overview">
+    Align your public privacy posture with the actual system behavior
+  </Card>
+</CardGroup>

@@ -1,0 +1,306 @@
+---
+title: "Conversation Goals"
+description: "Definiere und verfolge messbare Ziele für jedes Gespräch"
+icon: "bullseye"
+keywords: "conversation goals, AI metrics, success tracking, conversation objectives, goal tracking, AI analytics, performance measurement"
+"og:description": "Definiere und verfolge messbare Gesprächsziele, um den Erfolg von KI-Agenten zu messen und die Performance zu optimieren."
+"og:title": "Conversation Goals"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+## Was Conversation Goals tun
+
+Conversation Goals sind optionale Metriken, mit denen du Erfolg messen kannst. Definiere, welche Ergebnisse für dich wichtig sind, und die KI analysiert jedes Gesprächstranskript, um zu bestimmen, ob diese Ziele erreicht wurden. Das ermöglicht Performance-Reporting, Success-Rate-Tracking und datengetriebene Optimierung.
+
+<Warning>
+**Goals sind nur für Reporting gedacht.** Der Agent weiß während des Gesprächs nichts von den Goals. Die KI bewertet Goals erst nach Ende des Anrufs anhand des Transkripts.
+
+Um das Verhalten des Agents während des Anrufs zu steuern, definiere im [Agent-Prompt](/de/build/conversation/prompt), was der Agent erreichen soll.
+</Warning>
+
+**Zugriff:** In deinem Agent-Editor → Tab **Analytics** → Bereich **Post-Call Analytics**
+
+---
+
+## Setup
+
+<Screenshot
+  lightSrc="/images/goals__goals_DE-light.png"
+  darkSrc="/images/goals__goals_DE-dark.png"
+  alt="Analytics-Tab mit Post-Call Analytics, Goal-Zeilen, Insight-Zeilen, aktiven Toggles, Edit- und Archiv-Aktionen sowie dem aufklappbaren Bereich Default Insights"
+/>
+
+<Steps>
+  <Step title="Goals aufrufen">
+    In deinem Agent-Editor → Tab **Analytics** → Bereich **Post-Call Analytics** → **Add** → **Goal**
+  </Step>
+
+  <Step title="Goal-Typ wählen (optional)">
+    **Primary Goal:** Deine wichtigste Erfolgsmetrik
+    - Das wichtigste Ergebnis, das du für diesen Agenten messen willst
+    - Wird zur Berechnung der gesamten Conversation-Success-Rate verwendet
+    - Beispiel: „Termin gebucht“
+
+    **Secondary Goals:** Zusätzliche Metriken
+    - Erfasse zusätzliche Ergebnisse, ohne die primäre Success-Rate zu beeinflussen
+    - Messe zusätzlichen gelieferten Wert
+    - Beispiel: „E-Mail erfasst“
+  </Step>
+
+  <Step title="Goal konfigurieren">
+    **Name:** Klare, kurze Bezeichnung
+    ```
+    Example: "Follow-up meeting scheduled"
+    ```
+
+    **Description:** Wie Erfolg aussieht (so spezifisch wie möglich - die KI nutzt das zur Bewertung)
+    ```
+    Example: "A follow-up meeting was successfully scheduled with
+    a specific confirmed date, time, and list of attendees. The
+    customer agreed to the scheduled time and received confirmation."
+    ```
+
+    <Tip>
+    Je spezifischer die Beschreibung, desto genauer die Goal-Bewertung
+    </Tip>
+  </Step>
+
+  <Step title="Speichern">
+    Die Plattform trackt dieses Goal nun für alle zukünftigen Gespräche.
+  </Step>
+</Steps>
+
+---
+
+## Primary vs Secondary Goals
+
+<Tabs>
+  <Tab title="Primary Goal">
+    **Optional.** Wähle das einzelne wichtigste Ergebnis, das du messen möchtest.
+
+    <Info>
+    **Warum nur ein Primary Goal?** Ein primäres Goal definiert deine wichtigste Erfolgsmetrik. Gespräche gelten als erfolgreich, wenn das Primary Goal erreicht wurde, wodurch dein Analytics-Dashboard leichter zu interpretieren ist.
+    </Info>
+
+    **Beispiele:**
+    - 📅 Termin gebucht
+    - ✅ Lead qualifiziert
+    - 🔧 Problem gelöst
+    - 💳 Zahlung eingezogen
+    - 📞 Rückruf terminiert
+
+    **Reporting:**
+    - Wird zur Berechnung der Gesamt-Erfolgsrate verwendet
+    - Primäre Metrik im Analytics-Dashboard
+    - Entscheidet, ob das Gespräch erfolgreich war
+  </Tab>
+
+  <Tab title="Secondary Goals">
+    **Optional. Mehrere erlaubt.** Zusätzliche Ergebnisse zum Tracken.
+
+    **Beispiele:**
+    - 📧 E-Mail erfasst
+    - ⭐ Feedback gesammelt
+    - 💰 Upsell-Chance identifiziert
+    - 📝 Kontaktdaten aktualisiert
+    - ✓ Präferenzen bestätigt
+
+    **Reporting:**
+    - Werden getrennt vom Primary Goal getrackt
+    - Beeinflussen die Gesamt-Erfolgsrate nicht
+    - Messen zusätzlichen Wert
+  </Tab>
+</Tabs>
+
+---
+
+## Beispiele
+
+<AccordionGroup>
+  <Accordion title="Terminbuchung" icon="calendar">
+    **Primary Goal:**
+    - Name: "Appointment booked"
+    - Description: "An appointment was successfully scheduled with confirmed date, time, service type, and contact information"
+
+    **Secondary Goal:**
+    - Name: "Email collected"
+    - Description: "Customer provided their email address for appointment reminders"
+  </Accordion>
+
+  <Accordion title="Lead-Qualifizierung" icon="filter">
+    **Primary Goal:**
+    - Name: "Lead qualified"
+    - Description: "Lead meets qualification criteria with confirmed budget, timeline, decision-maker status, and identified pain points"
+
+    **Secondary Goal:**
+    - Name: "Demo scheduled"
+    - Description: "Product demo was successfully booked with the qualified lead"
+  </Accordion>
+
+  <Accordion title="Kundensupport" icon="headset">
+    **Primary Goal:**
+    - Name: "Issue resolved"
+    - Description: "Customer's problem was addressed and resolution confirmed to their satisfaction"
+
+    **Secondary Goal:**
+    - Name: "Feedback collected"
+    - Description: "Customer provided feedback rating or suggestions for improvement"
+  </Accordion>
+
+  <Accordion title="Informationssammlung" icon="clipboard-list">
+    **Primary Goal:**
+    - Name: "Requirements collected"
+    - Description: "Complete project requirements gathered including scope, budget, timeline, and decision process"
+
+    **Secondary Goal:**
+    - Name: "Urgency identified"
+    - Description: "Project urgency level and ideal start date were determined"
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Ergebnisse ansehen
+
+### Einzelne Gespräche
+
+Goal-Status für jeden Anruf anzeigen:
+
+1. Gehe zu **Conversations**
+2. Klicke auf eine Conversation
+3. Sieh dir den Bereich **Goals** an
+4. Prüfe, welche Goals erreicht wurden (achieved, partially achieved oder not achieved)
+
+### Dashboard
+
+Goal-Metriken über alle Gespräche hinweg anzeigen:
+
+Gehe zu **Dashboard**, um Goal-Abschlussraten und Performance-Trends zu sehen.
+
+[Mehr über das Dashboard erfahren →](/de/manage/dashboard)
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Klare Beschreibungen schreiben" icon="pen">
+    Die KI nutzt deine Beschreibung, um den Goal-Abschluss zu bewerten.
+
+    ❌ Vage: "Get customer info"
+
+    ✅ Klar: "Collect customer's full name, email address, phone number, and reason for inquiry"
+  </Accordion>
+
+  <Accordion title="Mit einem Primary Goal starten" icon="bullseye">
+    Versuch nicht, in einem Anruf zu viel zu erreichen.
+
+    ✅ Fokus: Ein klares primäres Ziel
+
+    ❌ Überlastung: Mehrere konkurrierende Primary Goals
+  </Accordion>
+
+  <Accordion title="Secondary Goals strategisch nutzen" icon="list">
+    Secondary Goals erfassen zusätzlichen Wert jenseits deiner primären Metrik.
+
+    **Beispiele:**
+    - Primary: "Appointment booked" + Secondary: "Email collected"
+    - Primary: "Issue resolved" + Secondary: "Feedback gathered"
+    - Primary: "Lead qualified" + Secondary: "Demo scheduled"
+  </Accordion>
+
+  <Accordion title="Veraltete Goals archivieren" icon="folder">
+    Archiviere alte Goals, um sie aus dem Weg zu räumen und die historischen Daten zu behalten.
+
+    **Zum Archivieren:** Auf das Archivsymbol neben dem Goal klicken
+
+    **Zum Wiederherstellen:** **Archived** öffnen → auf das Unarchive-Symbol klicken
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Tipps
+
+- **Richte deinen Prompt an den Goals aus** - Auch wenn der Agent Goals während des Gesprächs nicht sieht, solltest du den Prompt so schreiben, dass Gespräche auf die definierten Goals hinführen
+- **Regelmäßig prüfen** - Goal-Erreichungsraten wöchentlich kontrollieren, um Optimierungsmöglichkeiten zu erkennen
+- **Definitionen verfeinern** - Goal-Beschreibungen anpassen, wenn die KI-Bewertung nicht deinen Erwartungen entspricht
+- **Mit Insights kombinieren** - Nutze [Gather Insights](/de/build/analytics/gather-insights) für detaillierte Qualitätsbewertungen
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Goals werden in Conversations nicht angezeigt" icon="eye-slash">
+    **Ursachen:**
+    - Goals wurden erst nach den Gesprächen erstellt
+    - Goals archiviert
+
+    **Lösungen:**
+    - Goals gelten nur für neue Gespräche nach der Erstellung
+    - Öffne **Archived** im Analytics-Tab und stelle das Goal bei Bedarf wieder her
+  </Accordion>
+
+  <Accordion title="Ungenaue Goal-Bewertung" icon="triangle-exclamation">
+    **Ursachen:**
+    - Vage Goal-Beschreibung
+    - Beschreibung passt nicht zu den tatsächlichen Erfolgskriterien
+
+    **Lösungen:**
+    - Beschreibung spezifischer und detaillierter machen
+    - Klare Erfolgskriterien angeben
+    - Mit ein paar Anrufen testen und verfeinern
+  </Accordion>
+
+  <Accordion title="Niedrige Erreichungsraten" icon="chart-column">
+    **Ursachen:**
+    - Goal zu ambitioniert für diesen Gesprächstyp
+    - Agent-Prompt passt nicht zum Goal
+    - Goal-Beschreibung nicht spezifisch genug
+
+    **Lösungen:**
+    - Prüfen, ob das Goal realistisch für deinen Use-Case ist
+    - Agent-Prompt anpassen, um auf das gewünschte Ergebnis hinzuarbeiten
+    - Goal-Beschreibung spezifischer machen
+    - Goal-Definition anhand realer Gesprächsmuster anpassen
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Gather Insights" icon="magnifying-glass-chart" href="/de/build/analytics/gather-insights">
+    Detaillierte Insights und LLM-basierte Auswertungen extrahieren
+  </Card>
+  <Card title="Post-Call Automation" icon="envelope-open-text" href="/de/build/analytics/post-call-automation">
+    E-Mails, Team-Alerts und Tasks nach Anrufen senden
+  </Card>
+  <Card title="Dashboard" icon="chart-line" href="/de/manage/dashboard">
+    Performance-Metriken ansehen
+  </Card>
+  <Card title="Conversations" icon="messages" href="/de/manage/conversations/overview">
+    Goal-Ergebnisse in Conversations prüfen
+  </Card>
+</CardGroup>
+
+---
+
+## Häufige Fragen
+
+<AccordionGroup>
+  <Accordion title="Wann werden Goals ausgewertet?">
+    Die Plattform wertet Goals automatisch nach jedem Gesprächsende aus. Die Analyse läuft asynchron - die Ergebnisse erscheinen innerhalb weniger Sekunden in der Detailansicht der Conversation.
+  </Accordion>
+
+  <Accordion title="Kann ich Goals ändern, nachdem mein Agent live ist?">
+    Ja. Du kannst Goals jederzeit hinzufügen, bearbeiten oder archivieren. Neue Goals gelten nur für zukünftige Gespräche - vergangene Anrufe werden nicht rückwirkend ausgewertet.
+  </Accordion>
+
+  <Accordion title="Was ist der Unterschied zwischen Goals und Insights?">
+    Goals messen Erfolg (hat der Anruf seinen Zweck erreicht?). Insights ziehen spezifische Daten aus dem Gespräch (wie war die Stimmung des Anrufers? Welches Thema wurde besprochen?). Nutze beide zusammen für ein vollständiges Bild.
+  </Accordion>
+</AccordionGroup>

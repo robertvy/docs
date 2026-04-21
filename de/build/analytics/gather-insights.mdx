@@ -1,0 +1,423 @@
+---
+title: "Gather Insights"
+description: "Nutze LLM-as-a-Judge, um strukturierte Insights und Qualitätsmetriken aus Gesprächen zu extrahieren"
+icon: "magnifying-glass-chart"
+keywords: "gather insights, post-call analytics, LLM as a judge, conversation analytics, AI insights, quality metrics, sentiment analysis, call analysis, variable extraction"
+"og:description": "Nutze LLM-as-a-Judge, um nach jedem Anruf strukturierte Insights und Qualitätsmetriken aus KI-Gesprächen zu extrahieren."
+"og:title": "Gather Insights"
+---
+
+## Was Gather Insights macht
+
+Gather Insights nutzt KI nach jedem Anruf, um das Transkript auszuwerten, strukturierte Informationen zu extrahieren und die konkreten Fragen zu beantworten, die dir wichtig sind. Das ist deine **LLM-as-a-Judge**-Ebene für Qualitätsbewertung, Kategorisierung und Feldauslese.
+
+**Zugriff:** In deinem Agent-Editor → Tab **Analytics** → Bereich **Post-Call Analytics**
+
+## Analytik-Sprache
+
+<Badge>Profi</Badge>
+
+Lege die Sprache für die KI-Auswertung fest:
+
+**Zugriff:** In deinem Agent-Editor → Tab **Analytics** → Bereich **Settings** → **Analytics Language**
+
+Wähle die Sprache, in der die KI Goals und Insights bewertet, wenn sie Transkripte analysiert und Insight-Fragen beantwortet.
+
+Du kannst im selben Bereich **Settings** auch das **Analysis Model** festlegen.
+
+<Tip>
+Diese Einstellung gilt sowohl für Goals als auch für Insights.
+</Tip>
+
+---
+
+## Default Insights vs Custom Insights
+
+**Default Insights** - Vorkonfiguriert von itellicoAI:
+- Können nicht bearbeitet oder archiviert werden
+- Per Active-Schalter ein- oder ausschalten
+- Für häufige Use-Cases optimiert
+
+**Custom Insights** - Von deinem Team erstellt:
+- Volle Kontrolle über Name, Beschreibung und Typ
+- Können bearbeitet, archiviert und wiederhergestellt werden
+- Auf deine eigenen Workflows zugeschnitten
+
+<Info>
+Default Insights geben dir einen Startpunkt. Füge Custom Insights für eigene Reporting-, QA- oder Extraktionsanforderungen hinzu.
+</Info>
+
+## Wie du entscheidest, was du hinzufügen sollst
+
+| Verwende das, wenn du ... | Beste Wahl |
+| --- | --- |
+| ein fertiges, gängiges Qualitätssignal möchtest | **Default Insight** |
+| eine benutzerdefinierte Frage für deinen eigenen Workflow brauchst | **Insight** |
+| ein Ja/Nein-Geschäftsergebnis messen willst | **Goal** |
+
+---
+
+## Setup
+
+<Steps>
+  <Step title="Post-Call Analytics aufrufen">
+    In deinem Agent-Editor → Tab **Analytics** → Bereich **Post-Call Analytics** → **Add** → **Add Insight**
+  </Step>
+
+  <Step title="Insight konfigurieren">
+    **Name:** Interne Bezeichnung
+
+    ```text
+    Example: Customer Satisfaction Score
+    ```
+
+    **Description:** Die exakte Frage, die die KI beantworten soll
+
+    ```text
+    Example: On a scale of 1-5 stars, rate the customer's overall
+    satisfaction based on their tone, language, and whether their
+    issue was fully resolved during the call.
+    ```
+
+    <Tip>
+    Spezifischere Beschreibungen erzeugen zuverlässigere KI-Bewertungen.
+    </Tip>
+  </Step>
+
+  <Step title="Antworttyp wählen">
+    **Yes/No** - binäre Antwort
+
+    ```text
+    Example: Was the customer's issue fully resolved?
+    ```
+
+    **Open** - freie Textantwort
+
+    ```text
+    Example: What was the main topic discussed?
+    ```
+
+    **Data Point** - ein extrahierter Wert
+
+    ```text
+    Example: What order number did the caller provide?
+    ```
+
+    **Single Choice** - eine Option aus deiner Liste
+
+    ```text
+    Example: Which product line was discussed?
+    ```
+
+    **Multiple Choice** - eine oder mehrere Optionen aus deiner Liste
+
+    ```text
+    Example: Which objections did the caller mention?
+    ```
+
+    **Rating** - 1-5 Sterne
+
+    ```text
+    Example: How professional was the agent?
+    ```
+  </Step>
+
+  <Step title="Speichern">
+    Klicke auf **Add Analysis**, um zu speichern.
+  </Step>
+</Steps>
+
+---
+
+## Insights für strukturierte Extraktion nutzen
+
+Nutze **Data Point**- oder **Open**-Insights, wenn du die KI ein bestimmtes Feld oder eine Zusammenfassung aus dem Anruf ziehen lassen willst. Das ist das klarste Post-Call-Äquivalent zu „Variable Extraction“.
+
+**Gute Prompts im Extraktionsstil:**
+
+- `What is the customer's order number? Return only the order number or "not provided".`
+- `What date and time did the customer request for the appointment?`
+- `What is the main cancellation reason? Return a short phrase only.`
+- `Summarize the exact next steps agreed on in 1-2 sentences.`
+
+<Tip>
+Wenn du saubere operative Daten willst, sag der KI ganz genau, wie sie antworten soll: nur Kategorie, nur kurze Phrase, konkretes Datum/Uhrzeit oder `"not provided"` bei fehlenden Angaben.
+</Tip>
+
+## Fragetypen
+
+<Tabs>
+  <Tab title="Yes/No">
+    **Binäre Fragen** für klare Metriken.
+
+    **Best for:**
+    - Compliance-Prüfungen
+    - Qualitätsverifikation
+    - Erkennung von Feature-Nutzung
+
+    **Beispiele:**
+    - `Was payment information collected?`
+    - `Did the agent follow the script?`
+    - `Was the caller transferred?`
+    - `Did the customer agree to the offer?`
+  </Tab>
+
+  <Tab title="Open">
+    **Textantwort-Fragen** für detaillierte Insights und Feldauslese.
+
+    **Best for:**
+    - Informations-Extraktion
+    - Problem-Kategorisierung
+    - Root-Cause-Analyse
+    - Gesprächszusammenfassungen
+
+    **Beispiele:**
+    - `What was the primary topic discussed?`
+    - `What objections did the customer raise?`
+    - `Which product was discussed?`
+    - `Summarize the customer's technical issue`
+  </Tab>
+
+  <Tab title="Data Point">
+    **Single-Value-Extraktion** für operative Felder, die kurz bleiben sollen.
+
+    **Best for:**
+    - Bestellnummern
+    - Gewünschte Termindaten
+    - Produktnamen
+    - Kurze Labels oder IDs
+
+    **Beispiele:**
+    - `What order number did the caller provide? Return only the order number or N/A.`
+    - `What appointment date did the caller request? Return YYYY-MM-DD or N/A.`
+    - `Which account ID was mentioned?`
+  </Tab>
+
+  <Tab title="Single Choice">
+    **Eine Option aus einer Liste** für konsistente Kategorien.
+
+    **Best for:**
+    - Hauptanrufgrund
+    - Lead-Quelle
+    - Beschwerdeschwere
+    - Produktkategorie
+
+    **Beispiele:**
+    - `Choose the main call reason: Billing, Support, Sales, Cancellation, Other.`
+    - `Choose the highest escalation level: None, Team Lead, Manager, Legal.`
+  </Tab>
+
+  <Tab title="Multiple Choice">
+    **Eine oder mehrere Optionen aus einer Liste**, wenn mehrere Kategorien zutreffen können.
+
+    **Best for:**
+    - Genannte Einwände
+    - Besprochene Produkte
+    - Bestandenene Compliance-Checks
+    - Gewünschte Follow-up-Kanäle
+
+    **Beispiele:**
+    - `Which objections did the caller mention: Price, Timing, Trust, Missing Feature, Other?`
+    - `Which follow-up channels were requested: Email, Phone, SMS, In-person?`
+  </Tab>
+
+  <Tab title="Rating">
+    **1-5-Sterne-Skala** für qualitative Bewertungen.
+
+    **Standard-Skala:**
+    - **5** = Herausragende Leistung
+    - **4** = Überdurchschnittliche Leistung
+    - **3** = Durchschnittliche oder zufriedenstellende Leistung
+    - **2** = Unterdurchschnittliche Leistung
+    - **1** = Sehr geringe oder schlechte Leistung
+
+    **Best for:**
+    - Qualitätsbewertung
+    - Sentiment-Analyse
+    - Leistungsbewertung
+    - Zufriedenheitsmessung
+
+    **Beispiele:**
+    - `Rate customer sentiment (1=very negative, 5=very positive)`
+    - `How well did the agent handle objections?`
+    - `Rate call quality (1=poor, 5=excellent)`
+    - `Customer satisfaction score`
+  </Tab>
+</Tabs>
+
+## Empfohlener Startsatz
+
+Für die meisten Teams ist ein starker erster Insight-Satz:
+
+1. **Customer satisfaction** als Rating
+2. **Issue resolved** als Yes/No
+3. **Primary call topic** als Single Choice oder Open Text
+4. **Customer sentiment** als Rating
+
+Starte klein. Sobald diese Antworten operativ nützlich sind, füge weitere hinzu.
+
+---
+
+## Beispiele
+
+<AccordionGroup>
+  <Accordion title="Customer Satisfaction" icon="face-smile">
+    **Name:** Customer Satisfaction Score
+
+    **Type:** Rating (1-5 stars)
+
+    **Description:**
+    ```text
+    Rate the customer's overall satisfaction based on their tone,
+    language, and responses (1-5 stars):
+
+    5 stars = Very satisfied, enthusiastic, all needs met
+    4 stars = Satisfied, positive interaction
+    3 stars = Neutral, basic needs met
+    2 stars = Somewhat dissatisfied, some frustration
+    1 star = Very dissatisfied, angry, unresolved issues
+    ```
+  </Accordion>
+
+  <Accordion title="Issue Resolution" icon="check-circle">
+    **Name:** Issue Fully Resolved
+
+    **Type:** Yes/No
+
+    **Description:**
+    ```text
+    Was the customer's issue, question, or request fully resolved
+    by the end of the call? Answer Yes only if the customer confirmed
+    satisfaction or explicitly agreed the issue was resolved.
+    ```
+  </Accordion>
+
+  <Accordion title="Structured Extraction" icon="brackets-curly">
+    **Name:** Requested Appointment Date
+
+    **Type:** Data Point
+
+    **Description:**
+    ```text
+    Extract the appointment date requested by the caller.
+    Return only the date in YYYY-MM-DD format.
+    If no date was requested, return "not provided".
+    ```
+  </Accordion>
+
+  <Accordion title="Call Topic Classification" icon="tag">
+    **Name:** Primary Call Topic
+
+    **Type:** Open
+
+    **Description:**
+    ```text
+    Identify the main topic or reason for this call. Choose from:
+    - Billing inquiry
+    - Technical support
+    - Product information
+    - Order status
+    - Complaint
+    - Cancellation request
+    - General question
+
+    Return only the category name. If multiple topics were discussed,
+    return the one that took the most conversation time.
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Insights vs Goals
+
+Nutze beide zusammen für vollständiges Conversation-Tracking:
+
+| Feature | Goals | Insights |
+| --- | --- | --- |
+| **Purpose** | Conversions tracken | Insights extrahieren und Qualität bewerten |
+| **Example** | Termin gebucht | Wie zufrieden war der Kunde? |
+| **Answer Type** | Achieved / Partially achieved / Not achieved | Yes/No, Text, Data Point, Choice oder 1-5 Rating |
+| **Use For** | Erfolgsmetriken | Qualitätsbewertung, Kategorisierung, Extraktion |
+| **Best For** | Geschäftsergebnisse | Detailliertes Reporting |
+
+**Beispiel-Kombination:**
+- **Goal:** `Appointment booked` - wurde die Conversion erreicht?
+- **Insight:** `Customer Satisfaction` - wie gut wurde es umgesetzt?
+- **Insight:** `Primary Call Topic` - was wollte die Person?
+
+---
+
+## Ergebnisse ansehen
+
+### Einzelne Gespräche
+
+1. Gehe zu **Conversations**
+2. Klicke auf eine Conversation
+3. Öffne den Bereich **Gathered Insights**
+4. Prüfe jede Frage und die KI-Antwort
+
+### Dashboard
+
+Gehe zu **Dashboard**, um Insight-Trends und Metriken zu sehen.
+
+[Mehr über das Dashboard erfahren →](/de/manage/dashboard)
+
+## Wann du Insight-Ergebnisse prüfen solltest
+
+Prüfe sie, wenn du:
+
+- die Qualität zwischen Agenten oder Kampagnen vergleichen willst
+- verstehen willst, warum ein Goal verfehlt wird
+- Qualitätsprobleme in Follow-up-Arbeit überführen willst
+- strukturierte Anruf-Insights für Reporting oder nachgelagerte Workflows exportieren willst
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Spezifische Fragen schreiben" icon="pen">
+    Die KI nutzt deine Beschreibung für die Antwort. Sei detailliert.
+
+    ❌ `Was the call good?`
+
+    ✅ `Did the agent provide accurate information, address all customer questions, and maintain a professional tone throughout the call?`
+  </Accordion>
+
+  <Accordion title="Bewertungsskalen definieren" icon="star">
+    Definiere bei Rating-Fragen immer, was jede Stufe bedeutet.
+  </Accordion>
+
+  <Accordion title="Extraktionsausgaben eng halten" icon="filter">
+    Wenn du wiederverwendbare Daten willst, begrenze die Ausgabe:
+
+    - nur Kategorie
+    - nur ein kurzer Satz
+    - nur ein Datum/eine Uhrzeit
+    - `not provided`, wenn etwas fehlt
+  </Accordion>
+
+  <Accordion title="Mit den wichtigsten Fragen starten" icon="list">
+    Starte mit 3-5 kritischen Insight-Fragen, nicht mit 20.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Conversation Goals" icon="bullseye" href="/de/build/analytics/conversation-goals">
+    Conversions und Ergebnisse tracken
+  </Card>
+  <Card title="Post-Call Automation" icon="envelope-open-text" href="/de/build/analytics/post-call-automation">
+    E-Mails und Tasks aus Insights auslösen
+  </Card>
+  <Card title="Dashboard" icon="chart-line" href="/de/manage/dashboard">
+    Aggregierte Insights ansehen
+  </Card>
+  <Card title="Prompt Guide" icon="pen-to-square" href="/de/build/conversation/prompt">
+    Live-Verhalten mit dem, was du misst, ausrichten
+  </Card>
+</CardGroup>

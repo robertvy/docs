@@ -1,0 +1,326 @@
+---
+title: "Wissensdatenbanken erstellen"
+description: "Schritt-für-Schritt-Anleitung zum Erstellen, Füllen und Verwalten von Knowledge Bases für deine KI-Agenten"
+icon: "plus"
+keywords: "AI knowledge base, create knowledge base, knowledge management, document upload, PDF upload, URL scraping, agent knowledge, RAG setup"
+"og:description": "Schritt-für-Schritt-Anleitung zum Erstellen und Verwalten von Knowledge Bases mit Dokumenten-Uploads, URLs und Textinhalten für deine KI-Agenten."
+"og:title": "Wissensdatenbanken erstellen"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+## Deine erste Knowledge Base erstellen
+
+Eine [Knowledge Base](/de/build/knowledge/architecture) gibt deinem KI-Agenten Zugriff auf Unternehmensinformationen. Du kannst Dokumente hochladen, Text einfügen, eine einzelne Web-Seite scrapen oder eine öffentliche Website crawlen, um ein Wissens-Repository aufzubauen, aus dem dein Agent während des Gesprächs abruft. Dieser Leitfaden behandelt das Erstellen einer Knowledge Base, das Hochladen von Inhalten, das Überwachen des Verarbeitungsstatus und das Zuweisen von Knowledge an Agenten.
+
+<Tip>
+Plane deine Wissensstruktur, bevor du startest. Eine gut organisierte Knowledge Base ist leichter zu pflegen und erzeugt bessere Agentenantworten.
+</Tip>
+
+---
+
+## Schritt 1: Eine Knowledge Base erstellen
+
+### Zu Knowledge Bases navigieren
+
+<Steps>
+  <Step title="Knowledge Bases öffnen">
+    Melde dich im [itellicoAI Dashboard](https://app.itellico.ai) an und klicke im linken Navigationsmenü auf **Knowledge Bases**.
+  </Step>
+  <Step title="Neue Knowledge Base erstellen">
+    Klicke auf den Button **+ Create Knowledge Base**.
+  </Step>
+</Steps>
+
+<Screenshot lightSrc="/images/knowledge__knowledge-list_DE-light.png" darkSrc="/images/knowledge__knowledge-list_DE-dark.png" alt="Seite mit Knowledge-Bases-Liste und bestehenden Bases mit Name, Status und Dokumentzähler" caption="Öffne zuerst die Knowledge-Bases-Liste. Hier erstellst du neue Bases und kehrst später zur Verwaltung zurück." />
+
+### Basisinformationen ausfüllen
+
+<Screenshot lightSrc="/images/knowledgebase__create-kb-form_DE-light.png" darkSrc="/images/knowledgebase__create-kb-form_DE-dark.png" alt="Create-Knowledge-Base-Formular mit Namens- und Beschreibungsfeldern" caption="Das Formular fragt nur nach einem Namen und optional einer Beschreibung, daher ist es schnell erledigt." maxWidth="720px" />
+
+<Steps>
+  <Step title="Knowledge-Base-Namen eingeben">
+    Wähle einen klaren, beschreibenden Namen, der die Inhaltskategorie widerspiegelt.
+
+    **Regeln für Namen:**
+    - Nur Buchstaben, Zahlen, Leerzeichen, Bindestriche und Unterstriche
+    - Keine Sonderzeichen (@, #, $, usw.)
+    - Maximal 100 Zeichen
+
+    **Gute Beispiele:**
+    - "Customer Support FAQ"
+    - "Product Documentation"
+    - "Company Policies"
+
+    **Vermeiden:**
+    - "KB_001" (nicht beschreibend)
+    - "Misc Docs" (zu vage)
+  </Step>
+
+  <Step title="Beschreibung hinzufügen (optional)">
+    Gib Kontext dazu, was diese Knowledge Base enthält und wann sie verwendet werden soll.
+
+    **Beispielbeschreibungen:**
+    - "Customer-facing support documentation including FAQs, policies, and troubleshooting guides"
+    - "Internal product specifications, feature documentation, and technical details"
+  </Step>
+
+  <Step title="Create klicken">
+    Deine Knowledge Base wird erstellt und ist bereit für Inhalte.
+  </Step>
+</Steps>
+
+---
+
+## Der Knowledge-Base-Editor
+
+Nach dem Erstellen einer Knowledge Base landest du im Editor - einem Zwei-Spalten-Layout:
+
+- **Linkes Panel** - Deine Ordner (Collections). Suche, erstelle und wähle Ordner aus.
+- **Rechtes Panel** - Items im ausgewählten Ordner. Suche, füge hinzu, bearbeite und verwalte Items.
+
+<Screenshot lightSrc="/images/knowledgebase__kb-editor_DE-light.png" darkSrc="/images/knowledgebase__kb-editor_DE-dark.png" alt="Knowledge-Base-Editor mit Ordnerpanel links und Items-Tabelle rechts" caption="Denk an den Editor als Ordner links und Knowledge Items rechts." />
+
+### Items-Tabelle
+
+Wenn du einen Ordner auswählst, zeigt das rechte Panel alle Items in einer Tabelle:
+
+| Spalte | Beschreibung |
+| --- | --- |
+| **Title** | Item-Titel mit typenspezifischem Icon |
+| **Type** | Badge für Text, File, URL oder Website |
+| **Status** | Verarbeitungsanzeige mit Tooltip zu Ready, Processing, Pending oder Error |
+| **Actions** | Referenz kopieren, bearbeiten, neu indexieren, löschen |
+
+---
+
+## Schritt 2: Dokumente und Inhalte hochladen
+
+Sobald deine Knowledge Base mindestens einen Ordner hat, füge Inhalte mit einer der vier unterstützten Methoden hinzu.
+
+<Screenshot lightSrc="/images/knowledgebase__document-upload_DE-light.png" darkSrc="/images/knowledgebase__document-upload_DE-dark.png" alt="Dokumenten-Upload mit Optionen für Text Content, Upload File, Web Page und Website Crawl" caption="Text, Datei-Upload, einzelne URL und Website-Crawl starten alle im selben Add-Item-Flow." />
+
+<AccordionGroup>
+  <Accordion title="Dateien hochladen (PDF, Text und mehr)" icon="file-arrow-up" defaultOpen>
+    **Am besten für:** Benutzerhandbücher, Produktspezifikationen, Rechtsdokumente, Schulungsmaterialien
+
+    **Unterstützte Formate:** PDF, Word (.doc, .docx), Excel (.xlsx), Text (.txt, .log), Markdown (.md), CSV/TSV, JSON, YAML (.yaml, .yml), XML
+
+    **Maximale Dateigröße:** 10MB pro Datei
+
+    <Steps>
+      <Step title="'Add Item' klicken">
+        Klicke in deiner Knowledge Base auf **Add Item**.
+      </Step>
+      <Step title="'Upload File' wählen">
+        Wähle **Upload File** für Dokumentenuploads.
+      </Step>
+      <Step title="Beschreibenden Titel eingeben">
+        Gib deiner Datei einen klaren Titel, zum Beispiel "Return Policy for Digital Products".
+      </Step>
+      <Step title="Datei hochladen">
+        Ziehe die Datei per Drag-and-Drop hinein oder klicke zum Auswählen. Das System akzeptiert PDF, Word (.doc, .docx), Excel (.xlsx), Text (.txt, .log), Markdown (.md), CSV/TSV, JSON, YAML (.yaml, .yml) und XML-Dateien bis 10MB.
+      </Step>
+      <Step title="'Create' klicken">
+        Das System lädt hoch und beginnt mit der Verarbeitung. Das Status-Licht wird grün, wenn das Item bereit ist.
+      </Step>
+    </Steps>
+  </Accordion>
+
+  <Accordion title="Texteintrag - Inhalte direkt schreiben" icon="text">
+    **Am besten für:** FAQs, Richtlinien, Prozesse, schnelle Referenzinformationen
+
+    <Steps>
+      <Step title="'Add Item' klicken">
+        Klicke in deiner Knowledge Base auf **Add Item**.
+      </Step>
+      <Step title="'Text Content' wählen">
+        Wähle **Text Content**, um Inhalte direkt einzugeben.
+      </Step>
+      <Step title="Beschreibenden Titel eingeben">
+        Verwende einen klaren Titel wie "Password Reset Instructions" oder "Pricing Tiers Explained".
+      </Step>
+      <Step title="Inhalt schreiben oder einfügen">
+        Gib die Informationen ein, die dein Agent kennen soll. Sei klar, spezifisch und vollständig.
+      </Step>
+      <Step title="'Create' klicken">
+        Das System speichert und verarbeitet Text-Items sofort.
+      </Step>
+    </Steps>
+  </Accordion>
+
+  <Accordion title="URL-Scraping - Inhalte von Web-Seiten ziehen" icon="link">
+    **Am besten für:** Dokumentationsseiten, Blogposts, Help-Artikel, externe Ressourcen
+
+    <Steps>
+      <Step title="'Add Item' klicken">
+        Klicke in deiner Knowledge Base auf **Add Item**.
+      </Step>
+      <Step title="'Web Page' wählen">
+        Wähle **Web Page**, um eine einzelne Seite zu scrapen.
+      </Step>
+      <Step title="Beschreibenden Titel eingeben">
+        Gib dem Inhalt einen klaren Titel.
+      </Step>
+      <Step title="Quell-URL eingeben">
+        Füge die vollständige URL inklusive `https://` ein
+      </Step>
+      <Step title="'Create' klicken">
+        Das System ruft den Inhalt der Web-Seite ab und verarbeitet ihn.
+      </Step>
+    </Steps>
+
+    <Note>
+    URL-Scraping funktioniert am besten mit einfachen, textbasierten Web-Seiten. Seiten, die Authentifizierung oder schweres JavaScript benötigen, lassen sich möglicherweise nicht erfolgreich scrapen.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Website Crawl - mehrere Seiten einer Website importieren" icon="globe">
+    **Am besten für:** Öffentliche Help Center, Docs-Sites, Pricing-Seiten und andere mehrseitige Quellen
+
+    <Steps>
+      <Step title="'Add Item' klicken">
+        Klicke in deiner Knowledge Base auf **Add Item**.
+      </Step>
+      <Step title="'Website Crawl' wählen">
+        Wähle **Website Crawl**, um Seiten einer Website zu entdecken.
+      </Step>
+      <Step title="Website-URL eingeben">
+        Füge die Website-URL ein und nutze dann **Discover URLs**.
+      </Step>
+      <Step title="Seiten und Einstellungen wählen">
+        Wähle die zu importierenden Seiten aus. Öffne **Advanced options**, wenn du den Discovery-Umfang oder das Refresh-Verhalten ändern musst.
+      </Step>
+      <Step title="Ausgewählte Seiten importieren">
+        Klicke auf **Import Selected**. Die Crawl-Root erscheint als Website-Item, importierte Seiten werden als Child Pages verarbeitet.
+      </Step>
+    </Steps>
+
+    **Advanced options**
+
+    | UI setting | Default | Use when |
+    | --- | --- | --- |
+    | **Max pages to discover** | `100` | Du die Discovery auf `25`, `50`, `100`, `250` oder `500` Seiten begrenzen willst, bevor du importierst. |
+    | **Auto-refresh interval** | `Never` | Importierte Seiten alle 24 Stunden, 7 Tage oder 30 Tage neu synchronisiert werden sollen. |
+    | **Include subdomains** | Off | Die benötigten Seiten unter Subdomains des Start-Hosts liegen. |
+    | **Discover new pages on refresh** | Off, hidden while auto-refresh is `Never` | Refresh aktiviert ist und neue Seiten später zur Prüfung bereitgestellt werden sollen. |
+
+    <Note>
+    **Discover new pages on refresh** fügt neue Seiten nicht automatisch zu deinem Agenten-Wissen hinzu. Neue Seiten werden unter **View pages** zur Prüfung bereitgestellt, damit du sie inspizieren und einschließen kannst.
+    </Note>
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Schritt 3: Knowledge-Base-Items verwalten
+
+### Items anzeigen
+
+Öffne deine Knowledge Base, um alle Items mit Titel, Typ (Text, File, URL, Website), Verarbeitungsstatus und Zeitpunkt der letzten Aktualisierung zu sehen.
+
+### Items bearbeiten
+
+Klicke auf jedes Nicht-Website-Item, um dessen Inhalt anzusehen oder zu bearbeiten. Website-Crawl-Roots öffnen stattdessen die Crawl-Seitenansicht.
+
+### Items löschen
+
+Klicke auf das Löschsymbol bei einem Item, um es zu entfernen. Das entfernt das Item sowohl aus der Knowledge Base als auch aus dem Vector Index.
+
+---
+
+## Statusanzeigen verstehen
+
+Orange bedeutet: Das Item wird noch verarbeitet. Grün bedeutet: Es ist bereit.
+
+### Fehler beheben
+
+<AccordionGroup>
+  <Accordion title="Content processing error" icon="xmark">
+    **Häufige Ursachen:**
+    - Datei ist beschädigt oder passwortgeschützt
+    - URL- oder Website-Seite benötigt Authentifizierung oder verwendet komplexes JavaScript
+    - Datei überschreitet das 10MB-Limit
+
+    **Lösungen:**
+    - Versuche stattdessen, den Inhalt als TEXT hochzuladen
+    - Entferne den Passwortschutz der Datei
+    - Teile große Dateien in kleinere Dokumente auf
+  </Accordion>
+
+  <Accordion title="Vector indexing error" icon="xmark">
+    **Lösungen:**
+    - Klicke auf **Reindex**, um den Vorgang erneut zu starten
+    - Wenn Reindexing fehlschlägt, lösche das Item und erstelle es neu
+    - Stelle sicher, dass der Inhalt nicht zu kurz ist (mindestens ein paar Sätze)
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+Wenn Probleme bestehen bleiben, kontaktiere den Support unter **support@itellico.ai** und sende den Titel des Knowledge-Items, den Dateityp oder die URL sowie alle angezeigten Fehlermeldungen mit.
+</Warning>
+
+---
+
+## Schritt 4: Knowledge Base Agenten zuweisen
+
+Sobald deine Knowledge Base Inhalte mit Grün (bereit) anzeigt, verknüpfe sie mit deinen Agenten.
+
+<Steps>
+  <Step title="Agent editor öffnen">
+    Navigiere zu dem Agenten, den du konfigurieren willst.
+  </Step>
+  <Step title="Zum Knowledge-Tab gehen">
+    Öffne den Tab **Knowledge** im Agent Editor.
+  </Step>
+  <Step title="Connect Knowledge klicken">
+    Verwende **Connect Knowledge**, um den Knowledge-Browser zu öffnen.
+  </Step>
+  <Step title="Zugriffsmethode wählen">
+    Verbinde eine ganze Knowledge Base, einen Ordner oder ausgewählte Items. Profi erlaubt dir, **Context** (voller Inhalt wird in den Prompt injiziert) oder **RAG** (semantisches Search-Retrieval) zu wählen; Einfach nutzt standardmäßig RAG. Siehe [context vs RAG](/de/build/knowledge/context-vs-rag), um zu entscheiden, was für dich passt.
+  </Step>
+</Steps>
+
+<Card title="Context vs RAG" icon="brain" href="/de/build/knowledge/context-vs-rag">
+  Lerne, wann du volle Context-Injektion versus RAG-basiertes Retrieval für deine Knowledge Bases verwenden solltest.
+</Card>
+
+---
+
+## Richtlinien für Inhaltsqualität
+
+<AccordionGroup>
+  <Accordion title="Sei spezifisch und detailliert" icon="magnifying-glass">
+    **Statt:** "Customers can return items within our standard window."
+
+    **Schreibe:** "Customers can return items within 30 days of purchase. Items must be unused and in original packaging with all tags attached."
+  </Accordion>
+
+  <Accordion title="Verwende klare Sprache" icon="comment">
+    Vermeide Jargon, ausser er ist Branchenstandard und dein Publikum kennt ihn. Schreibe, als würdest du es einem fachkundigen Kollegen erklären.
+  </Accordion>
+
+  <Accordion title="Halte Inhalte fokussiert" icon="bullseye">
+    Jedes Item sollte ein Thema gründlich behandeln. Teile große Themen in mehrere Items auf, statt ein riesiges Dokument zu erstellen.
+  </Accordion>
+
+  <Accordion title="Beispiele einbauen" icon="list-check">
+    Beispiele machen abstrakte Konzepte konkret und helfen dem Agenten, bessere Antworten zu geben.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={3}>
+  <Card title="Assign to Agents" icon="link" href="/de/build/knowledge/assign-knowledge">
+    Verbinde deine Knowledge Base mit Agenten
+  </Card>
+  <Card title="Context vs RAG" icon="brain" href="/de/build/knowledge/context-vs-rag">
+    Wähle, wie Agenten auf Knowledge zugreifen
+  </Card>
+  <Card title="Architecture" icon="sitemap" href="/de/build/knowledge/architecture">
+    Lerne, wie du Knowledge Bases effektiv strukturierst
+  </Card>
+</CardGroup>

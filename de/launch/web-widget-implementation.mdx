@@ -1,0 +1,143 @@
+---
+title: "Web-Widget-Implementierung"
+description: "Deploye Widgets sauber über Staging und Produktion mit klaren Erwartungen an Laufzeit, Domains und Privatsphäre"
+icon: "code"
+keywords: "widget implementation, embed script, widget staging, widget production, domain restrictions, trust center, widget runtime, website integration"
+"og:description": "Lerne, wie du itellicoAI-Widgets auf echten Websites mit den richtigen Staging-, Domain-, Privacy- und Testpraktiken implementierst."
+"og:title": "Web-Widget-Implementierung"
+---
+
+Dieser Leitfaden ist für die Person gedacht, die das Widget auf eine echte Website bringen und über Umgebungen hinweg funktionsfähig halten muss.
+
+Wenn du den Produkteditor selbst brauchst, nutze [Widget-Konfiguration](/de/manage/web-widgets/configuration).
+
+Wenn du den groben Launch-Ablauf brauchst, nutze [Web-Widget-Deployment](/de/launch/web-widget-deployment).
+
+## Das empfohlene Implementierungsmuster
+
+Nutze ein Widget pro sinnvoller Website-Erfahrung.
+
+Das bedeutet meistens:
+
+- ein Widget für Produktion
+- ein Widget für Staging oder Preview
+- separate Widgets, wenn Branding, Agentenverhalten oder Privacy-Text je Website unterschiedlich sind
+
+Verwende nicht ein einziges Produktions-Widget überall, wenn:
+
+- du unterschiedliche erlaubte Domains brauchst
+- verschiedene Websites zu unterschiedlichen Agenten routen sollen
+- der Consent-Text oder das öffentliche Trust Center unterschiedlich ist
+
+## Deployment-Checkliste
+
+1. Widget erstellen und mit dem richtigen Agenten verknüpfen.
+2. Setup, Erscheinungsbild, Inhalte, Features, Aktionen und Privatsphäre konfigurieren.
+3. Erlaubte Domains auf deine Zielseiten beschränken.
+4. Öffentliches Trust Center und Policy-Links aktivieren, wenn das Widget für Kundschaft sichtbar ist.
+5. Im Preview und auf der Zielseite testen.
+6. Eine echte Sprach- oder Chatsession auf der Live-Website ausführen.
+7. [Gespräche](/de/manage/conversations/overview) prüfen, um zu bestätigen, dass Traffic wie erwartet aufgezeichnet wird.
+
+## Staging vs. Produktion
+
+Behandle Staging und Produktion als getrennte Implementierungen.
+
+### Staging-Widget
+
+Nutze ein Staging-Widget, wenn du Folgendes willst:
+
+- Änderungen auf einer Nicht-Produktionsdomain testen
+- Agenten-Updates vor der öffentlichen Freigabe validieren
+- Inhalte, Aktionen und Privacy-Text sicher testen
+
+### Produktions-Widget
+
+Nutze ein Produktions-Widget, wenn:
+
+- die Domain-Restriktionen final sind
+- Consent- und Trust-Center-Links final sind
+- Agent und Inhalte bereits validiert wurden
+
+<Warning>
+Leite eine öffentliche Produktionsseite nicht auf ein Widget, das du noch für interne Experimente nutzt. Widget-Einstellungen werden direkt nach dem Speichern wirksam.
+</Warning>
+
+## Domain-Restriktionen
+
+Domain-Restriktionen gehören zu den wichtigsten Implementierungsregeln.
+
+Nutze sie, damit das Widget nur auf den Seiten geladen wird, die du kontrollierst.
+
+Gute Praxis:
+
+- deine exakten Produktionsdomains einschließen
+- die Staging- oder Preview-Domains einschließen, die du wirklich testest
+- alte Preview-Domains entfernen, wenn sie nicht mehr nötig sind
+
+Siehe [Widget-Konfiguration](/de/manage/web-widgets/configuration) für die Details zum Editor.
+
+## Erwartungen an die Laufzeit
+
+Das Widget ist eine live Frontend-Oberfläche. Plane mit echtem Browserverhalten.
+
+### Was du erwarten solltest
+
+- Mikrofonzugriff erfordert HTTPS, außer auf localhost
+- Browser-Privatsphäre-Einstellungen können Voice-Zugriff blockieren
+- Domain-Restriktionen greifen direkt nach dem Speichern
+- gespeicherte Widget-Änderungen wirken sofort auf das live eingebettete Erlebnis, ohne das Script zu ändern
+
+### Was du prüfen solltest
+
+- das Widget lädt auf der vorgesehenen Domain
+- der richtige Agent antwortet
+- Sprache oder Chat starten korrekt
+- Transkript und Gespräche erscheinen im Dashboard
+- Consent-, AGB- und Trust-Center-Links sind dort sichtbar, wo sie erwartet werden
+
+## Privatsphäre und Trust Center
+
+Bei öffentlich sichtbaren Widgets sollte die Datenschutzlage vor oder während der Interaktion sichtbar sein.
+
+Mindestens solltest du entscheiden:
+
+- ob Consent erforderlich ist
+- welchen Text Besucherinnen und Besucher bei den Bedingungen sehen
+- ob das öffentliche Trust Center aktiviert ist
+- ob die verlinkte Privacy Policy und die Subprocessor-Seiten aktuell sind
+
+Nutze [Conversation Privacy Controls](/de/build/advanced/conversation-privacy-controls) für das vollständige Datenschutzmodell.
+
+## Häufige Fehler
+
+<AccordionGroup>
+  <Accordion title="Dasselbe Widget in Staging und Produktion wiederverwenden" icon="code-branch">
+    Dadurch ist es zu leicht, unfertige Texte, Aktionen oder Privacy-Einstellungen auf die öffentliche Website zu bringen.
+  </Accordion>
+
+  <Accordion title="Alle Domains aus Bequemlichkeit erlauben" icon="globe">
+    Leere Domain-Restriktionen sind in der frühen Einrichtung nützlich, sollten aber langfristig kein Produktionszustand für öffentliche Widgets sein.
+  </Accordion>
+
+  <Accordion title="Nur im Dashboard-Preview testen" icon="desktop">
+    Das Preview ist hilfreich, aber der finale Check muss auf der echten Website, mit der echten Domain, dem echten Browser und dem echten Consent-Flow stattfinden.
+  </Accordion>
+</AccordionGroup>
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Web-Widget-Deployment" icon="browser" href="/de/launch/web-widget-deployment">
+    Den kompletten Launch-Prozess von der Erstellung bis zum Live-Embed durchgehen
+  </Card>
+  <Card title="Widget-Konfiguration" icon="sliders" href="/de/manage/web-widgets/configuration">
+    Setup, Erscheinungsbild, Inhalte, Features, Aktionen und Privatsphäre konfigurieren
+  </Card>
+  <Card title="Trust Center" icon="shield-check" href="/de/manage/trust-center/overview">
+    Die Datenschutzposition deines Widgets für Besucher veröffentlichen
+  </Card>
+  <Card title="Gespräche" icon="messages" href="/de/manage/conversations/overview">
+    Den Live-Widget-Traffic nach dem Deployment prüfen
+  </Card>
+</CardGroup>

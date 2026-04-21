@@ -1,0 +1,172 @@
+---
+title: "Fehlerbehebung benutzerdefinierter Aktionen"
+description: "Authentifizierungs-, Payload-, Timeout- und Antwortprobleme bei benutzerdefinierten API-Aktionen diagnostizieren"
+icon: "wrench"
+keywords: "Fehlerbehebung benutzerdefinierter Aktionen, benutzerdefinierte API-Fehlerbehebung, Tool-Timeout, Payload-Zuordnung, Auth-Fehler, API-Tool-Debug"
+"og:description": "Häufige Probleme mit benutzerdefinierten Aktionen beheben: Auth-Fehler, fehlende Variablen, langsame APIs und falsche Agenten-Antworten."
+"og:title": "Fehlerbehebung benutzerdefinierter Aktionen"
+---
+
+Diese Seite verwenden, wenn ein [benutzerdefiniertes API-Tool](/build/tools/custom-api-actions) konfiguriert ist, sich die Live-Konversation aber nicht wie erwartet verhält.
+
+Typische Symptome:
+
+- das Tool löst nie aus
+- der API-Aufruf schlägt fehl
+- Variablen werden nicht befüllt
+- die API ist erfolgreich, aber der Agent antwortet danach schlecht
+
+## Schnelle Triage
+
+Hier beginnen, bevor mehrere Einstellungen auf einmal geändert werden.
+
+1. Prüfen, ob das Tool mit der richtigen Methode, URL und dem richtigen Auth-Typ konfiguriert ist.
+2. Prüfen, ob der Agent-Prompt das Tool mit dem exakt konfigurierten Namen referenziert.
+3. Prüfen, ob erforderliche Variablen klar definiert sind.
+4. Den Endpunkt außerhalb des Agenten zuerst mit statischen Werten testen.
+5. Das Szenario erneut ausführen und die [Konversations-Zeitachse](/manage/conversations/detail) prüfen.
+
+## Symptom: das Tool löst nie aus
+
+### Wahrscheinliche Ursachen
+
+- der Tool-Name ist zu vage
+- die Beschreibung erklärt dem Modell nicht, wofür das Tool ist
+- der Prompt definiert nicht, wann es verwendet werden soll
+- ein anderes Tool überschneidet sich mit derselben Absicht
+
+### Was zu beheben ist
+
+- das Tool mit einem klaren, aktionsorientierten Namen umbenennen
+- die Beschreibung verbessern
+- explizite Auslöse-Anweisungen zum Prompt hinzufügen
+- überlappende Tools nach Möglichkeit entfernen
+
+## Symptom: authentifizierung schlägt fehl
+
+### Wahrscheinliche Ursachen
+
+- falscher Auth-Typ
+- abgelaufenes Token
+- fehlender Header oder Anmeldedaten-Feld
+- Anmeldedaten an falscher Stelle eingegeben
+
+### Was zu beheben ist
+
+- prüfen, ob die API Bearer, Basic, Header oder Body-Auth erwartet
+- in Postman oder cURL mit denselben Anmeldedaten erneut testen
+- das Token bei Bedarf rotieren
+- Anmeldedaten aus der URL entfernen und in das richtige Auth-Feld verschieben
+
+## Symptom: variablen fehlen oder werden nicht ersetzt
+
+### Wahrscheinliche Ursachen
+
+- falscher Variablenname
+- erforderliche Variable wurde nie erfasst
+- der Kontaktdatensatz enthält das erwartete Feld nicht
+- die Template-Syntax ist falsch
+
+### Was zu beheben ist
+
+- Variablenschreibweise exakt prüfen
+- prüfen, ob das Feld in der richtigen Quelle vorhanden ist
+- `{{variable_name}}`-Syntax konsequent verwenden
+- Beschreibungen und Beispiele hinzufügen, damit das Modell weiß, was zu erfassen ist
+
+## Symptom: die API ist langsam oder läuft ab
+
+### Wahrscheinliche Ursachen
+
+- langsames externes System
+- unnötige Arbeit innerhalb des Endpunkts
+- das Tool wird für eine Aufgabe verwendet, die nach dem Anruf erfolgen sollte
+
+### Was zu beheben ist
+
+- den Endpunkt schneller machen
+- Payload-Größe reduzieren
+- wiederholte Lesevorgänge nach Möglichkeit cachen
+- Nicht-Live-Arbeiten auf [Webhooks](/accounts/webhooks) oder [Post-Call-Automatisierung](/build/analytics/post-call-automation) verschieben
+
+## Symptom: die API ist erfolgreich, aber der Agent antwortet schlecht
+
+Dies ist oft ein Prompt-Problem, kein API-Problem.
+
+### Wahrscheinliche Ursachen
+
+- die Tool-Beschreibung erklärt nicht, was das Ergebnis bedeutet
+- der Prompt sagt dem Agenten nicht, wie er das Ergebnis verwenden soll
+- die API-Antwort ist zu unübersichtlich oder inkonsistent
+
+### Was zu beheben ist
+
+- die Antwortstruktur vereinfachen
+- nur die Felder zurückgeben, die die Konversation benötigt
+- den Prompt mit klaren Post-Tool-Anweisungen aktualisieren
+
+### Beispiel
+
+```text
+Nach Verwendung von 'Lookup Order Status':
+- Wenn der Status 'shipped' ist, dem Anrufer mitteilen, dass die Bestellung unterwegs ist.
+- Wenn der Status 'delayed' ist, sich entschuldigen und nächste Schritte anbieten.
+- Wenn die Bestellung nicht gefunden wird, den Anrufer bitten, die Bestellnummer zu bestätigen.
+```
+
+## Symptom: das Tool funktioniert in postman, aber nicht im Agenten
+
+### Wahrscheinliche Ursachen
+
+- Template-Variablen produzieren andere Werte als beim manuellen Test
+- das Modell erfasst fehlerhafte Werte vom Anrufer
+- der Endpunkt funktioniert nur für eine sehr spezifische Payload-Form
+
+### Was zu beheben ist
+
+- zuerst mit statischen Werten in der Tool-Konfiguration testen
+- dann ein Feld nach dem anderen durch Live-Variablen ersetzen
+- die vom Agenten ausgelöste Payload mit der bekannt-guten Payload vergleichen
+
+## Was in der konversations-zeitachse prüfen
+
+Die Konversations-Details öffnen und prüfen:
+
+- ob das Tool überhaupt ausgelöst wurde
+- welcher Schritt fehlgeschlagen ist
+- ob Variablen korrekt erfasst wurden
+- wie lange das Tool gebraucht hat
+- was der Agent unmittelbar nach Rückgabe des Tools getan hat
+
+Die Zeitachse ist oft der schnellste Weg, um Folgendes zu unterscheiden:
+
+- Prompt-Probleme
+- Variablen-Probleme
+- Endpunkt-Probleme
+- Post-Tool-Antwort-Probleme
+
+## Eine zuverlässige testsequenz
+
+1. Den Endpunkt direkt außerhalb der Plattform testen.
+2. Das Tool mit statischen Werten testen.
+3. Ein statisches Feld durch eine Live-Variable ersetzen.
+4. Das Tool in einer kontrollierten Testkonversation auslösen.
+5. Die Konversations-Zeitachse überprüfen.
+6. Den Prompt erst anpassen, nachdem die API-Ebene als fehlerfrei bestätigt wurde.
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Benutzerdefinierte API-Tools" icon="code" href="/build/tools/custom-api-actions">
+    Das Tool selbst konfigurieren
+  </Card>
+  <Card title="Konversationsdatenfluss" icon="arrows-turn-right" href="/build/conversation/runtime-data-flow">
+    Verstehen, woher Variablen und Werte kommen
+  </Card>
+  <Card title="Integrationstests" icon="flask" href="/test/integration-testing">
+    Das Tool in einer wiederholbaren Testschleife validieren
+  </Card>
+  <Card title="Tools & Integrationen" icon="plug" href="/troubleshooting/tools-integrations">
+    Tools und Webhooks beheben
+  </Card>
+</CardGroup>

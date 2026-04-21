@@ -1,0 +1,172 @@
+---
+title: "Custom Action Troubleshooting"
+description: "Diagnose authentication, payload, timeout, and response issues in custom API actions"
+icon: "wrench"
+keywords: "custom action troubleshooting, custom api troubleshooting, tool timeout, payload mapping, auth failures, api tool debug"
+"og:description": "Fix common custom action problems such as auth errors, missing variables, slow APIs, and incorrect agent responses."
+"og:title": "Custom Action Troubleshooting"
+---
+
+Use this page when a [Custom API Tool](/build/tools/custom-api-actions) is configured, but the live conversation does not behave the way you expect.
+
+Typical symptoms:
+
+- the tool never triggers
+- the API call fails
+- variables do not populate
+- the API succeeds, but the agent answers badly afterward
+
+## Fast Triage
+
+Start here before changing multiple settings at once.
+
+1. Confirm the tool is configured with the correct method, URL, and auth type.
+2. Confirm your agent prompt references the tool by the exact configured name.
+3. Confirm required variables are defined clearly.
+4. Test the endpoint outside the agent with static values first.
+5. Re-run the scenario and inspect the [conversation timeline](/manage/conversations/detail).
+
+## Symptom: The Tool Never Triggers
+
+### Likely causes
+
+- the tool name is too vague
+- the description does not tell the model what the tool is for
+- the prompt does not define when to use it
+- another tool overlaps with the same intent
+
+### What to fix
+
+- rename the tool with a clear action-oriented name
+- improve the description
+- add explicit trigger guidance to your prompt
+- remove overlapping tools if possible
+
+## Symptom: Authentication Fails
+
+### Likely causes
+
+- wrong auth type
+- expired token
+- missing header or credential field
+- credentials entered in the wrong place
+
+### What to fix
+
+- confirm the API expects Bearer, Basic, Header, or Body auth
+- retest in Postman or cURL using the same credentials
+- rotate the token if needed
+- move credentials out of the URL and into the proper auth field
+
+## Symptom: Variables Are Missing Or Not Replacing
+
+### Likely causes
+
+- wrong variable name
+- required variable was never collected
+- the contact record does not contain the expected field
+- the template syntax is wrong
+
+### What to fix
+
+- check variable spelling exactly
+- confirm the field exists in the right source
+- use `{{variable_name}}` syntax consistently
+- add descriptions and examples so the model knows what to collect
+
+## Symptom: The API Is Slow Or Times Out
+
+### Likely causes
+
+- slow external system
+- unnecessary work inside the endpoint
+- the tool is being used for a task that should happen after the call
+
+### What to fix
+
+- make the endpoint faster
+- reduce payload size
+- cache repeated reads when possible
+- move non-live work to [Webhooks](/accounts/webhooks) or [Post-Call Automation](/build/analytics/post-call-automation)
+
+## Symptom: The API Succeeds But The Agent Responds Poorly
+
+This is often a prompt problem, not an API problem.
+
+### Likely causes
+
+- the tool description does not explain what the result means
+- the prompt does not tell the agent how to use the result
+- the API response is too noisy or inconsistent
+
+### What to fix
+
+- simplify the response shape
+- return only the fields the conversation needs
+- update the prompt with clear post-tool instructions
+
+### Example
+
+```text
+After using 'Lookup Order Status':
+- If status is shipped, tell the caller the order is on the way.
+- If status is delayed, apologize and offer next steps.
+- If the order is not found, ask the caller to confirm the order number.
+```
+
+## Symptom: The Tool Works In Postman But Not In The Agent
+
+### Likely causes
+
+- template variables are producing different values than your manual test
+- the model is collecting bad values from the caller
+- the endpoint works only for one very specific payload shape
+
+### What to fix
+
+- test first with static values inside the tool configuration
+- then replace one field at a time with live variables
+- compare the agent-triggered payload with the known-good payload
+
+## What To Check In The Conversation Timeline
+
+Open the conversation detail and inspect:
+
+- whether the tool fired at all
+- which step failed
+- whether variables were collected correctly
+- how long the tool took
+- what the agent did immediately after the tool returned
+
+The timeline is often the fastest way to separate:
+
+- prompt issues
+- variable issues
+- endpoint issues
+- post-tool response issues
+
+## A Reliable Test Sequence
+
+1. Test the endpoint directly outside the platform.
+2. Test the tool with static values.
+3. Replace one static field with one live variable.
+4. Trigger the tool in a controlled test conversation.
+5. Review the conversation timeline.
+6. Adjust the prompt only after the API layer is known-good.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Custom API Tools" icon="code" href="/build/tools/custom-api-actions">
+    Configure the tool itself
+  </Card>
+  <Card title="Conversation Data Flow" icon="arrows-turn-right" href="/build/conversation/runtime-data-flow">
+    Understand where variables and values come from
+  </Card>
+  <Card title="Integration Testing" icon="flask" href="/test/integration-testing">
+    Validate the tool in a repeatable test loop
+  </Card>
+  <Card title="Tools & Integrations" icon="plug" href="/troubleshooting/tools-integrations">
+    Troubleshoot tools and webhooks
+  </Card>
+</CardGroup>

@@ -1,0 +1,173 @@
+---
+title: "Security"
+description: "Manage MFA, password, sessions, and account authentication methods"
+icon: "shield-check"
+keywords: "security, MFA, two-factor authentication, password, sessions, login activity, social login"
+"og:description": "Secure your itellicoAI account with MFA, password management, session controls, and login activity review."
+"og:title": "Security"
+---
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+## Security Settings
+
+The Security page centralizes authentication and account protection controls.
+
+**Access:** Go to **Settings → Profile → Security**.
+
+<Screenshot
+  lightSrc="/images/accounts__security-light.png"
+  darkSrc="/images/accounts__security-dark.png"
+  alt="Security page showing authentication methods, connected accounts, active sessions, and login activity"
+/>
+
+## Authentication Methods
+
+The top section includes:
+
+- **Email** (verification and change flow)
+- **Password** (set/change)
+- **Phone** (add/edit)
+- **MFA** status and management
+
+## Multi-Factor Authentication (MFA)
+
+itellicoAI supports authenticator-app MFA (TOTP) with recovery codes.
+
+### Enable MFA
+
+<Steps>
+  <Step title="Open Security">
+    Go to **Settings → Profile → Security**.
+  </Step>
+
+  <Step title="Enable MFA">
+    In the MFA row, click **Enable**.
+  </Step>
+
+  <Step title="Complete authenticator setup">
+    Follow the TOTP setup flow and confirm with a valid code.
+  </Step>
+
+  <Step title="Store recovery codes">
+    Save your recovery codes in a secure location.
+  </Step>
+</Steps>
+
+### Disable MFA
+
+You can disable MFA from the same section. The flow requires security confirmation.
+
+<Warning>
+Disabling MFA reduces account security. Keep MFA enabled in production accounts.
+</Warning>
+
+## Recommended Minimum Setup
+
+For most business users, a good baseline is:
+
+- password set and up to date
+- MFA enabled
+- recovery codes stored safely
+- unfamiliar sessions revoked
+
+## Password Management
+
+Change your password from the Security page.
+
+Current password is required, and new passwords must meet current policy requirements (minimum length and validation rules).
+
+## Active Sessions
+
+The Active Sessions table shows currently active device sessions.
+
+<Screenshot
+  lightSrc="/images/accounts__security-sessions-light.png"
+  darkSrc="/images/accounts__security-sessions-dark.png"
+  alt="Active sessions dialog showing current browser sessions and session management actions"
+/>
+
+Each row includes:
+
+- Device/browser
+- Location (when available)
+- Last activity
+- Current-session indicator
+
+Actions available:
+
+- Revoke individual sessions
+- Revoke all other sessions
+
+## Login Activity
+
+Review recent security-relevant activity, including:
+
+<Screenshot
+  lightSrc="/images/accounts__security-login-activity-light.png"
+  darkSrc="/images/accounts__security-login-activity-dark.png"
+  alt="Login activity dialog showing recent security events"
+/>
+
+- Login events
+- Password changes/resets
+- MFA success/failure events
+- Event metadata (device, location, IP, timestamp)
+
+Use this section to review recent access and authentication events.
+
+## Connected Social Accounts
+
+Security also includes connected social providers (for example Google and Apple) where enabled.
+
+You can connect/disconnect providers from this section, subject to account safety checks (for example avoiding lockout if no other login method exists).
+
+## Security Best Practices
+
+<AccordionGroup>
+  <Accordion title="Enable MFA for all privileged users" icon="lock">
+    Require MFA for owners/admins and any user with elevated permissions.
+  </Accordion>
+
+  <Accordion title="Review sessions and activity regularly" icon="desktop">
+    Check active sessions and login activity for unfamiliar devices or locations.
+  </Accordion>
+
+  <Accordion title="Use unique, rotated credentials" icon="key">
+    Keep passwords unique and rotate exposed credentials quickly.
+  </Accordion>
+
+  <Accordion title="Protect recovery codes" icon="file-shield">
+    Store MFA recovery codes in a secure password manager or vault.
+  </Accordion>
+</AccordionGroup>
+
+## FAQs
+
+<AccordionGroup>
+  <Accordion title="What if I lose access to my authenticator app?">
+    Use a recovery code. If recovery options are unavailable, contact [support@itellico.ai](mailto:support@itellico.ai).
+  </Accordion>
+
+  <Accordion title="Can I revoke my current session?">
+    You can revoke other sessions from the table. Your current session remains active unless you log out.
+  </Accordion>
+
+  <Accordion title="Where do I change my email or phone?">
+    Use **Settings → Profile → Security** in the authentication methods section.
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Team Management" icon="users" href="/accounts/team-management">
+    Align member roles with your security model
+  </Card>
+  <Card title="API Keys" icon="key" href="/accounts/api-keys">
+    Rotate and manage programmatic credentials
+  </Card>
+  <Card title="User Profile" icon="user" href="/accounts/user-profile">
+    Configure UI mode, theme, and language
+  </Card>
+</CardGroup>

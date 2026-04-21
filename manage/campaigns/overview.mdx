@@ -1,0 +1,261 @@
+---
+title: "Campaign Management"
+description: "Monitor and manage live outbound campaigns with dashboards, contacts, settings, goals, analyses, and exports"
+icon: "bullhorn"
+keywords: "outbound campaigns, campaign creation, agent assignment, phone rotation, AMD detection, retry logic, campaign goals, campaign analyses, spam threshold, business hours"
+"og:description": "Monitor and manage outbound campaigns after launch. Review dashboards, contacts, settings, phone rotation, goals, analyses, and exports."
+"og:title": "Campaign Management"
+---
+
+
+
+import { Screenshot } from "/snippets/screenshot.mdx";
+
+Use this page after a campaign exists. It explains how to monitor performance, manage contacts, adjust settings, and review goals and analyses.
+
+**Access:** Navigate to **Campaigns** in the main menu.
+
+<Tip>
+For first-time campaign setup and launch steps, see [Campaign & Outbound Launch](/launch/campaign-outbound-launch).
+</Tip>
+
+<Screenshot
+  lightSrc="/images/manage__campaign-list-light.png"
+  darkSrc="/images/manage__campaign-list-dark.png"
+  alt="Campaign list page showing campaigns with status badges, agent, phone numbers, business hours, and contact count"
+/>
+
+---
+
+## Campaign List
+
+The campaigns page displays all your campaigns in a table.
+
+| Column | Description |
+| --- | --- |
+| **Name** | Campaign name — click to open the detail view |
+| **Status** | Color-coded badge (see [statuses](#campaign-statuses)) with dropdown to change status |
+| **Agent** | Assigned agent with avatar |
+| **Phone Numbers** | Outbound numbers assigned, with count when multiple |
+| **Schedule** | Linked business-hours schedule with live open/closed status indicator |
+| **Contacts** | Total contacts in the campaign |
+| **Start Date** | When the campaign is scheduled to begin |
+| **Actions** | Edit, Delete |
+
+Use the search bar to find campaigns by name, and sort by name, status, or date. You can select multiple campaigns for bulk actions.
+
+---
+
+## Campaign Statuses
+
+| Status | Color | Description |
+| --- | --- | --- |
+| **Active** | Teal | Campaign is running and placing calls |
+| **Paused** | Yellow | Temporarily stopped — can be resumed |
+| **Completed** | Blue | All contacts processed or manually ended |
+| **Cancelled** | Red | Cancelled; no further calls will be placed |
+
+Change a campaign's status directly from the list page using the status dropdown, or from the campaign detail view.
+
+---
+
+## Campaign Detail
+
+Once a campaign is created, the detail view contains four tabs:
+
+| Tab | Use it when you want to know... |
+| --- | --- |
+| **Dashboard** | Is the campaign healthy overall? |
+| **Contacts** | Which people were reached, retried, completed, or missed? |
+| **Settings** | How is the campaign configured? |
+| **Analytics** | Are we measuring the right outcomes and extracting the right call insights? |
+
+---
+
+## Dashboard Tab
+
+The Dashboard shows aggregate campaign performance:
+
+- quick stats: conversations, duration, answer rates, goal achievement
+- contact status breakdown (pending, dialing, called, retry, completed, failed, no conversation)
+- goal analysis breakdown
+- answer-status rates (human, machine, no answer, rejection)
+- human-answer heatmap by day and hour — useful for identifying better calling windows
+
+Use toolbar refresh to fetch current data.
+
+---
+
+## Settings Tab
+
+The settings tab lets you control all campaign behavior. All fields from creation are editable, plus additional options.
+
+### General
+
+| Setting | Description |
+| --- | --- |
+| **Campaign Name** | Descriptive name for internal use |
+| **Agent** | Assigned voice agent |
+| **Start Date & Time** | When calling begins (leave blank to start immediately) |
+| **Business Hours** | Linked schedule with live open/closed indicator |
+| **Notes** | Free-text notes about the campaign |
+
+### Phone Numbers
+
+The settings tab shows a phone number management table. Add more numbers here when you want rotation across multiple outbound numbers.
+
+| Column | Description |
+| --- | --- |
+| **Number** | Phone number with friendly name |
+| **Status** | Active, Disabled, or Excluded |
+| **Today's Calls** | Number of calls placed today |
+| **Total Calls** | Total calls placed since campaign start |
+| **Spam Score** | Current spam risk score (green 0–4, yellow 5–6, red 7+) |
+| **Actions** | Enable/disable number |
+
+The system automatically excludes numbers when their spam score reaches the configured threshold.
+
+### Rotation Settings
+
+Only visible when two or more phone numbers are assigned.
+
+| Setting | Description |
+| --- | --- |
+| **Rotation Strategy** | Round Robin, Lowest Spam, Least Used Today, or Weighted |
+| **Spam Threshold** | Maximum spam score before auto-exclusion (1–9, default: 7) |
+| **Max Calls Per Number Per Day** | Daily call limit per phone number (1–1,000, default: 100) |
+
+### Call Settings
+
+| Setting | Description |
+| --- | --- |
+| **Call Interval** | Time between calls (5s, 10s, 20s, 30s, 1min, 2min, 5min, 10min, 20min, 30min) |
+| **Ring Timeout** | How long to ring before giving up (10s, 15s, 20s, 25s, 30s, 45s, 60s) |
+| **AMD Mode** | Text-based or ML-based answering machine detection |
+| **Max Retry Attempts** | How many times to retry a contact (0–10, default: 2) |
+| **Retry Interval** | Time between retries (configurable in minutes, hours, or days) |
+| **Contact Completion Timeout** | How long to wait after a call before running analysis — gives the contact a window to call back before the outcome is finalized (configurable in minutes, hours, or days) |
+
+---
+
+## Contacts Tab
+
+The contacts tab manages who gets called in the campaign.
+
+<Screenshot
+  lightSrc="/images/manage__campaign-contacts-light.png"
+  darkSrc="/images/manage__campaign-contacts-dark.png"
+  alt="Campaign contacts tab showing contact list with status badges, priority, goal achievement, and bulk actions"
+/>
+
+### Contact Table
+
+| Column | Description |
+| --- | --- |
+| **Name** | Contact name with tags (shows up to 2, +N for more) |
+| **Phone Number** | With country flag |
+| **Priority** | High (red), Normal (gray), Low (blue) |
+| **Status** | Color-coded badge (see [contact statuses](#contact-statuses)) |
+| **Primary Goal** | Achievement indicator (checkmark or X) |
+| **Goal Score** | Ring progress showing 0–100% achievement |
+| **Conversations** | Count and total duration |
+| **Last Called** | Date and time of last call |
+| **Actions** | View Analytics, Retry Contact |
+
+### Contact Statuses
+
+| Status | Color | Description |
+| --- | --- | --- |
+| **Pending** | Gray | Queued and waiting to be dialed |
+| **Dialing** | Yellow | Currently being called |
+| **Called** | Violet | Call placed, awaiting next step |
+| **Retry** | Cyan | Scheduled for another attempt |
+| **Completed** | Green | Successfully completed |
+| **Failed** | Red | All attempts failed |
+| **No Conversation** | Gray | Call connected but no conversation occurred |
+
+### Adding Contacts
+
+Click **Add Contacts** to open a panel with two tabs:
+
+- **Add from Existing** — Search and filter available contacts, add contacts individually, add selected contacts, or add all filtered contacts.
+- **Import CSV** — Upload campaign contacts directly from a CSV file.
+
+### Import and Export
+
+- **CSV Import** — Drag and drop a CSV file (max 5 MB) to import contacts. The import runs in the background and shows progress.
+- **Export** — Export campaign contacts with all metrics. Available formats: CSV (comma), CSV (semicolon), Excel (`.xlsx`), JSON (`.json`). Export history is accessible from the export panel.
+
+---
+
+## Goals Tab
+
+Define what the campaign should achieve for each contact.
+
+- **Primary Goal** — One per campaign. The main success criterion (e.g., book an appointment, confirm attendance).
+- **Secondary Goals** — Unlimited. Additional objectives tracked alongside the primary goal.
+
+### Goal Results
+
+Each goal is evaluated per contact based on all their conversations:
+
+| Result | Description |
+| --- | --- |
+| **Achieved** | Goal fully met |
+| **Partially Achieved** | Goal partially met |
+| **Not Achieved** | Goal not met |
+| **Unknown** | System could not determine the outcome |
+
+### Managing Goals
+
+- Click **Add Goal** to create a new goal with a name, description, and primary/secondary designation
+- **Edit** any goal's name, description, or type
+- **Archive** goals you no longer need — archived goals are hidden but can be restored from the archive view
+
+---
+
+## Analyses Tab
+
+Define questions that are evaluated for each conversation in the campaign. Each analysis can be toggled active or inactive.
+
+<Screenshot
+  lightSrc="/images/manage__campaign-analytics-light.png"
+  darkSrc="/images/manage__campaign-analytics-dark.png"
+  alt="Campaign Analytics tab showing goals and active insight questions"
+/>
+
+### Question Types
+
+| Type | Description |
+| --- | --- |
+| **Yes/No** | Binary yes/no question |
+| **Single Choice** | One answer from predefined options |
+| **Multiple Choice** | One or more answers from predefined options |
+| **Open** | Free-text response |
+| **Rating** | Numeric rating scale |
+| **Data Point** | Extract a specific data point from the conversation |
+
+### Managing Analyses
+
+- Click **Add Analysis** to create a new question with name, description, and type
+- **Toggle** analyses active or inactive
+- **Archive** analyses you no longer need — restore from the archive view when needed
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Contact Management" icon="address-book" href="/manage/contacts/overview">
+    Manage the contacts that feed into your campaigns
+  </Card>
+  <Card title="Schedules" icon="clock" href="/launch/schedules">
+    Configure calling schedules for your campaigns
+  </Card>
+  <Card title="Outbound Compliance" icon="scale-balanced" href="/launch/outbound-compliance">
+    Review consent and calling-window guidance
+  </Card>
+  <Card title="Conversations" icon="messages" href="/manage/conversations/overview">
+    Inspect the calls generated by campaigns
+  </Card>
+</CardGroup>
