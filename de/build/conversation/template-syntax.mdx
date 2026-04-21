@@ -17,7 +17,7 @@ Variablen helfen dir dabei, den Prompt deines Agenten mit dynamischen Daten zu p
 
 ### Eingebaute Kontaktvariablen
 
-Wenn ein Kontakt in deinem itellicoAI-Konto existiert, sind diese 5 Felder automatisch verfügbar:
+Wenn ein Kontakt in deinem itellicoAI-Account existiert, sind diese 5 Felder automatisch verfügbar:
 
 ```jinja wrap
 {{ contact.first_name }}
@@ -258,3 +258,197 @@ Filter transformieren Variablenwerte.
 {{ current_datetime | datetime("%H:%M") }}         # 14:30
 {{ current_datetime | datetime("%d.%m.%Y") }}      # 24.01.2025
 {{ current_datetime | datetime("%A, %B %d") }}     # Monday, January 24
+```
+
+### Filter verketten
+
+```jinja wrap
+{{ contact.first_name | default("Friend") | title }}
+```
+
+---
+
+## Schleifen
+
+Über Listen iterieren (fortgeschrittener Anwendungsfall):
+
+```jinja wrap
+{% for item in list_variable %}
+  Process {{ item }}
+{% endfor %}
+```
+
+---
+
+## Praktische Beispiele
+
+### Beispiel 1: Personalisierte Begrüßung
+
+```jinja wrap
+{% if contact.first_name %}
+Hello {{ contact.first_name }}, great to hear from you!
+{% else %}
+Hello! Thanks for calling!
+{% endif %}
+
+{% if contact.email %}
+I have your contact information on file, so I can send you a confirmation after our call.
+{% endif %}
+```
+
+### Beispiel 2: Benutzerdefinierte Geschäftslogik (erfordert Dynamic Context API)
+
+```jinja wrap
+{% if contact.first_name %}
+Hello {{ contact.first_name }}, thanks for calling {{ company_name }}!
+{% else %}
+Hello! Thanks for calling {{ company_name }}!
+{% endif %}
+
+{% if account_tier == "premium" %}
+As a premium customer, you have priority support. How can I help you today?
+{% else %}
+How can I help you today?
+{% endif %}
+```
+
+<Note>
+Variablen wie `company_name` und `account_tier` müssen von deiner Dynamic-Context-Verbindung bereitgestellt werden (von deinem Entwicklungsteam eingerichtet). Siehe [Dynamic Context API](/de/build/advanced/dynamic-context).
+</Note>
+
+### Beispiel 3: Zeitbasierte Prompt-Logik
+
+```jinja wrap
+Current time: {{ current_datetime | datetime("%H:%M") }}
+
+{% if current_datetime.hour >= 17 or current_datetime.hour < 9 %}
+Outside normal business hours. If customer needs immediate assistance:
+"Our regular support hours are 9 AM to 5 PM. For urgent issues, I can take your information and have someone call you first thing in the morning, or you can reach our emergency line at [number]."
+{% else %}
+Within business hours. Full support available.
+{% endif %}
+```
+
+### Beispiel 4: Mehrsprachige Unterstützung (erfordert Dynamic Context API)
+
+```jinja wrap
+Customer's preferred language: {{ language | default("en") }}
+
+{% if language == "es" %}
+Language: Spanish
+Greeting: "¡Hola!"
+Tone: Formal (use "usted")
+Knowledge collection: "FAQ Español"
+{% elif language == "de" %}
+Language: German
+Greeting: "Guten Tag!"
+Tone: Formal (use "Sie")
+Knowledge collection: "FAQ Deutsch"
+{% else %}
+Language: English
+Greeting: "Hello!"
+Tone: Friendly and conversational
+Knowledge collection: "FAQ English"
+{% endif %}
+```
+
+### Beispiel 5: Account-Tier-Logik
+
+```jinja wrap
+Account value: ${{ account_value | default(0) }}
+
+{% if account_value >= 50000 %}
+ENTERPRISE CUSTOMER
+- Offer white-glove service
+- Direct access to account manager
+- Priority response times
+- Custom solutions available
+{% elif account_value >= 10000 %}
+PROFESSIONAL CUSTOMER
+- Premium support tier
+- Dedicated support team
+- Priority queue
+{% else %}
+STANDARD CUSTOMER
+- Standard support
+- Knowledge base first
+- Transfer for complex issues
+{% endif %}
+```
+
+---
+
+## Variablen testen
+
+### Mit verschiedenen Daten testen
+
+1. Öffne das **Test Agent**-Menü des Agenten und wähle **Chat**, **Web call** oder **Phone call**
+2. Teste Szenarien mit verschiedenen Kontaktdaten:
+   - Mit Vorname und ohne
+   - VIP- vs. Standardkunde
+   - Verschiedene Sprachen
+   - Verschiedene Zeitzonen
+
+### Häufige Probleme
+
+| Problem | Ursache | Lösung |
+|---------|---------|--------|
+| Variable wird leer angezeigt | Kein Default angegeben | `\| default("Fallback")` hinzufügen |
+| Syntaxfehler | Tippfehler im Variablennamen | Schreibweise gegen verfügbare Variablen prüfen |
+| Bedingung funktioniert nicht | Falscher Vergleichsoperator | `==` statt `=` verwenden |
+| Filter wird nicht angewendet | Filter existiert nicht | Filternamen-Schreibweise prüfen |
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Immer Defaults verwenden" icon="shield">
+    Nimm niemals an, dass eine Variable einen Wert hat. Verwende immer Defaults.
+
+    ❌ **Schlecht:**
+    ```jinja
+    Hello {{ contact.first_name }}!
+    ```
+
+    ✅ **Gut:**
+    ```jinja
+    Hello {{ contact.first_name | default("there") }}!
+    ```
+  </Accordion>
+
+  <Accordion title="Logik einfach halten" icon="lightbulb">
+    Komplexe verschachtelte Bedingungen sind schwer zu debuggen. Halte es einfach.
+
+    ❌ **Zu komplex:**
+    ```jinja
+    {% if account_tier == "VIP" and account_value > 10000 and region == "US" %}
+    ```
+
+    ✅ **Einfacher:**
+    ```jinja
+    {% if account_tier == "VIP" %}
+    ```
+  </Accordion>
+
+  <Accordion title="Edge Cases testen" icon="vial">
+    Teste mit:
+    - Fehlenden Daten (alle Felder leer)
+    - Unerwarteten Werten
+    - Sehr langen Strings
+    - Sonderzeichen
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Prompt Engineering Guide" icon="book" href="/de/build/conversation/prompt-engineering-guide">
+    Variablen in vollständigen Beispielen in Aktion sehen
+  </Card>
+  <Card title="Agent testen" icon="vial" href="/de/test/web-simulator">
+    Prüfen, ob deine Variablen korrekt funktionieren
+  </Card>
+</CardGroup>

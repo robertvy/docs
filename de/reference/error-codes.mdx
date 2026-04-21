@@ -24,7 +24,7 @@ Fehlerantworten geben JSON zurück mit:
 | **400** | `bad_request` | Die Anfrage ist fehlerhaft oder ungültig | Ungültiges JSON, fehlerhafte Parameter, nicht unterstützte Kombinationen |
 | **401** | `unauthorized` | Authentifizierung fehlt oder ist ungültig | Fehlender `X-API-Key`, widerrufener Schlüssel, abgelaufener Schlüssel |
 | **402** | `payment_required` | Zugang erfordert Abrechnung/Tarifberechtigung | Funktion im aktuellen Tarif nicht verfügbar |
-| **403** | `forbidden` | Authentifiziert, aber nicht berechtigt | Fehlende Berechtigung, falsches Konto ausgewählt |
+| **403** | `forbidden` | Authentifiziert, aber nicht berechtigt | Fehlende Berechtigung, falsches Account ausgewählt |
 | **404** | `not_found` | Die angeforderte Ressource existiert nicht | Falsche UUID, gelöschte Ressource, falscher Pfad |
 | **405** | `method_not_allowed` | HTTP-Methode wird nicht unterstützt | POST statt PATCH verwendet usw. |
 | **409** | `conflict` | Anfrage steht im Widerspruch zum aktuellen Zustand | Doppeltes Erstellen, gleichzeitiger Aktualisierungskonflikt |
@@ -86,13 +86,13 @@ Validierungsfehler (`422`) können feldebene Details enthalten:
     - Prüfen, ob der Schlüssel unter **Entwickler → API-Schlüssel** widerrufen wurde
     - Sicherstellen, dass der richtige Header verwendet wird: `X-API-Key: <dein-schlüssel>`
     - Prüfen, ob das Schlüsselformat mit `sk-` beginnt
-    - Prüfen, ob der Schlüssel zum richtigen Konto gehört
+    - Prüfen, ob der Schlüssel zum richtigen Account gehört
   </Accordion>
 
   <Accordion title="403: Zugriff auf Ressource verweigert" icon="lock">
-    - Prüfen, ob auf eine Ressource innerhalb des eigenen Kontos zugegriffen wird
+    - Prüfen, ob auf eine Ressource innerhalb des eigenen Accounts zugegriffen wird
     - Prüfen, ob die Team-Rolle ausreichende Berechtigungen hat
-    - Bei Unterkontoressourcen sicherstellen, dass das richtige Konto verwendet wird
+    - Bei Subaccount-Ressourcen sicherstellen, dass das richtige Account verwendet wird
   </Accordion>
 
   <Accordion title="422: Validierungsfehler beim Erstellen/Aktualisieren" icon="triangle-exclamation">
