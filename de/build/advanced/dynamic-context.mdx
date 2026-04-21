@@ -218,28 +218,211 @@ How can I help you today?
 You are helping a {{ account.tier }} customer since {{ account.created_date }}.
 
 {% if support_tickets|length > 0 %}
+IMPORTANT: Customer has {{ support_tickets|length }} open ticket(s):
+{% for ticket in support_tickets %}
+- Ticket #{{ ticket.ticket_id }}: {{ ticket.subject }} ({{ ticket.status }})
+{% endfor %}
+
+Ask if they're calling about ticket #{{ support_tickets[0].ticket_id }}.
+{% endif %}
+
+{% if recent_orders|length > 0 %}
+Recent order #{{ recent_orders[0].order_id }} is {{ recent_orders[0].status }}.
+{% if recent_orders[0].tracking %}
+Tracking: {{ recent_orders[0].tracking }}
+{% endif %}
+{% endif %}
+
+Account Status: {{ account.status | default("active") }}
 ```
 
-## Praktische Hinweise
+<Tip>
+Nutze den Filter `| default("value")`, um Fallbacks bereitzustellen, wenn Daten fehlen. Siehe [Greeting](/de/build/conversation/greeting-messages) und [Prompt](/de/build/conversation/prompt) für weitere Template-Syntax und Verwendungsbeispiele.
+</Tip>
 
-- Halte die Antwort klein und gezielt.
-- Gib nur Felder zurück, die du im Gespräch wirklich brauchst.
-- Nutze `null` oder lass Felder weg, wenn Daten fehlen.
-- Teste den Endpunkt mit realistischen Antworten aus dem CRM.
+---
+
+## Authentifizierung
+
+### Bearer Token (Empfohlen)
+
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+Verwende dies für JSON Web Token (JWT), OAuth (Open Authorization) 2.0 Access Tokens oder moderne API-Keys.
+
+### Custom Header
+
+```
+X-API-Key: sk-abc123def456...
+```
+
+Benutzerdefinierter Header-Name mit einem Credential-Wert, z. B. einem API-Key.
+
+### Basic Auth
+
+```
+Authorization: Basic YXBpX3VzZXI6cGFzc3dvcmQ=
+```
+
+Benutzername/Passwort, Base64-kodiert.
+
+### Keine Authentifizierung
+
+Keine Authentifizierung (nur für interne/private Netzwerke).
+
+<Warning>
+Verwende immer HTTPS.
+</Warning>
+
+---
+
+## Beispiel-Anwendungsfall
+
+**Kundensupport mit vollständigem Kontext**
+
+**Szenario:** Ein Support-Agent braucht eine vollständige Kundenansicht, bevor das Gespräch beginnt.
+
+**Deine API gibt zurück:**
+
+```json
+{
+  "customer": {
+    "name": "John Smith",
+    "tier": "Premium",
+    "since": "2022-01-15"
+  },
+  "account": {
+    "status": "active",
+    "subscription": "Pro Plan",
+    "renewal_date": "2025-12-01"
+  },
+  "support": {
+    "open_tickets": [
+      {
+        "id": "TKT-789",
+        "subject": "Can't export reports",
+        "priority": "high"
+      }
+    ]
+  }
+}
+```
+
+**Agent-Prompt:**
+
+```jinja
+You're helping {{ customer.name }}, a {{ customer.tier }} customer
+since {{ customer.since }}.
+
+{% if support.open_tickets|length > 0 %}
+Customer has an open {{ support.open_tickets[0].priority }} priority ticket
+about "{{ support.open_tickets[0].subject }}".
+
+Start by asking: "I see you have a ticket open about
+{{ support.open_tickets[0].subject }}. Is that what you're calling about today?"
+{% endif %}
+
+Account: {{ account.subscription }}, renews {{ account.renewal_date }}
+```
+
+**Ergebnis:** Der Agent kennt das offene Ticket bereits vor dem Gesprächsstart, was eine personalisierte Begrüßung und ein informiertes Gespräch ermöglicht.
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Antworten schnell halten" icon="gauge-high">
+    - Ziel: Antwortzeit unter 1 Sekunde
+    - Häufig abgerufene Daten cachen (TTL 5–10 Minuten)
+    - Nur Felder zurückgeben, die im Prompt verwendet werden
+    - Datenbankindizes auf Lookup-Felder setzen (contact\_number, external\_id oder interne Kunden-IDs)
+  </Accordion>
+
+  <Accordion title="Fehlende Daten sauber behandeln" icon="shield-check">
+    - `| default("value")`-Filter im Prompt verwenden
+    - `null` für fehlende Felder zurückgeben (keinen Fehler werfen)
+    - Mit Kontakten testen, die nur minimale Daten haben
+
+    ```jinja
+    {# Sicher - liefert Fallback #}
+    Tier: {{ account.tier | default("Standard") }}
+
+    {# Sicherer - prüft Existenz #}
+    {% if support_tickets and support_tickets|length > 0 %}
+      Has open tickets
+    {% endif %}
+    ```
+  </Accordion>
+
+  <Accordion title="Sensible Daten schützen" icon="lock">
+    - Keine Sozialversicherungsnummern, Kreditkarten oder Passwörter zurückgeben
+    - Nur HTTPS verwenden
+    - Authentifizierung implementieren (Bearer Token empfohlen)
+    - Nur notwendige Felder zurückgeben (z. B. letzte 4 Stellen der Kontonummer, nicht die vollständige)
+    - Zugriff für Audit-Trails protokollieren
+  </Accordion>
+
+  <Accordion title="Vor dem Produktivbetrieb testen" icon="vial">
+    1. **Test** mit echten Kundendaten verwenden
+    2. Edge Cases testen (neuer Kunde, VIP, gesperrtes Konto)
+    3. Prüfen, ob dein Prompt fehlende Felder sauber behandelt
+    4. Mit kleinem Traffic-Anteil pilotieren, bevor du vollständig ausrollst
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Fehlerbehebung
+
+<AccordionGroup>
+  <Accordion title="401 Unauthorized" icon="lock-open">
+    - Prüfen, ob die Credentials korrekt sind
+    - Sicherstellen, dass der Authentifizierungstyp zu deiner API passt (Bearer Token, Basic Auth oder Custom Header)
+    - Mit denselben Credentials in Postman testen
+    - Prüfen, ob das Token abgelaufen ist
+  </Accordion>
+
+  <Accordion title="Kontextvariablen leer" icon="brackets-curly">
+    - **Test** verwenden, um zu prüfen, ob der Endpunkt antwortet
+    - JSON-Struktur gegen die abgerufenen Felder prüfen
+    - Sicherstellen, dass der Dynamic-Context-Toggle eingeschaltet ist
+    - `| default("fallback")` für fehlende Felder verwenden
+  </Accordion>
+
+  <Accordion title="Langsam oder Timeout" icon="hourglass">
+    - Datenbankindizes hinzufügen
+    - Caching implementieren
+    - Nur notwendige Felder zurückgeben
+    - Datenbankabfragen optimieren
+    - Netzwerklatenz zur API prüfen
+  </Accordion>
+
+  <Accordion title="Falsche Daten zurückgegeben" icon="triangle-exclamation">
+    - Parameter in **Test** prüfen
+    - Sicherstellen, dass Template-Variablen korrekt aufgelöst werden: `{{ account.tier }}`
+    - Prüfen, ob Cache-Keys die Kundenkennung enthalten
+    - Mit bekanntem Kunden testen, um zu bestätigen, dass die Daten übereinstimmen
+  </Accordion>
+</AccordionGroup>
+
+---
 
 ## Nächste Schritte
 
 <CardGroup cols={2}>
-  <Card title="Greeting Messages" icon="hand-wave" href="/de/build/conversation/greeting-messages">
-    Kontextvariablen in der Begrüßung verwenden
+  <Card title="Greeting" icon="hand-wave" href="/de/build/conversation/greeting-messages">
+    Kontextvariablen verwenden, um die Begrüßung des Agenten zu personalisieren
   </Card>
-  <Card title="Prompt" icon="pen-to-square" href="/de/build/conversation/prompt">
-    Kontextvariablen im Prompt verwenden
+  <Card title="Prompt" icon="pen" href="/de/build/conversation/prompt">
+    Kontextvariablen im Prompt mit Jinja-Templating verwenden
   </Card>
-  <Card title="Custom API Actions" icon="plug" href="/de/build/tools/custom-api-actions">
-    Daten während des Gesprächs abrufen
+  <Card title="Template Syntax" icon="brackets-curly" href="/de/build/conversation/template-syntax">
+    Template-Syntax für dynamische Prompts meistern
   </Card>
-  <Card title="Web Widget" icon="window" href="/de/manage/web-widgets/overview">
-    Kontext für Web-Widget-Gespräche bereitstellen
+  <Card title="Custom Action" icon="code" href="/de/build/tools/custom-api-actions">
+    Tools erstellen, die Kontextdaten während des Gesprächs verwenden
   </Card>
 </CardGroup>

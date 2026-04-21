@@ -129,7 +129,124 @@ Subaccounts übernehmen die Abrechnung vom Parent Account. Die Nutzung wird sepa
     - Neue Subaccounts starten standardmäßig auf Parent Billing
     - Die Nutzung wird für Berichte separat erfasst
     - Abo-Limits gelten über alle Subaccounts hinweg
-    - Direkte Abrechnung ist über den Billing-Transfer-Flow verfügbar
+    - Direkte Abrechnung ist über den Billing-Transfer-Flow verfügbar, wenn der Kunde direkt bei itellicoAI zahlen soll
+    - Nutzungslimits beachten, wenn viele Subaccounts erstellt werden
+  </Accordion>
+
+  <Accordion title="Ownership-Zuweisung" icon="crown">
+    Überlege sorgfältig, wer Eigentümer jedes Accounts sein soll:
+
+    - Haupt-Account-Owner: In der Regel die Unternehmensleitung
+    - Subaccount-Owner: Kundenkontakt, Klientenkontakt oder Abteilungsleitung
+    - Owner können nicht einfach gewechselt werden (erfordert Support)
+    - Der Owner hat vollständige Kontrolle über den Account, aber Account-Löschung und komplexe Eigentümerwechsel erfordern Support-Bestätigung
+  </Accordion>
+</AccordionGroup>
+
+## Häufige Szenarien
+
+### Szenario 1: Reseller oder API-Integrator mit zentralisierter Abrechnung
+
+<Steps>
+  <Step title="Kunden-Subaccount erstellen">
+    Navigiere zu **Einstellungen → Account → Subaccounts** und erstelle einen neuen Subaccount mit dem Namen des Kunden.
+  </Step>
+
+  <Step title="Account-Identität anpassen">
+    Wechsle zum Subaccount des Kunden und aktualisiere **Einstellungen → Account → Settings** mit dem kundenseitigen Namen und Logo.
+  </Step>
+
+  <Step title="Parent Billing beibehalten">
+    Lasse den Account auf Parent Billing, wenn dein Unternehmen die itellicoAI-Rechnung erhalten und die Kundenabrechnung separat verwalten soll.
+  </Step>
+
+  <Step title="Integrationen verbinden">
+    Erstelle bei Bedarf account-spezifische API-Keys, Webhooks, Secrets und Integrationen für den Kunden-Account.
+  </Step>
+
+  <Step title="Kunden-Nutzer einladen, falls erforderlich">
+    Lade Kunden-Nutzer nur ein, wenn sie direkt auf ihren eigenen Subaccount zugreifen sollen.
+  </Step>
+</Steps>
+
+### Szenario 2: Unternehmen mit regionaler oder abteilungsweiser Trennung
+
+<Steps>
+  <Step title="Eine primäre Grenze wählen">
+    Entscheide, ob die erste Account-Ebene Regionen, Marken, Abteilungen oder Geschäftsbereiche repräsentieren soll. Vermeide Verschachtelung, wenn sie aus Governance-Sicht nicht wirklich notwendig ist.
+  </Step>
+
+  <Step title="Subaccounts erstellen">
+    Erstelle einen Subaccount pro Grenze, z. B. Nordamerika, Europa, Vertrieb, Support oder Betrieb.
+  </Step>
+
+  <Step title="Manager zuweisen">
+    Mache den verantwortlichen Manager oder Abteilungsleiter zum Owner jedes Subaccounts.
+  </Step>
+
+  <Step title="Berechtigungen konfigurieren">
+    Parent-Account-Admins behalten über den Parent-Account die Übersicht, während jeder Subaccount sein eigenes Team und seine eigenen Ressourcen verwaltet.
+  </Step>
+</Steps>
+
+### Szenario 3: Agentur verwaltet einen kundeneigenen Account
+
+Für Agentur-Zugriffsszenarien, bei denen der Kunde den Account besitzt und die Abrechnung direkt verwaltet, siehe [Client Service Models](/de/accounts/agency-playbook).
+
+## Account-Lebenszyklus verwalten
+
+### Account pausieren oder reaktivieren
+
+Die Account-Aktivierung ist keine Self-Service-Einstellung in der Account-Benutzeroberfläche. Um den Zugriff auf einen Account zu pausieren oder wiederherzustellen, kontaktiere [support@itellico.ai](mailto:support@itellico.ai) mit dem Account-Namen und der Account-ID.
+
+### Subaccounts übertragen
+
+Um einen Subaccount zu einem anderen Parent zu verschieben oder ihn zu einem Haupt-Account zu machen:
+
+Kontaktiere den Support mit:
+- Aktuellem Parent-Account-Namen und ID
+- Zu übertragendem Subaccount
+- Gewünschtem neuen Parent (oder "in Haupt-Account umwandeln")
+- Geschäftlichem Grund für die Übertragung
+
+<Warning>
+Die Übertragung von Subaccounts wirkt sich auf die Abrechnung aus. Stelle sicher, dass du die Abrechnungsauswirkungen verstehst, bevor du eine Übertragung anforderst.
+</Warning>
+
+## Fehlerbehebung
+
+<AccordionGroup>
+  <Accordion title="Kann keinen Subaccount erstellen" icon="circle-exclamation">
+    **Mögliche Ursachen:**
+    - Kein Admin oder Owner des Parent-Accounts
+    - Abo enthält keine Subaccounts
+    - Abo-Limit für Subaccounts erreicht
+
+    **Lösung:** Prüfe deinen Abo-Plan. Kontaktiere [support@itellico.ai](mailto:support@itellico.ai), wenn du ein Upgrade benötigst.
+  </Accordion>
+
+  <Accordion title="Account im Switcher nicht sichtbar" icon="eye-slash">
+    **Mögliche Ursachen:**
+    - Kein Mitglied dieses Accounts
+    - Account wurde deaktiviert
+    - Account wurde gelöscht
+
+    **Lösung:** Bitte einen Admin dieses Accounts zu prüfen, ob er noch aktiv ist und ob du noch Mitglied bist.
+  </Accordion>
+
+  <Accordion title="Zugriff nach Account-Wechsel verloren" icon="lock">
+    **Das ist normales Verhalten:** Wenn du Accounts wechselst, siehst du nur die Daten dieses Accounts.
+
+    **Lösung:** Wechsle über den Account-Switcher zurück zum ursprünglichen Account.
+  </Accordion>
+
+  <Accordion title="Kann Account nicht löschen" icon="trash">
+    **Mögliche Ursachen:**
+    - Kein Owner des Accounts
+    - Account hat aktive Subaccounts
+    - Account-Löschung erfordert Support-Bestätigung
+
+    **Lösung:** Kontaktiere [support@itellico.ai](mailto:support@itellico.ai). Gib den Account-Namen, die Account-ID und alle Subaccounts an, die zuerst übertragen oder archiviert werden müssen.
   </Accordion>
 </AccordionGroup>
 
