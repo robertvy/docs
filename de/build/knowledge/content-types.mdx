@@ -1,248 +1,559 @@
 ---
-title: "Inhaltstypen"
-description: "Verstehe die unterstützten Content-Typen für Knowledge Items"
+title: "Inhaltstypen & Verarbeitung"
+description: "Verstehe Text-, Datei-, URL- und Website-Crawl-Knowledge-Items und wie sie verarbeitet werden"
 icon: "file-lines"
-keywords: "knowledge content types, text items, file uploads, URL items, website crawl items"
-"og:description": "Lerne die unterstützten Content-Typen für Knowledge Items kennen - Text, Datei, URL und Website Crawl."
-"og:title": "Inhaltstypen"
+keywords: "knowledge base file types, PDF processing, URL ingestion, text knowledge, document processing, content types, knowledge sources"
+"og:description": "Lerne über Text-, Datei-, URL- und Website-Crawl-Knowledge-Items und wie sie für KI-Agenten-Knowledge-Bases verarbeitet werden."
+"og:title": "Inhaltstypen & Verarbeitung"
 ---
+
+
 
 import { Screenshot } from "/snippets/screenshot.mdx";
 
-## Unterstützte Content-Typen
+## Unterstützte Inhaltstypen
 
-<Screenshot lightSrc="/images/knowledge__content-type-selection_DE-light.png" darkSrc="/images/knowledge__content-type-selection_DE-dark.png" alt="Übersicht der Knowledge-Base-Content-Typen" />
+itellicoAI unterstützt vier Typen von Knowledge-Items, die jeweils für unterschiedliche Inhaltsquellen und Anwendungsfälle konzipiert sind. Das Verständnis der Funktionsweise jedes Typs hilft dir, das richtige Format für deine Informationen zu wählen. Hinweise zur Organisation dieser Items findest du unter [Knowledge-Base-Architektur](/build/knowledge/architecture).
+
+<Screenshot
+  lightSrc="/images/knowledge__content-type-selection-light.png"
+  darkSrc="/images/knowledge__content-type-selection-dark.png"
+  alt="Auswahl des Inhaltstyps mit den Optionen Text Content, Upload File, Web Page und Website Crawl"
+/>
 
 <CardGroup cols={2}>
-  <Card title="Text" icon="text">
-    Direkter, von dir geschriebener Inhalt
+  <Card title="Text-Items" icon="text">
+    Inhalt direkt über den integrierten Editor eingeben
   </Card>
-  <Card title="File" icon="file-arrow-up">
-    Hochgeladene Dokumente wie PDF, Word, Excel, JSON, YAML und XML
+  <Card title="Datei-Uploads" icon="file-pdf">
+    PDF-, Word-, Excel-, Text-, Markdown-, CSV-, JSON-, YAML- und XML-Dateien bis 10 MB hochladen
   </Card>
-  <Card title="URL" icon="link">
-    Inhalte von einer einzelnen Web-Seite
+  <Card title="URL-Scraping" icon="link">
+    Inhalt von einer einzelnen Webseite abrufen
   </Card>
-  <Card title="Website" icon="globe">
-    Mehrere Seiten, die von einer Website gecrawlt werden
+  <Card title="Website Crawl" icon="globe">
+    Mehrere Seiten einer öffentlichen Website entdecken und importieren
   </Card>
 </CardGroup>
 
 ---
 
-## Text Items
+## Text-Items
 
-### Was sind Text Items?
+### Was sind Text-Items?
 
-Text Items sind manuell geschriebene Wissenseinträge. Nutze sie für kurze, strukturierte oder häufig aktualisierte Inhalte.
+Text-Items sind Inhalte, die du direkt in den itellicoAI-Knowledge-Base-Editor eingibst. Sie sind der unkomplizierteste und zuverlässigste Inhaltstyp – sofort verfügbar ohne Verarbeitungsverzögerung.
 
-### Wie du ein Text Item hinzufügst
+### Wie du ein Text-Item hinzufügst
 
 <Steps>
-  <Step title="Knowledge Base öffnen">
-    Öffne deine Knowledge Base und klicke auf **Add Item**.
+  <Step title="Zum Ordner navigieren">
+    Öffne den Ordner, in dem du das Item hinzufügen möchtest.
   </Step>
-  <Step title="Text Content wählen">
-    Wähle **Text Content**.
+
+  <Step title="'Add Item' klicken">
+    Klicke auf **Add Item**, um ein neues Item zu erstellen.
   </Step>
-  <Step title="Titel und Inhalt eingeben">
-    Gib einen klaren Titel und den eigentlichen Inhalt ein.
+
+  <Step title="'Text Content' wählen">
+    Wähle **Text Content** aus den Inhaltstyp-Optionen.
   </Step>
-  <Step title="Create klicken">
-    Speichere das Item.
+
+  <Step title="Titel eingeben">
+    Gib deinem Item einen klaren, beschreibenden Titel.
+  </Step>
+
+  <Step title="Inhalt schreiben">
+    Gib deinen Inhalt in den Editor ein. Nutze Formatierung für mehr Klarheit:
+    - Überschriften für Abschnitte
+    - Aufzählungspunkte für Listen
+    - Nummern für Schrittfolgen
+    - Fettschrift für Hervorhebungen
+  </Step>
+
+  <Step title="'Create' klicken">
+    Speichere dein Text-Item. Es wird sofort grün.
   </Step>
 </Steps>
 
 ### Best Practices
 
 <CardGroup cols={2}>
-  <Card title="Ein Thema pro Item" icon="bullseye">
-    Halte Items fokussiert.
+  <Card title="Für Retrieval strukturieren" icon="sitemap">
+    Schreibe Inhalt in klaren, in sich geschlossenen Abschnitten. Jeder Abschnitt sollte eine spezifische Frage beantworten, damit RAG (Retrieval-Augmented Generation) fokussierte Ergebnisse zurückgibt.
   </Card>
-  <Card title="Klar und konkret" icon="comment">
-    Schreib so, dass der Agent die Antwort leicht extrahieren kann.
+  <Card title="Beschreibende Titel verwenden" icon="heading">
+    Verbessere Organisation und Retrieval-Genauigkeit mit klaren Namen wie "Rückgaberichtlinie – Digitale Produkte" statt "Richtlinie 4".
   </Card>
 </CardGroup>
 
-### Wann du Text Items nutzen solltest
+### Wann du Text-Items nutzen solltest
 
 <AccordionGroup>
-  <Accordion title="FAQs" icon="circle-question">
-    Kurze, wiederholte Fragen und Antworten.
+  <Accordion title="FAQs schreiben" icon="circle-question">
+    Erstelle Frage-und-Antwort-Paare direkt im System.
+
+    **Beispiel:**
+    ```text wrap
+    Title: How do I reset my password?
+
+    Content:
+    To reset your password:
+
+    1. Go to the login page
+    2. Click "Forgot Password"
+    3. Enter your email address
+    4. Check your email for a reset link
+    5. Click the link and create a new password
+
+    Password requirements:
+    - Minimum 8 characters
+    - At least one uppercase letter
+    - At least one number
+    - At least one special character
+
+    If you don't receive the email within 5 minutes, check your spam
+    folder or contact support@company.com.
+    ```
   </Accordion>
-  <Accordion title="Policies" icon="shield">
-    Kompakte Richtlinien und Regeln.
+
+  <Accordion title="Richtlinien zusammenfassen" icon="book">
+    Schreibe klare, prägnante Richtlinienaussagen.
+
+    **Beispiel:**
+    ```text wrap
+    Title: Return Policy - Digital Products
+
+    Content:
+    Digital products can be refunded within 30 days of purchase if:
+
+    Eligible for refund:
+    - Product has a technical defect preventing usage
+    - Product description was materially inaccurate
+    - Customer has not accessed or downloaded the product
+
+    Not eligible for refund:
+    - Change of mind after accessing the product
+    - Compatibility issues disclosed in product description
+    - User error or misunderstanding of features
+
+    To request a refund:
+    Email support@company.com with your order number and reason
+    for the refund request.
+
+    Processing time: 5-7 business days
+    Refund method: Original payment method
+    ```
   </Accordion>
-  <Accordion title="How-Tos" icon="list-check">
-    Kurze Schrittfolgen oder Referenzinfos.
+
+  <Accordion title="Abläufe dokumentieren" icon="list-check">
+    Schritt-für-Schritt-Anweisungen für Prozesse.
+
+    **Beispiel:**
+    ```
+    Title: Order Modification Process
+
+    Content:
+    Customers can modify orders within 24 hours of placement.
+
+    What can be modified:
+    - Shipping address
+    - Delivery speed
+    - Item quantities (if inventory available)
+
+    What cannot be modified:
+    - Payment method (must cancel and reorder)
+    - Items after processing has begun
+    - Orders placed more than 24 hours ago
+
+    Modification process:
+    1. Customer contacts support via phone or email
+    2. Agent verifies order is within modification window
+    3. Agent checks inventory for requested changes
+    4. Agent updates order in system
+    5. Customer receives confirmation email
+
+    If order has already shipped, customer must use return process instead.
+    ```
+  </Accordion>
+
+  <Accordion title="Schnellreferenz-Informationen" icon="clock">
+    Kurze, häufig benötigte Informationen.
+
+    **Beispiel:**
+    ```
+    Title: Business Hours & Contact Information
+
+    Content:
+    Customer Support:
+    - Phone: 1-800-555-0123
+    - Email: support@company.com
+    - Hours: Monday-Friday, 9 AM - 6 PM EST
+    - After-hours: emergency@company.com (urgent issues only)
+
+    Sales:
+    - Phone: 1-800-555-0124
+    - Email: sales@company.com
+    - Hours: Monday-Friday, 8 AM - 8 PM EST
+
+    Billing:
+    - Phone: 1-800-555-0125
+    - Email: billing@company.com
+    - Hours: Monday-Friday, 9 AM - 5 PM EST
+    ```
   </Accordion>
 </AccordionGroup>
 
 ### Einschränkungen
 
+- Keine Dateianhänge möglich – Inhalt muss getippt oder eingefügt werden
+- Große Inhaltsmengen lassen sich besser als Datei-Uploads verwalten
+
 <Tip>
-Halte Text Items knapp. Wenn ein Thema sehr groß wird, splitte es in mehrere Items oder verwende eine Datei.
+Text-Items sind der zuverlässigste Inhaltstyp. Gib Inhalt wenn möglich als Text ein, anstatt Dateien hochzuladen.
 </Tip>
 
 ---
 
-## File Upload Items
+## Datei-Upload-Items
 
-### Was sind File Upload Items?
+### Was sind Datei-Upload-Items?
 
-Datei-Items sind hochgeladene Dokumente, die dein Agent später abrufen kann.
+Datei-Upload-Items ermöglichen das Hochladen bestehender Dokumente in verschiedenen Formaten. Das System extrahiert den Textinhalt und stellt ihn deinen Agenten zur Verfügung.
 
-### Wie du ein File Item hinzufügst
+### Wie du ein Datei-Item hinzufügst
 
 <Steps>
-  <Step title="Add Item">
-    Klicke auf **Add Item**.
+  <Step title="Zum Ordner navigieren">
+    Öffne den Ordner, in dem du die Datei hinzufügen möchtest.
   </Step>
-  <Step title="Upload File wählen">
-    Wähle **Upload File**.
+
+  <Step title="'Add Item' klicken">
+    Klicke auf **Add Item**, um ein neues Item zu erstellen.
   </Step>
-  <Step title="Datei auswählen">
-    Lade die Datei hoch und vergebe einen Titel.
+
+  <Step title="'Upload File' wählen">
+    Wähle **Upload File** aus den Inhaltstyp-Optionen.
+  </Step>
+
+  <Step title="Titel eingeben">
+    Gib deiner Datei einen beschreibenden Titel (dieser ist vom Dateinamen unabhängig).
+  </Step>
+
+  <Step title="Datei hochladen">
+    Klicke auf **Upload** und wähle dein Dokument vom Computer aus.
+  </Step>
+
+  <Step title="'Create' klicken">
+    Das System lädt die Datei hoch und beginnt mit der Verarbeitung.
+
+    Das Item wird orange während der Verarbeitung und grün, sobald es einsatzbereit ist.
   </Step>
 </Steps>
 
 ### Verarbeitungsdetails
 
-Dateien werden verarbeitet und indexiert, damit der Agent relevante Abschnitte abrufen kann.
+Das System verwendet fortschrittliche Dokumentenanalyse, um Text aus hochgeladenen Dateien zu extrahieren:
+
+- **Textextraktion** – Bei textbasierten PDFs und Word-Dokumenten wird der Inhalt direkt extrahiert
+- **OCR (Optical Character Recognition) – Technologie, die Text aus gescannten Bildern liest** – Die Plattform verarbeitet gescannte Dokumente und Bilder in PDFs mit OCR
+- **Chunking** – Extrahierter Inhalt wird in Chunks für die Vektorindexierung aufgeteilt (Inhalt für semantische Suche vorbereiten), um Retrieval zu ermöglichen
+
+**Dateispezifikationen:**
+- **Formate:** PDF, Word (.doc, .docx), Excel (.xlsx), Text (.txt, .log), Markdown (.md), CSV/TSV (Datenformate), JSON (Datenformate), YAML (.yaml, .yml) (Datenformate), XML (Datenformate)
+- **Größenlimit:** maximal 10 MB
+- **Inhalt:** Textbasierte Dokumente und gescannte Bilder (erweiterte Analyse verarbeitet die meisten Scans)
+- **Schutz:** Kein Passwortschutz
+
+Die Verarbeitung kann je nach Dateigröße und Analyseschwierigkeitsgrad bis zu mehreren Minuten dauern.
 
 ### Best Practices
 
 <CardGroup cols={2}>
-  <Card title="Saubere, klare Dateien" icon="file">
-    Vermeide überflüssige Inhalte.
+  <Card title="Vor dem Upload optimieren" icon="compress">
+    - Große Dateien komprimieren
+    - Unnötige Bilder entfernen
+    - Wenn möglich, textbasierte Dokumente verwenden
+    - Unter 5 MB halten für schnellere Verarbeitung
   </Card>
-  <Card title="Relevante Ausschnitte" icon="scissors">
-    Extrahiere nur den Teil, den der Agent braucht.
+  <Card title="Extraktion testen" icon="vial">
+    - Extrahierten Inhalt nach der Verarbeitung prüfen
+    - Auf Formatierungsprobleme achten
+    - Korrektheit kritischer Informationen verifizieren
+    - Bei schlechter Extraktion neu hochladen
   </Card>
 </CardGroup>
 
 ### Einschränkungen
 
-Größe und Format müssen unterstützt sein.
+- Maximale Dateigröße von 10 MB
+- Passwortgeschützte Dateien können nicht verarbeitet werden
+- Sehr schlechte Scans können unvollständigen oder ungenauen Text erzeugen
+- Komplexe Layouts (mehrspaltig, aufwendige Tabellen) werden möglicherweise nicht perfekt extrahiert – extrahierten Inhalt prüfen und bei Bedarf in Text-Items umwandeln
 
-### Troubleshooting
+### Fehlerbehebung
 
 <AccordionGroup>
-  <Accordion title="Datei verarbeitet nicht" icon="xmark">
-    Datei ist möglicherweise beschädigt, zu groß oder passwortgeschützt.
+  <Accordion title="Verarbeitung fehlgeschlagen" icon="circle-xmark">
+    **Ursachen:**
+    - Datei überschreitet 10 MB
+    - Datei ist passwortgeschützt
+    - Datei ist beschädigt
+    - Sehr schlechte Qualität gescannter Bilder
+
+    **Lösungen:**
+    - Datei komprimieren oder in kleinere Dateien aufteilen
+    - Passwortschutz entfernen
+    - Datei aus der Quelle neu exportieren
+    - Bei sehr schlechten Scans Inhalt in ein Text-Item kopieren
   </Accordion>
-  <Accordion title="Antworten sind ungenau" icon="magnifying-glass">
-    Datei möglicherweise zu groß oder zu unscharf strukturiert. Splitte Inhalte besser auf.
+
+  <Accordion title="Inhalt falsch extrahiert" icon="text-slash">
+    **Ursachen:**
+    - Komplexe Layouts (mehrspaltiger Satz, Tabellen)
+    - Sehr schlechte Qualität gescannter Bilder
+    - Spezielle Schriftarten oder Zeichenkodierungen
+    - Formularfelder und interaktive Elemente
+
+    **Lösungen:**
+    - Extrahierten Inhalt im Bearbeitungsmodus prüfen
+    - Als Text-Item mit korrekter Formatierung neu erstellen
+    - Dokumentenlayout vor dem Hochladen vereinfachen
+    - Als reines Textdokument exportieren
+  </Accordion>
+
+  <Accordion title="Verarbeitung dauert zu lang" icon="clock">
+    **Vorgehen:**
+    - 5–10 Minuten warten, bevor ein Fehler angenommen wird
+    - Dateigröße und Seitenanzahl prüfen
+    - Für große Dateien in mehrere Dateien aufteilen
+    - In Text konvertieren und als TEXT-Items hochladen
   </Accordion>
 </AccordionGroup>
 
 ---
 
-## URL Items
+## URL-Items
 
-### Was sind URL Items?
+### Was sind URL-Items?
 
-URL Items ziehen Inhalte von einer einzelnen öffentlichen Web-Seite.
+URL-Items scrapen den Inhalt einer einzelnen Webseite und speichern ihn in deiner Knowledge Base. Das ist nützlich, um auf eine bestimmte Online-Dokumentationsseite, einen Hilfe-Artikel oder einen Blog-Beitrag zu verweisen.
 
-### Wie du ein URL Item hinzufügst
+### Wie du ein URL-Item hinzufügst
 
 <Steps>
-  <Step title="Add Item">
-    Klicke auf **Add Item**.
+  <Step title="Zum Ordner navigieren">
+    Öffne den Ordner, in dem du die URL hinzufügen möchtest.
   </Step>
-  <Step title="Web Page wählen">
-    Wähle **Web Page**.
+
+  <Step title="'Add Item' klicken">
+    Klicke auf **Add Item**, um ein neues Item zu erstellen.
   </Step>
-  <Step title="URL eingeben">
-    Füge die Ziel-URL ein.
+
+  <Step title="'Web Page' wählen">
+    Wähle **Web Page** aus den Inhaltstyp-Optionen.
+  </Step>
+
+  <Step title="Titel eingeben">
+    Gib dem Inhalt einen beschreibenden Titel.
+  </Step>
+
+  <Step title="Quell-URL eingeben">
+    Füge die vollständige URL inklusive `https://` ein
+
+    **Beispiel:**
+    ```
+    https://docs.company.com/api/authentication
+    ```
+  </Step>
+
+  <Step title="'Create' klicken">
+    Das System ruft die Webseite ab und verarbeitet sie.
+
+    Das Item wird orange während der Verarbeitung und grün, sobald es einsatzbereit ist.
   </Step>
 </Steps>
 
 ### Verarbeitungsdetails
 
-Der Inhalt der Seite wird abgerufen und in die Knowledge Base aufgenommen.
+Wenn du ein URL-Item hinzufügst, führt das System folgendes durch:
+
+1. **Abrufen** der Seite unter der angegebenen URL
+2. **Extrahieren** des Haupttextinhalts, wobei Navigation, Werbung und Boilerplate entfernt werden
+3. **Speichern** des extrahierten Texts als Inhalt des Knowledge-Items
+4. **Indexieren** des Inhalts für die Vektorsuche, genau wie bei Text- und Datei-Items
+
+Das System scrapt Inhalt einmalig bei der Erstellung. Zum Aktualisieren das URL-Item löschen und neu erstellen.
 
 ### Best Practices
 
 <CardGroup cols={2}>
-  <Card title="Einfache Seiten" icon="globe">
-    Nutze Seiten mit sauberem Text.
+  <Card title="Erreichbarkeit prüfen" icon="unlock">
+    - URL zuerst im Inkognito-Fenster öffnen
+    - Prüfen, ob kein Login erforderlich ist
+    - Sicherstellen, dass Inhalt ohne JavaScript sichtbar ist
+    - Sicherstellen, dass die Seite schnell lädt
   </Card>
-  <Card title="Stabile Inhalte" icon="clock">
-    Gute Wahl für Inhalte, die sich selten ändern.
+  <Card title="Gescrapten Inhalt prüfen" icon="eye">
+    - Inhalt nach dem Scraping prüfen
+    - Verifizieren, dass der richtige Inhalt erfasst wurde
+    - Auf Formatierungsprobleme achten
+    - Sicherstellen, dass kein Zusatzinhalt (Werbung, Seitenleisten) aufgenommen wurde
   </Card>
 </CardGroup>
 
 ### Einschränkungen
+
+- **Authentifizierung** – Seiten mit Login-Anforderung können nicht gescrapt werden
+- **JavaScript-intensive Seiten** – Single-Page-Applications und dynamisch geladener Inhalt werden möglicherweise nicht erfasst
+- **Bezahlschranken** – Inhalt hinter Paywalls ist nicht zugänglich
+- **Kein automatisches Aktualisieren** – Inhalt wird einmalig gescrapt; das Item muss neu erstellt werden, um es zu aktualisieren
+- **robots.txt (eine Datei, mit der Websites den automatisierten Zugriff steuern)** – Websites, die Scraping blockieren, schlagen fehl
 
 <Note>
-Seiten mit Authentifizierung oder starkem JavaScript sind möglicherweise ungeeignet.
+URL-Scraping funktioniert am besten mit einfachen, textbasierten Webseiten. Wenn das Scraping fehlschlägt oder unvollständigen Inhalt liefert, kopiere den Inhalt stattdessen manuell in ein Text-Item.
 </Note>
 
-### Troubleshooting
+### Fehlerbehebung
 
 <AccordionGroup>
-  <Accordion title="Scrape fehlschlägt" icon="xmark">
-    Prüfe URL, Zugriff und Seitenstruktur.
+  <Accordion title="Scraping fehlgeschlagen" icon="circle-xmark">
+    **Ursachen:**
+    - Seite erfordert Login/Authentifizierung
+    - URL ist falsch oder defekt
+    - Inhalt wird per JavaScript geladen
+    - Website blockiert Scraping (robots.txt)
+    - Seite existiert nicht (404)
+
+    **Lösungen:**
+    - Prüfen, ob URL öffentlich zugänglich ist
+    - URL im Inkognito-Browserfenster testen
+    - Prüfen, ob URL vollständig und korrekt ist
+    - Inhalt manuell in Text-Item kopieren
+    - Seite stattdessen als PDF exportieren und hochladen
+  </Accordion>
+
+  <Accordion title="Inhalt unvollständig oder falsch" icon="puzzle-piece">
+    **Ursachen:**
+    - JavaScript-gerenderter Inhalt nicht erfasst
+    - Dynamisch geladener Inhalt
+    - Mehrere Tabs/Abschnitte auf der Seite
+    - Kommentare oder Seitenleisten statt Hauptinhalt gescrapt
+
+    **Lösungen:**
+    - Gescrapten Inhalt im Bearbeitungsmodus prüfen
+    - Direkte URL zu einem bestimmten Inhaltsabschnitt verwenden
+    - Gewünschten Inhalt in Text-Item kopieren
+    - Seite als PDF exportieren und stattdessen hochladen
+  </Accordion>
+
+  <Accordion title="Inhalt veraltet" icon="calendar">
+    **Lösung:**
+    Einzelseiten-URL-Inhalt wird einmalig bei der Erstellung gescrapt. Zum Aktualisieren:
+    - URL-Item löschen und neu erstellen
+    - Oder aktuellen Inhalt in ein Text-Item kopieren für manuelle Aktualisierungen
+
+    Für häufig ändernde Inhalte erwägen:
+    - Manuelle Text-Items, die du regelmäßig aktualisierst
+    - PDF-Exporte, die du regelmäßig aktualisierst
   </Accordion>
 </AccordionGroup>
 
 ---
 
-## Website Crawl Items
+## Website-Crawl-Items
 
-### Was sind Website Crawl Items?
+### Was sind Website-Crawl-Items?
 
-Website Crawl Items entdecken und importieren mehrere Seiten von derselben Website.
+Website-Crawl-Items entdecken mehrere öffentliche Seiten einer Website und importieren die von dir ausgewählten Seiten. Verwende diesen Typ, wenn eine Wissensquelle mehrere URLs umfasst, wie etwa ein Help Center oder eine Dokumentations-Website.
 
 ### Wie du einen Website Crawl hinzufügst
 
 <Steps>
-  <Step title="Add Item">
-    Klicke auf **Add Item**.
+  <Step title="Zum Ordner navigieren">
+    Öffne den Ordner, in dem du den Crawl hinzufügen möchtest.
   </Step>
-  <Step title="Website Crawl wählen">
-    Wähle **Website Crawl**.
+
+  <Step title="'Add Item' klicken">
+    Klicke auf **Add Item**, um ein neues Item zu erstellen.
   </Step>
-  <Step title="URL eingeben und entdecken">
-    Füge die Website ein und nutze **Discover URLs**.
+
+  <Step title="'Website Crawl' wählen">
+    Wähle **Website Crawl** aus den Inhaltstyp-Optionen.
+  </Step>
+
+  <Step title="Website-URL eingeben">
+    Füge die Website-URL ein und klicke auf **Discover URLs**.
+  </Step>
+
+  <Step title="Seiten auswählen">
+    Prüfe die entdeckten Seiten, wähle die gewünschten aus und klicke auf **Import Selected**.
   </Step>
 </Steps>
 
 ### Crawl-Einstellungen
 
-Lege fest, wie viele Seiten entdeckt und aktualisiert werden sollen.
+Öffne **Advanced options** vor der Entdeckung, um den Crawl-Umfang und das Aktualisierungsverhalten zu steuern.
+
+| UI-Einstellung | Standard | Was sie steuert | Wann ändern |
+| --- | --- | --- | --- |
+| **Max pages to discover** | `100` | Die maximale Anzahl von URLs, die von der Startseite entdeckt werden. Verfügbare Werte sind `25`, `50`, `100`, `250` und `500`. Dies begrenzt nur die Entdeckung; du wählst weiterhin selbst aus, welche entdeckten Seiten importiert werden. | Verringern für kleine Websites oder schnelle Tests. Erhöhen für größere Help Center oder Dokumentations-Websites. |
+| **Auto-refresh interval** | `Never` | Wie oft das System bereits importierte Seiten neu synchronisiert. Optionen sind `Never`, `Every 24 hours`, `Every 7 days` und `Every 30 days`. | `Every 7 days` oder `Every 30 days` für öffentliche Dokumentationen, Preisseiten, Richtlinien oder Help-Center-Seiten verwenden, die sich im Laufe der Zeit ändern. |
+| **Include subdomains** | Aus | Ob bei der Entdeckung auch Seiten unter Subdomains des Starthosts berücksichtigt werden. Bei Start von `docs.example.com` sind damit Hosts wie `api.docs.example.com` erlaubt; Geschwister-Domains wie `help.example.com` sind nicht eingeschlossen. | Nur aktivieren, wenn die zu importierende Website auf mehrere Subdomains desselben Hosts verteilt ist. |
+| **Discover new pages on refresh** | Aus, ausgeblendet wenn Auto-refresh `Never` ist | Wenn Refresh aktiviert ist, kann das System die Entdeckung erneut ausführen und neu gefundene Seiten zur Prüfung bereitstellen. Neu entdeckte Seiten werden nicht automatisch eingeschlossen. | Aktivieren, wenn die Website regelmäßig neue Seiten hinzufügt und du diese über **View pages** prüfen möchtest. |
+
+Nach dem Import erscheint das Website-Stammverzeichnis als Website-Item. Nutze **View pages**, um einzelne Seiten ein- oder auszuschließen, URLs innerhalb der Crawl-Domain hinzuzufügen, Seiten neu zu entdecken oder Seiteninhalte neu zu synchronisieren. Unter **View pages** kannst du das Refresh-Intervall und das automatische Entdeckungsverhalten aktualisieren; die ursprüngliche Seitenanzahl und der Subdomain-Umfang werden bei der Entdeckung festgelegt.
 
 ### Einschränkungen
 
-Crawler sollten für öffentliche, gut strukturierte Websites genutzt werden.
+- Öffentliche Seiten funktionieren am besten; authentifizierungspflichtige Seiten werden nicht unterstützt
+- JavaScript-intensive Seiten werden möglicherweise nicht sauber extrahiert
+- Crawls zählen zum Knowledge-Base-Limit für URL-/Website-Items
+- Importierte Seiten müssen zunächst die Inhaltsverarbeitung und Vektorindexierung erfolgreich abschließen, bevor RAG sie abrufen kann
 
 ---
 
-## Verarbeitungsstatus
+## Verarbeitungs-Status-Flow
 
-### Status
+Knowledge-Items durchlaufen zwei separate Verarbeitungs-Pipelines:
 
-- **Pending**
-- **Processing**
-- **Ready**
-- **Error**
+1. **Inhaltsverarbeitung** – Text aus Dateien, URLs und Website-Seiten extrahieren
+2. **Vektorindexierung** – Inhalt für RAG (semantische Suche) vorbereiten
+
+### Verarbeitungsstatus
+
+Orange bedeutet, dass das Item noch verarbeitet wird. Grün bedeutet, es ist einsatzbereit. Wenn ein Item einen Fehler anzeigt, klicke auf **Reindex**, um es erneut zu versuchen.
 
 ---
 
-## Die richtige Content-Art wählen
+## Den richtigen Inhaltstyp wählen
 
-Nutze Text für kurze Inhalte, Dateien für Dokumente, URL für einzelne Seiten und Website Crawl für mehrseitige Websites.
+| Deine Situation | Bester Inhaltstyp |
+|----------------|-------------------|
+| FAQs von Grund auf schreiben | TEXT |
+| Vorhandene Word-/PDF-Dokumente unter 10 MB | FILE |
+| Dokumente über 10 MB | In kleinere Dateien aufteilen oder in TEXT extrahieren |
+| Eine einzelne öffentliche Webseite | URL (mit TEXT als Backup) |
+| Mehrseitige öffentliche Dokumentation oder Help Center | Website Crawl |
+| Private/authentifizierungspflichtige Inhalte | In TEXT kopieren |
+| Sofortige Verfügbarkeit benötigt | TEXT (keine Verarbeitungsverzögerung) |
+| Komplexe Formatierung ist wichtig | FILE |
 
 ---
 
 ## Nächste Schritte
 
 <CardGroup cols={2}>
-  <Card title="Create Knowledge Bases" icon="plus" href="/de/build/knowledge/create-knowledge-bases">
-    Deine Knowledge Base aufbauen
+  <Card title="Context vs. RAG" icon="brain" href="/build/knowledge/context-vs-rag">
+    Erfahre, wie Agenten auf deine Wissensinhalte zugreifen
   </Card>
-  <Card title="Assign to Agents" icon="link" href="/de/build/knowledge/assign-knowledge">
-    Knowledge mit Agenten verbinden
+  <Card title="Knowledge Bases erstellen" icon="plus" href="/build/knowledge/create-knowledge-bases">
+    Schritt-für-Schritt-Anleitung zur Erstellung folgen
+  </Card>
+  <Card title="Architektur-Übersicht" icon="sitemap" href="/build/knowledge/architecture">
+    Struktur der Knowledge Base verstehen
+  </Card>
+  <Card title="Template-Syntax" icon="brackets-curly" href="/build/conversation/template-syntax">
+    Wissen im Agenten-Prompt referenzieren
   </Card>
 </CardGroup>

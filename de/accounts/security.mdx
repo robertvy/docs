@@ -1,30 +1,173 @@
 ---
 title: "Sicherheit"
-description: "Sichere Authentifizierung, Sessions und Zugriffe auf Account-Ebene ab."
-icon: "shield-halved"
-keywords: "security, authentication, sessions, access control"
-"og:description": "Sichere Anmeldungen, Sitzungen und Account-Zugriffe ab."
+description: "Verwalte MFA, Passwort, Sessions und Account-Authentifizierungsmethoden"
+icon: "shield-check"
+keywords: "sicherheit, MFA, zwei-faktor-authentifizierung, passwort, sessions, anmeldeaktivität, social login"
+"og:description": "Sichere deinen itellicoAI-Account mit MFA, Passwortverwaltung, Session-Steuerung und Überprüfung der Anmeldeaktivität."
 "og:title": "Sicherheit"
 ---
 
-## Überblick
+import { Screenshot } from "/snippets/screenshot.mdx";
 
-Verwende Security, um den Zugriff auf den Account zu härten und Sessions sauber zu kontrollieren.
+## Sicherheitseinstellungen
 
-## Typische Maßnahmen
+Die Sicherheitsseite bündelt alle Steuerungselemente für Authentifizierung und Account-Schutz.
 
-- starke Authentifizierung
-- Sitzungskontrolle
-- Zugriffsbeschränkungen
-- regelmäßige Prüfung von Berechtigungen
+**Zugriff:** Gehe zu **Einstellungen → Profil → Sicherheit**.
+
+<Screenshot
+  lightSrc="/images/accounts__security-light.png"
+  darkSrc="/images/accounts__security-dark.png"
+  alt="Sicherheitsseite mit Authentifizierungsmethoden, verknüpften Accounts, aktiven Sessions und Anmeldeaktivität"
+/>
+
+## Authentifizierungsmethoden
+
+Der obere Bereich enthält:
+
+- **E-Mail** (Verifizierungs- und Änderungsablauf)
+- **Passwort** (festlegen/ändern)
+- **Telefon** (hinzufügen/bearbeiten)
+- **MFA**-Status und -Verwaltung
+
+## Multi-Faktor-Authentifizierung (MFA)
+
+itellicoAI unterstützt Authentifizierungs-App-MFA (TOTP) mit Wiederherstellungscodes.
+
+### MFA aktivieren
+
+<Steps>
+  <Step title="Sicherheit öffnen">
+    Gehe zu **Einstellungen → Profil → Sicherheit**.
+  </Step>
+
+  <Step title="MFA aktivieren">
+    Klicke in der MFA-Zeile auf **Aktivieren**.
+  </Step>
+
+  <Step title="Authenticator-Einrichtung abschließen">
+    Folge dem TOTP-Einrichtungsablauf und bestätige mit einem gültigen Code.
+  </Step>
+
+  <Step title="Wiederherstellungscodes speichern">
+    Bewahre deine Wiederherstellungscodes an einem sicheren Ort auf.
+  </Step>
+</Steps>
+
+### MFA deaktivieren
+
+Du kannst MFA im selben Bereich deaktivieren. Der Ablauf erfordert eine Sicherheitsbestätigung.
+
+<Warning>
+Das Deaktivieren von MFA verringert die Account-Sicherheit. Halte MFA in produktiven Accounts stets aktiviert.
+</Warning>
+
+## Empfohlene Mindestabsicherung
+
+Für die meisten Business-Nutzer ist folgende Grundkonfiguration empfehlenswert:
+
+- Passwort gesetzt und aktuell
+- MFA aktiviert
+- Wiederherstellungscodes sicher gespeichert
+- Unbekannte Sessions widerrufen
+
+## Passwortverwaltung
+
+Ändere dein Passwort über die Sicherheitsseite.
+
+Das aktuelle Passwort ist erforderlich, und neue Passwörter müssen die aktuellen Richtlinienanforderungen erfüllen (Mindestlänge und Validierungsregeln).
+
+## Aktive Sessions
+
+Die Tabelle „Aktive Sessions" zeigt aktuell aktive Gerätesitzungen.
+
+<Screenshot
+  lightSrc="/images/accounts__security-sessions-light.png"
+  darkSrc="/images/accounts__security-sessions-dark.png"
+  alt="Dialog „Aktive Sessions" mit aktuellen Browser-Sitzungen und Session-Verwaltungsaktionen"
+/>
+
+Jede Zeile enthält:
+
+- Gerät/Browser
+- Standort (sofern verfügbar)
+- Letzte Aktivität
+- Hinweis auf die aktuelle Sitzung
+
+Verfügbare Aktionen:
+
+- Einzelne Sessions widerrufen
+- Alle anderen Sessions widerrufen
+
+## Anmeldeaktivität
+
+Überprüfe aktuelle sicherheitsrelevante Aktivitäten, darunter:
+
+<Screenshot
+  lightSrc="/images/accounts__security-login-activity-light.png"
+  darkSrc="/images/accounts__security-login-activity-dark.png"
+  alt="Dialog „Anmeldeaktivität" mit aktuellen Sicherheitsereignissen"
+/>
+
+- Anmeldeereignisse
+- Passwortänderungen/-zurücksetzungen
+- MFA-Erfolg-/Fehlerereignisse
+- Ereignis-Metadaten (Gerät, Standort, IP, Zeitstempel)
+
+Nutze diesen Bereich, um aktuelle Zugriffs- und Authentifizierungsereignisse zu prüfen.
+
+## Verbundene Social-Accounts
+
+Unter Sicherheit findest du auch verbundene Social-Provider (z. B. Google und Apple), sofern aktiviert.
+
+Du kannst Provider in diesem Bereich verbinden und trennen, vorbehaltlich der Account-Sicherheitsprüfungen (z. B. um einen Aussperrungsfall zu vermeiden, wenn keine andere Anmeldemethode vorhanden ist).
+
+## Sicherheits-Best-Practices
+
+<AccordionGroup>
+  <Accordion title="MFA für alle privilegierten Nutzer aktivieren" icon="lock">
+    Verlange MFA für Inhaber/Admins und alle Nutzer mit erhöhten Berechtigungen.
+  </Accordion>
+
+  <Accordion title="Sessions und Aktivitäten regelmäßig prüfen" icon="desktop">
+    Überprüfe aktive Sessions und Anmeldeaktivitäten auf unbekannte Geräte oder Standorte.
+  </Accordion>
+
+  <Accordion title="Einzigartige und rotierte Zugangsdaten verwenden" icon="key">
+    Halte Passwörter einzigartig und rotiere kompromittierte Zugangsdaten umgehend.
+  </Accordion>
+
+  <Accordion title="Wiederherstellungscodes schützen" icon="file-shield">
+    Bewahre MFA-Wiederherstellungscodes in einem sicheren Passwort-Manager oder Tresor auf.
+  </Accordion>
+</AccordionGroup>
+
+## Häufige Fragen
+
+<AccordionGroup>
+  <Accordion title="Was tue ich, wenn ich keinen Zugriff mehr auf meine Authenticator-App habe?">
+    Verwende einen Wiederherstellungscode. Falls keine Wiederherstellungsoptionen verfügbar sind, wende dich an [support@itellico.ai](mailto:support@itellico.ai).
+  </Accordion>
+
+  <Accordion title="Kann ich meine aktuelle Session widerrufen?">
+    Du kannst andere Sessions über die Tabelle widerrufen. Deine aktuelle Session bleibt aktiv, bis du dich abmeldest.
+  </Accordion>
+
+  <Accordion title="Wo ändere ich meine E-Mail oder Telefonnummer?">
+    Verwende **Einstellungen → Profil → Sicherheit** im Bereich „Authentifizierungsmethoden".
+  </Accordion>
+</AccordionGroup>
 
 ## Nächste Schritte
 
 <CardGroup cols={2}>
-  <Card title="Authentifizierung" icon="lock" href="/de/accounts/authentication">
-    Anmeldeoptionen prüfen
+  <Card title="Team-Verwaltung" icon="users" href="/accounts/team-management">
+    Mitgliederrollen mit deinem Sicherheitsmodell abgleichen
   </Card>
-  <Card title="API-Schlüssel" icon="key" href="/de/accounts/api-keys">
-    API-Zugriff absichern
+  <Card title="API-Schlüssel" icon="key" href="/accounts/api-keys">
+    Programmatische Zugangsdaten rotieren und verwalten
+  </Card>
+  <Card title="Nutzerprofil" icon="user" href="/accounts/user-profile">
+    UI-Modus, Theme und Sprache konfigurieren
   </Card>
 </CardGroup>

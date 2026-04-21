@@ -1,36 +1,81 @@
 ---
 title: "Agency-Einstellungen"
-description: "Lege den Standardzugriff für Agentur-Teams in kunden­eigenen Accounts fest."
+description: "Steuere, worauf Nicht-Agentur-Mitglieder in Accounts mit aktiviertem Agency-Zugriff zugreifen können"
 icon: "building"
-keywords: "agency settings, client-owned accounts, agency access"
-"og:description": "Konfiguriere den Zugriff von Agenturen in kunden­eigenen Accounts."
+keywords: "agency settings, agency access, member permissions, agency admin, account access"
+"og:description": "Nutze die Agency-Einstellungen, um festzulegen, worauf Nicht-Agentur-Mitglieder in einem Account mit aktiviertem Agency-Zugriff zugreifen können."
 "og:title": "Agency-Einstellungen"
 ---
 
-## Was hier konfiguriert wird
+import { Screenshot } from "/snippets/screenshot.mdx";
 
-Agency Settings definieren, was Nicht-Owner und Nicht-Admins in einem kunden­eigenen Account tun dürfen.
+Die Agency-Einstellungen steuern, was Nicht-Agentur-Mitglieder in einem Account mit aktiviertem Agency-Zugriff sehen und tun können.
 
-## Typische Einstellungen
+**Zugriff:** Öffne **Einstellungen → Agency**.
 
-- zugelassene Bereiche und Funktionen
-- administrative Grenzen
-- Sichtbarkeit für operative Daten
+<Note>
+Diese Seite ist nur sichtbar, wenn der Account Agency-Zugriff aktiviert hat und deine Rolle das Bearbeiten von Mitgliederberechtigungen erlaubt.
+</Note>
 
-## Wann du das brauchst
+## Wen das betrifft
 
-Nutze diese Einstellungen, wenn eine Agentur den Account eines Kunden betreut, aber die Inhaberschaft beim Kunden bleibt.
+Diese Einstellung gilt für **jedes Mitglied des Accounts, das kein Agency-Mitglied ist** — einschließlich des Account-Owners. Wenn der Account-Owner keinen Agency-Zugriff hat, unterliegt er denselben hier festgelegten Einschränkungen.
+
+Agency-Mitglieder behalten ihren erhöhten Zugriff immer, unabhängig davon, was auf dieser Seite konfiguriert ist.
+
+<Screenshot
+  lightSrc="/images/accounts__agency-settings-light.png"
+  darkSrc="/images/accounts__agency-settings-dark.png"
+  alt="Agency Settings page showing the permission matrix for non-agency members"
+/>
+
+## Was du konfigurierst
+
+Die Berechtigungsmatrix steuert den Zugriff auf alle wichtigen Bereiche des Accounts für Nicht-Agentur-Mitglieder:
+
+- **Täglicher Betrieb** — Konversationen und Aufgaben
+- **Agents** — allgemeine Einstellungen, Prompts, Knowledge, Tools, Call Flow, Analytics, Benachrichtigungen und Knowledge Bases
+- **Deploy** — Telefonie, Telefonnummern, SIP-Trunks, Compliance-Profile, Kampagnen und Kontakte
+- **Account & Einstellungen** — Einstellungen, Mitglieder, Subaccounts, Trust Center, Zeitpläne, Entwickler-Tools, Billing und Nutzung
+
+Die meisten Kategorien verwenden **Keine**, **Lesen** oder **Voll**. Einige Account-Kategorien verwenden eine eingeschränktere Skala.
+
+## Bezug zu anderen Seiten
+
+| Seite | Was sie steuert |
+| --- | --- |
+| **Agency-Einstellungen** | Was Nicht-Agentur-Mitglieder in diesem Account zugreifen können |
+| **Mitglieder** | Wer eingeladen ist und welche Rolle er hat |
+| **Subaccounts** | Isolierte Kind-Accounts mit eigenen Datengrenzen |
+
+## Empfohlener Arbeitsablauf
+
+<Steps>
+  <Step title="Berechtigungen vor dem Einladen von Mitgliedern festlegen">
+    Öffne **Einstellungen → Agency** und konfiguriere die Zugriffsebenen, bevor du Einladungen sendest — Mitglieder erhalten die zum Zeitpunkt der Annahme gültigen Berechtigungen.
+  </Step>
+  <Step title="Über Mitglieder einladen">
+    Gehe zu **Einstellungen → Account → Mitglieder** und sende Einladungen, sobald die Berechtigungen korrekt sind.
+  </Step>
+</Steps>
+
+<Tip>
+Starte mit restriktiven Einstellungen. Gib Nicht-Agentur-Mitgliedern nur die Bereiche, die sie für den täglichen Betrieb benötigen, und erweitere den Zugriff bei Bedarf.
+</Tip>
 
 ## Nächste Schritte
 
 <CardGroup cols={2}>
-  <Card title="Kunden-Service-Modelle" icon="briefcase" href="/de/accounts/agency-playbook">
-    Das passende Servicemodell auswählen
+  <Card title="Team-Verwaltung" icon="users" href="/accounts/team-management">
+    Mitglieder einladen und Account-Rollen verwalten
   </Card>
-  <Card title="Team Management" icon="users-gear" href="/de/accounts/team-management">
-    Mitglieder verwalten
+  <Card title="Subaccounts" icon="sitemap" href="/accounts/subaccounts">
+    Isolierte Kind-Accounts, Billing und Hierarchie konfigurieren
   </Card>
-  <Card title="Security" icon="shield-halved" href="/de/accounts/security">
-    Zugang absichern
+  <Card title="Accounts-Übersicht" icon="building-community" href="/accounts/overview">
+    Verstehen, wie Accounts, Subaccounts und Agency-Zugriff zusammenpassen
+  </Card>
+  <Card title="Trust Center" icon="shield-check" href="/manage/trust-center/overview">
+    Datenschutz und Governance für deine Accounts verwalten
   </Card>
 </CardGroup>

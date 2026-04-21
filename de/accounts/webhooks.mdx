@@ -1,30 +1,203 @@
 ---
 title: "Webhooks"
-description: "Konfiguriere Webhooks, um Account-Ereignisse an externe Systeme zu senden."
-icon: "bolt"
-keywords: "webhooks, events, callbacks, integrations"
-"og:description": "Richte Webhooks für Account-Ereignisse ein."
+description: "Webhook-Abonnements erstellen, Ereignisse auswählen, auf Agenten eingrenzen und Zustellungen absichern"
+icon: "webhook"
+keywords: "webhooks, webhook-abonnements, ereigniszustellung, webhook-secret, signierte payloads, agentenbezogene webhooks"
+"og:description": "Konfiguriere Account-Webhooks, um Echtzeitereignisse mit Ereignisfilterung, Agentenbeschränkung und signierten Zustellungen an deine eigenen Systeme zu senden."
 "og:title": "Webhooks"
 ---
 
-## Überblick
+import { Screenshot } from "/snippets/screenshot.mdx";
 
-Webhooks informieren externe Systeme über Ereignisse im Account.
+Webhooks senden itellicoAI-Echtzeitereignisse an ein anderes System, das du betreibst.
 
-## Typische Inhalte
+**Zugriff:** Gehe zu **Einstellungen → Entwickler → Webhooks**.
 
-- Ereignisse auswählen
-- Ziel-URL hinterlegen
-- Signaturen prüfen
-- Zustellung überwachen
+<Screenshot
+  lightSrc="/images/accounts__webhooks-list-light.png"
+  darkSrc="/images/accounts__webhooks-list-dark.png"
+  alt="Webhooks-Seite mit aktiven Webhook-Abonnements, Ziel-URLs, Ereignisanzahl, Agentenbereich und Aktionen"
+/>
+
+<Info>
+Diese Seite wird in der Regel von einem technischen Teammitglied eingerichtet, auch wenn Betriebs-, Vertriebs- oder Support-Teams entscheiden, welche Ereignisse Folgemaßnahmen auslösen sollen.
+</Info>
+
+## Was du konfigurierst
+
+Jedes Webhook-Abonnement enthält:
+
+- **Name**
+- **Ziel-URL**
+- **Aktiv/Inaktiv-Status**
+- **Optionales Signing-Secret**
+- **Optionaler Agentenbereich**
+- **Ereignisabonnements**
+
+Wenn du keine Agenten auswählst, gilt der Webhook für alle Agenten im aktuellen Account.
+
+## Einen Webhook erstellen
+
+<Steps>
+  <Step title="Webhooks öffnen">
+    Navigiere zu **Einstellungen → Entwickler → Webhooks**.
+  </Step>
+
+  <Step title="Webhook erstellen">
+    Klicke auf **Webhook erstellen**.
+  </Step>
+
+  <Step title="Erstellungsformular prüfen">
+    Der Erstellungsdialog enthält Steuerungselemente für Ziel, Signing-Secret, Agentenbereich und Ereignisauswahl.
+  </Step>
+
+  <Step title="Ziel festlegen">
+    Füge einen beschreibenden Namen und die HTTPS-Adresse ein, die Zustellungen empfangen soll.
+  </Step>
+
+  <Step title="Signing-Secret generieren">
+    Verwende die Aktion **Neu generieren**, um ein Signing-Secret zu erstellen.
+  </Step>
+
+  <Step title="Agentenbereich wählen">
+    Schränke den Webhook optional auf einen oder mehrere Agenten ein. Lasse das Feld leer, um Ereignisse für alle Agenten zu empfangen.
+  </Step>
+
+  <Step title="Ereignisse auswählen">
+    Wähle die Ereignisgruppen und einzelnen Ereignisse aus, die du empfangen möchtest.
+  </Step>
+
+  <Step title="Abonnement speichern">
+    Erstelle den Webhook und stelle sicher, dass das empfangende System Ereignisse schnell bestätigen kann.
+  </Step>
+</Steps>
+
+<Screenshot
+  lightSrc="/images/accounts__webhook-create-light.png"
+  darkSrc="/images/accounts__webhook-create-dark.png"
+  alt="Webhook-Erstellungsdialog mit Name, Ziel-URL, Aktiv-Umschalter, Signing-Secret, Agentenbereich und Ereignisauswahl"
+/>
+
+<Warning>
+Wenn du ein Secret generierst oder neu generierst, kopiere es sofort und speichere es sicher, bevor du den Dialog schließt. Die aktuelle Benutzeroberfläche erlaubt es nicht, einen benutzerdefinierten Secret-Wert direkt einzufügen.
+</Warning>
+
+## Schnellster Weg zum Testen
+
+Wenn du Webhooks zum ersten Mal einrichtest, beginne mit einem temporären Inspektionsendpunkt, bevor du dein Produktionssystem verbindest.
+
+<Steps>
+  <Step title="Temporären Endpunkt erstellen">
+    Verwende einen Anfragen-Inspektionsdienst wie Webhook.site oder RequestBin, um eine eindeutige HTTPS-URL zu erhalten.
+  </Step>
+
+  <Step title="Enges Abonnement erstellen">
+    Abonniere nur ein oder zwei Ereignisse, z. B. `conversation.ended` oder `conversation.analysis.completed`.
+  </Step>
+
+  <Step title="Ein echtes Ereignis auslösen">
+    Starte einen Testanruf oder schließe den Workflow ab, der das ausgewählte Ereignis auslösen soll.
+  </Step>
+
+  <Step title="Payload prüfen">
+    Überprüfe Header, Signaturfelder, Ereignistyp und die `data`-Payload-Struktur, bevor du deinen echten Endpunkt verbindest.
+  </Step>
+
+  <Step title="Zum Produktionsendpunkt wechseln">
+    Nachdem du Struktur und Timing validiert hast, ersetze die temporäre URL durch dein echtes Ziel.
+  </Step>
+</Steps>
+
+## Implementierungsmodell
+
+Die besten Webhook-Empfänger folgen einem einfachen Muster:
+
+1. Signatur anhand des Roh-Bodys verifizieren
+2. Schnell bestätigen
+3. Langsame Verarbeitung in eigene Hintergrundjobs auslagern
+
+Wenn du den Empfangsendpunkt selbst entwickelst, lies den [Webhook-Implementierungsleitfaden](/accounts/webhook-implementation).
+
+## Ereignisauswahl
+
+Die Ereignisauswahl ist nach Entität gruppiert, sodass du auf verschiedenen Ebenen abonnieren kannst:
+
+- alle Ereignisse auswählen oder abwählen
+- eine gesamte Entitätsgruppe auswählen oder abwählen
+- einzelne Ereignisse innerhalb einer Gruppe auswählen
+
+Verwende für jedes Ziel einen engen Ereignissatz, damit nachgelagerte Systeme nur die Daten erhalten, die sie benötigen.
+
+## Webhook-Übersicht
+
+Die Tabelle zeigt die aktuellen Abonnements mit:
+
+- **Name**
+- **Ziel-URL**
+- **Status**
+- **Anzahl abonnierter Ereignisse**
+- **Agentenbereich**
+
+Über die Tabelle kannst du:
+
+- ein Abonnement bearbeiten
+- ein Abonnement löschen
+- prüfen, ob ein Signing-Secret gesetzt ist
+
+Wenn keine Agenten ausgewählt sind, zeigt die Tabelle das Abonnement als für **Alle Agenten** gültig an.
+
+## Sicherheitsempfehlungen
+
+<AccordionGroup>
+  <Accordion title="Sichere HTTPS-Ziele verwenden" icon="shield-halved">
+    Zustellungen sollten über HTTPS erfolgen, damit Secrets und Ereignisdaten während der Übertragung geschützt sind.
+  </Accordion>
+
+  <Accordion title="Signaturen verifizieren" icon="key">
+    Validiere die Webhook-Signatur und den Zeitstempel bei jeder Anfrage, bevor du dem Payload vertraust.
+  </Accordion>
+
+  <Accordion title="Empfangssysteme schnell halten" icon="bolt">
+    Bestätige das Ereignis schnell und lagere länger dauernde Arbeiten in eigene Hintergrundjobs aus.
+  </Accordion>
+
+  <Accordion title="Ziele nach Zweck trennen" icon="diagram-project">
+    Verwende verschiedene Webhook-Abonnements für CRM-Synchronisierung, Analysen oder Benachrichtigungen, damit du Ereignisbereich und Zugangsdaten unabhängig voneinander anpassen kannst.
+  </Accordion>
+</AccordionGroup>
+
+## Fehlerbehebung
+
+<AccordionGroup>
+  <Accordion title="Mein Empfangssystem erhält keine Ereignisse" icon="triangle-exclamation">
+    Überprüfe, ob der Webhook aktiv ist, die Ziel-URL erreichbar ist und der ausgewählte Ereignissatz zur getesteten Aktivität passt.
+  </Accordion>
+
+  <Accordion title="Die Signaturverifizierung schlägt fehl" icon="lock">
+    Stelle sicher, dass dein Endpunkt den Roh-Request-Body und das aktuelle Signing-Secret für die HMAC-Signaturberechnung verwendet.
+  </Accordion>
+
+  <Accordion title="Ich benötige nur die Ereignisse eines Agenten" icon="robot">
+    Bearbeite den Webhook und befülle das Feld **Agenten**, anstatt es leer zu lassen.
+  </Accordion>
+</AccordionGroup>
 
 ## Nächste Schritte
 
 <CardGroup cols={2}>
-  <Card title="Webhook Implementation" icon="code" href="/de/accounts/webhook-implementation">
-    Webhook-Verarbeitung umsetzen
+  <Card title="Webhook-Ereignisreferenz" icon="book" href="/reference/webhook-events">
+    Ereignisnamen, Payload-Envelopes, Header und Wiederholungsverhalten prüfen
   </Card>
-  <Card title="Integrations" icon="plug" href="/de/accounts/integrations">
-    Systeme verbinden
+  <Card title="Webhook-Implementierungsleitfaden" icon="plug-circle-check" href="/accounts/webhook-implementation">
+    Einen Empfänger erstellen, der schnell, sicher und leicht zu debuggen ist
+  </Card>
+  <Card title="Integrationstests" icon="flask" href="/test/integration-testing">
+    Endpunkt und End-to-End-Ereignisverarbeitung validieren
+  </Card>
+  <Card title="Integrationen" icon="plug" href="/accounts/integrations">
+    Andere Account-Integrationen im selben Account verbinden
+  </Card>
+  <Card title="Secrets" icon="lock" href="/accounts/secrets">
+    Wiederverwendbare Zugangsdaten für unterstützte Konfigurationen verwalten
   </Card>
 </CardGroup>

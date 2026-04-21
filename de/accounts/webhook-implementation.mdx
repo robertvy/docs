@@ -1,30 +1,180 @@
 ---
-title: "Webhook-Implementierung"
-description: "Implementiere einen Webhook-Receiver für eingehende Account-Ereignisse."
-icon: "code"
-keywords: "webhook implementation, receiver, event handling"
-"og:description": "Baue die technische Verarbeitung für itellicoAI-Webhooks."
-"og:title": "Webhook-Implementierung"
+title: "Webhook-Implementierungsleitfaden"
+description: "Implementiere Webhook-Receiver, die schnell, sicher und leicht zu debuggen sind"
+icon: "plug-circle-check"
+keywords: "webhook implementation, webhook receiver, HMAC verification, idempotency, event lifecycle, webhook debugging"
+"og:description": "Baue einen zuverlässigen Webhook-Receiver für itellicoAI-Ereignisse mit Signaturprüfung, schnellen Bestätigungen und einem klaren Event-Lebenszyklus."
+"og:title": "Webhook-Implementierungsleitfaden"
 ---
 
-## Überblick
+Diese Seite richtet sich an die technische Person im Team, die den Empfangs-Endpoint implementiert.
 
-Diese Seite beschreibt die technische Umsetzung der Webhook-Verarbeitung auf Empfängerseite.
+Wenn du nur Subscriptions im Dashboard anlegen möchtest, starte mit [Webhooks](/accounts/webhooks).
 
-## Wichtige Punkte
+## Was ein guter Receiver leisten muss
 
-- eingehende Requests validieren
-- Signaturen prüfen
-- Ereignisse idempotent verarbeiten
-- Fehler und Retries beachten
+Ein zuverlässiger Webhook-Receiver sollte:
+
+- HTTPS-`POST`-Anfragen akzeptieren
+- die Signatur prüfen, bevor er dem Payload vertraut
+- schnell bestätigen
+- langsame Arbeit in eigene Hintergrundjobs auslagern
+- doppelte Lieferungen sicher verarbeiten
+- genug Details protokollieren, um Fehler später debuggen zu können
+
+## Der empfohlene Ablauf
+
+<Steps>
+  <Step title="Request empfangen">
+    Nimm den rohen Request-Body genau so entgegen, wie er geliefert wird. Parsen und Re-Serialisieren vor der Signaturprüfung ist nicht erlaubt.
+  </Step>
+
+  <Step title="Signatur prüfen">
+    Berechne den HMAC mit deinem Webhook-Secret und vergleiche ihn mit dem Signatur-Header.
+  </Step>
+
+  <Step title="Envelope validieren">
+    Lese Event-Typ, Event-ID, erstellten Zeitstempel und Event-Payload aus.
+  </Step>
+
+  <Step title="Schnell bestätigen">
+    Sende eine erfolgreiche Antwort, sobald die grundlegende Verifizierung abgeschlossen ist.
+  </Step>
+
+  <Step title="Asynchron verarbeiten">
+    Übergib langsame Aufgaben wie CRM-Synchronisierung, Benachrichtigungen oder Analytics-Updates an deine eigene Queue oder deine Worker.
+  </Step>
+</Steps>
+
+## Der grundlegende Event-Lebenszyklus
+
+Für viele Konversations-Workflows sind drei Ereignisse entscheidend:
+
+1. `conversation.started`
+2. `conversation.ended`
+3. `conversation.analysis.completed`
+
+### So denkst du darüber nach
+
+| Ereignis | Bester Einsatz |
+| --- | --- |
+| `conversation.started` | Tracking starten, Live-Session-Zustand anlegen oder festhalten, dass die Konversation begonnen hat |
+| `conversation.ended` | Endgültiges Anrufergebnis, Dauer, transkriptnahe Daten und Verarbeitung nach dem Anruf |
+| `conversation.analysis.completed` | Zielergebnisse, gesammelte Insights und Auswertungsdaten nach dem Anruf |
+
+### Praktische Regel
+
+Wenn dein nachgelagertes System Insight- oder Scoring-Ergebnisse benötigt, halte nicht bei `conversation.ended` an. Warte auf `conversation.analysis.completed`.
+
+## Minimales Receiver-Beispiel
+
+```python
+import hashlib
+import hmac
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+WEBHOOK_SECRET = "replace-me"
+
+
+def verify_signature(raw_body: bytes, timestamp: str, signature_header: str, secret: str) -> bool:
+    signed_payload = raw_body + b"." + timestamp.encode()
+    expected = hmac.new(secret.encode(), signed_payload, hashlib.sha256).hexdigest()
+    return hmac.compare_digest(expected, signature_header or "")
+
+
+@app.post("/webhooks/itellico")
+def itellico_webhook():
+    raw_body = request.get_data()
+    timestamp = request.headers.get("X-Webhook-Timestamp", "")
+    signature = request.headers.get("X-Webhook-Signature-256", "")
+
+    if not timestamp or not verify_signature(raw_body, timestamp, signature, WEBHOOK_SECRET):
+        return jsonify({"ok": False, "error": "invalid signature"}), 401
+
+    event = request.json
+    event_type = event.get("event_type")
+
+    # Queue this for background processing in your own system.
+    print("received", event_type)
+
+    return jsonify({"ok": True}), 200
+```
+
+## Idempotenz und Schutz vor Duplikaten
+
+Gestalte deinen Receiver so, dass dasselbe Ereignis mehr als einmal sicher verarbeitet werden kann.
+
+Gute Muster:
+
+- verarbeitete `event_id`-Werte speichern
+- nachgelagerte Schreibvorgänge nach Möglichkeit idempotent gestalten
+- keine Seiteneffekte vor der Signaturprüfung
+
+Das ist besonders wichtig für:
+
+- CRM-Updates
+- Ticket-Erstellung
+- Abrechnungs- oder Nutzungsaktualisierungen
+- Aufgabenerstellung
+
+## Logging-Empfehlungen
+
+Protokolliere genug Daten, um Fehler nachzuverfolgen, ohne Secrets preiszugeben.
+
+Gute Felder zum Protokollieren:
+
+- Event-ID
+- Event-Typ
+- Account- oder Organisations-Identifier
+- Lieferzeitstempel
+- Verifizierungsergebnis
+- dein internes Verarbeitungsergebnis
+
+Vermeide das Protokollieren von:
+
+- rohen Signing-Secrets
+- vollständigen Authorization-Headern
+- sensiblen Payload-Inhalten, sofern deine Compliance-Regeln es nicht erlauben
+
+## Häufige Implementierungsfehler
+
+<AccordionGroup>
+  <Accordion title="Body vor der Signaturprüfung parsen" icon="triangle-exclamation">
+    Verifiziere immer gegen den rohen Request-Body. Das Re-Serialisieren von JSON kann die Byte-Darstellung verändern und Signaturprüfungen zum Scheitern bringen.
+  </Accordion>
+
+  <Accordion title="Langsame Arbeit im Request-Thread ausführen" icon="clock">
+    Blockiere die Webhook-Antwort nicht, während du andere Systeme aufrufst oder schwere Verarbeitung durchführst. Bestätige zuerst, dann fahre in deiner eigenen Queue fort.
+  </Accordion>
+
+  <Accordion title="`conversation.ended` als finales Analyse-Ereignis behandeln" icon="chart-line">
+    `conversation.ended` teilt dir mit, dass der Anruf abgeschlossen ist. `conversation.analysis.completed` ist das bessere Ereignis für Post-Call-Scoring und insight-gesteuerte Workflows.
+  </Accordion>
+</AccordionGroup>
+
+## Debugging-Checkliste
+
+1. Bestätige, dass die Webhook-Subscription aktiv ist.
+2. Bestätige, dass die Ziel-URL vom öffentlichen Internet aus erreichbar ist.
+3. Bestätige, dass du das aktuelle Signing-Secret verwendest.
+4. Bestätige, dass dein Receiver den rohen Body liest, bevor er ihn parst.
+5. Bestätige, dass der abonnierte Ereignistyp mit dem Workflow übereinstimmt, den du testest.
+6. Prüfe deine eigenen Anwendungslogs auf Event-ID, Verifizierungsergebnis und Verarbeitungsergebnis.
 
 ## Nächste Schritte
 
 <CardGroup cols={2}>
-  <Card title="Webhooks" icon="bolt" href="/de/accounts/webhooks">
-    Webhook-Einrichtung prüfen
+  <Card title="Webhooks" icon="webhook" href="/accounts/webhooks">
+    Webhook-Subscriptions im Dashboard konfigurieren
   </Card>
-  <Card title="Secrets" icon="lock" href="/de/accounts/secrets">
-    Geheimnisse schützen
+  <Card title="Webhook-Ereignisse" icon="book" href="/reference/webhook-events">
+    Payload-Felder und Ereignistypen nachschlagen
+  </Card>
+  <Card title="Integrationstests" icon="flask" href="/test/integration-testing">
+    Deine End-to-End-Ereignisverarbeitung validieren
+  </Card>
+  <Card title="Secrets" icon="lock" href="/accounts/secrets">
+    Wiederverwendbare Anmeldedaten sicher speichern
   </Card>
 </CardGroup>

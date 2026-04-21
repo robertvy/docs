@@ -3,7 +3,7 @@ title: "Transfer Tools"
 description: "Leite laufende Anrufe an Agenten, Telefonnummern oder SIP-Ziele weiter"
 icon: "phone-arrow-right"
 keywords: "call transfer, phone transfer, AI call routing, transfer configuration, SIP transfer, agent transfer, call control"
-"og:description": "Konfiguriere Anrufweiterleitungen an KI-Agenten, Telefonnummern und SIP-Ziele für intelligentes Routing."
+"og:description": "Konfiguriere Anrufweiterleitungen an KI-Agenten, Telefonnummern und SIP-Ziele für intelligentes Gesprächs-Routing."
 "og:title": "Transfer Tools"
 ---
 
@@ -12,7 +12,7 @@ import { Screenshot } from "/snippets/screenshot.mdx";
 **Zugriff:** Öffne den Agent Editor und gehe zum Tab **Tools**.
 
 <Note>
-Weiterleitungen an Telefonnummern und SIP funktionieren nur während eines echten Telefonanrufs. Sie können im Web Simulator nicht getestet werden - nutze **Test Agent -> Phone call** dafür.
+Weiterleitungen an Telefonnummern und SIP funktionieren nur während eines echten Telefonanrufs. Sie können im Web Simulator nicht getestet werden – nutze **Test Agent → Phone call** dafür.
 </Note>
 
 ---
@@ -21,17 +21,17 @@ Weiterleitungen an Telefonnummern und SIP funktionieren nur während eines echte
 
 <Steps>
   <Step title="Tools-Tab öffnen">
-    Gehe im Agent Editor zum Tab **Tools** und klicke auf **Add** -> **Transfer**.
+    Gehe im Agent Editor zum Tab **Tools** und klicke auf **Add** → **Transfer**.
   </Step>
   <Step title="Tool benennen">
-    Verwende einen klaren, beschreibenden Namen - dein Prompt referenziert ihn später genau so.
+    Verwende einen klaren, beschreibenden Namen – dein Prompt referenziert ihn später genau so.
 
     **Gut:** "Transfer to Billing", "Transfer to On-Call Manager"
 
     **Schlecht:** "Transfer 1", "Escalate"
   </Step>
   <Step title="Zieltyp wählen">
-    Wähle **Agent**, **Phone** oder **SIP** (siehe [Transfer Destinations](#transfer-destinations)).
+    Wähle **Agent**, **Phone** oder **SIP** (siehe [Transfer-Ziele](#transfer-destinations) unten).
   </Step>
   <Step title="Ziel konfigurieren">
     Fülle die Zieldetails für den gewählten Typ aus.
@@ -57,17 +57,21 @@ When a customer asks to speak with a human:
 
 ## Transfer-Ziele
 
-<Screenshot lightSrc="/images/operations__transfer-dest_DE-light.png" darkSrc="/images/operations__transfer-dest_DE-dark.png" alt="Dialog für Transfer-Ziel mit Name, Beschreibung, Optionen für KI-Agent und Telefonnummer, Dropdown zur Agentenwahl, Transfer Message und Save-Button" />
+<Screenshot
+  lightSrc="/images/operations__transfer-dest_DE-light.png"
+  darkSrc="/images/operations__transfer-dest_DE-dark.png"
+  alt="Dialog für Transfer-Ziel mit Name- und Beschreibungsfeldern, Optionen für KI-Agent und Telefonnummer, Dropdown zur Agentenwahl, Transfer Message und Save-Button"
+/>
 
 | Ziel | Sinnvoll wenn | Beispiel |
 | --- | --- | --- |
 | **Anderer KI-Agent** | Du innerhalb von itellicoAI bleiben und an einen spezialisierteren Agenten übergeben willst | Billing-Agent, sprachspezifischer Agent |
-| **Telefonnummer** | Du mit einem Menschen oder externen Ziel über das Telefonnetz verbinden musst | Live-Support-Queue, On-Call-Manager |
+| **Telefonnummer** | Du mit einem Menschen oder einem externen Ziel über das Telefonnetz verbinden musst | Live-Support-Queue, On-Call-Manager |
 | **SIP-Adresse** | Du in ein PBX-, Contact-Center- oder SIP-fähiges System routen musst | Contact-Center-Queue, interne Durchwahl |
 
 <AccordionGroup>
   <Accordion title="Agent Transfer" icon="users" defaultOpen>
-    Weiterleitung an einen anderen KI-Agenten in deinem itellicoAI-Konto.
+    Weiterleitung an einen anderen KI-Agenten in deinem itellicoAI-Account.
 
     **Konfiguration:**
 
@@ -75,7 +79,7 @@ When a customer asks to speak with a human:
       <Step title="Transfer-Typ wählen">Wähle **Agent**</Step>
       <Step title="Zielagent wählen">Wähle den Zielagenten im Dropdown</Step>
       <Step title="Optional: Hold Music und Klingelton">
-        Im Profi kannst du Audio konfigurieren, das während der Verbindung abgespielt wird (jeweils 0-300 Sekunden).
+        Im Profi kannst du Audio konfigurieren, das während der Verbindung abgespielt wird (jeweils 0–300 Sekunden).
       </Step>
     </Steps>
 
@@ -83,11 +87,11 @@ When a customer asks to speak with a human:
 
     <Badge>Profi</Badge>
 
-    **Audio-Einstellungen:** Du kannst Hold Music und einen Klingelton für Agent-Transfers hinzufügen. Für direkte KI-zu-KI-Routing-Fälle deaktiviere beides für die sofortige Verbindung.
+    **Audio-Einstellungen:** Du kannst Hold Music und einen Klingelton für Agent-Transfers hinzufügen. Für direkte KI-zu-KI-Weiterleitung deaktiviere beides für eine sofortige Verbindung.
   </Accordion>
 
   <Accordion title="Telefonnummer-Transfer" icon="phone">
-    Weiterleitung an eine externe Telefonnummer - mobil, Festnetz oder Business-Nummer.
+    Weiterleitung an eine externe Telefonnummer – mobil, Festnetz oder Business-Nummer.
 
     **Konfiguration:**
 
@@ -95,7 +99,7 @@ When a customer asks to speak with a human:
       <Step title="Transfer-Typ wählen">Wähle **Phone**</Step>
       <Step title="Telefonnummer eingeben">
         Verwende E.164-Format: `+14155551234`
-        - Muss Ländercode enthalten (`+1` für USA/Kanada)
+        - Muss Ländervorwahl enthalten (`+1` für USA/Kanada)
         - Keine Leerzeichen, Bindestriche oder Klammern
       </Step>
     </Steps>
@@ -128,3 +132,192 @@ When a customer asks to speak with a human:
   </Accordion>
 </AccordionGroup>
 
+---
+
+## Mehrere Transfer-Tools
+
+<AccordionGroup>
+  <Accordion title="Fallback-Ketten" icon="arrow-turn-down-right">
+    Schreibe Fallback-Logik direkt in den Prompt:
+
+    ```text
+    1. Attempt 'Transfer to Technical Support'
+    2. If that fails, attempt 'Transfer to General Support'
+    3. If all fail, apologize and collect a callback number
+    ```
+  </Accordion>
+
+  <Accordion title="Bedingtes Routing" icon="code-branch">
+    Verwende Variablen, um basierend auf Kundendaten zu routen:
+
+    ```jinja
+    {% if contact_account_type == "enterprise" %}
+    Route to 'Transfer to Enterprise Support'
+    {% else %}
+    Route to 'Transfer to General Support'
+    {% endif %}
+    ```
+  </Accordion>
+
+  <Accordion title="Zeitbasiertes Routing" icon="clock">
+    ```jinja
+    {% set current_hour = current_datetime | date('H') | int %}
+    {% if current_hour >= 9 and current_hour < 17 %}
+    Business hours: use 'Transfer to Support Team'
+    {% else %}
+    After hours: use 'Transfer to On-Call Support'
+    {% endif %}
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Anruf beenden
+
+Das Beenden eines Anrufs wird im **Call Flow** konfiguriert, nicht im Tab **Tools**.
+
+Wenn **Allow AI to hang up** aktiviert ist, erhält der Agent eine Standard-`end_conversation`-Funktion, die er nutzen kann, wenn die Aufgabe abgeschlossen ist oder der Anrufer sich verabschiedet.
+
+**So aktivierst du es:** Öffne **Call Flow** → scrolle zu **Call End** → aktiviere **Allow AI to hang up**.
+
+```text
+Once you've successfully completed their request:
+1. Ask "Is there anything else I can help you with?"
+2. If they say no, thank them and end the call naturally
+```
+
+<Warning>
+Der Anruf endet, nachdem der Agent seinen abschließenden Redebeitrag beendet hat. Stelle sicher, dass dein Prompt den Agenten anweist, zu bestätigen, dass der Anrufer fertig ist, bevor der Anruf beendet wird.
+</Warning>
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Immer erklären, bevor weitergeleitet wird" icon="comment">
+    Leite nie ohne Kontext weiter. Erkläre, mit wem du verbindest und warum, und bestätige dann.
+
+    **Gut:**
+    ```
+    "I understand you need help with billing. Our billing team can access
+    your account details. Would you like me to connect you now?"
+    ```
+
+    **Schlecht:**
+    ```
+    "Hold please." [immediate transfer]
+    ```
+  </Accordion>
+
+  <Accordion title="Vor der Ausführung um Bestätigung bitten" icon="comments">
+    Weise den Agenten an, auf ein "Ja" zu warten, bevor er weiterleitet, um zu vermeiden, dass eine Weiterleitung angekündigt wird, die erst im nächsten Redebeitrag stattfindet.
+
+    ```
+    "I can transfer you to our billing team. Would you like me to do that now?"
+    [Wait for response]
+    [Execute transfer after confirmation]
+    ```
+  </Accordion>
+
+  <Accordion title="Zuerst Kontext sammeln" icon="clipboard">
+    Erfasse Name, Kundennummer und eine kurze Problembeschreibung vor der Weiterleitung, damit der Empfänger nicht erneut danach fragen muss.
+  </Accordion>
+
+  <Accordion title="Immer einen Fallback definieren" icon="triangle-exclamation">
+    Jeder Weiterleitungspfad benötigt einen Fallback für den Fall, dass das Ziel nicht verfügbar ist.
+
+    ```
+    If 'Transfer to Support' fails:
+    1. Apologize: "I'm having trouble connecting right now"
+    2. Offer a callback: collect number and best time
+    3. Confirm: "Expect a call from us within the hour"
+    ```
+  </Accordion>
+
+  <Accordion title="E.164-Format für Telefonnummern verwenden" icon="phone">
+    - ✅ `+14155551234`
+    - ❌ `(415) 555-1234`
+    - ❌ `415-555-1234`
+    - ❌ `14155551234` (fehlendes +)
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Testen
+
+<Note>
+Weiterleitungen an Telefonnummern und SIP erfordern einen echten Telefonanruf zum Testen. Nutze **Test Agent → Phone call** dafür. Der Web Simulator kann Telefonie-Transfers nicht ausführen.
+</Note>
+
+Überprüfe vor dem Go-live:
+
+- Transfer wird an das richtige Ziel ausgeführt
+- Agent erklärt die Weiterleitung und bestätigt vor der Ausführung
+- Fehlerszenarien werden sicher behandelt (keine Antwort, besetzt, ungültiges Ziel)
+- Hold Music und Klingelton werden wie erwartet abgespielt (Agent-Transfers, Profi)
+- Im Gesprächsverlauf wird das Transfer-Ereignis in [Konversationen](/manage/conversations/detail) angezeigt
+
+---
+
+## Fehlerbehebung
+
+<AccordionGroup>
+  <Accordion title="Transfer verbindet, bricht aber sofort ab" icon="phone-slash">
+    - Prüfe, ob der Ziel-Agent aktiv und veröffentlicht ist
+    - Teste die Ziel-Telefonnummer unabhängig
+    - SIP-Trunk-Konfiguration und Firewall-Regeln prüfen
+  </Accordion>
+
+  <Accordion title="Kein Audio nach dem Transfer" icon="volume-xmark">
+    - Prüfe, ob RTP-Ports geöffnet sind (typischerweise 10000–20000)
+    - NAT-Konfiguration auf SIP-Endpunkten prüfen
+    - Kompatible Codecs sicherstellen (G.711, Opus)
+  </Accordion>
+
+  <Accordion title="Telefon-Transfer schlägt mit Fehler fehl" icon="circle-exclamation">
+    - E.164-Format prüfen: `+14155551234`
+    - Account-Guthaben und Telefonie-Credits prüfen
+    - Sicherstellen, dass das Zielland unterstützt wird
+  </Accordion>
+
+  <Accordion title="Agent-Transfer übergibt keinen Kontext" icon="message-slash">
+    - Prüfen, ob beide Agenten im selben itellicoAI-Account sind
+    - Bestätigen, dass der Transfer als Agent-Transfer konfiguriert ist, nicht als Telefon-Transfer
+    - Prompt des empfangenden Agenten auf Kontext-Verarbeitungsanweisungen prüfen
+  </Accordion>
+
+  <Accordion title="Hold Music wird nicht abgespielt" icon="music-slash">
+    - **Play Music** in den Transfer-Einstellungen aktivieren (Profi)
+    - Eine Musik-Dauer größer als 0 einstellen
+    - Hold Music gilt nur für Agent-Transfers
+  </Accordion>
+
+  <Accordion title="SIP-Transfer stellt keine Verbindung her" icon="network-wired">
+    - SIP-URI-Format prüfen: `sip:user@domain.com`
+    - SIP-Trunk-Konfiguration in itellicoAI prüfen
+    - Firewall-Regeln für SIP-Datenverkehr prüfen (Port 5060/5061)
+    - SIP-Endpunkt unabhängig mit einem SIP-Client testen
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Tools-Übersicht" icon="bolt" href="/build/tools/overview">
+    Alle verfügbaren Tool-Typen ansehen
+  </Card>
+  <Card title="Booking Calendar" icon="calendar" href="/build/tools/booking-calendar">
+    Terminplanung einrichten
+  </Card>
+  <Card title="Custom API Actions" icon="code" href="/build/tools/custom-api-actions">
+    Mit externen Systemen verbinden
+  </Card>
+  <Card title="Telefon-Tests" icon="phone" href="/test/phone-testing">
+    Telefon- und SIP-Transfer-Verhalten validieren
+  </Card>
+</CardGroup>

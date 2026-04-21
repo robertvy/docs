@@ -9,20 +9,21 @@ keywords: "AI appointment booking, Cal.com integration, calendar integration, sc
 
 import { Screenshot } from "/snippets/screenshot.mdx";
 
+
 ## Wie Calendar Booking funktioniert
 
 Mit dem Booking-Tool können deine KI-Agenten während Live-Gesprächen Termine planen. In Verbindung mit Cal.com können Agenten Verfügbarkeiten prüfen, Zeitfenster anbieten, Buchungen bestätigen und automatische Bestätigungen senden.
 
 <Note>
-Erfordert ein Cal.com-Konto und eine aktive Integration. Funktioniert auch mit dem kostenlosen Cal.com-Tarif.
+Erfordert ein Cal.com-Account und eine aktive Integration. Funktioniert auch mit dem kostenlosen Cal.com-Tarif.
 </Note>
 
 <Info>
 **So funktioniert es:** Das Booking-Tool stellt deinem Agenten zwei Funktionen bereit:
-1. **Verfügbare Slots abrufen** - Ruft verfügbare Zeitfenster von Cal.com ab
-2. **Termin buchen** - Erstellt die Buchung mit Kundendaten
+1. **Verfügbare Slots abrufen** – Ruft verfügbare Zeitfenster von Cal.com ab
+2. **Termin buchen** – Erstellt die Buchung mit Kundendaten
 
-Das deckt den Kern des Buchungsflusses ab. Für fortgeschrittene Workflows wie Terminbestätigung, Umbuchung oder Stornierung musst du mit [Custom API Actions](/de/build/tools/custom-api-actions) eigene Logik bauen, die direkt mit der Cal.com-API oder der API eines anderen Kalenderanbieters wie Calendly integriert.
+Das deckt den Kern des Buchungsflusses ab. Für fortgeschrittene Workflows wie Terminbestätigung, Umbuchung oder Stornierung musst du mit [Custom API Actions](/build/tools/custom-api-actions) eigene Logik bauen, die direkt mit der Cal.com-API oder der API eines anderen Kalenderanbieters (z. B. Calendly) integriert.
 </Info>
 
 ---
@@ -44,16 +45,21 @@ Das deckt den Kern des Buchungsflusses ab. Für fortgeschrittene Workflows wie T
   <Step title="Cal.com verbinden">
     Hole deinen Cal.com API-Schlüssel und verbinde ihn mit itellicoAI:
 
-    1. Gehe zu [Cal.com Settings -> Developer -> API Keys](https://app.cal.com/settings/developer/api-keys)
+    1. Gehe zu [Cal.com Settings → Developer → API Keys](https://app.cal.com/settings/developer/api-keys)
     2. Klicke auf **+ Add**, vergib einen Namen (z. B. "itellicoAI") und speichere
-    3. Gehe in itellicoAI zu **Settings -> Developers -> Integrations**
+    3. Gehe in itellicoAI zu **Settings → Developers → Integrations**
     4. Öffne die **Cal.com**-Karte und wähle oder erstelle ein Secret, das den API-Schlüssel speichert
     5. Klicke auf **Test Connection**
     6. Klicke nach erfolgreichem Test auf **Connect**
   </Step>
 </Steps>
 
-<Screenshot lightSrc="/images/cal__test-cal_DE-light.png" darkSrc="/images/cal__test-cal_DE-dark.png" alt="Cal.com-Integrations-Einstellungen mit Secret-Auswahl, Verbindungs-Test und Connect-Steuerung" caption="Wähle das Secret mit deinem Cal.com API-Schlüssel, teste die Verbindung und speichere sie." />
+<Screenshot
+  lightSrc="/images/cal__test-cal_DE-light.png"
+  darkSrc="/images/cal__test-cal_DE-dark.png"
+  alt="Cal.com-Integrationseinstellungen mit Secret-Auswahl, Verbindungstest und Connect-Steuerung"
+  caption="Wähle das Secret mit deinem Cal.com API-Schlüssel, teste die Verbindung und speichere sie."
+/>
 
 ---
 
@@ -67,29 +73,29 @@ Eine häufige Frage: **"Wir nutzen Google Calendar / Microsoft Outlook / Microso
 
 Cal.com verbindet sich mit dem Kalendersystem deines Unternehmens (Google Calendar, Microsoft Outlook, Microsoft 365, Exchange) und:
 
-1. **Prüft Verfügbarkeit** - Liest den bestehenden Kalender, um freie Zeiten zu bestimmen
-2. **Verhindert Konflikte** - Prüft alle verbundenen Kalender, bevor freie Slots angezeigt werden
-3. **Synchronisiert Buchungen** - Tragt bestätigte Termine automatisch in deinen bestehenden Kalender ein
-4. **Aktualisiert in Echtzeit** - Wenn Kunden über itellicoAI buchen, erscheint der Termin sofort in deinem Firmenkalender
+1. **Prüft Verfügbarkeit** – Liest den bestehenden Kalender, um freie Zeiten zu bestimmen
+2. **Verhindert Konflikte** – Gleicht alle verbundenen Kalender ab, bevor freie Slots angezeigt werden
+3. **Synchronisiert Buchungen** – Trägt bestätigte Termine automatisch in deinen bestehenden Kalender ein
+4. **Aktualisiert in Echtzeit** – Wenn Kunden über itellicoAI buchen, erscheint der Termin sofort in deinem Firmenkalender
 
 <Note>
-Cal.com ist eine Scheduling-Schicht über deinem bestehenden Kalendersystem. Du nutzt weiterhin Google Calendar, Outlook oder Microsoft 365 wie gewohnt - Cal.com liest nur die Verfügbarkeit und schreibt Buchungen dorthin.
+Cal.com ist eine Scheduling-Schicht über deinem bestehenden Kalendersystem. Du nutzt weiterhin Google Calendar, Outlook oder Microsoft 365 wie gewohnt – Cal.com liest nur die Verfügbarkeit und schreibt Buchungen dorthin.
 </Note>
 
 ### Unterstützte Kalendersysteme
 
 Cal.com integriert sich mit:
-- **Google Calendar** - Persönliche und Google-Account-Konten
-- **Microsoft Outlook** - Outlook.com und Outlook Desktop
-- **Microsoft 365** - Business- und Enterprise-Konten
-- **Microsoft Exchange** - Exchange 2013, 2016 und neuer
-- **Apple Calendar** - iCloud-Kalender
+- **Google Calendar** – Persönliche und Google-Account-Konten
+- **Microsoft Outlook** – Outlook.com und Outlook Desktop
+- **Microsoft 365** – Business- und Enterprise-Konten
+- **Microsoft Exchange** – Exchange 2013, 2016 und neuer
+- **Apple Calendar** – iCloud-Kalender
 
 ### Kalenderintegration einrichten
 
 <Steps>
   <Step title="Deinen Kalender mit Cal.com verbinden">
-    Gehe in Cal.com zu **Settings -> Calendars** und verbinde deinen Kalender:
+    Gehe in Cal.com zu **Settings → Calendars** und verbinde deinen Kalender:
 
     - **Google Calendar**: Klicke auf "Connect" und autorisiere Cal.com
     - **Microsoft Outlook/365**: Klicke auf "Connect" und melde dich mit Microsoft an
@@ -114,7 +120,7 @@ Cal.com integriert sich mit:
 </Steps>
 
 <Info>
-**Mehrere Kalender:** Du kannst mehrere Kalender verbinden, etwa persönlichen Google Calendar plus Arbeits-Outlook. Cal.com prüft alle auf Konflikte und du wählst aus, welcher neue Buchungen bekommt.
+**Mehrere Kalender:** Du kannst mehrere Kalender verbinden (z. B. persönlicher Google Calendar + Arbeits-Outlook). Cal.com prüft alle auf Konflikte und du wählst aus, welcher neue Buchungen bekommt.
 </Info>
 
 ### Häufige Szenarien
@@ -122,27 +128,27 @@ Cal.com integriert sich mit:
 <AccordionGroup>
   <Accordion title="Unternehmen nutzt Microsoft 365" icon="microsoft">
     **Setup:**
-    1. Verbinde dein Microsoft-365-Konto mit Cal.com
+    1. Verbinde dein Microsoft-365-Account mit Cal.com
     2. Cal.com liest deine Verfügbarkeit aus Microsoft 365
     3. Neue Buchungen erscheinen in deinem Microsoft-365-Kalender
-    4. Dein KI-Agent bucht Termine über itellicoAI -> Cal.com -> Microsoft 365
+    4. Dein KI-Agent bucht Termine über itellicoAI → Cal.com → Microsoft 365
 
-    **Vorteil:** Du und dein Team nutzt Microsoft 365 weiterhin normal. Der KI-Agent respektiert automatisch die bestehenden Kalenderverpflichtungen.
+    **Vorteil:** Du und dein Team nutzen Microsoft 365 weiterhin normal. Der KI-Agent respektiert automatisch alle bestehenden Kalenderverpflichtungen.
   </Accordion>
 
   <Accordion title="Unternehmen nutzt Google Account" icon="google">
     **Setup:**
-    1. Verbinde dein Google-Account-Konto mit Cal.com
+    1. Verbinde deinen Google-Account mit Cal.com
     2. Cal.com liest deine Verfügbarkeit aus Google Calendar
     3. Neue Buchungen erscheinen in deinem Google Calendar
-    4. Dein KI-Agent bucht Termine über itellicoAI -> Cal.com -> Google Calendar
+    4. Dein KI-Agent bucht Termine über itellicoAI → Cal.com → Google Calendar
 
     **Vorteil:** Direkte Integration in dein bestehendes Google-Setup. Alle Buchungen synchronisieren automatisch.
   </Accordion>
 
   <Accordion title="Teammitglieder nutzen unterschiedliche Kalendersysteme" icon="users">
     **Setup:**
-    Jedes Teammitglied verbindet seinen eigenen Kalender mit seinem Cal.com-Konto:
+    Jedes Teammitglied verbindet seinen eigenen Kalender mit seinem Cal.com-Account:
     - Alice verbindet ihren Google Calendar
     - Bob verbindet seinen Microsoft-365-Kalender
     - Carol verbindet ihren Outlook-Kalender
@@ -155,11 +161,16 @@ Cal.com integriert sich mit:
 
 ## Booking-Tool hinzufügen
 
-<Screenshot lightSrc="/images/cal__booking-action_DE-light.png" darkSrc="/images/cal__booking-action_DE-dark.png" alt="Tools-Seite mit Calendar Booking als verfügbarem Tool" caption="Sobald Cal.com verbunden ist, erscheint Calendar Booking als Tool, das du im Tools-Tab deines Agenten hinzufügen kannst." />
+<Screenshot
+  lightSrc="/images/cal__booking-action_DE-light.png"
+  darkSrc="/images/cal__booking-action_DE-dark.png"
+  alt="Tools-Seite mit Calendar Booking als verfügbarem Tool"
+  caption="Sobald Cal.com verbunden ist, erscheint Calendar Booking als Tool, das du im Tools-Tab deines Agenten hinzufügen kannst."
+/>
 
 <Steps>
   <Step title="Tool erstellen">
-    1. Gehe zu deinem Agenten -> Tab **Tools**
+    1. Gehe zu deinem Agenten → Tab **Tools**
     2. Klicke auf **Add** und wähle **Calendar Booking**
     3. Wähle deinen Cal.com-Event-Type
   </Step>
@@ -172,7 +183,12 @@ Cal.com integriert sich mit:
 
 ## Konfiguration
 
-<Screenshot lightSrc="/images/cal__event-config_DE-light.png" darkSrc="/images/cal__event-config_DE-dark.png" alt="Konfigurationsdialog für Booking-Tool mit Event-Einstellungen, Plattformoptionen und Scheduling-Präferenzen" caption="Nach dem Hinzufügen des Tools konfigurierst du Event-Type, Plattform, Zeitzone und wie aggressiv der Agent Zeiten vorschlägt." />
+<Screenshot
+  lightSrc="/images/cal__event-config_DE-light.png"
+  darkSrc="/images/cal__event-config_DE-dark.png"
+  alt="Konfigurationsdialog für das Booking-Tool mit Event-Einstellungen, Plattformoptionen und Scheduling-Präferenzen"
+  caption="Nach dem Hinzufügen des Tools konfigurierst du Event-Type, Plattform, Zeitzone und wie aggressiv der Agent Zeiten vorschlägt."
+/>
 
 ### Event & Platform
 
@@ -182,12 +198,12 @@ Cal.com integriert sich mit:
 
 **Meeting Platform** (erforderlich)
 - Wähle, wie Meetings stattfinden:
-  - **Cal Video** - Integriertes Cal.com-Video
-  - **Zoom** - Erfordert verbundenes Zoom in Cal.com
-  - **Google Meet** - Erfordert verbundenes Google Meet
-  - **Microsoft Teams** - Erfordert verbundenes Teams
-  - **Phone** - Telefontermin
-  - **In Person** - Physisches Treffen (Adresse erforderlich)
+  - **Cal Video** – Integriertes Cal.com-Video
+  - **Zoom** – Erfordert verbundenes Zoom in Cal.com
+  - **Google Meet** – Erfordert verbundenes Google Meet
+  - **Microsoft Teams** – Erfordert verbundenes Teams
+  - **Phone** – Telefontermin
+  - **In Person** – Physisches Treffen (Adresse erforderlich)
 
 **Timezone** (erforderlich)
 - Standardmäßig Browser-Zeitzone (kann geändert werden)
@@ -196,9 +212,370 @@ Cal.com integriert sich mit:
 
 ### Scheduling Preferences
 
-**Days to Look Ahead** (1-3 Tage, Standard: 2)
-- Wie viele zukünftige Tage der Agent für Slots betrachtet
+**Days to Look Ahead** (1–3 Tage, Standard: 2)
+- Wie viele zukünftige Tage der Agent bei der Suche nach Slots berücksichtigt
 
-**Time Slots Per Day** (2-5 Slots, Standard: 3)
+**Time Slots Per Day** (2–5 Slots, Standard: 3)
 - Wie viele Zeitfenster pro Tag der Agent anbietet
 
+**Hours Between Suggestions** (1–4 Stunden, Standard: 3)
+- Mindestabstand zwischen vorgeschlagenen Zeiten
+
+**Start Date** (optional)
+- Frühestes Datum, das der Agent vorschlagen darf
+- Leer lassen für sofortige Verfügbarkeit
+
+### E-Mail-Konfiguration
+
+Der Agent nutzt diese Prioritätsreihenfolge, um die E-Mail-Adresse des Kunden zu ermitteln:
+
+1. **Dynamic Context** – `cal_email` aus deiner Context-API
+2. **Kontaktdatensatz** – In itellicoAI gespeicherte E-Mail des Kontakts
+3. **Fallback-E-Mail** – Team-Posteingang (unten konfigurierbar)
+4. **Kunde fragen** – Agent fordert E-Mail während des Anrufs an
+
+**Fallback Email** (optional)
+- Wird verwendet, wenn keine Kunden-E-Mail verfügbar ist
+- Leer lassen, damit der Agent immer eine E-Mail erfasst
+
+### SMS-Benachrichtigungen
+
+**Send SMS Confirmation** (Standard: aktiviert)
+- Sendet eine SMS nach Abschluss der Buchung
+- Enthält Meeting-Details und Beitrittslink
+
+<Warning>
+SMS-Bestätigungen funktionieren nur bei **Telefonanrufen**, bei denen die Rufnummer des Anrufers im System verfügbar ist. Sie werden nicht bei Web Calls oder wenn die Telefonnummer nicht verfügbar ist gesendet.
+</Warning>
+
+**SMS Template**
+- Passe die Nachricht mit Platzhaltern an:
+  - `{date}` – Termindatum
+  - `{time}` – Terminzeit
+  - `{link}` – Meeting-Link
+  - `{location}` – Adresse vor Ort
+  - `{duration}` – Meeting-Dauer
+
+**Use default booking instructions** (Standard: aktiviert)
+- Fügt das integrierte Scheduling-Skript zum Agenten-Prompt hinzu
+- Für die meisten Agenten empfohlen
+- Nur deaktivieren, wenn du den kompletten Buchungsfluss in deinem eigenen Prompt ersetzt
+
+---
+
+## Scheduling für mehrere Mitarbeiter
+
+Ein häufiges Szenario: **"Wir haben 3 Mitarbeiter, die Termine übernehmen können, jeder mit unterschiedlicher Verfügbarkeit. Wie planen wir über das Team hinweg?"**
+
+**Lösung:** Nutze Cal.com Teams mit Round-Robin-Scheduling. Damit werden Termine basierend auf der individuellen Verfügbarkeit auf Teammitglieder verteilt.
+
+### Was sind Cal.com Teams?
+
+Mit Cal.com Teams kannst du Event Types erstellen, die von mehreren Teammitgliedern bearbeitet werden. Anstatt mit einer bestimmten Person zu buchen, buchen Kunden mit deinem Team und Cal.com weist den Termin automatisch einem verfügbaren Teammitglied zu.
+
+<Note>
+Cal.com Teams erfordert einen Teams- oder Organization-Plan. Das Round-Robin-Feature verteilt Termine intelligent nach Verfügbarkeit, Priorität oder Rotation.
+</Note>
+
+### Wie Round Robin funktioniert
+
+Wenn ein Kunde einen Termin bucht:
+
+1. **Prüft Verfügbarkeit** – Cal.com prüft den Kalender jedes Teammitglieds
+2. **Wendet Verteilungslogik an** – Wählt das beste Teammitglied nach deiner gewählten Methode:
+   - **Priority**: Zuerst Teammitglieder mit höherer Priorität zuweisen
+   - **Weighted**: Proportional verteilen (z. B. Senior-Mitarbeiter erhalten mehr Buchungen)
+   - **Least recently booked**: Gleichmäßig rotieren, wer zuletzt am wenigsten gebucht wurde
+3. **Bucht mit einer Person** – Cal.com plant den Kunden mit dem ausgewählten Teammitglied ein
+4. **Aktualisiert den Kalender** – Der Termin erscheint im Kalender des Teammitglieds
+
+### Team-Event-Types einrichten
+
+<Steps>
+  <Step title="Team in Cal.com erstellen">
+    In Cal.com:
+    1. Gehe zu **Teams** → **Create Team**
+    2. Benenne dein Team (z. B. "Sales Team", "Support Team")
+    3. Lade Teammitglieder per E-Mail ein
+    4. Jedes Mitglied verbindet seinen eigenen Kalender (Google, Microsoft usw.)
+  </Step>
+  <Step title="Team-Event-Type erstellen">
+    In deinem Cal.com-Team:
+    1. Gehe zu **Event Types** → **New Event Type**
+    2. Wähle **Round Robin** als Event-Type
+    3. Konfiguriere Dauer, Meeting-Plattform usw.
+    4. Wähle aus, welche Teammitglieder diesen Event-Type bearbeiten können
+  </Step>
+  <Step title="Verteilungsmethode konfigurieren">
+    Wähle, wie Termine verteilt werden:
+
+    **Priority Ranking:**
+    - Weise jedem Teammitglied eine Priorität zu (High, Medium, Low)
+    - Mitglieder mit höherer Priorität werden zuerst gebucht
+    - Für Senior-Mitarbeiter oder Spezialisten verwenden
+
+    **Weighted Distribution:**
+    - Weise jedem Mitglied ein Gewicht in Prozent zu (Standard: 100 %)
+    - Höhere Gewichtung = mehr Buchungen
+    - Für Teilzeit- vs. Vollzeitkräfte verwenden
+
+    **Least Recently Booked:**
+    - Rotiert automatisch durch die Teammitglieder
+    - Sorgt für gleichmäßige Verteilung
+    - Für gleiche Arbeitsbelastung verwenden
+  </Step>
+  <Step title="Zu itellicoAI hinzufügen">
+    Sobald dein Team-Event-Type erstellt ist:
+    1. Gehe in itellicoAI zu deinem Agenten → Tab **Tools**
+    2. Klicke auf **Add** und wähle **Calendar Booking**
+    3. Wähle deinen Team-Event-Type aus dem Dropdown
+    4. Das Booking-Tool plant nun Termine mit deinem Team
+  </Step>
+</Steps>
+
+### Erweitert: Feste und rotierende Hosts kombinieren
+
+Für Szenarien, in denen eine Person immer anwesend sein muss, während andere rotieren:
+
+**Beispiel:** Sales-Calls benötigen einen Sales-Rep (rotierend) + Sales-Manager (immer anwesend)
+
+**Setup in Cal.com:**
+1. Round-Robin-Event-Type erstellen
+2. **Fixed Hosts** wählen: Sales-Manager (immer anwesend)
+3. **Round Robin Hosts** wählen: Sales-Reps (einer pro Call)
+4. Cal.com prüft die Verfügbarkeit beider und bucht, wenn beide frei sind
+
+### Beispiele für Team-Scheduling
+
+<AccordionGroup>
+  <Accordion title="Sales-Team: 3 Reps mit gleicher Verteilung" icon="users">
+    **Szenario:** 3 Sales-Reps sollen Demo-Calls gleichmäßig aufteilen
+
+    **Setup:**
+    - Team "Sales Team" mit 3 Mitgliedern erstellen
+    - **Least Recently Booked**-Verteilung verwenden
+    - Jeder Rep verbindet seinen Kalender mit Cal.com
+    - Event-Type "Sales Demo" erstellen (30 Min., Round Robin)
+
+    **Ergebnis:** Demos werden automatisch gleichmäßig verteilt. Die Verfügbarkeit der Reps wird in Echtzeit aus ihren individuellen Kalendern geprüft.
+  </Accordion>
+
+  <Accordion title="Support-Team: Prioritätsbasierte Zuweisung" icon="headset">
+    **Szenario:** Senior-Support-Mitarbeiter sollen komplexe Fälle erhalten, Junior-Mitarbeiter Routinefälle
+
+    **Setup:**
+    - Event-Type "Technical Support Call" mit Prioritätsverteilung erstellen
+    - Senior-Mitarbeiter: Hohe Priorität
+    - Junior-Mitarbeiter: Mittlere Priorität
+
+    **Ergebnis:** Senior-Mitarbeiter werden zuerst gebucht, wenn verfügbar. Junior-Mitarbeiter übernehmen den Überlauf.
+  </Accordion>
+
+  <Accordion title="Teilzeit-Team: Gewichtete Verteilung" icon="clock">
+    **Szenario:** 2 Vollzeitkräfte und 1 Teilzeitkraft
+
+    **Setup:**
+    - Vollzeitkräfte: je 100 % Gewichtung
+    - Teilzeitkraft: 50 % Gewichtung
+    - Gewichtete Verteilung verwenden
+
+    **Ergebnis:** Die Teilzeitkraft erhält halb so viele Buchungen wie die Vollzeitkräfte.
+  </Accordion>
+
+  <Accordion title="Meetings mit mehreren Rollen" icon="user-group">
+    **Szenario:** Kunde benötigt sowohl einen technischen Spezialisten als auch einen Account Manager
+
+    **Setup:**
+    - **Round Robin Groups** verwenden (erweitertes Feature)
+    - Gruppe 1: Technische Spezialisten (einer nimmt teil)
+    - Gruppe 2: Account Manager (einer nimmt teil)
+
+    **Ergebnis:** Cal.com wählt eine Person aus jeder Gruppe und stellt sicher, dass beide Rollen abgedeckt sind.
+  </Accordion>
+</AccordionGroup>
+
+### Team-Integration mit itellicoAI
+
+Wenn du einen Cal.com-Team-Event-Type mit itellicoAI verbindest:
+
+1. **Dein KI-Agent bucht mit dem Team** – Nicht mit einer bestimmten Person
+2. **Cal.com übernimmt die Zuweisung** – Wählt automatisch das beste Teammitglied
+3. **Der Kunde erhält eine Bestätigung** – Mit den Details des zugewiesenen Teammitglieds
+4. **Der Kalender des Teammitglieds wird aktualisiert** – Der Termin erscheint in seinem individuellen Kalender
+
+**In deinem Agenten-Prompt:**
+
+```
+When a customer wants to schedule a consultation:
+
+1. Use 'Book Team Consultation' action
+2. The system will automatically assign an available team member
+3. Confirm: "Perfect! You're scheduled with [assigned team member]
+   on [date] at [time]. You'll receive a confirmation email."
+```
+
+<Info>
+**Flexibilität:** Teammitglieder können ihre individuelle Cal.com-Verfügbarkeit jederzeit aktualisieren, und das Round Robin respektiert diese Änderungen automatisch. In itellicoAI muss nichts angepasst werden.
+</Info>
+
+---
+
+## Buchung im Prompt verwenden
+
+Das Booking-Tool hat standardmäßig **Use default booking instructions** aktiviert. Lasse diese Einstellung aktiviert, es sei denn, du schreibst und pflegst den kompletten Buchungsfluss selbst.
+
+Wenn die Standard-Buchungsanweisungen aktiviert sind, nutze deinen Agenten-Prompt für geschäftsspezifische Buchungsregeln – nicht zum Duplizieren des schrittweisen Scheduling-Skripts:
+
+- wem dieser Termintyp angeboten werden soll
+- welche Fälle weitergeleitet statt gebucht werden sollen
+- welche Informationen der Agent vor dem Anbieten einer Buchung sammeln soll
+- welchen Ausweichpfad der Agent nutzen soll, wenn keine Buchung möglich ist
+
+<Warning>
+Vermeide es, eine separate Buchungssequenz sowohl in deinem Prompt als auch im Tab Call Flow zu definieren, während **Use default booking instructions** aktiviert ist. Widersprüchliche Anweisungen können dazu führen, dass der Agent dieselben Informationen zweimal abfragt, Zeiten zu früh anbietet oder das Booking-Tool aufruft, bevor der Anrufer eindeutig bestätigt hat.
+</Warning>
+
+### Empfohlene Prompt-Ergänzungen
+
+Referenziere das Tool nur dann bei seinem automatisch generierten Namen, wenn du geschäftsspezifisches Verhalten benötigst:
+
+```
+For consultation requests:
+
+- Use the "Book 30-Minute Consultation" booking tool.
+- Before offering booking, confirm the customer wants a product consultation, not billing support.
+- If the customer asks for billing help, offer to transfer instead of booking a consultation.
+- If no suitable slot is available, collect a callback number and preferred timeframe.
+```
+
+<Info>
+Der Tool-Name wird automatisch aus dem Titel deines Cal.com-Event-Types generiert (z. B. wird aus "30-Minute Consultation" der Name "Book 30-Minute Consultation").
+</Info>
+
+### Den Standard-Buchungsfluss ersetzen
+
+Deaktiviere **Use default booking instructions** nur, wenn du die vollständige Kontrolle über das Scheduling-Gespräch benötigst. Wenn du die Option deaktivierst, muss dein Prompt folgendes abdecken: Einwilligung einholen vor dem Prüfen der Verfügbarkeit, E-Mail erfassen wenn nötig, den genauen Slot bestätigen vor der Buchung und den Fall ohne Verfügbarkeit behandeln.
+
+### Buchungsfehler behandeln
+
+```
+If 'Book 30-Minute Consultation' fails:
+
+1. Apologize: "I'm having trouble accessing the calendar right now"
+2. Offer alternative:
+   - "I can have someone call you back to schedule"
+   - Collect callback number and best time
+3. If no availability: "We're fully booked for [timeframe].
+   Would [alternative timeframe] work?"
+```
+
+---
+
+## Testen
+
+<Steps>
+  <Step title="Integration prüfen">
+    - Cal.com-Integration zeigt "Connected"
+    - Event-Types erscheinen im Dropdown
+    - Meeting-Plattformen in Cal.com konfiguriert
+  </Step>
+  <Step title="Buchungsfluss testen">
+    1. Testanruf mit deinem Agenten starten
+    2. Terminbuchung anfordern
+    3. Prüfen, ob der Agent verfügbare Zeiten vorstellt
+    4. Bestätigen, dass die Buchung abgeschlossen wird
+  </Step>
+  <Step title="Bestätigungen prüfen">
+    - E-Mail-Bestätigung erhalten
+    - SMS-Bestätigung gesendet (falls aktiviert)
+    - Meeting-Link funktioniert
+    - Kalender aktualisiert
+  </Step>
+  <Step title="Grenzfälle testen">
+    - Daten außerhalb der Verfügbarkeit anfordern
+    - Ohne E-Mail im Kontaktdatensatz testen
+    - Fehlerbehandlung prüfen
+  </Step>
+</Steps>
+
+---
+
+## Fehlerbehebung
+
+<AccordionGroup>
+  <Accordion title="Booking Action wird nicht angezeigt" icon="eye-slash">
+    **Ursache:** Cal.com nicht verbunden
+
+    **Lösung:**
+    - Gehe zu **Settings → Developers → Integrations**
+    - Öffne die **Cal.com**-Karte
+    - Prüfe, ob der Status "Connected" anzeigt
+  </Accordion>
+
+  <Accordion title="Keine Event-Types im Dropdown" icon="calendar-xmark">
+    **Ursache:** Keine Event-Types in Cal.com oder Synchronisierungsproblem
+
+    **Lösung:**
+    - Event-Types in Cal.com erstellen
+    - Integration bei Bedarf trennen und neu verbinden
+  </Accordion>
+
+  <Accordion title="Meeting-Plattform deaktiviert" icon="video-slash">
+    **Ursache:** Plattform in Cal.com nicht verbunden
+
+    **Lösung:**
+    - Gehe zu den Cal.com-Event-Type-Einstellungen
+    - Verbinde die Plattform (Zoom, Google Meet usw.)
+    - Integration trennen und neu verbinden, um Änderungen zu synchronisieren
+  </Accordion>
+
+  <Accordion title="E-Mail-Bestätigung nicht erhalten" icon="envelope-open-text">
+    **Mögliche Ursachen:**
+    - Falsche E-Mail-Adresse
+    - Spam-Ordner
+    - Cal.com-E-Mail-Einstellungen
+
+    **Lösung:**
+    - Spam-/Junk-Ordner prüfen
+    - E-Mail in der Buchungsbestätigung verifizieren
+    - Cal.com-Benachrichtigungseinstellungen prüfen
+  </Accordion>
+
+  <Accordion title="Agent nutzt die Action nicht" icon="robot">
+    **Mögliche Ursachen:**
+    - Action-Name nicht im Prompt referenziert
+    - Agent erkennt Buchungsabsicht nicht
+    - LLM führt Function Calling nicht zuverlässig aus
+
+    **Lösung:**
+    - Exakten automatisch generierten Namen verwenden (z. B. 'Book 30-Minute Consultation')
+    - Im Tab Actions den tatsächlichen Namen prüfen
+    - Sicherstellen, dass die Action dem Agenten hinzugefügt wurde
+    - Expliziten Buchungsfluss in deinen Prompt einfügen
+    - Mit einem klaren Satz testen: "I want to book an appointment"
+    - GPT-4.1 oder GPT-4.1-mini für zuverlässigstes Function Calling verwenden
+    - Temperatur reduzieren für konsistenteres Verhalten
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Tools-Übersicht" icon="bolt" href="/build/tools/overview">
+    Alle Tool-Typen kennenlernen
+  </Card>
+  <Card title="Custom API Actions" icon="code" href="/build/tools/custom-api-actions">
+    Eigene Buchungsflüsse bauen
+  </Card>
+  <Card title="Transfer Tools" icon="phone-arrow-right" href="/build/tools/transfer-tools">
+    An menschliche Disponenten weiterleiten
+  </Card>
+  <Card title="Agenten testen" icon="vial" href="/test/web-simulator">
+    Buchungsfluss von Anfang bis Ende testen
+  </Card>
+  <Card title="Buchungsbeispiel" icon="calendar-check" href="/examples/appointment-booking">
+    Ein vollständiges Beispiel mit Cal.com-Integration ansehen
+  </Card>
+</CardGroup>

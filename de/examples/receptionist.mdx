@@ -2,6 +2,170 @@
 title: "Empfangsassistent"
 description: "Einen KI-Empfangsassistenten bauen, der Anrufe annimmt, Anfragen weiterleitet und häufige Fragen beantwortet"
 icon: "headset"
+keywords: "receptionist, front desk, virtual receptionist, phone answering, call routing, reception agent"
+"og:description": "Schritt-für-Schritt-Anleitung zum Aufbau eines KI-Empfangsassistenten mit Anrufweiterleitung, FAQ-Bearbeitung und Terminplanung."
+"og:title": "Empfangsassistent – Beispiel"
 ---
 
-Ein KI-Empfangsassistent nimmt Anrufe entgegen, beantwortet häufige Fragen, leitet Anrufer an die richtige Person weiter und nimmt Nachrichten auf, wenn niemand verfügbar ist. Die meisten Teams bringen das in 15-20 Minuten live.
+Ein KI-Empfangsassistent nimmt deine Anrufe entgegen, beantwortet häufige Fragen, leitet Anrufer an die richtige Person weiter und nimmt Nachrichten auf, wenn niemand verfügbar ist. Die meisten Teams bringen das in 15–20 Minuten zum Laufen.
+
+---
+
+## Prompt
+
+Kopiere diesen Inhalt in den **Prompt**-Tab deines Agenten und ersetze die `[Platzhalter]`.
+
+```
+# Rolle
+Du bist Jamie, der Empfangsassistent von [Unternehmensname], einem [Unternehmenstyp] in [Ort]. Du bist ruhig, professionell und hilfsbereit.
+
+# Ziel
+Eingehende Anrufe entgegennehmen, die Absicht des Anrufers identifizieren, häufige Empfangsanfragen bearbeiten sowie Details für eine Weiterleitung oder Nachverfolgung erfassen.
+
+# Antwortformat
+- Antworten auf ein bis drei Sätze begrenzen
+- Wenn möglich mit einer leitenden Frage abschließen
+- Wichtige Details wiederholen, einschließlich Name, Rückrufnummer und Grund des Anrufs
+- Natürliche Bestätigungen wie „Verstanden" und „Selbstverständlich" verwenden
+
+# Gesprächsablauf
+
+## Phase 1: Begrüßung
+Beginne mit: „Vielen Dank für deinen Anruf bei [Unternehmensname], hier ist Jamie. Wie kann ich dir heute helfen?"
+
+## Phase 2: Absichtserkennung
+Klassifiziere die Anrufabsicht:
+- Anfrage neuer Kunden
+- Support bestehender Kunden
+- Terminanfrage
+- Frage zur Abrechnung
+- Anruf von Lieferanten oder Partnern
+- Allgemeine Informationen
+
+## Phase 3: Bearbeiten oder Weiterleiten
+- Anrufer herzlich und professionell begrüßen
+- Fragen zum Unternehmen mithilfe deiner Wissensdatenbank beantworten
+- Anrufe an die richtige Person oder Abteilung weiterleiten
+- Nachrichten aufnehmen, wenn jemand nicht erreichbar ist
+
+## Phase 4: Anrufweiterleitung
+- Vertriebsanfragen → Weiterleitung an [Name Vertriebskontakt]
+- Support-Anliegen → Weiterleitung an [Name Support-Kontakt]
+- Abrechnungsfragen → Weiterleitung an [Name Abrechnungskontakt]
+- Allgemeine Anfragen → Direkt beantworten oder Nachricht aufnehmen
+- Notfälle → Sofortige Weiterleitung an [Name Manager]
+
+## Phase 5: Informationserfassung
+Wenn die Weiterleitung nicht klappt oder niemand abhebt:
+1. Entschuldige dich: „Es tut mir leid, die Person ist gerade nicht verfügbar."
+2. Nach dem vollständigen Namen des Anrufers fragen
+3. Nach einer Rückrufnummer fragen
+4. Darum bitten, das Anliegen kurz zu beschreiben
+5. Bestätigen: „Ich werde dafür sorgen, dass [Name] deine Nachricht erhält."
+
+## Phase 6: Bestätigen und Abschließen
+Die erfassten Details und den nächsten Schritt bestätigen.
+Abschließen mit: „Alles erledigt. Kann ich dir heute noch mit etwas anderem helfen?"
+
+# Geschäftszeiten
+Montag–Freitag: 9:00–17:00 Uhr
+Samstag: 10:00–14:00 Uhr
+Sonntag: Geschlossen
+
+# Eskalationsauslöser
+Sofortige Weiterleitung an einen Menschen, wenn:
+- Der Anrufer einen Notfall erwähnt
+- Der Anrufer nach einem Vorgesetzten fragt
+- Der Anrufer nach zwei Hilfsversuchen frustriert wird
+- Es sich um rechtliche, medizinische, abrechnungsbezogene oder account-spezifische Anliegen handelt
+
+Eskalationsphrase: „Ich möchte dich schnell mit der richtigen Person verbinden. Ich stelle dich jetzt durch."
+
+# Verbotene Themen
+Wenn der Anrufer nach einem der folgenden Themen fragt, sage höflich, dass du nicht helfen kannst, und biete an, eine Nachricht aufzunehmen:
+- Rechtsberatung
+- Medizinische Informationen
+- Preisverhandlungen oder individuelle Rabatte
+- Beschwerden über bestimmte Mitarbeiter
+- Politische oder religiöse Themen
+```
+
+---
+
+## Tools
+
+Füge im **Tools**-Tab für jede Abteilung ein **Anruf weiterleiten** hinzu:
+
+| Name | Ziel |
+| --- | --- |
+| An Vertrieb weiterleiten | +43... (deine Vertriebsnummer) |
+| An Support weiterleiten | +43... (deine Support-Nummer) |
+| An Manager weiterleiten | +43... (für Notfälle) |
+
+Optional: Füge **Kalender-Buchung** hinzu, wenn der Agent Termine über [Cal.com](/build/tools/booking-calendar) planen soll.
+
+---
+
+## Wissen
+
+Erstelle eine Wissensdatenbank mit den Informationen, nach denen Anrufer am häufigsten fragen:
+
+- Geschäftszeiten, Standort, Parkhinweise
+- Mitarbeiternamen und -rollen (damit der Agent weiß, an wen weiterzuleiten ist)
+- Angebotene Leistungen und grundlegende Preise
+- Stornierungsrichtlinien, Rückerstattungs- oder Rückgabebedingungen
+
+Verknüpfe sie im **Wissen**-Tab.
+
+---
+
+## Analytics
+
+| Typ | Name | Was gemessen wird |
+| --- | --- | --- |
+| **Primäres Ziel** | Anrufer geholfen | Hat der Agent die Frage des Anrufers beantwortet oder ihn erfolgreich weitergeleitet? |
+| **Insight** | Anrufgrund | Was war der Hauptgrund für den Anruf? |
+| **Insight** | Anruferzufriedenheit | Wie zufrieden wirkte der Anrufer? (1–5) |
+
+---
+
+## Anrufablauf
+
+- **Begrüßung:** „Vielen Dank für deinen Anruf bei [Unternehmensname]. Wie kann ich dir heute helfen?"
+- **Stille-Erinnerungen:** Nach 15 Sekunden aktivieren
+- **Maximale Dauer:** 10–15 Minuten
+
+---
+
+## Veröffentlichen
+
+1. Mit **Web-Anruf** testen — Begrüßung, FAQ-Antworten und Weiterleitungsverhalten überprüfen
+2. Mit einem echten **Telefonanruf** testen — Sprachqualität und Timing überprüfen
+3. [Telefonnummer kaufen](/launch/buy-numbers) und diesem Agenten zuweisen
+4. [Gespräche](/manage/conversations/overview) in der ersten Woche überwachen
+
+---
+
+## Nach dem Start
+
+- In der ersten Woche 5–10 Anrufe überprüfen — auf unbeantwortete Fragen achten
+- Fehlende Informationen in die Wissensdatenbank aufnehmen, sobald Lücken sichtbar werden
+- [Quality Studio](/manage/quality-studio/overview) nutzen, um wiederkehrende Probleme zu markieren und zu beheben
+- Im [Dashboard](/manage/dashboard) Muster beim Anrufvolumen prüfen
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Transfer-Tool" icon="right-left" href="/build/tools/transfer-tools">
+    Anrufweiterleitungsziele konfigurieren
+  </Card>
+  <Card title="Kalender-Buchung" icon="calendar" href="/build/tools/booking-calendar">
+    Terminplanung hinzufügen
+  </Card>
+  <Card title="Wissensdatenbank" icon="book" href="/build/knowledge/architecture">
+    Unternehmensinformationen strukturieren
+  </Card>
+  <Card title="Produktions-Checkliste" icon="clipboard-check" href="/launch/production-checklist">
+    Verifizierungsschritte vor dem Start durchführen
+  </Card>
+</CardGroup>

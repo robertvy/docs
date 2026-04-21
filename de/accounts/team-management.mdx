@@ -1,54 +1,225 @@
 ---
 title: "Team-Verwaltung"
-description: "Lade Team-Mitglieder ein, verwalte Rollen und steuere den Zugriff auf Accounts und Subaccounts."
-icon: "users-gear"
-keywords: "team management, roles, invitations, permissions, members"
-"og:description": "Verwalte Team-Mitglieder, Rollen und Zugriffe in Accounts und Subaccounts."
+description: "Lade Team-Mitglieder ein, verwalte sie und steuere ihre Berechtigungen"
+icon: "users"
+keywords: "team management, invite members, team invitations, user management, team access, member permissions, role-based access"
+"og:description": "Lade Team-Mitglieder in itellicoAI ein und verwalte sie. Weise Rollen zu und steuere die Zusammenarbeit in deinem Account."
 "og:title": "Team-Verwaltung"
 ---
 
-## Wofür dieser Bereich gedacht ist
 
-Nutze Team Management, um Personen hinzuzufügen und ihre Rechte im Account sauber zu steuern.
+import { Screenshot } from "/snippets/screenshot.mdx";
 
-## Typische Aufgaben
+## Team-Mitgliederverwaltung
 
-- Mitglieder einladen
-- Rollen vergeben
-- Zugriffe prüfen und anpassen
-- veraltete Mitglieder entfernen
+Die Seite zur Team-Verwaltung ermöglicht es dir, Mitglieder anzuzeigen, Nutzer einzuladen, Rollen zu ändern und den Zugriff zu entfernen.
 
-## Rollen
+**Zugriff:** Gehe zu **Einstellungen → Account → Mitglieder**.
 
-Die genaue Rollenverteilung hängt von deinem Account-Modell ab. Gib nur so viele Rechte wie nötig.
+<Screenshot
+  lightSrc="/images/accounts__team-members-light.png"
+  darkSrc="/images/accounts__team-members-dark.png"
+  alt="Team members list showing name, email, role, last login, and actions columns"
+/>
+
+## Team-Mitgliederliste
+
+Die Tabelle enthält:
+
+| Spalte | Beschreibung |
+|--------|-------------|
+| **Mitglied** | Name und Avatar |
+| **E-Mail** | Account-E-Mail |
+| **Rolle** | Aktuelle Rolle (bearbeitbar, wenn erlaubt) |
+| **Letzter Login** | Letzte Login-Aktivität |
+| **Aktionen** | Einladung erneut senden oder Mitglied entfernen |
+
+Nutze die Symbolleisten-Suche, um Mitglieder zu filtern.
+
+## Rollen und Berechtigungen
+
+### Rollenübersicht
+
+| Rolle | Beschreibung |
+| --- | --- |
+| **Owner** | Höchste Kontrollebene. Verwaltet die Organisations-Inhaberschaft und die übergeordnete Administration. Kann nicht von niedrigeren Rollen geändert werden. |
+| **Admin** | Verwaltet Mitglieder, Einladungen und accountweite Einstellungen. Kann niedrigere oder gleichwertige Rollen vergeben. |
+| **Member** | Standardmäßiger operativer Zugriff für den täglichen Betrieb. Kann keine accountweiten Admin-Aktionen durchführen. |
+| **Viewer** | Nur-Lese-Zugriff für Sichtbarkeits- und Monitoring-Anwendungsfälle. |
+| **Agency Admin** | Erhöhter Agency-Zugriff in Accounts, in die ein externer Agency-Nutzer eingeladen wurde. |
+
+### Berechtigungsmatrix
+
+| Bereich | Owner | Admin | Agency Admin | Member | Viewer |
+| --- | --- | --- | --- | --- | --- |
+| **Agents** | | | | | |
+| Agents anzeigen | Voll | Voll | Voll | Voll | Lesen |
+| Agents erstellen/bearbeiten | Voll | Voll | Voll | Voll | Keine |
+| Agents löschen | Voll | Voll | Voll | Keine | Keine |
+| **Konversationen** | | | | | |
+| Konversationen anzeigen | Voll | Voll | Voll | Voll | Lesen |
+| Konversationen löschen | Voll | Voll | Voll | Keine | Keine |
+| Konversationen exportieren | Voll | Voll | Voll | Voll | Lesen |
+| **Kampagnen** | | | | | |
+| Kampagnen anzeigen | Voll | Voll | Voll | Voll | Lesen |
+| Kampagnen erstellen/verwalten | Voll | Voll | Voll | Voll | Keine |
+| **Knowledge Bases** | | | | | |
+| Knowledge Bases anzeigen | Voll | Voll | Voll | Voll | Lesen |
+| Knowledge erstellen/bearbeiten | Voll | Voll | Voll | Voll | Keine |
+| **Telefonie** | | | | | |
+| Telefonnummern anzeigen | Voll | Voll | Voll | Voll | Lesen |
+| Nummern kaufen/importieren | Voll | Voll | Voll | Keine | Keine |
+| SIP-Trunks verwalten | Voll | Voll | Voll | Keine | Keine |
+| **Account & Einstellungen** | | | | | |
+| Account-Einstellungen anzeigen | Voll | Voll | Voll | Lesen | Lesen |
+| Account-Einstellungen bearbeiten | Voll | Voll | Voll | Keine | Keine |
+| Mitglieder verwalten | Voll | Voll | Voll | Keine | Keine |
+| Subaccounts verwalten | Voll | Voll | Voll | Keine | Keine |
+| Billing verwalten | Voll | Voll | Keine | Keine | Keine |
+| **Entwickler** | | | | | |
+| API-Schlüssel anzeigen | Voll | Voll | Voll | Lesen | Keine |
+| API-Schlüssel erstellen/widerrufen | Voll | Voll | Voll | Keine | Keine |
+| Integrationen verwalten | Voll | Voll | Voll | Keine | Keine |
+| Webhooks verwalten | Voll | Voll | Voll | Keine | Keine |
+
+<Note>
+Dein Account zeigt möglicherweise andere Rollenoptionen basierend auf deinem Account-Setup. Die obige Berechtigungsmatrix spiegelt die Standardkonfiguration wider — Berechtigungen auf Subaccount-Ebene können den Zugriff weiter einschränken. Siehe [Subaccounts](/accounts/subaccounts) für Berechtigungsüberschreibungen.
+</Note>
+
+## Accounts mit Agency-Zugriff
+
+Einige unabhängige Accounts gewähren externen Agency-Nutzern Agency-Zugriff.
+
+In diesen Accounts:
+
+- können nur Agency-Admins verwalten, worauf Nicht-Agentur-Mitglieder zugreifen können
+- kann die **Einladen**-Aktion für Nicht-Agency-Admins ausgeblendet oder deaktiviert sein
+- steuern Agency-Admins in den [Agency-Einstellungen](/accounts/agency-settings), was Nicht-Agentur-Mitglieder — einschließlich des Account-Owners — sehen und tun können
+
+Verwende **Mitglieder** für Einladungen und Rollenänderungen. Verwende **Agency-Einstellungen**, um den Zugriff für alle im Account zu steuern, die keinen Agency-Zugriff haben.
+
+## Team-Mitglieder einladen
+
+<Steps>
+  <Step title="Mitgliederseite öffnen">
+    Gehe zu **Einstellungen → Account → Mitglieder**.
+  </Step>
+
+  <Step title="Auf „Einladen" klicken">
+    Klicke auf die Aktion **Einladen** in der Seitensymbolleiste.
+  </Step>
+
+  <Step title="Eine oder mehrere E-Mail-Adressen hinzufügen">
+    Gib E-Mail-Adressen in das Einladungsformular ein.
+  </Step>
+
+  <Step title="Rolle auswählen">
+    Wähle eine Rolle für die eingeladenen Nutzer aus.
+  </Step>
+
+  <Step title="Einladungen senden">
+    Sende die Einladung ab. Nutzer erhalten eine E-Mail mit einem Akzeptanzlink.
+  </Step>
+</Steps>
+
+<Note>
+Die Gültigkeit der Einladung wird im Einladungsflow und in der Liste ausstehender Einladungen angezeigt. Du kannst ausstehende Einladungen erneut senden, und der obige Screenshot der Mitgliederliste zeigt auch den Bereich ausstehender Einladungen, der nach dem Versenden von Einladungen erscheint.
+</Note>
+
+## Ausstehende Einladungen verwalten
+
+Ausstehende Einladungen werden unterhalb der Mitgliederliste angezeigt.
+
+Für jede ausstehende Einladung kannst du:
+
+- **Erneut senden**: Eine neue Einladungs-E-Mail ausstellen
+- **Abbrechen**: Die Einladung sofort widerrufen
+
+## Was Eingeladene sehen
+
+Der Einladungslink verhält sich nicht für alle Empfänger gleich:
+
+- bestehende itellicoAI-Nutzer werden aufgefordert, sich anzumelden, und dann zur Einladungsannahmeseite weitergeleitet
+- neue Nutzer werden durch den Anmeldeprozess geführt, wobei die eingeladene E-Mail-Adresse vorausgefüllt ist
+- eingeladene Anmeldungen sehen möglicherweise einen kurzen Begrüßungsschritt, um ihr Profil zu vervollständigen, bevor sie den Account betreten
+
+Wenn eine Einladung abläuft oder ungültig wird, kann der Eingeladene sie nicht selbst wiederherstellen. Du musst sie aus der Liste der ausstehenden Einladungen erneut senden.
+
+## Die Rolle eines Mitglieds ändern
+
+Wenn du die Berechtigung hast, Rollen zu aktualisieren:
+
+1. Öffne **Einstellungen → Account → Mitglieder**
+2. Suche den Nutzer in der Liste
+3. Verwende das **Rollen**-Dropdown in der Zeile
+4. Wähle die neue Rolle aus
+
+<Warning>
+Du kannst deine eigene Rolle nicht aus derselben Mitgliederzeile ändern, und Owner-Rollenänderungen sind eingeschränkt.
+</Warning>
+
+## Team-Mitglieder entfernen
+
+1. Öffne **Einstellungen → Account → Mitglieder**
+2. Öffne das Zeilenaktionsmenü für diesen Nutzer
+3. Klicke auf **Entfernen**
+4. Bestätige die Entfernung
+
+Entfernte Nutzer verlieren sofort den Zugriff, und die Plattform entfernt den Account aus ihrem Account-Switcher.
 
 ## Best Practices
 
 <AccordionGroup>
-  <Accordion title="Least Privilege">
-    Verteile administrative Rechte nur an Personen, die sie wirklich brauchen.
+  <Accordion title="Least Privilege verwenden" icon="shield-halved">
+    Vergib Admin-Rollen nur an Personen, die eine accountweite Kontrolle benötigen.
   </Accordion>
-  <Accordion title="Regelmäßig prüfen">
-    Kontrolliere Mitgliedschaften in festen Intervallen.
+
+  <Accordion title="Rollen regelmäßig überprüfen" icon="clipboard-list">
+    Prüfe Rollenzuweisungen in einem festen Rhythmus und passe veraltete oder überprivilegierte Zugänge an.
   </Accordion>
-  <Accordion title="Sauber trennen">
-    Nutze Subaccounts, wenn du Teams, Kunden oder Regionen strikt isolieren willst.
+
+  <Accordion title="Einladungen sauber halten" icon="envelope">
+    Storniere veraltete Einladungen und sende sie nur erneut, wenn die E-Mail-Adresse bestätigt ist.
+  </Accordion>
+
+  <Accordion title="Sofort offboarden" icon="user-minus">
+    Entferne den Zugriff, sobald jemand das Team verlässt, und rotiere alle gemeinsam genutzten Anmeldedaten, auf die die Person zugreifen konnte.
+  </Accordion>
+</AccordionGroup>
+
+## Fehlerbehebung
+
+<AccordionGroup>
+  <Accordion title="Einladung nicht erhalten" icon="envelope">
+    Überprüfe die Adresse, prüfe den Spam-Ordner und sende die Einladung dann erneut.
+  </Accordion>
+
+  <Accordion title="Einladung abgelaufen" icon="clock">
+    Sende sie aus der Liste der ausstehenden Einladungen erneut, um einen neuen Link auszustellen.
+  </Accordion>
+
+  <Accordion title="Nutzer kann den Account nicht sehen" icon="eye-slash">
+    Bestätige, dass die Person die Einladung mit derselben E-Mail-Adresse akzeptiert hat, die eingeladen wurde.
+  </Accordion>
+
+  <Accordion title="Rollenänderung ist deaktiviert" icon="lock">
+    Deine aktuelle Rolle oder Berechtigungen erlauben möglicherweise nicht, die Rolle dieses Mitglieds zu aktualisieren.
   </Accordion>
 </AccordionGroup>
 
 ## Nächste Schritte
 
 <CardGroup cols={2}>
-  <Card title="Accounts und Subaccounts" icon="users" href="/de/accounts/overview">
-    Das Zugriffmodell verstehen
+  <Card title="Subaccounts" icon="sitemap" href="/accounts/subaccounts">
+    Verschachtelte Account-Strukturen und Zugriffskategorien verwalten
   </Card>
-  <Card title="Agency-Einstellungen" icon="building" href="/de/accounts/agency-settings">
-    Agency-Zugriff konfigurieren
+  <Card title="Agency-Einstellungen" icon="building" href="/accounts/agency-settings">
+    Standardmäßigen Mitgliederzugriff in Accounts mit Agency-Zugriff steuern
   </Card>
-  <Card title="Sicherheit" icon="shield-halved" href="/de/accounts/security">
-    Anmeldung und Sitzungen absichern
+  <Card title="Sicherheit" icon="shield-check" href="/accounts/security">
+    Authentifizierung und Sitzungssicherheit konfigurieren
   </Card>
-  <Card title="Profil" icon="user" href="/de/accounts/user-profile">
-    Das eigene Profil verwalten
+  <Card title="API-Schlüssel" icon="key" href="/accounts/api-keys">
+    Programmatische Zugangsdaten verwalten
   </Card>
 </CardGroup>

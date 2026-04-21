@@ -1,32 +1,106 @@
 ---
 title: "Integrationen"
-description: "Verbinde Accounts mit externen Systemen, APIs und Automatisierungen."
+description: "Verbinde Drittanbieter-Dienste, um dein itellicoAI-Deployment zu erweitern"
 icon: "plug"
-keywords: "integrations, api, automation, external systems"
-"og:description": "Richte Integrationen für deinen Account ein."
+keywords: "integrations, Cal.com, webhooks, third-party connections, calendar integration, MCP servers"
+"og:description": "Verbinde Drittanbieter-Dienste mit itellicoAI und erweitere deinen Workflow."
 "og:title": "Integrationen"
 ---
 
-## Überblick
+## Verfügbare Integrationen
 
-Nutze Integrationen, um itellicoAI mit deinen internen Systemen und Workflows zu verbinden.
+Integrationen verbinden itellicoAI mit externen Tools.
 
-## Typische Anwendungsfälle
+**Zugriff:** Gehe zu **Einstellungen → Entwickler → Integrationen**.
 
-- CRM- und Support-Tools anbinden
-- eigene Automationen auslösen
-- Account-spezifische Prozesse steuern
+## Aktueller Provider-Status
+
+<CardGroup cols={3}>
+  <Card title="Cal.com" icon="calendar">
+    Verbinde mithilfe eines gespeicherten Secrets, das deinen Cal.com API-Schlüssel enthält, und nutze dann Buchungsabläufe in Agenten.
+  </Card>
+  <Card title="Twilio" icon="phone">
+    Demnächst in der Integrationen-Oberfläche verfügbar.
+  </Card>
+  <Card title="ElevenLabs" icon="plug">
+    Demnächst in der Integrationen-Oberfläche verfügbar.
+  </Card>
+</CardGroup>
+
+## Cal.com-Integration
+
+Nutze Cal.com, um Terminbuchungs-Workflows zu unterstützen.
+
+### Einrichtung
+
+<Steps>
+  <Step title="Integrationen öffnen">
+    Navigiere zu **Einstellungen → Entwickler → Integrationen**.
+  </Step>
+
+  <Step title="Cal.com öffnen">
+    Klicke auf der Cal.com-Karte auf **Verbinden** (oder **Verwalten**, falls bereits verbunden).
+  </Step>
+
+  <Step title="Secret auswählen oder erstellen">
+    Wähle ein vorhandenes Secret aus oder erstelle ein neues, das deinen Cal.com API-Schlüssel speichert.
+  </Step>
+
+  <Step title="Verbindung testen">
+    Führe den Verbindungstest aus. Die Aktion **Verbinden** ist erst nach einem erfolgreichen Test aktiviert.
+  </Step>
+
+  <Step title="Verbindung speichern">
+    Bestätige die Verbindung. Der Integrationsstatus wechselt auf „verbunden".
+  </Step>
+
+  <Step title="In Agenten-Tools verwenden">
+    Konfiguriere die Agenten-Buchung mit [Kalender-Buchung](/build/tools/booking-calendar).
+  </Step>
+</Steps>
+
+### Was dadurch ermöglicht wird
+
+Nach der Verbindung können deine Agenten über konfigurierte Tools auf Kalenderverfügbarkeit und Buchungs-Workflows zugreifen.
+
+## Secrets
+
+Verwende [Secrets](/accounts/secrets), wenn du wiederverwendbare Zugangsdaten für unterstützte Account-Funktionen zentral verwalten möchtest, statt Rohwerte an mehreren Stellen erneut einzugeben.
+
+Derselbe Secret-basierte Ablauf wird heute auch an anderen Stellen verwendet, z. B. bei der SIP-Trunk-Authentifizierung, MCP-Server-Zugangsdaten und agentenseitigen externen Aktionen.
+
+## Webhooks
+
+Webhooks werden über **Einstellungen → Entwickler → Webhooks** konfiguriert (getrennt von der Integrationsliste).
+
+Nutze Webhooks, um Ereignisdaten in Echtzeit an deine Systeme zu übertragen.
+
+- Abonnements konfigurieren: [Webhooks](/accounts/webhooks)
+- Ereigniskatalog einsehen: [Webhook-Ereignisse](/reference/webhook-events)
+- Halte Webhook-Secrets vertraulich und rotiere sie bei Bedarf
+
+## MCP-Server
+
+Die MCP-Server-Konfiguration wird innerhalb der Agenten-Build-Oberfläche verwaltet.
+
+Verwende [MCP-Server](/build/advanced/mcp-servers), wenn du Tool- oder Datenerweiterungen in Profi-Workflows benötigst.
 
 ## Nächste Schritte
 
 <CardGroup cols={2}>
-  <Card title="API-Schlüssel" icon="key" href="/de/accounts/api-keys">
-    Zugriff für Integrationen anlegen
+  <Card title="Kalender-Buchung" icon="calendar-check" href="/build/tools/booking-calendar">
+    Buchungsverhalten in deinen Agenten konfigurieren
   </Card>
-  <Card title="Secrets" icon="lock" href="/de/accounts/secrets">
-    Zugangsdaten sicher speichern
+  <Card title="Webhooks" icon="webhook" href="/accounts/webhooks">
+    Webhook-Abonnements für Echtzeit-Ereignisse erstellen
   </Card>
-  <Card title="Webhooks" icon="bolt" href="/de/accounts/webhooks">
-    Ereignisse nach außen senden
+  <Card title="Secrets" icon="lock" href="/accounts/secrets">
+    Wiederverwendbare Zugangsdaten für unterstützte Workflows speichern
+  </Card>
+  <Card title="Webhooks-Referenz" icon="webhook" href="/reference/webhook-events">
+    Unterstützte Webhook-Ereignisse und Zustellungsdetails einsehen
+  </Card>
+  <Card title="API-Schlüssel" icon="key" href="/accounts/api-keys">
+    Zugangsdaten für Integrationen und Automatisierungen verwalten
   </Card>
 </CardGroup>
