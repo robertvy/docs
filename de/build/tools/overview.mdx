@@ -258,3 +258,251 @@ Tool-Namen sind case-sensitiv und müssen exakt mit der Konfiguration übereinst
     1. Confirm the customer wants to schedule
     2. Ask for their email address if not in contact record
     3. Discuss their preferred dates and times
+    4. Explain what the consultation will cover
+    5. Only then execute the booking tool
+    ```
+  </Accordion>
+
+  <Accordion title="Zugangsdaten absichern" icon="lock">
+    Verwende geeignete Authentifizierung für alle benutzerdefinierten Tools. Exponiere niemals API-Schlüssel oder Zugangsdaten in URLs oder unverschlüsselten Feldern.
+
+    - Bearer-Tokens für API-Authentifizierung verwenden
+    - Basic Auth nur über HTTPS einsetzen
+    - Sensible Zugangsdaten sicher speichern
+    - Zugangsdaten regelmäßig rotieren
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Tools testen
+
+<Note>
+Einige Tools funktionieren nur bei einem echten Telefonanruf. Weiterleitungen an eine Telefonnummer oder SIP-Adresse können nicht im Web-Simulator getestet werden — die Weiterleitungsaktion erfordert eine echte Telefonieverbindung. Verwende **Agent testen → Telefonanruf**, um diese zu testen.
+</Note>
+
+Teste vor dem Einsatz von Agenten mit Tools gründlich in der Dashboard-Testoberfläche:
+
+<Steps>
+  <Step title="Testoberfläche öffnen">
+    Klicke auf **Agent testen** in der oberen rechten Ecke des Agenten-Editors.
+  </Step>
+  <Step title="Web-Call starten">
+    Klicke auf **Web-Call starten**, um ein Testgespräch zu beginnen.
+  </Step>
+  <Step title="Jedes Tool auslösen">
+    Führe Szenarien durch, die jedes konfigurierte Tool auslösen.
+  </Step>
+  <Step title="Ausführung prüfen">
+    Überprüfe, ob Tools korrekt ausgeführt werden und Antworten angemessen verarbeiten.
+  </Step>
+  <Step title="Fehlerfälle testen">
+    Simuliere Fehler, um sicherzustellen, dass die Fehlerbehandlung wie erwartet funktioniert.
+  </Step>
+  <Step title="Transkript prüfen">
+    Überprüfe das Gesprächstranskript, um sicherzustellen, dass der Ablauf natürlich ist und Tools reibungslos integriert sind.
+  </Step>
+</Steps>
+
+### Was zu testen ist
+
+**Für Weiterleitungs-Tools:**
+- Weiterleitung zum richtigen Ziel
+- Wartemusik bei Agent-Weiterleitung, sofern konfiguriert
+- Weiterleitungsnachricht ist angemessen
+- Cold-Transfer-Verhalten und Fallback-Behandlung funktionieren korrekt
+
+**Für Buchungs-Tools:**
+- Verfügbarkeit wird korrekt abgerufen
+- Buchung wird erfolgreich bestätigt
+- E-Mail-/SMS-Benachrichtigungen werden korrekt gesendet
+- Zeitzonenbehandlung ist korrekt
+
+**Für benutzerdefinierte Aktionen:**
+- Verbundene Systeme antworten erfolgreich
+- Authentifizierung funktioniert
+- Antwortdaten sind für den Agenten verfügbar
+- Fehlerantworten werden korrekt behandelt
+
+**Für alle Tools:**
+- Agent referenziert Tool mit dem richtigen Namen
+- Agent sammelt zuerst erforderliche Informationen
+- Gesprächsfluss bleibt natürlich
+- Fehler unterbrechen das Gespräch nicht
+
+<Warning>
+Testanrufe verwenden echte Integrationen. Wenn du ein Buchungs-Tool testest, werden echte Termine in deinem Cal.com-Account erstellt. Bereinige Testdaten anschließend.
+</Warning>
+
+---
+
+## Häufige Anwendungsfälle
+
+### Kundensupport-Workflow
+
+```text wrap
+Agentenkonfiguration:
+- Weiterleitung zum Support (für komplexe Probleme)
+- Kundenkonto nachschlagen (benutzerdefinierte API)
+- Support-Ticket erstellen (benutzerdefinierte API)
+- "KI darf auflegen" aktiviert unter Gespräch → Gesprächsende
+
+Anweisungen:
+Wenn ein Kunde anruft:
+1. Begrüße ihn freundlich
+2. Verwende "Kundenkonto nachschlagen", um seine Informationen abzurufen
+3. Frage nach seinem Anliegen
+4. Wenn du es lösen kannst, tue es mithilfe der Wissensdatenbank
+5. Bei komplexen Problemen verwende "Support-Ticket erstellen" und gib die Ticketnummer an
+6. Wenn der Kunde einen Menschen wünscht, verwende "Weiterleitung zum Support"
+7. Bei Lösung bestätige die nächsten Schritte und beende natürlich
+```
+
+### Terminbuchungs-Workflow
+
+```text wrap
+Agentenkonfiguration:
+- Beratung buchen (Cal.com-Buchung)
+- Weiterleitung zur Terminplanung (Fallback)
+- "KI darf auflegen" aktiviert unter Gespräch → Gesprächsende
+
+Anweisungen:
+Wenn ein Kunde einen Termin buchen möchte:
+1. Frage, welche Art von Termin benötigt wird
+2. E-Mail-Adresse erfragen, falls nicht im Kontaktdatensatz
+3. Bevorzugte Termine besprechen
+4. Verwende "Beratung buchen", um Verfügbarkeit anzuzeigen und zu bestätigen
+5. Bei erfolgreicher Buchung Details mündlich bestätigen
+6. Bei fehlgeschlagener Buchung "Weiterleitung zur Terminplanung" verwenden
+7. Gespräch nach Bestätigung des Ergebnisses natürlich beenden
+```
+
+### Verkaufsqualifizierungs-Workflow
+
+```text wrap
+Agentenkonfiguration:
+- Unternehmensdaten nachschlagen (benutzerdefinierte API)
+- CRM-Lead aktualisieren (benutzerdefinierte API)
+- Weiterleitung zum Vertrieb (für qualifizierte Leads)
+- "KI darf auflegen" aktiviert unter Gespräch → Gesprächsende
+
+Anweisungen:
+Für ausgehende Verkaufsanrufe:
+1. Stelle dich und den Zweck vor
+2. Verwende "Unternehmensdaten nachschlagen", um Firmendaten abzurufen
+3. Stelle Qualifizierungsfragen (Budget, Zeitplan, Entscheidungsbefugnis)
+4. Verwende "CRM-Lead aktualisieren" mit Qualifizierungsstatus
+5. Bei Qualifizierung "Weiterleitung zum Vertrieb" mit Kontext verwenden
+6. Bei fehlender Qualifizierung bedanke dich und beende das Gespräch natürlich
+```
+
+---
+
+## Häufige Probleme beheben
+
+<AccordionGroup>
+  <Accordion title="Tool wird nicht ausgelöst" icon="circle-exclamation">
+    **Problem:** Agent verwendet das Tool nicht, obwohl er sollte.
+
+    **Lösungen:**
+    - Überprüfe, ob der Tool-Name im Prompt exakt übereinstimmt (Groß-/Kleinschreibung beachten)
+    - Stelle sicher, dass das Tool in der Tools-Tabelle vorhanden ist und eine erforderliche Integration verbunden ist
+    - Mache deinen Prompt expliziter, wann das Tool verwendet werden soll
+    - Teste isoliert, indem du den Agenten explizit auffordest, das Tool zu verwenden
+    - Überprüfe das Gesprächstranskript, um die Überlegungen des Agenten zu sehen
+  </Accordion>
+
+  <Accordion title="Agent kündigt Tool an, führt es aber nicht aus" icon="comments">
+    **Problem:** Agent bestätigt mündlich die Ausführung eines Tools (z.B. "Ich leite dich jetzt weiter"), aber das Tool wird erst im nächsten Gesprächszug ausgeführt.
+
+    **Warum das passiert:** Der Agent generiert eine Antwort und führt das Tool im selben Zug aus, aber nur eines kann pro Zug passieren.
+
+    **Lösung:** Weise den Agenten an, vor der Tool-Ausführung eine Bestätigung einzuholen:
+
+    ```jinja
+    Bevor du das Tool "Weiterleitung zum Support" verwendest:
+    1. Erkläre, warum du weiterleitest
+    2. Frage: "Soll ich dich jetzt weiterleiten?"
+    3. Warte auf Bestätigung
+    4. Nach Bestätigung führe das Tool "Weiterleitung zum Support" aus
+    ```
+
+    So stellt der Agent sicher, dass das Tool sofort nach der Bestätigung ausgeführt wird, nicht im selben Zug wie die Ankündigung.
+  </Accordion>
+
+  <Accordion title="Authentifizierungsfehler" icon="key">
+    **Problem:** Benutzerdefinierte Tools schlagen mit 401/403-Fehlern fehl.
+
+    **Lösungen:**
+    - Überprüfe, ob Zugangsdaten korrekt und nicht abgelaufen sind
+    - Prüfe, ob der Authentifizierungstyp den Anforderungen des verbundenen Systems entspricht
+    - Stelle sicher, dass Bearer-Tokens ggf. den Präfix "Bearer" enthalten
+    - Bitte den Eigentümer des verbundenen Systems zu bestätigen, dass die Verbindung außerhalb des Agenten funktioniert
+    - Überprüfe die Authentifizierungsanforderungen des verbundenen Systems
+  </Accordion>
+
+  <Accordion title="Buchungsaktion schlägt fehl" icon="calendar-xmark">
+    **Problem:** Das Cal.com-Buchungs-Tool gibt Fehler zurück.
+
+    **Lösungen:**
+    - Überprüfe, ob die Cal.com-Integration verbunden ist
+    - Prüfe, ob der Event-Typ vorhanden und aktiv ist
+    - Stelle sicher, dass die Meeting-Plattform in Cal.com konfiguriert ist
+    - Überprüfe, ob Planungsfenster die angeforderten Termine zulassen
+    - Zeitzonenkonfiguration prüfen
+    - Teste die Buchung manuell in Cal.com, um die Verfügbarkeit zu prüfen
+  </Accordion>
+
+  <Accordion title="Weiterleitung stellt keine Verbindung her" icon="phone-slash">
+    **Problem:** Das Weiterleitungs-Tool wird ausgeführt, stellt aber keine Verbindung her.
+
+    **Lösungen:**
+    - Überprüfe, ob das Ziel im korrekten E.164-Format vorliegt (z.B. +49151234567)
+    - Stelle sicher, dass die Telefonnummer erreichbar ist (bei Telefon-Weiterleitungen)
+    - Überprüfe, ob die SIP-Adresse korrekt ist (bei SIP-Weiterleitungen)
+    - Teste das Ziel unabhängig
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Weiterleitungs-Tools" icon="phone-arrow-right" href="/build/tools/transfer-tools">
+    Ziele, Modi, Routing-Muster und Gesprächsende konfigurieren
+  </Card>
+  <Card title="Buchungsintegration" icon="calendar" href="/build/tools/booking-calendar">
+    Cal.com-Terminplanung mit E-Mail- und SMS-Benachrichtigungen einrichten
+  </Card>
+  <Card title="Benutzerdefinierte Aktion" icon="code" href="/build/tools/custom-api-actions">
+    Agenten mit externen Systemen und APIs verbinden
+  </Card>
+  <Card title="Gesprächsdatenfluss" icon="arrows-turn-right" href="/build/conversation/runtime-data-flow">
+    Verstehen, wie Werte in Live-Tools und Post-Call-Workflows fließen
+  </Card>
+  <Card title="Prompt" icon="pen" href="/build/conversation/prompt">
+    Effektive Agenten-Prompts schreiben
+  </Card>
+  <Card title="Prompt Engineering" icon="book" href="/build/conversation/prompt-engineering-guide">
+    Fortgeschrittene Prompt-Techniken für zuverlässiges Agentenverhalten
+  </Card>
+</CardGroup>
+
+---
+
+## Häufige Fragen
+
+<AccordionGroup>
+  <Accordion title="Spielt der Tool-Name eine Rolle?">
+    Ja. Der Agent wählt Tools basierend auf dem von dir angegebenen Namen und der Beschreibung aus. Verwende klare, beschreibende Namen wie "Weiterleitung zum Vertrieb" oder "Termin buchen" — nicht "Tool 1" oder "Aktion A". Namen unterscheiden zwischen Groß- und Kleinschreibung.
+  </Accordion>
+
+  <Accordion title="Kann ich Tools ohne Programmierung hinzufügen?">
+    Integrierte Tools (Anruf weiterleiten, Kalenderbuchung, Websuche) erfordern keinen Code. Benutzerdefinierte API-Aktionen benötigen einen aufzurufenden API-Endpunkt, werden aber vollständig in der Benutzeroberfläche konfiguriert — kein SDK oder serverseitiger Code erforderlich.
+  </Accordion>
+
+  <Accordion title="Was passiert, wenn ein Tool während eines Anrufs fehlschlägt?">
+    Der Agent erhält die Fehlerantwort und kann damit umgehen, wenn dein Prompt Fallback-Anweisungen enthält. Überprüfe die Gesprächszeitleiste, um die genaue Anfrage und Antwort für jeden Tool-Aufruf zu sehen.
+  </Accordion>
+</AccordionGroup>
