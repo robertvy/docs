@@ -1,10 +1,10 @@
 ---
-title: "Greeting Messages"
+title: "Begrüßungen"
 description: "Wähle feste, KI-generierte oder vom Nutzer initiierte Begrüßungsmodi. Personalisiere Startnachrichten mit Variablen, setze Verzögerungen und konfiguriere Barge-In für Inbound- und Outbound-Anrufe."
 icon: "hand-wave"
 keywords: "AI greeting messages, conversational AI greetings, dynamic greetings, personalized agent messages, conversation starters, AI welcome messages"
 "og:description": "Konfiguriere dynamische, personalisierte Begrüßungsnachrichten, die für jedes Gespräch eines KI-Agenten den richtigen Ton setzen."
-"og:title": "Greeting Messages"
+"og:title": "Begrüßungen"
 ---
 
 import { Screenshot } from "/snippets/screenshot.mdx";
@@ -29,8 +29,8 @@ Dieser Bereich wechselt zwischen Einfach und Profi. Einfach hält die Einrichtun
 <Screenshot
   lightSrc="/images/operations__greeting_DE-light.png"
   darkSrc="/images/operations__greeting_DE-dark.png"
-  alt="Begrüßungskonfiguration mit Call-Flow-Tab, Call-Start-Einstellungen und den Modi Fixed Message, AI Generated und Wait for Caller"
-  caption="Im Einfach sichtbar. Das gesamte Begrüßungsverhalten startet in Call Start, wo du den Begrüßungsmodus wählst und entscheidest, ob Inbound- und Outbound-Anrufe unterschiedlich behandelt werden sollen."
+  alt="Begrüßungskonfiguration mit Tab Anrufablauf, Bereich Anrufstart und den Modi Feste Begrüßung, Dynamische Begrüßung und Auf Anrufer warten"
+  caption="Im Einfach sichtbar. Das gesamte Begrüßungsverhalten startet in Anrufstart, wo du den Begrüßungsmodus wählst und entscheidest, ob eingehende und ausgehende Anrufe unterschiedlich behandelt werden sollen."
   maxWidth="860px"
 />
 
@@ -45,7 +45,7 @@ Dieser Bereich wechselt zwischen Einfach und Profi. Einfach hält die Einrichtun
 />
 
 <Tabs>
-  <Tab title="Fixed Message">
+  <Tab title="Feste Begrüßung">
     **Am besten für**: Einheitliche, gebrandete Begrüßungen
 
     Dein Agent spricht jedes Mal exakt dieselbe Begrüßung.
@@ -66,7 +66,7 @@ Dieser Bereich wechselt zwischen Einfach und Profi. Einfach hält die Einrichtun
     - Konsistenz über alle Anrufe hinweg benötigt wird
   </Tab>
 
-  <Tab title="AI Generated">
+  <Tab title="Dynamische Begrüßung">
     **Am besten für**: Personalisierte, kontextbewusste Begrüßungen
 
     Dein Agent erzeugt Begrüßungen dynamisch auf Basis des verfügbaren Kontexts.
@@ -218,7 +218,7 @@ Du rufst den Kunden an. Du musst Legitimität und Zweck schnell klar machen.
 
 <Badge>Profi</Badge>
 
-Konfiguriere separate Begrüßungen für Outbound-Anrufe im Abschnitt **Greeting**.
+Konfiguriere separate Begrüßungen für Outbound-Anrufe im Abschnitt **Begrüßung**.
 
 <Screenshot
   lightSrc="/images/operations__outbound-greeting_DE-light.png"
@@ -258,3 +258,121 @@ Standardmäßig spiegeln Outbound-Anrufe deine Inbound-Begrüßung. Nutze Übers
   caption="Der Begrüßungseditor zeigt erkannte Variablen inline, damit du sie vor dem Einsatz in der Produktion prüfen kannst."
   maxWidth="760px"
 />
+
+---
+
+## Gute Begrüßungen schreiben
+
+<AccordionGroup>
+  <Accordion title="Kurz halten" icon="clock">
+    Ziel: unter 10 Sekunden.
+
+    **Gut:** "Hallo! Danke für Ihren Anruf bei Acme Support. Wie kann ich helfen?"
+
+    **Zu lang:** "Hallo und vielen Dank, dass Sie beim technischen Support von Acme Software anrufen. Mein Name ist Alex und ich werde Sie heute unterstützen..."
+  </Accordion>
+
+  <Accordion title="Natürlich klingen" icon="comments">
+    Verwende eine natürliche, gesprächsnahe Sprache.
+
+    **Gut:** "Hallo! Danke für den Anruf. Wie kann ich helfen?"
+
+    **Vermeiden:** "Guten Tag, geschätzter Kunde. Bitte schildern Sie Ihr Anliegen."
+  </Accordion>
+
+  <Accordion title="Erwartungen setzen" icon="bullseye">
+    Mach den Zweck des Anrufs klar.
+
+    **Gut:** "Hallo! Hier ist Alex von der Acme-Buchhaltung. Ich rufe wegen Ihrer letzten Rechnung an."
+
+    **Vermeiden:** "Hallo, hier ist Acme. Ich wollte mich bei Ihnen melden."
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Begrüßungen testen
+
+### Was du testen solltest
+
+<AccordionGroup>
+  <Accordion title="Timing" icon="clock">
+    - Ist die Verzögerung angemessen?
+    - Beginnt der Agent zu früh oder zu spät zu sprechen?
+    - Kann der Anrufer bei Bedarf unterbrechen?
+  </Accordion>
+
+  <Accordion title="Inhalt" icon="message">
+    - Ist die Begrüßung klar und verständlich?
+    - Wird der Zweck deutlich?
+    - Ist der Tonfall angemessen?
+    - Gibt es unnatürliche Formulierungen?
+  </Accordion>
+
+  <Accordion title="Variablen" icon="brackets-curly">
+    - Werden Variablen korrekt gerendert?
+    - Funktionieren die Defaults?
+    - Wird bedingte Logik korrekt ausgelöst?
+  </Accordion>
+
+  <Accordion title="Länge" icon="ruler">
+    - Unter 10 Sekunden?
+    - Bleibt der Anrufer aufmerksam?
+    - Keine unnötigen Wörter?
+  </Accordion>
+</AccordionGroup>
+
+### Testablauf
+
+1. Klicke im Agent-Editor auf **Agent testen**
+2. Wähle **Web call**
+3. Höre dir die Begrüßung mehrfach an
+4. Teste mit verschiedenen Kontexten (VIP-Kunde, verschiedene Kampagnen usw.)
+5. Bitte Kolleginnen und Kollegen um Feedback
+6. Verfeinere basierend auf echten Anrufergebnissen
+
+---
+
+## Häufige Fehler
+
+<AccordionGroup>
+  <Accordion title="Zu förmlich" icon="user-tie">
+    **Vermeiden:** "Guten Tag. Sie haben die technische Supportabteilung der Acme Corporation erreicht."
+
+    **Besser:** "Hallo! Danke für Ihren Anruf beim Acme-Support. Wie kann ich helfen?"
+  </Accordion>
+
+  <Accordion title="Zu locker" icon="face-smile">
+    **Vermeiden:** "Hey! Was gibt's? Was brauchst du?"
+
+    **Besser:** "Hallo! Danke für den Anruf. Wie kann ich heute helfen?"
+  </Accordion>
+
+  <Accordion title="Firmenname fehlt" icon="building">
+    **Vermeiden:** "Hallo, hier ist Alex. Wie kann ich helfen?"
+
+    **Besser:** "Hallo! Hier ist Alex vom Acme-Support. Was kann ich für Sie tun?"
+  </Accordion>
+
+  <Accordion title="Kein Zweck bei ausgehenden Anrufen" icon="phone-arrow-up-right">
+    **Vermeiden:** "Hallo, spreche ich mit Sarah? Wie geht es Ihnen?"
+
+    **Besser:** "Hallo Sarah! Hier ist Alex von Acme. Sie hatten Informationen zu unserem Produkt angefragt - haben Sie kurz Zeit?"
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Nächste Schritte
+
+<CardGroup cols={2}>
+  <Card title="Template Syntax" icon="brackets-curly" href="/de/build/conversation/template-syntax">
+    Variablen in Begrüßungen und Prompts verwenden
+  </Card>
+  <Card title="Prompt Engineering Guide" icon="book" href="/de/build/conversation/prompt-engineering-guide">
+    Fortgeschrittene Prompting-Techniken meistern
+  </Card>
+  <Card title="Agent testen" icon="vial" href="/de/test/web-simulator">
+    Begrüßungen testen und verfeinern
+  </Card>
+</CardGroup>

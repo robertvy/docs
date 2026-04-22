@@ -66,13 +66,13 @@ Wenn in der Produktion Probleme auftreten, gehe so vor:
 
   <Accordion title="Transkriptionsfehler (falsche Wörter)">
     Wenn der Agent bestimmte Wörter häufig falsch versteht:
-    - Füge diese Begriffe dem [Keyword Boosting](/de/build/voice-speech/transcriber) (Deepgram) oder der Phrase List (Azure Speech) in den [Transcriber-Einstellungen](/de/build/voice-speech/transcriber) hinzu
+    - Füge diese Begriffe dem [Keyword Boosting](/de/build/voice-speech/transcriber) (Deepgram) oder der Phrase List (Azure Speech) in den [Transkribierer-Einstellungen](/de/build/voice-speech/transcriber) hinzu
     - Nutze [Custom Pronunciations](/de/build/voice-speech/custom-pronunciations) für Markennamen oder technische Begriffe
     - Teste einen anderen Transkriptionsanbieter - Deepgram ist gut bei Akzenten, Azure bei technischer Fachsprache
   </Accordion>
 
   <Accordion title="Agent unterbricht zu oft">
-    Passe die [Voice Activity Detection](/de/build/advanced/vad-turn-detection)-Einstellungen an:
+    Passe die [VAD & Sprecherwechsel-Erkennung](/de/build/advanced/vad-turn-detection)-Einstellungen an:
     - Wechsle **Response Timing** zu einem geduldigeren Preset
     - Erhöhe im Profi **Silence before responding**
     - Erhöhe im Profi **Speech duration to trigger interrupt**
@@ -86,7 +86,7 @@ Wenn in der Produktion Probleme auftreten, gehe so vor:
     - Prüfe deinen [Agenten-Prompt](/de/build/conversation/prompt) - ist er spezifisch genug? Vage Prompts führen zu inkonsistentem Verhalten.
     - Prüfe auf widersprüchliche Regeln, z. B. "sei knapp" vs. "erkläre ausführlich"
     - Senke den Regler **Response Style** in den [KI-Modell-Einstellungen](/de/build/voice-speech/choose-ai-model) Richtung "Consistent", um kreative Antworten zu reduzieren
-    - Sieh dir den [Prompt Engineering Guide](/de/build/conversation/prompt-engineering-guide) für wirksame Prompting-Techniken an
+    - Sieh dir den [Prompt-Leitfaden](/de/build/conversation/prompt-engineering-guide) für wirksame Prompting-Techniken an
   </Accordion>
 
   <Accordion title="Agent erfindet Informationen (Halluzination)">
@@ -98,7 +98,7 @@ Wenn in der Produktion Probleme auftreten, gehe so vor:
   </Accordion>
 
   <Accordion title="Agent nutzt Wissensdatenbank-Inhalte nicht">
-    - Prüfe, ob das Wissen im Tab [Knowledge](/de/build/getting-started/agent-editor#knowledge) zugewiesen ist
+    - Prüfe, ob das Wissen im Tab [Wissen](/de/build/getting-started/agent-editor#knowledge) zugewiesen ist
     - Stelle sicher, dass alle Elemente grün sind
     - Wenn Elemente als fehlgeschlagen angezeigt werden, klicke auf **Reindex**, um es erneut zu versuchen
     - Achte darauf, dass die Wissensinhalte dieselbe Sprache und Terminologie nutzen wie deine Anrufenden
@@ -108,7 +108,7 @@ Wenn in der Produktion Probleme auftreten, gehe so vor:
   <Accordion title="Agent hängt in Schleifen fest">
     Wenn der Agent dieselbe Frage immer wieder stellt:
     - Ergänze den Prompt um Hinweise zum Umgang mit unklaren Antworten, z. B. "Wenn die Antwort nach zwei Versuchen unklar bleibt, biete einen Transfer an"
-    - Prüfe die [Inactivity Settings](/de/build/advanced/inactivity-timeout-settings) - setze ein Timeout, damit Anrufe nicht endlos laufen
+    - Prüfe die [Inaktivitätseinstellungen](/de/build/advanced/inactivity-timeout-settings) - setze ein Timeout, damit Anrufe nicht endlos laufen
     - Lies das Gesprächs-Transkript, um die Schleife zu identifizieren
   </Accordion>
 </AccordionGroup>
@@ -116,7 +116,7 @@ Wenn in der Produktion Probleme auftreten, gehe so vor:
 ### Integrations- und Tool-Fehler
 
 <AccordionGroup>
-  <Accordion title="Custom Action schlägt fehl">
+  <Accordion title="Benutzerdefinierte Aktion schlägt fehl">
     Öffne die [Gesprächsdetails](/de/manage/conversations/detail) und suche in der Timeline nach Tool-Call-Ereignissen. Dort siehst du den Tool-Status und eventuelle Fehlermeldungen.
 
     Häufige Ursachen:
@@ -126,7 +126,7 @@ Wenn in der Produktion Probleme auftreten, gehe so vor:
     - **Request-Format** - Stelle sicher, dass der Request-Body dem entspricht, was deine API erwartet
   </Accordion>
 
-  <Accordion title="Call Transfer schlägt fehl">
+  <Accordion title="Anrufweiterleitung schlägt fehl">
     - Prüfe, ob die Transfer-Zielnummer korrekt und erreichbar ist, und rufe sie notfalls manuell an
     - Prüfe, ob die Nummer im richtigen Format vorliegt
     - Prüfe die [Transfer-Einstellungen](/de/build/tools/transfer-tools) - Ringdauer und Hold-Optionen sollten korrekt konfiguriert sein
@@ -144,7 +144,7 @@ Wenn in der Produktion Probleme auftreten, gehe so vor:
 
 <AccordionGroup>
   <Accordion title="Kampagne platziert keine Anrufe">
-    - Prüfe, ob die Kampagne den Status **Active** hat
+    - Prüfe, ob die Kampagne den Status **Aktiv** hat
     - Prüfe die [Geschäftszeiten](/de/launch/schedules) - Anrufe werden nur während der konfigurierten Zeiten platziert
     - Stelle sicher, dass noch Kontakte in der Kampagne vorhanden sind, die noch nicht angerufen wurden
     - Prüfe, ob der Kampagne eine Telefonnummer zugewiesen ist

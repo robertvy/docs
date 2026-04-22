@@ -1,10 +1,10 @@
 ---
-title: "Custom API Actions"
+title: "Benutzerdefinierte Aktionen"
 description: "Verbinde deine Agenten über HTTP-Integrationen mit externen Systemen"
 icon: "code"
 keywords: "custom API actions, API integration, webhook integration, external APIs, HTTP requests, custom integrations, agent API calls, parameter mapping"
 "og:description": "Verbinde deine KI-Agenten mit externen Systemen über Custom HTTP-Integrationen und API-Aufrufe in Echtzeit."
-"og:title": "Custom API Actions"
+"og:title": "Benutzerdefinierte Aktionen"
 ---
 
 
@@ -19,9 +19,9 @@ import { Screenshot } from "/snippets/screenshot.mdx";
 
 ---
 
-## Wie Custom Actions funktionieren
+## Wie benutzerdefinierte Aktionen funktionieren
 
-Custom Actions lassen deine KI-Agenten während des Gesprächs mit externen Systemen integrieren. Deine Agenten können Kundendaten abrufen, CRM-Datensätze aktualisieren, Lagerbestand prüfen, Tickets erstellen und Business-Logik ausführen - alles in Echtzeit während sie mit Kunden sprechen.
+Benutzerdefinierte Aktionen lassen deine KI-Agenten während des Gesprächs mit externen Systemen integrieren. Deine Agenten können Kundendaten abrufen, CRM-Datensätze aktualisieren, Lagerbestand prüfen, Tickets erstellen und Business-Logik ausführen - alles in Echtzeit, während sie mit Kunden sprechen.
 
 <Screenshot lightSrc="/images/operations__api-action-builder_DE-light.png" darkSrc="/images/operations__api-action-builder_DE-dark.png" alt="Custom-Action-Builder mit Endpoint-Konfiguration, HTTP-Methoden-Auswahl, URL-Feld, Auth-Tab, Parameters-Tab und Variables-Tab" />
 
@@ -32,7 +32,7 @@ Custom Actions lassen deine KI-Agenten während des Gesprächs mit externen Syst
 4. **API antwortet** - Dein System gibt Daten zurück, mit denen der Agent das Gespräch fortsetzt
 
 <Info>
-Custom Actions laufen **synchron** während des Gesprächs. Für Operationen, die keine sofortige Antwort brauchen, etwa Logging, Analytics oder Post-Call-Verarbeitung, nutze stattdessen [Webhooks](/de/accounts/integrations#webhooks).
+Benutzerdefinierte Aktionen laufen **synchron** während des Gesprächs. Für Operationen, die keine sofortige Antwort brauchen, etwa Logging, Insights-Auswertung oder Post-Call-Verarbeitung, nutze stattdessen [Webhooks](/de/accounts/integrations#webhooks).
 </Info>
 
 ---
@@ -58,15 +58,15 @@ Agent: "Your order has shipped! Your tracking number is
 
 ---
 
-## Eine Custom API Action erstellen
+## Eine benutzerdefinierte Aktion erstellen
 
 <Steps>
   <Step title="Zu Tools navigieren">
-    Gehe im Agent Editor zu **Tools** > **Add** > **Custom Action**.
+    Gehe im Agent-Editor zu **Tools** > **Hinzufügen** > **Benutzerdefinierte Aktion**.
   </Step>
   <Step title="Basisinfos konfigurieren">
     - **Name**: Beschreibender Name, zum Beispiel "Lookup Order Status"
-    - **Description**: Wann dieses Tool verwendet werden soll (10-200 Zeichen). Das hilft der KI, den Aufruf zu entscheiden.
+    - **Beschreibung**: Wann dieses Tool verwendet werden soll (10-200 Zeichen). Das hilft der KI, den Aufruf zu entscheiden.
   </Step>
   <Step title="Endpoint konfigurieren">
     Wähle die HTTP-Methode und gib die Endpoint-URL ein. Siehe Endpoint Configuration unten.
@@ -81,7 +81,7 @@ Agent: "Your order has shipped! Your tracking number is
     Füge Variablen hinzu, die der Agent aus dem Gespräch einsammeln soll. Siehe Variables unten.
   </Step>
   <Step title="Tool testen">
-    Speichere und teste die Action über **Agent testen** mit einem Web call, Phone call oder einer Chat-Session.
+    Speichere und teste die Action über **Agent testen** mit einem Web call, Telefonanruf oder einer Chat-Session.
   </Step>
 </Steps>
 
@@ -195,27 +195,27 @@ Variablen definieren, welche Informationen dein Agent vor dem API-Aufruf aus dem
 | Feld | Beschreibung |
 |-------|-------------|
 | **Name** | Variablenname, zum Beispiel `order_number`, `customer_email` |
-| **Type** | Datentyp: string, integer, float, boolean, date, email, phone |
-| **Description** | Wofür diese Variable ist (hilft der KI zu verstehen, wann sie die Info einsammeln soll) |
-| **Example** | Beispielwert (zeigt der KI das erwartete Format) |
-| **Required** | Wenn true, muss die KI diese Info vor dem API-Aufruf einsammeln |
-| **Default Value** | Wird genutzt, wenn die Variable nicht erforderlich ist und der Kunde sie nicht liefert |
+| **Typ** | Datentyp: string, integer, float, boolean, date, email, phone |
+| **Beschreibung** | Wofür diese Variable ist (hilft der KI zu verstehen, wann sie die Info einsammeln soll) |
+| **Beispiel** | Beispielwert (zeigt der KI das erwartete Format) |
+| **Erforderlich** | Wenn true, muss die KI diese Info vor dem API-Aufruf einsammeln |
+| **Standardwert** | Wird genutzt, wenn die Variable nicht erforderlich ist und der Kunde sie nicht liefert |
 
 ### Beispiel-Variable
 
 ```
 Name: order_number
-Type: string
-Description: Customer's order number, usually starts with ORD-
-Example: ORD-12345
-Required: Yes
+Typ: string
+Beschreibung: Bestellnummer des Kunden, beginnt normalerweise mit ORD-
+Beispiel: ORD-12345
+Erforderlich: Ja
 ```
 
 Die KI weiß dann, dass sie den Kunden vor der Anfrage nach der Bestellnummer fragen muss.
 
-### Runtime Variables
+### Laufzeitvariablen
 
-Custom-Action-Templates nutzen flache `{{variable_name}}`-Platzhalter in Headers, Query-Parametern und im Request Body. Diese Laufzeitwerte sind verfügbar, wenn sie existieren:
+Benutzerdefinierte Aktions-Templates nutzen flache `{{variable_name}}`-Platzhalter in Headern, Query-Parametern und im Request Body. Diese Laufzeitwerte sind verfügbar, wenn sie existieren:
 
 ```text
 {{agent_number}}
@@ -248,7 +248,7 @@ Geschachtelte Prompt-Variablen wie `{{contact.email}}` sind für die Prompt-Rend
     Ersetze die fest codierten Werte durch flache Template-Variablen wie `{{order_id}}`.
   </Step>
   <Step title="Im Agenten testen">
-    Starte **Agent testen** und führe eine Web call-, Phone call- oder Chat-Session aus. Löse die Action im Gespräch aus und verifiziere:
+    Starte **Agent testen** und führe eine Web call-, Telefonanruf- oder Chat-Session aus. Löse die Action im Gespräch aus und verifiziere:
     - Der Agent sammelt Variablen korrekt ein
     - Die API wird mit den richtigen Daten aufgerufen
     - Der Agent nutzt die Antwort passend
@@ -377,13 +377,13 @@ If the tool returns an error:
   <Card title="Booking Tools" icon="calendar" href="/de/build/tools/booking-calendar">
     Cal.com-Terminplanung einrichten
   </Card>
-  <Card title="Conversation Data Flow" icon="arrows-turn-right" href="/de/build/conversation/runtime-data-flow">
+  <Card title="Gesprächsdatenfluss" icon="arrows-turn-right" href="/de/build/conversation/runtime-data-flow">
     Verstehen, woher Variablen kommen und was nach der Tool-Ausführung passiert
   </Card>
-  <Card title="Template Syntax" icon="brackets-curly" href="/de/build/conversation/template-syntax">
+  <Card title="Template-Syntax" icon="brackets-curly" href="/de/build/conversation/template-syntax">
     Template-Variablen meistern
   </Card>
-  <Card title="MCP Servers" icon="server" href="/de/build/advanced/mcp-servers">
+  <Card title="MCP-Server" icon="server" href="/de/build/advanced/mcp-servers">
     MCP-Server für fortgeschrittene Integrationen verbinden
   </Card>
 </CardGroup>

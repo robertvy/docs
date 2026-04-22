@@ -1,30 +1,30 @@
 ---
-title: "Turn-Taking und Timing"
+title: "Sprecherwechsel und Timing"
 description: "Feinjustiere Unterbrechungen, Pausen, Stillebehandlung und Tempo für natürliche Gespräche"
 icon: "wave-square"
 keywords: "turn taking, timing, interruption, pause timing, VAD, silence handling, conversation pacing, voice timing"
 "og:description": "Erfahre, wie Begrüßungstiming, VAD, Inaktivität und Umgebungsgeräusche zusammenwirken, um das Gesprächserlebnis zu prägen."
-"og:title": "Turn-Taking und Timing"
+"og:title": "Sprecherwechsel und Timing"
 ---
 
 Natürliche Spracherlebnisse hängen vom Timing ab.
 
 Spricht der Agent zu schnell, fühlen sich Kundinnen und Kunden unterbrochen. Wartet er zu lange, wirkt der Anruf unsicher oder langsam.
 
-Diese Seite erklärt die wichtigsten Steuerungen für Timing und Turn-Taking.
+Diese Seite erklärt die wichtigsten Steuerungen für Timing und Sprecherwechsel.
 
 <Tip>
-Timing ist nur eine Ebene des Anrufererlebnisses. Wenn sich das Gespräch nach Timing-Änderungen immer noch falsch anfühlt, geh einen Schritt zurück und prüfe den vollständigen [AI Pipeline Guide](/de/build/voice-speech/ai-pipeline-guide).
+Timing ist nur eine Ebene des Anrufererlebnisses. Wenn sich das Gespräch nach Timing-Änderungen immer noch falsch anfühlt, geh einen Schritt zurück und prüfe den vollständigen [KI-Pipeline-Leitfaden](/de/build/voice-speech/ai-pipeline-guide).
 </Tip>
 
 ## Die vier Steuerungen
 
 | Steuerung | Was sie beeinflusst | Hauptdokument |
 | --- | --- | --- |
-| **Begrüßungstiming** | Wann die erste Nachricht startet und ob Anrufer sie unterbrechen können | [Greeting Messages](/de/build/conversation/greeting-messages) |
-| **VAD / Turn Detection** | Wann die Plattform entscheidet, dass der Anrufer fertig gesprochen hat | [VAD & Turn Detection](/de/build/advanced/vad-turn-detection) |
-| **Inaktivitätsbehandlung** | Was passiert, wenn längere Zeit niemand spricht | [Inactivity Timeout Settings](/de/build/advanced/inactivity-timeout-settings) |
-| **Umgebungsgeräusch** | Wie Pausen zwischen gesprochenen Turns wirken | [Ambient Sound](/de/build/voice-speech/ambient-sound) |
+| **Begrüßungstiming** | Wann die erste Nachricht startet und ob Anrufer sie unterbrechen können | [Begrüßungen](/de/build/conversation/greeting-messages) |
+| **VAD / Sprecherwechsel-Erkennung** | Wann die Plattform entscheidet, dass der Anrufer fertig gesprochen hat | [VAD & Sprecherwechsel-Erkennung](/de/build/advanced/vad-turn-detection) |
+| **Inaktivitätsbehandlung** | Was passiert, wenn längere Zeit niemand spricht | [Inaktivitäts-Timeout-Einstellungen](/de/build/advanced/inactivity-timeout-settings) |
+| **Umgebungsgeräusch** | Wie Pausen zwischen gesprochenen Sprecherwechseln wirken | [Umgebungsgeräusch](/de/build/voice-speech/ambient-sound) |
 
 ## 1. Begrüßungstiming
 
@@ -42,7 +42,7 @@ Mit dem Begrüßungstiming steuerst du:
 - nicht unterbrechbare Begrüßung für die meisten Inbound-Use-Cases
 - outbound-spezifische Überschreibung nur dann, wenn proaktive Anrufe eine andere Eröffnung brauchen
 
-## 2. VAD und Turn Detection
+## 2. VAD und Sprecherwechsel-Erkennung
 
 VAD entscheidet, wann der Anrufer aufgehört hat zu sprechen und wann der Agent antworten soll.
 
@@ -122,28 +122,28 @@ graph TD
 | Anrufe fühlen sich während Stille unangenehm an | Inaktivitätseinstellungen |
 | Pausen wirken steril oder abrupt | Umgebungsgeräusch und Gesamttempo |
 
-## Wie Modell- und Transcriber-Auswahl das Timing beeinflussen
+## Wie Modell- und Transkribierer-Auswahl das Timing beeinflussen
 
 Ein Einstellungsbereich steuert nicht alles Timing.
 
 Dein Erlebnis hängt auch ab von:
 
 - dem Sprachmodell und der Stimmenauswahl
-- dem Verhalten des Transcribers
+- dem Verhalten des Transkribierers
 - wie viel Arbeit der Agent während des Turns erledigt
 - ob Tools oder Wissensabrufe zusätzliche Latenz verursachen
 
 Wenn sich ein Gespräch langsam anfühlt, ändere nicht nur einen Timing-Regler. Prüfe auch:
 
-- [Choose AI Model](/de/build/voice-speech/choose-ai-model)
-- [Transcriber](/de/build/voice-speech/transcriber)
+- [KI-Modell auswählen](/de/build/voice-speech/choose-ai-model)
+- [Transkribierer](/de/build/voice-speech/transcriber)
 - [Knowledge issues](/de/troubleshooting/knowledge-issues)
 - [Tool and integration issues](/de/troubleshooting/tools-integrations)
 
 ## Ein praktischer Tuning-Loop
 
 1. Starte mit den Standardwerten für Timing.
-2. Führe einen kurzen Test im [Web Simulator](/de/test/web-simulator) durch.
+2. Führe einen kurzen Test im [Web-Simulator](/de/test/web-simulator) durch.
 3. Führe mindestens einen echten [Phone Test](/de/test/phone-testing) aus.
 4. Höre auf Unterbrechungen, lange Pausen und unangenehme Stille.
 5. Ändere immer nur eine Timing-Variable auf einmal.
@@ -168,16 +168,16 @@ Wenn sich ein Gespräch langsam anfühlt, ändere nicht nur einen Timing-Regler.
 ## Nächste Schritte
 
 <CardGroup cols={2}>
-  <Card title="Greeting Messages" icon="hand-wave" href="/de/build/conversation/greeting-messages">
+  <Card title="Begrüßungen" icon="hand-wave" href="/de/build/conversation/greeting-messages">
     Das Eröffnungserlebnis konfigurieren
   </Card>
-  <Card title="VAD & Turn Detection" icon="ear-listen" href="/de/build/advanced/vad-turn-detection">
+  <Card title="VAD & Sprecherwechsel-Erkennung" icon="ear-listen" href="/de/build/advanced/vad-turn-detection">
     Feinjustieren, wie die Plattform abgeschlossene Sprache erkennt
   </Card>
-  <Card title="Inactivity Timeout Settings" icon="hourglass-half" href="/de/build/advanced/inactivity-timeout-settings">
+  <Card title="Inaktivitäts-Timeout-Einstellungen" icon="hourglass-half" href="/de/build/advanced/inactivity-timeout-settings">
     Festlegen, was bei Stille passiert
   </Card>
-  <Card title="Ambient Sound" icon="volume" href="/de/build/voice-speech/ambient-sound">
+  <Card title="Umgebungsgeräusch" icon="volume" href="/de/build/voice-speech/ambient-sound">
     Das Gefühl von Pausen und Hintergrundatmosphäre anpassen
   </Card>
 </CardGroup>

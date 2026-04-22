@@ -1,10 +1,10 @@
 ---
-title: "Conversation Data Flow"
+title: "Gesprächsdatenfluss"
 description: "Sieh, wie Werte von Kontakten und Kontext in Live-Tools und Automatisierungen nach dem Anruf landen"
 icon: "arrows-turn-right"
 keywords: "conversation data flow, variable flow, dynamic context, tool inputs, post-call variables, runtime data"
 "og:description": "Verstehe, wie Kunden-Daten, Systemvariablen, Tool-Inputs und Post-Call-Insights durch den Gesprächs-Lifecycle wandern."
-"og:title": "Conversation Data Flow"
+"og:title": "Gesprächsdatenfluss"
 ---
 
 Diese Seite zeigt, wie Werte durch ein Gespräch wandern.
@@ -19,14 +19,14 @@ Sie beantwortet drei praktische Fragen:
 
 ```mermaid
 graph LR
-    A[Contact data] --> D[Live conversation]
-    B[Dynamic Context] --> D
-    C[Built-in system variables] --> D
-    D --> E[Tool inputs]
-    E --> F[Tool result used in current conversation]
-    D --> G[Transcript and events]
-    G --> H[Goals and gathered insights]
-    H --> I[Post-call notifications and tasks]
+    A[Kontaktdaten] --> D[Live-Gespräch]
+    B[Dynamischer Kontext] --> D
+    C[Eingebaute Systemvariablen] --> D
+    D --> E[Tool-Inputs]
+    E --> F[Tool-Ergebnis im aktuellen Gespräch]
+    D --> G[Transkript und Ereignisse]
+    G --> H[Ziele und gesammelte Insights]
+    H --> I[Benachrichtigungen und Tasks nach dem Anruf]
 ```
 
 ## Phase 1: Daten, die vor dem Anruf verfügbar sind
@@ -95,16 +95,16 @@ Das heißt, der Agent kann kombinieren:
 
 | Tool-Typ | Typische Quelle | Typisches Ergebnis |
 | --- | --- | --- |
-| **Transfer** | Absicht des Anrufers, Abteilung, Dringlichkeit | Leitet das Gespräch an ein anderes Ziel weiter |
-| **Booking** | Datum, Uhrzeit, Kontaktdaten | Erstellt oder aktualisiert einen Termin |
-| **Custom Action** | Erfasste Werte plus Kontextvariablen | Ruft deine externe API auf und nutzt die Antwort im Live-Gespräch |
-| **Web Search** | Aktuelle Frage | Liefert externe Informationen für die aktuelle Antwort |
+| **Anruf weiterleiten** | Absicht des Anrufers, Abteilung, Dringlichkeit | Leitet das Gespräch an ein anderes Ziel weiter |
+| **Kalenderbuchung** | Datum, Uhrzeit, Kontaktdaten | Erstellt oder aktualisiert einen Termin |
+| **Benutzerdefinierte Aktion** | Erfasste Werte plus Kontextvariablen | Ruft deine externe API auf und nutzt die Antwort im Live-Gespräch |
+| **Websuche** | Aktuelle Frage | Liefert externe Informationen für die aktuelle Antwort |
 
 ### Wichtige Einschränkung
 
-Ergebnisse von Custom Actions sind Teil des aktuellen Gesprächsflusses. Sie helfen dem Agenten, den Anrufer zu beantworten oder den nächsten Schritt zu wählen.
+Ergebnisse von Benutzerdefinierte Aktionen sind Teil des aktuellen Gesprächsflusses. Sie helfen dem Agenten, den Anrufer zu beantworten oder den nächsten Schritt zu wählen.
 
-Behandle sie **nicht** als allgemeinen Speicher für Post-Call-Variablen. Für wiederverwendbare Werte nach dem Gespräch nutze [Gather Insights](/de/build/analytics/gather-insights) und [Post-Call Automation](/de/build/analytics/post-call-automation).
+Behandle sie **nicht** als allgemeinen Speicher für Post-Call-Variablen. Für wiederverwendbare Werte nach dem Gespräch nutze [Insights sammeln](/de/build/analytics/gather-insights) und [Post-Call-Automatisierung](/de/build/analytics/post-call-automation).
 
 ## Phase 4: Daten, die nach dem Anruf erstellt werden
 
@@ -136,23 +136,23 @@ Sie sind **nicht** während des abgeschlossenen Anrufs für den Agenten verfügb
 
 | Ort | Kontaktdaten | Dynamic Context | Eingebaute Systemwerte | Live-erfasste Werte | `{{dyn_*}}` Post-Call-Werte |
 | --- | --- | --- | --- | --- | --- |
-| **Greeting** | Ja | Ja | Ja | Nein | Nein |
+| **Begrüßung** | Ja | Ja | Ja | Nein | Nein |
 | **Prompt** | Ja | Ja | Ja | Nein direkt vor der Erfassung | Nein |
-| **Live tools** | Ja | Ja | Ja | Ja | Nein |
-| **Notification templates** | Nur Kundenfelder | Nein | Nur Gesprächsfelder | Kein direkter Live-Call-Status | Ja |
+| **Live-Tools** | Ja | Ja | Ja | Ja | Nein |
+| **Benachrichtigungs-Vorlagen** | Nur Kundenfelder | Nein | Nur Gesprächsfelder | Kein direkter Live-Call-Status | Ja |
 
 <Note>
-Notification-Templates verwenden den Live-Call-Prompt-Kontext nicht erneut. Nutze Post-Call-Variablen wie `{{customer_name}}`, `{{customer_email}}`, `{{customer_number}}`, `{{conversation_date}}`, `{{conversation_direction}}`, `{{conversation_url}}` und `{{dyn_*}}`.
+Benachrichtigungs-Vorlagen verwenden den Live-Call-Prompt-Kontext nicht erneut. Nutze Post-Call-Variablen wie `{{customer_name}}`, `{{customer_email}}`, `{{customer_number}}`, `{{conversation_date}}`, `{{conversation_direction}}`, `{{conversation_url}}` und `{{dyn_*}}`.
 </Note>
 
 ## Empfohlenes Muster
 
 Nutze die richtige Datenquelle für die richtige Aufgabe:
 
-- verwende **Contacts** für stabile Kundenprofil-Daten
+- verwende **Kontakte** für stabile Kundenprofil-Daten
 - verwende **Dynamic Context** für frische Business-System-Daten vor dem Anruf
 - verwende **Tool-Inputs** für Live-Aktionen während des Anrufs
-- verwende **Gather Insights** für strukturierte Analysen nach dem Anruf
+- verwende **Insights sammeln** für strukturierte Auswertungen nach dem Anruf
 
 Das macht dein System vorhersagbarer und leichter zu debuggen.
 
@@ -164,27 +164,27 @@ Das macht dein System vorhersagbarer und leichter zu debuggen.
   </Accordion>
 
   <Accordion title="Erwarten, dass Dynamic Context mitten im Anruf aktualisiert wird" icon="rotate-right">
-    Dynamic Context läuft vor dem Start des Gesprächs. Wenn du während des Anrufs frische Informationen brauchst, verwende ein Live-Tool wie eine [Custom Action](/de/build/tools/custom-api-actions).
+    Dynamic Context läuft vor dem Start des Gesprächs. Wenn du während des Anrufs frische Informationen brauchst, verwende ein Live-Tool wie eine [Benutzerdefinierte Aktion](/de/build/tools/custom-api-actions).
   </Accordion>
 
   <Accordion title="Post-Call-Variablen im Live-Prompt verwenden" icon="hourglass-half">
-    `{{dyn_*}}`-Werte werden erst nach Ende des Anrufs erzeugt. Nutze sie in [Post-Call Automation](/de/build/analytics/post-call-automation), nicht in Begrüßung oder Prompt.
+    `{{dyn_*}}`-Werte werden erst nach Ende des Anrufs erzeugt. Nutze sie in [Post-Call-Automatisierung](/de/build/analytics/post-call-automation), nicht in Begrüßung oder Prompt.
   </Accordion>
 </AccordionGroup>
 
 ## Nächste Schritte
 
 <CardGroup cols={2}>
-  <Card title="Variable Sources" icon="brackets-curly" href="/de/build/conversation/variable-sources">
+  <Card title="Variablenquellen" icon="brackets-curly" href="/de/build/conversation/variable-sources">
     Jede Quelle einzeln ansehen
   </Card>
   <Card title="Dynamic Context" icon="database" href="/de/build/advanced/dynamic-context">
     Pre-Call-Kontext aus deinen Systemen einbinden
   </Card>
-  <Card title="Custom API Tools" icon="code" href="/de/build/tools/custom-api-actions">
+  <Card title="Benutzerdefinierte Aktionen" icon="code" href="/de/build/tools/custom-api-actions">
     Live-Daten während des Gesprächs nutzen
   </Card>
-  <Card title="Post-Call Automation" icon="envelope-open-text" href="/de/build/analytics/post-call-automation">
+  <Card title="Post-Call-Automatisierung" icon="envelope-open-text" href="/de/build/analytics/post-call-automation">
     Post-Call-Werte in Folgeaktionen umwandeln
   </Card>
 </CardGroup>

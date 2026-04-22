@@ -1,33 +1,33 @@
 ---
-title: "Voice Activity Detection und Turn Detection"
+title: "VAD & Sprecherwechsel-Erkennung"
 description: "Konfiguriere Antwortzeit, KI-Turn-Erkennung und Unterbrechungsbehandlung für natürliche Gesprächsabläufe"
 icon: "microphone-lines"
 keywords: "VAD, voice activity detection, turn detection, interrupt handling, speech detection, response timing, endpointing"
 "og:description": "Konfiguriere Antwortzeit und Turn-Erkennung für natürliche, reaktionsschnelle KI-Sprachgespräche."
-"og:title": "Voice Activity Detection & Turn Detection"
+"og:title": "VAD & Sprecherwechsel-Erkennung"
 ---
 
 import { Screenshot } from "/snippets/screenshot.mdx";
 
 **Zugriff:** Öffne einen Agenten und gehe zu **Anrufablauf**, dann scrolle zu **Gesprächsablauf**.
 
-## Wie Turn Detection funktioniert
+## Wie Sprecherwechsel-Erkennung funktioniert
 
-Voice Activity Detection (VAD) und Turn Detection entscheiden, wann der Anrufer fertig gesprochen hat und wann der Agent antworten soll. Diese Steuerungen beeinflussen die wahrgenommene Reaktionsgeschwindigkeit, Unterbrechungen und ob der Agent natürliche Pausen abwartet.
+VAD und Sprecherwechsel-Erkennung entscheiden, wann der Anrufer fertig gesprochen hat und wann der Agent antworten soll. Diese Steuerungen beeinflussen die wahrgenommene Reaktionsgeschwindigkeit, Unterbrechungen und ob der Agent natürliche Pausen abwartet.
 
 <Screenshot
   lightSrc="/images/operations__vad_DE-light.png"
   darkSrc="/images/operations__vad_DE-dark.png"
-  alt="Call-Flow-Profi mit Allow Interruptions, Response Timing, AI Turn Detection und erweiterten Timing-Reglern"
+  alt="Anrufablauf im Profi mit Unterbrechungen erlauben, Antwortzeit, KI-Sprecherwechsel-Erkennung und erweiterten Timing-Reglern"
 />
 
 <Note>
-Diese Einstellungen gelten für Sprachgespräche, einschließlich Telefonanrufen und Web-Anrufen. Der Einfach zeigt Presets für Response Timing. Der Profi ergänzt Unterbrechungssteuerung, AI Turn Detection und erweiterte Timing-Slider.
+Diese Einstellungen gelten für Sprachgespräche, einschließlich Telefonanrufen und Web-Anrufen. Der Einfach zeigt Presets für die Antwortzeit. Der Profi ergänzt Unterbrechungssteuerung, KI-Sprecherwechsel-Erkennung und erweiterte Timing-Slider.
 </Note>
 
 ## Einfach
 
-Der Einfach zeigt Presets für **Response Timing**:
+Der Einfach zeigt Presets für **Antwortzeit**:
 
 <AccordionGroup>
   <Accordion title="Patient" icon="turtle">
@@ -46,25 +46,25 @@ Der Einfach zeigt Presets für **Response Timing**:
 ## Steuerungen im Profi
 
 <AccordionGroup>
-  <Accordion title="Allow Interruptions" icon="circle-pause">
+  <Accordion title="Unterbrechungen erlauben" icon="circle-pause">
     Steuert, ob Anrufer den Agenten unterbrechen können, während er spricht.
 
     Schalte das für rechtliche Hinweise, Pflichtankündigungen oder skriptierte Abschnitte aus, bei denen der Anrufer die komplette Nachricht hören soll.
   </Accordion>
 
-  <Accordion title="Response Timing" icon="gauge-high">
+  <Accordion title="Antwortzeit" icon="gauge-high">
     Wähle **Patient**, **Balanced**, **Responsive** oder **Custom**.
 
     Die Presets aktualisieren die zugrunde liegenden Timing-Werte gemeinsam. Wähle **Custom**, wenn du die Slider direkt feinjustieren willst.
   </Accordion>
 
-  <Accordion title="AI Turn Detection" icon="brain-circuit">
-    Aktiviert KI-basierte Ende-des-Turns-Erkennung. Wenn deaktiviert, nutzt die Runtime nur VAD-Erkennung.
+  <Accordion title="KI-Sprecherwechsel-Erkennung" icon="brain-circuit">
+    Aktiviert KI-basierte Erkennung des Turn-Endes. Wenn deaktiviert, nutzt die Runtime nur VAD-Erkennung.
 
-    AI Turn Detection kann das Abbrechen mitten im Satz reduzieren, fügt aber möglicherweise etwas Latenz hinzu.
+    Die KI-Sprecherwechsel-Erkennung kann das Abbrechen mitten im Satz reduzieren, fügt aber möglicherweise etwas Latenz hinzu.
   </Accordion>
 
-  <Accordion title="Advanced timing controls" icon="sliders">
+  <Accordion title="Erweiterte Timing-Steuerungen" icon="sliders">
     Der Profi zeigt drei Slider:
 
     - **Silence before responding:** `0.10s-1.00s`
@@ -75,9 +75,9 @@ Der Einfach zeigt Presets für **Response Timing**:
   </Accordion>
 </AccordionGroup>
 
-## AI Turn Detection
+## KI-Sprecherwechsel-Erkennung
 
-AI Turn Detection ist die Dashboard-Steuerung für smartes Endpointing. Statt nur auf einen reinen Stille-Schwellenwert zu setzen, nutzt sie ein KI-Modell, um zu erkennen, wann ein Anrufer seinen Turn beendet hat.
+Die KI-Sprecherwechsel-Erkennung ist die Dashboard-Steuerung für smartes Endpointing. Statt nur auf einen reinen Stille-Schwellenwert zu setzen, nutzt sie ein KI-Modell, um zu erkennen, wann ein Anrufer seinen Turn beendet hat.
 
 **Vorteile:**
 
@@ -114,11 +114,11 @@ Aktiviere es, um zu testen, ob es für deinen Use-Case bessere Ergebnisse liefer
 
 <AccordionGroup>
   <Accordion title="Agent fällt Anrufern mitten im Satz ins Wort" icon="scissors">
-    Wechsle zu **Patient**, erhöhe **Silence before responding**, erhöhe **Minimum words to interrupt** oder aktiviere **AI Turn Detection**.
+    Wechsle zu **Patient**, erhöhe **Silence before responding**, erhöhe **Minimum words to interrupt** oder aktiviere **KI-Sprecherwechsel-Erkennung**.
   </Accordion>
 
   <Accordion title="Agent antwortet zu langsam" icon="hourglass">
-    Wechsle zu **Responsive**, reduziere **Silence before responding** oder deaktiviere **AI Turn Detection**, wenn die zusätzliche Geduld nicht nötig ist.
+    Wechsle zu **Responsive**, reduziere **Silence before responding** oder deaktiviere **KI-Sprecherwechsel-Erkennung**, wenn die zusätzliche Geduld nicht nötig ist.
   </Accordion>
 
   <Accordion title="Anrufer können den Agenten nicht unterbrechen" icon="ban">
@@ -133,16 +133,16 @@ Aktiviere es, um zu testen, ob es für deinen Use-Case bessere Ergebnisse liefer
 ## Verwandte Funktionen
 
 <CardGroup cols={2}>
-  <Card title="Voice Settings" icon="sliders" href="/de/build/voice-speech/voice-settings">
+  <Card title="Spracheinstellungen" icon="sliders" href="/de/build/voice-speech/voice-settings">
     Stimmen-Geschwindigkeit und provider-spezifische Voice-Steuerung konfigurieren
   </Card>
-  <Card title="Inactivity Settings" icon="hourglass-half" href="/de/build/advanced/inactivity-timeout-settings">
+  <Card title="Inaktivitäts-Timeout-Einstellungen" icon="hourglass-half" href="/de/build/advanced/inactivity-timeout-settings">
     Festlegen, was bei Stille passiert
   </Card>
-  <Card title="Announcements" icon="bullhorn" href="/de/build/advanced/announcements">
+  <Card title="Ansage vor dem Anruf" icon="bullhorn" href="/de/build/advanced/announcements">
     Pflichtnachrichten konfigurieren, die meist nicht unterbrochen werden sollten
   </Card>
-  <Card title="DTMF Controls" icon="hashtag" href="/de/build/advanced/dtmf-controls">
+  <Card title="DTMF-Steuerungen" icon="hashtag" href="/de/build/advanced/dtmf-controls">
     Telefon-Tastenfeld-Interaktion konfigurieren
   </Card>
 </CardGroup>
