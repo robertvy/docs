@@ -31,9 +31,9 @@ Wenn du nur eine Ebene optimierst, kann sich das Gespräch trotzdem langsam, rob
 | Teil | Was er steuert | Hauptdoku |
 | --- | --- | --- |
 | **Transkribierer** | Wie aus Anruf-Audio Text wird | [Transkribierer](/de/build/voice-speech/transcriber) |
-| **AI model** | Wie der Agent denkt und antwortet | [KI-Modell auswählen](/de/build/voice-speech/choose-ai-model) |
-| **Voice** | Wie die Antwort für Anrufende klingt | [Stimme auswählen](/de/build/voice-speech/select-voice) |
-| **Voice behavior** | Geschwindigkeit, Stabilität, Stil und Aussprache | [Spracheinstellungen](/de/build/voice-speech/voice-settings) und [Custom Pronunciations](/de/build/voice-speech/custom-pronunciations) |
+| **KI-Modell** | Wie der Agent denkt und antwortet | [KI-Modell auswählen](/de/build/voice-speech/choose-ai-model) |
+| **Stimme** | Wie die Antwort für Anrufende klingt | [Stimme auswählen](/de/build/voice-speech/select-voice) |
+| **Sprechen** | Geschwindigkeit, Stabilität, Stil und Aussprache | [Spracheinstellungen](/de/build/voice-speech/voice-settings) und [Aussprache](/de/build/voice-speech/custom-pronunciations) |
 | **Timing** | Unterbrechungen, Pausen, Stille und das Gefühl beim Sprecherwechsel | [Sprecherwechsel und Timing](/de/build/advanced/turn-taking-and-timing) |
 
 ## Starte mit dem gewünschten Ergebnis
@@ -58,7 +58,7 @@ Wähle die Pipeline-Konfiguration anhand des tatsächlichen Gesprächs, das du b
     Starte mit:
 
     - einer Stimme, die zu Tonfall und Zielgruppe passt
-    - stärkerem [Voice-Prompting](/de/build/conversation/prompt-engineering-guide)
+    - stärkerem Fokus auf den [Prompt-Leitfaden](/de/build/conversation/prompt-engineering-guide)
     - Aussprache-Regeln für Produkt- und Firmennamen
     - Test-Calls mit realistischen Einwänden und Unterbrechungen
   </Accordion>
@@ -81,7 +81,7 @@ Wähle die Pipeline-Konfiguration anhand des tatsächlichen Gesprächs, das du b
 
     - kurzen, direkten Stimmen mit wenig Verzierung
     - klaren [Ansage vor dem Anruf](/de/build/advanced/announcements)
-    - expliziten [Privacy Controls](/de/build/advanced/conversation-privacy-controls)
+    - expliziten [Datenschutz-Steuerungen für Gespräche](/de/build/advanced/conversation-privacy-controls)
     - konservativen Timing-Einstellungen, damit Anrufende leicht unterbrechen können
   </Accordion>
 </AccordionGroup>
@@ -93,8 +93,8 @@ Arbeite die Pipeline in dieser Reihenfolge durch. Jede Ebene hängt von der vorh
 | Schritt | Was du konfigurierst | Warum zuerst |
 | --- | --- | --- |
 | **1. Transkribierer** | Sprache, Anbieter, Modell | Wenn die Anrufenden falsch verstanden werden, kann nichts danach das ausgleichen |
-| **2. Voice** | Anbieter, Stimme, Cloning | Wähle, was Anrufende hören, sobald die Transkription stimmt |
-| **3. Voice refinements** | Einstellungen, Aussprache, Ambient Sound, Thinking Sounds | Feintuning erst nach der Wahl der Kernstimme |
+| **2. Stimme** | Anbieter, Stimme, Stimmenklonen | Wähle, was Anrufende hören, sobald die Transkription stimmt |
+| **3. Feintuning** | Einstellungen, Aussprache, Hintergrundgeräusche, Denk-Sounds | Feintuning erst nach der Wahl der Kernstimme |
 | **4. Timing** | Turn-Taking, Stille, Unterbrechungen | Zuletzt abstimmen - Timing-Regler können tiefere Probleme verdecken |
 
 <Tip>
@@ -105,20 +105,20 @@ Starte nicht mit Timing. Wenn Transkribierer, Stimme oder Prompt bereits Reibung
 
 - [Transkribierer](/de/build/voice-speech/transcriber) - Anbieter- und Sprachübersicht
 - [Stimme auswählen](/de/build/voice-speech/select-voice) - Katalog und Anbieter-Hinweise
-- [Spracheinstellungen](/de/build/voice-speech/voice-settings), [Custom Pronunciations](/de/build/voice-speech/custom-pronunciations), [Ambient Sound](/de/build/voice-speech/ambient-sound), [Thinking Sounds](/de/build/voice-speech/thinking-sounds)
+- [Spracheinstellungen](/de/build/voice-speech/voice-settings), [Aussprache](/de/build/voice-speech/custom-pronunciations), [Hintergrundgeräusche](/de/build/voice-speech/ambient-sound), [Denk-Sounds](/de/build/voice-speech/thinking-sounds)
 - [Sprecherwechsel und Timing](/de/build/advanced/turn-taking-and-timing)
 
 ## Häufige Symptome und wo du zuerst hinschauen solltest
 
 | Symptom | Erster Blick | Danach prüfen |
 | --- | --- | --- |
-| Agent versteht Namen, Adressen oder Zahlen falsch | [Transkribierer](/de/build/voice-speech/transcriber) | [Custom Pronunciations](/de/build/voice-speech/custom-pronunciations) |
+| Agent versteht Namen, Adressen oder Zahlen falsch | [Transkribierer](/de/build/voice-speech/transcriber) | [Aussprache](/de/build/voice-speech/custom-pronunciations) |
 | Stimme passt nicht zur Marke | [Stimme auswählen](/de/build/voice-speech/select-voice) | [Prompt-Leitfaden](/de/build/conversation/prompt-engineering-guide) |
 | Sprache klingt roboterhaft oder ungleichmäßig | [Spracheinstellungen](/de/build/voice-speech/voice-settings) | [Stimme auswählen](/de/build/voice-speech/select-voice) |
 | Agent fällt Anrufenden ins Wort | [Sprecherwechsel und Timing](/de/build/advanced/turn-taking-and-timing) | [Transkribierer](/de/build/voice-speech/transcriber) |
 | Agent fühlt sich langsam an, nachdem die anrufende Person aufgehört hat zu sprechen | [Sprecherwechsel und Timing](/de/build/advanced/turn-taking-and-timing) | [KI-Modell auswählen](/de/build/voice-speech/choose-ai-model) |
-| Produkt- oder Firmennamen werden schlecht ausgesprochen | [Custom Pronunciations](/de/build/voice-speech/custom-pronunciations) | [Prompt-Leitfaden](/de/build/conversation/prompt-engineering-guide) |
-| Cloned Voice klingt inkonsistent | [Voice Cloning](/de/build/voice-speech/voice-cloning) | [Spracheinstellungen](/de/build/voice-speech/voice-settings) |
+| Produkt- oder Firmennamen werden schlecht ausgesprochen | [Aussprache](/de/build/voice-speech/custom-pronunciations) | [Prompt-Leitfaden](/de/build/conversation/prompt-engineering-guide) |
+| Geklonte Stimme klingt inkonsistent | [Stimmen klonen](/de/build/voice-speech/voice-cloning) | [Spracheinstellungen](/de/build/voice-speech/voice-settings) |
 
 ## Praktische Rollout-Reihenfolge
 
@@ -126,7 +126,7 @@ Starte nicht mit Timing. Wenn Transkribierer, Stimme oder Prompt bereits Reibung
   <Step title="Logik zuerst im Chat belegen">
     Bestätige Prompt, Tools und Knowledge, bevor du Zeit in Voice-Tuning steckst.
   </Step>
-  <Step title="Stimme im Web-Call bewerten">
+  <Step title="Stimme im Browser bewerten">
     Achte im Browser auf Tempo, Aussprache und das Unterbrechungsgefühl.
   </Step>
   <Step title="Den vollständigen Call am Telefon validieren">
@@ -144,8 +144,8 @@ Starte nicht mit Timing. Wenn Transkribierer, Stimme oder Prompt bereits Reibung
     Eine schöne Stimme hilft nicht, wenn die Anrufenden ungenau transkribiert werden. Starte mit der Erkennungsqualität und optimiere dann den Stil.
   </Accordion>
 
-  <Accordion title="Langsame Antworten mit Ambient Sound lösen wollen" icon="music">
-    Ambient Sound kann das Gefühl verbessern, löst aber keine langsamen Modellantworten, langsamen Tools oder eine Transkription mit hoher Latenz.
+  <Accordion title="Langsame Antworten mit Hintergrundgeräuschen lösen wollen" icon="music">
+    Hintergrundgeräusche können das Gefühl verbessern, lösen aber keine langsamen Modellantworten, langsamen Tools oder eine Transkription mit hoher Latenz.
   </Accordion>
 
   <Accordion title="Nur mit der eigenen Stimme und dem eigenen Akzent testen" icon="users">
@@ -166,7 +166,7 @@ Starte nicht mit Timing. Wenn Transkribierer, Stimme oder Prompt bereits Reibung
   <Card title="Transkribierer" icon="ear" href="/de/build/voice-speech/transcriber">
     Die Speech-to-Text-Ebene passend zu Sprache und Latenz auswählen
   </Card>
-  <Card title="Voice Cloning" icon="wand-magic-sparkles" href="/de/build/voice-speech/voice-cloning">
+  <Card title="Stimmen klonen" icon="wand-magic-sparkles" href="/de/build/voice-speech/voice-cloning">
     Eigene gebrandete Stimmen erstellen und bewerten
   </Card>
   <Card title="Sprecherwechsel und Timing" icon="wave-square" href="/de/build/advanced/turn-taking-and-timing">
