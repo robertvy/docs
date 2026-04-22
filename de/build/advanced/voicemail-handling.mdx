@@ -31,17 +31,17 @@ Beim Tätigen von Outbound-Anrufen gibt es zwei mögliche Szenarien:
 
 **Szenario 1: Mensch antwortet**
 ```text wrap
-Phone rings → Person answers → "Hello?"
-→ Agent should engage in conversation
-→ Full agent capabilities needed
+Telefon klingelt → Person antwortet → „Hallo?"
+→ Agent soll Gespräch führen
+→ Volle Agenten-Funktionalität benötigt
 ```
 
 **Szenario 2: Voicemail**
 ```text wrap
-Phone rings → Voicemail system answers → "You've reached John Smith..."
-→ Agent should hang up and retry later
-→ Don't waste time with full conversation script
-→ Don't create awkward interaction talking over voicemail greeting
+Telefon klingelt → Voicemail antwortet → „Sie haben den Anschluss von Max Mustermann erreicht …"
+→ Agent soll auflegen und später erneut versuchen
+→ Keine Zeit mit vollem Gesprächsskript verschwenden
+→ Kein peinliches Hineinsprechen in die Voicemail-Ansage
 ```
 
 **Das Problem:** Woher weiß der Agent, welches Szenario eingetreten ist?
@@ -52,10 +52,10 @@ AMD analysiert die Audio der ersten Sekunden nach dem Verbindungsaufbau, um zu e
 
 **Erkennungsprozess:**
 ```text wrap
-1. Call connects
-2. AMD analyzes audio (0.5-3 seconds depending on method)
-3. Classification: HUMAN or MACHINE
-4. Agent executes appropriate behavior
+1. Anruf wird verbunden
+2. AMD analysiert Audio (0,5–3 Sekunden je nach Methode)
+3. Klassifikation: MENSCH oder MASCHINE
+4. Agent führt entsprechendes Verhalten aus
 ```
 
 **Vorteile:**
@@ -85,33 +85,33 @@ AMD analysiert die Audio der ersten Sekunden nach dem Verbindungsaufbau, um zu e
 
 **So funktioniert es:**
 ```text wrap
-1. Call connects
-2. Agent's AI voice pipeline (transcriber) receives audio
-3. Agent waits for first turn/utterance to complete (pause detected)
-4. LLM analyzes transcription for voicemail-like patterns:
-   - "You've reached"
-   - "Leave a message"
-   - "Not available"
-   - "Voicemail"
-   - "After the beep"
-5. If voicemail detected → Agent hangs up
-6. If live person detected → Agent continues normal conversation
+1. Anruf wird verbunden
+2. Voice-Pipeline des Agents (Transkribierer) empfängt Audio
+3. Agent wartet, bis der erste Turn/die erste Äußerung abgeschlossen ist (Pause erkannt)
+4. LLM analysiert Transkription auf Voicemail-typische Muster:
+   - „Sie haben den Anschluss von … erreicht"
+   - „Hinterlassen Sie eine Nachricht"
+   - „Nicht erreichbar"
+   - „Mailbox"
+   - „Nach dem Signalton"
+5. Voicemail erkannt → Agent legt auf
+6. Person erkannt → Agent führt normales Gespräch fort
 ```
 
 **Eigenschaften:**
 
 <AccordionGroup>
-  <Accordion title="Speed" icon="gauge">
+  <Accordion title="Geschwindigkeit" icon="gauge">
     **Langsamer:** Wartet, bis der komplette Turn/die komplette Äußerung beendet ist
 
     Muss warten, bis die gesamte Voicemail-Begrüßung abgeschlossen ist (Pause erkannt), dann transkribieren und den vollständigen Text analysieren. Typische Erkennung nach 5-15+ Sekunden, abhängig von der Länge der Voicemail-Nachricht.
 
     **Einschränkung:** Lange Voicemail-Begrüßungen bedeuten längere Wartezeiten bis zur Erkennung
 
-    **Best for:** Kampagnen, bei denen Genauigkeit wichtiger ist als sofortige Erkennung
+    **Ideal für:** Kampagnen, bei denen Genauigkeit wichtiger ist als sofortige Erkennung
   </Accordion>
 
-  <Accordion title="Accuracy" icon="chart-line">
+  <Accordion title="Genauigkeit" icon="chart-line">
     **Hohe Genauigkeit bei:**
     - Standard-Voicemail-Begrüßungen mit üblichen Formulierungen
     - Klarer Audioqualität
@@ -125,7 +125,7 @@ AMD analysiert die Audio der ersten Sekunden nach dem Verbindungsaufbau, um zu e
 
     **Geringere Genauigkeit bei:**
     - Benutzerdefinierten Begrüßungen ohne Standard-Keywords
-    - Sehr kurzen Begrüßungen ("Hi, leave a message" - sehr kurz)
+    - Sehr kurzen Begrüßungen („Hallo, Nachricht hinterlassen" – sehr kurz)
     - Schlechter Audioqualität oder Hintergrundgeräuschen
     - Hintergrundgeräuschen, die die Transkription stören
   </Accordion>
@@ -143,15 +143,15 @@ AMD analysiert die Audio der ersten Sekunden nach dem Verbindungsaufbau, um zu e
     - B2B-Lead-Qualifizierungs-Kampagnen
   </Accordion>
 
-  <Accordion title="Limitations" icon="triangle-exclamation">
+  <Accordion title="Einschränkungen" icon="triangle-exclamation">
     **Kann Schwierigkeiten haben mit:**
-    - Persönlichen, kreativen Voicemail-Begrüßungen ("Hey, it's Mike, you know what to do")
+    - Persönlichen, kreativen Voicemail-Begrüßungen („Hey, hier ist Mike, ihr wisst Bescheid")
     - Sehr kurzen Begrüßungen
     - Voicemail-Sprache passt nicht zur Transkribierer-Sprache
-    - Begrüßungen, die gesprächig klingen ("Hello? Hello? Just kidding, leave a message")
+    - Begrüßungen, die gesprächig klingen („Hallo? Hallo? War nur Spaß, Nachricht hinterlassen")
     - Hintergrundmusik oder Geräuschen in der Begrüßung
 
-    **False Positives:** Ein Mensch, der mit „You've reached...“ beginnt, könnte falsch klassifiziert werden
+    **False Positives:** Ein Mensch, der mit „Sie haben den Anschluss von … erreicht” beginnt, könnte falsch klassifiziert werden
 
     **False Negatives:** Voicemail ohne Keywords könnte als Mensch klassifiziert werden
   </Accordion>
@@ -163,16 +163,16 @@ AMD analysiert die Audio der ersten Sekunden nach dem Verbindungsaufbau, um zu e
 
 **So funktioniert es:**
 ```text wrap
-1. Call connects
-2. Deep Neural Network (DNN) analyzes audio in real-time:
-   - Speech patterns and cadence
-   - Voicemail audio patterns
-   - Acoustic characteristics
-   - Timing and rhythm
-   - Natural vs. recorded speech indicators
-3. Model trained on tens of thousands of audio recordings
-4. Classification: HUMAN or MACHINE
-5. Language-independent detection
+1. Anruf wird verbunden
+2. Deep Neural Network (DNN) analysiert Audio in Echtzeit:
+   - Sprachmuster und Kadenz
+   - Voicemail-Audiomuster
+   - Akustische Eigenschaften
+   - Timing und Rhythmus
+   - Indikatoren für natürliche vs. aufgezeichnete Sprache
+3. Modell trainiert auf Zehntausenden von Audioaufnahmen
+4. Klassifikation: MENSCH oder MASCHINE
+5. Sprachunabhängige Erkennung
 ```
 
 **Eigenschaften:**
@@ -217,7 +217,7 @@ AMD analysiert die Audio der ersten Sekunden nach dem Verbindungsaufbau, um zu e
     - Mehrsprachige Support-Kampagnen
   </Accordion>
 
-  <Accordion title="Advantages" icon="check">
+  <Accordion title="Vorteile" icon="check">
     **Kommt gut zurecht mit:**
     - Kreativen persönlichen Begrüßungen
     - Kurzen Begrüßungen
@@ -255,14 +255,14 @@ AMD analysiert die Audio der ersten Sekunden nach dem Verbindungsaufbau, um zu e
 - Langsamere Erkennung (5-15+ Sekunden)
 - Legt selten bei echten Menschen auf
 - **Trade-off:** Kann manche Voicemails verpassen und mit ihnen sprechen
-- Best for: Wenn du um jeden Preis vermeiden willst, bei echten Menschen aufzulegen
+- Ideal für: Wenn du um jeden Preis vermeiden willst, bei echten Menschen aufzulegen
 
 **Text-based + ML-based (schnell & empfohlen):**
 - ML erkennt in ~1,5 Sekunden
 - Text-based validiert parallel
 - Sehr hohe Genauigkeit
 - **Trade-off:** Legt gelegentlich bei echten Menschen auf
-- Best for: Kampagnen, bei denen Gespräche mit Voicemail zusätzliche Kosten verursachen
+- Ideal für: Kampagnen, bei denen Gespräche mit Voicemail zusätzliche Kosten verursachen
 
 <Tip>
 **Welche Variante solltest du wählen?**
