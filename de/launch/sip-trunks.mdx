@@ -60,13 +60,30 @@ Nutze den Outbound-Tab, um Folgendes zu konfigurieren:
 
 Du kannst einen SIP Trunk erst löschen, wenn alle Telefonnummern, die ihn noch verwenden, entkoppelt wurden.
 
-<Note>
-Standardmäßig stellt itellicoAI keine statischen IP-Adressen für ausgehendes SIP bereit - Whitelisting auf Carrier-Seite ist also nicht out of the box möglich. Statische IPs können auf Anfrage arrangiert werden. Kontaktiere [support@itellico.ai](mailto:support@itellico.ai), wenn du das brauchst.
-</Note>
-
 <Tip>
 Nutze für SIP-Authentifizierung ein gespeichertes Secret, damit du Zugangsdaten später zentral rotieren kannst.
 </Tip>
+
+## Statische SIP-IP-Ranges
+
+itellicoAI stellt statische SIP-IP-Ranges für ausgehenden Traffic bereit, damit dein Carrier sie auf seiner Seite whitelisten kann.
+
+### Verfügbare IP-Ranges
+
+- `143.223.88.0/21`
+- `161.115.160.0/19`
+
+### Wann ist das relevant?
+
+Nutze die statischen IP-Ranges, wenn du:
+
+- SIP-Traffic in **Firewalls oder SBCs whitelisten** musst
+- in **restriktiven oder sicherheitskritischen Netzwerken** arbeitest
+- eine **stabile und vorhersehbare SIP-Anbindung** benötigst
+
+### Wichtiger Hinweis
+
+Stelle sicher, dass für diese IP-Ranges sowohl **UDP als auch TCP** für **SIP-Signalisierung und RTP-Media** freigegeben sind.
 
 ## Telefonnummern importieren
 

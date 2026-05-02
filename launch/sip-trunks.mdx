@@ -61,13 +61,30 @@ Use the outbound tab to configure:
 
 You can delete a SIP trunk only after unlinking any phone numbers that still use it.
 
-<Note>
-By default, itellicoAI does not provide static IP addresses for outbound SIP — so IP whitelisting on your carrier side is not possible out of the box. Static IPs can be arranged on demand. Contact [support@itellico.ai](mailto:support@itellico.ai) if you need this.
-</Note>
-
 <Tip>
 Use a saved secret for SIP authentication so you can rotate credentials centrally later.
 </Tip>
+
+## Static SIP IP Ranges
+
+itellicoAI provides static SIP IP ranges for outbound traffic so your carrier can whitelist them on their side.
+
+### Available IP Ranges
+
+- `143.223.88.0/21`
+- `161.115.160.0/19`
+
+### When This Is Relevant
+
+Use the static IP ranges when you:
+
+- Need to **whitelist SIP traffic in firewalls or SBCs**
+- Operate in **restrictive or security-critical networks**
+- Require a **stable, predictable SIP connection**
+
+### Important
+
+Make sure both **UDP and TCP** are open on these IP ranges for **SIP signalling and RTP media**.
 
 ## Importing Phone Numbers
 
