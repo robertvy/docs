@@ -10,11 +10,16 @@ keywords: "Easybell SIP, Easybell forwarding, DACH telephony, BYOC"
 Nutze diese Anleitung, wenn deine bestehenden DACH-Nummern bereits über Easybell laufen.
 
 <Steps>
-  <Step title="Easybell-SIP-Zugangsdaten abrufen">
-    1. Melde dich im [Easybell](https://www.easybell.de) Kundenportal an
-    2. Navigiere zu deinen SIP-Trunk-Einstellungen
-    3. Notiere den SIP-Registrar, den Benutzernamen und das Passwort
-    4. Stelle sicher, dass der Trunk externe Weiterleitung unterstützt
+  <Step title="FQDN-Authentifizierung aktivieren">
+    Easybell benötigt das [FQDN-Authentifizierungs-Feature](https://www.easybell.de/hilfe/fragen/fragen-zum-telefonanschluss/antwort/sip-trunk-authentifizierung-per-fqdn-domain-einrichten/), um einen SIP Trunk auf einen externen Host wie itellicoAI zu zeigen. In Cloud Telefonanlage Pro und in Volumentarifen für SIP Trunks ist es enthalten; in anderen Tarifen ist es ein kostenpflichtiges Add-on. Aktiviere es im Easybell-Kundenportal oder über den Easybell-Support, bevor du fortfährst.
+  </Step>
+  <Step title="Easybell-SIP-Trunk konfigurieren">
+    1. Melde dich im [Easybell](https://www.easybell.de)-Kundenportal an
+    2. Öffne deine SIP-Trunk-Einstellungen
+    3. Wähle unter Authentifizierung **FQDN Domain** und gib `50ebbp4vhpr.eu.sip.livekit.cloud` ein
+    4. Nutze **TCP** oder **TLS** als Transportprotokoll
+    5. Stelle das eingehende Rufnummernformat auf **E.164 mit führendem +** ein
+    6. Notiere den SIP-Registrar, den Benutzernamen und das Passwort für die itellicoAI-Seite
   </Step>
   <Step title="SIP Trunk in itellicoAI erstellen">
     Gehe zu **Telefonie → SIP Trunks → SIP Trunk erstellen**:
@@ -23,6 +28,6 @@ Nutze diese Anleitung, wenn deine bestehenden DACH-Nummern bereits über Easybel
     - **SIP Auth Username/Password:** Deine Easybell-SIP-Zugangsdaten
   </Step>
   <Step title="Routing konfigurieren">
-    Konfiguriere in Easybell die Anrufweiterleitung, damit eingehende Anrufe an den itellicoAI-SIP-Endpunkt weitergeleitet werden.
+    Konfiguriere in Easybell die Anrufweiterleitung, damit eingehende Anrufe an den itellicoAI-SIP-Endpunkt (`sip:50ebbp4vhpr.eu.sip.livekit.cloud`) weitergeleitet werden.
   </Step>
 </Steps>

@@ -10,11 +10,16 @@ keywords: "Easybell SIP, Easybell forwarding, DACH telephony, BYOC"
 Use this guide when your existing DACH phone numbers already run through Easybell.
 
 <Steps>
-  <Step title="Get Easybell SIP credentials">
+  <Step title="Enable FQDN authentication">
+    Easybell requires their [FQDN authentication feature](https://www.easybell.de/hilfe/fragen/fragen-zum-telefonanschluss/antwort/sip-trunk-authentifizierung-per-fqdn-domain-einrichten/) to point a SIP Trunk at an external host like itellicoAI. It is included on Cloud Telefonanlage Pro and on volume SIP Trunk tariffs; on other tariffs it is a paid add-on. Activate it in the Easybell customer portal or via Easybell support before continuing.
+  </Step>
+  <Step title="Configure the Easybell SIP trunk">
     1. Log in to your [Easybell](https://www.easybell.de) customer portal
-    2. Navigate to your SIP trunk settings
-    3. Note the SIP registrar, username, and password
-    4. Ensure the trunk supports external routing
+    2. Open your SIP trunk settings
+    3. Under authentication, select **FQDN Domain** and enter `50ebbp4vhpr.eu.sip.livekit.cloud`
+    4. Use **TCP** or **TLS** as the transport protocol
+    5. Set the inbound number format to **E.164 with leading +**
+    6. Note the SIP registrar, username, and password for the itellicoAI side
   </Step>
   <Step title="Create SIP Trunk in itellicoAI">
     Go to **Telephony → SIP Trunks → Create SIP Trunk**:
@@ -23,6 +28,6 @@ Use this guide when your existing DACH phone numbers already run through Easybel
     - **SIP Auth Username/Password:** Your Easybell SIP credentials
   </Step>
   <Step title="Configure routing">
-    In Easybell, configure call forwarding to route inbound calls to the itellicoAI SIP endpoint.
+    In Easybell, configure call forwarding to route inbound calls to the itellicoAI SIP endpoint (`sip:50ebbp4vhpr.eu.sip.livekit.cloud`).
   </Step>
 </Steps>
